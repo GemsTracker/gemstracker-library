@@ -9,10 +9,24 @@
  * @license    No free license, do not copy
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\RouteHelper;
+use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Project\ProjectSettings;
+use Gems\Screens\ScreenRepository;
 use Gems\Screens\SubscribeScreenInterface;
 use Gems\Screens\UnsubscribeScreenInterface;
+use Gems\Site\SiteUtil;
+use Gems\User\User;
+use MUtil\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\RequestInfoFactory;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
+
 
 /**
  *
@@ -22,25 +36,12 @@ use Gems\Screens\UnsubscribeScreenInterface;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.6 18-Mar-2019 16:02:12
  */
-class ParticipateAction extends \MUtil\Controller\Action
+class ParticipateHandler extends SnippetLegacyHandlerAbstract
 {
     /**
-     *
-     * @var \Gems\User\User
+     * @var User|null Current user, or null when not logged in.
      */
-    public $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
+    protected User|null $currentUser = null;
 
     /**
      * The parameters used for the subscribe-thanks action.
@@ -80,98 +81,102 @@ class ParticipateAction extends \MUtil\Controller\Action
      */
     protected $unsubscribeThanksSnippets = ['Unsubscribe\\UnsubscribedSnippet'];
 
-    /**
-     * Set to true in child class for automatic creation of $this->html.
-     *
-     * To initiate the use of $this->html from the code call $this->initHtml()
-     *
-     * Overrules $useRawOutput.
-     *
-     * @see $useRawOutput
-     * @var boolean $useHtmlView
-     */
-    public bool $useHtmlView = true;
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected CurrentUserRepository $currentUserRepository,
+        protected ScreenRepository $screenRepository,
+        protected RouteHelper $routeHelper,
+        protected ResultFetcher $resultFetcher,
+        protected SiteUtil $siteUtil,
+        protected array $config,
+    ) {
+        parent::__construct($responder, $translate);
 
+        \Gems\Html::init();
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+
+    /**
+     * Return a list of organizations where the field $onfield has a value.
+     */
     protected function _getScreenOrgs($onfield)
     {
-        $select = $this->db->select();
-        $select->from('gems__organizations', ['gor_id_organization', 'gor_name'])
+        $select = $this->resultFetcher->getSelect('gems__organizations')
+                ->columns(['gor_id_organization', 'gor_name'])
                 ->where("LENGTH($onfield) > 0")
                 ->order('gor_name');
 
-        return $this->db->fetchPairs($select);
+        return $this->resultFetcher->fetchPairs($select);
     }
 
     /**
-     *
-     * @param array $input
-     * @return array
+     * Nothing here yet.
      */
-    protected function _processParameters(array $input)
+    public function indexAction(): void
     {
-        $output = array();
-
-        foreach ($input as $key => $value) {
-            if (is_string($value) && method_exists($this, $value)) {
-                $value = $this->$value($key);
-
-                if (is_integer($key) || ($value === null)) {
-                    continue;
-                }
-            }
-            $output[$key] = $value;
-        }
-
-        return $output;
     }
-
+   
     /**
-     * Ask the user which organization to participate with
-     *
-     * @return void
+     * Ask the user which organization to participate with.
      */
-    public function subscribeAction()
+    public function subscribeAction(): void
     {
-        $orgId = urldecode($this->getRequest()->getParam('org'));
+        $queryParams = $this->request->getQueryParams();
+        $orgId = $queryParams['org'] ?? null;
 
-        if ($orgId && ($orgId != $this->currentUser->getCurrentOrganizationId())) {
+        if ($this->currentUser) {
             $allowedOrganizations = $this->currentUser->getAllowedOrganizations();
-            if ((! $this->currentUser->isActive()) || isset($allowedOrganizations[$orgId])) {
-                $this->currentUser->setCurrentOrganization($orgId);
-            }
+        } else {
+            $site = $this->siteUtil->getCurrentSite($this->request);
+            $allowedOrganizations = $this->siteUtil->getNamedOrganizationsFromSiteUrl($site);
+        }
+        $screenOrganizations = $this->_getScreenOrgs('gor_respondent_subscribe');
+        $subscribableOrganizations = array_intersect_assoc($allowedOrganizations, $screenOrganizations);
+
+        if ($orgId && !isset($subscribableOrganizations[$orgId])) {
+            // The organization Id was set but it is not valid.
+            $ordId = null;
         }
 
-        $this->html->h1($this->_('Subscribe'));
+        // If there is only one organization we can subscribe to, select it.
+        if (count($subscribableOrganizations) == 1) {
+            $orgId = key($subscribableOrganizations);
+        }
 
-        $screen = $this->currentUser->getCurrentOrganization()->getSubscribeScreen();
+        $this->setCurrentOrganization($orgId);
 
-        if ($screen instanceof SubscribeScreenInterface) {
-            $params   = $screen->getSubscribeParameters();
-            $snippets = $screen->getSubscribeSnippets();
+        // What to show if there are no organizations to subscribe to.
+        $params   = [];
+        $snippets = ['Subscribe\\NoSubscriptionsSnippet'];
+
+        if ($orgId) {
+            $screen = $this->screenRepository->getSubscribeScreenForOrganizationId($orgId);
+            if ($screen instanceof SubscribeScreenInterface) {
+                $params   = $screen->getSubscribeParameters();
+                $snippets = $screen->getSubscribeSnippets();
+            }
         } else {
-            $list = $this->_getScreenOrgs('gor_respondent_subscribe');
-            if ($list) {
+            if ($subscribableOrganizations) {
                 $params   = [
                     'action' => 'subscribe',
                     'info'   => $this->_('Select an organization to subscribe to:'),
-                    'orgs'   => $list,
+                    'orgs'   => $subscribableOrganizations,
                     ];
                 $snippets = ['Organization\\ChooseListedOrganizationSnippet'];
-            } else {
-                $params   = [];
-                $snippets = ['Subscribe\\NoSubscriptionsSnippet'];
             }
         }
 
+        $params = $this->convertLegacyRouteActionToAfterSaveRouteUrl($params);
+
+        $this->addSnippets('Gems\\Snippets\\Generic\\ContentTitleSnippet', ['contentTitle' => $this->_('Subscribe'), 'tagName' => 'h1']);
         $this->addSnippets($snippets, $params);
     }
 
     /**
      * Show the thanks screen
-     *
-     * @return void
      */
-    public function subscribeThanksAction()
+    public function subscribeThanksAction(): void
     {
         if ($this->subscribeThanksSnippets) {
             $params = $this->_processParameters($this->subscribeThanksParameters);
@@ -182,51 +187,64 @@ class ParticipateAction extends \MUtil\Controller\Action
 
     /**
      * Ask the user which organization to unsubscribe from
-     *
-     * @return void
      */
-    public function unsubscribeAction()
+    public function unsubscribeAction(): void
     {
-        $orgId = urldecode($this->getRequest()->getParam('org'));
+        $queryParams = $this->request->getQueryParams();
+        $orgId = $queryParams['org'] ?? null;
 
-        if ($orgId && ($orgId != $this->currentUser->getCurrentOrganizationId())) {
+        if ($this->currentUser) {
             $allowedOrganizations = $this->currentUser->getAllowedOrganizations();
-            if ((! $this->currentUser->isActive()) || isset($allowedOrganizations[$orgId])) {
-                $this->currentUser->setCurrentOrganization($orgId);
-            }
+        } else {
+            $site = $this->siteUtil->getCurrentSite($this->request);
+            $allowedOrganizations = $this->siteUtil->getNamedOrganizationsFromSiteUrl($site);
+        }
+        $screenOrganizations = $this->_getScreenOrgs('gor_respondent_unsubscribe');
+        $unsubscribableOrganizations = array_intersect_assoc($allowedOrganizations, $screenOrganizations);
+
+        if ($orgId && !isset($unsubscribableOrganizations[$orgId])) {
+            // The organization Id was set but it is not valid.
+            $ordId = null;
         }
 
-        $this->html->h1($this->_('Unsubscribe'));
+        // If there is only one organization we can subscribe to, select it.
+        if (count($unsubscribableOrganizations) == 1) {
+            $orgId = key($unsubscribableOrganizations);
+        }
 
-        $screen = $this->currentUser->getCurrentOrganization()->getUnsubscribeScreen();
+        $this->setCurrentOrganization($orgId);
 
-        if ($screen instanceof UnsubscribeScreenInterface) {
-            $params   = $screen->getUnsubscribeParameters();
-            $snippets = $screen->getUnsubscribeSnippets();
+        // What to show if there are no organizations to subscribe to.
+        $params   = [];
+        $snippets = ['Unsubscribe\\NoUnsubscriptionsSnippet'];
+
+        if ($orgId) {
+            $screen = $this->screenRepository->getUnsubscribeScreenForOrganizationId($orgId);
+            if ($screen instanceof UnsubscribeScreenInterface) {
+                $params   = $screen->getUnsubscribeParameters();
+                $snippets = $screen->getUnsubscribeSnippets();
+            }
         } else {
-            $list = $this->_getScreenOrgs('gor_respondent_unsubscribe');
-            if ($list) {
+            if ($unsubscribableOrganizations) {
                 $params   = [
                     'action' => 'unsubscribe',
                     'info'   => $this->_('Select an organization to unsubscribe from:'),
-                    'orgs'   => $list,
+                    'orgs'   => $unsubscribableOrganizations,
                     ];
                 $snippets = ['Organization\\ChooseListedOrganizationSnippet'];
-            } else {
-                $params   = [];
-                $snippets = ['Unsubscribe\\NoUnsubscriptionsSnippet'];
             }
         }
 
+        $params = $this->convertLegacyRouteActionToAfterSaveRouteUrl($params);
+
+        $this->addSnippets('Gems\\Snippets\\Generic\\ContentTitleSnippet', ['contentTitle' => $this->_('Unsubscribe'), 'tagName' => 'h1']);
         $this->addSnippets($snippets, $params);
     }
 
     /**
      * Show the thanks screen
-     *
-     * @return void
      */
-    public function unsubscribeThanksAction()
+    public function unsubscribeThanksAction(): void
     {
         if ($this->unsubscribeThanksSnippets) {
             $params = $this->_processParameters($this->unsubscribeThanksParameters);
@@ -236,20 +254,35 @@ class ParticipateAction extends \MUtil\Controller\Action
     }
 
     /**
-     * Ask the user which organization to participate with
-     *
+     * Since we don't have the routeHelper in the Snippets we're loading, convert
+     * the route name to a URL here.
+     * @param  array  $params Snippet parameters
+     * @return array          Updated snippet parameters
+     */
+    private function convertLegacyRouteActionToAfterSaveRouteUrl(array $params): array
+    {
+        // Convert routeAction to afterSaveRouteUrl
+        if (isset($params['routeAction'])) {
+            $params['afterSaveRouteUrl'] = $this->routeHelper->getRouteUrl($params['routeAction']);
+            unset($params['routeAction']);
+        }
+        return $params;
+    }
+
+    /**
+     * Set the current organization. We set it on the currentUserRepository
+     * for the case where we don't have a logged in user, and additionally
+     * on the currentUser if we do.
+     * @param  int|null $orgId OrganizationId
      * @return void
      */
-    public function unsubscribeToOrgAction()
+    private function setCurrentOrganization(?int $orgId): void
     {
-        $request = $this->getRequest();
-        $orgId   = urldecode($request->getParam('org'));
-
-        $allowedOrganizations = $this->currentUser->getAllowedOrganizations();
-        if ((! $this->currentUser->isActive()) || isset($allowedOrganizations[$orgId])) {
-            $this->currentUser->setCurrentOrganization($orgId);
+        if ($orgId) {
+            $this->currentUserRepository->setCurrentOrganizationId($orgId);
+            if ($this->currentUser && ($orgId != $this->currentUser->getCurrentOrganizationId())) {
+                $this->currentUser->setCurrentOrganization($orgId);
+            }
         }
-
-        $this->forward('unsubscribe');
     }
 }

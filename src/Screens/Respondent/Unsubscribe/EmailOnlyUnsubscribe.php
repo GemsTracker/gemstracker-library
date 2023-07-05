@@ -24,11 +24,11 @@ use Gems\Screens\UnsubscribeScreenInterface;
 class EmailOnlyUnsubscribe extends \MUtil\Translate\TranslateableAbstract implements UnsubscribeScreenInterface
 {
     /**
-     * Use currentUser since currentOrganization may have changed by now
+     * Use currentUserRepository, we may not have a currentUser.
      *
-     * @var \Gems\User\User
+     * @var \Gems\Legacy\CurrentUserRepository
      */
-    protected $currentUser;
+    protected $currentUserRepository;
 
     /**
      *
@@ -48,7 +48,7 @@ class EmailOnlyUnsubscribe extends \MUtil\Translate\TranslateableAbstract implem
         return [
             'formTitle' => sprintf(
                     $this->_('Unsubscribe from surveys for %s'),
-                    $this->currentUser->getCurrentOrganization()->getName()
+                    $this->currentUserRepository->getCurrentOrganization()->getName()
                     ),
             'routeAction' => 'unsubscribe-thanks',
             'saveLabel' => $this->_('Unsubscribe'),

@@ -11,7 +11,19 @@
 
 namespace Gems\Snippets\Unsubscribe;
 
-use Gems\Snippets\FormSnippetAbstractMUtil;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Loader;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Snippets\FormSnippetAbstract;
+use Gems\User\Organization;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Literal;
+use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Where;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -21,25 +33,13 @@ use Gems\Snippets\FormSnippetAbstractMUtil;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 19-Mar-2019 14:17:37
  */
-class EmailUnsubscribeSnippet extends FormSnippetAbstractMUtil
+class EmailUnsubscribeSnippet extends FormSnippetAbstract
 {
     /**
      *
      * @var \Gems\User\Organization
      */
     protected $currentOrganization;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
 
     /**
      * Since this forms acts as if it was successful when a valid e-mail address was
@@ -66,12 +66,27 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstractMUtil
      */
     protected $userData = [0 => []];
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        protected Loader $loader,
+        protected MenuSnippetHelper $menuHelper,
+        protected readonly Adapter $db,
+        protected readonly CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+
+        $this->currentOrganization = $this->currentUserRepository->getCurrentOrganization();
+    }
+
     /**
      * Add the elements to the form
      *
-     * @param \Zend_Form $form
+     * @param mixed $form
      */
-    protected function addFormElements(\Zend_Form $form)
+    protected function addFormElements(mixed $form)
     {
 //        \MUtil\EchoOut\EchoOut::track('EmailUnsubscribeSnippet');
         // Veld inlognaam
@@ -79,8 +94,9 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstractMUtil
         $element->setLabel($this->_('Your E-Mail address'))
                 ->setAttrib('size', 30)
                 ->setRequired(true)
-                ->addValidator('SimpleEmail')
-                ->addValidator($this->loader->getSubscriptionThrottleValidator());
+                ->addValidator('SimpleEmail');
+                // FIXME Roel
+//                ->addValidator($this->loader->getSubscriptionThrottleValidator());
 
         $form->addElement($element);
 
@@ -111,17 +127,17 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstractMUtil
     protected function afterSave($changed)
     {
         // \MUtil\EchoOut\EchoOut::track($this->getMessenger()->getCurrentMessages(), $this->formData, $this->userData, $this->realChange);
-
+        /*
+        // This is also commented in our parent class (FormSnippetAbstract)
         foreach ($this->userData as $userData) {
-            $this->accesslog->logEntry(
-                    $this->request,
-                    $this->request->getControllerName() . '.' . $this->request->getActionName(),
-                    $this->realChange,
-                    $this->getMessenger()->getCurrentMessages(),
+            $this->accesslogRepository->logRequest(
+                    $this->requestInfo,
+                    $this->getMessages(),
                     $this->formData + $userData,
                     isset($userData['gr2o_id_user']) ? $userData['gr2o_id_user'] : 0,
-                    true);
+                    $this->realChange);
         }
+        */
     }
 
     /**
@@ -134,26 +150,43 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstractMUtil
         $this->addMessage($this->unsubscribedMessage ?:
                 $this->_('If your E-email address is known, you have been unsubscribed.'));
 
-        $sql = "SELECT gr2o_patient_nr, gr2o_id_organization, gr2o_id_user, gr2o_mailable FROM gems__respondent2org
-            WHERE gr2o_email = ? AND gr2o_id_organization = ?";
+        $sql = new Sql($this->db);
+        $select = $sql->select()
+            ->columns([
+                'gr2o_patient_nr',
+                'gr2o_id_organization',
+                'gr2o_id_user',
+                'gr2o_mailable',
+            ])
+            ->from('gems__respondent2org')
+            ->where([
+                'gr2o_email' => $this->formData['email'],
+                'gr2o_id_organization' => $this->currentOrganization->getId(),
+            ]);
 
-        $rows = $this->db->fetchAll($sql, [$this->formData['email'], $this->currentOrganization->getId()]);
+        $resultSet = $sql->prepareStatementForSqlObject($select)->execute();
+
         // \MUtil\EchoOut\EchoOut::track($rows);
-        foreach ($rows as $id => $row) {
+        foreach ($resultSet as $id => $row) {
             // Save respondent & ord id
             $this->userData[$id]['gr2o_id_user']         = $row['gr2o_id_user'];
             $this->userData[$id]['gr2o_id_organization'] = $this->currentOrganization->getId();
 
             if ($row['gr2o_mailable']) {
-                $row['gr2o_mailable'] = $this->unsubscribedValue;
-                $row['gr2o_changed'] = new \MUtil\Db\Expr\CurrentTimestamp();
-                $row['gr2o_changed_by'] = $row['gr2o_id_user'];
+                $values = [
+                    'gr2o_mailable' => $this->unsubscribedValue,
+                    'gr2o_changed' => new Literal('CURRENT_TIMESTAMP'),
+                    'gr2o_changed_by' => $row['gr2o_id_user'],
+                ];
 
-                $where = $this->db->quoteInto("gr2o_patient_nr = ?", $row['gr2o_patient_nr']) . " AND " .
-                    $this->db->quoteInto("gr2o_id_organization = ?", $row['gr2o_id_organization']) . " AND " .
-                    $this->db->quoteInto("gr2o_mailable > ?", $this->unsubscribedValue);
-
-                $this->db->update('gems__respondent2org', $row, $where);
+                $update = $sql->update('gems__respondent2org')
+                    ->where([
+                        'gr2o_email' => $this->formData['email'],
+                        'gr2o_id_organization' => $this->currentOrganization->getId(),
+                    ])->where(function (Where $where) {
+                        $where->notEqualTo('gr2o_mailable', $this->unsubscribedValue);
+                    })->set($values);
+                $sql->prepareStatementForSqlObject($update)->execute();
 
                 // Signal something has actually changed for logging purposes
                 $this->realChange = true;

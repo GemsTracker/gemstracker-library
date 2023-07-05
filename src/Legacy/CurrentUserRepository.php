@@ -20,7 +20,7 @@ class CurrentUserRepository
 
     protected ?int $organizationId = null;
 
-    protected ?UserLoader $userLoader;
+    protected ?UserLoader $userLoader = null;
 
     public function __construct(ProjectOverloader $loader)
     {
@@ -78,6 +78,17 @@ class CurrentUserRepository
         }
 
         return $this->userLoader;
+    }
+
+    /**
+     * Returns the organization that is currently used by this user.
+     *
+     * @return \Gems\User\Organization
+     */
+    public function getCurrentOrganization()
+    {
+        $userLoader = $this->getUserLoader();
+        return $userLoader->getOrganization($this->getCurrentOrganizationId());
     }
 
     public function setCurrentUser(User $user): void
