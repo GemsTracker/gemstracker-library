@@ -37,7 +37,7 @@ class GemsSources extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gso_ls_class', 'string', [
                 'null' => false,
-                'default' => 'Gems_Source_LimeSurvey1m9Database',
+                'default' => 'Gems_Source_LimeSurvey3m00Database',
                 'limit' => 60,
                 'collation' => 'utf8mb4_unicode_ci',
                 'encoding' => 'utf8mb4',
