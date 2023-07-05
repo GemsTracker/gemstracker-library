@@ -508,11 +508,11 @@ class TokenRepository
      */
     public function getTokenShowLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $plusLabel = true): ?AElement
     {
-        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.show')) {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.track.token.show')) {
             //return null;
         }
 
-        $routeName = 'respondent.tracks.show';
+        $routeName = 'respondent.tracks.token.show';
         $label = $this->translator->_('Show');
 
         if ($plusLabel) {
