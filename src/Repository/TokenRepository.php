@@ -278,10 +278,10 @@ class TokenRepository
      * @param boolean $keepCaps Keep the capital letters in the label
      * @return LateCall
      */
-    public function getTokenAnswerLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $keepCaps = false): LateCall
+    public function getTokenAnswerLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $keepCaps = false): ?LateCall
     {
         if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.token.answer')) {
-            //return null;
+            return null;
         }
 
         $url = $helper->getLateRouteUrl('respondent.tracks.token.answer', [
@@ -459,10 +459,10 @@ class TokenRepository
     /**
      * De a lazy answer link for bridges
      */
-    public function getTokenEmailLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper): LateCall
+    public function getTokenEmailLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper): ?LateCall
     {
         if (! $this->currentUser->hasPrivilege('pr.respondent.track.email')) {
-            //return null;
+            return null;
         }
 
         return Late::method($this, 'getTokenEmailLink',
