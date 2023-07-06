@@ -24,6 +24,8 @@ use Mezzio\Session\SessionInterface;
  */
 class EditTrackSnippet extends EditTrackSnippetAbstract
 {
+    protected string $afterSaveRoutePart = 'respondent.tracks.show';
+
     /**
      * @var SessionInterface
      */
