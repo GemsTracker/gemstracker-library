@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Middleware;
 
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Menu\MenuRepository;
 use Mezzio\Router\RouteResult;
 use Psr\Http\Message\ResponseInterface;
@@ -22,7 +23,9 @@ class MenuMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $menu = $this->menuRepository->getMenu();
+        $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+
+        $menu = $this->menuRepository->getMenu($user);
 
         // TODO: Disable default param
 

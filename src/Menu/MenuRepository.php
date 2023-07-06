@@ -4,6 +4,9 @@ namespace Gems\Menu;
 
 use Gems\Event\Application\CreateMenuEvent;
 use Gems\Event\Application\MenuBuildItemsEvent;
+use Gems\User\User;
+use Laminas\Permissions\Acl\Acl;
+use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -16,16 +19,20 @@ class MenuRepository
 
     public function __construct(
         private readonly TemplateRendererInterface $templateRenderer,
-        private readonly RouteHelper $routeHelper,
+        private readonly Acl $acl,
+        private readonly UrlHelper $urlHelper,
         private readonly TranslatorInterface $translator,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly array $config,
     )
     {}
 
-    public function getMenu(): Menu
+    public function getMenu(?User $user): Menu
     {
         if (!$this->menu instanceof Menu) {
-            $menu = new Menu($this->templateRenderer, $this->routeHelper, $this->getMenuConfig());
+            $routeHelper = $this->getRouteHelper($user);
+
+            $menu = new Menu($this->templateRenderer, $routeHelper, $this->getMenuConfig());
 
             $event = new CreateMenuEvent($menu);
             $this->eventDispatcher->dispatch($event);
@@ -49,5 +56,15 @@ class MenuRepository
         }
 
         return $this->menuConfig;
+    }
+
+    protected function getRouteHelper(?User $user): RouteHelper
+    {
+        $userRole = null;
+        if ($user instanceof User) {
+            $userRole = $user->getRole();
+        }
+
+        return new RouteHelper($this->acl, $this->urlHelper, $userRole, $this->config);
     }
 }
