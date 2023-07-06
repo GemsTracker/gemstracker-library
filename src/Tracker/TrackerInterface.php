@@ -10,7 +10,19 @@
 
 namespace Gems\Tracker;
 
+use Gems\Agenda\Appointment;
 use Gems\Task\TaskRunnerBatch;
+use Gems\Tracker\Engine\TrackEngineInterface;
+use Gems\Tracker\Form\AskTokenForm;
+use Gems\Tracker\Model\RespondentTrackModel;
+use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Model\TrackModel;
+use Gems\Tracker\Source\SourceInterface;
+use Gems\Tracker\Token\TokenFilter;
+use Gems\Tracker\Token\TokenLibrary;
+use Gems\Tracker\Token\TokenSelect;
+use Gems\Tracker\Token\TokenValidator;
+use Laminas\Db\Sql\Expression;
 use Mezzio\Session\SessionInterface;
 
 /**
@@ -70,7 +82,7 @@ interface TrackerInterface
      * @param SessionInterface $session
      * @return \Gems\Tracker\RespondentTrack The newly created track
      */
-    public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = null, array $trackFieldsData = array(), SessionInterface $session = null);
+    public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int $userId, int|array|null $respTrackData = null, array $trackFieldsData = [], SessionInterface $session = null): RespondentTrack;
 
     /**
      * Dynamically load and create a [Gems|Project]_Tracker class
@@ -80,7 +92,7 @@ interface TrackerInterface
      * @param mixed $param2
      * @return object
      */
-    public function createTrackClass($className, $param1 = null, $param2 = null);
+    public function createTrackClass(string $className, mixed $param1 = null, mixed $param2 = null): object;
 
     /**
      * Creates a new token with a new random token Id
@@ -98,7 +110,7 @@ interface TrackerInterface
      * @param array $newValues
      * @return array
      */
-    public function filterChangesOnly(array $oldValues, array &$newValues);
+    public function filterChangesOnly(array $oldValues, array &$newValues): array;
 
     /**
      * Removes all unacceptable characters from the input token and inserts any fixed characters left out
@@ -106,22 +118,22 @@ interface TrackerInterface
      * @param string $tokenId
      * @return string Reformatted token
      */
-    public function filterToken($tokenId);
+    public function filterToken(string $tokenId): string;
 
     /**
      * Returns an array of all field id's for all tracks that have a code id
      *
      * @return array id => code
      */
-    public function getAllCodeFields();
+    public function getAllCodeFields(): array;
 
     /**
      * Get an appointment object
      *
-     * @param mixed $appointmentData Appointment id or array containing appintment data
+     * @param int|array $appointmentData Appointment id or array containing appintment data
      * @return \Gems\Agenda\Appointment
      */
-    public function getAppointment($appointmentData);
+    public function getAppointment(int|array $appointmentData): Appointment;
 
     /**
      * Returns a form to ask for a token
@@ -129,14 +141,14 @@ interface TrackerInterface
      * @param mixed $args_array \MUtil\Ra::args array for Form initiation.
      * @return \Gems\Tracker\Form\AskTokenForm
      */
-    public function getAskTokenForm($args_array = null);
+    public function getAskTokenForm(mixed $args_array = null): AskTokenForm;
 
     /**
      *
-     * @param mixed $respTrackData Track id or array containing trackdata
+     * @param int|array $respTrackData Track id or array containing trackdata
      * @return \Gems\Tracker\RespondentTrack
      */
-    public function getRespondentTrack($respTrackData);
+    public function getRespondentTrack(int|array $respTrackData): RespondentTrack;
 
     /**
      * Get all tracks for a respondent
@@ -148,14 +160,14 @@ interface TrackerInterface
      * @param mixed $order The column(s) and direction to order by
      * @return \Gems\Tracker\RespondentTrack[]
      */
-    public function getRespondentTracks($respondentId, $organizationId, $order = array('gr2t_start_date'));
+    public function getRespondentTracks(int $respondentId, int $organizationId, string|array|Expression $order = ['gr2t_start_date']): array;
 
     /**
      * Load project specific model or general \Gems model otherwise
      *
      * @return \Gems\Tracker\Model\RespondentTrackModel
      */
-    public function getRespondentTrackModel();
+    public function getRespondentTrackModel(): RespondentTrackModel;
 
     /**
      * Retrieve a SourceInterface with a given id
@@ -163,31 +175,31 @@ interface TrackerInterface
      * Should only be called by \Gems\Tracker, \Gems\Tracker\Survey or \Gems\Tracker\Token (or should
      * this one use Gems\Tracker\Survey instead?)
      *
-     * @param mixed $sourceData \Gems source id or array containing gems source data
+     * @param int|array $sourceData \Gems source id or array containing gems source data
      * @return \Gems\Tracker\Source\SourceInterface
      */
-    public function getSource($sourceData);
+    public function getSource(int|array $sourceData): SourceInterface;
 
     /**
      * Returns all registered source classes
      *
      * @return array Of classname => description
      */
-    public function getSourceClasses();
+    public function getSourceClasses(): array;
 
     /**
      * Returns all registered database source classes
      *
      * @return array Of classname => description
      */
-    public function getSourceDatabaseClasses();
+    public function getSourceDatabaseClasses(): array;
 
     /**
      *
-     * @param mixed $surveyData \Gems survey id or array containing gems survey data
+     * @param int|array $surveyData \Gems survey id or array containing gems survey data
      * @return \Gems\Tracker\Survey
      */
-    public function getSurvey($surveyData);
+    public function getSurvey(int|array $surveyData): Survey;
 
     /**
      *
@@ -195,7 +207,7 @@ interface TrackerInterface
      * @param int $sourceId The gems source id of the source
      * @return \Gems\Tracker\Survey
      */
-    public function getSurveyBySourceId($sourceSurveyId, $sourceId);
+    public function getSurveyBySourceId(int|string $sourceSurveyId, int $sourceId): Survey;
 
     /**
      *
@@ -203,27 +215,27 @@ interface TrackerInterface
      * @param \Gems\Tracker\Source\SourceInterface $source
      * @return \Gems\Tracker\SurveyModel
      */
-    public function getSurveyModel(\Gems\Tracker\Survey $survey, \Gems\Tracker\Source\SourceInterface $source);
+    public function getSurveyModel(Survey $survey, SourceInterface $source): SurveyModel;
 
     /**
      *
-     * @param mixed $tokenData Token id or array containing tokendata
+     * @param string|array $tokenData Token id or array containing tokendata
      * @return \Gems\Tracker\Token
      */
-    public function getToken($tokenData);
+    public function getToken(string|array $tokenData): Token;
 
     /**
      *
      * @return \Gems\Tracker\Token\TokenFilter
      */
-    public function getTokenFilter();
+    public function getTokenFilter(): TokenFilter;
 
     /**
      * Use this function only within \Gems\Tracker!!
      *
      * @return \Gems\Tracker\Token\TokenLibrary
      */
-    public function getTokenLibrary();
+    public function getTokenLibrary(): TokenLibrary;
 
     /**
      * Returns a token model of the specified class with full display information
@@ -231,41 +243,41 @@ interface TrackerInterface
      * @param string $modelClass Optional class to use instead of StandardTokenModel. Must be subclass.
      * @return \Gems\Tracker\Model\StandardTokenModel
      */
-    public function getTokenModel($modelClass = 'StandardTokenModel');
+    public function getTokenModel(string $modelClass = 'StandardTokenModel'): StandardTokenModel;
 
     /**
      * Create a select statement on the token table
      *
      * @return \Gems\Tracker\Token\TokenSelect
      */
-    public function getTokenSelect($fields = '*');
+    public function getTokenSelect(string|array $fields = '*'): TokenSelect;
 
     /**
      *
      * @return \Gems\Tracker\Token\TokenValidator
      */
-    public function getTokenValidator();
+    public function getTokenValidator(): TokenValidator;
 
     /**
      * Get the allowed display groups for tracks in this project.
      *
      * @return array
      */
-    public function getTrackDisplayGroups();
+    public function getTrackDisplayGroups(): array;
 
     /**
      *
-     * @param mixed $trackData \Gems track id or array containing gems track data
+     * @param int|array $trackData \Gems track id or array containing gems track data
      * @return \Gems\Tracker\Engine\TrackEngineInterface
      */
-    public function getTrackEngine($trackData);
+    public function getTrackEngine(int|array $trackData): TrackEngineInterface;
 
     /**
      *
      * @param string $trackCode Track code or whole word part of code to find track by
      * @return \Gems\Tracker\Engine\TrackEngineInterface or null when not found
      */
-    public function getTrackEngineByCode($trackCode);
+    public function getTrackEngineByCode(string $trackCode): TrackEngineInterface|null;
 
     /**
      * Returns dummy objects for all registered track engines class names
@@ -280,14 +292,14 @@ interface TrackerInterface
      * @static $dummyClasses Cache array
      * @return array Of \Gems\Tracker\Engine\TrackEngineInterface
      */
-    public function getTrackEngineClasses();
+    public function getTrackEngineClasses(): array;
 
     /**
      * Return the edit snippets for editing or creating a new track
      *
      * @return array of snippet names for creating a new track engine
      */
-    public function getTrackEngineEditSnippets();
+    public function getTrackEngineEditSnippets(): array;
 
     /**
      * Returns all registered track engines classes for use in drop down lists.
@@ -296,14 +308,14 @@ interface TrackerInterface
      * @param boolean $userCreatableOnly Return only the classes that can be created by the user interface
      * @return array Of classname => description
      */
-    public function getTrackEngineList($extended = false, $userCreatableOnly = false);
+    public function getTrackEngineList(bool $extended = false, bool $userCreatableOnly = false): array;
 
     /**
      * Simple function for a default track model.
      *
      * @return \Gems\Tracker\Model\TrackModel
      */
-    public function getTrackModel();
+    public function getTrackModel(): TrackModel;
 
     /**
      * Checks the token table to see if there are any answered surveys to be processed
@@ -335,7 +347,7 @@ interface TrackerInterface
      * @param string $cond
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function recalculateTokens(SessionInterface $session, $batch_id, $userId = null, $cond = null): TaskRunnerBatch;
+    public function recalculateTokens(SessionInterface $session, string $batch_id, ?int $userId = null, string $cond = null, mixed $bind = null): TaskRunnerBatch;
 
     /**
      * Recalculates the fields in tracks.
@@ -365,7 +377,7 @@ interface TrackerInterface
      * @param string|\Gems\Tracker\Token $token
      * @return \Gems\Tracker (continuation pattern)
      */
-    public function removeToken($token);
+    public function removeToken(Token|string $token): self;
 
     /**
      * Recalculates all token dates, timing and results
