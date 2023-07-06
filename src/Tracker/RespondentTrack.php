@@ -14,16 +14,21 @@ namespace Gems\Tracker;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\Db\ResultFetcher;
 use Gems\Event\Application\TokenEvent;
 use Gems\Event\Application\RespondentTrackFieldUpdateEvent;
 use Gems\Event\Application\RespondentTrackFieldEvent;
+use Gems\Registry\TargetAbstract;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Translate\DbTranslateUtilTrait;
 
 use Gems\User\Mask\MaskRepository;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\TableGateway;
 use MUtil\Model;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Zalt\Base\TranslateableTrait;
 
 /**
  * Object representing a track assignment to a respondent.
@@ -34,15 +39,17 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class RespondentTrack extends \Gems\Registry\TargetAbstract
+class RespondentTrack extends TargetAbstract
 {
     use DbTranslateUtilTrait;
+
+    use TranslateableTrait;
 
     /**
      *
      * @var array of round_id => \Gems\Tracker\Token
      */
-    protected $_activeTokens = array();
+    protected $_activeTokens = [];
 
     /**
      * @var \Gems\Tracker\Token
@@ -121,6 +128,11 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
     protected MaskRepository $maskRepository;
 
     /**
+     * @var ResultFetcher
+     */
+    protected $resultFetcher;
+
+    /**
      *
      * @var \Gems\Tracker
      */
@@ -136,7 +148,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
      *
      * @param mixed $respTracksData Track Id or array containing reps2track record
      */
-    public function __construct($respTracksData)
+    public function __construct(int|array $respTracksData)
     {
         if (is_array($respTracksData)) {
             $this->_respTrackData = $respTracksData;
@@ -160,7 +172,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
                 gems__reception_codes ON gto_reception_code = grc_id_reception_code AND grc_success = 1
             WHERE gto_id_respondent_track = ?';
 
-        $counts = $this->db->fetchRow($sqlCount, $this->_respTrackId);
+        $counts = $this->resultFetcher->fetchRow($sqlCount, [$this->_respTrackId]);
         if (! $counts) {
             $counts = array('count' => 0, 'completed' => 0);
         }
@@ -231,7 +243,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
             $respId = $this->_respTrackData['gr2t_id_user'];
             $orgId  = $this->_respTrackData['gr2t_id_organization'];
 
-            if ($row = $this->db->fetchRow($sql, array($respId, $orgId))) {
+            if ($row = $this->resultFetcher->fetchRow($sql, array($respId, $orgId))) {
                 $this->_respTrackData = $this->_respTrackData + $row;
             } else {
                 $trackId = $this->_respTrackId;
@@ -335,7 +347,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
         }
         // \MUtil\EchoOut\EchoOut::track($values);
         if ($this->tracker->filterChangesOnly($this->_respTrackData, $values)) {
-            $where = $this->db->quoteInto('gr2t_id_respondent_track = ?', $this->_respTrackId);
+            $where = ['gr2t_id_respondent_track' => $this->_respTrackId];
 
             if (\Gems\Tracker::$verbose) {
                 $echo = '';
@@ -346,7 +358,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
             }
 
             if (! isset($values['gr2t_changed'])) {
-                $values['gr2t_changed'] = new \MUtil\Db\Expr\CurrentTimestamp();
+                $values['gr2t_changed'] = new Expression('NOW()');
             }
             if (! isset($values['gr2t_changed_by'])) {
                 $values['gr2t_changed_by'] = $userId;
@@ -355,8 +367,8 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
             $this->_respTrackData = $values + $this->_respTrackData;
             // \MUtil\EchoOut\EchoOut::track($values);
             // return 1;
-            return $this->db->update('gems__respondent2track', $values, $where);
-
+            $table = new TableGateway('gems__respondent2track', $this->resultFetcher->getAdapter());
+            return $table->update($values, $where);
         } else {
             return 0;
         }
@@ -421,8 +433,13 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
         $tokenData['gto_changed']             = new \MUtil\Db\Expr\CurrentTimestamp();
         $tokenData['gto_changed_by']          = $userId;
 
-        $where = $this->db->quoteInto('gto_id_token = ?', $token->getTokenId());
+        $where = [
+            'gto_id_token' => $token->getTokenId()
+        ];
         $this->db->update('gems__tokens', $tokenData, $where);
+
+        $table = new TableGateway('gems__tokens', $this->resultFetcher->getAdapter());
+        $table->update($tokenData, $where);
 
         $token->refresh();
 
