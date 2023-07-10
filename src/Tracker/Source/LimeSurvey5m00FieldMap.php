@@ -264,51 +264,6 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
     }
 
     /**
-     * Return an array with all possible answers for a given sid/field combination
-     *
-     * @param array $field    Field from getFieldMap function
-     */
-    protected function _getMultiOptions($field)
-    {
-        $scaleId = isset($field['scale_id']) ? $field['scale_id'] : 0;
-        $qid     = $field['qid'];
-
-        switch ($field['type']) {
-            case 'F':
-            case 'H':
-            case 'L':
-            case 'O':
-            case 'R':
-            case '1':
-            case '!':
-                $answers = $this->_getHardAnswers($qid, $scaleId);
-                break;
-
-            case ':':
-                //Get the labels that could apply!
-                $answers = false;
-                if ($this->_getQuestionAttribute($qid, 'multiflexible_checkbox')) {
-                    $answers = $this->_getFixedAnswers($field['type']);
-                }
-                break;
-
-            case "C":
-            case "E":
-            case 'G':
-            case 'M':
-            case 'P':
-            case 'Y':
-                $answers = $this->_getFixedAnswers($field['type']);
-                break;
-
-            default:
-                $answers = false;
-        }
-
-        return $answers;
-    }
-
-    /**
      * Return a certain question attribute or the default value if it does not exist.
      *
      * @param string $qid

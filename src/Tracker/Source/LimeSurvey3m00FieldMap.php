@@ -399,7 +399,7 @@ class LimeSurvey3m00FieldMap
     /**
      * Return an array with all possible answers for a given sid/field combination
      *
-     * @param $field    Field from getFieldMap function
+     * @param array $field    Field from getFieldMap function
      */
     protected function _getMultiOptions($field)
     {
