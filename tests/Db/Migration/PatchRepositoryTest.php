@@ -18,6 +18,9 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Model\MetaModel;
 
+/**
+ * @group database
+ */
 class PatchRepositoryTest extends MigrationRepositoryTestAbstract
 {
     use ProphecyTrait;

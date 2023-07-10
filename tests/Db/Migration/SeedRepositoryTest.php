@@ -17,6 +17,9 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Model\MetaModel;
 
+/**
+ * @group database
+ */
 class SeedRepositoryTest extends MigrationRepositoryTestAbstract
 {
     public function setUp(): void

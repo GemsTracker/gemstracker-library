@@ -21,6 +21,9 @@ use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Model\MetaModel;
 
+/**
+ * @group database
+ */
 class TableRepositoryTest extends MigrationRepositoryTestAbstract
 {
 
