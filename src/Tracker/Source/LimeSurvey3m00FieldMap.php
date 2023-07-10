@@ -132,7 +132,7 @@ class LimeSurvey3m00FieldMap
         return $this->tablePrefix . self::GROUPS_TABLE;
     }
 
-    private function _getFixedAnswers($type)
+    protected function _getFixedAnswers($type)
     {
         switch ($type) {
             case ':':
@@ -156,7 +156,7 @@ class LimeSurvey3m00FieldMap
             case 'M':
             case 'P':
                 $answers['Y'] = $this->translate->_('Checked');
-                $answers['']  = '';
+                $answers['']  = $this->translate->_('Not checked');
                 break;
             case "Y":
                 $answers['Y'] = $this->translate->_('Yes');
@@ -399,7 +399,7 @@ class LimeSurvey3m00FieldMap
     /**
      * Return an array with all possible answers for a given sid/field combination
      *
-     * @param $field    Field from getFieldMap function
+     * @param array $field    Field from getFieldMap function
      */
     protected function _getMultiOptions($field)
     {

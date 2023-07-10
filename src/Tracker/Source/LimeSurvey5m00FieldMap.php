@@ -20,42 +20,6 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         return $this->tablePrefix . self::ANSWERS_TRANSLATE_TABLE;
     }
 
-    private function _getFixedAnswers($type)
-    {
-        switch ($type) {
-            case ':':
-                $answers[1] = $this->translate->_('Yes');
-                $answers[0] = $this->translate->_('No');
-                break;
-            case "C":
-                $answers['Y'] = $this->translate->_('Yes');
-                $answers['N'] = $this->translate->_('No');
-                $answers['U'] = $this->translate->_('Uncertain');
-                break;
-            case "E":
-                $answers['I'] = $this->translate->_('Increase');
-                $answers['S'] = $this->translate->_('Same');
-                $answers['D'] = $this->translate->_('Decrease');
-                break;
-            case 'G':
-                $answers['F'] = $this->translate->_('Female');
-                $answers['M'] = $this->translate->_('Male');
-                break;
-            case 'M':
-            case 'P':
-                $answers['Y'] = $this->translate->_('Checked');
-                $answers['']  = $this->translate->_('Not checked');
-                break;
-            case "Y":
-                $answers['Y'] = $this->translate->_('Yes');
-                $answers['N'] = $this->translate->_('No');
-                break;
-            default:
-                $answers = false;
-        }
-        return $answers;
-    }
-
     /**
      * The groups table contains group texts per group id / language
      *
@@ -297,51 +261,6 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         }
 
         return (array)$this->_fieldMap;
-    }
-
-    /**
-     * Return an array with all possible answers for a given sid/field combination
-     *
-     * @param array $field    Field from getFieldMap function
-     */
-    protected function _getMultiOptions($field)
-    {
-        $scaleId = isset($field['scale_id']) ? $field['scale_id'] : 0;
-        $qid     = $field['qid'];
-
-        switch ($field['type']) {
-            case 'F':
-            case 'H':
-            case 'L':
-            case 'O':
-            case 'R':
-            case '1':
-            case '!':
-                $answers = $this->_getHardAnswers($qid, $scaleId);
-                break;
-
-            case ':':
-                //Get the labels that could apply!
-                $answers = false;
-                if ($this->_getQuestionAttribute($qid, 'multiflexible_checkbox')) {
-                    $answers = $this->_getFixedAnswers($field['type']);
-                }
-                break;
-
-            case "C":
-            case "E":
-            case 'G':
-            case 'M':
-            case 'P':
-            case 'Y':
-                $answers = $this->_getFixedAnswers($field['type']);
-                break;
-
-            default:
-                $answers = false;
-        }
-
-        return $answers;
     }
 
     /**
