@@ -167,7 +167,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                 1,
                 $patchInfo['module'],
                 $patchInfo['name'],
-                'sucess',
+                'success',
                 join("\n", $patchInfo['sql']),
                 null,
                 $start,

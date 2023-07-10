@@ -240,7 +240,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 1,
                 $seedInfo['module'],
                 $seedInfo['name'],
-                'sucess',
+                'success',
                 join("\n", $finalQueries),
                 null,
                 $start,
