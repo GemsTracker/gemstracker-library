@@ -20,7 +20,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         return $this->tablePrefix . self::ANSWERS_TRANSLATE_TABLE;
     }
 
-    private function _getFixedAnswers($type)
+    protected function _getFixedAnswers($type)
     {
         switch ($type) {
             case ':':

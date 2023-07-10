@@ -132,7 +132,7 @@ class LimeSurvey3m00FieldMap
         return $this->tablePrefix . self::GROUPS_TABLE;
     }
 
-    private function _getFixedAnswers($type)
+    protected function _getFixedAnswers($type)
     {
         switch ($type) {
             case ':':
