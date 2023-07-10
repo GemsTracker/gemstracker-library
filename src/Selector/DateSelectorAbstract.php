@@ -15,7 +15,7 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 
-use Gems\Menu\MenuSnippetHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
 use MUtil\Model\Transform\RequiredRowsTransformer;
@@ -127,7 +127,7 @@ abstract class DateSelectorAbstract
         protected Translator $translator,
         protected Localized $localized,
         protected \Zend_Db_Adapter_Abstract $db,
-        protected MenuSnippetHelper $menuSnippetHelper,
+        protected RouteHelper $routeHelper,
         protected Translated $translatedUtil,
     )
     {}
@@ -343,6 +343,11 @@ abstract class DateSelectorAbstract
         return $model;
     }
 
+    protected function getBaseUrl(): string
+    {
+        return $this->routeHelper->getRouteUrlOnMatch($this->requestInfo->getRouteName(), $this->requestInfo->getRequestMatchedParams());
+    }
+
     protected function getDateDescriptions()
     {
         return array(
@@ -538,7 +543,7 @@ abstract class DateSelectorAbstract
 
     protected function setTableBody(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
-        $baseurl = $this->menuSnippetHelper->getRouteUrl($this->requestInfo->getRouteName(), $this->requestInfo->getRequestMatchedParams());
+        $baseurl = $this->getBaseUrl();
         $onEmpty = $this->translator->_('-');
 
         foreach ($this->getFields() as $name => $field) {
@@ -562,7 +567,7 @@ abstract class DateSelectorAbstract
 
     protected function setTableFooter(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
-        $baseurl = $this->menuSnippetHelper->getRouteUrl($this->requestInfo->getRouteName(), $this->requestInfo->getRequestMatchedParams());
+        $baseurl = $this->getBaseUrl();
 
         // Empty cell for left column
         $bridge->tf();
@@ -585,7 +590,7 @@ abstract class DateSelectorAbstract
 
     protected function setTableHeader(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
-        $baseurl = $this->menuSnippetHelper->getRouteUrl($this->requestInfo->getRouteName(), $this->requestInfo->getRequestMatchedParams());
+        $baseurl = $this->getBaseUrl();
         
         // Left cell with period types
         $th = $bridge->th($this->translator->_('Period'), ' ');

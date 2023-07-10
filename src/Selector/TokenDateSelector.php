@@ -11,12 +11,11 @@
 
 namespace Gems\Selector;
 
-use Gems\Menu\MenuSnippetHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
 use MUtil\Translate\Translator;
-use Zalt\Base\RequestInfo;
 
 /**
  *
@@ -52,12 +51,11 @@ class TokenDateSelector extends DateSelectorAbstract
         Translator $translator,
         Localized $localized,
         \Zend_Db_Adapter_Abstract $db,
-        MenuSnippetHelper $menuSnippetHelper,
+        RouteHelper $routeHelper,
         Translated $translatedUtil,
         protected TokenRepository $tokenRepository
     ) {
-        parent::__construct($translator, $localized, $db, $menuSnippetHelper, $translatedUtil);
-
+        parent::__construct($translator, $localized, $db, $routeHelper, $translatedUtil);
     }
 
     /**
