@@ -20,42 +20,6 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         return $this->tablePrefix . self::ANSWERS_TRANSLATE_TABLE;
     }
 
-    protected function _getFixedAnswers($type)
-    {
-        switch ($type) {
-            case ':':
-                $answers[1] = $this->translate->_('Yes');
-                $answers[0] = $this->translate->_('No');
-                break;
-            case "C":
-                $answers['Y'] = $this->translate->_('Yes');
-                $answers['N'] = $this->translate->_('No');
-                $answers['U'] = $this->translate->_('Uncertain');
-                break;
-            case "E":
-                $answers['I'] = $this->translate->_('Increase');
-                $answers['S'] = $this->translate->_('Same');
-                $answers['D'] = $this->translate->_('Decrease');
-                break;
-            case 'G':
-                $answers['F'] = $this->translate->_('Female');
-                $answers['M'] = $this->translate->_('Male');
-                break;
-            case 'M':
-            case 'P':
-                $answers['Y'] = $this->translate->_('Checked');
-                $answers['']  = $this->translate->_('Not checked');
-                break;
-            case "Y":
-                $answers['Y'] = $this->translate->_('Yes');
-                $answers['N'] = $this->translate->_('No');
-                break;
-            default:
-                $answers = false;
-        }
-        return $answers;
-    }
-
     /**
      * The groups table contains group texts per group id / language
      *

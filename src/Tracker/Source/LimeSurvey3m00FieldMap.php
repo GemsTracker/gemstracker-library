@@ -156,7 +156,7 @@ class LimeSurvey3m00FieldMap
             case 'M':
             case 'P':
                 $answers['Y'] = $this->translate->_('Checked');
-                $answers['']  = '';
+                $answers['']  = $this->translate->_('Not checked');
                 break;
             case "Y":
                 $answers['Y'] = $this->translate->_('Yes');
