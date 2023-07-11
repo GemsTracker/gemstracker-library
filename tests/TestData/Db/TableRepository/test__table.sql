@@ -7,6 +7,6 @@ CREATE TABLE if not exists test__table
     PRIMARY KEY (tt_id)
     )
     ENGINE = InnoDB
-    auto_increment = 20
+    auto_increment = 0
     CHARACTER SET 'utf8mb4'
     COLLATE utf8mb4_general_ci;
