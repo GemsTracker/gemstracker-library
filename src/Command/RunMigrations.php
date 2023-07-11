@@ -42,7 +42,7 @@ class RunMigrations extends Command
         $this->addArgument('command', InputArgument::OPTIONAL, sprintf('use \'all\' Directy run all migrations'));
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $command = $input->getArgument('all');
 
@@ -53,10 +53,10 @@ class RunMigrations extends Command
             default => $this->showAll($input, $output),
         };
 
-        return $result;
+        return $result ? Command::SUCCESS : Command::FAILURE;
     }
 
-    protected function createTables(array $tables, SymfonyStyle $io): void
+    protected function createTables(array $tables, SymfonyStyle $io): bool
     {
         foreach($tables as $tableInfo) {
             try {
@@ -64,24 +64,29 @@ class RunMigrations extends Command
                 $io->success(sprintf('%s %s successfully executed', 'Table', $tableInfo['name']));
             } catch (\Exception $e) {
                 $io->error(sprintf('%s %s failed.. %s', 'Table', $tableInfo['name'], $e->getMessage()));
+                return false;
             }
         }
+
+        return true;
     }
 
-    protected function initDatabase(InputInterface $input, OutputInterface $output): int
+    protected function initDatabase(InputInterface $input, OutputInterface $output): bool
     {
         $io = new SymfonyStyle($input, $output);
 
         $tables = $this->getTables();
         $seeds = $this->getSeeds();
 
-        $this->createTables($tables, $io);
+        if (!$this->createTables($tables, $io)) {
+            return false;
+        }
         $this->patchRepository->setBaseline();
 
-        $this->runSeeds($seeds, $io);
+        return $this->runSeeds($seeds, $io);
     }
 
-    protected function runAll(InputInterface $input, OutputInterface $output): int
+    protected function runAll(InputInterface $input, OutputInterface $output): bool
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -89,12 +94,17 @@ class RunMigrations extends Command
         $patches = $this->getPatches();
         $seeds = $this->getSeeds();
 
-        $this->createTables($tables, $io);
-        $this->runPatches($patches, $io);
-        $this->runSeeds($seeds, $io);
+        if (!$this->createTables($tables, $io)) {
+            return false;
+        }
+        if (!$this->runPatches($patches, $io)) {
+            return false;
+        }
+
+        return $this->runSeeds($seeds, $io);
     }
 
-    protected function runPatches(array $patches, SymfonyStyle $io): void
+    protected function runPatches(array $patches, SymfonyStyle $io): bool
     {
         foreach($patches as $patchInfo) {
             try {
@@ -102,11 +112,14 @@ class RunMigrations extends Command
                 $io->success(sprintf('%s %s successfully executed', 'Patch', $patchInfo['name']));
             } catch (\Exception $e) {
                 $io->error(sprintf('%s %s failed.. %s', 'Patch', $patchInfo['name'], $e->getMessage()));
+                return false;
             }
         }
+
+        return true;
     }
 
-    protected function runSeeds(array $seeds, SymfonyStyle $io): void
+    protected function runSeeds(array $seeds, SymfonyStyle $io): bool
     {
         foreach($seeds as $seedInfo) {
             try {
@@ -114,11 +127,14 @@ class RunMigrations extends Command
                 $io->success(sprintf('%s %s successfully executed', 'Seed', $seedInfo['name']));
             } catch (\Exception $e) {
                 $io->error(sprintf('%s %s failed.. %s', 'Seed', $seedInfo['name'], $e->getMessage()));
+                return false;
             }
         }
+
+        return true;
     }
 
-    protected function showAll(InputInterface $input, OutputInterface $output): int
+    protected function showAll(InputInterface $input, OutputInterface $output): bool
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -133,7 +149,7 @@ class RunMigrations extends Command
 
         $result = $io->confirm('Run all migrations?', false);
         if (!$result) {
-            return Command::SUCCESS;
+            return true;
         }
         return $this->runAll($input, $output);
     }
