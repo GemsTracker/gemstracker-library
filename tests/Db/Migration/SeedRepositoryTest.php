@@ -317,8 +317,12 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'tt_description' => 'hello yaml',
             ],
             [
-                'tt_id' => 20,
+                'tt_id' => 6,
                 'tt_description' => 'hello another yaml',
+            ],
+            [
+                'tt_id' => 7,
+                'tt_description' => 'hi php',
             ],
             [
                 'tt_id' => 21,
@@ -331,10 +335,6 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
             [
                 'tt_id' => 23,
                 'tt_description' => 'hello yml',
-            ],
-            [
-                'tt_id' => 24,
-                'tt_description' => 'hi php',
             ],
         ];
 
@@ -376,8 +376,12 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'tt_description' => 'hello yaml',
             ],
             [
-                'tt_id' => 20,
+                'tt_id' => 6,
                 'tt_description' => 'hello another yaml',
+            ],
+            [
+                'tt_id' => 7,
+                'tt_description' => 'hi php',
             ],
             [
                 'tt_id' => 21,
@@ -386,10 +390,6 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
             [
                 'tt_id' => 22,
                 'tt_description' => 'hello another json',
-            ],
-            [
-                'tt_id' => 23,
-                'tt_description' => 'hi php',
             ],
         ];
 
