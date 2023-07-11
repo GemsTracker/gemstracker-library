@@ -12,7 +12,7 @@ class MailTransportFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): TransportInterface
     {
         /**
-         * @var $communicationRepository CommunicationRepository
+         * @var CommunicationRepository
          */
         $communicationRepository = $container->get(CommunicationRepository::class);
         return $communicationRepository->getCombinedTransport();
