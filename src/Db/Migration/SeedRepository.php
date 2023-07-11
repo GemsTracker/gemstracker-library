@@ -103,6 +103,14 @@ class SeedRepository extends MigrationRepositoryAbstract
 
         $seedLogs = array_column($this->getLoggedResources('seed'), null, 'gml_name');
 
+        // Sort by order first and name second.
+        uasort($seedInfo, function($a, $b) {
+            if ($a['order'] != $b['order']) {
+                return $a['order'] - $b['order'];
+            }
+            return strcmp($a['name'], $b['name']);
+        });
+
         foreach($seedInfo as $seedKey => $seedRow) {
             $seedInfo[$seedKey]['status'] = 'new';
             $seedInfo[$seedKey]['executed'] = null;

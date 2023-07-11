@@ -221,6 +221,28 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'sql' => null,
                 'comment' => null,
             ],
+            PhpSeed::class => [
+                'name' => PhpSeed::class,
+                'type' => 'seed',
+                'description' => null,
+                'order' => 501,
+                'data' => [
+                    'test__table' => [
+                        [
+                            'tt_description' => 'hi php',
+                        ],
+                    ],
+                ],
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php')),
+                'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
+                'db' => 'gems',
+                'module' => 'gems',
+                'status' => 'new',
+                'executed' => null,
+                'duration' => null,
+                'sql' => null,
+                'comment' => null,
+            ],
             'jsonTestSeed' => [
                 'name' => 'jsonTestSeed',
                 'type' => 'seed',
@@ -269,31 +291,11 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'sql' => null,
                 'comment' => null,
             ],
-            PhpSeed::class => [
-                'name' => PhpSeed::class,
-                'type' => 'seed',
-                'description' => null,
-                'order' => 501,
-                'data' => [
-                    'test__table' => [
-                        [
-                            'tt_description' => 'hi php',
-                        ],
-                    ],
-                ],
-                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php')),
-                'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
-                'db' => 'gems',
-                'module' => 'gems',
-                'status' => 'new',
-                'executed' => null,
-                'duration' => null,
-                'sql' => null,
-                'comment' => null,
-            ],
         ];
 
         $this->assertEquals($expected, $seedInfo);
+        // Also assert that the order of the array elements is as expected.
+        $this->assertEquals(array_keys($expected), array_keys($seedInfo), 'Seeds are in the wrong order');
     }
 
     public function testRunSeed()
