@@ -170,7 +170,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'name' => PhpSeed::class,
                 'type' => 'seed',
                 'description' => null,
-                'order' => 1000,
+                'order' => 501,
                 'data' => [
                     'test__table' => [
                         [
@@ -273,7 +273,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'name' => PhpSeed::class,
                 'type' => 'seed',
                 'description' => null,
-                'order' => 1000,
+                'order' => 501,
                 'data' => [
                     'test__table' => [
                         [

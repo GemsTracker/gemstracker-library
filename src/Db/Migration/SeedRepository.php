@@ -142,7 +142,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 'module' => $seedClassInfo['module'] ?? 'gems',
                 'type' => 'seed',
                 'description' => $description,
-                'order' => $this->defaultOrder,
+                'order' => $seedClass->getOrder() ?? $this->defaultOrder,
                 'data' => $data,
                 'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime($reflectionClass->getFileName())),
                 'location' => $reflectionClass->getFileName(),
