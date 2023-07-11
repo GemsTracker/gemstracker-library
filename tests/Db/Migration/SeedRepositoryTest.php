@@ -86,7 +86,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'name' => 'anotherTestSeed',
                 'type' => 'seed',
                 'description' => null,
-                'order' => 1000,
+                'order' => 100,
                 'data' => [
                     'test__table' => [
                         [
@@ -199,7 +199,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'name' => 'anotherTestSeed',
                 'type' => 'seed',
                 'description' => null,
-                'order' => 1000,
+                'order' => 100,
                 'data' => [
                     'test__table' => [
                         [

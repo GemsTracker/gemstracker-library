@@ -169,7 +169,7 @@ class SeedRepository extends MigrationRepositoryAbstract
 
 
             foreach ($files as $file) {
-                $filenameParts = explode('.', $file->getBaseName('.sql'));
+                $filenameParts = explode('.', $file->getBaseName());
                 $name = $filenameParts[0];
                 $data = $this->getSeedDataFromFile($file);
                 $description = $data['description'] ?? null;
@@ -184,7 +184,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                     'location' => $file->getRealPath(),
                     'db' => $directory['db'],
                 ];
-                if (count($filenameParts) === 2 && is_numeric($filenameParts[1])) {
+                if (count($filenameParts) === 3 && is_numeric($filenameParts[1])) {
                     $seed['order'] = (int)$filenameParts[1];
                 }
                 $seeds[$name] = $seed;
