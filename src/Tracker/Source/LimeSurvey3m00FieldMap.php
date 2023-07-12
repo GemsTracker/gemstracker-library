@@ -209,7 +209,7 @@ class LimeSurvey3m00FieldMap
         $cacheId = 'lsFieldMap'.$this->sourceId . '_'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
         $this->_fieldMap = $this->cache->getCacheItem($cacheId);
 
-        if (false === $this->_fieldMap) {
+        if (null === $this->_fieldMap) {
             $aTable = $this->_getQuestionAttributesTableName();
             $cTable = $this->_getQuestionConditonsTableName();
             $gTable = $this->_getGroupsTableName();
