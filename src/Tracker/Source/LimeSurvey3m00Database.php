@@ -1437,7 +1437,7 @@ class LimeSurvey3m00Database extends SourceAbstract
             }
         } else {
             // No start date, use save date in the past to block access
-            $lsFrom  = DateTimeImmutable::createFromFormat('Y-m-d', '1900-01-01');
+            $lsFrom  = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1900-01-01 00:00:00');
             $lsUntil = $lsFrom;
         }
 
