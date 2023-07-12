@@ -11,7 +11,10 @@
 
 namespace Gems\Tracker\Source;
 
+use Gems\Db\Dsn;
+use Laminas\Db\Adapter\Adapter;
 use Gems\Encryption\ValueEncryptor;
+use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 
 /**
  * Abstract implementation of SourceInterface containing basic utilities and logical
@@ -48,10 +51,8 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
 
     /**
      * The database connection to the source, usedable by all implementations that use a database
-     *
-     * @var \Zend_Db_Adapter_Abstract
      */
-    private $_sourceDb;
+    private Adapter $_sourceDb;
 
     /**
      *
@@ -295,12 +296,10 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
 
     /**
      * Get the db adapter for this source
-     *
-     * @return \Zend_Db_Adapter_Abstract
      */
-    public function getSourceDatabase()
+    public function getSourceDatabase(): Adapter
     {
-        if (! $this->_sourceDb) {
+        if (! isset($this->_sourceDb)) {
 
             if ($dbConfig['dbname'] = $this->_sourceData['gso_ls_database']) {
 
@@ -309,7 +308,8 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
                 $gemsName   = $gemsConfig['dbname'];
 
                 if (($dbConfig['dbname'] != $gemsName) &&
-                    ($adapter = $this->_sourceData['gso_ls_adapter'])) {
+                    ($driver = $this->_sourceData['gso_ls_adapter'])) {
+                    $dbConfig['driver'] = $driver;
 
                     //If upgrade has run and we have a 'charset' use it
                     if (array_key_exists('gso_ls_charset', $this->_sourceData)) {
@@ -332,12 +332,13 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
                         ? $this->valueEncryptor->decrypt($this->_sourceData['gso_ls_password'])
                         : $gemsConfig['password'];
 
-                    $this->_sourceDb = \Zend_Db::factory($adapter, $dbConfig);
+                    $this->_sourceDb = new Adapter(new Pdo(new \Pdo(Dsn::fromConfig($dbConfig))));
                 }
             }
 
             // In all other cases use $_gemsDb
-            if (! $this->_sourceDb) {
+            // FIXME _gemsDb is still \Zend_Db_Adapter_Abstract
+            if (! isset($this->_sourceDb)) {
                 $this->_sourceDb = $this->_gemsDb;
             }
         }
