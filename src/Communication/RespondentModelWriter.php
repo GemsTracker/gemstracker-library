@@ -11,7 +11,7 @@
 namespace Gems\Communication;
 
 use Gems\Model;
-use Gems\Util\ReceptionCodeLibrary;
+use Gems\Repository\ReceptionCodeRepository;
 
 /**
  * Writer implementation to save respondents to the database
@@ -49,7 +49,7 @@ class RespondentModelWriter implements \Gems\Communication\RespondentWriter
         $parameters = $this->_model->applyParameters(
             array(
                 'grs_ssn' => $respondent->getBsn(),
-                'gr2o_reception_code' => ReceptionCodeLibrary::RECEPTION_OK,
+                'gr2o_reception_code' => ReceptionCodeRepository::RECEPTION_OK,
                 'gr2o_patient_nr' => $respondent->getPatientId()
             )
         );

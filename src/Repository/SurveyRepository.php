@@ -2,11 +2,40 @@
 
 namespace Gems\Repository;
 
+use Gems\Db\CachedResultFetcher;
+use Gems\Tracker\Survey;
+use Gems\Translate\CachedDbTranslationRepository;
+use Gems\Translate\DbTranslationRepository;
 use Gems\Util\UtilDbHelper;
+use Zalt\Loader\ProjectOverloader;
 
 class SurveyRepository
 {
-    public function __construct(protected UtilDbHelper $utilDbHelper)
+    protected array $cacheTags = [
+        'survey',
+        'surveys'
+    ];
+
+    protected array $defaultData = [
+        'gsu_active' => 0,
+        'gsu_code' => null,
+        'gsu_valid_for_length' => 6,
+        'gsu_valid_for_unit' => 'M',
+        'ggp_member_type' => 'respondent'
+    ];
+
+    /**
+     * @var int Counter for new surveys, negative value used as temp survey id
+     */
+    public static int $newSurveyCount = 0;
+
+    public function __construct(
+        protected UtilDbHelper $utilDbHelper,
+        protected CachedResultFetcher $cachedResultFetcher,
+        protected CachedDbTranslationRepository $cachedDbTranslationRepository,
+        protected ProjectOverloader $projectOverloader,
+        protected GroupRepository $groupRepository,
+    )
     {}
 
     /**
@@ -63,6 +92,45 @@ class SurveyRepository
                         $orgIn
                 )
                 ORDER BY gsu_survey_name");
+    }
+
+    public function getSurvey(array|int $surveyData): Survey
+    {
+        $surveyData = $this->getSurveyData($surveyData);
+
+        return $this->projectOverloader->create('Tracker\\Survey', $surveyData);
+    }
+
+    public function getSurveyData(array|int $surveyData): array
+    {
+        $data = null;
+        $surveyId = $surveyData;
+        $cacheId = 'getSurveyData' . $surveyId;
+
+        if (is_array($surveyData) && isset($surveyData['gsu_id_survey'])) {
+            $data = $surveyData;
+            if (!isset($data['ggp_member_type']) && isset($data['gsu_id_primary_group'])) {
+                $data['ggp_member_type'] = $this->groupRepository->getGroupMemberType($data['gsu_id_primary_group']);
+            }
+            $surveyId = $surveyData['gsu_id_survey'];
+        }
+
+        if (!$data) {
+            $select = $this->cachedResultFetcher->getSelect('gems__surveys');
+            $select->join('gems__groups', 'ggp_id_group = gsu_id_primary_group', [
+                'ggp_member_type',
+            ])
+                ->where(['gsu_id_survey' => $surveyId]);
+
+            $data = $this->cachedResultFetcher->fetchRow('getSurveyData' . $surveyId, $select, null, $this->cacheTags);
+
+            if (!$data) {
+                self::$newSurveyCount++;
+                return ['gsu_id_survey' => $surveyId] + $this->defaultData;
+            }
+        }
+
+        return $this->cachedDbTranslationRepository->translateTable($cacheId, 'gems__surveys', 'gsu_id_survey', $data);
     }
     
     /**

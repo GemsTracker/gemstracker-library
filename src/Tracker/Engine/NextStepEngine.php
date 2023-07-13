@@ -13,7 +13,22 @@ namespace Gems\Tracker\Engine;
 
 use DateTimeInterface;
 
+use Gems\Condition\ConditionLoader;
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Locale\Locale;
+use Gems\Project\ProjectSettings;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Tracker;
+use Gems\Tracker\RespondentTrack;
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvents;
+use Gems\Translate\DbTranslationRepository;
 use Gems\Util\Translated;
+use MUtil\Translate\Translator;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\MetaModelInterface;
 
 /**
  * Step engine that uses a begin date from the previous round and calculates the end date using the token itself.
@@ -26,11 +41,40 @@ use Gems\Util\Translated;
  */
 class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
 {
+    public function __construct(
+        array $trackData,
+        ResultFetcher $resultFetcher,
+        Tracker $tracker,
+        DbTranslationRepository $dbTranslationRepository,
+        ProjectOverloader $overloader,
+        Translator $translator,
+        TrackEvents $trackEvents,
+        ConditionLoader $conditionLoader,
+        TrackDataRepository $trackDataRepository,
+        OrganizationRepository $organizationRepository,
+        Translated $translatedUtil,
+        Locale $locale,
+        ProjectSettings $projectSettings,
+        CurrentUserRepository $currentUserRepository,
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    ) {
+        parent::__construct(
+            $trackData,
+            $resultFetcher,
+            $tracker,
+            $dbTranslationRepository,
+            $overloader,
+            $translator,
+            $trackEvents,
+            $conditionLoader,
+            $trackDataRepository,
+            $organizationRepository,
+            $translatedUtil,
+            $locale,
+            $projectSettings,
+            $currentUserRepository
+        );
+    }
 
     /**
      * Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)
@@ -39,7 +83,7 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param array $itemData    The current items data
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function applySurveyListValidAfter(\MUtil\Model\ModelAbstract $model, array &$itemData)
+    protected function applySurveyListValidAfter(MetaModelInterface $model, array &$itemData): bool
     {
         $this->_ensureRounds();
 
@@ -65,7 +109,7 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param array $itemData    The current items data
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function applySurveyListValidFor(\MUtil\Model\ModelAbstract $model, array &$itemData)
+    protected function applySurveyListValidFor(MetaModelInterface $model, array &$itemData): bool
     {
         if (! (isset($itemData['gro_id_round']) && $itemData['gro_id_round'])) {
             $itemData['gro_id_round'] = '';
@@ -74,27 +118,11 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
         $itemData['gro_valid_for_id'] = $itemData['gro_id_round'];
 
         // The options array
-        $rounds[$itemData['gro_id_round']] = $this->_('This round');
+        $rounds[$itemData['gro_id_round']] = $this->translator->_('This round');
 
         $model->set('gro_valid_for_id', 'multiOptions', $rounds, 'elementClass', 'Exhibitor');
 
         return false;
-    }
-
-    /**
-     * Convert a TrackEngine instance to a TrackEngine of another type.
-     *
-     * @see getConversionTargets()
-     *
-     * @param string $conversionTargetClass
-     */
-    public function convertTo($conversionTargetClass)
-    {
-        if ($conversionTargetClass == 'AnyStepEngine') {
-            //TODO: Check for right sequence of rounds
-        } else {
-            parent::convertTo($conversionTargetClass);
-        }
     }
 
     /**
@@ -127,9 +155,9 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      *
      * @return string Name
      */
-    public function getDescription()
+    public function getDescription(): string
     {
-        return $this->_('Engine for tracks where the next round is always dependent on the previous step.');
+        return $this->translator->_('Engine for tracks where the next round is always dependent on the previous step.');
     }
 
 
@@ -138,9 +166,9 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      *
      * @return string Name
      */
-    public function getName()
+    public function getName(): string
     {
-        return $this->_('Next Step');
+        return $this->translator->_('Next Step');
     }
 
     /**
@@ -153,7 +181,7 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param \Gems\Tracker\RespondentTrack $respTrack
      * @return ?DateTimeInterface date time or null
      */
-    protected function getValidFromDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack)
+    protected function getValidFromDate(string $fieldSource, string $fieldName, int $prevRoundId, Token $token, RespondentTrack $respTrack): ?DateTimeInterface
     {
         $date = null;
 
@@ -194,7 +222,7 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param ?DateTimeInterface $validFrom The calculated new valid from value or null
      * @return ?DateTimeInterface date time or null
      */
-    protected function getValidUntilDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack, $validFrom)
+    protected function getValidUntilDate(string $fieldSource, string $fieldName, int $prevRoundId, Token $token, RespondentTrack $respTrack, ?DateTimeInterface $validFrom = null): ?DateTimeInterface
     {
         $date = null;
 

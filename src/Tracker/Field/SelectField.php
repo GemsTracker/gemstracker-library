@@ -25,26 +25,21 @@ use Gems\Util\Translated;
 class SelectField extends FieldAbstract
 {
     /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
      * Add the model settings like the elementClass for this field.
      *
      * elementClass is overwritten when this field is read only, unless you override it again in getDataModelSettings()
      *
      * @param array $settings The settings set so far
      */
-    protected function addModelSettings(array &$settings)
+    protected function addModelSettings(array &$settings): void
     {
         $empty = [];
-        if (!$this->_fieldDefinition['gtf_required'] || $this->_fieldDefinition['gtf_field_default'] === null) {
+        if (!$this->fieldDefinition['gtf_required'] || $this->fieldDefinition['gtf_field_default'] === null) {
             $empty = $this->translatedUtil->getEmptyDropdownArray();
         }
 
-        $multiKeys = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_value_keys']);
-        $multi = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
+        $multiKeys = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_value_keys']);
+        $multi = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_values']);
 
 
         $settings['elementClass'] = 'Select';

@@ -13,7 +13,12 @@ namespace Gems\Tracker\Token;
 
 namespace Gems\Tracker\Token;
 
-use Gems\Util;
+use Gems\Db\ResultFetcher;
+use Gems\Repository\TokenRepository;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Predicate\Expression;
+use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Sql;
 
 /**
  * Helps building select statements for the Token model
@@ -23,40 +28,19 @@ use Gems\Util;
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4
- * @deprecated use \Gems\Tracker\Token\LaminasTokenSelect
  */
-class TokenSelect
+class LaminasTokenSelect
 {
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    protected array $columns = [];
 
-    /**
-     *
-     * @var \Zend_Db_Select
-     */
-    private $sql_select;
+    protected Select $select;
 
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    /**
-     *
-     * @param \Zend_Db_Adapter_Abstract $db Adapter to use
-     * @param string|array $fields Optional select fieldlist
-     */
-    public function __construct(\Zend_Db_Adapter_Abstract $db, Util $util)
+    public function __construct(
+        protected readonly ResultFetcher $resultFetcher,
+    )
     {
-        $this->db   = $db;
-        $this->util = $util;
-
-        $this->sql_select = $this->db->select();
-        $this->sql_select->from('gems__tokens', []);
+        $this->select = $this->resultFetcher->getSelect('gems__tokens');
+        $this->columns();
     }
 
     /**
@@ -65,22 +49,25 @@ class TokenSelect
      */
     public function __toString(): string
     {
-        return $this->sql_select->__toString();
+        return $this->select->getSqlString($this->resultFetcher->getPlatform());
+    }
+
+    protected function addColumns(array $columns): void
+    {
+        $this->columns = array_merge($this->columns, $columns);
+        $this->select->columns($this->columns);
     }
 
     /**
      * Add the status column to the select, $this->andReceptionCodes() must be called first
-     *
-     * @param int $groupId
-     * @return $this
-     * @throws \Zend_Db_Select_Exception
      */
     public function addShowAnswers(int $groupId): self
     {
         $this->andSurveys([]);
-        $this->sql_select->columns(
-            ['show_answers' => $this->util->getTokenData()->getShowAnswersExpression($groupId),],
-            'gems__tokens'
+        $this->addColumns(
+            [
+                'show_answers' => TokenRepository::getShowAnswersExpression($groupId),
+            ]
         );
 
         return $this;
@@ -88,18 +75,14 @@ class TokenSelect
 
     /**
      * Add the status column to the select, $this->andReceptionCodes() must be called first
-     *
-     * @return self
-     * @throws \Zend_Db_Select_Exception
      */
     public function addStatus(): self
     {
         // Some queries use multiple token tables
-        $expr = str_replace('gto_', 'gems__tokens.gto_', (string) $this->util->getTokenData()->getStatusExpression());
+        $expression = str_replace('gto_', 'gems__tokens.gto_', TokenRepository::getStatusExpression()->getExpression());
 
-        $this->sql_select->columns(
-            ['token_status' => new \Zend_Db_Expr($expr)],
-            'gems__tokens'
+        $this->addColumns(
+            ['token_status' => new Expression($expression)]
         );
 
         return $this;
@@ -113,7 +96,7 @@ class TokenSelect
      */
     public function andConsents(string|array $fields = '*'): self
     {
-        $this->sql_select->join('gems__consents',
+        $this->select->join('gems__consents',
             'gr2o_consent = gco_description',
             $fields);
 
@@ -126,11 +109,10 @@ class TokenSelect
      * @param string|array $fields
      * @param bool   $addStatus When true the token status column is added (default)
      * @return self
-     * @throws \Zend_Db_Select_Exception
      */
     public function andReceptionCodes(string|array $fields = '*', bool $addStatus = true): self
     {
-        $this->sql_select->join('gems__reception_codes',
+        $this->select->join('gems__reception_codes',
             'gems__tokens.gto_reception_code = grc_id_reception_code',
             $fields);
 
@@ -149,7 +131,7 @@ class TokenSelect
      */
     public function andRespondents(string|array $fields = '*'): self
     {
-        $this->sql_select->join('gems__respondents',
+        $this->select->join('gems__respondents',
             'gto_id_respondent = grs_id_user',
             $fields);
 
@@ -164,7 +146,7 @@ class TokenSelect
      */
     public function andRespondentOrganizations(string|array $fields = '*'): self
     {
-        $this->sql_select->join('gems__respondent2org',
+        $this->select->join('gems__respondent2org',
             'gto_id_respondent = gr2o_id_user AND gto_id_organization = gr2o_id_organization',
             $fields);
 
@@ -180,12 +162,12 @@ class TokenSelect
      */
     public function andRespondentTracks(string|array $fields = '*', bool $groupBy = false): self
     {
-        $this->sql_select->join('gems__respondent2track',
+        $this->select->join('gems__respondent2track',
             'gto_id_respondent_track = gr2t_id_respondent_track',
             $fields);
 
         if ($groupBy && is_array($fields)) {
-            $this->sql_select->group($fields);
+            $this->select->group($fields);
         }
 
         return $this;
@@ -199,7 +181,7 @@ class TokenSelect
      */
     public function andRounds(string|array $fields = '*'): self
     {
-        $this->sql_select->join('gems__rounds',
+        $this->select->join('gems__rounds',
             'gto_id_round = gro_id_round',
             $fields);
 
@@ -214,7 +196,7 @@ class TokenSelect
      */
     public function andSurveys(string|array $fields = '*'): self
     {
-        $this->sql_select->join('gems__surveys',
+        $this->select->join('gems__surveys',
             'gto_id_survey = gsu_id_survey',
             $fields);
 
@@ -230,12 +212,12 @@ class TokenSelect
      */
     public function andTracks(string|array $fields = '*', bool $groupBy = false): self
     {
-        $this->sql_select->join('gems__tracks',
+        $this->select->join('gems__tracks',
             'gto_id_track = gtr_id_track',
             $fields);
 
         if ($groupBy && is_array($fields)) {
-            $this->sql_select->group($fields);
+            $this->select->group($fields);
         }
 
         return $this;
@@ -243,7 +225,11 @@ class TokenSelect
 
     public function columns(string|array $fields = '*'): self
     {
-        $this->sql_select->columns($fields);
+        if ($fields === '*') {
+            $this->columns = [Select::SQL_STAR];
+            $fields = [Select::SQL_STAR];
+        }
+        $this->select->columns($fields);
 
         return $this;
     }
@@ -253,7 +239,7 @@ class TokenSelect
      */
     public function fetchAll(): array
     {
-        return $this->sql_select->query()->fetchAll();
+        return $this->resultFetcher->fetchAll($this->select);
     }
 
     /**
@@ -261,9 +247,9 @@ class TokenSelect
      */
     public function fetchOne(): mixed
     {
-        $this->sql_select->limit(1);
+        $this->select->limit(1);
 
-        return $this->sql_select->query()->fetchColumn(0);
+        return $this->resultFetcher->fetchOne($this->select);
     }
 
     /**
@@ -271,9 +257,9 @@ class TokenSelect
      */
     public function fetchRow(): array|bool
     {
-        $this->sql_select->limit(1);
+        $this->select->limit(1);
 
-        return $this->sql_select->query()->fetch();
+        return $this->resultFetcher->fetchRow($this->select);
     }
 
     /**
@@ -284,10 +270,7 @@ class TokenSelect
      */
     public function forGroupId(int $groupId): self
     {
-
-        // $this->andSurveys(array());
-
-        $this->sql_select->where('gsu_id_primary_group = ?', $groupId);
+        $this->select->where(['gsu_id_primary_group' => $groupId]);
 
         return $this;
     }
@@ -300,17 +283,17 @@ class TokenSelect
      */
     public function forNextTokenId(string $tokenId): self
     {
-        $this->sql_select->join('gems__tokens as ct',
+        $this->select->join('gems__tokens as ct',
             'gems__tokens.gto_id_respondent_track = ct.gto_id_respondent_track AND
                     gems__tokens.gto_id_token != ct.gto_id_token AND
                         ((gems__tokens.gto_round_order < ct.gto_round_order) OR
                             (gems__tokens.gto_round_order = ct.gto_round_order AND gems__tokens.gto_created < ct.gto_created))',
-            array());
+            []);
 
-        $this->sql_select
-            ->where('ct.gto_id_token = ?', $tokenId)
-            ->order('gems__tokens.gto_round_order DESC')
-            ->order('gems__tokens.gto_created DESC');
+        $this->select
+            ->where(['ct.gto_id_token' => $tokenId])
+            ->order(['gems__tokens.gto_round_order DESC',
+                'gems__tokens.gto_created DESC']);
 
         return $this;
     }
@@ -323,17 +306,17 @@ class TokenSelect
      */
     public function forPreviousTokenId(string $tokenId): self
     {
-        $this->sql_select->join('gems__tokens as ct',
+        $this->select->join('gems__tokens as ct',
             'gems__tokens.gto_id_respondent_track = ct.gto_id_respondent_track AND
                     gems__tokens.gto_id_token != ct.gto_id_token AND
                         ((gems__tokens.gto_round_order > ct.gto_round_order) OR
                             (gems__tokens.gto_round_order = ct.gto_round_order AND gems__tokens.gto_created > ct.gto_created))',
             array());
 
-        $this->sql_select
-            ->where('ct.gto_id_token = ?', $tokenId)
-            ->order('gems__tokens.gto_round_order')
-            ->order('gems__tokens.gto_created');
+        $this->select
+            ->where(['ct.gto_id_token' => $tokenId])
+            ->order(['gems__tokens.gto_round_order',
+                'gems__tokens.gto_created']);
 
         return $this;
     }
@@ -345,13 +328,13 @@ class TokenSelect
      * @param int $organizationId Optional
      * @return self
      */
-    public function forRespondent(?int $respondentId = null, ?int $organizationId = null): self
+    public function forRespondent(int $respondentId, int $organizationId = null): self
     {
         if (null !== $respondentId) {
-            $this->sql_select->where('gto_id_respondent = ?', $respondentId);
+            $this->select->where(['gto_id_respondent' => $respondentId]);
         }
         if (null !== $organizationId) {
-            $this->sql_select->where('gto_id_organization = ?', $organizationId);
+            $this->select->where(['gto_id_organization' => $organizationId]);
         }
 
         return $this;
@@ -365,10 +348,10 @@ class TokenSelect
      */
     public function forRespondentTrack(int $respTrackId): self
     {
-        $this->sql_select
-            ->where('gto_id_respondent_track = ?', $respTrackId)
-            ->order('gto_round_order')
-            ->order('gto_created');
+        $this->select
+            ->where(['gto_id_respondent_track' => $respTrackId])
+            ->order(['gto_round_order',
+                'gto_created']);
 
         return $this;
     }
@@ -381,7 +364,7 @@ class TokenSelect
      */
     public function forRound(int $roundId): self
     {
-        $this->sql_select->where('gto_id_round = ?', $roundId);
+        $this->select->where(['gto_id_round' => $roundId]);
 
         return $this;
     }
@@ -394,7 +377,7 @@ class TokenSelect
      */
     public function forSurveyCode(string $surveyCode): self
     {
-        $this->sql_select->where('gsu_code = ?', $surveyCode);
+        $this->select->where(['gsu_code' => $surveyCode]);
 
         return $this;
     }
@@ -407,7 +390,7 @@ class TokenSelect
      */
     public function forSurveyId(int $surveyId): self
     {
-        $this->sql_select->where('gto_id_survey = ?', $surveyId);
+        $this->select->where(['gto_id_survey' => $surveyId]);
 
         return $this;
     }
@@ -420,7 +403,7 @@ class TokenSelect
      */
     public function forTokenId(string $tokenId): self
     {
-        $this->sql_select->where('gto_id_token = ?', $tokenId);
+        $this->select->where(['gto_id_token' => $tokenId]);
 
         return $this;
     }
@@ -432,9 +415,9 @@ class TokenSelect
      * @param mixed $bind optional bind values
      * @return self
      */
-    public function forWhere(string $cond, mixed $bind = null): self
+    public function forWhere(array $conditions): self
     {
-        $this->sql_select->where($cond, $bind);
+        $this->select->where($conditions);
 
         return $this;
     }
@@ -442,11 +425,11 @@ class TokenSelect
     /**
      * Get the constructed select statement
      *
-     * @return \Zend_Db_Select
+     * @return Select
      */
-    public function getSelect(): \Zend_Db_Select
+    public function getSelect(): Select
     {
-        return $this->sql_select;
+        return $this->select;
     }
 
     /**
@@ -459,13 +442,12 @@ class TokenSelect
      */
     public function onlyActive(bool $recentCheck = false): self
     {
-        $this->sql_select
-            ->where('gto_in_source = ?', 1)
-            ->where('gto_completion_time IS NULL');
+        $this->select
+            ->where(['gto_in_source' => 1,
+                'gto_completion_time IS NULL']);
 
         if ($recentCheck) {
-            $this->sql_select->where('gto_start_time > DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)');
-            //$this->sql_select->where('(gto_valid_until IS NULL OR gto_valid_until > CURRENT_TIMESTAMP)');
+            $this->select->where(['gto_start_time > DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)']);
         }
 
         return $this;
@@ -480,8 +462,8 @@ class TokenSelect
      */
     public function onlyCompleted(): self
     {
-        $this->sql_select
-            ->where('gto_completion_time IS NOT NULL');
+        $this->select
+            ->where(['gto_completion_time IS NOT NULL']);
 
         return $this;
     }
@@ -493,7 +475,7 @@ class TokenSelect
      */
     public function onlySucces(): self
     {
-        $this->sql_select->where('grc_success = 1');
+        $this->select->where(['grc_success' => 1]);
 
         return $this;
     }
@@ -507,9 +489,10 @@ class TokenSelect
      */
     public function onlyValid(): self
     {
-        $this->sql_select->where('gto_completion_time IS NULL')
-            ->where('gto_valid_from <= CURRENT_TIMESTAMP')
-            ->where('(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)');
+
+        $this->select->where->isNull('gto_completion_time')
+            ->lessThanOrEqualTo('gto_valid_from', new Expression('CURRENT_TIMESTAMP'))
+            ->where->nest()->isNull('gto_valid_until')->or->greaterThanOrEqualTo('gto_valid_until', new Expression('CURRENT_TIMESTAMP'));
 
         return $this;
     }
@@ -521,7 +504,7 @@ class TokenSelect
      */
     public function order(mixed $spec): self
     {
-        $this->sql_select->order($spec);
+        $this->select->order($spec);
 
         return $this;
     }
@@ -534,7 +517,7 @@ class TokenSelect
      */
     public function withoutToken(string $tokenId): self
     {
-        $this->sql_select->where('gto_id_token != ?', $tokenId);
+        $this->select->where->notEqualTo('gto_id_token', $tokenId);
 
         return $this;
     }

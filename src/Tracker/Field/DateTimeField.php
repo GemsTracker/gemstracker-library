@@ -11,6 +11,10 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Tracker;
+use MUtil\Model;
+use MUtil\Model\Bridge\FormBridge;
+
 /**
  *
  *
@@ -27,30 +31,23 @@ class DateTimeField extends DateField
      *
      * @var int
      */
-    protected $type = \MUtil\Model::TYPE_DATETIME;
+    protected int $type = Model::TYPE_DATETIME;
 
     /**
      * The format string for outputting dates
      *
      * @var string
      */
-    protected $phpDateTimeFormat = 'j M Y H:i:s';
-
-    /**
-     * The format string for outputting dates
-     *
-     * @var string
-     */
-    protected $zendDateTimeFormat = 'dd MMM yyyy HH:mm:ss';
+    protected string $phpDateTimeFormat = 'j M Y H:i:s';
 
     /**
      * Get the date display format (zend style)
      *
      * @return string
      */
-    protected function getDateFormat()
+    protected function getDateFormat(): string
     {
-        return \MUtil\Model\Bridge\FormBridge::getFixedOption('datetime', 'dateFormat');
+        return FormBridge::getFixedOption('datetime', 'dateFormat');
     }
 
     /**
@@ -58,8 +55,8 @@ class DateTimeField extends DateField
      *
      * @return string
      */
-    protected function getStorageFormat()
+    protected function getStorageFormat(): string
     {
-        return \Gems\Tracker::DB_DATETIME_FORMAT;
+        return Tracker::DB_DATETIME_FORMAT;
     }
 }

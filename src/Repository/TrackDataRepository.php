@@ -2,14 +2,21 @@
 
 namespace Gems\Repository;
 
+use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\Util\UtilDbHelper;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Predicate\PredicateSet;
+use MUtil\Translate\Translator;
 
 class TrackDataRepository
 {
-    public function __construct(protected UtilDbHelper $utilDbHelper, protected ResultFetcher $resultFetcher)
+    public function __construct(
+        protected UtilDbHelper $utilDbHelper,
+        protected ResultFetcher $resultFetcher,
+        protected CachedResultFetcher $cachedResultFetcher,
+        protected Translator $translator,
+    )
     {}
 
     public function getActiveTracksForOrgs(array $organizationIds)
@@ -69,6 +76,25 @@ class TrackDataRepository
             $active ? ['gsu_active' => 1] : null,
             'asort'
         );
+    }
+
+    /**
+     * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name plus gsu_survey_description
+     *
+     * @return array
+     */
+    public function getAllSurveysAndDescriptions()
+    {
+        $select = 'SELECT gsu_id_survey,
+            	CONCAT(
+            		SUBSTR(CONCAT_WS(
+            			" - ", gsu_survey_name, CASE WHEN LENGTH(TRIM(gsu_survey_description)) = 0 THEN NULL ELSE gsu_survey_description END
+            		), 1, 50),
+        			CASE WHEN gsu_active = 1 THEN " (' . $this->translator->_('Active') . ')" ELSE " (' . $this->translator->_('Inactive') . ')" END
+    			)
+            	FROM gems__surveys ORDER BY gsu_survey_name';
+
+        return $this->cachedResultFetcher->fetchPairs(__CLASS__ . '_' . __FUNCTION__, $select, null, ['surveys']);
     }
 
     public function getAllTrackRoundsForOrgs(array $allowedOrgIds)

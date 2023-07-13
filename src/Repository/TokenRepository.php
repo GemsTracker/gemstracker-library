@@ -58,7 +58,7 @@ class TokenRepository
      * @param int $groupId
      * @return Expression
      */
-    public function getShowAnswersExpression(int $groupId): Expression
+    public static function getShowAnswersExpression(int $groupId): Expression
     {
         return new Expression(sprintf(
             "CASE WHEN gsu_answers_by_group = 0 OR gsu_answer_groups LIKE '%%|%d|%%' THEN 1 ELSE 0 END",
@@ -115,7 +115,7 @@ class TokenRepository
      *
      * @return Expression
      */
-    public function getStatusExpression(): Expression
+    public static function getStatusExpression(): Expression
     {
         return new Expression("
             CASE

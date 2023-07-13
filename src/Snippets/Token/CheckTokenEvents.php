@@ -62,6 +62,9 @@ class CheckTokenEvents extends TranslatableSnippetAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
+        /**
+         * @var TokenReadonly $checkToken
+         */
         $checkToken = $this->projectOverloader->create(TokenReadonly::class, $this->token);
 
         $checkSurvey = $checkToken->getSurvey();

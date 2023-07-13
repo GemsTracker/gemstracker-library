@@ -11,7 +11,8 @@
 
 namespace Gems\Tracker;
 
-use MUtil\Ra\RaObject;
+use Gems\Tracker;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -22,32 +23,33 @@ use MUtil\Ra\RaObject;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 7, 2016 11:26:57 AM
  */
-class Round extends RaObject
+class Round
 {
     /**
      *
      * @var string
      */
-    protected $_description;
+    protected ?string $_description = null;
 
     /**
      *
      * @var \Gems\Tracker\Survey
      */
-    protected $_survey = false;
+    protected Survey|null $_survey = null;
 
-    /**
-     *
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
+    public function __construct(
+        protected readonly array $roundData,
+        protected readonly Translator $translator,
+        protected readonly Tracker $tracker,
+    )
+    {}
 
     /**
      * Get a round description with order number and survey name
      *
      * @return string
      */
-    public function getFullDescription()
+    public function getFullDescription(): string
     {
         if ($this->_description) {
             return $this->_description;
@@ -62,18 +64,18 @@ class Round extends RaObject
         if ($order) {
             if ($hasDescr) {
                 if ($surveyExists) {
-                    $this->_description = sprintf($this->_('%d: %s - %s'), $order, $descr, $survey->getName());
+                    $this->_description = sprintf('%d: %s - %s', $order, $descr, $survey->getName());
                 } else {
-                    $this->_description = sprintf($this->_('%d: %s'), $order, $descr);
+                    $this->_description = sprintf('%d: %s', $order, $descr);
                 }
             } elseif ($surveyExists) {
-                $this->_description = sprintf($this->_('%d: %s'), $order, $survey->getName());
+                $this->_description = sprintf('%d: %s', $order, $survey->getName());
             } else {
                 $this->_description = $order;
             }
         } elseif ($hasDescr) {
             if ($surveyExists) {
-                $this->_description = sprintf($this->_('%s - %s'), $descr, $survey->getName());
+                $this->_description = sprintf('%s - %s', $descr, $survey->getName());
             } else {
                 $this->_description = $descr;
             }
@@ -93,9 +95,9 @@ class Round extends RaObject
      *
      * @return string
      */
-    public function getRoundDescription()
+    public function getRoundDescription(): string|null
     {
-        return (string) $this->offsetDefault('gro_round_description');
+        return $this->roundData['gro_round_description'] ?? null;
     }
 
     /**
@@ -103,9 +105,9 @@ class Round extends RaObject
      *
      * @return int
      */
-    public function getRoundId()
+    public function getRoundId(): int|null
     {
-        return $this->offsetDefault('gro_id_round');
+        return $this->roundData['gro_id_round'] ?? null;
     }
 
     /**
@@ -113,9 +115,9 @@ class Round extends RaObject
      *
      * @return int
      */
-    public function getRoundOrder()
+    public function getRoundOrder(): int|null
     {
-        return $this->offsetDefault('gro_id_order');
+        return $this->roundData['gro_id_order'] ?? null;
     }
 
     /**
@@ -123,7 +125,7 @@ class Round extends RaObject
      *
      * @return \Gems\Tracker\Survey
      */
-    public function getSurvey()
+    public function getSurvey(): Survey
     {
         if (false !== $this->_survey) {
             return $this->_survey;
@@ -144,9 +146,9 @@ class Round extends RaObject
      *
      * @return int
      */
-    public function getSurveyId()
+    public function getSurveyId(): int|null
     {
-        return $this->offsetDefault('gro_id_survey');
+        return $this->roundData['gro_id_survey'] ?? null;
     }
 
     /**
@@ -154,9 +156,9 @@ class Round extends RaObject
      *
      * @return boolean
      */
-    public function isActive()
+    public function isActive(): bool
     {
-        return $this->offsetDefault('gro_active', false);
+        return (bool) ($this->roundData['gro_active'] ?? false);
     }
 
 }

@@ -16,6 +16,8 @@ use Gems\Agenda\Appointment;
 use Gems\Db\ResultFetcher;
 use Gems\Exception\Coding;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\ReceptionCodeRepository;
+use Gems\Repository\SurveyRepository;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Engine\TrackEngineInterface;
@@ -35,13 +37,11 @@ use Gems\Tracker\Token\TokenValidator;
 use Gems\Tracker\TrackerInterface;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\UserLoader;
-use Gems\Util\ReceptionCodeLibrary;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 use Laminas\Db\Sql\Expression;
 use Mezzio\Session\SessionInterface;
 use MUtil\Ra;
 use MUtil\Translate\Translator;
-use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Loader\ProjectOverloader;
 
 /**
@@ -140,7 +140,7 @@ class Tracker implements TrackerInterface
         CurrentUserRepository $currentUserRepository,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly Model $modelLoader,
-        protected readonly ConstructorProjectOverloader $constructorProjectOverloader,
+        protected readonly SurveyRepository $surveyRepository,
     )
     {
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
@@ -253,7 +253,7 @@ class Tracker implements TrackerInterface
         $respTrackData['gr2t_id_organization'] = $organizationId;
         if (! array_key_exists('gr2t_reception_code', $respTrackData)) {
             // The start date has to exist.
-            $respTrackData['gr2t_reception_code'] = ReceptionCodeLibrary::RECEPTION_OK;
+            $respTrackData['gr2t_reception_code'] = ReceptionCodeRepository::RECEPTION_OK;
         }
 
         // Create the filter values for creating the track
@@ -434,7 +434,7 @@ class Tracker implements TrackerInterface
                 $this->_respTracks[$respTracksId]->refresh($respTrackData);
             }
         } else {
-            $this->_respTracks[$respTracksId] = $this->overLoader->create('Tracker\\RespondentTrack', $respTrackData);
+            $this->_respTracks[$respTracksId] = $this->overLoader->create('Tracker\\RespondentTrack', $respTrackData, $this->currentUserId);
         }
 
         return $this->_respTracks[$respTracksId];
@@ -529,7 +529,7 @@ class Tracker implements TrackerInterface
                 throw new \Gems\Exception\Coding('Missing source class for source ID: ' . $sourceId);
             }
 
-            $this->_sources[$sourceId] = $this->overLoader->create('Tracker\\Source\\' . $sourceData['gso_ls_class'], [$sourceData, $this->resultFetcher->getAdapter()]);
+            $this->_sources[$sourceId] = $this->overLoader->create('Tracker\\Source\\' . $sourceData['gso_ls_class'], $sourceData, $this->resultFetcher->getAdapter());
         }
 
         return $this->_sources[$sourceId];
@@ -585,7 +585,7 @@ class Tracker implements TrackerInterface
         }
 
         if ($surveyId == null || ! isset($this->_surveys[$surveyId])) {
-            $this->_surveys[$surveyId] = $this->overLoader->create('Tracker\\Survey', $surveyData);
+            $this->_surveys[$surveyId] = $this->surveyRepository->getSurvey($surveyData);
         }
 
         return $this->_surveys[$surveyId];
@@ -608,13 +608,11 @@ class Tracker implements TrackerInterface
         $surveyData = $this->resultFetcher->fetchRow($select);
 
 
-
-        if (! is_array($surveyData)) {
+        if (!is_array($surveyData)) {
             Survey::$newSurveyCount++;
-            $surveyData['gsu_id_survey']   = -Survey::$newSurveyCount;
+            $surveyData['gsu_id_survey'] = -Survey::$newSurveyCount;
             $surveyData['gsu_surveyor_id'] = $sourceSurveyId;
-            $surveyData['gsu_id_source']   = $sourceId;
-
+            $surveyData['gsu_id_source'] = $sourceId;
             // \MUtil\EchoOut\EchoOut::track($surveyData);
         }
 
@@ -726,7 +724,7 @@ class Tracker implements TrackerInterface
         /**
          * @var TokenSelect $tokenSelect
          */
-        $tokenSelect = $this->constructorProjectOverloader->create('Tracker\\Token\\TokenSelect');
+        $tokenSelect = $this->overLoader->create('Tracker\\Token\\TokenSelect');
 
         $tokenSelect->columns($fields);
         return $tokenSelect;
@@ -741,7 +739,7 @@ class Tracker implements TrackerInterface
         /**
          * @var $tokenValidator TokenValidator
          */
-        $tokenValidator = $this->constructorProjectOverloader->create('Tracker\\Token\\TokenValidator');
+        $tokenValidator = $this->overLoader->create('Tracker\\Token\\TokenValidator');
         if ($clientIpAddress !== null) {
             $tokenValidator->setClientIp($clientIpAddress);
         }

@@ -11,6 +11,8 @@
 
 namespace Gems\Util;
 
+use Gems\Repository\ConsentRepository;
+
 /**
  * Utility function for the user of consents.
  *
@@ -20,33 +22,16 @@ namespace Gems\Util;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class ConsentCode extends \Gems\Registry\CachedArrayTargetAbstract
+class ConsentCode
 {
-    /**
-     * Variable to add tags to the cache for cleanup.
-     *
-     * @var array
-     */
-    protected $_cacheTags = array('consent');
-
-    /**
-     * Return false on checkRegistryRequestsAnswers when the anser is not an array
-     *
-     * @var boolean
-     */
-    protected $requireArray = false;
-
-    /**
-     * Set in child classes
-     *
-     * @var string Name of table used in gtrs_table
-     */
-    protected $translationTable = 'gems__consents';
-
-    /**
-     * @var ConsentUtil
-     */
-    protected $consentUtil;
+    public function __construct(
+        protected readonly string $description,
+        protected readonly string $code,
+        protected readonly int|null $order = null,
+        protected readonly string $consentRejectedCode = 'do not use',
+    )
+    {
+    }
     
     /**
      * Compatibility mode, for use with logical operators returns this->getCode()
@@ -63,9 +48,9 @@ class ConsentCode extends \Gems\Registry\CachedArrayTargetAbstract
      *
      * @return boolean
      */
-    public function canBeUsed()
+    public function canBeUsed(): bool
     {
-        return $this->_get('gco_code') !== $this->consentUtil->getConsentRejected();
+        return $this->getCode() !== $this->consentRejectedCode;
     }
 
     /**
@@ -73,9 +58,13 @@ class ConsentCode extends \Gems\Registry\CachedArrayTargetAbstract
      *
      * @return array
      */
-    public function getAllData()
+    public function getAllData(): array
     {
-        return $this->_data;
+        return [
+            'gco_code' => $this->code,
+            'gco_description' => $this->description,
+            'gco_order' => $this->order,
+        ];
     }
 
     /**
@@ -83,38 +72,34 @@ class ConsentCode extends \Gems\Registry\CachedArrayTargetAbstract
      *
      * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
-        return $this->_get('gco_code');
+        return $this->code;
     }
 
     /**
      *
      * @return boolean
      */
-    public function getDescription()
+    public function getDescription(): bool
     {
-        return $this->_get('gco_description');
+        return $this->description;
     }
 
     /**
      *
      * @return boolean
      */
-    public function hasDescription()
+    public function hasDescription(): bool
     {
-        return (boolean) $this->_get('gco_description');
+        return !empty($this->description);
     }
 
     /**
-     * Load the data when the cache is empty.
-     *
-     * @param mixed $id
-     * @return array The array of data values
+     * @return int|null
      */
-    protected function loadData($id)
+    public function getOrder(): ?int
     {
-        $sql = "SELECT * FROM gems__consents WHERE gco_description = ? LIMIT 1";
-        return $this->db->fetchRow($sql, $id);
+        return $this->order;
     }
 }

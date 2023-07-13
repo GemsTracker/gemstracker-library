@@ -11,16 +11,18 @@
 
 namespace Gems\Tracker;
 
-
-use DateTimeImmutable;
 use DateTimeInterface;
 
 use Gems\Date\Period;
-use Gems\Registry\CachedArrayTargetAbstract;
+use Gems\Db\CachedResultFetcher;
+use Gems\Tracker;
 use Gems\Tracker\Source\SourceInterface;
 use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
 use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
-use MUtil\Model;
+use Gems\Translate\DbTranslationRepository;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\TableGateway;
+use Zalt\Model\MetaModelInterface;
 
 /**
  * Object representing a specific Survey
@@ -31,109 +33,56 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Survey extends CachedArrayTargetAbstract
+class Survey
 {
     /**
-     * Variable to add tags to the cache for cleanup.
-     *
      * @var array
      */
-    protected $_cacheTags = ['survey', 'surveys'];
-    
-    /**
-     *
-     * @var SourceInterface
-     */
-    private $_source;
-
-    /**
-     *
-     * @var TrackEvents
-     */
-    protected $trackEvents;
-
-    /**
-     * @var array
-     */
-    protected $defaultData = [
+    protected array $defaultData = [
         'gsu_active' => 0,
         'gsu_code' => null,
         'gsu_valid_for_length' => 6,
         'gsu_valid_for_unit' => 'M',
-        ];
+    ];
+
+    public bool $exists = false;
+
+    protected int $id;
 
     /**
      * @var int Counter for new surveys, negative value used as temp survey id
      */
-    public static $newSurveyCount = 0;
+    public static int $newSurveyCount = 0;
 
     /**
      *
-     * @var \Gems\Tracker
+     * @var SourceInterface
      */
-    protected $tracker;
+    private SourceInterface|null $_source = null;
 
     /**
      * Set in child classes
      *
      * @var string Name of table used in gtrs_table
      */
-    protected $translationTable = 'gems__surveys';
+    protected string $translationTable = 'gems__surveys';
     
     /**
      *
      * @param mixed $gemsSurveyData Token Id or array containing token record
      */
-    public function __construct($gemsSurveyData)
+    public function __construct(
+        protected readonly array $data,
+        protected readonly Tracker $tracker,
+        protected readonly CachedResultFetcher $cachedResultFetcher,
+        protected readonly DbTranslationRepository $dbTranslationRepository,
+        protected readonly TrackEvents $trackEvents,
+    )
     {
-        if (is_array($gemsSurveyData)) {
-            $this->_data = $gemsSurveyData;
-            $id = $gemsSurveyData['gsu_id_survey'];
-        } else {
-            $id = $gemsSurveyData;
+        $this->id = $this->data['gsu_id_survey'];
+        if ($this->id > 0) {
+            $this->exists = true;
         }
-        
-        parent::__construct($id);
-    }
-
-    /**
-     * Makes sure the group data is part of the $this->_data
-     *
-     * @param boolean $reload Optional parameter to force reload.
-     */
-    private function _ensureGroupData($reload = false)
-    {
-        if ($reload || (! $this->_has('ggp_id_group'))) {
-            $sql  = "SELECT * FROM gems__groups WHERE ggp_id_group = ?";
-            $code = $this->_get('gsu_id_primary_group');
-
-            if ($code) {
-                $row = $this->db->fetchRow($sql, $code);
-            } else {
-                $row = false;
-            }
-
-            if ($row) {
-                $this->_data = $row + $this->_data;
-            } else {
-                // Add default empty row
-                $this->_data = array(
-                    'ggp_id_group' => false,
-                    'ggp_name' => '',
-                    'ggp_description' => '',
-                    'ggp_role' => 'respondent',
-                    'ggp_group_active' => 0,
-                    'ggp_member_type' => 'respondent') + $this->_data;
-            }
-        }
-    }
-
-    /**
-     * @return bool This instance can be cached
-     */
-    protected function _hasCacheId()
-    {
-        return $this->_id > 0;
     }
 
     /**
@@ -143,10 +92,10 @@ class Survey extends CachedArrayTargetAbstract
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    private function _updateSurvey(array $values, $userId)
+    private function _updateSurvey(array $values, int $userId): int
     {
         // If loaded using tracker->getSurveyBySourceId the id can be negative if survey not found in GT
-        if ($this->_id <= 0) {
+        if ($this->id <= 0) {
             if (is_array($this->_data)) {
                 $values = $values + $this->_data;
             } else {
@@ -156,32 +105,31 @@ class Survey extends CachedArrayTargetAbstract
         }
         if ($this->tracker->filterChangesOnly($this->_data, $values)) {
 
-            if (\Gems\Tracker::$verbose) {
+            if (Tracker::$verbose) {
                 $echo = '';
                 foreach ($values as $key => $val) {
                     $old = isset($this->_data[$key]) ? $this->_data[$key] : null;
                     $echo .= $key . ': ' . $old . ' => ' . $val . "\n";
                 }
-                \MUtil\EchoOut\EchoOut::r($echo, 'Updated values for ' . $this->_id);
+                \MUtil\EchoOut\EchoOut::r($echo, 'Updated values for ' . $this->id);
             }
 
             if (! isset($values['gsu_changed'])) {
-                $values['gsu_changed'] = new \MUtil\Db\Expr\CurrentTimestamp();
+                $values['gsu_changed'] = new Expression('CURRENT_TIMESTAMP');
             }
             if (! isset($values['gsu_changed_by'])) {
                 $values['gsu_changed_by'] = $userId;
             }
 
+            $table = new TableGateway('gems__surveys', $this->cachedResultFetcher->getAdapter());
             if ($this->exists) {
                 // Update values in this object
                 $this->_data = $values + $this->_data;
 
-                // return 1;
-                return $this->db->update('gems__surveys', $values, array('gsu_id_survey = ?' => $this->_id));
-
+                return $table->update($values, ['gsu_id_survey' => $this->id]);
             } else {
                 if (! isset($values['gsu_created'])) {
-                    $values['gsu_created'] = new \MUtil\Db\Expr\CurrentTimestamp();
+                    $values['gsu_created'] = new Expression('CURRENT_TIMESTAMP');
                 }
                 if (! isset($values['gsu_created_by'])) {
                     $values['gsu_created_by'] = $userId;
@@ -193,8 +141,10 @@ class Survey extends CachedArrayTargetAbstract
                 // Remove the \Gems survey id
                 unset($this->_data['gsu_id_survey']);
 
-                $this->_id = $this->db->insert('gems__surveys', $this->_data);
-                $this->_data['gsu_id_survey'] = $this->_id;
+                $table->insert($this->_data);
+                $this->id = $this->cachedResultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
+
+                $this->_data['gsu_id_survey'] = $this->id;
                 $this->exists = true;
 
                 return 1;
@@ -210,7 +160,7 @@ class Survey extends CachedArrayTargetAbstract
      *
      * @return string
      */
-    public function calculateHash()
+    public function calculateHash(): string
     {
         $answerModel = $this->getAnswerModel('en');
         $items       = [];
@@ -227,26 +177,6 @@ class Survey extends CachedArrayTargetAbstract
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        $output = parent::checkRegistryRequestsAnswers();
-
-        // If loaded using tracker->getSurveyBySourceId the id can be negative if survey not found in GT
-        if ($this->_id > 0) {
-            $this->exists = true;
-        } else {
-            $this->exists = false;
-        }
-        
-        return $output;
-    }
-
-    /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
      * @param \Gems\Tracker\Token $token
@@ -254,10 +184,10 @@ class Survey extends CachedArrayTargetAbstract
      * @return int 1 of the token was inserted or changed, 0 otherwise
      * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
-    public function copyTokenToSource(\Gems\Tracker\Token $token, $language)
+    public function copyTokenToSource(Token $token, string $language): int
     {
         $source = $this->getSource();
-        return $source->copyTokenToSource($token, $language, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->copyTokenToSource($token, $language, $this->id, $this->getSourceSurveyId());
     }
 
     /**
@@ -267,10 +197,10 @@ class Survey extends CachedArrayTargetAbstract
      * @param \Gems\Tracker\Token  $token \Gems token object
      * @return ?DateTimeInterface date time or null
      */
-    public function getAnswerDateTime($fieldName, \Gems\Tracker\Token $token)
+    public function getAnswerDateTime($fieldName, Token $token)
     {
         $source = $this->getSource();
-        return $source->getAnswerDateTime($fieldName, $token, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->getAnswerDateTime($fieldName, $token, $this->id, $this->getSourceSurveyId());
     }
 
     /**
@@ -279,10 +209,10 @@ class Survey extends CachedArrayTargetAbstract
      * @param \Gems\Tracker\Token $token
      * @return array Of snippet names
      */
-    public function getAnswerSnippetNames(\Gems\Tracker\Token $token)
+    public function getAnswerSnippetNames(Token $token): array
     {
-        if ($this->_has('gsu_display_event') && $this->_get('gsu_display_event')) {
-            $event = $this->trackEvents->loadSurveyDisplayEvent($this->_get('gsu_display_event'));
+        if (isset($this->data['gsu_display_event']) && $this->data['gsu_display_event']) {
+            $event = $this->trackEvents->loadSurveyDisplayEvent($this->data['gsu_display_event']);
 
             return $event->getAnswerDisplaySnippets($token);
         }
@@ -295,19 +225,19 @@ class Survey extends CachedArrayTargetAbstract
      * @param string $language (ISO) language string
      * @return \MUtil\Model\ModelAbstract
      */
-    public function getAnswerModel($language)
+    public function getAnswerModel(string $language): MetaModelInterface
     {
         $source = $this->getSource();
-        return $source->getSurveyAnswerModel($this, $language, $this->_get('gsu_surveyor_id'));
+        return $source->getSurveyAnswerModel($this, $language, $this->getSourceSurveyId());
     }
 
     /**
      *
      * @return string Internal code of the survey
      */
-    public function getCode()
+    public function getCode(): string|null
     {
-        return $this->_get('gsu_code');
+        return $this->data['gsu_code'] ?? null;
     }
 
     /**
@@ -316,10 +246,10 @@ class Survey extends CachedArrayTargetAbstract
      * @param \Gems\Tracker\Token $token \Gems token object
      * @return ?DateTimeInterface date time or null
      */
-    public function getCompletionTime(\Gems\Tracker\Token $token)
+    public function getCompletionTime(Token $token): DateTimeInterface|null
     {
         $source = $this->getSource();
-        return $source->getCompletionTime($token, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->getCompletionTime($token, $this->id, $this->getSourceSurveyId());
     }
 
     /**
@@ -330,65 +260,65 @@ class Survey extends CachedArrayTargetAbstract
      * @param string $language (ISO) language string
      * @return array Returns an array of the strings datename => label
      */
-    public function getDatesList($language)
+    public function getDatesList(string $language): array
     {
         $source = $this->getSource();
-        return $source->getDatesList($language, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->getDatesList($language, $this->id, $this->getSourceSurveyId());
     }
 
     /**
      *
      * @return string Description of the survey
      */
-    public function getDescription()
+    public function getDescription(): string|null
     {
-        return $this->_get('gsu_survey_description');
+        return $this->data['gsu_survey_description'] ?? null;
     }
 
     /**
      *
      * @return string Available languages of the survey
      */
-    public function getAvailableLanguages()
+    public function getAvailableLanguages(): string|null
     {
-        return $this->_get('gsu_survey_languages');
+        return $this->data['gsu_survey_languages'] ?? null;
     }
 
     /**
      *
      * @return string Warning messages of the survey
      */
-    public function getSurveyWarnings()
+    public function getSurveyWarnings(): string|null
     {
-        return $this->_get('gsu_survey_warnings');
+        return $this->data['gsu_survey_warnings'] ?? null;
     }
 
     /**
      *
      * @return string The (manually entered) normal duration for taking this survey
      */
-    public function getDuration()
+    public function getDuration(): string|null
     {
-        return $this->_get('gsu_duration');
+        return $this->data['gsu_duration'] ?? null;
     }
 
     /**
      *
      * @return string Export code of the survey
      */
-    public function getExportCode()
+    public function getExportCode(): string|null
     {
-        return $this->_get('gsu_export_code');
+        return $this->data['gsu_export_code'] ?? null;
     }
 
     /**
      *
      * @return string External description of the survey
      */
-    public function getExternalName()
+    public function getExternalName(): string|null
     {
-        if ($this->_has('gsu_external_description')) {
-            return $this->_get('gsu_external_description');
+        if ($this->data['gsu_external_description']) {
+            return $this->data['gsu_external_description'] ?? null;
         }
         
         return $this->getName();
@@ -398,16 +328,16 @@ class Survey extends CachedArrayTargetAbstract
      *
      * @return int \Gems group id for survey
      */
-    public function getGroupId()
+    public function getGroupId(): int|null
     {
-        return $this->_get('gsu_id_primary_group');
+        return $this->data['gsu_id_primary_group'] ?? null;
     }
 
     /**
      *
      * @return string The hash of survey questions/answers
      */
-    public function getHash()
+    public function getHash(): string|null
     {
         return array_key_exists('gsu_hash', $this->_data) ? $this->_data['gsu_hash'] : null;
     }
@@ -418,30 +348,36 @@ class Survey extends CachedArrayTargetAbstract
      * @param DateTimeInterface $from
      * @return ?DateTimeInterface
      */
-    public function getInsertDateUntil(DateTimeInterface $from)
+    public function getInsertDateUntil(DateTimeInterface $from): DateTimeInterface|null
     {
+        $validForUnit = $this->data['gsu_valid_for_unit'] ?? null;
+        $validForLength = null;
+        if (isset($this->data['gsu_valid_for_length'])) {
+            $validForLength = (int)$this->data['gsu_valid_for_length'];
+        }
+
         return Period::applyPeriod(
-                $from,
-                $this->_get('gsu_valid_for_unit'),
-                (int)$this->_get('gsu_valid_for_length')
-                );
+            $from,
+            $validForUnit,
+            $validForLength
+        );
     }
 
     /**
      *
      * @return string Name of the survey
      */
-    public function getName()
+    public function getName(): string|null
     {
-        return $this->_get('gsu_survey_name');
+        return $this->data['gsu_survey_name'] ?? null;
     }
 
     /**
      * @return int
      */
-    public function getMailCode()
+    public function getMailCode(): string|null
     {
-        return $this->_get('gsu_mail_code');
+        return $this->data['gsu_mail_code'] ?? null;
     }
 
     /**
@@ -457,9 +393,9 @@ class Survey extends CachedArrayTargetAbstract
      * @param string $language   (ISO) language string
      * @return array Nested array
      */
-    public function getQuestionInformation($language)
+    public function getQuestionInformation(string|null $language = null): array
     {
-        return $this->getSource()->getQuestionInformation($language, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $this->getSource()->getQuestionInformation($language, $this->id, $this->getSourceSurveyId());
     }
 
     /**
@@ -468,9 +404,9 @@ class Survey extends CachedArrayTargetAbstract
      * @param string $language (ISO) language string
      * @return array of fieldname => label type
      */
-    public function getQuestionList($language)
+    public function getQuestionList(string|null $language = null): array
     {
-        return $this->getSource()->getQuestionList($language, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $this->getSource()->getQuestionList($language, $this->id, $this->getSourceSurveyId());
     }
 
     /**
@@ -481,10 +417,10 @@ class Survey extends CachedArrayTargetAbstract
      * @param string $tokenId \Gems Token Id
      * @return array Field => Value array
      */
-    public function getRawTokenAnswerRow($tokenId)
+    public function getRawTokenAnswerRow(string $tokenId): array
     {
         $source = $this->getSource();
-        return $source->getRawTokenAnswerRow($tokenId, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->getRawTokenAnswerRow($tokenId, $this->id, $this->getSourceSurveyId());
     }
 
     /**
@@ -496,10 +432,10 @@ class Survey extends CachedArrayTargetAbstract
      * @param array $filter XXX
      * @return array Of nested Field => Value arrays indexed by tokenId
      */
-    public function getRawTokenAnswerRows($filter = array())
+    public function getRawTokenAnswerRows(array $filter = []): array
     {
         $source = $this->getSource();
-        return $source->getRawTokenAnswerRows((array) $filter, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->getRawTokenAnswerRows($filter, $this->id, $this->getSourceSurveyId());
     }
 
     /**
@@ -508,10 +444,10 @@ class Survey extends CachedArrayTargetAbstract
      * @param array $filter XXX
      * @return array Of nested Field => Value arrays indexed by tokenId
      */
-    public function getRawTokenAnswerRowsCount($filter = array())
+    public function getRawTokenAnswerRowsCount(array $filter = []): int
     {
         $source = $this->getSource();
-        return $source->getRawTokenAnswerRowsCount((array) $filter, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->getRawTokenAnswerRowsCount((array) $filter, $this->id, $this->getSourceSurveyId());
     }
 
     /**
@@ -521,8 +457,9 @@ class Survey extends CachedArrayTargetAbstract
      *
      * @return string
      */
-    public function getResultField() {
-        return $this->_get('gsu_result_field');
+    public function getResultField(): string|null
+    {
+        return $this->data['gsu_result_field'] ?? null;
     }
 
     /**
@@ -531,23 +468,23 @@ class Survey extends CachedArrayTargetAbstract
      * @param \Gems\Tracker\Token $token \Gems token object
      * @return ?DateTimeInterface date time or null
      */
-    public function getStartTime(\Gems\Tracker\Token $token)
+    public function getStartTime(Token $token): DateTimeInterface|null
     {
         $source = $this->getSource();
-        return $source->getStartTime($token, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->getStartTime($token, $this->id, $this->getSourceSurveyId());
     }
 
     /**
      *
      * @return \Gems\Tracker\Source\SourceInterface
      */
-    public function getSource()
+    public function getSource(): SourceInterface
     {
-        if (! $this->_source && $this->_has('gsu_id_source')) {
-            $this->_source = $this->tracker->getSource($this->_get('gsu_id_source'));
+        if (! $this->_source && isset($this->data['gsu_id_source'])) {
+            $this->_source = $this->tracker->getSource($this->data['gsu_id_source']);
 
             if (! $this->_source) {
-                throw new \Gems\Exception('No source for exists for source ' . $this->_get('gsu_id_source') . '.');
+                throw new \Gems\Exception('No source for exists for source ' . $this->data['gsu_id_source'] . '.');
             }
         }
 
@@ -558,18 +495,18 @@ class Survey extends CachedArrayTargetAbstract
      *
      * @return int \Gems survey ID
      */
-    public function getSourceSurveyId()
+    public function getSourceSurveyId(): int|null
     {
-        return $this->_get('gsu_surveyor_id');
+        return $this->data['gsu_surveyor_id'] ?? null;
     }
 
     /**
      *
      * @return string Survey status
      */
-    public function getStatus()
+    public function getStatus(): string|null
     {
-        return $this->_get('gsu_status');
+        return $this->data['gsu_status'] ?? null;
     }
 
     /**
@@ -577,10 +514,10 @@ class Survey extends CachedArrayTargetAbstract
      *
      * @return SurveyBeforeAnsweringEventInterface|null event instance or null
      */
-    public function getSurveyBeforeAnsweringEvent()
+    public function getSurveyBeforeAnsweringEvent(): SurveyBeforeAnsweringEventInterface|null
     {
-        if ($this->_has('gsu_beforeanswering_event') && $this->_get('gsu_beforeanswering_event')) {
-            return $event = $this->trackEvents->loadSurveyBeforeAnsweringEvent($this->_get('gsu_beforeanswering_event'));
+        if (isset($this->data['gsu_beforeanswering_event']) && $this->data['gsu_beforeanswering_event']) {
+            return $this->trackEvents->loadSurveyBeforeAnsweringEvent($this->data['gsu_beforeanswering_event']);
         }
         return null;
     }
@@ -590,10 +527,10 @@ class Survey extends CachedArrayTargetAbstract
      *
      * @return SurveyCompletedEventInterface|null event instance or null
      */
-    public function getSurveyCompletedEvent()
+    public function getSurveyCompletedEvent(): SurveyCompletedEventInterface|null
     {
-        if ($this->_has('gsu_completed_event') && $this->_get('gsu_completed_event')) {
-            return $event = $this->trackEvents->loadSurveyCompletionEvent($this->_get('gsu_completed_event'));
+        if (isset($this->data['gsu_completed_event']) && $this->data['gsu_completed_event']) {
+            return $this->trackEvents->loadSurveyCompletionEvent($this->data['gsu_completed_event']);
         }
         return null;
     }
@@ -602,9 +539,9 @@ class Survey extends CachedArrayTargetAbstract
      *
      * @return int \Gems survey ID
      */
-    public function getSurveyId()
+    public function getSurveyId(): int
     {
-        return $this->_id;
+        return $this->id;
     }
 
     /**
@@ -614,19 +551,19 @@ class Survey extends CachedArrayTargetAbstract
      * @param string $language
      * @return string The url to start the survey
      */
-    public function getTokenUrl(\Gems\Tracker\Token $token, $language)
+    public function getTokenUrl(Token $token, string $language): string
     {
         $source = $this->getSource();
-        return $source->getTokenUrl($token, $language, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->getTokenUrl($token, $language, $this->id, $this->getSourceSurveyId());
     }
 
     /**
      *
      * @return boolean True if the survey has a pdf
      */
-    public function hasPdf()
+    public function hasPdf(): bool
     {
-        return (boolean) $this->_has('gsu_survey_pdf');
+        return isset($this->data['gsu_survey_pdf']);
     }
 
     /**
@@ -635,54 +572,50 @@ class Survey extends CachedArrayTargetAbstract
      * @param \Gems\Tracker\Token $token \Gems token object
      * @return boolean
      */
-    public function inSource(\Gems\Tracker\Token $token)
+    public function inSource(Token $token): bool
     {
         $source = $this->getSource();
-        return $source->inSource($token, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->inSource($token, $this->id, $this->getSourceSurveyId());
     }
 
     /**
      *
      * @return boolean True if the survey is active
      */
-    public function isActive()
+    public function isActive(): bool
     {
-        return $this->exists && $this->_get('gsu_active');
+        return $this->exists && isset($this->data['gsu_active']);
     }
 
     /**
      *
      * @return boolean True if the survey is active in the source
      */
-    public function isActiveInSource()
+    public function isActiveInSource(): bool
     {
-        return (boolean) $this->_get('gsu_surveyor_active');
+        return isset($this->data['gsu_surveyor_active']);
     }
 
     /**
      * Returns true if the survey was completed according to the source
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @return boolean True if the token has completed
+     * @param Token $token \Gems token object
+     * @return bool True if the token has completed
      */
-    public function isCompleted(\Gems\Tracker\Token $token)
+    public function isCompleted(Token $token): bool
     {
         $source = $this->getSource();
-        return $source->isCompleted($token, $this->_id, $this->_get('gsu_surveyor_id'));
+        return $source->isCompleted($token, $this->id, $this->getSourceSurveyId());
     }
 
     /**
      * Should this survey be filled in by staff members.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isTakenByStaff()
+    public function isTakenByStaff(): bool
     {
-        if (! $this->_has('ggp_member_type')) {
-            $this->_ensureGroupData();
-        }
-
-        return $this->_get('ggp_member_type') === 'staff';
+        return $this->data['ggp_member_type'] === 'staff';
     }
 
     /**
@@ -691,25 +624,24 @@ class Survey extends CachedArrayTargetAbstract
      * @param mixed $id
      * @return array The array of data values
      */
-    protected function loadData($id)
+    protected function loadData(int $id): array
     {
         // If loaded using tracker->getSurveyBySourceId the id can be negative if survey not found in GT
         if ($this->_data && $id <= 0) {
             return $this->_data;
         }
-        
+
         if ($id) {
-            $data = $this->db->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_survey = ?", $id);
-        } else {
-            $data = false;    
+            $resultFetcher = $this->cachedResultFetcher->getResultFetcher();
+            $data = $resultFetcher->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_survey = ?", $id);
+            if ($data) {
+                return $data;
+            }
         }
-        if (! $data) {
-            self::$newSurveyCount++;
-            $this->_id = -self::$newSurveyCount;
-            return ['gsu_id_survey' => $this->_id] + $this->defaultData;
-        }
-        
-        return $data;
+
+        self::$newSurveyCount++;
+        $this->id = -self::$newSurveyCount;
+        return ['gsu_id_survey' => $this->id] + $this->defaultData;
     }
     
     /**
@@ -719,7 +651,7 @@ class Survey extends CachedArrayTargetAbstract
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    public function saveSurvey(array $values, $userId)
+    public function saveSurvey(array $values, int $userId): int
     {
         // Keep the pattern of this object identical to that of others,
         // i.e. use an _update function
@@ -731,7 +663,7 @@ class Survey extends CachedArrayTargetAbstract
      * @param string $hash The hash for this survey
      * @param int $userId The current user
      */
-    public function setHash($hash, $userId)
+    public function setHash(string $hash, int $userId): void
     {
         if ($this->getHash() !== $hash && array_key_exists('gsu_hash', $this->_data)) {
             $values['gsu_hash'] = $hash;
@@ -740,15 +672,15 @@ class Survey extends CachedArrayTargetAbstract
     }
 
     /**
-     * Updates the consent code of the the token in the source (if needed)
+     * Updates the consent code of the token in the source (if needed)
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      * @param string $consentCode Optional consent code, otherwise code from token is used.
      * @return int 1 of the token was inserted or changed, 0 otherwise
      */
-    public function updateConsent(\Gems\Tracker\Token $token, $consentCode = null)
+    public function updateConsent(Token $token, string|null $consentCode = null): int
     {
         $source = $this->getSource();
-        return $source->updateConsent($token, $this->_id, $this->_get('gsu_surveyor_id'), $consentCode);
+        return $source->updateConsent($token, $this->id, $this->getSourceSurveyId(), $consentCode);
     }
 }

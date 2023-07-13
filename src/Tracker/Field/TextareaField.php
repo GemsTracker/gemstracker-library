@@ -29,7 +29,7 @@ class TextareaField extends FieldAbstract
      *
      * @param array $settings The settings set so far
      */
-    protected function addModelSettings(array &$settings)
+    protected function addModelSettings(array &$settings): void
     {
         $settings['elementClass'] = 'Textarea';
         $settings['cols']         = '60';

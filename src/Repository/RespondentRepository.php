@@ -24,8 +24,6 @@ class RespondentRepository
 
     protected array $respondents = [];
 
-
-
     public function __construct(
         protected Adapter $db, 
         protected Model $modelLoader, 

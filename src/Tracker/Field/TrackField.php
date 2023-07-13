@@ -3,8 +3,13 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Html;
+use Gems\Menu\RouteHelper;
+use Gems\Tracker;
+use Gems\Tracker\RespondentTrack;
 use Gems\Util\Translated;
 use DateTimeInterface;
+use MUtil\Translate\Translator;
 
 class TrackField extends FieldAbstract
 {
@@ -14,42 +19,30 @@ class TrackField extends FieldAbstract
      *
      * @var array Null or an array of respondent track fields.
      */
-    protected $_dependsOn = array('gr2t_id_user', 'gr2t_id_organization', 'gr2t_id_respondent_track');
+    protected array|null $_dependsOn = [
+        'gr2t_id_user',
+        'gr2t_id_organization',
+        'gr2t_id_respondent_track'
+    ];
 
     /**
      * Model settings for this field that may change depending on the dependsOn fields.
      *
      * @var array Null or an array of model settings that change for this field
      */
-    protected $_effecteds = array('multiOptions');
+    protected array|null $_effecteds = ['multiOptions'];
 
-    /**
-     * @var $db
-     */
-    protected $db;
-
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
-
-    /**
-     * Required
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    public function __construct(
+        int $trackId,
+        string $fieldKey,
+        array $fieldDefinition,
+        Translator $translator,
+        Translated $translatedUtil,
+        protected readonly Tracker $tracker,
+        protected readonly RouteHelper $routeHelper,
+    ) {
+        parent::__construct($trackId, $fieldKey, $fieldDefinition, $translator, $translatedUtil);
+    }
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -58,7 +51,7 @@ class TrackField extends FieldAbstract
      *
      * @param array $settings The settings set so far
      */
-    protected function addModelSettings(array &$settings)
+    protected function addModelSettings(array &$settings): void
     {
         $empty = $this->translatedUtil->getEmptyDropdownArray();
 
@@ -67,7 +60,7 @@ class TrackField extends FieldAbstract
         $settings['formatFunction'] = array($this, 'showTrack');
     }
     
-    public function calculateFieldInfo($currentValue, array $fieldData)
+    public function calculateFieldInfo(mixed $currentValue, array $fieldData): mixed
     {
         // Always leave empty
         return false;
@@ -91,7 +84,7 @@ class TrackField extends FieldAbstract
      * @param boolean $new True when the item is a new record not yet saved
      * @return array (setting => value)
      */
-    public function getDataModelDependyChanges(array $context, $new)
+    public function getDataModelDependencyChanges(array $context, bool $new): ?array
     {
         if ($this->isReadOnly()) {
             return null;
@@ -110,11 +103,11 @@ class TrackField extends FieldAbstract
      * @param int $organizationId Organization Id
      * @return array
      */
-    protected function getLookup($respondentId = null, $organizationId = null)
+    protected function getLookup(int $respondentId = null, int $organizationId = null): array
     {
         if ($respondentId !== null && $organizationId !== null) {
 
-            $respondentTracks = $this->loader->getTracker()->getRespondentTracks($respondentId, $organizationId);
+            $respondentTracks = $this->tracker->getRespondentTracks($respondentId, $organizationId);
 
             $respondentTrackPairs = [];
             foreach($respondentTracks as $respondentTrack) {
@@ -137,45 +130,30 @@ class TrackField extends FieldAbstract
      * @param $value
      * @return string
      */
-    public function showTrack($value)
+    public function showTrack(RespondentTrack|int|string|null $respondentTrack): ?string
     {
         $empty  = $this->translatedUtil->getEmptyDropdownArray();
-        if (! $value || in_array($value, $empty)) {
+        if (! $respondentTrack || in_array($respondentTrack, $empty)) {
             return null;
         }
-        if (!$value instanceof \Gems\Tracker\RespondentTrack && is_numeric($value)) {
-            $value = $this->loader->getTracker()->getRespondentTrack($value);
+        if (!$respondentTrack instanceof RespondentTrack && is_numeric($respondentTrack)) {
+            $respondentTrack = $this->tracker->getRespondentTrack($respondentTrack);
         }
 
-        if (!$value instanceof \Gems\Tracker\RespondentTrack) {
+        if (!$respondentTrack instanceof RespondentTrack) {
             return null;
         }
 
-        $name = $value->getTrackName();
-        /*$startDate = $value->getStartDate();
-        if ($startDate) {
-            $name .= ' (' . $startDate->toString('dd-MM-yyyy') . ')';
-        }*/
+        $url = $this->routeHelper->getRouteUrl('respondent.track.show', [
+            'gr2t_id_respondent' => $respondentTrack->getPatientNumber(),
+            'gr2t_id_organization' => $respondentTrack->getOrganizationId(),
+            'gr2t_id_respondent_track' => $respondentTrack->getRespondentTrackId(),
+        ]);
 
-        if (! $this->menu instanceof \Gems\Menu) {
-            $this->menu = $this->loader->getMenu();
+        if ($url) {
+            return Html::create('a', $url, $respondentTrack->getTrackName());
         }
 
-        $menuItem = $this->menu->findAllowedController('track', 'show-track');
-        if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
-            if (!$this->request) {
-                $this->request = \Zend_Controller_Front::getInstance()->getRequest();
-            }
-            $href = $menuItem->toHRefAttribute([
-                'gr2t_id_respondent' => $value->getPatientNumber(),
-                'gr2t_id_organization' => $value->getOrganizationId(),
-                'gr2t_id_respondent_track' => $value->getRespondentTrackId(),
-            ], $this->request);
-            if ($href) {
-                return \MUtil\Html::create('a', $href, $name);
-            }
-        }
-
-        return $name;
+        return $respondentTrack->getTrackName();
     }
 }

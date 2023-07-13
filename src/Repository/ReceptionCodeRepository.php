@@ -11,12 +11,34 @@ use MUtil\Translate\Translator;
 
 class ReceptionCodeRepository
 {
+
+    const RECEPTION_OK = 'OK';
+    const RECEPTION_SKIP = 'skip';
+    const RECEPTION_STOP = 'stop';
+    public const ACTIVE_FIELD = 'grc_active';
+    public const REDO_FIELD = 'grc_redo_survey';
     public const SUCCESS_FIELD = 'grc_success';
 
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
         protected Translator $translator,
     ) {
+    }
+
+    /**
+     * Returns the token deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getCompletedTokenDeletionCodes(): array
+    {
+        $allReceptionCodes = $this->getAllActiveReceptionCodes();
+
+        $filteredCode = array_filter($allReceptionCodes, function ($row) {
+            return $row[ReceptionCodeType::SURVEY->getDatabaseField()] == 0 && $row[self::SUCCESS_FIELD] == 0;
+        });
+
+        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
     }
 
     protected function getReceptionCodeFromData(array $data): ReceptionCode
@@ -27,7 +49,7 @@ class ReceptionCodeRepository
         }
 
         return new ReceptionCode(
-            $data['grc_id_reception_code '],
+            $data['grc_id_reception_code'],
             ReceptionCodeType::createFromData($data),
             (bool)$data['grc_success'],
             $description,
@@ -54,6 +76,14 @@ class ReceptionCodeRepository
         return $receptionCodes;
     }
 
+    public function getAllActiveReceptionCodes(): array
+    {
+        $allReceptionCodes = $this->getAllReceptionCodes();
+        return array_filter($allReceptionCodes, function ($row) {
+            return $row[self::ACTIVE_FIELD] == 1;
+        });
+    }
+
     public function getAllReceptionCodes(): array
     {
         $select = $this->cachedResultFetcher->getSelect('gems__reception_codes');
@@ -64,16 +94,48 @@ class ReceptionCodeRepository
     {
         $allReceptionCodes = $this->getAllReceptionCodes();
         foreach($allReceptionCodes as $receptionCode) {
-            if ($receptionCode['grc_code'] === $code) {
+            if ($receptionCode['grc_id_reception_code'] === $code) {
                 return $this->getReceptionCodeFromData($receptionCode);
             }
         }
         throw new Exception(sprintf('Reception code %s not found.', $code));
     }
 
+    /**
+     * Returns the respondent deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getRespondentDeletionCodes(): array
+    {
+        $allReceptionCodes = $this->getAllActiveReceptionCodes();
+
+        $filteredCode = array_filter($allReceptionCodes, function ($row) {
+            return $row[ReceptionCodeType::RESPONDENT->getDatabaseField()] == 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
+        });
+
+        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
+    }
+
+    /**
+     * Returns the respondent deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getRespondentRestoreCodes(): array
+    {
+        $allReceptionCodes = $this->getAllActiveReceptionCodes();
+
+        $filteredCode = array_filter($allReceptionCodes, function ($row) {
+            return $row[ReceptionCodeType::RESPONDENT->getDatabaseField()] == 0 && $row[self::SUCCESS_FIELD] == 1;
+        });
+
+        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
+    }
+
     public function getSuccessCodesFor(ReceptionCodeType $type): array
     {
-        $allReceptionCodes = $this->getAllReceptionCodes();
+        $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
         $successCodes = array_filter($allReceptionCodes, function ($row) use ($type) {
             return $row[$type->getDatabaseField()] != 0 && $row[self::SUCCESS_FIELD] == 1;
@@ -95,5 +157,53 @@ class ReceptionCodeRepository
     public function getSuccessCodesForTrack(): array
     {
         return $this->getSuccessCodesFor(ReceptionCodeType::TRACK);
+    }
+
+    /**
+     * Returns the track deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getTrackDeletionCodes(): array
+    {
+        $allReceptionCodes = $this->getAllActiveReceptionCodes();
+
+        $successCodes = array_filter($allReceptionCodes, function ($row) {
+            return $row[self::SUCCESS_FIELD] = 1 && ($row[ReceptionCodeType::TRACK->getDatabaseField()] == 1 || ReceptionCodeType::RESPONDENT->getDatabaseField() == 2);
+        });
+
+        return array_column($successCodes, 'grc_description', 'grc_id_reception_code');
+    }
+
+    /**
+     * Returns the track deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getTrackRestoreCodes(): array
+    {
+        $allReceptionCodes = $this->getAllActiveReceptionCodes();
+
+        $successCodes = array_filter($allReceptionCodes, function ($row) {
+            return $row[ReceptionCodeType::TRACK->getDatabaseField()] == 1 || ReceptionCodeType::RESPONDENT->getDatabaseField() == 2;
+        });
+
+        return array_column($successCodes, 'grc_description', 'grc_id_reception_code');
+    }
+
+    /**
+     * Returns the token deletion reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getUnansweredTokenDeletionCodes(): array
+    {
+        $allReceptionCodes = $this->getAllActiveReceptionCodes();
+
+        $filteredCode = array_filter($allReceptionCodes, function ($row) {
+            return $row[ReceptionCodeType::SURVEY->getDatabaseField()] == 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
+        });
+
+        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
     }
 }

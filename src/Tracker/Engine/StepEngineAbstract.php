@@ -11,21 +11,37 @@
 
 namespace Gems\Tracker\Engine;
 
+use Gems\Condition\ConditionLoader;
 use Gems\Date\Period;
+use Gems\Db\ResultFetcher;
+use Gems\Exception\Coding;
 use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\Project\ProjectSettings;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\ReceptionCodeRepository;
+use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Tracker;
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use Gems\Tracker\Model\RoundModel;
+use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\Token;
-use Gems\User\User;
-use Gems\Util\Translated;
+use Gems\Tracker\TrackEvents;
+use Gems\Translate\DbTranslationRepository;
 
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\User\User;
+use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\TableModel;
+use MUtil\Ra;
+use MUtil\Translate\Translator;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\MetaModelInterface;
 
 /**
  * Parent class for all engines that calculate dates using information
@@ -69,45 +85,56 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      */
     const TOKEN_TABLE = 'tok';
 
+    protected User $currentUser;
+
     /**
      *
      * @var string Class name for creating the round model.
      */
-    protected $_roundModelClass = TableModel::class;
+    protected string $_roundModelClass = TableModel::class;
 
-    /**
-     *
-     * @var User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var Locale
-     */
-    protected $locale;
-
-    /**
-     *
-     * @var ProjectSettings
-     */
-    protected $project;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    public function __construct(
+        array $trackData,
+        ResultFetcher $resultFetcher,
+        Tracker $tracker,
+        DbTranslationRepository $dbTranslationRepository,
+        ProjectOverloader $overloader,
+        Translator $translator,
+        TrackEvents $trackEvents,
+        ConditionLoader $conditionLoader,
+        TrackDataRepository $trackDataRepository,
+        OrganizationRepository $organizationRepository,
+        Translated $translatedUtil,
+        protected readonly Locale $locale,
+        protected readonly ProjectSettings $projectSettings,
+        CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct(
+            $trackData,
+            $resultFetcher,
+            $tracker,
+            $dbTranslationRepository,
+            $overloader,
+            $translator,
+            $trackEvents,
+            $conditionLoader,
+            $trackDataRepository,
+            $organizationRepository,
+            $translatedUtil,
+        );
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Helper function for default handling of multi options value sets
      *
-     * @param ModelAbstract $model
+     * @param MetaModelInterface $model
      * @param string $fieldName
      * @param array $options
      * @param array $itemData    The current items data
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function _applyOptions(ModelAbstract $model, $fieldName, array $options, array &$itemData)
+    protected function _applyOptions(MetaModelInterface $model, string $fieldName, array $options, array &$itemData): bool
     {
         if ($options) {
             $model->set($fieldName, 'multiOptions', $options);
@@ -131,7 +158,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param string $source The current source
      * @return boolean
      */
-    protected function _sourceUsesSurvey($source)
+    protected function _sourceUsesSurvey(string $source): bool
     {
         switch ($source) {
             case self::APPOINTMENT_TABLE:
@@ -148,12 +175,12 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     /**
      * Set the after dates to be listed for this item and the way they are displayed (if at all)
      *
-     * @param \MUtil\Model\ModelAbstract $model The round model
+     * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
      * @param string $language   (ISO) language string
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function applyDatesValidAfter(\MUtil\Model\ModelAbstract $model, array &$itemData, $language)
+    protected function applyDatesValidAfter(MetaModelInterface $model, array &$itemData, string $language): bool
     {
         // Set the after date fields that can be chosen for the current values
         $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_after_source'], $itemData['gro_valid_after_id'], $language, true);
@@ -164,12 +191,12 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     /**
      * Set the for dates to be listed for this item and the way they are displayed (if at all)
      *
-     * @param \MUtil\Model\ModelAbstract $model The round model
+     * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
      * @param string $language   (ISO) language string
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function applyDatesValidFor(\MUtil\Model\ModelAbstract $model, array &$itemData, $language)
+    protected function applyDatesValidFor(MetaModelInterface $model, array &$itemData, string $language): bool
     {
         $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_for_source'], $itemData['gro_valid_for_id'], $language, true);
 
@@ -185,7 +212,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         return $this->_applyOptions($model, 'gro_valid_for_field', $dateOptions, $itemData);
     }
 
-    protected function applyOrganizationRounds(\MUtil\Model\ModelAbstract $model, array &$itemData)
+    protected function applyOrganizationRounds(MetaModelInterface $model, array $itemData): void
     {
         if ($itemData['org_specific_round'] == 0) {
             $model->set('organizations', [
@@ -203,12 +230,12 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      *  0    => undefined (specifiy when assigning)
      *  >0   => the id of the track field of type relation to use
      *
-     * @param \MUtil\Model\ModelAbstract $model The round model
+     * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
      *
      * @return void
      */
-    protected function applyRespondentRelation(\MUtil\Model\ModelAbstract $model, array &$itemData)
+    protected function applyRespondentRelation(MetaModelInterface $model, array &$itemData): void
     {
         $model->set('gro_id_survey', [
             'class' => 'autosubmit',
@@ -216,19 +243,19 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         if (!empty($itemData['gro_id_survey']) && $model->has('gro_id_relationfield')) {
             $forStaff = $this->tracker->getSurvey($itemData['gro_id_survey'])->isTakenByStaff();
             if (!$forStaff) {
-                $empty = array('-1' => $this->_('Patient'));
+                $empty = array('-1' => $this->translator->_('Patient'));
 
                 $relations = $this->getRespondentRelationFields();
                 if (!empty($relations)) {
                     $relations = $empty + $relations;
-                    $model->set('gro_id_relationfield', 'label', $this->_('Assigned to'), 'multiOptions', $relations, 'order', 25);
+                    $model->set('gro_id_relationfield', 'label', $this->translator->_('Assigned to'), 'multiOptions', $relations, 'order', 25);
                 }
                 $model->del('ggp_name');
             } else {
-                $model->set('ggp_name', 'label', $this->_('Assigned to'), 'elementClass', 'Exhibitor', 'order', 25);
+                $model->set('ggp_name', 'label', $this->translator->_('Assigned to'), 'elementClass', 'Exhibitor', 'order', 25);
                 $model->set('gro_id_relationfield', 'elementClass', 'hidden');
 
-                $itemData['ggp_name'] = $this->db->fetchOne('select ggp_name from gems__groups join gems__surveys on ggp_id_group = gsu_id_primary_group and gsu_id_survey = ?', $itemData['gro_id_survey']);
+                $itemData['ggp_name'] = $this->resultFetcher->fetchOne('select ggp_name from gems__groups join gems__surveys on ggp_id_group = gsu_id_primary_group and gsu_id_survey = ?', $itemData['gro_id_survey']);
                 if (!is_null($itemData['gro_id_relationfield'])) {
                     $itemData['gro_id_relationfield'] = null;
                 }
@@ -245,20 +272,20 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     /**
      * Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)
      *
-     * @param \MUtil\Model\ModelAbstract $model The round model
+     * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
-     * @param boolean True if the update changed values (usually by changed selection lists).
+     * @param bool True if the update changed values (usually by changed selection lists).
      */
-    abstract protected function applySurveyListValidAfter(\MUtil\Model\ModelAbstract $model, array &$itemData);
+    abstract protected function applySurveyListValidAfter(MetaModelInterface $model, array &$itemData): bool;
 
     /**
      * Set the surveys to be listed as valid for choices for this item and the way they are displayed (if at all)
      *
-     * @param \MUtil\Model\ModelAbstract $model The round model
+     * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
-     * @param boolean True if the update changed values (usually by changed selection lists).
+     * @param bool True if the update changed values (usually by changed selection lists).
      */
-    abstract protected function applySurveyListValidFor(\MUtil\Model\ModelAbstract $model, array &$itemData);
+    abstract protected function applySurveyListValidFor(MetaModelInterface $model, array &$itemData): bool;
 
     /**
      *
@@ -267,9 +294,9 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param int $period
      * @return ?DateTimeInterface
      */
-    protected function calculateFromDate($startDate, $type, $period)
+    protected function calculateFromDate(DateTimeInterface|null $startDate, string $type, int $period): DateTimeInterface
     {
-        return Period::applyPeriod($startDate, $type, (int)$period);
+        return Period::applyPeriod($startDate, $type, $period);
     }
 
     /**
@@ -279,7 +306,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param int $period
      * @return ?DateTimeInterface
      */
-    protected function calculateUntilDate($startDate, $type, $period)
+    protected function calculateUntilDate(DateTimeInterface|null $startDate, string $type, int $period): ?DateTimeInterface
     {
         $date = $this->calculateFromDate($startDate, $type, $period);
 
@@ -290,6 +317,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
             }
             return $date;
         }
+        return null;
     }
 
     /**
@@ -301,9 +329,9 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param \Gems\Tracker\RespondentTrack Current respondent track
      * @return int The number of tokens changed by this code
      */
-    protected function checkTokenCondition(\Gems\Tracker\Token $token, $round, $userId, \Gems\Tracker\RespondentTrack $respTrack)
+    protected function checkTokenCondition(Token $token, array $round, int $userId, RespondentTrack $respTrack): int
     {
-        $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
+        $skipCode = ReceptionCodeRepository::RECEPTION_SKIP;
 
         // Only if we have a condition, the token is not yet completed and
         // receptioncode is ok or skip we evaluate the condition
@@ -322,11 +350,11 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         if ($newStatus !== $oldStatus) {
             $changed = 1;
             if ($newStatus == false) {
-                $message = $this->_('Skipped by condition %s: %s');
+                $message = $this->translator->_('Skipped by condition %s: %s');
                 $newCode = $skipCode;
             } else {
-                $message = $this->_('Activated by condition %s: %s');
-                $newCode = $this->util->getReceptionCodeLibrary()->getOKString();
+                $message = $this->translator->_('Activated by condition %s: %s');
+                $newCode = ReceptionCodeRepository::RECEPTION_OK;
             }
 
             $token->setReceptionCode($newCode,
@@ -346,9 +374,9 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param \Gems\Tracker\RespondentTrack Current respondent track
      * @return int 1 if the token has changed
      */
-    protected function checkTokenDates(Token $token, $round, $userId, \Gems\Tracker\RespondentTrack $respTrack)
+    protected function checkTokenDates(Token $token, array $round, int $userId, RespondentTrack $respTrack): int
     {
-        $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
+        $skipCode = ReceptionCodeRepository::RECEPTION_SKIP;
 
         // Change only not-completed tokens with a positive successcode where at least one date
         // is not set by user input
@@ -396,7 +424,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param \Gems\Tracker\Token $skipToken Optional token to skip in the recalculation
      * @return int The number of tokens changed by this code
      */
-    public function checkTokensFrom(\Gems\Tracker\RespondentTrack $respTrack, \Gems\Tracker\Token $startToken, $userId, \Gems\Tracker\Token $skipToken = null)
+    public function checkTokensFrom(RespondentTrack $respTrack, Token $startToken, $userId, ?Token $skipToken = null): int
     {
         // Make sure the rounds are loaded
         $this->_ensureRounds();
@@ -436,10 +464,10 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param int $userId Id of the user who takes the action (for logging)
      * @return int The number of tokens changed by this code
      */
-    public function checkTokensFromStart(\Gems\Tracker\RespondentTrack $respTrack, $userId)
+    public function checkTokensFromStart(RespondentTrack $respTrack, int $userId): int
     {
         $token = $respTrack->getFirstToken();
-        if ($token instanceof \Gems\Tracker\Token) {
+        if ($token instanceof Token) {
             return $this->checkTokensFrom($respTrack, $respTrack->getFirstToken(), $userId);
         } else {
             return 0;
@@ -450,12 +478,12 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * Changes the display of gro_valid_[after|for]_field into something readable
      *
      * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
+     * @param boolean $new True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @return string The value to use
      */
-    public function displayDateCalculation($value, $new, $name, array $context = array())
+    public function displayDateCalculation(mixed $value, bool $new, string $name, array $context = []): string
     {
         $fieldBase = substr($name, 0, -5);  // Strip field
         $validAfter = (bool) strpos($fieldBase, 'after');
@@ -477,11 +505,11 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         }
 
         if ($context[$fieldBase . 'length'] > 0) {
-            $format = $this->_('%s plus %s %s');
+            $format = $this->translator->_('%s plus %s %s');
         } elseif($context[$fieldBase . 'length'] < 0) {
-            $format = $this->_('%s minus %s %s');
+            $format = $this->translator->_('%s minus %s %s');
         } else {
-            $format = $this->_('%s');
+            $format = $this->translator->_('%s');
         }
 
         $units = $this->translatedUtil->getPeriodUnits();
@@ -506,7 +534,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param array $context Optional, the other values being saved
      * @return string The value to use
      */
-    public function displayRoundId($value, $new, $name, array $context = array())
+    public function displayRoundId(mixed $value, bool $new, string $name, array $context = [])
     {
         $fieldSource = substr($name, 0, -2) . 'source';
 
@@ -522,9 +550,9 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      *
      * @return array if string snippet names
      */
-    public function getAnswerSnippetNames()
+    public function getAnswerSnippetNames(): array
     {
-        return array('Tracker\\Answers\\TrackAnswersModelSnippet');
+        return ['Tracker\\Answers\\TrackAnswersModelSnippet'];
     }
 
     /**
@@ -536,7 +564,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param boolean $validAfter True if it concenrs _valid_after_ dates
      * @return array
      */
-    protected function getDateOptionsFor($sourceType, $roundId, $language, $validAfter)
+    protected function getDateOptionsFor(string $sourceType, int|null $roundId, string $language, bool $validAfter): array
     {
         switch ($sourceType) {
             case self::NO_TABLE:
@@ -544,7 +572,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
 
             case self::ANSWER_TABLE:
                 if (! isset($this->_rounds[$roundId], $this->_rounds[$roundId]['gro_id_survey'])) {
-                    return array();
+                    return [];
                 }
                 $surveyId = $this->_rounds[$roundId]['gro_id_survey'];
                 $survey = $this->tracker->getSurvey($surveyId);
@@ -554,31 +582,31 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                 return $this->_fieldsDefinition->getFieldLabelsOfType(FieldsDefinition::TYPE_APPOINTMENT);
 
             case self::RESPONDENT_TRACK_TABLE:
-                $results = array(
-                    'gr2t_start_date' => $this->_('Track start'),
-                    'gr2t_end_date'   => $this->_('Track end'),
-                    // 'gr2t_created'    => $this->_('Track created'),
-                );
+                $results = [
+                    'gr2t_start_date' => $this->translator->_('Track start'),
+                    'gr2t_end_date'   => $this->translator->_('Track end'),
+                    // 'gr2t_created'    => $this->translator->_('Track created'),
+                ];
 
-                return $results + $this->_fieldsDefinition->getFieldLabelsOfType(array(
+                return $results + $this->_fieldsDefinition->getFieldLabelsOfType([
                     FieldsDefinition::TYPE_DATE,
                     FieldsDefinition::TYPE_DATETIME,
-                    ));
+                    ]);
 
             case self::RESPONDENT_TABLE:
                 return [
-                    'grs_birthday' => $this->_('Birthday'),
-                    'gr2o_created' => $this->_('Respondent created'),
-                    /*'gr2o_changed' => $this->_('Respondent changed'),*/
+                    'grs_birthday' => $this->translator->_('Birthday'),
+                    'gr2o_created' => $this->translator->_('Respondent created'),
+                    /*'gr2o_changed' => $this->translator->_('Respondent changed'),*/
                     ];
 
             case self::TOKEN_TABLE:
-                return array(
-                    'gto_valid_from'      => $this->_('Valid from'),
-                    'gto_valid_until'     => $this->_('Valid until'),
-                    'gto_start_time'      => $this->_('Start time'),
-                    'gto_completion_time' => $this->_('Completion date'),
-                    );
+                return [
+                    'gto_valid_from'      => $this->translator->_('Valid from'),
+                    'gto_valid_until'     => $this->translator->_('Valid until'),
+                    'gto_start_time'      => $this->translator->_('Start time'),
+                    'gto_completion_time' => $this->translator->_('Completion date'),
+                ];
 
         }
 
@@ -592,8 +620,8 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      *
      * @return array
      */
-    public function getRespondentRelationFields() {
-        $fields = array();
+    public function getRespondentRelationFields(): array {
+        $fields = [];
         $relationFields = $this->getFieldsOfType('relation');
 
         if (!empty($relationFields)) {
@@ -612,21 +640,21 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     /**
      * Returns a model that can be used to retrieve or save the data.
      *
-     * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
+     * @param bool $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return \MUtil\Model\ModelAbstract
+     * @return RoundModel
      */
-    public function getRoundModel($detailed, $action)
+    public function getRoundModel(bool $detailed, string $action): RoundModel
     {
         $model = parent::getRoundModel($detailed, $action);
 
         // Add information about surveys and groups
-        $model->addLeftTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
-        $model->addLeftTable('gems__groups', array('gsu_id_primary_group' => 'ggp_id_group'));
-        $model->addLeftTable('gems__track_fields', array('gro_id_relationfield = gtf_id_field'), 'gtf', false);
+        $model->addLeftTable('gems__surveys', ['gro_id_survey' => 'gsu_id_survey']);
+        $model->addLeftTable('gems__groups', ['gsu_id_primary_group' => 'ggp_id_group']);
+        $model->addLeftTable('gems__track_fields', ['gro_id_relationfield = gtf_id_field'], 'gtf', false);
 
         $model->addColumn(new \Zend_Db_Expr('COALESCE(gtf_field_name, ggp_name)'), 'ggp_name');
-        $model->set('ggp_name', 'label', $this->_('Assigned to'));
+        $model->set('ggp_name', 'label', $this->translator->_('Assigned to'));
 
         // Reset display order to class specific order
         $model->resetOrder();
@@ -643,7 +671,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
 
         // Calculate valid from
         if ($detailed) {
-            $html = \Zalt\Html\Html::create()->h4($this->_('Valid from calculation'));
+            $html = \Zalt\Html\Html::create()->h4($this->translator->_('Valid from calculation'));
             $model->set('valid_after',
                     'default', $html,
                     'label', ' ',
@@ -652,7 +680,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                     );
         }
         $model->set('gro_valid_after_source',
-                'label', $this->_('Date source'),
+                'label', $this->translator->_('Date source'),
                 'default', self::TOKEN_TABLE,
                 'elementClass', 'Radio',
                 'escape', false,
@@ -661,7 +689,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                 'multiOptions', $this->getSourceList(true, false, false)
                 );
         $model->set('gro_valid_after_id',
-                'label', $this->_('Round used'),
+                'label', $this->translator->_('Round used'),
                 'class', 'autosubmit',
                 );
 
@@ -669,32 +697,32 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
             $periodUnits = $this->translatedUtil->getPeriodUnits();
 
             $model->set('gro_valid_after_field',
-                    'label', $this->_('Date used'),
+                    'label', $this->translator->_('Date used'),
                     'default', 'gto_valid_from',
                     'class', 'autosubmit',
                     );
             $model->set('gro_valid_after_length',
-                    'label', $this->_('Add to date'),
-                    'description', $this->_('Can be negative'),
+                    'label', $this->translator->_('Add to date'),
+                    'description', $this->translator->_('Can be negative'),
                     'required', false,
                     'filter', 'Int'
                     );
             $model->set('gro_valid_after_unit',
-                    'label', $this->_('Add to date unit'),
+                    'label', $this->translator->_('Add to date unit'),
                     'multiOptions', $periodUnits
                     );
         } else {
             $model->set('gro_valid_after_source',
-                    'label', $this->_('Source'),
+                    'label', $this->translator->_('Source'),
                     'tableDisplay', 'small'
                     );
-            $model->set('gro_valid_after_id', 'label', $this->_('Round'),
+            $model->set('gro_valid_after_id', 'label', $this->translator->_('Round'),
                     'multiOptions', $this->getRoundTranslations(),
                     'tableDisplay', 'small'
                     );
             $model->setOnLoad('gro_valid_after_id', array($this, 'displayRoundId'));
             $model->set('gro_valid_after_field',
-                    'label', $this->_('Date calculation'),
+                    'label', $this->translator->_('Date calculation'),
                     'tableHeaderDisplay', 'small'
                     );
             $model->setOnLoad('gro_valid_after_field', array($this, 'displayDateCalculation'));
@@ -704,7 +732,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
 
         if ($detailed) {
             // Calculate valid until
-            $html = \Zalt\Html\Html::create()->h4($this->_('Valid for calculation'));
+            $html = \Zalt\Html\Html::create()->h4($this->translator->_('Valid for calculation'));
             $model->set('valid_for',
                     'label', ' ',
                     'default', $html,
@@ -714,7 +742,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         }
 
         $model->set('gro_valid_for_source',
-                'label', $this->_('Date source'),
+                'label', $this->translator->_('Date source'),
                 'default', self::TOKEN_TABLE,
                 'elementClass', 'Radio',
                 'escape', false,
@@ -723,31 +751,31 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                 'multiOptions', $this->getSourceList(false, false, false)
                 );
         $model->set('gro_valid_for_id',
-                'label', $this->_('Round used'),
+                'label', $this->translator->_('Round used'),
                 'default', '',
                 'class', 'autosubmit',
                 );
 
         if ($detailed) {
             $model->set('gro_valid_for_field',
-                    'label', $this->_('Date used'),
+                    'label', $this->translator->_('Date used'),
                     'default', 'gto_valid_from',
                     'class', 'autosubmit',
                     );
             $model->set('gro_valid_for_length',
-                    'label', $this->_('Add to date'),
-                    'description', $this->_('Can be negative'),
+                    'label', $this->translator->_('Add to date'),
+                    'description', $this->translator->_('Can be negative'),
                     'required', false,
                     'default', 2,
                     'filter', 'Int'
                     );
             $model->set('gro_valid_for_unit',
-                    'label', $this->_('Add to date unit'),
+                    'label', $this->translator->_('Add to date unit'),
                     'multiOptions', $periodUnits
                     );
 
             // Calculate valid until
-            $html = \Zalt\Html\Html::create()->h4($this->_('Validity calculation'));
+            $html = \Zalt\Html\Html::create()->h4($this->translator->_('Validity calculation'));
             $model->set('valid_cond',
                         'label', ' ',
                         'default', $html,
@@ -762,17 +790,17 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
             $model->set('gro_changed_event');
         } else {
             $model->set('gro_valid_for_source',
-                    'label', $this->_('Source'),
+                    'label', $this->translator->_('Source'),
                     'tableDisplay', 'small'
                     );
             $model->set('gro_valid_for_id',
-                    'label', $this->_('Round'),
+                    'label', $this->translator->_('Round'),
                     'multiOptions', $this->getRoundTranslations(),
                     'tableDisplay', 'small'
                     );
             $model->setOnLoad('gro_valid_for_id', array($this, 'displayRoundId'));
             $model->set('gro_valid_for_field',
-                    'label', $this->_('Date calculation'),
+                    'label', $this->translator->_('Date calculation'),
                     'tableHeaderDisplay', 'small'
                     );
             $model->setOnLoad('gro_valid_for_field', array($this, 'displayDateCalculation'));
@@ -792,7 +820,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     {
         $this->_ensureRounds();
 
-        return \MUtil\Ra::column('gro_id_order', $this->_rounds);
+        return Ra::column('gro_id_order', $this->_rounds);
     }
 
     /**
@@ -803,25 +831,25 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param boolean $detailed   Return extended info
      * @return array source_name => label
      */
-    protected function getSourceList($validAfter, $firstRound, $detailed = true)
+    protected function getSourceList(bool $validAfter, bool $firstRound, bool $detailed = true): array
     {
-        if (! ($validAfter || $this->project->isValidUntilRequired())) {
-            $results[self::NO_TABLE] = array($this->_('Does not expire'));
+        if (! ($validAfter || $this->projectSettings->isValidUntilRequired())) {
+            $results[self::NO_TABLE] = [$this->translator->_('Does not expire')];
         }
         if (! ($validAfter && $firstRound)) {
-            $results[self::ANSWER_TABLE] = array($this->_('Answers'), $this->_('Use an answer from a survey.'));
+            $results[self::ANSWER_TABLE] = [$this->translator->_('Answers'), $this->translator->_('Use an answer from a survey.')];
         }
         if ($this->_fieldsDefinition->hasAppointmentFields()) {
-            $results[self::APPOINTMENT_TABLE] = array(
-                $this->_('Appointment'),
-                $this->_('Use an appointment linked to this track.'),
-                );
+            $results[self::APPOINTMENT_TABLE] = [
+                $this->translator->_('Appointment'),
+                $this->translator->_('Use an appointment linked to this track.'),
+            ];
         }
         if (! ($validAfter && $firstRound)) {
-            $results[self::TOKEN_TABLE]  = array($this->_('Token'), $this->_('Use a standard token date.'));
+            $results[self::TOKEN_TABLE]  = [$this->translator->_('Token'), $this->translator->_('Use a standard token date.')];
         }
-        $results[self::RESPONDENT_TRACK_TABLE] = array($this->_('Track'), $this->_('Use a track level date.'));
-        $results[self::RESPONDENT_TABLE] = array($this->_('Respondent'), $this->_('Use a respondent level date.'));
+        $results[self::RESPONDENT_TRACK_TABLE] = [$this->translator->_('Track'), $this->translator->_('Use a track level date.')];
+        $results[self::RESPONDENT_TABLE] = [$this->translator->_('Respondent'), $this->translator->_('Use a respondent level date.')];
 
         if ($detailed) {
             foreach ($results as $key => $value) {
@@ -846,14 +874,14 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param int $roundId  \Gems round id
      * @return int \Gems survey id
      */
-    protected function getSurveyId($roundId)
+    protected function getSurveyId(int $roundId): int
     {
        $this->_ensureRounds();
        if (isset($this->_rounds[$roundId]['gro_id_survey'])) {
            return $this->_rounds[$roundId]['gro_id_survey'];
        }
 
-       throw new \Gems\Exception\Coding("Requested non existing survey id for round $roundId.");
+       throw new Coding("Requested non existing survey id for round $roundId.");
     }
 
     /**
@@ -862,9 +890,9 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param \Gems\Tracker\Token $token Allows token status dependent delete snippets
      * @return array of string snippet names
      */
-    public function getTokenDeleteSnippetNames(\Gems\Tracker\Token $token)
+    public function getTokenDeleteSnippetNames(Token $token): array
     {
-        return array('Token\\DeleteTrackTokenSnippet', CurrentButtonRowSnippet::class);
+        return ['Token\\DeleteTrackTokenSnippet', CurrentButtonRowSnippet::class];
     }
 
     /**
@@ -873,9 +901,9 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param \Gems\Tracker\Token $token Allows token status dependent edit snippets
      * @return array of string snippet names
      */
-    public function getTokenEditSnippetNames(\Gems\Tracker\Token $token)
+    public function getTokenEditSnippetNames(Token $token): array
     {
-        return array('Token\\EditTrackTokenSnippet');
+        return ['Token\\EditTrackTokenSnippet'];
     }
 
     /**
@@ -884,7 +912,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param \Gems\Tracker\Token $token Allows token status dependent show snippets
      * @return array of string snippet names
      */
-    public function getTokenShowSnippetNames(\Gems\Tracker\Token $token)
+    public function getTokenShowSnippetNames(Token $token): array
     {
         $output[] = 'Token\\ShowTrackTokenSnippet';
 
@@ -897,56 +925,11 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     }
 
     /**
-     * An array of snippet names for deleting a track.
-     *
-     * @param \Gems\Tracker\RespondentTrack $respTrack Allows track status dependent edit snippets
-     * @return array of string snippet names
-     * @deprecated since version 1.7.1 Snippets defined TrackAction
-     */
-    public function getTrackDeleteSnippetNames(\Gems\Tracker\RespondentTrack $respTrack)
-    {
-        return array('Tracker\\DeleteTrackSnippet', 'Tracker\\TrackTokenOverviewSnippet');
-    }
-
-    /**
-     * An array of snippet names for editing a track.
-     *
-     * @return array of string snippet names
-     * @deprecated since version 1.7.1 Snippets defined TrackAction
-     */
-    public function getTrackCreateSnippetNames()
-    {
-        return array(
-            'Tracker\\ShowTrackUsageSnippet',
-            'Tracker\\EditTrackSnippet',
-            'Tracker\\TrackUsageTextDetailsSnippet',
-            'Tracker\\TrackSurveyOverviewSnippet',
-            );
-    }
-
-    /**
-     * An array of snippet names for editing a track.
-     *
-     * @param \Gems\Tracker\RespondentTrack $respTrack Allows track status dependent edit snippets
-     * @return array of string snippet names
-     * @deprecated since version 1.7.1 Snippets defined TrackAction
-     */
-    public function getTrackEditSnippetNames(\Gems\Tracker\RespondentTrack $respTrack)
-    {
-        return array(
-            'Tracker\\ShowTrackUsageSnippet',
-            'Tracker\\EditTrackSnippet',
-            'Tracker\\TrackUsageTextDetailsSnippet',
-            'Tracker\\TrackSurveyOverviewSnippet',
-            );
-    }
-
-    /**
      * The track type of this engine
      *
      * @return string 'T' or 'S'
      */
-    public function getTrackType()
+    public function getTrackType(): string
     {
         return 'T';
     }
@@ -961,7 +944,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param \Gems\Tracker\RespondentTrack $respTrack
      * @return ?DateTimeInterface date time or null
      */
-    abstract protected function getValidFromDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack);
+    abstract protected function getValidFromDate(string $fieldSource, string $fieldName, int $prevRoundId, Token $token, RespondentTrack $respTrack): ?DateTimeInterface;
 
     /**
      * Returns the date to use to calculate the ValidUntil if any
@@ -974,7 +957,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param ?DateTimeInterface $validFrom The calculated new valid from value
      * @return ?DateTimeInterface date time or null
      */
-    abstract protected function getValidUntilDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack, $validFrom);
+    abstract protected function getValidUntilDate(string $fieldSource, string $fieldName, int $prevRoundId, Token $token, RespondentTrack $respTrack, ?DateTimeInterface $validFrom = null): ?DateTimeInterface;
 
     /**
      * True if the user can create this kind of track in TrackMaintenanceAction.
@@ -984,7 +967,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      *
      * @return boolean
      */
-    public function isUserCreatable()
+    public function isUserCreatable(): bool
     {
         return true;
     }
@@ -992,14 +975,14 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     /**
      * The logic to set the display of the valid_X_field date list field.
      *
-     * @param \MUtil\Model\ModelAbstract $model The round model
+     * @param MetaModelInterface $model The round model
      * @param string $fieldName The valid_X_field to set
      * @param string $source The date list source as defined by this object
      * @param int $roundId Optional a round id
      * @param string $language   (ISO) language string
      * @param boolean $validAfter True if it concerns _valid_after_ dates
      */
-    protected function setDateListFor(\MUtil\Model\ModelAbstract $model, $fieldName, $source, $roundId, $language, $validAfter)
+    protected function setDateListFor(MetaModelInterface $model, string $fieldName, string $source, int $roundId, string $language, bool $validAfter): void
     {
         $dateOptions = $this->getDateOptionsFor($source, $roundId, $language, $validAfter);
 
@@ -1019,12 +1002,12 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     /**
      * Updates the model to reflect the values for the current item data
      *
-     * @param \MUtil\Model\ModelAbstract $model The round model
+     * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
      * @param string $language   (ISO) language string
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    public function updateRoundModelToItem(\MUtil\Model\ModelAbstract $model, array &$itemData, $language)
+    public function updateRoundModelToItem(MetaModelInterface $model, array &$itemData, string $language): bool
     {
         $this->_ensureRounds();
 

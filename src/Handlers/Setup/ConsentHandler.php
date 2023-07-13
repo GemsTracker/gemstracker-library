@@ -13,6 +13,7 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\MetaModelLoader;
+use Gems\Repository\ConsentRepository;
 use Gems\Util\ConsentUtil;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -48,7 +49,7 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected MetaModelLoader $metaModelLoader,
-        protected ConsentUtil $consentUtil,
+        protected ConsentRepository $consentRepository,
     ) {
         parent::__construct($responder, $translate);
     }
@@ -76,7 +77,7 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
                     'description', $this->_('Determines order of presentation in interface.'),
                     'validator', 'Digits');
         $metaModel->set('gco_code',        'label', $this->_('Consent code'),
-                    'multiOptions', $this->consentUtil->getConsentTypes(),
+                    'multiOptions', $this->consentRepository->getConsentTypes(),
                     'description', $this->_('Internal code, not visible to users, copied with the token information to the source.'));
         if ($detailed) {
             $metaModel->set('gco_description', 'validator', ModelUniqueValidator::class);

@@ -19,7 +19,9 @@ use Gems\Locale\Locale;
 use Gems\Menu\RouteHelper;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\CommJobRepository;
+use Gems\Repository\ConsentRepository;
 use Gems\Repository\OrganizationRepository;
+use Gems\Repository\ReceptionCodeRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Repository\SourceRepository;
 use Gems\Repository\StaffRepository;
@@ -65,7 +67,6 @@ class LegacyConfigProvider
                 \Gems\Loader::class => LegacyFactory::class,
                 \Gems\User\UserLoader::class => LegacyFactory::class,
                 \Gems\Menu::class => LegacyFactory::class,
-                \Gems\Tracker::class => LegacyFactory::class,
                 \Gems\Util::class => LegacyFactory::class,
                 \Zend_Locale::class => LegacyFactory::class,
                 \Zend_Translate::class => LegacyFactory::class,
@@ -88,7 +89,7 @@ class LegacyConfigProvider
                 'LegacyCommJobRepository' => CommJobRepository::class,
                 'LegacyConditionLoader' => ConditionLoader::class,
                 'LegacyConfig' => 'config',
-                'LegacyConsentUtil' => ConsentUtil::class,
+                'LegacyConsentRepository' => ConsentRepository::class,
                 'LegacyCurrentUserRepository' => CurrentUserRepository::class,
                 'LegacyEmbedLoader' => EmbedLoader::class,
                 'LegacyEvent' => EventDispatcher::class,
@@ -100,6 +101,7 @@ class LegacyConfigProvider
                 'LegacyOverLoader' => ProjectOverloader::class,
                 'LegacyOrganizationRepository' => OrganizationRepository::class,
                 'LegacyPasswordChecker' => PasswordChecker::class,
+                'LegacyReceptionCodeRepository' => ReceptionCodeRepository::class,
                 'LegacyRespondentRepository' => RespondentRepository::class,
                 'LegacyRouteHelper' => RouteHelper::class,
                 'LegacyResultFetcher' => ResultFetcher::class,

@@ -2,38 +2,97 @@
 
 namespace Gems\Fake;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Locale\Locale;
+use Gems\Log\Loggers;
+use Gems\Project\ProjectSettings;
+use Gems\Repository\ConsentRepository;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\ReceptionCodeRepository;
+use Gems\Repository\RespondentRepository;
+use Gems\Repository\TokenRepository;
+use Gems\Tracker;
+use Gems\User\Mask\MaskRepository;
+use Gems\Util\Translated;
+use MUtil\Translate\Translator;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Loader\ProjectOverloader;
 use DateTimeImmutable;
 use DateInterval;
 
 class Token extends \Gems\Tracker\Token
 {
-    public function __construct(protected ProjectOverloader $overloader)
+    /*public function __construct(protected ProjectOverloader $overloader)
     {
         //if ($tokenData === null) {
             $tokenData = $this->getTokenData();
         //}
         parent::__construct($tokenData);
+    }*/
+
+    public function __construct(
+        ResultFetcher $resultFetcher,
+        MaskRepository $maskRepository,
+        Tracker $tracker,
+        ProjectSettings $projectSettings,
+        ConsentRepository $consentRepository,
+        OrganizationRepository $organizationRepository,
+        ReceptionCodeRepository $receptionCodeRepository,
+        RespondentRepository $respondentRepository,
+        ProjectOverloader $projectOverloader,
+        Translated $translatedUtil,
+        Locale $locale,
+        TokenRepository $tokenRepository,
+        EventDispatcherInterface $eventDispatcher,
+        Translator $translator,
+        MessageBusInterface $messageBus,
+        Loggers $loggers,
+        CurrentUserRepository $currentUserRepository
+    ) {
+
+
+        parent::__construct(
+            $this->getTokenData(),
+            $resultFetcher,
+            $maskRepository,
+            $tracker,
+            $projectSettings,
+            $consentRepository,
+            $organizationRepository,
+            $receptionCodeRepository,
+            $respondentRepository,
+            $projectOverloader,
+            $translatedUtil,
+            $locale,
+            $tokenRepository,
+            $eventDispatcher,
+            $translator,
+            $messageBus,
+            $loggers,
+            $currentUserRepository
+        );
     }
 
-    public function getOrganization()
+    public function getOrganization(): Organization
     {
         return new Organization();
     }
 
-    public function getRespondent()
+    public function getRespondent(): Respondent
     {
-        return $this->overloader->create(Respondent::class);
+        return $this->projectOverloader->create(Respondent::class);
     }
 
-    public function getRespondentTrack()
+    public function getRespondentTrack(): RespondentTrack
     {
-        return $this->overloader->create(RespondentTrack::class);
+        return $this->projectOverloader->create(RespondentTrack::class);
     }
 
-    public function getSurvey()
+    public function getSurvey(): Survey
     {
-        return $this->overloader->create(Survey::class);
+        return $this->projectOverloader->create(Survey::class);
     }
 
     public function getTokenData(): array
@@ -63,7 +122,7 @@ class Token extends \Gems\Tracker\Token
         ];
     }
 
-    public function getTrackName()
+    public function getTrackName(): string
     {
         return 'Example track';
     }

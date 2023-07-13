@@ -16,10 +16,10 @@ use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Repository\ReceptionCodeRepository;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Token;
-use Gems\Util\ReceptionCodeLibrary;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessageStatus;
@@ -103,7 +103,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
-        protected ReceptionCodeLibrary $receptionCodeLibrary,
+        protected ReceptionCodeRepository $receptionCodeRepository,
         protected Tracker $tracker,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $currentUserRepository);
@@ -189,12 +189,12 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
     public function getReceptionCodes()
     {
         if ($this->unDelete) {
-            return $this->receptionCodeLibrary->getTokenRestoreCodes();
+            return $this->receptionCodeRepository->getTokenRestoreCodes();
         }
         if ($this->token->isCompleted()) {
-            return $this->receptionCodeLibrary->getCompletedTokenDeletionCodes();
+            return $this->receptionCodeRepository->getCompletedTokenDeletionCodes();
         }
-        return $this->receptionCodeLibrary->getUnansweredTokenDeletionCodes();
+        return $this->receptionCodeRepository->getUnansweredTokenDeletionCodes();
     }
 
     protected function loadForm()

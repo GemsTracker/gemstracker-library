@@ -95,7 +95,7 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
         // gtr_track_class
         if ($this->trackEngine) {
             $options      = $dataModel->get('gtr_track_class', 'multiOptions');
-            $alternatives = $this->trackEngine->getConversionTargets($options);
+            /*$alternatives = $this->trackEngine->getConversionTargets($options);
             if (count($alternatives) > 1) {
                 $options = $alternatives;
 
@@ -106,9 +106,9 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
                 }
 
                 $classEdit = true;
-            } else {
+            } else {*/
                 $classEdit = false;
-            }
+            //}
         } else {
             $options = $this->tracker->getTrackEngineList(true, true);
             $classEdit = true;
