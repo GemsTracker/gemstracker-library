@@ -19,9 +19,11 @@ use Gems\Event\Application\TokenEvent;
 use Gems\Event\Application\RespondentTrackFieldUpdateEvent;
 use Gems\Event\Application\RespondentTrackFieldEvent;
 use Gems\Exception;
+use Gems\Locale\Locale;
 use Gems\Registry\TargetAbstract;
 use Gems\Repository\MailRepository;
 use Gems\Repository\ReceptionCodeRepository;
+use Gems\Repository\RespondentRepository;
 use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Engine\StepEngineAbstract;
@@ -127,6 +129,8 @@ class RespondentTrack
         protected readonly MailRepository $mailRepository,
         protected readonly DbTranslationRepository $dbTranslationRepository,
         protected readonly Translator $translate,
+        protected readonly RespondentRepository $respondentRepository,
+        protected readonly Locale $locale,
         protected readonly int $currentUserId,
     )
     {
@@ -569,26 +573,6 @@ class RespondentTrack
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        $this->initDbTranslations();
-
-        if ($this->_respTrackData) {
-            $this->_respTrackData = $this->translateTables($this->_tablesForTranslations, $this->_respTrackData);
-            $this->_respTrackData = $this->maskRepository->applyMaskToRow($this->_respTrackData);
-        } else {
-            $this->refresh();
-        }
-
-        return (boolean) $this->_respTrackData;
-    }
-
-    /**
      * Check this respondent track for changes to the tokens
      *
      * @param int $userId Id of the user who takes the action (for logging)
@@ -603,9 +587,7 @@ class RespondentTrack
 
         $engine = $this->getTrackEngine();
 
-        $this->db->beginTransaction();
         $connection = $this->resultFetcher->getAdapter()->getDriver()->getConnection();
-
         $connection->beginTransaction();
         // Check for validFrom and validUntil dates that have changed.
         if ($fromToken) {
@@ -830,6 +812,7 @@ class RespondentTrack
         if (isset($this->_respTrackData['gr2t_end_date'])) {
             return DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $this->_respTrackData['gr2t_end_date']);
         }
+        return null;
     }
 
     /**
@@ -950,7 +933,7 @@ class RespondentTrack
         if (! ($this->_respondentObject instanceof Respondent)
                 || $this->_respondentObject->getPatientNumber()  !== $patientNumber
                 || $this->_respondentObject->getOrganizationId() !== $organizationId) {
-            $this->_respondentObject = $this->loader->getRespondent($patientNumber, $organizationId);
+            $this->_respondentObject = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
         }
 
         return $this->_respondentObject;
