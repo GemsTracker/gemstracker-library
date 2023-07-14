@@ -1205,11 +1205,11 @@ class Token
      */
     public function getRespondentTrack(): RespondentTrack
     {
-        if (! $this->respTrack) {
-            $this->respTrack = $this->tracker->getRespondentTrack($this->_gemsData['gto_id_respondent_track']);
+        if (! $this->respondentTrack) {
+            $this->respondentTrack = $this->tracker->getRespondentTrack($this->_gemsData['gto_id_respondent_track']);
         }
 
-        return $this->respTrack;
+        return $this->respondentTrack;
     }
 
     /**

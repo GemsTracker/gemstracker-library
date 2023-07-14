@@ -337,7 +337,7 @@ class Survey
      */
     public function getHash(): string|null
     {
-        return array_key_exists('gsu_hash', $this->_data) ? $this->_data['gsu_hash'] : null;
+        return array_key_exists('gsu_hash', $this->data) ? $this->data['gsu_hash'] : null;
     }
 
     /**
