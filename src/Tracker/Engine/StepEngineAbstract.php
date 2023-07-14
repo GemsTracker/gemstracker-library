@@ -1058,9 +1058,11 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         $result = $this->applyDatesValidFor($model, $itemData, $language) || $result;
 
         // Apply respondent relation settings
-        $result = $this->applyRespondentRelation($model, $itemData) || $result;
+        //$result = $this->applyRespondentRelation($model, $itemData) || $result;
+        $this->applyRespondentRelation($model, $itemData);
 
-        $result = $this->applyOrganizationRounds($model, $itemData) || $result;
+        //$result = $this->applyOrganizationRounds($model, $itemData) || $result;
+        $this->applyOrganizationRounds($model, $itemData);
 
         return $result;
     }

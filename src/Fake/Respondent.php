@@ -3,12 +3,16 @@
 namespace Gems\Fake;
 
 use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Repository\ConsentRepository;
 use Gems\Repository\MailRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\ReceptionCodeRepository;
+use Gems\Tracker;
 use Gems\User\Mask\MaskRepository;
+use Gems\Util\Translated;
+use MUtil\Translate\Translator;
 
 class Respondent extends \Gems\Tracker\Respondent
 {
@@ -19,6 +23,10 @@ class Respondent extends \Gems\Tracker\Respondent
         ReceptionCodeRepository $receptionCodeRepository,
         ResultFetcher $resultFetcher,
         MaskRepository $maskRepository,
+        Translator $translator,
+        Translated $translatedUtil,
+        Tracker $tracker,
+        CurrentUserRepository $currentUserRepository,
         Model $modelLoader
     ) {
         parent::__construct(
@@ -31,6 +39,10 @@ class Respondent extends \Gems\Tracker\Respondent
             $receptionCodeRepository,
             $resultFetcher,
             $maskRepository,
+            $translator,
+            $translatedUtil,
+            $tracker,
+            $currentUserRepository,
             $modelLoader
         );
     }

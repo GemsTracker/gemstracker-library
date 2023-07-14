@@ -251,7 +251,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
     public function setReceptionCode($newCode, $userId)
     {
         // Get the code object
-        $code    = $this->receptionCodeLibrary->getReceptionCode($newCode);
+        $code    = $this->receptionCodeRepository->getReceptionCode($newCode);
 
         // Use the token function as that cascades the consent code
         $changed = $this->token->setReceptionCode($code, $this->formData['gto_comment'], $userId);

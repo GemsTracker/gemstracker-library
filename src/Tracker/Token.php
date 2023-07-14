@@ -66,42 +66,44 @@ class Token
     const COMPLETION_DATACHANGE = 1;
     const COMPLETION_EVENTCHANGE = 2;
 
+    protected array $_cache = [];
+
     /**
      *
      * @var string The token id of the token this one was copied from, null when not loaded, false when does not exist
      */
-    protected $_copiedFromTokenId = null;
+    protected string|null $_copiedFromTokenId = null;
 
     /**
      *
      * @var array The token id's of the tokens this one was copied to, null when not loaded, [] when none exist
      */
-    protected $_copiedToTokenIds = null;
+    protected array|null $_copiedToTokenIds = null;
 
     /**
      *
      * @var array The gems token data
      */
-    protected $_gemsData = array();
+    protected array $_gemsData = [];
 
     /**
      * Helper var for preventing infinite loops
      *
      * @var bool
      */
-    protected $_loopCheck = false;
+    protected bool $_loopCheck = false;
 
     /**
      *
-     * @var \Gems\Tracker\Token
+     * @var Token
      */
-    private $_nextToken = null;
+    private Token|null $_nextToken = null;
 
     /**
      *
-     * @var \Gems\Tracker\Token
+     * @var Token
      */
-    private $_previousToken = null;
+    private Token|null $_previousToken = null;
 
     /**
      * Holds the relation (if any) for this token
@@ -112,21 +114,23 @@ class Token
 
     /**
      *
-     * @var \Gems\Tracker\Respondent
+     * @var Respondent
      */
-    protected $_respondentObject = null;
+    protected Respondent|null $_respondentObject = null;
+
+    protected RespondentTrack|null $respondentTrack = null;
 
     /**
      *
      * @var array The answers in raw format
      */
-    private $_sourceDataRaw;
+    private array|null $_sourceDataRaw;
 
     /**
      *
      * @var string The id of the token
      */
-    protected $_tokenId;
+    protected string $_tokenId;
 
     protected User $currentUser;
 
@@ -2024,7 +2028,7 @@ class Token
                 $values['gto_mail_sent_num']  = 0;
 
                 $format = Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat');
-                
+
                 $now = new DateTimeImmutable();
                 $newComment = sprintf(
                     $this->translator->_('%s: Reset number of contact moments because new start date %s is later than last contact date (%s).'),

@@ -383,7 +383,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
         $batch->setMessage('roundChangeUpdates', sprintf($this->translator->_('Round changes propagated to %d tokens.'), $i));
 
         // Step two: deactivate inactive rounds
-        $i = $batch->addToCounter('deletedTokens', $this->removeInactiveRounds($respTrack, $userId));
+        $i = $batch->addToCounter('deletedTokens', $this->removeInactiveRounds($respTrack));
         $batch->setMessage('deletedTokens', sprintf($this->translator->_('%d tokens deleted by round changes.'), $i));
 
         // Step three: create lacking tokens

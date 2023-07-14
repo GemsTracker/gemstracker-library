@@ -16,7 +16,7 @@ use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zalt\Loader\ConstructorProjectOverloader;
+use Zalt\Loader\ProjectOverloader;
 
 class CommFieldsHandler implements RequestHandlerInterface
 {
@@ -27,7 +27,7 @@ class CommFieldsHandler implements RequestHandlerInterface
         protected MailRepository $mailRepository,
         protected Tracker $tracker,
         protected array $config,
-        protected ConstructorProjectOverloader $overloader
+        protected ProjectOverloader $overloader
     )
     {
     }
@@ -135,7 +135,11 @@ class CommFieldsHandler implements RequestHandlerInterface
         $locale = $request->getAttribute(LocaleMiddleware::LOCALE_ATTRIBUTE);
         $language = $locale->getLanguage();
         if ($id === null) {
-            $mailFields = $this->communicationRepository->getTokenMailFields(new Token($this->overloader), $language);
+            /**
+             * @var Token $fakeToken
+             */
+            $fakeToken = $this->overloader->create(Token::class);
+            $mailFields = $this->communicationRepository->getTokenMailFields($fakeToken, $language);
             return new JsonResponse($mailFields);
         }
 

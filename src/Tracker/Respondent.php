@@ -15,6 +15,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 
 use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\RespondentModel;
 use Gems\Repository\ConsentRepository;
@@ -54,6 +55,8 @@ class Respondent
      */
     protected bool $addLoginCheck = false;
 
+    protected int $currentUserId;
+
     /**
      *
      * @var boolean true if Respondent exists in the database
@@ -92,9 +95,12 @@ class Respondent
         protected readonly MaskRepository $maskRepository,
         protected readonly Translator $translator,
         protected readonly Translated $translatedUtil,
+        protected readonly Tracker $tracker,
+        readonly CurrentUserRepository $currentUserRepository,
         readonly Model $modelLoader,
     )
     {
+        $this->currentUserId = $this->currentUserRepository->getCurrentUserId();
         $this->respondentModel = $modelLoader->getRespondentModel(true);
         if ($this->addLoginCheck) {
             $this->respondentModel->addLoginCheck();
@@ -138,7 +144,7 @@ class Respondent
         if ($months) {
             return ($diff->y * 12) + $diff->m;
         }
-        
+
         return $diff->y;
     }
 
@@ -205,7 +211,7 @@ class Respondent
 
     /**
      * Get the proper Dear mr./mrs/ greeting of respondent
-     * 
+     *
      * @return string
      */
     public function getDearGreeting(string $language = null): string
@@ -564,7 +570,7 @@ class Respondent
             foreach ($respTracks as $respTrack) {
                 if ($respTrack instanceof RespondentTrack) {
                     if ($oldCode->getCode() === $respTrack->getReceptionCode()->getCode()) {
-                        $respTrack->setReceptionCode($newCode, null, $this->currentUser->getUserId());
+                        $respTrack->setReceptionCode($newCode, null, $this->currentUserId);
                         $respTrack->restoreTokens($oldCode, $newCode);
                         $count++;
                     } else {

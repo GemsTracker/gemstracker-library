@@ -195,9 +195,9 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     public function setReceptionCode($newCode, $userId)
     {
         $oldCode = $this->respondentTrack->getReceptionCode();
-        
+
         if (! $newCode instanceof ReceptionCode) {
-            $newCode = $this->receptionCodeLibrary->getReceptionCode($newCode);
+            $newCode = $this->receptionCodeRepository->getReceptionCode($newCode);
         }
 
         // Use the repesondent track function as that cascades the consent code
@@ -206,9 +206,9 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
         if ($this->unDelete) {
             $this->addMessage($this->_('Track restored.'));
 
-            if (isset($this->formData['restore_tokens']) && $this->formData['restore_tokens']) {                
+            if (isset($this->formData['restore_tokens']) && $this->formData['restore_tokens']) {
                 $count = $this->respondentTrack->restoreTokens($oldCode, $newCode);
-                
+
                 $this->addMessage(sprintf($this->plural(
                         '%d token reception codes restored.',
                         '%d tokens reception codes restored.',

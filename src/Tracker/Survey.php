@@ -14,12 +14,11 @@ namespace Gems\Tracker;
 use DateTimeInterface;
 
 use Gems\Date\Period;
-use Gems\Db\CachedResultFetcher;
+use Gems\Db\ResultFetcher;
 use Gems\Tracker;
 use Gems\Tracker\Source\SourceInterface;
 use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
 use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
-use Gems\Translate\DbTranslationRepository;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
 use Zalt\Model\MetaModelInterface;
@@ -66,16 +65,15 @@ class Survey
      * @var string Name of table used in gtrs_table
      */
     protected string $translationTable = 'gems__surveys';
-    
+
     /**
      *
      * @param mixed $gemsSurveyData Token Id or array containing token record
      */
     public function __construct(
-        protected readonly array $data,
+        protected array $data,
         protected readonly Tracker $tracker,
-        protected readonly CachedResultFetcher $cachedResultFetcher,
-        protected readonly DbTranslationRepository $dbTranslationRepository,
+        protected readonly ResultFetcher $resultFetcher,
         protected readonly TrackEvents $trackEvents,
     )
     {
@@ -96,19 +94,19 @@ class Survey
     {
         // If loaded using tracker->getSurveyBySourceId the id can be negative if survey not found in GT
         if ($this->id <= 0) {
-            if (is_array($this->_data)) {
-                $values = $values + $this->_data;
+            if (is_array($this->data)) {
+                $values = $values + $this->data;
             } else {
-                \MUtil\EchoOut\EchoOut::track($this->_data);
+                \MUtil\EchoOut\EchoOut::track($this->data);
             }
-            $this->_data = [];
+            $this->data = [];
         }
-        if ($this->tracker->filterChangesOnly($this->_data, $values)) {
+        if ($this->tracker->filterChangesOnly($this->data, $values)) {
 
             if (Tracker::$verbose) {
                 $echo = '';
                 foreach ($values as $key => $val) {
-                    $old = isset($this->_data[$key]) ? $this->_data[$key] : null;
+                    $old = isset($this->data[$key]) ? $this->data[$key] : null;
                     $echo .= $key . ': ' . $old . ' => ' . $val . "\n";
                 }
                 \MUtil\EchoOut\EchoOut::r($echo, 'Updated values for ' . $this->id);
@@ -121,10 +119,10 @@ class Survey
                 $values['gsu_changed_by'] = $userId;
             }
 
-            $table = new TableGateway('gems__surveys', $this->cachedResultFetcher->getAdapter());
+            $table = new TableGateway('gems__surveys', $this->resultFetcher->getAdapter());
             if ($this->exists) {
                 // Update values in this object
-                $this->_data = $values + $this->_data;
+                $this->data = $values + $this->data;
 
                 return $table->update($values, ['gsu_id_survey' => $this->id]);
             } else {
@@ -136,15 +134,15 @@ class Survey
                 }
 
                 // Update values in this object
-                $this->_data = $values + $this->_data;
+                $this->data = $values + $this->data;
 
                 // Remove the \Gems survey id
-                unset($this->_data['gsu_id_survey']);
+                unset($this->data['gsu_id_survey']);
 
-                $table->insert($this->_data);
-                $this->id = $this->cachedResultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
+                $table->insert($this->data);
+                $this->id = $this->resultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
 
-                $this->_data['gsu_id_survey'] = $this->id;
+                $this->data['gsu_id_survey'] = $this->id;
                 $this->exists = true;
 
                 return 1;
@@ -320,7 +318,7 @@ class Survey
         if ($this->data['gsu_external_description']) {
             return $this->data['gsu_external_description'] ?? null;
         }
-        
+
         return $this->getName();
     }
 
@@ -619,32 +617,6 @@ class Survey
     }
 
     /**
-     * Load the data when the cache is empty.
-     *
-     * @param mixed $id
-     * @return array The array of data values
-     */
-    protected function loadData(int $id): array
-    {
-        // If loaded using tracker->getSurveyBySourceId the id can be negative if survey not found in GT
-        if ($this->_data && $id <= 0) {
-            return $this->_data;
-        }
-
-        if ($id) {
-            $resultFetcher = $this->cachedResultFetcher->getResultFetcher();
-            $data = $resultFetcher->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_survey = ?", $id);
-            if ($data) {
-                return $data;
-            }
-        }
-
-        self::$newSurveyCount++;
-        $this->id = -self::$newSurveyCount;
-        return ['gsu_id_survey' => $this->id] + $this->defaultData;
-    }
-    
-    /**
      * Update the survey, both in the database and in memory.
      *
      * @param array $values The values that this token should be set to
@@ -665,7 +637,7 @@ class Survey
      */
     public function setHash(string $hash, int $userId): void
     {
-        if ($this->getHash() !== $hash && array_key_exists('gsu_hash', $this->_data)) {
+        if ($this->getHash() !== $hash && array_key_exists('gsu_hash', $this->data)) {
             $values['gsu_hash'] = $hash;
             $this->_updateSurvey($values, $userId);
         }

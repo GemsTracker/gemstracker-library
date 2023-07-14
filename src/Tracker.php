@@ -469,12 +469,6 @@ class Tracker implements TrackerInterface
      */
     public function getRespondentTracks(int $respondentId, int $organizationId, string|array|Expression $order = ['gr2t_start_date']): array
     {
-        $select = $this->db->select()
-                ->from('gems__respondent2track')
-                ->joinInner('gems__tracks', 'gr2t_id_track = gtr_id_track')
-                ->joinInner('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code')
-                ->where('gr2t_id_user = ? AND gr2t_id_organization = ?');
-
         $select = $this->resultFetcher->getSelect('gems__respondent2track')
             ->join('gems__tracks', 'gr2t_id_track = gtr_id_track')
             ->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code')
@@ -529,7 +523,7 @@ class Tracker implements TrackerInterface
                 throw new \Gems\Exception\Coding('Missing source class for source ID: ' . $sourceId);
             }
 
-            $this->_sources[$sourceId] = $this->overLoader->create('Tracker\\Source\\' . $sourceData['gso_ls_class'], $sourceData, $this->resultFetcher->getAdapter());
+            $this->_sources[$sourceId] = $this->overLoader->create('Tracker\\Source\\' . $sourceData['gso_ls_class'], $sourceData);
         }
 
         return $this->_sources[$sourceId];
