@@ -165,7 +165,10 @@ class Respondent
      */
     public function getBirthday(): DateTimeInterface|null
     {
-        return $this->_gemsData['grs_birthday'];
+        if ($this->_gemsData['grs_birthday'] instanceof DateTimeInterface) {
+            return $this->_gemsData['grs_birthday'];
+        }
+        return null;
     }
 
     /**
