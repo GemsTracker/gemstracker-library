@@ -42,7 +42,7 @@ class LimeSurvey3m00FieldMap
     protected $_answers;
     protected $_attributes;
     protected $_fieldMap;
-    protected $_hardAnswers;
+    protected array $_hardAnswers;
     protected $_titlesMap;
     protected $tableMetaData;
 
@@ -140,9 +140,9 @@ class LimeSurvey3m00FieldMap
      * @param integer    $qid        Question ID
      * @param integer    $scaleId    Scale ID
      */
-    protected function _getHardAnswers($qid, $scaleId)
+    protected function _getHardAnswers($qid, $scaleId): array|false
     {
-        if (! is_array($this->_hardAnswers)) {
+        if (! isset($this->_hardAnswers)) {
             $this->_setHardAnswers();
         }
 
@@ -162,8 +162,8 @@ class LimeSurvey3m00FieldMap
             LEFT JOIN ' . $qTable . ' AS q ON q.qid = a.qid AND q.language = a.language
             WHERE q.sid = ? AND q.language = ? ORDER BY a.qid, a.scale_id, sortorder';
 
-        $this->_hardAnswers = array();
-        if ($rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
+        $this->_hardAnswers = [];
+        if ($rows = $this->lsResultFetcher->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
             foreach ($rows as $row) {
                 $this->_hardAnswers[$row['qid']][$row['scale_id']][$row['code']] = $this->removeMarkup($row['answer']);
                 if ($row['other']=='Y') {

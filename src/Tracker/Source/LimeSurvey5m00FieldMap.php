@@ -38,9 +38,9 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
      * @param integer    $qid        Question ID
      * @param integer    $scaleId    Scale ID
      */
-    protected function _getHardAnswers($qid, $scaleId)
+    protected function _getHardAnswers($qid, $scaleId): array|false
     {
-        if (! is_array($this->_hardAnswers)) {
+        if (! isset($this->_hardAnswers)) {
             $this->_setHardAnswers();
         }
 
@@ -62,8 +62,8 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
             LEFT JOIN ' . $qTable . ' AS q ON q.qid = a.qid
             WHERE q.sid = ? AND qat.language = ? ORDER BY a.qid, a.scale_id, sortorder';
 
-        $this->_hardAnswers = array();
-        if ($rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
+        $this->_hardAnswers = [];
+        if ($rows = $this->lsResultFetcher->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
             foreach ($rows as $row) {
                 $this->_hardAnswers[$row['qid']][$row['scale_id']][$row['code']] = $row['answer'];
                 if ($row['other']=='Y') {
