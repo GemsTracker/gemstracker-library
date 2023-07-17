@@ -180,6 +180,7 @@ class LimeSurvey3m00FieldMap
 
         if (null === $this->_fieldMap) {
             $this->_setMap();
+            $this->_cacheFieldMap($cacheId);
         }
 
         return $this->_fieldMap;
@@ -362,6 +363,10 @@ class LimeSurvey3m00FieldMap
 
         $this->_fieldMap = $map;
         // \MUtil\EchoOut\EchoOut::track($map);
+    }
+
+    protected function _cacheFieldMap(string $cacheId): void
+    {
         // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
         // 60*60*24=86400
         $item = $this->cache->getItem($cacheId);

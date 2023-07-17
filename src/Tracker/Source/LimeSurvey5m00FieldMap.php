@@ -80,6 +80,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
 
         if (null === $this->_fieldMap) {
             $this->_setMap();
+            $this->_cacheFieldMap();
         }
 
         return (array)$this->_fieldMap;
@@ -264,13 +265,6 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
 
         $this->_fieldMap = $map;
         // \MUtil\EchoOut\EchoOut::track($map);
-        // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
-
-        $item = $this->cache->getItem($cacheId);
-        $item->set($this->_fieldMap);
-        $item->tag(['fieldmap']);
-        $item->expiresAfter(86400);
-        $this->cache->save($item);
     }
 
     /**
