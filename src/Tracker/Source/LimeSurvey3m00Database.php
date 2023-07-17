@@ -510,7 +510,8 @@ class LimeSurvey3m00Database extends SourceAbstract
         // The only method to check if it is active is by getting all the tables,
         // since the surveys table may be empty so we just check for existence.
         $sourceDb  = $this->getSourceDatabase();
-        $tables    = array_map('strtolower', $sourceDb->listTables());
+        $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($sourceDb);
+        $tables    = array_map('strtolower', $metadata->getTableNames());
         $tableName = $this->addDatabasePrefix(self::SURVEYS_TABLE, false); // Get name without database prefix.
 
         $active = in_array($tableName, $tables);
