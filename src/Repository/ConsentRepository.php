@@ -3,7 +3,7 @@
 namespace Gems\Repository;
 
 use Gems\Db\CachedResultFetcher;
-use Gems\Exception\ConsenCreateException;
+use Gems\Exception\ConsentCreateException;
 use Gems\Translate\CachedDbTranslationRepository;
 use Gems\Translate\DbTranslationRepository;
 use Gems\Util\ConsentCode;
@@ -28,7 +28,7 @@ class ConsentRepository
     public function getConsentFromConsentData(array $data): ConsentCode
     {
         if (!array_key_exists('gco_description', $data) || !array_key_exists('gco_code', $data)) {
-            throw new ConsenCreateException('Consent data missing');
+            throw new ConsentCreateException('Consent data missing');
         }
 
         $order = $data['gco_order'] ?? null;
