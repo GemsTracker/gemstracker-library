@@ -959,11 +959,11 @@ class LimeSurvey3m00Database extends SourceAbstract
                         $sourceSurveyId = $this->_getSid($surveyId);
                     }
 
-                    $lsDb       = $this->getSourceDatabase();
+                    $lsResultFetcher = $this->getSourceResultFetcher();
                     $lsSurvey   = $this->_getSurveyTableName($sourceSurveyId);
                     $tokenId    = $this->_getToken($token->getTokenId());
 
-                    $submitDate = $lsDb->fetchOne("SELECT submitdate FROM $lsSurvey WHERE token = ? LIMIT 1", $tokenId);
+                    $submitDate = $lsResultFetcher->fetchOne("SELECT submitdate FROM $lsSurvey WHERE token = ? LIMIT 1", [$tokenId]);
 
                     if ($submitDate) {
                         $submitDate = Model::getDateTimeInterface($submitDate, self::LS_DB_DATETIME_FORMAT);
