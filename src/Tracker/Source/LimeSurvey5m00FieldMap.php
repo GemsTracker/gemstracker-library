@@ -73,7 +73,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         }
     }
 
-    protected function _getMap()
+    protected function _getMap(): array
     {
         $cacheId = 'lsFieldMap'.$this->sourceId . '_'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
         $this->_fieldMap = $this->cache->getCacheItem($cacheId);
@@ -112,7 +112,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
             WHERE g.sid = ? AND qt.language = ? AND gt.language = ? AND q.parent_qid = 0
             ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
 
-        $rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language, $this->language));
+        $rows = $this->lsResultFetcher->fetchAll($sql, [$this->sourceSurveyId, $this->language, $this->language]);
 
         $rowscount = count($rows);
         foreach($rows as &$row) {

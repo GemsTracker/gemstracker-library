@@ -41,7 +41,7 @@ class LimeSurvey3m00FieldMap
 
     protected $_answers;
     protected $_attributes;
-    protected $_fieldMap;
+    protected ?array $_fieldMap = null;
     protected array $_hardAnswers;
     protected $_titlesMap;
     protected $tableMetaData;
@@ -173,7 +173,7 @@ class LimeSurvey3m00FieldMap
         }
     }
 
-    protected function _getMap()
+    protected function _getMap(): array
     {
         $cacheId = 'lsFieldMap'.$this->sourceId . '_'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
         $this->_fieldMap = $this->cache->getCacheItem($cacheId);
@@ -208,7 +208,7 @@ class LimeSurvey3m00FieldMap
             ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
 
         // \MUtil\EchoOut\EchoOut::track($sql, $this->sourceSurveyId, $this->language);
-        $rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language));
+        $rows = $this->lsResultFetcher->fetchAll($sql, [$this->sourceSurveyId, $this->language]);
 
         $rowscount = count($rows);
         foreach($rows as &$row) {
