@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Source;
 
 use Gems\Db\Dsn;
+use Gems\Db\ResultFetcher;
 use Laminas\Db\Adapter\Adapter;
 use Gems\Encryption\ValueEncryptor;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
@@ -39,6 +40,11 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * The database connection to the source, usedable by all implementations that use a database
      */
     private Adapter $_sourceDb;
+
+    /**
+     * ResultFetcher interface to the source database.
+     */
+    private ResultFetcher $_sourceResultFetcher;
 
     /**
      *
@@ -332,6 +338,23 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
         }
 
         return $this->_sourceDb;
+    }
+
+    /**
+     * Get the result fetcher for the source database.
+     */
+    public function getSourceResultFetcher(): ResultFetcher
+    {
+        if (isset($this->_sourceResultFetcher)) {
+            return $this->_sourceResultFetcher;
+        }
+        if (! isset($this->_sourceDb)) {
+            $this->getSourceDatabase();
+        }
+
+        $this->_sourceResultFetcher = new ResultFetcher($this->_sourceDb);
+
+        return $this->_sourceResultFetcher;
     }
 
     /**
