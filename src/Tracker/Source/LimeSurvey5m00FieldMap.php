@@ -38,7 +38,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
      * @param integer    $qid        Question ID
      * @param integer    $scaleId    Scale ID
      */
-    protected function _getHardAnswers($qid, $scaleId): array|false
+    protected function _getHardAnswers($qid, $scaleId): array|bool
     {
         if (! isset($this->_hardAnswers)) {
             $this->_setHardAnswers();
