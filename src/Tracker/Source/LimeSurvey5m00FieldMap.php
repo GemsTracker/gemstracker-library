@@ -73,19 +73,6 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         }
     }
 
-    protected function _getMap(): array
-    {
-        $cacheId = 'lsFieldMap'.$this->sourceId . '_'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
-        $this->_fieldMap = $this->cache->getCacheItem($cacheId);
-
-        if (null === $this->_fieldMap) {
-            $this->_setMap();
-            $this->_cacheFieldMap();
-        }
-
-        return (array)$this->_fieldMap;
-    }
-
     private function _setMap(): void
     {
         $aTable = $this->_getQuestionAttributesTableName();
