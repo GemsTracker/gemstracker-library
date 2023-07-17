@@ -11,6 +11,7 @@
 namespace Gems\Tracker\Source;
 
 use Gems\Tracker\Source\LimeSurvey3m00Database as LSSingleSource;
+use Laminas\Db\Sql\Select;
 
 /**
  * This source allows to share one LimeSurvey with multiple satellite GemsTracker installations.
@@ -109,9 +110,9 @@ class LimeSurvey3m00MultiSource extends LSSingleSource {
      * @param array $filter
      * @param int $surveyId
      * @param int $sourceSurveyId
-     * @return \Zend_Db_Select
      */
-    public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null) {
+    public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null): Select
+    {
         // Add the extra site attribute
         $filter['site'] = $this->_getSite();
         return parent::getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);

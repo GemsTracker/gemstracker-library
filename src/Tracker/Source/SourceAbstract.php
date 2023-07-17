@@ -13,6 +13,7 @@ namespace Gems\Tracker\Source;
 
 use Gems\Db\Dsn;
 use Gems\Db\ResultFetcher;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\Adapter\Adapter;
 use Gems\Encryption\ValueEncryptor;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
@@ -226,9 +227,9 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * Extract limit and offset from the filter and add it to a select
      *
      * @param array $filter
-     * @param \Zend_Db_Select $select
+     * @param Select $select
      */
-    protected function filterLimitOffset(&$filter, $select)
+    protected function filterLimitOffset(array &$filter, Select $select): void
     {
         $limit = null;
         $offset = null;

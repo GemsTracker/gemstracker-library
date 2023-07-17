@@ -1241,22 +1241,23 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param array $filter
      * @param int $surveyId
      * @param int $sourceSurveyId
-     * @return \Zend_Db_Select
      */
-    public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null) {
+    public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null): Select
+    {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
         }
 
-        $lsDb = $this->getSourceDatabase();
+        $lsAdapter = $this->getSourceDatabase();
+        $lsPlatform = $lsAdapter->getPlatform();
         $lsSurveyTable = $this->_getSurveyTableName($sourceSurveyId);
         $lsTokenTable  = $this->_getTokenTableName($sourceSurveyId);
         $tokenField    = $lsSurveyTable . '.token';
 
-        $quotedTokenTable  = $lsDb->quoteIdentifier($lsTokenTable . '.token');
-        $quotedSurveyTable = $lsDb->quoteIdentifier($lsSurveyTable . '.token');
+        $quotedTokenTable  = $lsPlatform->quoteIdentifier($lsTokenTable . '.token');
+        $quotedSurveyTable = $lsPlatform->quoteIdentifier($lsSurveyTable . '.token');
 
-        $select = $lsDb->select();
+        $select = new Select;
         $select->from($lsTokenTable, $this->_attributeMap)
                ->join($lsSurveyTable, $quotedTokenTable . ' = ' . $quotedSurveyTable);
 
@@ -1285,16 +1286,16 @@ class LimeSurvey3m00Database extends SourceAbstract
         $this->filterLimitOffset($filter, $select);
 
         foreach ($filter as $field => $values) {
-            $field = $lsDb->quoteIdentifier($field);
+            $field = $lsPlatform->quoteIdentifier($field);
             if (is_array($values)) {
-                $select->where("$field IN (?)", array_values($values));
+                $select->where([$field => array_values($values)]);
             } else {
-                $select->where("$field = ?", $values);
+                $select->where([$field => $values]);
             }
         }
 
         if (\Gems\Tracker::$verbose) {
-            \MUtil\EchoOut\EchoOut::r($select->__toString(), 'Select');
+            \MUtil\EchoOut\EchoOut::r($select->getSqlString(), 'Select');
         }
 
         return $select;
