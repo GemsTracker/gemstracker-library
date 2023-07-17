@@ -13,9 +13,7 @@ namespace Gems\Tracker\Source;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-
 use Gems\Log\LogHelper;
-
 use MUtil\Model;
 
 /**
