@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Source;
 
+use Gems\Db\ResultFetcher;
 use Gems\Cache\HelperAdapter;
 use Laminas\Db\Adapter\Adapter;
 use MUtil\Translate\Translator;
@@ -46,6 +47,13 @@ class LimeSurvey3m00FieldMap
     protected $tableMetaData;
 
     /**
+     * Resultfetcher for the LimeSurvey database connection.
+     *
+     * @var ResultFetcher
+     */
+    protected ResultFetcher $lsResultFetcher;
+
+    /**
      * Construct a fieldmap object to add LS source code knowledge and interpretation to the database data about a survey.
      *
      * @param int $sourceSurveyId            The LimeSurvey survey Id
@@ -65,6 +73,7 @@ class LimeSurvey3m00FieldMap
         protected HelperAdapter $cache,
         protected int $sourceId
     ) {
+        $this->lsResultFetcher = new ResultFetcher($lsAdapter);
     }
 
     /**
