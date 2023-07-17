@@ -14,6 +14,7 @@ namespace Gems\Tracker\Source;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Log\LogHelper;
+use Laminas\Db\Sql\Select;
 use MUtil\Model;
 
 /**
@@ -994,18 +995,20 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     public function getCompletedTokens($tokenIds, $sourceSurveyId)
     {
-        $lsDb       = $this->getSourceDatabase();
+        $lsResultFetcher = $this->getSourceResultFetcher();
         $lsToken   = $this->_getTokenTableName($sourceSurveyId);
 
         // Make sure we use tokens in the format LimeSurvey likes
         $tokens = array_map(array($this, '_getToken'), $tokenIds);
 
-        $sql = $lsDb->select()
-                ->from($lsToken, array('token'))
-                ->where('token IN (?)', $tokens)
-                ->where('completed != ?', 'N');
+        $select = new Select;
+        $select->from([$lsToken, 'token'])
+                ->where([
+                    'token' => $tokens,
+                    'completed' => 'N',
+                ]);
 
-        $completedTokens = $lsDb->fetchCol($sql);
+        $completedTokens = $lsResultFetcher->fetchCol($select);
 
         // Now make sure we return tokens GemsTracker likes
         if ($completedTokens) {
