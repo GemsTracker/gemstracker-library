@@ -380,7 +380,7 @@ class LimeSurvey3m00FieldMap
      *
      * @param array $field    Field from getFieldMap function
      */
-    protected function _getMultiOptions($field)
+    protected function _getMultiOptions($field): array|bool
     {
         $scaleId = isset($field['scale_id']) ? $field['scale_id'] : 0;
         $qid     = $field['qid'];
