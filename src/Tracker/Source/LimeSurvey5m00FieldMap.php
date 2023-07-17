@@ -79,193 +79,198 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         $this->_fieldMap = $this->cache->getCacheItem($cacheId);
 
         if (null === $this->_fieldMap) {
-            $aTable = $this->_getQuestionAttributesTableName();
-            $cTable = $this->_getQuestionConditonsTableName();
-            $gTable = $this->_getGroupsTableName();
-            $gtTable = $this->_getGroupsTranslateTableName();
-            $qTable = $this->_getQuestionsTableName();
-            $qtTable = $this->_getQuestionsTranslateTableName();
-
-            $sql    = "
-                SELECT q.sid, q.type, q.qid, q.gid, qt.question, q.title, qt.help,
-                    q.other, q.question_order,
-                    g.group_order, gt.group_name, gt.description,
-                    sq.title AS sq_title, sq.question_order, sqt.question AS sq_question, sq.scale_id,
-                    at.value AS hidden,
-                    CASE WHEN q.relevance IS NULL OR q.relevance = '' OR q.relevance = 1 OR NOT EXISTS (SELECT * FROM $cTable AS cn WHERE cn.qid = q.qid) THEN 0 ELSE 1 END AS hasConditon
-                FROM $qTable AS q
-                    JOIN $qtTable AS qt ON q.qid = qt.qid
-                    LEFT JOIN $gTable AS g ON q.sid = g.sid AND q.gid = g.gid
-                    LEFT JOIN $gtTable AS gt ON g.gid = gt.gid AND qt.language=gt.language
-                    LEFT JOIN $qTable AS sq ON q.qid = sq.parent_qid
-                    LEFT JOIN $qtTable AS sqt ON sq.parent_qid = sqt.qid
-                    LEFT JOIN (SELECT * FROM $aTable WHERE attribute = 'hidden' AND (language = ''  OR language IS NULL)) AS at ON q.qid = at.qid
-                WHERE g.sid = ? AND qt.language = ? AND gt.language = ? AND q.parent_qid = 0
-                ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
-
-            $rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language, $this->language));
-
-            $rowscount = count($rows);
-            foreach($rows as &$row) {
-                $row['sgq'] = $row['sid'] . 'X' . $row['gid'] . 'X' . $row['qid'];
-            }
-            unset($row);    // To prevent strange error
-
-            $map = array();
-            for ($i = 0; $i < $rowscount; $i++) {
-                $row = $rows[$i];
-                $other = ($row['other'] == 'Y');
-
-                switch ($row['type']) {
-                    case '1':        //Dual scale
-                        //Check scale header in attributes table
-                        $row1 = $row;
-                        $row1['sgq'] .= $row['sq_title'] . '#0';
-                        $row1['code'] = $row['title'] . '_' . $row['sq_title'] . '#0';
-                        $row1['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerA', 'scale 1');
-                        $map[$row1['sgq']] = $row1;
-
-                        $row2 = $row;
-                        $row2['scale_id'] = 1;
-                        $row2['sgq'] .= $row['sq_title'] . '#1';
-                        $row2['code'] = $row['title'] . '_' . $row['sq_title'] . '#1';
-                        $row2['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerB', 'scale 2');
-                        $map[$row2['sgq']] = $row2;
-                        break;
-
-                    case 'R':     //Ranking question
-                        //Check the needed slots in attributes table
-                        $possibleAnswers = count($this->_getMultiOptions($row));
-                        $maxAnswers      = $this->_getQuestionAttribute($row['qid'], 'max_answers', $possibleAnswers);
-                        $slots           = min($maxAnswers, $possibleAnswers);
-
-                        for ($a = 1; $a <= $slots; $a++) {
-                            $row1 = $row;
-                            $row1['code'] = $row['title'] . '_' . $a;
-                            $row1['sgq'] = $row['sgq'] . $a;
-                            $row1['sq_title'] = $a;
-                            $row1['sq_question'] = sprintf($this->translate->_('Rank %d'), $a);
-                            $map[$row1['sgq']] = $row1;
-                        }
-                        break;
-
-                    case 'M':    //Multiple options with other
-                    case 'O':    //List with comment
-                    case 'P':    //Multiple options with other and comment
-                        do {
-                            $row = $rows[$i];
-                            $row['sgq'] .= $row['sq_title'];
-                            if ($rows[$i]['type'] === 'O') {    // List, only one answer don't add _
-                                $row['code'] = $row['title'];
-                            } else {
-                                $row['code'] = $row['title'] . '_' . $row['sq_title'];
-                            }
-                            $map[$row['sgq']] = $row;
-                            $row1 = $row;
-                            if ($row['type'] !== 'M') {
-                                $row1['sgq'] .= 'comment';
-                                $row1['code'] .= 'comment';
-                                $row1['sq_title'] .= 'comment';
-                                $row1['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
-                                $row1['type'] = 'S';
-                                $map[$row1['sgq']] = $row1;
-                            }
-                            $i++;
-                        } while ($i<$rowscount && $rows[$i]['qid']==$row['qid']);
-                        $i--;
-                        if ($other) {
-                            $row = $rows[$i];
-                            $row['sgq'] .= 'other';
-                            $row['sq_title'] = 'other';
-                            $row['code'] = $row['title'] . '_' . $row['sq_title'];
-                            $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
-                            if ($row['type'] === 'P' || $row['type'] === 'M') {
-                                $row['type'] = 'S';
-                            }
-                            $map[$row['sgq']] = $row;
-
-                            if ($rows[$i]['type'] == 'P') {
-                                $row['sgq'] .= 'comment';
-                                $row['code'] .= 'comment';
-                                $row['sq_title'] .= 'comment';
-                                $row['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
-                                $row['type'] = 'S';
-                                $map[$row['sgq']] = $row;
-                            }
-                        }
-                        break;
-
-                    case ':':    //Multi flexi numbers
-                    case ';':    //Multi flexi text
-                        $tmprow = array();
-                        do {
-                            $tmprow[] = $rows[$i];
-                            $i++;
-                        } while ($rows[$i]['scale_id']=='1');
-                        do {
-                            foreach($tmprow as $row2) {
-                                $row1 = $rows[$i];
-                                $row1['sgq'] .= $row1['sq_title'] . '_' . $row2['sq_title'];
-                                $row1['code'] = $row1['title']. '_' .$row1['sq_title'] . '_' . $row2['sq_title'];
-                                $row1['sq_question1'] = $row2['sq_question'];
-                                $map[$row1['sgq']] = $row1;
-                            }
-                            $i++;
-                        } while ($i<$rowscount && $rows[$i]['qid']==$row1['qid']);
-                        $i--;
-                        break;
-
-                    case '*':   //Equation type
-                        $row['code'] = $row['title'];
-
-                        // Since there is no question text (it contains the equation)
-                        // We use the help text for that, but in case that is empty we use
-                        // The question code
-                        $row['equation'] = $row['question'];
-                        $row['question'] = $row['help'];
-                        $row['help']     = '';
-                        if (empty($row['question'])) {
-                            $row['question'] = $row['code'];
-                        }
-                        $map[$row['sgq']] = $row;
-                        break;
-
-                    default:
-                        $row['code'] = $row['title'];
-                        if (!is_null($row['sq_title'])) {
-                            $row['sgq'] .= $row['sq_title'];
-                            $row['code'] .= '_' . $row['sq_title'];
-                        }
-                        $map[$row['sgq']] = $row;
-                        if ($other) {
-                            $row['sgq'] .= 'other';
-                            $row['code'] .= 'other';
-                            $row['sq_title'] = 'other';
-                            $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
-                            $row['type'] = 'S';
-                            $map[$row['sgq']] = $row;
-                        }
-                }
-            }
-            // now add some default fields that need a datetime stamp
-            $map = array(
-                    'startdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
-                    'submitdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
-                    'datestamp' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
-                ) + $map;
-
-            $this->_fieldMap = $map;
-            // \MUtil\EchoOut\EchoOut::track($map);
-            // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
-
-            $item = $this->cache->getItem($cacheId);
-            $item->set($this->_fieldMap);
-            $item->tag(['fieldmap']);
-            $item->expiresAfter(86400);
-            $this->cache->save($item);
+            $this->_setMap();
         }
 
         return (array)$this->_fieldMap;
+    }
+
+    private function _setMap(): void
+    {
+        $aTable = $this->_getQuestionAttributesTableName();
+        $cTable = $this->_getQuestionConditonsTableName();
+        $gTable = $this->_getGroupsTableName();
+        $gtTable = $this->_getGroupsTranslateTableName();
+        $qTable = $this->_getQuestionsTableName();
+        $qtTable = $this->_getQuestionsTranslateTableName();
+
+        $sql    = "
+            SELECT q.sid, q.type, q.qid, q.gid, qt.question, q.title, qt.help,
+                q.other, q.question_order,
+                g.group_order, gt.group_name, gt.description,
+                sq.title AS sq_title, sq.question_order, sqt.question AS sq_question, sq.scale_id,
+                at.value AS hidden,
+                CASE WHEN q.relevance IS NULL OR q.relevance = '' OR q.relevance = 1 OR NOT EXISTS (SELECT * FROM $cTable AS cn WHERE cn.qid = q.qid) THEN 0 ELSE 1 END AS hasConditon
+            FROM $qTable AS q
+                JOIN $qtTable AS qt ON q.qid = qt.qid
+                LEFT JOIN $gTable AS g ON q.sid = g.sid AND q.gid = g.gid
+                LEFT JOIN $gtTable AS gt ON g.gid = gt.gid AND qt.language=gt.language
+                LEFT JOIN $qTable AS sq ON q.qid = sq.parent_qid
+                LEFT JOIN $qtTable AS sqt ON sq.parent_qid = sqt.qid
+                LEFT JOIN (SELECT * FROM $aTable WHERE attribute = 'hidden' AND (language = ''  OR language IS NULL)) AS at ON q.qid = at.qid
+            WHERE g.sid = ? AND qt.language = ? AND gt.language = ? AND q.parent_qid = 0
+            ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
+
+        $rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language, $this->language));
+
+        $rowscount = count($rows);
+        foreach($rows as &$row) {
+            $row['sgq'] = $row['sid'] . 'X' . $row['gid'] . 'X' . $row['qid'];
+        }
+        unset($row);    // To prevent strange error
+
+        $map = array();
+        for ($i = 0; $i < $rowscount; $i++) {
+            $row = $rows[$i];
+            $other = ($row['other'] == 'Y');
+
+            switch ($row['type']) {
+                case '1':        //Dual scale
+                    //Check scale header in attributes table
+                    $row1 = $row;
+                    $row1['sgq'] .= $row['sq_title'] . '#0';
+                    $row1['code'] = $row['title'] . '_' . $row['sq_title'] . '#0';
+                    $row1['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerA', 'scale 1');
+                    $map[$row1['sgq']] = $row1;
+
+                    $row2 = $row;
+                    $row2['scale_id'] = 1;
+                    $row2['sgq'] .= $row['sq_title'] . '#1';
+                    $row2['code'] = $row['title'] . '_' . $row['sq_title'] . '#1';
+                    $row2['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerB', 'scale 2');
+                    $map[$row2['sgq']] = $row2;
+                    break;
+
+                case 'R':     //Ranking question
+                    //Check the needed slots in attributes table
+                    $possibleAnswers = count($this->_getMultiOptions($row));
+                    $maxAnswers      = $this->_getQuestionAttribute($row['qid'], 'max_answers', $possibleAnswers);
+                    $slots           = min($maxAnswers, $possibleAnswers);
+
+                    for ($a = 1; $a <= $slots; $a++) {
+                        $row1 = $row;
+                        $row1['code'] = $row['title'] . '_' . $a;
+                        $row1['sgq'] = $row['sgq'] . $a;
+                        $row1['sq_title'] = $a;
+                        $row1['sq_question'] = sprintf($this->translate->_('Rank %d'), $a);
+                        $map[$row1['sgq']] = $row1;
+                    }
+                    break;
+
+                case 'M':    //Multiple options with other
+                case 'O':    //List with comment
+                case 'P':    //Multiple options with other and comment
+                    do {
+                        $row = $rows[$i];
+                        $row['sgq'] .= $row['sq_title'];
+                        if ($rows[$i]['type'] === 'O') {    // List, only one answer don't add _
+                            $row['code'] = $row['title'];
+                        } else {
+                            $row['code'] = $row['title'] . '_' . $row['sq_title'];
+                        }
+                        $map[$row['sgq']] = $row;
+                        $row1 = $row;
+                        if ($row['type'] !== 'M') {
+                            $row1['sgq'] .= 'comment';
+                            $row1['code'] .= 'comment';
+                            $row1['sq_title'] .= 'comment';
+                            $row1['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
+                            $row1['type'] = 'S';
+                            $map[$row1['sgq']] = $row1;
+                        }
+                        $i++;
+                    } while ($i<$rowscount && $rows[$i]['qid']==$row['qid']);
+                    $i--;
+                    if ($other) {
+                        $row = $rows[$i];
+                        $row['sgq'] .= 'other';
+                        $row['sq_title'] = 'other';
+                        $row['code'] = $row['title'] . '_' . $row['sq_title'];
+                        $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
+                        if ($row['type'] === 'P' || $row['type'] === 'M') {
+                            $row['type'] = 'S';
+                        }
+                        $map[$row['sgq']] = $row;
+
+                        if ($rows[$i]['type'] == 'P') {
+                            $row['sgq'] .= 'comment';
+                            $row['code'] .= 'comment';
+                            $row['sq_title'] .= 'comment';
+                            $row['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
+                            $row['type'] = 'S';
+                            $map[$row['sgq']] = $row;
+                        }
+                    }
+                    break;
+
+                case ':':    //Multi flexi numbers
+                case ';':    //Multi flexi text
+                    $tmprow = array();
+                    do {
+                        $tmprow[] = $rows[$i];
+                        $i++;
+                    } while ($rows[$i]['scale_id']=='1');
+                    do {
+                        foreach($tmprow as $row2) {
+                            $row1 = $rows[$i];
+                            $row1['sgq'] .= $row1['sq_title'] . '_' . $row2['sq_title'];
+                            $row1['code'] = $row1['title']. '_' .$row1['sq_title'] . '_' . $row2['sq_title'];
+                            $row1['sq_question1'] = $row2['sq_question'];
+                            $map[$row1['sgq']] = $row1;
+                        }
+                        $i++;
+                    } while ($i<$rowscount && $rows[$i]['qid']==$row1['qid']);
+                    $i--;
+                    break;
+
+                case '*':   //Equation type
+                    $row['code'] = $row['title'];
+
+                    // Since there is no question text (it contains the equation)
+                    // We use the help text for that, but in case that is empty we use
+                    // The question code
+                    $row['equation'] = $row['question'];
+                    $row['question'] = $row['help'];
+                    $row['help']     = '';
+                    if (empty($row['question'])) {
+                        $row['question'] = $row['code'];
+                    }
+                    $map[$row['sgq']] = $row;
+                    break;
+
+                default:
+                    $row['code'] = $row['title'];
+                    if (!is_null($row['sq_title'])) {
+                        $row['sgq'] .= $row['sq_title'];
+                        $row['code'] .= '_' . $row['sq_title'];
+                    }
+                    $map[$row['sgq']] = $row;
+                    if ($other) {
+                        $row['sgq'] .= 'other';
+                        $row['code'] .= 'other';
+                        $row['sq_title'] = 'other';
+                        $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
+                        $row['type'] = 'S';
+                        $map[$row['sgq']] = $row;
+                    }
+            }
+        }
+        // now add some default fields that need a datetime stamp
+        $map = array(
+                'startdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
+                'submitdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
+                'datestamp' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
+            ) + $map;
+
+        $this->_fieldMap = $map;
+        // \MUtil\EchoOut\EchoOut::track($map);
+        // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
+
+        $item = $this->cache->getItem($cacheId);
+        $item->set($this->_fieldMap);
+        $item->tag(['fieldmap']);
+        $item->expiresAfter(86400);
+        $this->cache->save($item);
     }
 
     /**
