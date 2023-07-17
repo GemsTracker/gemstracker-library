@@ -488,9 +488,9 @@ class LimeSurvey3m00Database extends SourceAbstract
         if ($language && strlen($language)) {
             // Check for availability of language
             $sql = 'SELECT surveyls_language FROM ' . $this->_getSurveyLanguagesTableName() . ' WHERE surveyls_survey_id = ? AND surveyls_language = ?';
-            $lsDb = $this->getSourceDatabase();
+            $lsResultFetcher = $this->getSourceResultFetcher();
 
-            return $lsDb->fetchOne($sql, array($sourceSurveyId, $language));
+            return $lsResultFetcher->fetchOne($sql, [$sourceSurveyId, $language]);
         }
 
         return false;
