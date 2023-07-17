@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Source;
 
 use Gems\Cache\HelperAdapter;
+use Laminas\Db\Adapter\Adapter;
 use MUtil\Translate\Translator;
 
 /**
@@ -49,7 +50,7 @@ class LimeSurvey3m00FieldMap
      *
      * @param int $sourceSurveyId            The LimeSurvey survey Id
      * @param string $language               (ISO) Language of this fieldmap
-     * @param \Zend_Db_Adapter_Abstract $lsDb The Lime Survey database connection
+     * @param Adapter $lsAdapter             The Lime Survey database connection
      * @param Translator $translate           A translate object
      * @param string $tablePrefix              The prefix to use for all LS tables (in this installation)
      * @param \Gems\Cache\HelperAdapter $cache
@@ -58,7 +59,7 @@ class LimeSurvey3m00FieldMap
     public function __construct(
         protected int $sourceSurveyId,
         protected string $language,
-        protected \Zend_Db_Adapter_Abstract $lsDb,
+        protected Adapter $lsAdapter,
         protected Translator $translate,
         protected string $tablePrefix,
         protected HelperAdapter $cache,
