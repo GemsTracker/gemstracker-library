@@ -1361,16 +1361,6 @@ parameters:
 			path: src/Snippets/Tracker/Answers/TrackAnswersModelSnippet.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Tracker\\\\Fields\\\\FieldDeleteSnippet\\:\\:\\$afterSaveRouteUrl\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Fields/FieldDeleteSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Tracker\\\\Fields\\\\FieldDeleteSnippet\\:\\:\\$request\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Fields/FieldDeleteSnippet.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Tracker\\\\Fields\\\\FieldShowSnippet\\:\\:\\$menu\\.$#"
 			count: 4
 			path: src/Snippets/Tracker/Fields/FieldShowSnippet.php

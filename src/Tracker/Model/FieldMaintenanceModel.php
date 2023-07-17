@@ -251,7 +251,7 @@ class FieldMaintenanceModel extends UnionModel
         $this->resetOrder();
 
         $yesNo = $this->translatedUtil->getYesNo();
-        $types = $this->translatedUtil->getEmptyDropdownArray()+$this->getFieldTypes();
+        $types = $this->translatedUtil->getEmptyDropdownArray() + $this->getFieldTypes();
 
         $this->set('gtf_id_track'); // Set order
         $this->set('gtf_field_name',    'label', $this->_('Name'));
@@ -259,8 +259,7 @@ class FieldMaintenanceModel extends UnionModel
                 'description', $this->_('The display and processing order of the fields.')
                 );
         $this->set('gtf_field_type',    'label', $this->_('Type'),
-                'multiOptions', $types/*,
-                'default', 'text'*/
+                'multiOptions', $types
                 );
         if ($detailed) {
             $this->set('gtf_field_values'); // Set order

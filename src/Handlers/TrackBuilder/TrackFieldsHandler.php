@@ -13,6 +13,7 @@ namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Db\ResultFetcher;
 use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\Tracker\Fields\FieldsButtonRowSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\FieldMaintenanceModel;
@@ -80,16 +81,9 @@ class TrackFieldsHandler extends TrackMaintenanceWithEngineHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $createEditSnippets = [
-        'Tracker\\Fields\\FieldEditSnippet',
+        ModelFormSnippet::class,
         'Agenda\\ApplyFiltersInformation',
         ];
-
-    /**
-     * The snippets used for the delete action.
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected array $deleteSnippets = ['Tracker\\Fields\\FieldDeleteSnippet'];
 
     /**
      * The snippets used for the index action, before those in autofilter
