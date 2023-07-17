@@ -39,7 +39,7 @@ class LimeSurvey3m00FieldMap
      */
     const INTERNAL           = 'stamp';
 
-    protected $_answers;
+    protected array $_answers = [];
     protected $_attributes;
     protected ?array $_fieldMap = null;
     protected array $_hardAnswers;
@@ -425,7 +425,7 @@ class LimeSurvey3m00FieldMap
      *
      * @param $field    Field from getFieldMap function
      */
-    private function _getPossibleAnswers($field)
+    private function _getPossibleAnswers($field): array|string|bool
     {
         $scaleId = isset($field['scale_id']) ? $field['scale_id'] : 0;
         $code    = $field['code'];
