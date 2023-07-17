@@ -41,24 +41,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
     protected function _getHardAnswers($qid, $scaleId)
     {
         if (! is_array($this->_hardAnswers)) {
-            $qaTable = $this->_getAnswersTableName();
-            $qatTable = $this->_getAnswersTranslateTableName();
-            $qTable  = $this->_getQuestionsTableName();
-
-            $sql = 'SELECT a.*, qat.answer,  q.other FROM ' . $qaTable . ' AS a
-                JOIN ' . $qatTable . ' AS qat ON a.aid = qat.aid
-                LEFT JOIN ' . $qTable . ' AS q ON q.qid = a.qid
-                WHERE q.sid = ? AND qat.language = ? ORDER BY a.qid, a.scale_id, sortorder';
-
-            $this->_hardAnswers = array();
-            if ($rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
-                foreach ($rows as $row) {
-                    $this->_hardAnswers[$row['qid']][$row['scale_id']][$row['code']] = $row['answer'];
-                    if ($row['other']=='Y') {
-                        $this->_hardAnswers[$row['qid']][$row['scale_id']]['-oth-'] =  $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
-                    }
-                }
-            }
+            $this->_setHardAnswers();
         }
 
         if (array_key_exists($qid, $this->_hardAnswers) && array_key_exists($scaleId, $this->_hardAnswers[$qid])) {
@@ -66,6 +49,28 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         }
 
         return false;
+    }
+
+    private function _setHardAnswers()
+    {
+        $qaTable = $this->_getAnswersTableName();
+        $qatTable = $this->_getAnswersTranslateTableName();
+        $qTable  = $this->_getQuestionsTableName();
+
+        $sql = 'SELECT a.*, qat.answer,  q.other FROM ' . $qaTable . ' AS a
+            JOIN ' . $qatTable . ' AS qat ON a.aid = qat.aid
+            LEFT JOIN ' . $qTable . ' AS q ON q.qid = a.qid
+            WHERE q.sid = ? AND qat.language = ? ORDER BY a.qid, a.scale_id, sortorder';
+
+        $this->_hardAnswers = array();
+        if ($rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
+            foreach ($rows as $row) {
+                $this->_hardAnswers[$row['qid']][$row['scale_id']][$row['code']] = $row['answer'];
+                if ($row['other']=='Y') {
+                    $this->_hardAnswers[$row['qid']][$row['scale_id']]['-oth-'] =  $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
+                }
+            }
+        }
     }
 
     protected function _getMap()
