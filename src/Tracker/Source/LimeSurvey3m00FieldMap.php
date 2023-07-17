@@ -986,17 +986,11 @@ class LimeSurvey3m00FieldMap
     /**
      * Get the table structure of the token table
      *
-     * @return array List of \Zend_DB Table metadata
+     * @return array<string, array<TABLE_NAME: string, DATA_TYPE: string>>
      */
-    public function getTokenTableStructure()
+    public function getTokenTableStructure(): array
     {
-        $tableName = $this->_getTokenTableName();
-
-        $table = new \Zend_Db_Table(['name' => $tableName, 'db' => $this->lsDb]);
-        $info = $table->info();
-        $metaData = $info['metadata'];
-
-        return $metaData;
+        return $this->getZendAlikeTableStructure($this->_getTokenTableName());
     }
 
     /**
@@ -1012,14 +1006,12 @@ class LimeSurvey3m00FieldMap
     protected function loadTableMetaData()
     {
         try {
-            $tableName = $this->_getSurveyTableName();
-            $table = new \Zend_Db_Table(array('name' => $tableName, 'db' => $this->lsDb));
-            $info = $table->info();
+            $metadata = $this->getZendAlikeTableStructure($this->_getSurveyTableName());
         } catch (\Exception $exc) {
-            $info = array('metadata'=>array());
+            $metadata = [];
         }
 
-        $this->tableMetaData = $info['metadata'];
+        $this->tableMetaData = $metadata;
 
         return $this->tableMetaData;
     }
@@ -1080,6 +1072,30 @@ class LimeSurvey3m00FieldMap
     public function removeMarkup($text)
     {
         return trim(\MUtil\StringUtil\StringUtil::beforeChars(\MUtil\Html::removeMarkup($text, 'b|i|u|em|strong'), '{'));
+    }
+
+    /**
+     * Return an array with a table structure, modeled on the Zend Db metadata.
+     *
+     * @param string $tableName
+     * @return array<string, array<TABLE_NAME: string, DATA_TYPE: string>>
+     */
+    private function getZendAlikeTableStructure(string $tableName): array
+    {
+        $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->lsAdapter);
+        $table = $metadata->getTable($tableName);
+
+        // Modeled on Zend/Db
+        $structure = [];
+        foreach ($table->getColumns() as $column) {
+            $columnName = $column->getName();
+            $structure[$columnName] = [
+                'TABLE_NAME' => $tableName,
+                'DATA_TYPE' => $column->getDataType(),
+            ];
+        }
+
+        return $structure;
     }
 
     /**
