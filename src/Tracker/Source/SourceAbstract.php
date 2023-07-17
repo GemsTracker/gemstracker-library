@@ -97,11 +97,11 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      */
     protected function _getTokenFromSqlWhere($from, $fieldName)
     {
-        $lsDb = $this->getSourceDatabase();
-        $tokField = $lsDb->quoteIdentifier($fieldName);
+        $lsPlatform = $this->getSourceDatabase()->getPlatform();
+        $tokField = $lsPlatform->quoteIdentifier($fieldName);
 
         foreach (str_split($from) as $check) {
-            $checks[] = 'LOCATE(' . $lsDb->quote($check) . ', ' . $tokField . ')';
+            $checks[] = 'LOCATE(' . $lsPlatform->quoteValue($check) . ', ' . $tokField . ')';
         }
 
         return '(' . implode(' OR ', $checks) . ')';
@@ -118,15 +118,15 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      */
     protected function _getTokenFromToSql($from, $to, $fieldName)
     {
-        $lsDb = $this->getSourceDatabase();
+        $lsPlatform = $this->getSourceDatabase()->getPlatform();
         if ($from) {
             // Build the sql statement using recursion
             return 'REPLACE(' .
                 $this->_getTokenFromToSql(substr($from, 1), substr($to, 1), $fieldName) . ', ' .
-                $lsDb->quote($from[0]) . ', ' .
-                $lsDb->quote($to[0]) . ')';
+                $lsPlatform->quoteValue($from[0]) . ', ' .
+                $lsPlatform->quoteValue($to[0]) . ')';
         } else {
-            return $lsDb->quoteIdentifier($fieldName);
+            return $lsPlatform->quoteIdentifier($fieldName);
         }
     }
 
