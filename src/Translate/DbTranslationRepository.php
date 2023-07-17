@@ -25,6 +25,18 @@ class DbTranslationRepository
         }
     }
 
+    public function fetchTranslatedRow(string $tableName, string $keyField, mixed $keyValue): array|null
+    {
+        $select = $this->resultFetcher->getSelect($tableName);
+        $select->where([
+            $keyField => $keyValue,
+        ]);
+
+        $result = $this->resultFetcher->fetchRow($select);
+
+        return $this->translateTable($tableName, $keyField, $result);
+    }
+
     /**
      * @param string $tableName
      * @param string $keyValue

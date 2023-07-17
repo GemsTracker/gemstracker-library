@@ -263,7 +263,7 @@ class RespondentTrack
     protected function _ensureTrackData(): void
     {
         if (! isset($this->_respTrackData['gtr_code'], $this->_respTrackData['gtr_name'])) {
-            $trackData = $this->fetchTranslatedRow('gems__tracks', 'gtr_id_track', $this->_respTrackData['gr2t_id_track']);
+            $trackData = $this->dbTranslationRepository->fetchTranslatedRow('gems__tracks', 'gtr_id_track', $this->_respTrackData['gr2t_id_track']);
             if ($trackData) {
                 $this->_respTrackData = $this->_respTrackData + $trackData;
             } else {
