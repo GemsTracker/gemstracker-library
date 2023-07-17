@@ -32,7 +32,7 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
      */
     public function getEventName()
     {
-        return $this->_('Repeat rounds on \'repeatRound\' with \'repeatUnit/Count\'.');
+        return $this->_('Repeat rounds on \'repeatRound\' with \'repeat[From][Unit|Count]\'.');
     }
 
     /**
@@ -50,20 +50,39 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
             // Do not repeat, do nothing!
             return null;
         }
+        
+        // From
+        if (isset($answers['repeatFromUnitCount'])) {
+            $fromUnit  = substr($answers['repeatFromUnitCount'], 0, 1);
+            $fromCount = intval(substr($answers['repeatFromUnitCount'], 1));
+
+        } elseif (isset($answers['repeatFromCount'], $answers['repeatFromUnit'])) {
+            $fromUnit  = substr($answers['repeatFromUnit'], 0, 1);
+            $fromCount = intval($answers['repeatFromCount']);
+
+        } elseif (isset($answers['repeatFromUnitCountother'])) {
+            $fromUnit  = 'D';
+            $fromCount = intval($answers['repeatFromUnitCountother']);
+
+        } else {
+            $fromUnit = false;
+        }
+        
+        // Until
         if (isset($answers['repeatUnitCount'])) {
-            $unit  = substr($answers['repeatUnitCount'], 0, 1);
-            $count = intval(substr($answers['repeatUnitCount'], 1));
+            $untilUnit  = substr($answers['repeatUnitCount'], 0, 1);
+            $untilCount = intval(substr($answers['repeatUnitCount'], 1));
             
         } elseif (isset($answers['repeatCount'], $answers['repeatUnit'])) {
-            $unit  = substr($answers['repeatUnit'], 0, 1);
-            $count = intval($answers['repeatCount']);
+            $untilUnit  = substr($answers['repeatUnit'], 0, 1);
+            $untilCount = intval($answers['repeatCount']);
 
         } elseif (isset($answers['repeatUnitCountother'])) {
-            $unit  = 'D';
-            $count = intval($answers['repeatUnitCountother']);
+            $untilUnit  = 'D';
+            $untilCount = intval($answers['repeatUnitCountother']);
             
         } else {
-            $unit = false;
+            $untilUnit = false;
         }
         
         $oldRoundDescription = trim($token->getRoundDescription());
@@ -81,10 +100,15 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
         $newOrder            = $token->getRoundOrder();
         $respondentTrack     = $token->getRespondentTrack();
         $userId              = $this->currentUser->getUserId();
-        $validFrom           = $token->getCompletionTime();
+
+        if ($fromUnit) {
+            $validFrom = Period::applyPeriod($token->getCompletionTime(), $fromUnit, $fromCount);
+        } else {
+            $validFrom = $token->getCompletionTime();
+        }
         
-        if ($unit) {
-            $validUntil       = Period::applyPeriod($validFrom, $unit, $count);
+        if ($untilUnit) {
+            $validUntil       = Period::applyPeriod($validFrom, $untilUnit, $untilCount);
             $validUntilManual = 1;
         } else {
             $validUntil       = null;
