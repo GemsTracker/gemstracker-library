@@ -15,10 +15,10 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\RespondentModel;
+use Gems\Repository\ReceptionCodeRepository;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
 use Gems\Snippets\Token\DeleteTrackTokenSnippet;
 use Gems\Tracker\Respondent;
-use Gems\Util\ReceptionCodeLibrary;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
@@ -91,7 +91,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
         protected Model $modelLoader,
-        protected ReceptionCodeLibrary $receptionCodeLibrary,
+        protected ReceptionCodeRepository $receptionCodeRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $currentUserRepository);
     }
@@ -139,9 +139,9 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
     public function getReceptionCodes()
     {
         if ($this->unDelete) {
-            return $this->receptionCodeLibrary->getRespondentRestoreCodes();
+            return $this->receptionCodeRepository->getRespondentRestoreCodes();
         }
-        return $this->receptionCodeLibrary->getRespondentDeletionCodes();
+        return $this->receptionCodeRepository->getRespondentDeletionCodes();
     }
 
     /**

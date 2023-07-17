@@ -72,7 +72,7 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
         }
 
         // Get the tokens
-        $tokens = $this->token->getAllUnansweredTokens($where);
+        $tokens = $this->token->getAllUnansweredTokens([$where]);
         $output = [];
 
         foreach ($tokens as $tokenData) {

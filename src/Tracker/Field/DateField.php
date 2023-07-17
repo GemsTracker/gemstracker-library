@@ -13,7 +13,12 @@ namespace Gems\Tracker\Field;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use Gems\Agenda\Agenda;
+use Gems\Tracker;
+use Gems\Util\Translated;
+use Laminas\Db\Sql\Expression;
 use MUtil\Model;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -27,7 +32,7 @@ use MUtil\Model;
 class DateField extends FieldAbstract
 {
     
-    public $allowedDateFormats = [
+    public array $allowedDateFormats = [
         'Y-m-d H:i:s',
         'Y-m-d H:i',
         'Y-m-d',
@@ -38,24 +43,29 @@ class DateField extends FieldAbstract
     ];
 
     /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * The format string for outputting dates
      *
      * @var string
      */
-    protected $phpDateTimeFormat = 'j M Y';
+    protected string $phpDateTimeFormat = 'j M Y';
 
     /**
      * The model type
      *
      * @var int
      */
-    protected $type = \MUtil\Model::TYPE_DATE;
+    protected int $type = Model::TYPE_DATE;
+
+    public function __construct(
+        int $trackId,
+        string $fieldKey,
+        array $fieldDefinition,
+        Translator $translator,
+        Translated $translatedUtil,
+        protected readonly Agenda $agenda,
+    ) {
+        parent::__construct($trackId, $fieldKey, $fieldDefinition, $translator, $translatedUtil);
+    }
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -64,7 +74,7 @@ class DateField extends FieldAbstract
      *
      * @param array $settings The settings set so far
      */
-    protected function addModelSettings(array &$settings)
+    protected function addModelSettings(array &$settings): void
     {
         $settings['elementClass']  = 'Date';
         $settings['dateFormat']    = $this->getDateFormat();
@@ -79,11 +89,12 @@ class DateField extends FieldAbstract
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $fieldData)
+    public function calculateFieldInfo(mixed $currentValue, array $fieldData): mixed
     {
         if ((null === $currentValue) ||
                 ($currentValue instanceof \Zend_Db_Expr) ||
-                \MUtil\StringUtil\StringUtil::startsWith($currentValue, 'current_', true)) {
+                ($currentValue instanceof Expression) ||
+                str_starts_with($currentValue, 'current_')) {
             return null;
         }
 
@@ -108,16 +119,14 @@ class DateField extends FieldAbstract
      * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
      */
-    public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
+    public function calculateFieldValue(mixed $currentValue, array $fieldData, array $trackData): mixed
     {
         $calcUsing = $this->getCalculationFields($fieldData);
 
         if ($calcUsing) {
-            $agenda = $this->loader->getAgenda();
-
             // Get the used fields with values
             foreach (array_filter($calcUsing) as $value) {
-                $appointment = $agenda->getAppointment($value);
+                $appointment = $this->agenda->getAppointment($value);
 
                 if ($appointment->exists) {
                     return $appointment->getAdmissionTime();
@@ -140,7 +149,7 @@ class DateField extends FieldAbstract
      *
      * @return string
      */
-    protected function getDateFormat()
+    protected function getDateFormat(): string
     {
         return Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
     }
@@ -150,9 +159,9 @@ class DateField extends FieldAbstract
      *
      * @return string
      */
-    protected function getStorageFormat()
+    protected function getStorageFormat(): string
     {
-        return Model::getTypeDefault(Model::TYPE_DATE, 'storageFormat');;
+        return Model::getTypeDefault(Model::TYPE_DATE, 'storageFormat');
     }
 
     /**
@@ -162,7 +171,7 @@ class DateField extends FieldAbstract
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onFieldDataLoad($currentValue, array $fieldData)
+    public function onFieldDataLoad(mixed $currentValue, array $fieldData): mixed
     {
         if (empty($currentValue)) {
             return null;
@@ -178,11 +187,12 @@ class DateField extends FieldAbstract
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onFieldDataSave($currentValue, array $fieldData)
+    public function onFieldDataSave(mixed $currentValue, array $fieldData): mixed
     {
         if ((null === $currentValue) ||
                 ($currentValue instanceof \Zend_Db_Expr) ||
-                \MUtil\StringUtil\StringUtil::startsWith($currentValue, 'current_', true)) {
+                ($currentValue instanceof Expression) ||
+                str_starts_with($currentValue, 'current_')) {
             return $currentValue;
         }
 
@@ -194,9 +204,9 @@ class DateField extends FieldAbstract
         } else {
             $displayFormat = $this->getDateFormat();
 
-            $saveDate = Model::getDateTimeInterface($currentValue, [$displayFormat, $saveFormat, \Gems\Tracker::DB_DATETIME_FORMAT]);
+            $saveDate = Model::getDateTimeInterface($currentValue, [$displayFormat, $saveFormat, Tracker::DB_DATETIME_FORMAT]);
             if ($saveDate instanceof \DateTimeInterface) {
-                return $saveDate->toString($saveFormat);
+                return $saveDate->format($saveFormat);
             }
         }
 

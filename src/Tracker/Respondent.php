@@ -14,14 +14,20 @@ namespace Gems\Tracker;
 use DateTimeImmutable;
 use DateTimeInterface;
 
-use Gems\Loader;
-use Gems\Registry\TargetAbstract;
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
+use Gems\Model\RespondentModel;
+use Gems\Repository\ConsentRepository;
+use Gems\Repository\MailRepository;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\ReceptionCodeRepository;
+use Gems\Tracker;
 use Gems\Translate\GenderTranslation;
 use Gems\User\Mask\MaskRepository;
-use Gems\User\User;
+use Gems\User\Organization;
 use Gems\Util\Translated;
-
-use MUtil\Model;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -32,7 +38,7 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Respondent extends TargetAbstract
+class Respondent
 {
     use GenderTranslation;
 
@@ -47,78 +53,29 @@ class Respondent extends TargetAbstract
      *
      * @var boolean
      */
-    protected $addLoginCheck = false;
+    protected bool $addLoginCheck = false;
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    protected int $currentUserId;
 
     /**
      *
      * @var boolean true if Respondent exists in the database
      */
-    public $exists = false;
-
-    /**
-     * @var Loader
-     */
-    protected $loader;
-
-    protected MaskRepository $maskRepository;
+    public bool $exists = false;
 
     /**
      *
      * @var int The highest grs_phone_nr phone number used in this project
      */
-    protected $maxPhoneNumber = 4;
+    protected int $maxPhoneNumber = 4;
 
-    /**
-     *
-     * @var \Gems\Model\RespondentModel
-     */
-	protected $model;
-
-    /**
-     *
-     * @var integer Organization Id
-     */
-    protected $organizationId;
-
-    /**
-     *
-     * @var string Patient Id
-     */
-    protected $patientId;
-
-    /**
-     * @var int respondentId
-     */
-    protected $respondentId;
+    protected RespondentModel $respondentModel;
 
     /**
      *
      * @var string Respondent language
      */
-    protected $respondentLanguage;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    protected string|null $respondentLanguage = null;
 
     /**
      *
@@ -126,47 +83,30 @@ class Respondent extends TargetAbstract
      * @param int $organizationId Organization id
      * @param int $respondentId   Optional respondent id, used when patient id is empty
      */
-    public function __construct($patientId, $organizationId, $respondentId = null)
+    public function __construct(
+        protected readonly string $patientId,
+        protected readonly int $organizationId,
+        protected int|null $respondentId = null,
+        protected readonly ConsentRepository $consentRepository,
+        protected readonly MailRepository $mailRepository,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly ReceptionCodeRepository $receptionCodeRepository,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly MaskRepository $maskRepository,
+        protected readonly Translator $translator,
+        protected readonly Translated $translatedUtil,
+        protected readonly Tracker $tracker,
+        readonly CurrentUserRepository $currentUserRepository,
+        readonly Model $modelLoader,
+    )
     {
-        $this->patientId      = $patientId;
-        $this->organizationId = $organizationId;
-        $this->respondentId   = $respondentId;
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->model = $this->loader->getModels()->getRespondentModel(true);
+        $this->currentUserId = $this->currentUserRepository->getCurrentUserId();
+        $this->respondentModel = $modelLoader->getRespondentModel(true);
         if ($this->addLoginCheck) {
-            $this->model->addLoginCheck();
+            $this->respondentModel->addLoginCheck();
         }
-        $this->initGenderTranslations();
 
-        $this->maskRepository = $this->loader->getMaskRepository();
-
-        // Load the data
         $this->refresh();
-    }
-
-    /**
-     * Set menu parameters from this token
-     *
-     * @param \Gems\Menu\ParameterSource $source
-     * @return \Gems\Tracker\Respondent (continuation pattern)
-     */
-    public function applyToMenuSource(\Gems\Menu\ParameterSource $source)
-    {
-        $source->setPatient($this->getPatientNumber(), $this->getOrganizationId());
-        $source->offsetSet('resp_deleted', ($this->getReceptionCode()->isSuccess() ? 0 : 1));
-
-        return $this;
     }
 
     /**
@@ -174,7 +114,7 @@ class Respondent extends TargetAbstract
      *
      * @return boolean
      */
-    public function canBeMailed()
+    public function canBeMailed(): bool
     {
         return $this->_gemsData['gr2o_mailable'] && $this->_gemsData['gr2o_email'];
     }
@@ -185,7 +125,7 @@ class Respondent extends TargetAbstract
      * @param \DateTimeInterface|null $date
      * @return int
      */
-    public function getAge($date = null, $months = false): ?int
+    public function getAge(DateTimeInterface|null $date = null, bool $months = false): ?int
     {
         $birthDate = $this->getBirthDay();
         if (! $birthDate instanceof DateTimeInterface) {
@@ -204,7 +144,7 @@ class Respondent extends TargetAbstract
         if ($months) {
             return ($diff->y * 12) + $diff->m;
         }
-        
+
         return $diff->y;
     }
 
@@ -213,7 +153,7 @@ class Respondent extends TargetAbstract
      *
      * @return array
      */
-    public function getArrayCopy()
+    public function getArrayCopy(): array
     {
         return $this->_gemsData;
     }
@@ -223,9 +163,12 @@ class Respondent extends TargetAbstract
      *
      * @return \DateTimeInterface|null
      */
-    public function getBirthday()
+    public function getBirthday(): DateTimeInterface|null
     {
-        return $this->_gemsData['grs_birthday'];
+        if ($this->_gemsData['grs_birthday'] instanceof DateTimeInterface) {
+            return $this->_gemsData['grs_birthday'];
+        }
+        return null;
     }
 
     /**
@@ -233,7 +176,7 @@ class Respondent extends TargetAbstract
      *
      * @return string
      */
-    public function getCity()
+    public function getCity(): string|null
     {
         return $this->_gemsData['grs_city'];
     }
@@ -245,7 +188,7 @@ class Respondent extends TargetAbstract
      */
     public function getConsent()
     {
-        return $this->util->getConsent($this->_gemsData['gr2o_consent']);
+        return $this->consentRepository->getConsentFromDescription($this->_gemsData['gr2o_consent']);
     }
 
     /**
@@ -263,7 +206,7 @@ class Respondent extends TargetAbstract
                     return $date;
                 }
 
-                return Model::getDateTimeInterface($date, [\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT]);
+                return \MUtil\Model::getDateTimeInterface($date, [Tracker::DB_DATETIME_FORMAT, Tracker::DB_DATE_FORMAT]);
             }
         }
         return null;
@@ -271,7 +214,7 @@ class Respondent extends TargetAbstract
 
     /**
      * Get the proper Dear mr./mrs/ greeting of respondent
-     * 
+     *
      * @return string
      */
     public function getDearGreeting(string $language = null): string
@@ -306,7 +249,7 @@ class Respondent extends TargetAbstract
      * Get First name of respondent
      * @return string
      */
-    public function getFirstName()
+    public function getFirstName(): string
     {
         return $this->_gemsData['grs_first_name'];
     }
@@ -315,9 +258,8 @@ class Respondent extends TargetAbstract
      * Get the formal name of respondent
      * @return string
      */
-    public function getFullName()
+    public function getFullName(): string
     {
-
         $genderGreetings = $this->translatedUtil->getGenderHello($this->getLanguage());
 
         $greeting = isset($genderGreetings[$this->getGender()]) ? $genderGreetings[$this->getGender()] : '';
@@ -329,7 +271,7 @@ class Respondent extends TargetAbstract
      * Get a single char code for the gender (normally M/F/U)
      * @return string
      */
-    public function getGender()
+    public function getGender(): string
     {
         return $this->_gemsData['grs_gender'];
     }
@@ -338,7 +280,7 @@ class Respondent extends TargetAbstract
      * Get the proper greeting of respondent
      * @return string
      */
-    public function getGreeting(string $language = null)
+    public function getGreeting(string $language = null): string
     {
         if ($language === null) {
             $language = $this->getLanguage();
@@ -360,7 +302,7 @@ class Respondent extends TargetAbstract
      * Get the propper greeting of respondent
      * @return string
      */
-    public function getGreetingNL()
+    public function getGreetingNL(): string
     {
         $genderGreetings = $this->translatedUtil->getGenderGreeting($this->getLanguage());
 
@@ -373,7 +315,7 @@ class Respondent extends TargetAbstract
      *
      * @return int The respondent id
      */
-    public function getId()
+    public function getId(): int|null
     {
         return $this->respondentId;
     }
@@ -382,7 +324,7 @@ class Respondent extends TargetAbstract
      * Get the respondents preferred language
      * @return string
      */
-    public function getLanguage() 
+    public function getLanguage(): string
     {
         if (!isset($this->respondentLanguage)) {
             $this->respondentLanguage = $this->_gemsData['grs_iso_lang'];
@@ -394,7 +336,7 @@ class Respondent extends TargetAbstract
      * Get Last name of respondent
      * @return string
      */
-    public function getLastName()
+    public function getLastName(): string
     {
         $lastname = '';
         if (!empty($this->_gemsData['grs_surname_prefix'])) {
@@ -408,7 +350,7 @@ class Respondent extends TargetAbstract
      * Get the full name (firstname, prefix and last name)
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         $fullName = $this->getFirstName() . ' ' . $this->getLastName();
 
@@ -419,36 +361,25 @@ class Respondent extends TargetAbstract
      *
      * @return \Gems\User\Organization
      */
-    public function getOrganization()
+    public function getOrganization(): Organization
     {
-        return $this->loader->getOrganization($this->organizationId);
+        return $this->organizationRepository->getOrganization($this->organizationId);
     }
 
     /**
      *
      * @return integer Organization ID
      */
-    public function getOrganizationId()
+    public function getOrganizationId(): int
     {
         return $this->organizationId;
-    }
-
-    /**
-     * Get Patient number of respondent
-     *
-     * @deprecated since version 1.6.4
-     * @return string
-     */
-    public function getPatientId()
-    {
-        return $this->patientId;
     }
 
     /**
      *
      * @return string The respondents patient number
      */
-    public function getPatientNumber()
+    public function getPatientNumber(): string
     {
         return $this->patientId;
     }
@@ -458,7 +389,7 @@ class Respondent extends TargetAbstract
      *
      * @return string
      */
-    public function getPhonenumber()
+    public function getPhonenumber(): string|null
     {
         for ($i = 1; $i <= $this->maxPhoneNumber; $i++) {
             if (isset($this->_gemsData['grs_phone_' . $i]) && ! empty($this->_gemsData['grs_phone_' . $i])) {
@@ -470,55 +401,44 @@ class Respondent extends TargetAbstract
     }
 
     /**
-     * @return array Url array for token routes
-     */
-    public function getMenuUrlParameters(): array
-    {
-        $params[\MUtil\Model::REQUEST_ID1] = $this->getPatientNumber();
-        $params[\MUtil\Model::REQUEST_ID2] = $this->getOrganizationId();
-
-        return $params;
-    }
-
-    /**
      * Get the Mobile phone number specifically. In some projects this is fixed to a specific field
      *
      * @return string|null
      */
-    public function getMobilePhoneNumber()
+    public function getMobilePhoneNumber(): string|null
     {
         return $this->getPhonenumber();
     }
 
     /**
-     * Return the \Gems\Util\ReceptionCode object
+     * Return the ReceptionCode object
      *
-     * @return \Gems\Util\ReceptionCode reception code
+     * @return ReceptionCode reception code
      */
-    public function getReceptionCode()
+    public function getReceptionCode(): ReceptionCode
     {
-        return $this->util->getReceptionCode($this->_gemsData['gr2o_reception_code']);
+        return $this->receptionCodeRepository->getReceptionCode($this->_gemsData['gr2o_reception_code']);
     }
 
     /**
      *
      * @return \Gems\Model\RespondentModel
      */
-    public function getRespondentModel()
+    public function getRespondentModel(): RespondentModel
     {
-        return $this->model;
+        return $this->respondentModel;
     }
 
     /**
      * Get the propper salutation of respondent
      * @return string
      */
-    public function getSalutation(string $language = null)
+    public function getSalutation(string $language = null): string
     {
         if ($language === null) {
             $language = $this->getLanguage();
         }
-        return sprintf($this->_('Dear %s', $language, $this->getGender()), $this->getGreeting());
+        return sprintf($this->translator->_('Dear %s', [], $this->getGender(), $language), $this->getGreeting());
     }
 
     /**
@@ -526,7 +446,7 @@ class Respondent extends TargetAbstract
      *
      * @return string
      */
-    public function getStreetAddress()
+    public function getStreetAddress(): string
     {
         return $this->_gemsData['grs_address_1'];
     }
@@ -536,7 +456,7 @@ class Respondent extends TargetAbstract
      *
      * @return string
      */
-    public function getZip()
+    public function getZip(): string
     {
         return $this->_gemsData['grs_zipcode'];
     }
@@ -546,33 +466,37 @@ class Respondent extends TargetAbstract
      *
      * @return boolean
      */
-    public function hasActiveTracks()
+    public function hasActiveTracks(): bool
     {
-        $select = $this->db->select()
-                ->from('gems__respondent2track', ['gr2t_id_respondent_track'])
-                ->joinInner('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', [])
-                ->where('grc_success = 1')
-                ->where('gr2t_id_user = ?', $this->respondentId)
-                ->where('gr2t_id_organization = ?', $this->organizationId)
-                ->limit(1);
+        $select = $this->resultFetcher->getSelect('gems__respondent2track')
+            ->columns(['gr2t_id_respondent_track'])
+            ->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', [])
+            ->where([
+                'grc_success' => 1,
+                'gr2t_id_user' => $this->respondentId,
+                'gr2t_id_organization' => $this->organizationId,
+            ])
+            ->limit(1);
 
-        return (boolean) $this->db->fetchOne($select);
+        return (boolean) $this->resultFetcher->fetchOne($select);
     }
 
     /**
      * Has the respondent active tracks
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasAnyTracks()
+    public function hasAnyTracks(): bool
     {
-        $select = $this->db->select()
-                ->from('gems__respondent2track', ['gr2t_id_respondent_track'])
-                ->where('gr2t_id_user = ?', $this->respondentId)
-                ->where('gr2t_id_organization = ?', $this->organizationId)
-                ->limit(1);
+        $select = $this->resultFetcher->getSelect('gems__respondent2track')
+            ->columns(['gr2t_id_respondent_track'])
+            ->where([
+                'gr2t_id_user' => $this->respondentId,
+                'gr2t_id_organization' => $this->organizationId,
+            ])
+            ->limit(1);
 
-        return (boolean) $this->db->fetchOne($select);
+        return (boolean) $this->resultFetcher->fetchOne($select);
     }
 
     /**
@@ -580,15 +504,15 @@ class Respondent extends TargetAbstract
      *
      * This only check the mailable attribute, not the presence of a mailaddress
      *
-     * @return boolean
+     * @return bool
      */
-    public function isMailable()
+    public function isMailable(): bool
     {
         if (!array_key_exists('gr2o_mailable', $this->_gemsData)) {
             $this->refresh();
         }
 
-        $noMailCode = $this->util->getDbLookup()->getRespondentNoMailCodeValue();
+        $noMailCode = $this->mailRepository->getRespondentNoMailCodeValue();
 
         return $this->_gemsData['gr2o_mailable'] > $noMailCode;
     }
@@ -596,18 +520,15 @@ class Respondent extends TargetAbstract
     /**
      * Refresh the data
      */
-	public function refresh()
+	public function refresh(): void
     {
-        $default = true;
-        $filter  = array();
+        $filter  = [];
 
         if ($this->patientId) {
             $filter['gr2o_patient_nr'] = $this->patientId;
-            $default = false;
-        } elseif ($this->respondentId) {
+        }/* elseif ($this->respondentId) {
             $filter['gr2o_id_user'] = $this->respondentId;
-            $default = false;
-        }
+        }*/
         if (! $filter) {
             // Otherwise we load the first patient in the current organization
             $filter[] = '1=0';
@@ -616,16 +537,13 @@ class Respondent extends TargetAbstract
             $filter['gr2o_id_organization'] = $this->organizationId;
         }
 
-        $this->_gemsData = $this->model->loadFirst($filter);
+        $this->_gemsData = $this->respondentModel->loadFirst($filter);
 
         if ($this->_gemsData) {
             $this->exists = true;
-
-            $this->patientId      = $this->_gemsData['gr2o_patient_nr'];
-            $this->organizationId = $this->_gemsData['gr2o_id_organization'];
             $this->respondentId   = $this->_gemsData['gr2o_id_user'];
         } else {
-            $this->_gemsData = $this->model->loadNew();
+            $this->_gemsData = $this->respondentModel->loadNew();
             $this->exists = false;
         }
 
@@ -638,23 +556,24 @@ class Respondent extends TargetAbstract
      * Used when restoring a respondent, and the restore tracks box is checked. This will
      * also restore all tokens in the tracks that have the same codes.
      *
-     * @param \Gems\Util\ReceptionCode $oldCode The old reception code
-     * @param \Gems\Util\ReceptionCode $newCode the new reception code
+     * @param ReceptionCode $oldCode The old reception code
+     * @param ReceptionCode $newCode the new reception code
      * @return int  The number of restored tracks
      */
-    public function restoreTracks(\Gems\Util\ReceptionCode $oldCode, \Gems\Util\ReceptionCode $newCode) {
+    public function restoreTracks(ReceptionCode $oldCode, ReceptionCode $newCode): int
+    {
         $count      = 0;
 
         if (!$oldCode->isSuccess() && $newCode->isSuccess()) {
-            $respTracks = $this->loader->getTracker()->getRespondentTracks(
+            $respTracks = $this->tracker->getRespondentTracks(
                     $this->getId(),
                     $this->getOrganizationId()
                     );
 
             foreach ($respTracks as $respTrack) {
-                if ($respTrack instanceof \Gems\Tracker\RespondentTrack) {
+                if ($respTrack instanceof RespondentTrack) {
                     if ($oldCode->getCode() === $respTrack->getReceptionCode()->getCode()) {
-                        $respTrack->setReceptionCode($newCode, null, $this->currentUser->getUserId());
+                        $respTrack->setReceptionCode($newCode, null, $this->currentUserId);
                         $respTrack->restoreTokens($oldCode, $newCode);
                         $count++;
                     } else {
@@ -672,7 +591,7 @@ class Respondent extends TargetAbstract
     /**
      * Overwrite the respondents preferred language
      */
-    public function setLocale($locale)
+    public function setLocale(string $locale): void
     {
         $this->respondentLanguage = $locale;
     }
@@ -682,11 +601,11 @@ class Respondent extends TargetAbstract
      * tracks / surveys.
      *
      * @param string $newCode     String or \Gems\Util\ReceptionCode
-     * @return \Gems\Util\ReceptionCode The new code reception code object for further processing
+     * @return ReceptionCode The new code reception code object for further processing
      */
-    public function setReceptionCode($newCode)
+    public function setReceptionCode(ReceptionCode|string $newCode)
     {
-        return $this->model->setReceptionCode(
+        return $this->respondentModel->setReceptionCode(
                 $this->getPatientNumber(),
                 $this->getOrganizationId(),
                 $newCode,

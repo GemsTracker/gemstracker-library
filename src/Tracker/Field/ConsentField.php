@@ -11,7 +11,9 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Repository\ConsentRepository;
 use Gems\Util\Translated;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -24,16 +26,16 @@ use Gems\Util\Translated;
  */
 class ConsentField extends FieldAbstract
 {
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        int $trackId,
+        string $fieldKey,
+        array $fieldDefinition,
+        Translator $translator,
+        Translated $translatedUtil,
+        protected readonly ConsentRepository $consentRepository,
+    ) {
+        parent::__construct($trackId, $fieldKey, $fieldDefinition, $translator, $translatedUtil);
+    }
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -42,11 +44,11 @@ class ConsentField extends FieldAbstract
      *
      * @param array $settings The settings set so far
      */
-    protected function addModelSettings(array &$settings)
+    protected function addModelSettings(array &$settings): void
     {
         $empty = $this->translatedUtil->getEmptyDropdownArray();
 
         $settings['elementClass'] = 'Select';
-        $settings['multiOptions'] = $empty + $this->util->getDbLookup()->getUserConsents();
+        $settings['multiOptions'] = $empty + $this->consentRepository->getUserConsentOptions();
     }
 }

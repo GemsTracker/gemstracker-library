@@ -13,6 +13,7 @@ namespace Gems\Tracker\Field;
 
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Util\Translated;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -23,7 +24,7 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 4-mrt-2015 11:40:28
  */
-abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract implements FieldInterface
+abstract class FieldAbstract implements FieldInterface
 {
     /**
      * Option separator for fields
@@ -35,37 +36,14 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @var array Null or an array of respondent track fields.
      */
-    protected $_dependsOn;
+    protected array|null $_dependsOn = null;
 
     /**
      * Model settings for this field that may change depending on the dependsOn fields.
      *
      * @var array Null or an array of model settings that change for this field
      */
-    protected $_effecteds;
-
-    /**
-     *
-     * @var array  Field definition array
-     */
-    protected $_fieldDefinition;
-
-    /**
-     *
-     * @var string
-     */
-    protected $_fieldKey;
-
-    /**
-     *
-     * @var int gems__tracks id for this field
-     */
-    protected $_trackId;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    protected array|null $_effecteds = null;
 
     /**
      *
@@ -73,11 +51,14 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      * @param string $key The field key
      * @param array $fieldDefinition Field definition array
      */
-    public function __construct($trackId, $key, array $fieldDefinition)
+    public function __construct(
+        protected int $trackId,
+        protected string $fieldKey,
+        protected array $fieldDefinition,
+        protected Translator $translator,
+        protected Translated $translatedUtil,
+    )
     {
-        $this->_trackId         = $trackId;
-        $this->_fieldKey        = $key;
-        $this->_fieldDefinition = $fieldDefinition;
     }
 
     /**
@@ -87,7 +68,7 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @param array $settings The settings set so far
      */
-    abstract protected function addModelSettings(array &$settings);
+    abstract protected function addModelSettings(array &$settings): void;
 
 
     /**
@@ -97,7 +78,7 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $fieldData)
+    public function calculateFieldInfo(mixed $currentValue, array $fieldData): mixed
     {
         return $currentValue;
     }
@@ -110,10 +91,10 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
      */
-    public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
+    public function calculateFieldValue(mixed $currentValue, array $fieldData, array $trackData): mixed
     {
-        if (null === $currentValue && isset($this->_fieldDefinition['gtf_field_default'])) {
-            return $this->_fieldDefinition['gtf_field_default'];
+        if (null === $currentValue && isset($this->fieldDefinition['gtf_field_default'])) {
+            return $this->fieldDefinition['gtf_field_default'];
         }
 
         return $currentValue;
@@ -123,9 +104,9 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      * Signal the start of a new calculation round (for all fields)
      *
      * @param array $trackData The currently available track data (track id may be empty)
-     * @return \Gems\Tracker\Field\FieldAbstract
+     * @return self
      */
-    public function calculationStart(array $trackData)
+    public function calculationStart(array $trackData): self
     {
         return $this;
     }
@@ -140,13 +121,13 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      * @param array $fieldData The fields being saved
      * @return array [fieldKey => fieldValue]
      */
-    public function getCalculationFields(array $fieldData)
+    public function getCalculationFields(array $fieldData): array
     {
-        $output = array();
+        $output = [];
 
         // Perform automatic calculation
-        if (isset($this->_fieldDefinition['gtf_calculate_using'])) {
-            $sources = explode(self::FIELD_SEP, $this->_fieldDefinition['gtf_calculate_using']);
+        if (isset($this->fieldDefinition['gtf_calculate_using'])) {
+            $sources = explode(self::FIELD_SEP, $this->fieldDefinition['gtf_calculate_using']);
 
             foreach ($sources as $source) {
                 if (isset($fieldData[$source]) && $fieldData[$source]) {
@@ -163,9 +144,9 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @return string The field code
      */
-    public function getCode()
+    public function getCode(): string
     {
-        return $this->_fieldDefinition['gtf_field_code'];
+        return $this->fieldDefinition['gtf_field_code'];
     }
 
     /**
@@ -173,7 +154,7 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @return array Null or an array of respondent track fields
      */
-    public function getDataModelDependsOn()
+    public function getDataModelDependsOn(): array|null
     {
         return $this->_dependsOn;
     }
@@ -196,7 +177,7 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      * @param boolean $new True when the item is a new record not yet saved
      * @return array (setting => value)
      */
-    public function getDataModelDependyChanges(array $context, $new)
+    public function getDataModelDependencyChanges(array $context, bool $new): array|null
     {
         return null;
     }
@@ -206,7 +187,7 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @return array Null or an array of model settings that change for this field
      */
-    public function getDataModelEffecteds()
+    public function getDataModelEffecteds(): array|null
     {
         return $this->_effecteds;
     }
@@ -215,11 +196,11 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @return array Of settings to add to a model using these fields
      */
-    public function getDataModelSettings()
+    public function getDataModelSettings(): array
     {
         $output['label']       = $this->getLabel();
-        $output['required']    = $this->_fieldDefinition['gtf_required'];
-        $output['description'] = $this->_fieldDefinition['gtf_field_description'];
+        $output['required']    = $this->fieldDefinition['gtf_required'];
+        $output['description'] = $this->fieldDefinition['gtf_field_description'];
         $output['noSort']      = true;
 
         $this->addModelSettings($output);
@@ -235,52 +216,52 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @return int The track field id
      */
-    public function getFieldId()
+    public function getFieldId(): int
     {
-        return $this->_fieldDefinition['gtf_id_field'];
+        return (int)$this->fieldDefinition['gtf_id_field'];
     }
 
     /**
      *
      * @return string The track field key as used by the union model
      */
-    public function getFieldKey()
+    public function getFieldKey(): string
     {
-        return $this->_fieldKey;
+        return $this->fieldKey;
     }
 
     /**
      *
      * @return string The field type
      */
-    public function getFieldType()
+    public function getFieldType(): string
     {
-        return $this->_fieldDefinition['gtf_field_type'];
+        return $this->fieldDefinition['gtf_field_type'];
     }
 
     /**
      *
      * @return string The track field sub (model) value
      */
-    public function getFieldSub()
+    public function getFieldSub(): string
     {
-        return $this->_fieldDefinition['sub'];
+        return $this->fieldDefinition['sub'];
     }
 
     /**
      *
      * @return string The field label
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return $this->_fieldDefinition['gtf_field_name'];
+        return $this->fieldDefinition['gtf_field_name'];
     }
 
     /**
      *
      * @return string The track field key for the manual setting
      */
-    public function getManualKey()
+    public function getManualKey(): string
     {
         return $this->getFieldKey() . FieldsDefinition::FIELD_KEY_SEPARATOR . 'manual';
     }
@@ -289,12 +270,12 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @return array Of settings to add to a model if this is a manual check field
      */
-    public function getManualModelSettings()
+    public function getManualModelSettings(): array
     {
         if ($this->hasManualSetOption()) {
             return [
-                'label'        => sprintf($this->_('Set %s'), strtolower($this->getLabel())),
-                'description'  => $this->_('Manually set fields will never be (re)calculated.'),
+                'label'        => sprintf($this->translator->_('Set %s'), strtolower($this->getLabel())),
+                'description'  => $this->translator->_('Manually set fields will never be (re)calculated.'),
                 'elementClass' => 'Radio',
                 'multiOptions' => $this->translatedUtil->getDateCalculationOptions(),
                 'separator'    => ' ',
@@ -307,34 +288,34 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @return int The field order
      */
-    public function getOrder()
+    public function getOrder(): int
     {
-        return $this->_fieldDefinition['gtf_id_order'];
+        return $this->fieldDefinition['gtf_id_order'];
     }
 
     /**
      *
      * @return boolean True when this field can be calculated
      */
-    public function hasCalculation()
+    public function hasCalculation(): bool
     {
-        return (boolean) $this->_fieldDefinition['gtf_calculate_using'];
+        return (boolean) $this->fieldDefinition['gtf_calculate_using'];
     }
 
     /**
      *
      * @return boolean When this field has dependencies
      */
-    public function hasDataModelDependencies()
+    public function hasDataModelDependencies(): bool
     {
-        return (boolean) $this->_dependsOn && $this->_effecteds;
+        return $this->_dependsOn && $this->_effecteds;
     }
 
     /**
      *
      * @return boolean When this field can be calculated, but also set manually
      */
-    public function hasManualSetOption()
+    public function hasManualSetOption(): bool
     {
         return (! $this->isReadOnly()) && $this->hasCalculation();
     }
@@ -344,28 +325,28 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @return boolean
      */
-    public function isLabelInTrackInfo()
+    public function isLabelInTrackInfo(): bool
     {
-        return $this->_fieldDefinition['gtf_track_info_label'];
+        return (bool)$this->fieldDefinition['gtf_track_info_label'];
     }
 
     /**
      *
      * @return boolean True when this field is read only
      */
-    public function isReadOnly()
+    public function isReadOnly(): bool
     {
-        return $this->_fieldDefinition['gtf_readonly'];
+        return (bool)$this->fieldDefinition['gtf_readonly'];
     }
 
     /**
      * Calculation the field value when loading from a respondent track
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onFieldDataLoad($currentValue, array $fieldData)
+    public function onFieldDataLoad(mixed $currentValue, array $fieldData): mixed
     {
         return $currentValue;
     }
@@ -373,11 +354,11 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
     /**
      * Converting the field value when saving to a respondent track
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onFieldDataSave($currentValue, array $fieldData)
+    public function onFieldDataSave(mixed $currentValue, array $fieldData): mixed
     {
         return $currentValue;
     }
@@ -387,8 +368,8 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
      *
      * @return boolean
      */
-    public function toTrackInfo()
+    public function toTrackInfo(): bool
     {
-        return $this->_fieldDefinition['gtf_to_track_info'];
+        return $this->fieldDefinition['gtf_to_track_info'];
     }
 }

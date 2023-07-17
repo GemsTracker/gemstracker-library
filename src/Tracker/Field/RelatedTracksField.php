@@ -11,10 +11,13 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Html;
 use Gems\Menu\RouteHelper;
 use Gems\Tracker;
 use Gems\Tracker\RespondentTrack;
+use Gems\Util\Translated;
 use MUtil\Model;
+use MUtil\Translate\Translator;
 use Zalt\Html\HtmlElement;
 
 /**
@@ -31,47 +34,55 @@ class RelatedTracksField extends MultiselectField
      *
      * @var array Null or an array of respondent track fields.
      */
-    protected $_dependsOn = ['gr2t_id_user', 'gr2t_id_organization', 'gr2t_id_respondent_track'];
+    protected array|null $_dependsOn = [
+        'gr2t_id_user',
+        'gr2t_id_organization',
+        'gr2t_id_respondent_track'
+    ];
 
     /**
      * Model settings for this field that may change depending on the dependsOn fields.
      *
      * @var array Null or an array of model settings that change for this field
      */
-    protected $_effecteds = ['description', 'elementClass', 'multiOptions'];
+    protected array|null $_effecteds = [
+        'description',
+        'elementClass',
+        'multiOptions'
+    ];
 
     /**
      * @var string class for showtracks list display
      */
-    protected $displayClass;
+    protected string $displayClass;
 
     /**
      * @var bool When true the value is saved with padded seperators
      */
-    protected $padSeperators = true;
+    protected bool $padSeperators = true;
 
-    /**
-     * @var RouteHelper
-     */
-    protected $routeHelper;
+    public function __construct(
+        int $trackId,
+        string $fieldKey,
+        array $fieldDefinition,
+        Translator $translator,
+        Translated $translatedUtil,
+        protected readonly Tracker $tracker,
+        protected readonly RouteHelper $routeHelper,
+    ) {
+        parent::__construct($trackId, $fieldKey, $fieldDefinition, $translator, $translatedUtil);
+    }
 
-    /**
-     * @var Tracker
-     */
-    protected $tracker;
-
-    protected $urlHelper;
-    
     /**
      * @inheritDoc
      */
-    protected function addModelSettings(array &$settings)
+    protected function addModelSettings(array &$settings): void
     {
         parent::addModelSettings($settings);
         // \MUtil\EchoOut\EchoOut::track(array_keys($settings));
 
         $settings['escape'] = false;
-        $settings['formatFunction'] = array($this, 'showTracks');
+        $settings['formatFunction'] = [$this, 'showTracks'];
     }
 
     /**
@@ -92,11 +103,11 @@ class RelatedTracksField extends MultiselectField
      * @param boolean $new True when the item is a new record not yet saved
      * @return array (setting => value)
      */
-    public function getDataModelDependyChanges(array $context, $new)
+    public function getDataModelDependencyChanges(array $context, bool $new): array
     {
         if ($this->isReadOnly()) {
             $output['elementClass'] = 'Exhibitor';
-            $output['description']  = $this->_('No other tracks to select');
+            $output['description']  = $this->translator->_('No other tracks to select');
         } else {
             $respondentTracks = $this->tracker->getRespondentTracks($context['gr2t_id_user'], $context['gr2t_id_organization'], ['gr2t_start_date DESC']);
 
@@ -111,14 +122,14 @@ class RelatedTracksField extends MultiselectField
                         $label = $this->getTrackLabel($respondentTrack);
                         
                         if ($class) {
-                            $label = \Zalt\Html\Html::create('span', $label, ['class' => $class])->render();
+                            $label = Html::create('span', $label, ['class' => $class])->render();
                         }
                         $options[$respondentTrack->getRespondentTrackId()] = $label;
                     }
                 }
                 $output['multiOptions'] = $options;
             } else {
-                $output['description'] = $this->_('No other tracks to select');
+                $output['description'] = $this->translator->_('No other tracks to select');
                 $output['elementClass'] = 'Exhibitor';
             }
             // \MUtil\EchoOut\EchoOut::track($context,count($respondentTracks), array_keys($respondentTracks));
@@ -131,7 +142,7 @@ class RelatedTracksField extends MultiselectField
      * @param \Gems\Tracker\RespondentTrack $respondentTrack
      * @return string The label to display
      */
-    public function getTrackClass(\Gems\Tracker\RespondentTrack $respondentTrack)
+    public function getTrackClass(RespondentTrack $respondentTrack): string
     {
         return $respondentTrack->getReceptionCode()->isSuccess() ? '' : 'deleted';
     }
@@ -140,7 +151,7 @@ class RelatedTracksField extends MultiselectField
      * @param \Gems\Tracker\RespondentTrack $respondentTrack
      * @return string The label to display
      */
-    public function getTrackLabel(\Gems\Tracker\RespondentTrack $respondentTrack)
+    public function getTrackLabel(RespondentTrack $respondentTrack): string
     {
         return $respondentTrack->getTrackName() . ' ' . $respondentTrack->getFieldsInfo();
     }
@@ -152,7 +163,7 @@ class RelatedTracksField extends MultiselectField
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onFieldDataSave($currentValue, array $fieldData)
+    public function onFieldDataSave(mixed $currentValue, array $fieldData): mixed
     {
         if (is_array($currentValue)) {
             rsort($currentValue, SORT_NUMERIC);
@@ -165,13 +176,13 @@ class RelatedTracksField extends MultiselectField
      * @param $value
      * @return HtmlElement
      */
-    public function showTracks($value)
+    public function showTracks(array|string $value): HtmlElement
     {
         if (! is_array($value)) {
             $value = explode('|', $value);
         }
 
-        $ul = \Zalt\Html\Html::create('span', $this->_('No linked tracks selected.'));
+        $ul = Html::create('span', $this->translator->_('No linked tracks selected.'));
         if ($value) {
             $ul = \Zalt\Html\Html::create('ul', ['class' => $this->displayClass]);
             foreach ($value as $respondentTrackId) {

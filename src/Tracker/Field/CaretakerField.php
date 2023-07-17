@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Agenda\Appointment;
+
 /**
  *
  *
@@ -28,7 +30,8 @@ class CaretakerField extends AppointmentDerivedFieldAbstract
      * @param \Gems\Agenda\Appointment $appointment
      * @return int
      */
-    protected function getId(\Gems\Agenda\Appointment $appointment) {
+    protected function getId(Appointment $appointment): int
+    {
         return $appointment->getAttendedById();
     }
 
@@ -38,8 +41,9 @@ class CaretakerField extends AppointmentDerivedFieldAbstract
      * @param int $organizationId Organization Id
      * @return array
      */
-    protected function getLookup($organizationId = null) {
-        return $this->getAgenda()->getHealthcareStaff($organizationId);
+    protected function getLookup(int|null $organizationId = null): array
+    {
+        return $this->agenda->getHealthcareStaff($organizationId);
     }
 
 }

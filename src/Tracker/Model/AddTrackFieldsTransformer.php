@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Zalt\Model\MetaModelInterface;
 
@@ -33,21 +34,9 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
 
     /**
      *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
      * @var string The field that contains the respondent track id
      */
-    protected $respTrackIdField = 'gr2t_id_respondent_track';
-
-    /**
-     *
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
+    protected ?string $respTrackIdField = 'gr2t_id_respondent_track';
 
     /**
      *
@@ -55,11 +44,10 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
      * @param \Gems\Tracker\Engine\FieldsDefinition; $fieldsDefinition
      * @param mixed $respTrackIdField Overwrite the default field that contains the respondent track id (gr2t_id_respondent_track)
      */
-    public function __construct(\Gems\Loader $loader, FieldsDefinition $fieldsDefinition, $respTrackIdField = false)
+    public function __construct(protected Tracker $tracker, FieldsDefinition $fieldsDefinition, ?string $respTrackIdField = null)
     {
-        $this->loader = $loader;
         $this->fieldsDefinition = $fieldsDefinition;
-        if ($respTrackIdField) {
+        if ($respTrackIdField !== null) {
             $this->respTrackIdField = $respTrackIdField;
         }
     }
@@ -150,10 +138,6 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
     public function transformRowAfterSave(MetaModelInterface $model, array $row)
     {
         if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
-            if (! $this->tracker) {
-                $this->tracker = $this->loader->getTracker();
-            }
-
             if ((! $this->respTrackIdField) || ($this->respTrackIdField == 'gr2t_id_respondent_track')) {
                 // Load && refresh when using standard gems__respondent2track data
                 $respTrack = $this->tracker->getRespondentTrack($row);

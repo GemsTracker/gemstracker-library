@@ -75,7 +75,7 @@ class FieldDataDependency extends DependencyAbstract
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
-                $changes = $field->getDataModelDependyChanges($context, $new);
+                $changes = $field->getDataModelDependencyChanges($context, $new);
 
                 if ($changes) {
                     $output[$field->getFieldKey()] = $changes;

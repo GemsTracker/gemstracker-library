@@ -23,63 +23,44 @@ namespace Gems\Tracker\Field;
 interface FieldInterface
 {
     /**
-     *
-     * @param int $trackId gems__tracks id for this field
-     * @param string $key The field key
-     * @param array $fieldDefinition Field definition array
-     */
-    public function __construct($trackId, $key, array $fieldData);
-
-    /**
      * Calculation the field info display for this type
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $fieldData);
+    public function calculateFieldInfo(mixed $currentValue, array $fieldData): mixed;
 
     /**
      * Calculate the field value using the current values
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other known field values
      * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
      */
-    public function calculateFieldValue($currentValue, array $fieldData, array $trackData);
+    public function calculateFieldValue(mixed $currentValue, array $fieldData, array $trackData): mixed;
 
     /**
      * Signal the start of a new calculation round (for all fields)
      *
      * @param array $trackData The currently available track data (track id may be empty)
-     * @return \Gems\Tracker\Field\FieldAbstract
+     * @return self
      */
-    public function calculationStart(array $trackData);
-
-    /**
-     * On save calculation function
-     *
-     * @param array $currentValue The current value
-     * @param array $values The values for the checked calculate from fields
-     * @param array $fieldData The other values being saved
-     * @param int $respTrackId Optional gems respondent track id
-     * @return mixed the new value
-     * /
-    public function calculateOnSave($currentValue, array $values, array $fieldData, $respTrackId = null);
+    public function calculationStart(array $trackData): self;
 
     /**
      *
      * @return string The field code
      */
-    public function getCode();
+    public function getCode(): string;
 
     /**
      * Respondent track fields that this field's settings are dependent on.
      *
      * @return array Null or an array of respondent track fields
      */
-    public function getDataModelDependsOn();
+    public function getDataModelDependsOn(): array|null;
 
     /**
      * Returns the changes to the model for this field that must be made in an array consisting of
@@ -96,71 +77,71 @@ interface FieldInterface
      * When a 'model' setting is set, the workings cascade.
      *
      * @param array $context The current data this object is dependent on
-     * @param boolean $new True when the item is a new record not yet saved
+     * @param bool $new True when the item is a new record not yet saved
      * @return array (setting => value)
      */
-    public function getDataModelDependyChanges(array $context, $new);
+    public function getDataModelDependencyChanges(array $context, bool $new): ?array;
 
     /**
      * Model settings for this field that may change depending on the dependsOn fields.
      *
      * @return array Null or an array of model settings that change for this field
      */
-    public function getDataModelEffecteds();
+    public function getDataModelEffecteds(): array|null;
 
     /**
      *
      * @return array Of settings to add to a model using these fields
      */
-    public function getDataModelSettings();
+    public function getDataModelSettings(): array;
 
     /**
      *
      * @return int The track field id
      */
-    public function getFieldId();
+    public function getFieldId(): int;
 
     /**
      *
      * @return string The track field key as used by the union model
      */
-    public function getFieldKey();
+    public function getFieldKey(): string;
 
     /**
      *
      * @return int The field order
      */
-    public function getOrder();
+    public function getOrder(): int;
 
     /**
      *
      * @return string The track field sub (model) value
      */
-    public function getFieldSub();
+    public function getFieldSub(): string;
 
     /**
      *
      * @return string The field type
      */
-    public function getFieldType();
+    public function getFieldType(): string;
 
     /**
      *
      * @return string The field label
      */
-    public function getLabel();
+    public function getLabel(): string;
 
     /**
      *
      * @return string The track field key for the manual setting
      */
-    public function getManualKey();
+    public function getManualKey(): string;
 
     /**
      *
      * @return array Of settings to add to a model if this is a manual check field
      */
-    public function getManualModelSettings();
+    public function getManualModelSettings(): array;
 
     /**
      * Setting function for activity select
@@ -169,7 +150,7 @@ interface FieldInterface
      * @param int $respondentId When null $patientNr is required
      * @param int $organizationId
      * @param string $patientNr Optional for when $respondentId is null
-     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @param bool $edit True when editing, false for display (detailed is assumed to be true)
      * @return array containing model settings
      * /
     public function getRespondentTrackSettings($values, $respondentId, $organizationId, $patientNr = null, $edit = true);
@@ -181,7 +162,7 @@ interface FieldInterface
      * @param int $respondentId When null $patientNr is required
      * @param int $organizationId
      * @param string $patientNr Optional for when $respondentId is null
-     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @param bool $edit True when editing, false for display (detailed is assumed to be true)
      * @return array containing model settings
      * /
     public function getTrackMaintenanceSettings($values, $respondentId, $organizationId, $patientNr = null, $edit = true);
@@ -189,28 +170,28 @@ interface FieldInterface
 
     /**
      *
-     * @return boolean When this field can be calculated, but also set manually
+     * @return bool When this field can be calculated, but also set manually
      */
-    public function hasManualSetOption();
+    public function hasManualSetOption(): bool;
 
     /**
      * Should the label be included in the track information?
      *
-     * @return boolean
+     * @return bool
      */
-    public function isLabelInTrackInfo();
+    public function isLabelInTrackInfo(): bool;
 
     /**
      *
-     * @return boolean True when this field is read only
+     * @return bool True when this field is read only
      */
-    public function isReadOnly();
+    public function isReadOnly(): bool;
         
     /**
      *
-     * @return boolean When this field has dependencies
+     * @return bool When this field has dependencies
      */
-    public function hasDataModelDependencies();
+    public function hasDataModelDependencies(): bool;
 
     /**
      * Calculate the field value using the current values
@@ -219,7 +200,7 @@ interface FieldInterface
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onFieldDataLoad($currentValue, array $fieldData);
+    public function onFieldDataLoad(mixed $currentValue, array $fieldData): mixed;
 
     /**
      * Converting the field value when saving to a respondent track
@@ -228,12 +209,12 @@ interface FieldInterface
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onFieldDataSave($currentValue, array $fieldData);
+    public function onFieldDataSave(mixed $currentValue, array $fieldData): mixed;
 
     /**
      * Should this field be added to the track info
      *
-     * @return boolean
+     * @return bool
      */
-    public function toTrackInfo();
+    public function toTrackInfo(): bool;
 }

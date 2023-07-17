@@ -11,7 +11,10 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Agenda\Agenda;
+use Gems\Agenda\Appointment;
 use Gems\Util\Translated;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -29,31 +32,25 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
      *
      * @var array Null or an array of respondent track fields.
      */
-    protected $_dependsOn = array('gr2t_id_organization');
+    protected array|null $_dependsOn = ['gr2t_id_organization'];
 
     /**
      * Model settings for this field that may change depending on the dependsOn fields.
      *
      * @var array Null or an array of model settings that change for this field
      */
-    protected $_effecteds = array('multiOptions');
-    
-    /**
-     *
-     * @var \Gems\Agenda\Agenda 
-     */
-    protected $agenda;
+    protected array|null $_effecteds = ['multiOptions'];
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    public function __construct(
+        int $trackId,
+        string $fieldKey,
+        array $fieldDefinition,
+        Translator $translator,
+        Translated $translatedUtil,
+        protected Agenda $agenda,
+    ) {
+        parent::__construct($trackId, $fieldKey, $fieldDefinition, $translator, $translatedUtil);
+    }
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -62,7 +59,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
      *
      * @param array $settings The settings set so far
      */
-    protected function addModelSettings(array &$settings)
+    protected function addModelSettings(array &$settings): void
     {
         $empty = $this->translatedUtil->getEmptyDropdownArray();
 
@@ -77,7 +74,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $fieldData)
+    public function calculateFieldInfo(mixed $currentValue, array $fieldData): mixed
     {
         if (! $currentValue) {
             return $currentValue;
@@ -100,16 +97,15 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
      * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
      */
-    public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
+    public function calculateFieldValue(mixed $currentValue, array $fieldData, array $trackData): mixed
     {
         $calcUsing = $this->getCalculationFields($fieldData);
 
         if ($calcUsing) {
-            $agenda = $this->getAgenda();
 
             // Get the used fields with values
             foreach (array_filter($calcUsing) as $value) {
-                $appointment = $agenda->getAppointment($value);
+                $appointment = $this->agenda->getAppointment($value);
 
                 if ($appointment->exists) {
                     return $this->getId($appointment);
@@ -118,20 +114,6 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
         }
 
         return $currentValue;
-    }
-    
-    /**
-     * Retreive the agenda if not injected
-     * 
-     * @return \Gems\Agenda\Agenda
-     */
-    protected function getAgenda()
-    {
-        if (!$this->agenda) {
-            $this->agenda = $this->loader->getAgenda();
-        }
-        
-        return $this->agenda;
     }
 
     /**
@@ -152,7 +134,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
      * @param boolean $new True when the item is a new record not yet saved
      * @return array (setting => value)
      */
-    public function getDataModelDependyChanges(array $context, $new)
+    public function getDataModelDependencyChanges(array $context, bool $new): array|null
     {
         if ($this->isReadOnly()) {
             return null;
@@ -170,7 +152,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
      * @param \Gems\Agenda\Appointment $appointment
      * @return int
      */
-    abstract protected function getId(\Gems\Agenda\Appointment $appointment);
+    abstract protected function getId(Appointment $appointment): int;
             
     /**
      * Return the lookup array for this field
@@ -178,5 +160,5 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
      * @param int $organizationId Organization Id
      * @return array
      */
-    abstract protected function getLookup($organizationId = null);
+    abstract protected function getLookup(int|null $organizationId = null): array;
 }

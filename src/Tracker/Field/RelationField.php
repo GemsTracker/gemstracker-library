@@ -11,7 +11,11 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Db\ResultFetcher;
 use Gems\Util\Translated;
+use Laminas\Db\Sql\Select;
+use MUtil\Translate\Translator;
+use Phinx\Util\Expression;
 
 /**
  *
@@ -29,55 +33,25 @@ class RelationField extends FieldAbstract
      *
      * @var array Null or an array of respondent track fields.
      */
-    protected $_dependsOn = array('gr2t_id_user');
+    protected array|null $_dependsOn = ['gr2t_id_user'];
 
     /**
      * Model settings for this field that may change depending on the dependsOn fields.
      *
      * @var array Null or an array of model settings that change for this field
      */
-    protected $_effecteds = array('multiOptions');
+    protected array|null $_effecteds = ['multiOptions'];
 
-    /**
-     * Query for respondent infomration.
-     *
-     * Can be changed by project specific classes
-     *
-     * @var string
-     */
-    protected $_sql = "SELECT grr_id,                    
-                        CASE WHEN gsf_id_user IS NULL
-                            THEN CONCAT_WS(' ',
-                                grr_type,
-                                grr_first_name,
-                                grr_last_name
-                                )
-                            ELSE CONCAT_WS(' ',
-                                grr_type,
-                                gsf_first_name,
-                                gsf_surname_prefix,
-                                gsf_last_name
-                                )
-                        END
-                        AS name
-                FROM gems__respondent_relations LEFT JOIN gems__staff ON gsf_id_user = grr_id_staff
-                ";
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    public function __construct(
+        int $trackId,
+        string $fieldKey,
+        array $fieldDefinition,
+        Translator $translator,
+        Translated $translatedUtil,
+        protected readonly ResultFetcher $resultFetcher,
+    ) {
+        parent::__construct($trackId, $fieldKey, $fieldDefinition, $translator, $translatedUtil);
+    }
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -86,10 +60,10 @@ class RelationField extends FieldAbstract
      *
      * @param array $settings The settings set so far
      */
-    protected function addModelSettings(array &$settings)
+    protected function addModelSettings(array &$settings): void
     {
         $settings['elementClass']   = 'Select';
-        $settings['formatFunction'] = array($this, 'showRelation');
+        $settings['formatFunction'] = [$this, 'showRelation'];
     }
 
     /**
@@ -99,18 +73,21 @@ class RelationField extends FieldAbstract
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $fieldData)
+    public function calculateFieldInfo(mixed $currentValue, array $fieldData): mixed
     {
-        if (! $currentValue) {
+        if (! $currentValue || !is_numeric($currentValue)) {
             return $currentValue;
         }
 
-        // Display nice
-        $sql = $this->_sql . "WHERE grr_id = ?";
-        $row = $this->db->fetchRow($sql, $currentValue);
+        $select = $this->getSelect();
+        $select->where([
+            'grr_id' => (int)$currentValue,
+        ]);
 
-        if ($row && isset($row['name'])) {
-            return $row['name'];
+        $relation = $this->resultFetcher->fetchRow($select);
+
+        if ($relation && isset($relation['name'])) {
+            return $relation['name'];
         }
 
         return $currentValue;
@@ -134,18 +111,39 @@ class RelationField extends FieldAbstract
      * @param boolean $new True when the item is a new record not yet saved
      * @return array (setting => value)
      */
-    public function getDataModelDependyChanges(array $context, $new)
+    public function getDataModelDependencyChanges(array $context, bool $new): array|null
     {
         if ($this->isReadOnly()) {
             return null;
         }
 
-        $sql    = $this->_sql ."WHERE grr_id_respondent = ? ORDER BY grr_type";
+        $select = $this->getSelect();
+        $select->where([
+            'grr_id_respondent' => $context['gr2t_id_user'],
+        ])
+            ->order(['grr_type']);
+
         $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
-        $output['multiOptions'] = $empty + $this->db->fetchPairs($sql, $context['gr2t_id_user']);
+        $output['multiOptions'] = $empty + $this->resultFetcher->fetchPairs($select);
 
         return $output;
+    }
+
+    protected function getSelect(): Select
+    {
+        $select = $this->resultFetcher->getSelect('gems__respondent_relations');
+        $select->columns([
+           'grr_id',
+           'name' => new Expression("
+                CASE
+                    WHEN gsf_id_user IS NULL THEN CONCAT_WS(' ', grr_type, grr_first_name, grr_last_name)
+                    ELSE CONCAT_WS(' ', grr_type, gsf_first_name, gsf_surname_prefix, gsf_last_name)
+                END")
+        ])
+            ->join('gems__staff', 'gsf_id_user = grr_id_staff');
+
+        return $select;
     }
 
     /**
@@ -157,9 +155,9 @@ class RelationField extends FieldAbstract
     public function showRelation($value)
     {
         // Display nicer
-        $display = $this->calculateFieldInfo($value, array());
+        $display = $this->calculateFieldInfo($value, []);
         if ($value == $display) {
-            $display = $this->_('-');
+            $display = '-';
         }
 
         return $display;

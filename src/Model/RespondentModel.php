@@ -3,10 +3,12 @@
 namespace Gems\Model;
 
 use Gems\Exception\RespondentAlreadyExists;
+use Gems\Repository\ConsentRepository;
+use Gems\Repository\ReceptionCodeRepository;
 use Gems\Repository\StaffRepository;
+use Gems\Tracker\ReceptionCode;
 use Gems\User\User;
 use Gems\Util\Localized;
-use Gems\Util\ReceptionCodeLibrary;
 use Zalt\Model\MetaModelInterface;
 
 /**
@@ -55,6 +57,11 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
     public $consentFields = ['gr2o_consent'];
 
     /**
+     * @var ConsentRepository
+     */
+    protected $consentRepository;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -101,6 +108,11 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      * @var \Gems\Project\ProjectSettings
      */
     protected $project;
+
+    /**
+     * @var ReceptionCodeRepository
+     */
+    protected $receptionCodeRepository;
 
     /**
      * @var StaffRepository
@@ -325,7 +337,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 'formatFunction', $this->translatedUtil->describeDateFromNow);
         $this->setIfExists('gr2o_consent',
                 'label', $this->_('Consent'),
-                'multiOptions', $dbLookup->getUserConsents()
+                'multiOptions', $this->consentRepository->getUserConsents()
                 );
 
         $this->applyMask();
@@ -426,9 +438,9 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 'tab', $this->_('Settings'), 'default', $this->project->getLocaleDefault());
 
         $this->setIfExists('gr2o_consent',    'label', $this->_('Consent'),
-                'default', $this->util->getDefaultConsent(),
+                'default', $this->consentRepository->getDefaultConsent(),
                 'description', $this->_('Has the respondent signed the informed consent letter?'),
-                'multiOptions', $dbLookup->getUserConsents()
+                'multiOptions', $this->consentRepository->getUserConsentOptions()
                 );
 
         $changers = $this->getChangersList();
@@ -579,7 +591,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         $this->setIfExists('grs_phone_4', 'size', 15);
 
         $this->setIfExists('gr2o_consent',
-                'default', $this->util->getDefaultConsent(),
+                'default', $this->consentRepository->getDefaultConsent(),
                 'elementClass', 'Radio',
                 'separator', ' ',
                 'required', true);
@@ -679,7 +691,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         // And save the record
         $toPatient['gr2o_patient_nr']      = $toPid;
         $toPatient['gr2o_id_organization'] = $toOrgId;
-        $toPatient['gr2o_reception_code']  = ReceptionCodeLibrary::RECEPTION_OK;
+        $toPatient['gr2o_reception_code']  = ReceptionCodeRepository::RECEPTION_OK;
 
         $loginToSaveTable = false;
         if (isset($this->_saveTables['gems__user_logins'])) {
@@ -1170,12 +1182,12 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      * @param string $newCode     String or \Gems\Util\ReceptionCode
      * @param int $respondentId   Pass when at hand, is looked up otherwise
      * @param string $oldCode     Pass when at hand as string or \Gems\Util\ReceptionCode, is looked up otherwise
-     * @return \Gems\Util\ReceptionCode The new code reception code object for further processing
+     * @return ReceptionCode The new code reception code object for further processing
      */
     public function setReceptionCode($patientId, $organizationId, $newCode, $respondentId = null, $oldCode = null)
     {
-        if (!$newCode instanceof \Gems\Util\ReceptionCode) {
-            $newCode = $this->util->getReceptionCode($newCode);
+        if (!$newCode instanceof ReceptionCode) {
+            $newCode = $this->receptionCodeRepository->getReceptionCode($newCode);
         }
         $userId = $this->currentUserRepository->getCurrentUserId();
 
@@ -1184,7 +1196,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
             if (null === $oldCode) {
                 $oldCode = $this->getReceptionCode($patientId, $organizationId, $respondentId);
             }
-            if ($oldCode instanceof \Gems\Util\ReceptionCode) {
+            if ($oldCode instanceof ReceptionCode) {
                 $oldCode = $oldCode->getCode();
             }
 

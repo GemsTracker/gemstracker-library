@@ -753,6 +753,8 @@ class ConfigProvider
             'databaseFields' => false,
             'paths' => [
                 'gems' => [__DIR__ . '/../languages'],
+                'gems-male' => [__DIR__ . '/../languages/gender/male'],
+                'gems-female' => [__DIR__ . '/../languages/gender/female'],
             ],
         ];
     }

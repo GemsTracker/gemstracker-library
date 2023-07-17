@@ -11,8 +11,27 @@
 
 namespace Gems\Tracker\Mock;
 
+use DateTimeInterface;
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Locale\Locale;
+use Gems\Log\Loggers;
+use Gems\Project\ProjectSettings;
+use Gems\Repository\ConsentRepository;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\ReceptionCodeRepository;
+use Gems\Repository\RespondentRepository;
+use Gems\Repository\TokenRepository;
+use Gems\Tracker;
+use Gems\Tracker\ReceptionCode;
 use Gems\Tracker\Token;
-use Gems\Util\ReceptionCodeLibrary;
+use Gems\User\Mask\MaskRepository;
+use Gems\Util\Translated;
+use Laminas\Db\Sql\Expression;
+use MUtil\Translate\Translator;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  *
@@ -26,31 +45,53 @@ class TokenReadonly extends Token
     /**
      * @var array function => [changes]
      */
-    protected $_changes;
+    protected array $_changes = [];
 
     /**
-     * @var array The local current answers
+     * @var array|null The local current answers
      */
-    private $_localDataRaw = null;
-    
-    /**
-     * @var \Gems\Tracker\Token
-     */
-    protected $_parentToken;
+    private array|null $_localDataRaw = null;
 
-    /**
-     * TokenReadonly constructor.
-     *
-     * @param \Gems\Tracker\Token $parent
-     */
-    public function __construct(\Gems\Tracker\Token $parent)
-    {
-        $this->_parentToken = $parent;
-        
-        if ($parent->_gemsData) {
-            $this->_gemsData = $parent->_gemsData;
-        }
-        $this->_tokenId  = $parent->_tokenId;
+    public function __construct(
+        protected readonly Token $parentToken,
+        ResultFetcher $resultFetcher,
+        MaskRepository $maskRepository,
+        Tracker $tracker,
+        ProjectSettings $projectSettings,
+        ConsentRepository $consentRepository,
+        OrganizationRepository $organizationRepository,
+        ReceptionCodeRepository $receptionCodeRepository,
+        RespondentRepository $respondentRepository,
+        ProjectOverloader $projectOverloader,
+        Translated $translatedUtil,
+        Locale $locale,
+        TokenRepository $tokenRepository,
+        EventDispatcherInterface $eventDispatcher,
+        Translator $translator,
+        MessageBusInterface $messageBus,
+        Loggers $loggers,
+        CurrentUserRepository $currentUserRepository
+    ) {
+        parent::__construct(
+            $this->parentToken->_gemsData,
+            $resultFetcher,
+            $maskRepository,
+            $tracker,
+            $projectSettings,
+            $consentRepository,
+            $organizationRepository,
+            $receptionCodeRepository,
+            $respondentRepository,
+            $projectOverloader,
+            $translatedUtil,
+            $locale,
+            $tokenRepository,
+            $eventDispatcher,
+            $translator,
+            $messageBus,
+            $loggers,
+            $currentUserRepository
+        );
     }
 
     /**
@@ -60,7 +101,7 @@ class TokenReadonly extends Token
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    protected function _updateToken(array $values, $userId)
+    protected function _updateToken(array $values, int $userId): int
     {
         $functionName = debug_backtrace()[1]['function'];
         $this->_changes[$functionName]['oldValues'] = [];
@@ -82,27 +123,10 @@ class TokenReadonly extends Token
     /**
      * @param $log mixed Optional action log, set from outside the token
      */
-    public function addLog($log)
+    public function addLog($log): void
     {
         foreach ((array) $log as $item) {
             $this->_changes['log'][] = $item;
-        }
-    }
-    
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * This function is no needed if the classes are setup correctly
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        if (! $this->tracker) {
-            $this->tracker = $this->loader->getTracker();
         }
     }
 
@@ -117,7 +141,7 @@ class TokenReadonly extends Token
      * @param array $otherValues Other values to set in the token
      * @return string The new token
      */
-    public function createReplacement($newComment, $userId, array $otherValues = array())
+    public function createReplacement(string $newComment, int $userId, array $otherValues = []): string|null
     {
         // Do not try to imitate this action
         return null;
@@ -128,7 +152,7 @@ class TokenReadonly extends Token
      * @param null $param Optional paramter name
      * @return array
      */
-    public function getMockChanges($function = null, $param = null)
+    public function getMockChanges(string|null $function = null, string|null $param = null): array
     {
         if ($param) {
             if (isset($this->_changes[$function][$param])) {
@@ -152,7 +176,7 @@ class TokenReadonly extends Token
      *
      * @return array Field => Value array
      */
-    public function getRawAnswers()
+    public function getRawAnswers(): array
     {
         if (! is_array($this->_localDataRaw)) {
             $this->_localDataRaw = parent::getRawAnswers();
@@ -166,7 +190,7 @@ class TokenReadonly extends Token
      * @param int $userId The id of the gems user
      * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
-    public function getUrl($language, $userId, ?string $returnUrl = null)
+    public function getUrl(string $language, int $userId, string $returnUrl): string
     {
         $this->_changes[__FUNCTION__] = ['language' => $language, 'userId' => $userId];
         
@@ -175,7 +199,7 @@ class TokenReadonly extends Token
         // $survey->copyTokenToSource($this, $language);
 
         if (! $this->_gemsData['gto_in_source']) {
-            $values['gto_start_time'] = new \MUtil\Db\Expr\CurrentTimestamp();
+            $values['gto_start_time'] = new Expression('CURRENT_TIMESTAMP');
             $values['gto_in_source']  = 1;
 
             $oldTokenId = $this->getCopiedFrom();
@@ -187,7 +211,7 @@ class TokenReadonly extends Token
             }
         }
         $values['gto_by']         = $userId;
-        $values['gto_return_url'] = $this->calculateReturnUrl();
+        $values['gto_return_url'] = $returnUrl;
 
         $this->_updateToken($values, $userId);
 
@@ -203,9 +227,9 @@ class TokenReadonly extends Token
      *
      * @return boolean
      */
-    public function hasAnswersLoaded()
+    public function hasAnswersLoaded(): bool
     {
-        return (boolean) $this->_localDataRaw;
+        return (bool) $this->_localDataRaw;
     }
 
     /**
@@ -214,7 +238,7 @@ class TokenReadonly extends Token
      * @param int $userId The current user
      * @return \Gems\Tracker\Token (continuation pattern)
      */
-    public function setCompletionTime($completionTime, $userId)
+    public function setCompletionTime(string|null $completionTime, int $userId): self
     {
         $this->_changes[__FUNCTION__] = ['completionTime' => $completionTime, 'userId' => $userId];
         
@@ -227,11 +251,11 @@ class TokenReadonly extends Token
      *
      * @param array $answers
      */
-    public function setRawAnswers($answers)
+    public function setRawAnswers(array $answers): void
     {
         $this->_changes[__FUNCTION__] = ['answers' => $answers];        
         
-        $this->_localDataRaw = $this->_localDataRaw + (array) $answers;
+        $this->_localDataRaw = $this->_localDataRaw + $answers;
     }
     
     /**
@@ -243,7 +267,7 @@ class TokenReadonly extends Token
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */
-    public function setReceptionCode($code, $comment, $userId)
+    public function setReceptionCode(ReceptionCode|string $code, string $comment, int $userId): int
     {
         $this->_changes[__FUNCTION__] = ['code' => $code, 'comment' => $comment, 'userId' => $userId];
 
@@ -257,7 +281,7 @@ class TokenReadonly extends Token
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    public function setRoundDescription($description, $userId)
+    public function setRoundDescription(string $description, int $userId): int
     {
         $this->_changes[__FUNCTION__] = ['description' => $description, 'userId' => $userId];
 
@@ -271,7 +295,7 @@ class TokenReadonly extends Token
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */
-    public function setValidFrom($validFrom, $validUntil, $userId)
+    public function setValidFrom(DateTimeInterface|string $validFrom, DateTimeInterface|string|null $validUntil, int $userId): int
     {
         $this->_changes[__FUNCTION__] = ['validFrom' => $validFrom, 'validUntil' => $validUntil, 'userId' => $userId];
 
@@ -285,7 +309,7 @@ class TokenReadonly extends Token
      *
      * @param int $userId The id of the gems user
      */
-    protected function toResponseDatabase($userId)
+    protected function toResponseDatabase(int $userId): void
     {
         // do nothing
     }
@@ -293,12 +317,12 @@ class TokenReadonly extends Token
     /**
      * Clean up existing values
      */
-    public function unsetRawAnswers()
+    public function unsetRawAnswers(): void
     {
         $this->_localDataRaw                    = [];
         $this->_changes                         = [];
         $this->_gemsData['gto_in_source']       = 0;
         $this->_gemsData['gto_completion_time'] = null;
-        $this->_gemsData['gto_reception_code']  = ReceptionCodeLibrary::RECEPTION_OK;
+        $this->_gemsData['gto_reception_code']  = ReceptionCodeRepository::RECEPTION_OK;
     }
 }

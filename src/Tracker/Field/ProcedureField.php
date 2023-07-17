@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Agenda\Appointment;
+
 /**
  *
  *
@@ -28,7 +30,8 @@ class ProcedureField  extends AppointmentDerivedFieldAbstract
      * @param \Gems\Agenda\Appointment $appointment
      * @return int
      */
-    protected function getId(\Gems\Agenda\Appointment$appointment) {
+    protected function getId(Appointment $appointment): int
+    {
         return $appointment->getProcedureId();
     }
 
@@ -38,8 +41,9 @@ class ProcedureField  extends AppointmentDerivedFieldAbstract
      * @param int $organizationId Organization Id
      * @return array
      */
-    protected function getLookup($organizationId = null) {
-        return $this->getAgenda()->getProcedures($organizationId);
+    protected function getLookup(int|null $organizationId = null): array
+    {
+        return $this->agenda->getProcedures($organizationId);
     }
 
 }

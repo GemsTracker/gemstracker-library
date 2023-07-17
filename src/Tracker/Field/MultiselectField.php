@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Field;
 
+use MUtil\Model\Type\ConcatenatedRow;
+
 /**
  *
  *
@@ -25,18 +27,12 @@ class MultiselectField extends FieldAbstract
     /**
      * @var string to use as display separator
      */
-    protected $displaySeparator = ' ';
+    protected string $displaySeparator = ' ';
 
     /**
      * @var bool When true the value is saved with padded seperators
      */
-    protected $padSeperators = false;
-    
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    protected bool $padSeperators = false;
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -45,11 +41,11 @@ class MultiselectField extends FieldAbstract
      *
      * @param array $settings The settings set so far
      */
-    protected function addModelSettings(array &$settings)
+    protected function addModelSettings(array &$settings): void
     {
-        $concatter = new \MUtil\Model\Type\ConcatenatedRow(parent::FIELD_SEP, $this->displaySeparator, $this->padSeperators);
-        $multiKeys = explode(parent::FIELD_SEP, (string)$this->_fieldDefinition['gtf_field_value_keys']);
-        $multi     = explode(parent::FIELD_SEP, (string)$this->_fieldDefinition['gtf_field_values']);
+        $concatter = new ConcatenatedRow(parent::FIELD_SEP, $this->displaySeparator, $this->padSeperators);
+        $multiKeys = explode(parent::FIELD_SEP, (string)$this->fieldDefinition['gtf_field_value_keys']);
+        $multi     = explode(parent::FIELD_SEP, (string)$this->fieldDefinition['gtf_field_values']);
         $settings  = $concatter->getSettings() + $settings;
 
         $settings['elementClass'] = 'MultiCheckbox';
@@ -63,7 +59,7 @@ class MultiselectField extends FieldAbstract
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onFieldDataSave($currentValue, array $fieldData)
+    public function onFieldDataSave(mixed $currentValue, array $fieldData): mixed
     {
         if (is_array($currentValue)) {
             if ($this->padSeperators) {

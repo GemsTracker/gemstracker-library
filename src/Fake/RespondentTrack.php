@@ -4,14 +4,14 @@ namespace Gems\Fake;
 
 class RespondentTrack extends \Gems\Tracker\RespondentTrack
 {
-    public function getCodeFields()
+    public function getCodeFields(): array
     {
         return [
             'exampleField' => 'exampleValue',
         ];
     }
 
-    public function refresh(array $gemsData = null)
+    public function refresh(array $gemsData = null): self
     {
         return $this;
     }

@@ -4,8 +4,11 @@ namespace Gems\Repository;
 
 use Gems\Cache\HelperAdapter;
 use Gems\Db\CachedResultFetcher;
+use Gems\User\Organization;
+use Gems\User\UserLoader;
 use Gems\Util\UtilDbHelper;
 use Laminas\Db\Sql\Predicate\Predicate;
+use Zalt\Loader\ProjectOverloader;
 
 class OrganizationRepository
 {
@@ -22,8 +25,18 @@ class OrganizationRepository
         return [static::SYSTEM_NO_ORG => 'create db first'];
     }
 
-    public function __construct(protected CachedResultFetcher $cachedResultFetcher, protected UtilDbHelper $utilDbHelper)
+    public function __construct(
+        protected readonly CachedResultFetcher $cachedResultFetcher,
+        protected readonly UtilDbHelper $utilDbHelper,
+        protected readonly ProjectOverloader $projectOverloader,
+        protected readonly UserLoader $userLoader,
+    )
     {}
+
+    public function getOrganization(int $organizationId): Organization
+    {
+        return $this->projectOverloader->create('User\\Organization', $organizationId, $this->userLoader->getAvailableStaffDefinitions());
+    }
 
     /**
      * Get all active organizations

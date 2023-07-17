@@ -14,14 +14,42 @@ namespace Gems\Tracker;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\Db\ResultFetcher;
 use Gems\Event\Application\TokenEvent;
+use Gems\Exception\Coding;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Locale\Locale;
+use Gems\Log\Loggers;
 use Gems\Log\LogHelper;
-use Gems\Registry\TargetAbstract;
+use Gems\Messenger\Message\TokenResponse;
+use Gems\Model\RespondentRelationInstance;
+use Gems\Model\RespondentRelationModel;
+use Gems\Project\ProjectSettings;
+use Gems\Repository\ConsentRepository;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\ReceptionCodeRepository;
+use Gems\Repository\RespondentRepository;
+use Gems\Repository\TokenRepository;
+use Gems\Tracker;
+use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Tracker\Engine\TrackEngineInterface;
+use Gems\Tracker\Model\FieldMaintenanceModel;
+use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Source\SourceAbstract;
+use Gems\Tracker\Token\LaminasTokenSelect;
 use Gems\User\Mask\MaskRepository;
+use Gems\User\Organization;
 use Gems\User\User;
 use Gems\Util\Translated;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\TableGateway;
 use MUtil\Model;
-use MUtil\Translate\TranslateableTrait;
+use MUtil\Translate\Translator;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\MetaModelInterface;
 
 
 /**
@@ -33,138 +61,87 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Token extends TargetAbstract
-{
-    use TranslateableTrait;
-
-    const COMPLETION_NOCHANGE = 0;
+class Token
+{    const COMPLETION_NOCHANGE = 0;
     const COMPLETION_DATACHANGE = 1;
     const COMPLETION_EVENTCHANGE = 2;
 
-    /**
-     *
-     * @var array Can hold any data the source likes to store for the token
-     */
-    private $_cache = array();
+    protected array $_cache = [];
 
     /**
      *
      * @var string The token id of the token this one was copied from, null when not loaded, false when does not exist
      */
-    protected $_copiedFromTokenId = null;
+    protected string|null $_copiedFromTokenId = null;
 
     /**
      *
      * @var array The token id's of the tokens this one was copied to, null when not loaded, [] when none exist
      */
-    protected $_copiedToTokenIds = null;
+    protected array|null $_copiedToTokenIds = null;
 
     /**
      *
      * @var array The gems token data
      */
-    protected $_gemsData = array();
+    protected array $_gemsData = [];
 
     /**
      * Helper var for preventing infinite loops
      *
-     * @var boolean
+     * @var bool
      */
-    protected $_loopCheck = false;
+    protected bool $_loopCheck = false;
 
     /**
      *
-     * @var \Gems\Tracker\Token
+     * @var Token
      */
-    private $_nextToken = null;
+    private Token|null $_nextToken = null;
 
     /**
      *
-     * @var \Gems\Tracker\Token
+     * @var Token
      */
-    private $_previousToken = null;
+    private Token|null $_previousToken = null;
 
     /**
      * Holds the relation (if any) for this token
      *
      * @var array
      */
-    protected $_relation = null;
+    protected RespondentRelationInstance|null $_relation = null;
 
     /**
      *
-     * @var \Gems\Tracker\Respondent
+     * @var Respondent
      */
-    protected $_respondentObject = null;
+    protected Respondent|null $_respondentObject = null;
+
+    protected RespondentTrack|null $respondentTrack = null;
 
     /**
      *
      * @var array The answers in raw format
      */
-    private $_sourceDataRaw;
+    private array|null $_sourceDataRaw;
 
     /**
      *
      * @var string The id of the token
      */
-    protected $_tokenId;
+    protected string $_tokenId;
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
-     */
-    protected $event;
+    protected User $currentUser;
 
     /**
      * True when the token does exist.
      *
-     * @var boolean
+     * @var bool
      */
-    public $exists = true;
+    public bool $exists = true;
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Zend_Locale
-     */
-    protected $locale;
-
-    /**
-     * Logger instance
-     *
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected $logger;
-
-    protected MaskRepository $maskRepository;
-
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
-
-    /**
-     *
-     * @var \Gems\Tracker\RespondentTrack
-     */
-    protected $respTrack;
+    protected LoggerInterface $logger;
 
     /**
      * The size of the result field, calculated from meta data when null,
@@ -172,51 +149,57 @@ class Token extends TargetAbstract
      *
      * @var int The maximum character length of the result field
      */
-    protected $resultFieldLength = null;
+    protected int|null $resultFieldLength = null;
 
     /**
      * Cache for storing the calculation of the length
      *
      * @var int the character length of the result field
      */
-    protected static $staticResultFieldLength = null;
+    protected static int|null $staticResultFieldLength = null;
 
-    /**
-     *
-     * @var \Gems\Tracker\Survey
-     */
-    protected $survey;
-
-    /**
-     *
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    protected Survey|null $survey = null;
 
     /**
      * Creates the token object
      *
      * @param mixed $gemsTokenData Token Id or array containing token record
      */
-    public function __construct($gemsTokenData)
+    public function __construct(
+        array|string $gemsTokenData,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly MaskRepository $maskRepository,
+        protected readonly Tracker $tracker,
+        protected readonly ProjectSettings $projectSettings,
+        protected readonly ConsentRepository $consentRepository,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly ReceptionCodeRepository $receptionCodeRepository,
+        protected readonly RespondentRepository $respondentRepository,
+        protected readonly ProjectOverloader $projectOverloader,
+        protected readonly Translated $translatedUtil,
+        protected readonly Locale $locale,
+        protected readonly TokenRepository $tokenRepository,
+        protected readonly EventDispatcherInterface $eventDispatcher,
+        protected readonly Translator $translator,
+        protected readonly MessageBusInterface $messageBus,
+        Loggers $loggers,
+        CurrentUserRepository $currentUserRepository,
+    )
     {
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+        $this->logger = $loggers->getLogger('LegacyLogger');
         if (is_array($gemsTokenData)) {
             $this->_gemsData = $gemsTokenData;
             $this->_tokenId  = $gemsTokenData['gto_id_token'];
         } else {
             $this->_tokenId  = $gemsTokenData;
             // loading occurs in checkRegistryRequestAnswers
+        }
+
+        if ($this->_gemsData) {
+            $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
+        } else {
+            $this->refresh();
         }
     }
 
@@ -225,32 +208,32 @@ class Token extends TargetAbstract
      *
      * @param \Gems\Tracker\Token\TokenSelect $select
      */
-    protected function _addRelation($select)
+    protected function _addRelation(LaminasTokenSelect $select): void
     {
         if (!is_null($this->_gemsData['gto_id_relation'])) {
-            $select->forWhere('gto_id_relation = ?', $this->_gemsData['gto_id_relation']);
+            $select->forWhere(['gto_id_relation' => $this->_gemsData['gto_id_relation']]);
         } else {
-            $select->forWhere('gto_id_relation IS NULL');
+            $select->forWhere(['gto_id_relation IS NULL']);
         }
     }
 
     /**
      * Makes sure the respondent data is part of the $this->_gemsData
      */
-    protected function _ensureRespondentData()
+    protected function _ensureRespondentData(): void
     {
         if (! isset($this->_gemsData['grs_id_user'], $this->_gemsData['gr2o_id_user'], $this->_gemsData['gco_code'])) {
-            $sql = "SELECT *
-                FROM gems__respondents INNER JOIN
-                    gems__respondent2org ON grs_id_user = gr2o_id_user INNER JOIN
-                    gems__consents ON gr2o_consent = gco_description
-                WHERE gr2o_id_user = ? AND gr2o_id_organization = ? LIMIT 1";
 
-            $respId = $this->_gemsData['gto_id_respondent'];
-            $orgId  = $this->_gemsData['gto_id_organization'];
-            // \MUtil\EchoOut\EchoOut::track($this->_gemsData);
+            $select = $this->resultFetcher->getSelect('gems__respondents')
+                ->join('gems__respondent2org', 'grs_id_user = gr2o_id_user')
+                ->join('gems__consents', 'gr2o_consent = gco_description')
+                ->where([
+                    'gr2o_id_user' => $this->_gemsData['gto_id_respondent'],
+                    'gr2o_id_organization' => $this->_gemsData['gto_id_organization'],
+                ])
+                ->limit(1);
 
-            if ($row = $this->db->fetchRow($sql, array($respId, $orgId))) {
+            if ($row = $this->resultFetcher->fetchRow($select)) {
                 $this->_gemsData = $this->_gemsData + $row;
             } else {
                 $token = $this->_tokenId;
@@ -264,7 +247,7 @@ class Token extends TargetAbstract
      *
      * @return int
      */
-    protected function _getResultFieldLength()
+    protected function _getResultFieldLength(): int
     {
         if (null !== $this->resultFieldLength) {
             return $this->resultFieldLength;
@@ -289,13 +272,13 @@ class Token extends TargetAbstract
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    protected function _updateToken(array $values, $userId)
+    protected function _updateToken(array $values, int $userId): int
     {
         if (!$this->tracker->filterChangesOnly($this->_gemsData, $values)) {
             return 0;   // No changes
         }
 
-        if (\Gems\Tracker::$verbose) {
+        if (Tracker::$verbose) {
             $echo = '';
             foreach ($values as $key => $val) {
                 $echo .= $key . ': ' . $this->_gemsData[$key] . ' => ' . $val . "\n";
@@ -304,52 +287,15 @@ class Token extends TargetAbstract
         }
 
         $defaults = [
-            'gto_changed'    => new \MUtil\Db\Expr\CurrentTimestamp(),
+            'gto_changed'    => new Expression('CURRENT_TIMESTAMP'),
             'gto_changed_by' => $userId
         ];
 
         // Update values in this object
         $this->_gemsData = $values + $defaults + (array) $this->_gemsData;
 
-        // return 1;
-        return $this->db->update('gems__tokens', $values, array('gto_id_token = ?' => $this->_tokenId));
-    }
-
-    /**
-     * Set menu parameters from this token
-     *
-     * @param \Gems\Menu\ParameterSource $source
-     * @return \Gems\Tracker\Token (continuation pattern)
-     */
-    public function applyToMenuSource(\Gems\Menu\ParameterSource $source)
-    {
-        $source->setTokenId($this->_tokenId);
-        if (!$this->exists) return $this;
-
-        if (! isset($this->_gemsData['gr2o_patient_nr'])) {
-            $this->_ensureRespondentData();
-        }
-        $this->getRespondentTrack()->applyToMenuSource($source);
-
-        $completed = $this->_gemsData['gto_completion_time'] ? 1 : 0;
-        $source->offsetSet('gsu_id_survey', $this->_gemsData['gto_id_survey']);
-        $source->offsetSet('is_completed', $completed);
-        $source->offsetSet('show_answers', $completed);
-        $source->offsetSet('gto_in_source', $this->_gemsData['gto_in_source']);
-        $source->offsetSet('gto_reception_code', $this->_gemsData['gto_reception_code']);
-
-        $receptionCode = $this->getReceptionCode();
-        $source->offsetSet('grc_success', $receptionCode->isSuccess() ? 1 : 0);
-        $canBeTaken = false;
-        if ($receptionCode->isSuccess() &&
-                ($completed == 0) &&
-                ($validFrom = $this->getValidFrom())) {
-
-            $canBeTaken = $this->isCurrentlyValid();
-        }
-        $source->offsetSet('can_be_taken', $canBeTaken);
-
-        return $this;
+        $table = new TableGateway('gems__tokens', $this->resultFetcher->getAdapter());
+        return $table->update($values, ['gto_id_token' => $this->_tokenId]);
     }
 
     /**
@@ -359,7 +305,7 @@ class Token extends TargetAbstract
      * @param int $relationFieldId
      * @return int 1 if data changed, 0 otherwise
      */
-    public function assignTo($respondentRelationId, $relationFieldId)
+    public function assignTo(int $respondentRelationId, int $relationFieldId): int
     {
         if (($this->getRelationFieldId() == $relationFieldId) && ($this->getRelationId() == $respondentRelationId)) {
             return 0;
@@ -384,7 +330,8 @@ class Token extends TargetAbstract
      * @param mixed  $defaultValue    The optional default value to use when it is not present
      * @return mixed
      */
-    public function cacheGet($key, $defaultValue = null) {
+    public function cacheGet(string $key, mixed $defaultValue = null): mixed
+    {
         if ($this->cacheHas($key)) {
             return $this->_cache[$key];
         } else {
@@ -396,11 +343,11 @@ class Token extends TargetAbstract
      * find out if a certain key is present in the cache
      *
      * @param string $key
-     * @return boolean
+     * @return bool
      */
-    public function cacheHas($key) {
+    public function cacheHas(string $key): bool
+    {
         return isset($this->_cache[$key]);
-
     }
 
     /**
@@ -411,7 +358,8 @@ class Token extends TargetAbstract
      *
      * @param string|null $key The key to reset
      */
-    public function cacheReset($key = null) {
+    public function cacheReset(string|null $key = null): void
+    {
         if (is_null($key)) {
             $this->_cache = array();
         } else {
@@ -425,54 +373,9 @@ class Token extends TargetAbstract
      * @param string $key
      * @param mixed  $value
      */
-    public function cacheSet($key, $value) {
-        $this->_cache[$key] = $value;
-    }
-
-    /**
-     * Returns the full url \Gems should forward to after survey completion.
-     *
-     * This fix allows multiple sites with multiple url's to share a single
-     * installation.
-     *
-     * @return string
-     */
-    protected function calculateReturnUrl()
+    public function cacheSet(string $key, mixed $value): void
     {
-        //if ($this->currentUser->isActive(false)) {
-        //    $currentUri = $this->util->getCurrentURI();
-        //} else {
-            $currentUri = $this->getOrganization()->getPreferredSiteUrl();
-        //}
-
-        /*
-        // Referrer would be powerful when someone is usng multiple windows, but
-        // the loop does not always provide a correct referrer.
-        $referrer   = $_SERVER["HTTP_REFERER"];
-
-        // If a referrer was specified and that referral is from the current site, then use it
-        // as it is more dependable when the user has multiple windows open on the application.
-        if ($referrer && (0 == strncasecmp($referrer, $currentUri, strlen($currentUri)))) {
-            return $referrer;
-            // \MUtil\EchoOut\EchoOut::track($referrer);
-        } // */
-
-        // Use the survey return if available.
-        $surveyReturn = $this->currentUser->getSurveyReturn();
-        if ($surveyReturn) {
-            // Do not show the base url as it is in $currentUri
-            $surveyReturn['NoBase'] = true;
-
-            // Add route reset to prevet the current parameters to be
-            // added to the url.
-            $surveyReturn['RouteReset'] = true;
-
-            // \MUtil\EchoOut\EchoOut::track($currentUri, \MUtil\Html::urlString($surveyReturn));
-            return $currentUri . \MUtil\Html::urlString($surveyReturn);
-        }
-
-        // Ultimate backup solution for return
-        return $currentUri . '/ask/forward/' . urlencode($this->getTokenId());
+        $this->_cache[$key] = $value;
     }
 
     public function canBeEmailed(): bool
@@ -486,34 +389,12 @@ class Token extends TargetAbstract
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        $this->maskRepository = $this->loader->getMaskRepository();
-
-        if ($this->_gemsData) {
-            $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
-        } else {
-            if (!$this->db instanceof \Zend_Db_Adapter_Abstract) {
-                return false;
-            }
-            $this->refresh();
-        }
-
-        return $this->exists;
-    }
-
-    /**
      * Checks whether the survey for this token was completed and processes the result
      *
      * @param int $userId The id of the gems user
      * @return int self::COMPLETION_NOCHANGE || (self::COMPLETION_DATACHANGE | self::COMPLETION_EVENTCHANGE)
      */
-    public function checkTokenCompletion($userId)
+    public function checkTokenCompletion(int $userId): int
     {
         $result = self::COMPLETION_NOCHANGE;
 
@@ -600,7 +481,7 @@ class Token extends TargetAbstract
                     }
                 }
 
-                if ($this->project->hasResponseDatabase()) {
+                if ($this->projectSettings->hasResponseDatabase()) {
                     $this->toResponseDatabase($userId);
                 }
             }
@@ -628,7 +509,7 @@ class Token extends TargetAbstract
      * @param array $otherValues Other values to set in the token
      * @return string The new token
      */
-    public function createReplacement($newComment, $userId, array $otherValues = array())
+    public function createReplacement(string $newComment, int $userId, array $otherValues = []): string|null
     {
         $values['gto_id_respondent_track'] = $this->_gemsData['gto_id_respondent_track'];
         $values['gto_id_round']            = $this->_gemsData['gto_id_round'];
@@ -650,7 +531,7 @@ class Token extends TargetAbstract
         foreach($newValues as &$value)
         {
             if ($value instanceof \DateTimeInterface) {
-                $value = $value->format(\Gems\Tracker::DB_DATETIME_FORMAT);
+                $value = $value->format(Tracker::DB_DATETIME_FORMAT);
             }
         }
 
@@ -658,10 +539,11 @@ class Token extends TargetAbstract
 
         $replacementLog['gtrp_id_token_new'] = $tokenId;
         $replacementLog['gtrp_id_token_old'] = $this->_tokenId;
-        $replacementLog['gtrp_created']      = new \MUtil\Db\Expr\CurrentTimestamp();
+        $replacementLog['gtrp_created']      = new Expression('CURRENT_TIMESTAMP');
         $replacementLog['gtrp_created_by']   = $userId;
 
-        $this->db->insert('gems__token_replacements', $replacementLog);
+        $table = new TableGateway('gems__token_replacements', $this->resultFetcher->getAdapter());
+        $table->insert($replacementLog);
 
         return $tokenId;
     }
@@ -674,24 +556,28 @@ class Token extends TargetAbstract
      *
      * @return array of tokendata
      */
-    public function getAllUnansweredTokens($where = '')
+    public function getAllUnansweredTokens(array|null $where = null): array
     {
-        $select = $this->tracker->getTokenSelect();
+        $select = new LaminasTokenSelect($this->resultFetcher);
         $select->andReceptionCodes()
                 ->andRespondentTracks()
-                ->andRounds(array())
-                ->andSurveys(array())
+                ->andRounds([])
+                ->andSurveys([])
                 ->andTracks()
                 ->forGroupId($this->getSurvey()->getGroupId())
                 ->forRespondent($this->getRespondentId(), $this->getOrganizationId())
                 ->onlySucces()
-                ->forWhere('gsu_active = 1')
-                ->forWhere('gro_active = 1 OR gro_active IS NULL')
-                ->order('gtr_track_name')
-                ->order('gr2t_track_info')
-                ->order('gto_valid_until')
-                ->order('gto_valid_from')
-                ->order('gto_round_order');
+                ->forWhere([
+                    'gsu_active' => 1,
+                    'gro_active = 1 OR gro_active IS NULL',
+                ])
+                ->order([
+                    'gtr_track_name',
+                    'gr2t_track_info',
+                    'gto_valid_until',
+                    'gto_valid_from',
+                    'gto_round_order',
+                ]);
 
         $this->_addRelation($select);
 
@@ -708,7 +594,7 @@ class Token extends TargetAbstract
      * @param string $fieldName Name of answer field
      * @return ?DateTimeInterface date time or null
      */
-    public function getAnswerDateTime($fieldName)
+    public function getAnswerDateTime(string $fieldName): DateTimeInterface|null
     {
         $survey = $this->getSurvey();
         return $survey->getAnswerDateTime($fieldName, $this);
@@ -719,7 +605,7 @@ class Token extends TargetAbstract
      *
      * @return array Of snippet names
      */
-    public function getAnswerSnippetNames()
+    public function getAnswerSnippetNames(): array
     {
         if (! $this->exists) {
             return ['Token\\TokenNotFoundSnippet'];
@@ -751,7 +637,7 @@ class Token extends TargetAbstract
      *
      * @return array
      */
-    public function getArrayCopy()
+    public function getArrayCopy(): array
     {
         return $this->_gemsData;
     }
@@ -762,7 +648,7 @@ class Token extends TargetAbstract
      *
      * @return int
      */
-    public function getChangedBy()
+    public function getChangedBy(): int
     {
         return $this->_gemsData['gto_changed_by'];
     }
@@ -772,7 +658,7 @@ class Token extends TargetAbstract
      *
      * @return string
      */
-    public function getComment()
+    public function getComment(): string
     {
         return $this->_gemsData['gto_comment'];
     }
@@ -781,13 +667,13 @@ class Token extends TargetAbstract
      *
      * @return ?DateTimeInterface Completion time as a date or null
      */
-    public function getCompletionTime(): ?DateTimeInterface
+    public function getCompletionTime(): DateTimeInterface|null
     {
         if (isset($this->_gemsData['gto_completion_time']) && $this->_gemsData['gto_completion_time']) {
             if ($this->_gemsData['gto_completion_time'] instanceof DateTimeInterface) {
                 return $this->_gemsData['gto_completion_time'];
             }
-            return Model::getDateTimeInterface($this->_gemsData['gto_completion_time'], \Gems\Tracker::DB_DATETIME_FORMAT);
+            return Model::getDateTimeInterface($this->_gemsData['gto_completion_time'], Tracker::DB_DATETIME_FORMAT);
         }
         return null;
     }
@@ -796,7 +682,7 @@ class Token extends TargetAbstract
      *
      * @return string
      */
-    public function getConsentCode()
+    public function getConsentCode(): string
     {
         if ($this->getReceptionCode()->isSuccess()) {
             if (! isset($this->_gemsData['gco_code'])) {
@@ -805,7 +691,7 @@ class Token extends TargetAbstract
 
             return $this->_gemsData['gco_code'];
         } else {
-            return $this->util->getConsentRejected();
+            return $this->consentRepository->getConsentRejected();
         }
     }
 
@@ -814,12 +700,12 @@ class Token extends TargetAbstract
      *
      * @return string
      */
-    public function getCopiedFrom()
+    public function getCopiedFrom(): string|null
     {
         if (null === $this->_copiedFromTokenId) {
-            $this->_copiedFromTokenId = $this->db->fetchOne(
+            $this->_copiedFromTokenId = $this->resultFetcher->fetchOne(
                     "SELECT gtrp_id_token_old FROM gems__token_replacements WHERE gtrp_id_token_new = ?",
-                    $this->_tokenId
+                    [$this->_tokenId]
                     );
         }
 
@@ -831,14 +717,14 @@ class Token extends TargetAbstract
      *
      * @return array tokenId => tokenId
      */
-    public function getCopiedTo()
+    public function getCopiedTo(): array|null
     {
         if (null === $this->_copiedToTokenIds) {
-            $this->_copiedToTokenIds = $this->db->fetchPairs(
+            $this->_copiedToTokenIds = $this->resultFetcher->fetchPairs(
                     "SELECT gtrp_id_token_new, gtrp_id_token_new
                         FROM gems__token_replacements
                         WHERE gtrp_id_token_old = ?",
-                    $this->_tokenId
+                    [$this->_tokenId]
                     );
 
             if (! $this->_copiedToTokenIds) {
@@ -855,7 +741,7 @@ class Token extends TargetAbstract
      *
      * @return int
      */
-    public function getCreatedBy()
+    public function getCreatedBy(): int
     {
         return $this->_gemsData['gto_created_by'];
     }
@@ -882,7 +768,7 @@ class Token extends TargetAbstract
      *
      * @return array of strings
      */
-    public function getDeleteSnippetNames()
+    public function getDeleteSnippetNames(): array
     {
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenDeleteSnippetNames($this);
@@ -896,7 +782,7 @@ class Token extends TargetAbstract
      *
      * @return array of strings
      */
-    public function getEditSnippetNames()
+    public function getEditSnippetNames(): array
     {
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenEditSnippetNames($this);
@@ -912,7 +798,7 @@ class Token extends TargetAbstract
      *
      * @return string|null Email address of the person who needs to fill out the survey or null
      */
-    public function getEmail()
+    public function getEmail(): string|null
     {
         // If staff, return null, we don't know who to email
         if ($this->getSurvey()->isTakenByStaff()) {
@@ -936,7 +822,7 @@ class Token extends TargetAbstract
      *
      * @return string Last mail sent date
      */
-    public function getMailSentDate()
+    public function getMailSentDate(): string|null
     {
         return $this->_gemsData['gto_mail_sent_date'];
     }
@@ -957,9 +843,9 @@ class Token extends TargetAbstract
     /**
      * Returns a model that can be used to save, edit, etc. the token
      *
-     * @return \Gems\Tracker\Model\StandardTokenModel
+     * @return StandardTokenModel
      */
-    public function getModel()
+    public function getModel(): StandardTokenModel
     {
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenModel();
@@ -973,10 +859,10 @@ class Token extends TargetAbstract
      *
      * @return \Gems\Tracker\Token
      */
-    public function getNextToken()
+    public function getNextToken(): Token
     {
         if (null === $this->_nextToken) {
-            $tokenSelect = $this->tracker->getTokenSelect();
+            $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
             $tokenSelect
                     ->andReceptionCodes()
                     ->forPreviousTokenId($this->_tokenId);
@@ -997,23 +883,25 @@ class Token extends TargetAbstract
      *
      * @return ?Token
      */
-    public function getNextUnansweredToken()
+    public function getNextUnansweredToken(): Token|null
     {
-        $tokenSelect = $this->tracker->getTokenSelect();
+        $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
         $tokenSelect
                 ->andReceptionCodes()
                 // ->andRespondents()
                 // ->andRespondentOrganizations()
                 // ->andConsents
-                ->andRounds(array())
-                ->andSurveys(array())
+                ->andRounds([])
+                ->andSurveys([])
                 ->forRespondent($this->getRespondentId())
                 ->forGroupId($this->getSurvey()->getGroupId())
                 ->onlySucces()
                 ->onlyValid()
-                ->forWhere('gsu_active = 1')
-                ->forWhere('gro_active = 1 OR gro_active IS NULL')
-                ->order(array('gto_valid_from', 'gto_round_order'));
+                ->forWhere([
+                    'gsu_active' => 1,
+                    'gro_active = 1 OR gro_active IS NULL',
+                ])
+                ->order(['gto_valid_from', 'gto_round_order']);
 
         $this->_addRelation($tokenSelect);
 
@@ -1025,18 +913,18 @@ class Token extends TargetAbstract
 
     /**
      *
-     * @return \Gems\User\Organization
+     * @return Organization
      */
-    public function getOrganization()
+    public function getOrganization(): Organization
     {
-        return $this->loader->getOrganization($this->getOrganizationId());
+        return $this->organizationRepository->getOrganization($this->getOrganizationId());
     }
 
     /**
      *
      * @return int
      */
-    public function getOrganizationId()
+    public function getOrganizationId(): int
     {
         return $this->_gemsData['gto_id_organization'];
     }
@@ -1045,7 +933,7 @@ class Token extends TargetAbstract
      *
      * @return string The respondents patient number
      */
-    public function getPatientNumber()
+    public function getPatientNumber(): string
     {
         if (! isset($this->_gemsData['gr2o_patient_nr'])) {
             $this->_ensureRespondentData();
@@ -1061,7 +949,7 @@ class Token extends TargetAbstract
      *
      * @return string|null phone number of the person who needs to fill out the survey or null
      */
-    public function getPhoneNumber()
+    public function getPhoneNumber(): string|null
     {
         // If staff, return null, we don't know who to message
         if ($this->getSurvey()->isTakenByStaff()) {
@@ -1086,11 +974,11 @@ class Token extends TargetAbstract
      *
      * @return \Gems\Tracker\Token
      */
-    public function getPreviousSuccessToken()
+    public function getPreviousSuccessToken(): Token
     {
         $prev = $this->getPreviousToken();
 
-        while ($prev && (! $prev->hasSuccesCode())) {
+        while ($prev && (! $prev->getReceptionCode()->isSuccess())) {
             $prev = $prev->getPreviousToken();
         }
 
@@ -1102,10 +990,10 @@ class Token extends TargetAbstract
      *
      * @return \Gems\Tracker\Token
      */
-    public function getPreviousToken()
+    public function getPreviousToken(): Token
     {
         if (null === $this->_previousToken) {
-            $tokenSelect = $this->tracker->getTokenSelect();
+            $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
             $tokenSelect
                     ->andReceptionCodes()
                     ->forNextTokenId($this->_tokenId);
@@ -1128,7 +1016,7 @@ class Token extends TargetAbstract
      *
      * @return array Field => Value array
      */
-    public function getRawAnswers()
+    public function getRawAnswers(): array
     {
         if (! is_array($this->_sourceDataRaw)) {
             $this->_sourceDataRaw = $this->getSurvey()->getRawTokenAnswerRow($this->_tokenId);
@@ -1139,11 +1027,11 @@ class Token extends TargetAbstract
     /**
      * Return the \Gems\Util\ReceptionCode object
      *
-     * @return \Gems\Util\ReceptionCode reception code
+     * @return ReceptionCode reception code
      */
-    public function getReceptionCode()
+    public function getReceptionCode(): ReceptionCode
     {
-        return $this->util->getReceptionCode($this->_gemsData['gto_reception_code']);
+        return $this->receptionCodeRepository->getReceptionCode($this->_gemsData['gto_reception_code']);
     }
 
     /**
@@ -1151,10 +1039,13 @@ class Token extends TargetAbstract
      *
      * @return \Gems\Model\RespondentRelationInstance
      */
-    public function getRelation()
+    public function getRelation(): RespondentRelationInstance
     {
         if (is_null($this->_relation) || $this->_relation->getRelationId() !== $this->getRelationId()) {
-            $model = $this->loader->getModels()->getRespondentRelationModel();
+            /**
+             * @var RespondentRelationModel $model
+             */
+            $model = $this->projectOverloader->create('Model\\RespondentRelationModel');
             $relationObject = $model->getRelation($this->getRespondentId(), $this->getRelationId());
             $this->_relation = $relationObject;
         }
@@ -1170,7 +1061,7 @@ class Token extends TargetAbstract
      *
      * @return int
      */
-    public function getRelationFieldId()
+    public function getRelationFieldId(): int|null
     {
         return $this->hasRelation() ? (int) $this->_gemsData['gto_id_relationfield'] : null;
     }
@@ -1180,11 +1071,11 @@ class Token extends TargetAbstract
      *
      * @return string
      */
-    public function getRelationFieldName()
+    public function getRelationFieldName(): string|null
     {
         if ($relationFieldId = $this->getRelationFieldId()) {
             $names = $this->getRespondentTrack()->getTrackEngine()->getFieldNames();
-            $fieldPrefix = \Gems\Tracker\Model\FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
+            $fieldPrefix = FieldMaintenanceModel::FIELDS_NAME . FieldsDefinition::FIELD_KEY_SEPARATOR;
             $key = $fieldPrefix . $relationFieldId;
 
             return array_key_exists($key, $names) ? lcfirst($names[$key]) : null;
@@ -1198,7 +1089,7 @@ class Token extends TargetAbstract
      *
      * @return int
      */
-    public function getRelationId()
+    public function getRelationId(): int|null
     {
         return $this->hasRelation() ? $this->_gemsData['gto_id_relation'] : null;
     }
@@ -1208,15 +1099,15 @@ class Token extends TargetAbstract
      *
      * @return \Gems\Tracker\Respondent
      */
-    public function getRespondent()
+    public function getRespondent(): Respondent
     {
         $patientNumber  = $this->getPatientNumber();
         $organizationId = $this->getOrganizationId();
 
-        if (! ($this->_respondentObject instanceof \Gems\Tracker\Respondent)
+        if (! ($this->_respondentObject instanceof Respondent)
                 || $this->_respondentObject->getPatientNumber()  !== $patientNumber
                 || $this->_respondentObject->getOrganizationId() !== $organizationId) {
-            $this->_respondentObject = $this->loader->getRespondent($patientNumber, $organizationId);
+            $this->_respondentObject = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
         }
 
         return $this->_respondentObject;
@@ -1227,7 +1118,7 @@ class Token extends TargetAbstract
      *
      * @return string
      */
-    public function getRespondentGender()
+    public function getRespondentGender(): string
     {
         return $this->getRespondent()->getGender();
     }
@@ -1237,7 +1128,7 @@ class Token extends TargetAbstract
      *
      * @return string|null
      */
-    public function getRespondentGenderHello()
+    public function getRespondentGenderHello(): string|null
     {
         $greetings = $this->translatedUtil->getGenderGreeting();
         $gender    = $this->getRespondentGender();
@@ -1252,13 +1143,12 @@ class Token extends TargetAbstract
      *
      * @return int
      */
-    public function getRespondentId()
+    public function getRespondentId(): int
     {
         if (array_key_exists('gto_id_respondent', $this->_gemsData)) {
             return $this->_gemsData['gto_id_respondent'];
-        } else {
-            throw new \Gems\Exception(sprintf('Token %s not loaded correctly', $this->getTokenId()));
         }
+        throw new \Gems\Exception(sprintf('Token %s not loaded correctly', $this->getTokenId()));
     }
 
     /**
@@ -1266,7 +1156,7 @@ class Token extends TargetAbstract
      *
      * @return string Two letter language code
      */
-    public function getRespondentLanguage()
+    public function getRespondentLanguage(): string
     {
         if (! isset($this->_gemsData['grs_iso_lang'])) {
             $this->_ensureRespondentData();
@@ -1284,7 +1174,7 @@ class Token extends TargetAbstract
      *
      * @return string
      */
-    public function getRespondentLastName()
+    public function getRespondentLastName(): string
     {
         return $this->getRespondent()->getLastName();
     }
@@ -1296,7 +1186,7 @@ class Token extends TargetAbstract
      *
      * @return string
      */
-    public function getRespondentName()
+    public function getRespondentName(): string|null
     {
         if ($this->hasRelation()) {
             if ($relation = $this->getRelation()) {
@@ -1313,20 +1203,20 @@ class Token extends TargetAbstract
      *
      * @return \Gems\Tracker\RespondentTrack
      */
-    public function getRespondentTrack()
+    public function getRespondentTrack(): RespondentTrack
     {
-        if (! $this->respTrack) {
-            $this->respTrack = $this->tracker->getRespondentTrack($this->_gemsData['gto_id_respondent_track']);
+        if (! $this->respondentTrack) {
+            $this->respondentTrack = $this->tracker->getRespondentTrack($this->_gemsData['gto_id_respondent_track']);
         }
 
-        return $this->respTrack;
+        return $this->respondentTrack;
     }
 
     /**
      *
      * @return int
      */
-    public function getRespondentTrackId()
+    public function getRespondentTrackId(): int
     {
         return $this->_gemsData['gto_id_respondent_track'];
     }
@@ -1346,7 +1236,7 @@ class Token extends TargetAbstract
      *
      * @return string
      */
-    public function getReturnUrl()
+    public function getReturnUrl(): string
     {
         return $this->_gemsData['gto_return_url'];
     }
@@ -1356,7 +1246,7 @@ class Token extends TargetAbstract
      *
      * @return string|null Null when no round id is present or round no longer exists
      */
-    public function getRoundCode()
+    public function getRoundCode(): string|null
     {
         $roundCode = null;
         $roundId = $this->getRoundId();
@@ -1380,18 +1270,18 @@ class Token extends TargetAbstract
      *
      * @return int round id
      */
-    public function getRoundId()
+    public function getRoundId(): int
     {
-        return $this->_gemsData['gto_id_round'];
+        return (int)$this->_gemsData['gto_id_round'];
     }
 
     /**
      *
      * @return int round order
      */
-    public function getRoundOrder()
+    public function getRoundOrder(): int
     {
-        return $this->_gemsData['gto_round_order'];
+        return (int)$this->_gemsData['gto_round_order'];
     }
 
     /**
@@ -1401,7 +1291,7 @@ class Token extends TargetAbstract
      *
      * @return string
      */
-    public function getSubjectname()
+    public function getSubjectname(): string
     {
         return $this->getRespondent()->getName();
     }
@@ -1411,12 +1301,12 @@ class Token extends TargetAbstract
      *
      * @return string
      */
-    public function getShowSnippetNames()
+    public function getShowSnippetNames(): array
     {
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenShowSnippetNames($this);
         } else {
-            return 'Token\\TokenNotFoundSnippet';
+            return ['Token\\TokenNotFoundSnippet'];
         }
     }
 
@@ -1427,9 +1317,9 @@ class Token extends TargetAbstract
      *
      * @return string Token status description
      */
-    public function getStatus()
+    public function getStatus(): string
     {
-        return $this->util->getTokenData()->getStatusDescription($this->getStatusCode());
+        return $this->tokenRepository->getStatusDescription($this->getStatusCode());
     }
 
     /**
@@ -1437,7 +1327,7 @@ class Token extends TargetAbstract
      *
      * @return string Token status code in one letter
      */
-    public function getStatusCode()
+    public function getStatusCode(): string
     {
         return $this->_gemsData['token_status'];
     }
@@ -1446,7 +1336,7 @@ class Token extends TargetAbstract
      *
      * @return \Gems\Tracker\Survey
      */
-    public function getSurvey()
+    public function getSurvey(): Survey
     {
         if (! $this->survey) {
             $this->survey = $this->tracker->getSurvey($this->_gemsData['gto_id_survey']);
@@ -1459,9 +1349,9 @@ class Token extends TargetAbstract
      *
      * @return int \Gems survey id
      */
-    public function getSurveyId()
+    public function getSurveyId(): int
     {
-        return $this->_gemsData['gto_id_survey'];
+        return (int)$this->_gemsData['gto_id_survey'];
     }
 
     /**
@@ -1469,7 +1359,7 @@ class Token extends TargetAbstract
      * @param string $language (ISO) language string
      * @return \MUtil\Model\ModelAbstract
      */
-    public function getSurveyAnswerModel($language)
+    public function getSurveyAnswerModel(string $language): MetaModelInterface
     {
         $survey = $this->getSurvey();
         return $survey->getAnswerModel($language);
@@ -1479,7 +1369,7 @@ class Token extends TargetAbstract
      *
      * @return string Name of the survey
      */
-    public function getSurveyName()
+    public function getSurveyName(): string
     {
         $survey = $this->getSurvey();
         return $survey->getName();
@@ -1491,19 +1381,22 @@ class Token extends TargetAbstract
      *
      * @return int
      */
-    public function getTokenCountUnanswered()
+    public function getTokenCountUnanswered(): int
     {
-        $tokenSelect = $this->tracker->getTokenSelect(new \Zend_Db_Expr('COUNT(*)'));
+        $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
         $tokenSelect
-                ->andReceptionCodes(array(), false)
-                ->andSurveys(array())
-                ->andRounds(array())
+                ->columns([new Expression('COUNT(*)')])
+                ->andReceptionCodes([], false)
+                ->andSurveys([])
+                ->andRounds([])
                 ->forRespondent($this->getRespondentId())
                 ->forGroupId($this->getSurvey()->getGroupId())
                 ->onlySucces()
                 ->onlyValid()
-                ->forWhere('gsu_active = 1')
-                ->forWhere('gro_active = 1 OR gro_active IS NULL')
+                ->forWhere([
+                    'gsu_active' => 1,
+                    'gro_active = 1 OR gro_active IS NULL',
+                ])
                 ->withoutToken($this->_tokenId);
 
         $this->_addRelation($tokenSelect);
@@ -1515,7 +1408,7 @@ class Token extends TargetAbstract
      *
      * @return string token
      */
-    public function getTokenId()
+    public function getTokenId(): string
     {
         return $this->_tokenId;
     }
@@ -1523,29 +1416,29 @@ class Token extends TargetAbstract
     /**
      * Get the track engine that generated this token
      *
-     * @return \Gems\Tracker\Engine\TrackEngineInterface
+     * @return TrackEngineInterface
      */
-    public function getTrackEngine()
+    public function getTrackEngine(): TrackEngineInterface
     {
         if ($this->exists) {
             return $this->tracker->getTrackEngine($this->_gemsData['gto_id_track']);
         }
 
-        throw new \Gems\Exception\Coding('Coding error: requesting track engine for non existing token.');
+        throw new Coding('Coding error: requesting track engine for non existing token.');
     }
 
     /**
      *
      * @return int gems_tracks track id
      */
-    public function getTrackId()
+    public function getTrackId(): int
     {
-        return $this->_gemsData['gto_id_track'];
+        return (int)$this->_gemsData['gto_id_track'];
     }
 
-    public function getTrackName()
+    public function getTrackName(): string
     {
-        $trackData = $this->db->fetchRow("SELECT gtr_track_name FROM gems__tracks WHERE gtr_id_track = ?", $this->getTrackId());
+        $trackData = $this->resultFetcher->fetchRow("SELECT gtr_track_name FROM gems__tracks WHERE gtr_id_track = ?", $this->getTrackId());
         return $trackData['gtr_track_name'];
     }
 
@@ -1555,14 +1448,14 @@ class Token extends TargetAbstract
      * @param int $userId The id of the gems user
      * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
-    public function getUrl($language, $userId, string $returnUrl = null)
+    public function getUrl(string $language, int $userId, string $returnUrl): string
     {
         $survey = $this->getSurvey();
 
         $survey->copyTokenToSource($this, $language);
 
         if (! $this->_gemsData['gto_in_source']) {
-            $values['gto_start_time'] = new \MUtil\Db\Expr\CurrentTimestamp();
+            $values['gto_start_time'] = new Expression('CURRENT_TIMESTAMP');
             $values['gto_in_source']  = 1;
 
             $oldTokenId = $this->getCopiedFrom();
@@ -1585,9 +1478,9 @@ class Token extends TargetAbstract
 
     /**
      *
-     * @return ?DateTimeInterface Valid from as a date or null
+     * @return DateTimeInterface|null Valid from as a date or null
      */
-    public function getValidFrom(): ?DateTimeInterface
+    public function getValidFrom(): DateTimeInterface|null
     {
         return $this->getDateTime('gto_valid_from');
     }
@@ -1596,7 +1489,7 @@ class Token extends TargetAbstract
      *
      * @return ?DateTimeInterface Valid until as a date or null
      */
-    public function getValidUntil(): ?DateTimeInterface
+    public function getValidUntil(): DateTimeInterface|null
     {
         return $this->getDateTime('gto_valid_until');
     }
@@ -1606,26 +1499,26 @@ class Token extends TargetAbstract
      *
      * @return array The changed values
      */
-    public function handleAfterCompletion()
+    public function handleAfterCompletion(): array|null
     {
         $survey = $this->getSurvey();
         $completedEvent = $survey->getSurveyCompletedEvent();
 
         $eventName = 'gems.survey.completed';
 
-        if ($this->event->hasListeners($eventName)) {
+        if ($this->eventDispatcher->hasListeners($eventName)) {
             // Remove previous gems survey completed events if set
-            $listeners = $this->event->getListeners($eventName);
+            $listeners = $this->eventDispatcher->getListeners($eventName);
             foreach($listeners as $listener) {
-                $order = $this->event->getListenerPriority($eventName, $listener);
+                $order = $this->eventDispatcher->getListenerPriority($eventName, $listener);
                 if ($order === 100) {
-                    $this->event->removeListener($eventName, $listener);
+                    $this->eventDispatcher->removeListener($eventName, $listener);
                 }
             }
         }
 
-        if (! $completedEvent && !$this->event->hasListeners($eventName)) {
-            return;
+        if (! $completedEvent && !$this->eventDispatcher->hasListeners($eventName)) {
+            return null;
         }
 
         if ($completedEvent) {
@@ -1640,12 +1533,12 @@ class Token extends TargetAbstract
                     throw new \Exception('Event: ' . $completedEvent->getEventName() . '. ' . $e->getMessage());
                 }
             };
-            $this->event->addListener($eventName, $eventFunction, 100);
+            $this->eventDispatcher->addListener($eventName, $eventFunction, 100);
         }
 
         $tokenEvent = new TokenEvent($this);
         try {
-            $this->event->dispatch($tokenEvent, $eventName);
+            $this->eventDispatcher->dispatch($tokenEvent, $eventName);
         } catch (\Exception $e) {
             $this->logger->error(sprintf(
                 "After completion event error for token %s on survey '%s': %s",
@@ -1656,7 +1549,7 @@ class Token extends TargetAbstract
         }
         if ($completedEvent) {
             // Remove this event to prevent double triggering
-            $this->event->removeListener($eventName, $eventFunction);
+            $this->eventDispatcher->removeListener($eventName, $eventFunction);
         }
 
         $changed = $tokenEvent->getChanged();
@@ -1671,19 +1564,19 @@ class Token extends TargetAbstract
     /**
      * Survey dependent calculations / answer changes that must occur after a survey is completed
      *
-     * @param type $tokenId The tokend the answers are for
+     * @param string $tokenId The tokend the answers are for
      * @param array $tokenAnswers Array with answers. May be changed in process
      * @return array The changed values
      */
-    public function handleBeforeAnswering()
+    public function handleBeforeAnswering(): array|null
     {
         $survey = $this->getSurvey();
         $beforeAnswerEvent  = $survey->getSurveyBeforeAnsweringEvent();
 
         $eventName = 'gems.survey.before-answering';
 
-        if (! $beforeAnswerEvent && !$this->event->hasListeners($eventName)) {
-            return;
+        if (! $beforeAnswerEvent && !$this->eventDispatcher->hasListeners($eventName)) {
+            return null;
         }
 
         if ($beforeAnswerEvent) {
@@ -1698,13 +1591,13 @@ class Token extends TargetAbstract
                     throw new \Exception('Event: ' . $beforeAnswerEvent->getEventName() . '. ' . $e->getMessage());
                 }
             };
-            $this->event->addListener($eventName, $eventFunction, 100);
+            $this->eventDispatcher->addListener($eventName, $eventFunction, 100);
         }
 
         $tokenEvent = new TokenEvent($this);
 
         try {
-            $this->event->dispatch($tokenEvent, $eventName);
+            $this->eventDispatcher->dispatch($tokenEvent, $eventName);
         } catch (\Exception $e) {
             $this->logger->error(sprintf(
                 "Before answering before event error for token %s on survey '%s': %s",
@@ -1715,7 +1608,7 @@ class Token extends TargetAbstract
         }
         if ($beforeAnswerEvent) {
             // Remove this event to prevent double triggering
-            $this->event->removeListener($eventName, $eventFunction);
+            $this->eventDispatcher->removeListener($eventName, $eventFunction);
         }
 
         $changed = $tokenEvent->getChanged();
@@ -1723,7 +1616,7 @@ class Token extends TargetAbstract
 
             $this->setRawAnswers($changed);
 
-            if (\Gems\Tracker::$verbose) {
+            if (Tracker::$verbose) {
                 \MUtil\EchoOut\EchoOut::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
             }
         }
@@ -1736,19 +1629,19 @@ class Token extends TargetAbstract
      *
      * There may not be any answers, but the attemt to retrieve them was made.
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasAnswersLoaded()
+    public function hasAnswersLoaded(): bool
     {
-        return (boolean) $this->_sourceDataRaw;
+        return (bool) $this->_sourceDataRaw;
     }
 
     /**
      *
      * @deprecated Use the ReceptionCode->hasRedoCode
-     * @return boolean
+     * @return bool
      */
-    public function hasRedoCode()
+    public function hasRedoCode(): bool
     {
         return $this->getReceptionCode()->hasRedoCode();
     }
@@ -1757,9 +1650,9 @@ class Token extends TargetAbstract
      * True if the reception code is a redo survey copy.
      *
      * @deprecated Use the ReceptionCode->hasRedoCopyCode
-     * @return boolean
+     * @return bool
      */
-    public function hasRedoCopyCode()
+    public function hasRedoCopyCode(): bool
     {
         return $this->getReceptionCode()->hasRedoCopyCode();
     }
@@ -1767,9 +1660,9 @@ class Token extends TargetAbstract
     /**
      * Is this token linked to a relation?
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasRelation()
+    public function hasRelation(): bool
     {
         if (array_key_exists('gto_id_relationfield', $this->_gemsData) && $this->_gemsData['gto_id_relationfield'] > 0) {
             // We have a relation
@@ -1782,19 +1675,22 @@ class Token extends TargetAbstract
 
     /**
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasResult()
+    public function hasResult(): bool
     {
-        return $this->_gemsData['gto_result'];
+        if (isset($this->_gemsData['gto_result'])) {
+            return (bool)$this->_gemsData['gto_result'];
+        }
+        return false;
     }
 
     /**
      *
      * @deprecated Use the ReceptionCode->isSuccess
-     * @return boolean
+     * @return bool
      */
-    public function hasSuccesCode()
+    public function hasSuccesCode(): bool
     {
         return $this->getReceptionCode()->isSuccess();
     }
@@ -1802,9 +1698,9 @@ class Token extends TargetAbstract
     /**
      * True is this token was exported to the source.
      *
-     * @return boolean
+     * @return bool
      */
-    public function inSource()
+    public function inSource(): bool
     {
         if ($this->exists) {
             $survey = $this->getSurvey();
@@ -1817,9 +1713,9 @@ class Token extends TargetAbstract
 
     /**
      *
-     * @return boolean
+     * @return bool
      */
-    public function isCompleted()
+    public function isCompleted(): bool
     {
         return isset($this->_gemsData['gto_completion_time']) && $this->_gemsData['gto_completion_time'];
     }
@@ -1827,9 +1723,9 @@ class Token extends TargetAbstract
     /**
      * True when the valid from is set and in the past and the valid until is not set or is in the future
      *
-     * @return boolean
+     * @return bool
      */
-    public function isCurrentlyValid()
+    public function isCurrentlyValid(): bool
     {
         if ($this->isNotYetValid()) {
             return false;
@@ -1842,9 +1738,9 @@ class Token extends TargetAbstract
 
     /**
      * True when the valid until is set and is in the past
-     * @return boolean
+     * @return bool
      */
-    public function isExpired()
+    public function isExpired(): bool
     {
         $date = $this->getValidUntil();
 
@@ -1861,9 +1757,9 @@ class Token extends TargetAbstract
      * Cascades to track and respondent level mailable setting
      * also checks is the email field for respondent or relation is not null
      *
-     * @return boolean
+     * @return bool
      */
-    public function isMailable()
+    public function isMailable(): bool
     {
         $email = $this->getEmail();
         if ($this->hasRelation()) {
@@ -1879,9 +1775,9 @@ class Token extends TargetAbstract
     /**
      * True when the valid from is in the future or not yet set
      *
-     * @return boolean
+     * @return bool
      */
-    public function isNotYetValid()
+    public function isNotYetValid(): bool
     {
         $date = $this->getValidFrom();
 
@@ -1899,27 +1795,27 @@ class Token extends TargetAbstract
 
     /**
      *
-     * @return boolean True when this date was set by user input
+     * @return bool True when this date was set by user input
      */
-    public function isValidFromManual()
+    public function isValidFromManual(): bool
     {
         return isset($this->_gemsData['gto_valid_from_manual']) && $this->_gemsData['gto_valid_from_manual'];
     }
 
     /**
      *
-     * @return boolean True when this date was set by user input
+     * @return bool True when this date was set by user input
      */
-    public function isValidUntilManual()
+    public function isValidUntilManual(): bool
     {
         return isset($this->_gemsData['gto_valid_until_manual']) && $this->_gemsData['gto_valid_until_manual'];
     }
 
     /**
      *
-     * @return boolean True when this user has the right to view these answers
+     * @return bool True when this user has the right to view these answers
      */
-    public function isViewable()
+    public function isViewable(): bool
     {
         if (isset($this->_gemsData['show_answers']) && $this->_gemsData['show_answers']) {
             return $this->currentUser->isAllowedOrganization($this->getOrganizationId());
@@ -1931,14 +1827,14 @@ class Token extends TargetAbstract
     /**
      *
      * @param array $gemsData Optional, the data refresh with, otherwise refresh from database.
-     * @return \Gems\Tracker\Token (continuation pattern)
+     * @return self (continuation pattern)
      */
-    public function refresh(array $gemsData = null)
+    public function refresh(array|null $gemsData = null): self
     {
         if (is_array($gemsData)) {
             $this->_gemsData = $gemsData + $this->_gemsData;
         } else {
-            $tokenSelect = $this->tracker->getTokenSelect();
+            $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
 
             $groupId = $this->currentUser instanceof User ? $this->currentUser->getGroupId() : 0;
 
@@ -1967,22 +1863,23 @@ class Token extends TargetAbstract
      *
      * @param string $consentCode
      */
-    public function refreshConsent()
+    public function refreshConsent(): string|null
     {
         if (isset($this->_gemsData['gco_code'])) {
             // Setting the gco_code to false will make sure the data is reloaded
             $this->_gemsData['gco_code'] = false;
             $this->getConsentCode();
         }
+        return null;
     }
 
     /**
      *
      * @param string $completionTime Completion time as a date or null
      * @param int $userId The current user
-     * @return \Gems\Tracker\Token (continuation pattern)
+     * @return self (continuation pattern)
      */
-    public function setCompletionTime($completionTime, $userId)
+    public function setCompletionTime(string|null $completionTime, int $userId): self
     {
         $values['gto_completion_time'] = null;
         if (!is_null($completionTime)) {
@@ -1990,7 +1887,7 @@ class Token extends TargetAbstract
                 $completionTime = Model::getDateTimeInterface($completionTime);
             }
             if ($completionTime instanceof DateTimeInterface) {
-                $values['gto_completion_time'] = $completionTime->format(\Gems\Tracker::DB_DATETIME_FORMAT);
+                $values['gto_completion_time'] = $completionTime->format(Tracker::DB_DATETIME_FORMAT);
             }
         }
         $this->_updateToken($values, $userId);
@@ -2008,7 +1905,7 @@ class Token extends TargetAbstract
     /**
      * Add 1 to the number of messages sent and change the sent date
      */
-    public function setMessageSent()
+    public function setMessageSent(): void
     {
         $values = [
             'gto_mail_sent_num' => new \Zend_Db_Expr('gto_mail_sent_num + 1'),
@@ -2021,10 +1918,10 @@ class Token extends TargetAbstract
     /**
      * Sets the next token in this track
      *
-     * @param \Gems\Tracker\Token $token
-     * @return \Gems\Tracker\Token (continuation pattern)
+     * @param Token $token
+     * @return self (continuation pattern)
      */
-    public function setNextToken(\Gems\Tracker\Token $token)
+    public function setNextToken(Token $token): self
     {
         $this->_nextToken = $token;
 
@@ -2039,7 +1936,7 @@ class Token extends TargetAbstract
      *
      * @param array $answers
      */
-    public function setRawAnswers($answers)
+    public function setRawAnswers(array $answers): void
     {
         $survey = $this->getSurvey();
         $source = $survey->getSource();
@@ -2062,11 +1959,11 @@ class Token extends TargetAbstract
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */
-    public function setReceptionCode($code, $comment, $userId)
+    public function setReceptionCode(ReceptionCode|string $code, string $comment, int $userId): int
     {
-        // Make sure it is a \Gems\Util\ReceptionCode object
-        if (! $code instanceof \Gems\Util\ReceptionCode) {
-            $code = $this->util->getReceptionCode($code);
+        // Make sure it is a ReceptionCode object
+        if (! $code instanceof ReceptionCode) {
+            $code = $this->receptionCodeRepository->getReceptionCode($code);
         }
         $values['gto_reception_code'] = $code->getCode();
         if ($comment) {
@@ -2097,7 +1994,7 @@ class Token extends TargetAbstract
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    public function setRoundDescription($description, $userId)
+    public function setRoundDescription(string $description, int $userId): int
     {
         $values = $this->_gemsData;
         $values['gto_round_description'] = $description;
@@ -2111,11 +2008,11 @@ class Token extends TargetAbstract
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */
-    public function setValidFrom($validFrom, $validUntil, $userId)
+    public function setValidFrom(DateTimeInterface|string $validFrom, DateTimeInterface|string|null $validUntil, int $userId): int
     {
         $mailSentDate = $this->getMailSentDate();
         if (! $mailSentDate instanceof DateTimeInterface) {
-            $mailSentDate = Model::getDateTimeInterface($mailSentDate, [\Gems\Tracker::DB_DATE_FORMAT, \Gems\Tracker::DB_DATETIME_FORMAT]);
+            $mailSentDate = Model::getDateTimeInterface($mailSentDate, [Tracker::DB_DATE_FORMAT, Tracker::DB_DATETIME_FORMAT]);
         }
         if ($validFrom && $mailSentDate) {
             // Check for newerness
@@ -2123,7 +2020,7 @@ class Token extends TargetAbstract
             if ($validFrom instanceof DateTimeInterface) {
                 $start = $validFrom;
             } else {
-                $start = DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $validFrom);
+                $start = DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $validFrom);
             }
 
             if ($start < $mailSentDate) {
@@ -2131,10 +2028,10 @@ class Token extends TargetAbstract
                 $values['gto_mail_sent_num']  = 0;
 
                 $format = Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat');
-                
+
                 $now = new DateTimeImmutable();
                 $newComment = sprintf(
-                    $this->_('%s: Reset number of contact moments because new start date %s is later than last contact date (%s).'),
+                    $this->translator->_('%s: Reset number of contact moments because new start date %s is later than last contact date (%s).'),
                     $now->format($format),
                     $start->format($format),
                     $mailSentDate->format($format)
@@ -2148,12 +2045,12 @@ class Token extends TargetAbstract
         }
 
         if ($validFrom instanceof DateTimeInterface) {
-            $validFrom = $validFrom->format(\Gems\Tracker::DB_DATETIME_FORMAT);
+            $validFrom = $validFrom->format(Tracker::DB_DATETIME_FORMAT);
         } elseif ('' === $validFrom) {
             $validFrom = null;
         }
         if ($validUntil instanceof DateTimeInterface) {
-            $validUntil = $validUntil->format(\Gems\Tracker::DB_DATETIME_FORMAT);
+            $validUntil = $validUntil->format(Tracker::DB_DATETIME_FORMAT);
         } elseif ('' === $validUntil) {
             $validUntil = null;
         }
@@ -2171,15 +2068,31 @@ class Token extends TargetAbstract
      *
      * @param int $userId The id of the gems user
      */
-    protected function toResponseDatabase($userId)
+    protected function toResponseDatabase(int $userId): void
     {
-        $responseDb = $this->project->getResponseDatabase();
+        $responses = $this->getRawAnswers();
+
+        $source = $this->getSurvey()->getSource();
+        if ($source instanceof SourceAbstract) {
+            $metaFields = $source::$metaFields;
+            foreach ($metaFields as $field) {
+                if (array_key_exists($field, $responses)) {
+                    unset($responses[$field]);
+                }
+            }
+        }
+
+        $message = new TokenResponse($this->getTokenId(), $responses, $userId);
+
+        $this->messageBus->dispatch($message);
+
+        //$responseDb = $this->project->getResponseDatabase();
 
         // WHY EXPLANATION!!
         //
         // For some reason mysql prepared parameters do nothing with a \Zend_Db_Expr
         // object and that causes an error when using CURRENT_TIMESTAMP
-        $current = (new DateTimeImmutable())->format(\Gems\Tracker::DB_DATETIME_FORMAT);
+        /*$current = (new DateTimeImmutable())->format(Tracker::DB_DATETIME_FORMAT);
         $rValues = array(
             'gdr_id_token'   => $this->_tokenId,
             'gdr_changed'    => $current,
@@ -2190,7 +2103,7 @@ class Token extends TargetAbstract
         $responses = $this->getRawAnswers();
 
         $source = $this->getSurvey()->getSource();
-        if ($source instanceof \Gems\Tracker\Source\SourceAbstract) {
+        if ($source instanceof SourceAbstract) {
             $metaFields = $source::$metaFields;
             foreach ($metaFields as $field) {
                 if (array_key_exists($field, $responses)) {
@@ -2268,6 +2181,6 @@ class Token extends TargetAbstract
                 error_log($e->getMessage());
                 $this->logger->error(LogHelper::getMessageFromException($e));
             }
-        }
+        }*/
     }
 }

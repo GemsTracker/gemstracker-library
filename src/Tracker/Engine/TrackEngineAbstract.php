@@ -12,24 +12,38 @@
 namespace Gems\Tracker\Engine;
 
 use Gems\Condition\ConditionLoader;
-use Gems\Model\JoinModel;
+use Gems\Db\ResultFetcher;
+use Gems\Exception;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Task\TaskRunnerBatch;
+use Gems\Tracker;
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
+use Gems\Tracker\Model\FieldDataModel;
+use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Tracker\Model\RoundModel;
 use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\Round;
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvents;
 use Gems\Tracker\TrackEvent\RoundChangedEventInterface;
 use Gems\Tracker\TrackEvent\TrackBeforeFieldUpdateEventInterface;
 use Gems\Tracker\TrackEvent\TrackCalculationEventInterface;
 use Gems\Tracker\TrackEvent\TrackCompletedEventInterface;
 use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
-use Gems\Translate\DbTranslateUtilTrait;
+use Gems\Translate\DbTranslationRepository;
 use Gems\Util\Translated;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\TableGateway;
 use Mezzio\Session\SessionInterface;
-use MUtil\Model\ModelAbstract;
+use MUtil\EchoOut\EchoOut;
+use MUtil\Model\Type\ConcatenatedRow;
 use MUtil\Registry\TargetAbstract;
-use MUtil\Translate\TranslateableTrait;
+use MUtil\Translate\Translator;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Dependency\DependencyInterface;
+use Zalt\Model\MetaModelInterface;
 
 /**
  * Utility class containing functions used by most track engines.
@@ -40,95 +54,69 @@ use Zalt\Model\Dependency\DependencyInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngineInterface
+abstract class TrackEngineAbstract implements TrackEngineInterface
 {
-    use TranslateableTrait;
-    use DbTranslateUtilTrait;
-    
     /**
      * Stores how the fields are define for this track
      *
-     * @var \Gems\Tracker\Engine\FieldsDefinition;
+     * @var FieldsDefinition;
      */
-    protected $_fieldsDefinition;
+    protected FieldsDefinition $_fieldsDefinition;
 
     /**
      *
      * @var array of rounds objects, initiated at need
      */
-    protected $_roundObjects;
+    protected array $_roundObjects;
 
     /**
      *
-     * @var array of rounds data
+     * @var array|null of rounds data
      */
-    protected $_rounds;
+    protected ?array $_rounds = null;
 
     /**
      *
      * @var array
      */
-    protected $_trackData;
+    protected array $_trackData;
 
     /**
      *
      * @var int
      */
-    protected $_trackId;
-
-    /**
-     * @var ConditionLoader
-     */
-    protected $conditionLoader;
-
-    /**
-     *
-     * @var \Gems\Tracker\TrackEvents
-     */
-    protected $trackEvents;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * @var ProjectOverloader
-     */
-    protected $overLoader;
-
-    /**
-     *
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    /**
-     *
-     * @var \Zend_View
-     */
-    protected $view;
+    protected int $_trackId;
 
     /**
      *
      * @param array $trackData array containing track record
      */
-    public function __construct($trackData)
+    public function __construct(
+        array $trackData,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly Tracker $tracker,
+        protected readonly DbTranslationRepository $dbTranslationRepository,
+        protected readonly ProjectOverloader $overloader,
+        protected readonly Translator $translator,
+        protected readonly TrackEvents $trackEvents,
+        protected readonly ConditionLoader $conditionLoader,
+        protected readonly TrackDataRepository $trackDataRepository,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly Translated $translatedUtil,
+    )
     {
         $this->_trackData = $trackData;
         $this->_trackId   = $trackData['gtr_id_track'];
+
+        /**
+         * @var FieldsDefinition $fieldsDefinition
+         */
+        $fieldsDefinition = $this->overloader->create('Tracker\\Engine\\FieldsDefinition', $this->_trackId, $this->overloader);
+        $this->_fieldsDefinition = $fieldsDefinition;
+
+        $this->_trackData = $this->dbTranslationRepository->translateTable('gems__tracks', $this->_trackId, $this->_trackData);
+
+        $this->_ensureRounds();
     }
 
     /**
@@ -136,18 +124,17 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * Can be overruled by sub classes.
      */
-    protected function _ensureRounds()
+    protected function _ensureRounds(): void
     {
         if (! is_array($this->_rounds)) {
-            $roundSelect = $this->db->select();
-            $roundSelect->from('gems__rounds')
-                ->where('gro_id_track = ?', $this->_trackId)
-                ->order('gro_id_order');
+            $roundSelect = $this->resultFetcher->getSelect('gems__rounds')
+                ->where(['gro_id_track', $this->_trackId])
+                ->order(['gro_id_order']);
 
             // \MUtil\EchoOut\EchoOut::track((string) $roundSelect, $this->_trackId);
 
-            $this->_rounds  = array();
-            foreach ($roundSelect->query()->fetchAll() as $round) {
+            $this->_rounds  = [];
+            foreach ($this->resultFetcher->fetchAll($roundSelect) as $round) {
                 $this->_rounds[$round['gro_id_round']] = $round;
             }
         }
@@ -157,10 +144,10 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * Returns a list of available icons under 'htdocs/pulse/icons'
      * @return string[]
      */
-    protected function _getAvailableIcons()
+    protected function _getAvailableIcons(): array
     {
         return [];
-        $dir = GEMS_WEB_DIR . '/gems-responsive/images/icons';
+        /*$dir = GEMS_WEB_DIR . '/gems-responsive/images/icons';
         if (!file_exists($dir)) {
             $dir = GEMS_WEB_DIR . '/gems/icons';
         }
@@ -182,7 +169,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
 
         ksort($icons);  // Sort by key
 
-        return $icons;
+        return $icons;*/
     }
 
     /**
@@ -192,20 +179,20 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    private function _update(array $values, $userId)
+    private function _update(array $values, int $userId): int
     {
         if ($this->tracker->filterChangesOnly($this->_trackData, $values)) {
 
-            if (\Gems\Tracker::$verbose) {
+            if (Tracker::$verbose) {
                 $echo = '';
                 foreach ($values as $key => $val) {
                     $echo .= $key . ': ' . $this->_trackData[$key] . ' => ' . $val . "\n";
                 }
-                \MUtil\EchoOut\EchoOut::r($echo, 'Updated values for ' . $this->_trackId);
+                EchoOut::r($echo, 'Updated values for ' . $this->_trackId);
             }
 
             if (! isset($values['gto_changed'])) {
-                $values['gtr_changed'] = new \MUtil\Db\Expr\CurrentTimestamp();
+                $values['gtr_changed'] = new Expression('CURRENT_TIMESTAMP');
             }
             if (! isset($values['gtr_changed_by'])) {
                 $values['gtr_changed_by'] = $userId;
@@ -214,9 +201,8 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
             // Update values in this object
             $this->_trackData = $values + $this->_trackData;
 
-            // return 1;
-            return $this->db->update('gems__tracks', $values, array('gtr_id_track = ?' => $this->_trackId));
-
+            $table = new TableGateway('gems__tracks', $this->resultFetcher->getAdapter());
+            return $table->update($values, ['gtr_id_track' => $this->_trackId]);
         } else {
             return 0;
         }
@@ -225,16 +211,16 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
     /**
      * Integrate field loading en showing and editing
      *
-     * @param ModelAbstract $model
-     * @param boolean $addDependency True when editing, can be false in all other cases
-     * @param string|bool $respTrackId Optional Database column name where Respondent Track Id is set
+     * @param MetaModelInterface $model
+     * @param bool $addDependency True when editing, can be false in all other cases
+     * @param string|null $respTrackIdField Optional Database column name where Respondent Track Id is set
      * @return self
      */
-    public function addFieldsToModel(ModelAbstract $model, $addDependency = true, $respTrackId = false)
+    public function addFieldsToModel(MetaModelInterface $model, bool $addDependency = true, ?string $respTrackIdField = null): self
     {
         if ($this->_fieldsDefinition->exists) {
             // Add the data to the load / save
-            $transformer = new AddTrackFieldsTransformer($this->loader, $this->_fieldsDefinition, $respTrackId);
+            $transformer = new AddTrackFieldsTransformer($this->tracker, $this->_fieldsDefinition, $respTrackIdField);
             $model->addTransformer($transformer);
 
             if ($addDependency) {
@@ -257,11 +243,11 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * NOTE: When overruling this function you should not create tokens because they
      * were deleted by the user
      *
-     * @param \Gems\Tracker\RespondentTrack $respTrack The respondent track to check
+     * @param RespondentTrack $respTrack The respondent track to check
      * @param int $userId Id of the user who takes the action (for logging)
      * @return int The number of tokens created by this code
      */
-    protected function addNewTokens(\Gems\Tracker\RespondentTrack $respTrack, $userId)
+    protected function addNewTokens(RespondentTrack $respTrack, int $userId): int
     {
         $orgId       = $respTrack->getOrganizationId();
         $respId      = $respTrack->getRespondentId();
@@ -277,9 +263,10 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
                 (gro_organizations IS NULL OR gro_organizations LIKE CONCAT('%|',?,'|%'))
             ORDER BY gro_id_order";
 
-        $newRounds = $this->db->fetchAll($sql, array($this->_trackId, $respTrackId, $orgId));
+        $newRounds = $this->resultFetcher->fetchAll($sql, [$this->_trackId, $respTrackId, $orgId]);
 
-        $this->db->beginTransaction();
+        $connection = $this->resultFetcher->getAdapter()->getDriver()->getConnection();
+        $connection->beginTransaction();
         foreach ($newRounds as $round) {
 
             $values = array();
@@ -301,35 +288,9 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
 
             $this->tracker->createToken($values, $userId);
         }
-        $this->db->commit();
+        $connection->commit();
 
         return count($newRounds);
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->_fieldsDefinition = $this->tracker->createTrackClass('Engine\\FieldsDefinition', $this->_trackId);
-    }
-
-    /**
-     * Set menu parameters from this track engine
-     *
-     * @param \Gems\Menu\ParameterSource $source
-     * @return \Gems\Tracker\Engine\TrackEngineInterface (continuation pattern)
-     */
-    public function applyToMenuSource(\Gems\Menu\ParameterSource $source)
-    {
-        $source->setTrackId($this->_trackId);
-        $source->offsetSet('gtr_active', isset($this->_trackData['gtr_active']) ? $this->_trackData['gtr_active'] : 0);
-        return $this;
     }
 
     /**
@@ -338,7 +299,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * @param array $data The values to save
      * @return string The description to save as track_info
      */
-    public function calculateFieldsInfo(array $data)
+    public function calculateFieldsInfo(array $data): string
     {
         return $this->_fieldsDefinition->calculateFieldsInfo($data);
     }
@@ -348,51 +309,40 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return int The number of rounds in this track.
      */
-    public function calculateRoundCount()
+    public function calculateRoundCount(): int
     {
-        return $this->db->fetchOne("SELECT COUNT(*) FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ?", $this->_trackId);
+        return $this->resultFetcher->fetchOne("SELECT COUNT(*) FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ?", [$this->_trackId]);
     }
 
     /**
      * Checks all existing tokens and updates any changes to the original rounds (when necessary)
      *
-     * @param \Gems\Tracker\RespondentTrack $respTrack The respondent track to check
+     * @param RespondentTrack $respTrack The respondent track to check
      * @param int $userId Id of the user who takes the action (for logging)
      * @return int The number of tokens changed by this code
      */
-    protected function checkExistingRoundsFor(\Gems\Tracker\RespondentTrack $respTrack, $userId)
+    protected function checkExistingRoundsFor(RespondentTrack $respTrack, int $userId): int
     {
-        // FOR TESTING: sqlite can not de update and joins, so when testing just return zero for now
-        if (\Zend_Session::$_unitTestEnabled === true) return 0;
-        // @@ TODO Make this testable and not db dependent anymore
-
-        // Quote here, I like to keep bound parameters limited to the WHERE
-        // Besides, these statements are not order dependent while parameters are and do not repeat
-        $qOrgId   = $this->db->quote($respTrack->getOrganizationId());
-        $qRespId  = $this->db->quote($respTrack->getRespondentId());
-        $qTrackId = $this->db->quote($this->_trackId);
-        $qUserId  = $this->db->quote($userId);
-
         $respTrackId = $respTrack->getRespondentTrackId();
 
         $sql = "UPDATE gems__tokens, gems__rounds, gems__reception_codes
-            SET gto_id_respondent = $qRespId,
-                gto_id_organization = $qOrgId,
-                gto_id_track = $qTrackId,
+            SET gto_id_respondent = ?,
+                gto_id_organization = ?,
+                gto_id_track = ?,
                 gto_id_survey = CASE WHEN gto_start_time IS NULL AND grc_success = 1 THEN gro_id_survey ELSE gto_id_survey END,
                 gto_round_order = gro_id_order,
                 gto_icon_file = gro_icon_file,
                 gto_round_description = gro_round_description,
                 gto_changed = CURRENT_TIMESTAMP,
-                gto_changed_by = $qUserId
+                gto_changed_by = ?
             WHERE gto_id_round = gro_id_round AND
                 gto_reception_code = grc_id_reception_code AND
                 gto_id_round != 0 AND
                 gro_active = 1 AND
                 (
-                    gto_id_respondent != $qRespId OR
-                    gto_id_organization != $qOrgId OR
-                    gto_id_track != $qTrackId OR
+                    gto_id_respondent != ? OR
+                    gto_id_organization != ? OR
+                    gto_id_track != ? OR
                     gto_id_survey != CASE WHEN gto_start_time IS NULL AND grc_success = 1 THEN gro_id_survey ELSE gto_id_survey END OR
                     gto_round_order != gro_id_order OR
                     (gto_round_order IS NULL AND gro_id_order IS NOT NULL) OR
@@ -406,70 +356,49 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
                 ) AND
                     gto_id_respondent_track = ?";
 
-        $stmt = $this->db->query($sql, array($respTrackId));
+        $parameters = [
+            $respTrack->getRespondentId(),
+            $respTrack->getOrganizationId(),
+            $this->_trackId,
+            $userId,
+            $respTrack->getRespondentId(),
+            $respTrack->getOrganizationId(),
+            $this->_trackId,
+            $respTrackId,
+        ];
 
-        return $stmt->rowCount();
-    }
+        $stmt = $this->resultFetcher->query($sql, $parameters);
 
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        $this->initDbTranslations();
-        
-        if (! $this->dbTranslationOff) {
-            // This is never refreshed, so we can just translate here 
-            $this->_trackData = $this->translateTable('gems__tracks', $this->_trackId, $this->_trackData);
-        }
-        
-        $this->_ensureRounds();
-
-        return true;
+        return $stmt->count();
     }
 
 
-    public function checkRoundsFor(\Gems\Tracker\RespondentTrack $respTrack, SessionInterface $session = null, $userId, \Gems\Task\TaskRunnerBatch $batch = null)
+    public function checkRoundsFor(RespondentTrack $respTrack, SessionInterface $session = null, int $userId, ?TaskRunnerBatch $batch = null): void
     {
         if (null === $batch) {
-            $batch = new \Gems\Task\TaskRunnerBatch('tmptrack' . $respTrack->getRespondentTrackId(), $this->overLoader, $session);
+            $batch = new TaskRunnerBatch('tmptrack' . $respTrack->getRespondentTrackId(), $this->overloader, $session);
         }
         // Step one: update existing tokens
         $i = $batch->addToCounter('roundChangeUpdates', $this->checkExistingRoundsFor($respTrack, $userId));
-        $batch->setMessage('roundChangeUpdates', sprintf($this->_('Round changes propagated to %d tokens.'), $i));
+        $batch->setMessage('roundChangeUpdates', sprintf($this->translator->_('Round changes propagated to %d tokens.'), $i));
 
         // Step two: deactivate inactive rounds
-        $i = $batch->addToCounter('deletedTokens', $this->removeInactiveRounds($respTrack, $userId));
-        $batch->setMessage('deletedTokens', sprintf($this->_('%d tokens deleted by round changes.'), $i));
+        $i = $batch->addToCounter('deletedTokens', $this->removeInactiveRounds($respTrack));
+        $batch->setMessage('deletedTokens', sprintf($this->translator->_('%d tokens deleted by round changes.'), $i));
 
         // Step three: create lacking tokens
         $i = $batch->addToCounter('createdTokens', $this->addNewTokens($respTrack, $userId));
-        $batch->setMessage('createdTokens', sprintf($this->_('%d tokens created to by round changes.'), $i));
+        $batch->setMessage('createdTokens', sprintf($this->translator->_('%d tokens created to by round changes.'), $i));
 
         // Step four: set the dates and times
         //$changed = $this->checkTokensFromStart($respTrack, $userId);
         $changed = $respTrack->checkTrackTokens($userId);
         $ica = $batch->addToCounter('tokenDateCauses', $changed ? 1 : 0);
         $ich = $batch->addToCounter('tokenDateChanges', $changed);
-        $batch->setMessage('tokenDateChanges', sprintf($this->_('%2$d token date changes in %1$d tracks.'), $ica, $ich));
+        $batch->setMessage('tokenDateChanges', sprintf($this->translator->_('%2$d token date changes in %1$d tracks.'), $ica, $ich));
 
         $i = $batch->addToCounter('checkedRespondentTracks');
-        $batch->setMessage('checkedRespondentTracks', sprintf($this->_('Checked %d tracks.'), $i));
-    }
-
-    /**
-     * Convert a TrackEngine instance to a TrackEngine of another type.
-     *
-     * @see getConversionTargets()
-     *
-     * @param string $conversionTargetClass
-     */
-    public function convertTo($conversionTargetClass)
-    {
-        throw new \Gems\Exception\Coding(sprintf($this->_('%s track engines cannot be converted to %s track engines.'), $this->getName(), $conversionTargetClass));
+        $batch->setMessage('checkedRespondentTracks', sprintf($this->translator->_('Checked %d tracks.'), $i));
     }
 
     /**
@@ -478,7 +407,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * @param int $oldTrackId  The id of the track to copy
      * @return int              The id of the copied track
      */
-    public function copyTrack($oldTrackId)
+    public function copyTrack(int $oldTrackId): int
     {
         $trackModel = $this->tracker->getTrackModel();
 
@@ -486,25 +415,23 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
         $fieldModel = $this->getFieldsMaintenanceModel();
 
         // First load the track
-        $trackModel->applyParameters(array('id' => $oldTrackId));
-        $track = $trackModel->loadFirst();
+        $track = $trackModel->loadFirst(['id' => $oldTrackId]);
 
         // Create an empty track
         $newTrack = $trackModel->loadNew();
         unset($track['gtr_id_track'], $track['gtr_changed'], $track['gtr_changed_by'], $track['gtr_created'], $track['gtr_created_by']);
-        $track['gtr_track_name'] .= $this->_(' - Copy');
+        $track['gtr_track_name'] .= $this->translator->_(' - Copy');
         $newTrack = $track + $newTrack;
         // Now save (not done yet)
         $savedValues = $trackModel->save($newTrack);
         $newTrackId = $savedValues['gtr_id_track'];
 
         // Now copy the fields
-        $fieldModel->applyParameters(array('id' => $oldTrackId));
-        $fields = $fieldModel->load();
+        $fields = $fieldModel->load(['id' => $oldTrackId]);
         $oldNewFieldMap = [];
 
         if ($fields) {
-            $oldIds = array();
+            $oldIds = [];
             $numFields = count($fields);
             $newFields = $fieldModel->loadNew($numFields);
             foreach ($newFields as $idx => $newField) {
@@ -512,7 +439,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
                 $oldIds[$idx] = $field['gtf_id_field'];
                 unset($field['gtf_id_field'], $field['gtf_changed'], $field['gtf_changed_by'], $field['gtf_created'], $field['gtf_created_by']);
                 $field['gtf_id_track'] = $newTrackId;
-                $newFields[$idx] = $field + $newFields[$idx];
+                $newFields[$idx] = $field + $newFields;
             }
             // Now save (not done yet)
             $savedValues = $fieldModel->saveAll($newFields);
@@ -524,8 +451,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
         }
 
         // Now copy the rounds and map the gro_id_relation to the right field
-        $roundModel->applyParameters(array('id' => $oldTrackId));
-        $rounds = $roundModel->load();
+        $rounds = $roundModel->load(['id' => $oldTrackId]);
 
         if ($rounds) {
             $numRounds = count($rounds);
@@ -537,7 +463,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
                 if (array_key_exists('gro_id_relationfield', $round) && $round['gro_id_relationfield']>0) {
                     $round['gro_id_relationfield'] = $oldNewFieldMap[$round['gro_id_relationfield']];
                 }
-                $newRounds[$idx] = $round + $newRounds[$idx];
+                $newRounds[$idx] = $round + $newRound;
             }
             // Now save (not done yet)
             $savedValues = $roundModel->saveAll($newRounds);
@@ -545,10 +471,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
             $numRounds = 0;
         }
 
-        //MUtil\EchoOut\EchoOut::track($track, $copy);
-        //MUtil\EchoOut\EchoOut::track($rounds, $newRounds);
-        //MUtil\EchoOut\EchoOut::track($fields, $newFields);
-        \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
+        //\Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->translator->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
 
         return $newTrackId;
     }
@@ -556,38 +479,19 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
     /**
      * Create model for rounds. Allowes overriding by sub classes.
      *
-     * @return JoinModel
+     * @return RoundModel
      */
-    protected function createRoundModel()
+    protected function createRoundModel(): RoundModel
     {
         $roundModel = new RoundModel();
-        $roundModel->answerRegistryRequest('db', $this->db);
         return $roundModel;
-    }
-
-    /**
-     * Returns a list of classnames this track engine can be converted into.
-     *
-     * Should always contain at least the class itself.
-     *
-     * @see convertTo()
-     *
-     * @param array $options The track engine class options available in as a "track engine class names" => "descriptions" array
-     * @return array Filter or adaptation of $options
-     */
-    public function getConversionTargets(array $options)
-    {
-        $classParts = explode('\\', get_class($this));
-        $className  = end($classParts);
-
-        return array($className => $options[$className]);
     }
 
     /**
      *
      * @return string External description of the track
      */
-    public function getExternalName()
+    public function getExternalName(): string
     {
         if (isset($this->_trackData['gtr_external_description']) && $this->_trackData['gtr_external_description']) {
             return $this->_trackData['gtr_external_description'];
@@ -601,11 +505,12 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return TrackBeforeFieldUpdateEventInterface | null
      */
-    public function getFieldBeforeUpdateEvent()
+    public function getFieldBeforeUpdateEvent(): ?TrackBeforeFieldUpdateEventInterface
     {
         if (isset($this->_trackData['gtr_beforefieldupdate_event']) && $this->_trackData['gtr_beforefieldupdate_event']) {
             return $this->trackEvents->loadBeforeTrackFieldUpdateEvent($this->_trackData['gtr_beforefieldupdate_event']);
         }
+        return null;
     }
 
     /**
@@ -613,7 +518,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return array fieldid => fieldcode With null when no fieldcode
      */
-    public function getFieldCodes()
+    public function getFieldCodes(): array
     {
         return $this->_fieldsDefinition->getFieldCodes();
     }
@@ -624,21 +529,9 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return array fieldid => fieldcode
      */
-    public function getFieldNames()
+    public function getFieldNames(): array
     {
         return $this->_fieldsDefinition->getFieldNames();
-    }
-
-    /**
-     * Returns an array of the fields in this track
-     * key / value are id / code
-     *
-     * @return array fieldid => fieldcode
-     * @deprecated since 1.8.2 Replaced with getFieldCodes()
-     */
-    public function getFields()
-    {
-        return $this->_fieldsDefinition->getFieldCodes();
     }
 
     /**
@@ -647,7 +540,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * @param int $respTrackId \Gems respondent track id or null when new
      * @return array of the existing field values for this respondent track
      */
-    public function getFieldsData($respTrackId)
+    public function getFieldsData(int $respTrackId): array
     {
         return $this->_fieldsDefinition->getFieldsDataFor($respTrackId);
     }
@@ -655,9 +548,9 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
     /**
      * Get the storage model for field values
      *
-     * @return \Gems\Tracker\Model\FieldDataModel
+     * @return FieldDataModel
      */
-    public function getFieldsDataStorageModel()
+    public function getFieldsDataStorageModel(): FieldDataModel
     {
         return $this->_fieldsDefinition->getDataStorageModel();
     }
@@ -665,9 +558,9 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
     /**
      * Returns the field definition for the track enige.
      *
-     * @return \Gems\Tracker\Engine\FieldsDefinition;
+     * @return FieldsDefinition;
      */
-    public function getFieldsDefinition()
+    public function getFieldsDefinition(): FieldsDefinition
     {
         return $this->_fieldsDefinition;
     }
@@ -675,11 +568,11 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
     /**
      * Returns a model that can be used to retrieve or save the field definitions for the track editor.
      *
-     * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
+     * @param bool $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return \Gems\Tracker\Model\FieldMaintenanceModel
+     * @return FieldMaintenanceModel
      */
-    public function getFieldsMaintenanceModel($detailed = false, $action = 'index')
+    public function getFieldsMaintenanceModel(bool $detailed = false, string $action = 'index'): FieldMaintenanceModel
     {
         return $this->_fieldsDefinition->getMaintenanceModel($detailed, $action);
     }
@@ -690,7 +583,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * @param string $fieldType
      * @return array name => code
      */
-    public function getFieldsOfType($fieldType)
+    public function getFieldsOfType(string $fieldType): array
     {
         return $this->_fieldsDefinition->getFieldCodesOfType($fieldType);
     }
@@ -700,11 +593,12 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return TrackFieldUpdateEventInterface | null
      */
-    public function getFieldUpdateEvent()
+    public function getFieldUpdateEvent(): ?TrackFieldUpdateEventInterface
     {
         if (isset($this->_trackData['gtr_fieldupdate_event']) && $this->_trackData['gtr_fieldupdate_event']) {
             return $this->trackEvents->loadTrackFieldUpdateEvent($this->_trackData['gtr_fieldupdate_event']);
         }
+        return null;
     }
 
     /**
@@ -712,7 +606,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return int \Gems id of first round
      */
-    public function getFirstRoundId()
+    public function getFirstRoundId(): int
     {
         $this->_ensureRounds();
 
@@ -727,7 +621,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * @param int $roundId  \Gems round id
      * @return int|null \Gems round id
      */
-    public function getNextRoundId($roundId)
+    public function getNextRoundId(int $roundId): ?int
     {
        $this->_ensureRounds();
 
@@ -755,10 +649,10 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * Look up the round id for the previous round
      *
      * @param int $roundId  \Gems round id
-     * @param int $roundOrder Optional extra round order, for when the current round may have changed.
+     * @param int|null $roundOrder Optional extra round order, for when the current round may have changed.
      * @return int|null \Gems round id
      */
-    public function getPreviousRoundId($roundId, $roundOrder = null)
+    public function getPreviousRoundId(int $roundId, int|null $roundOrder = null): ?int
     {
        $this->_ensureRounds();
 
@@ -773,7 +667,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
            }
 
 
-           throw new \Gems\Exception(sprintf($this->_('Requested non existing round with id %d.'), $roundId));
+           throw new Exception(sprintf($this->translator->_('Requested non existing round with id %d.'), $roundId));
 
        } elseif ($this->_rounds) {
             end($this->_rounds);
@@ -791,9 +685,9 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * Get the round object
      *
      * @param int $roundId  \Gems round id
-     * @return \Gems\Tracker\Round
+     * @return Round|null
      */
-    public function getRound($roundId)
+    public function getRound(int $roundId): ?Round
     {
         $this->_ensureRounds();
 
@@ -801,7 +695,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
             return null;
         }
         if (! isset($this->_roundObjects[$roundId])) {
-            $this->_roundObjects[$roundId] = $this->tracker->createTrackClass('Round', $this->_rounds[$roundId]);
+            $this->_roundObjects[$roundId] = $this->overloader->create('Tracker\\Round', $this->_rounds[$roundId]);
         }
         return $this->_roundObjects[$roundId];
     }
@@ -809,10 +703,10 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
     /**
      * Returns a snippet name that can be used to display the answers to the token or nothing.
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      * @return array Of snippet names
      */
-    public function getRoundAnswerSnippets(\Gems\Tracker\Token $token)
+    public function getRoundAnswerSnippets(Token $token): array
     {
         $this->_ensureRounds();
         $roundId = $token->getRoundId();
@@ -831,7 +725,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * @param int $roundId
      * @return RoundChangedEventInterface|null event instance or null
      */
-    public function getRoundChangedEvent($roundId)
+    public function getRoundChangedEvent(int $roundId): ?RoundChangedEventInterface
     {
         $this->_ensureRounds();
 
@@ -846,7 +740,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return array Of fieldname => default
      */
-    public function getRoundDefaults()
+    public function getRoundDefaults(): array
     {
         $this->_ensureRounds();
 
@@ -868,7 +762,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return array roundId => string
      */
-    public function getRoundDescriptions()
+    public function getRoundDescriptions(): array
     {
         $this->_ensureRounds();
 
@@ -887,62 +781,66 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return array of string snippet names
      */
-    public function getRoundEditSnippetNames()
+    public function getRoundEditSnippetNames(): array
     {
-        return array('Tracker\\Rounds\\EditRoundStepSnippet');
+        return ['Tracker\\Rounds\\EditRoundStepSnippet'];
     }
 
     /**
      * Returns a model that can be used to retrieve or save the data.
      *
-     * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
+     * @param bool $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return \MUtil\Model\ModelAbstract
+     * @return RoundModel
      */
-    public function getRoundModel($detailed, $action)
+    public function getRoundModel(bool $detailed, string $action): RoundModel
     {
         $model      = $this->createRoundModel();
 
         // Set the keys to the parameters in use.
-        $model->setKeys(array(\MUtil\Model::REQUEST_ID => 'gro_id_track', \Gems\Model::ROUND_ID => 'gro_id_round'));
+        $model->setKeys([
+            \MUtil\Model::REQUEST_ID => 'gro_id_track',
+            \Gems\Model::ROUND_ID => 'gro_id_round'
+        ]);
 
         if ($detailed) {
-            $model->set('gro_id_track',      'label', $this->_('Track'),
-                    'elementClass', 'exhibitor',
-                    'multiOptions', $this->util->getTrackData()->getAllTracks
-                    );
+            $model->set('gro_id_track', [
+                'label' => $this->translator->_('Track'),
+                'elementClass' => 'exhibitor',
+                'multiOptions' => $this->trackDataRepository->getAllTracks(),
+            ]);
         }
 
-        $model->set('gro_id_survey',         'label', $this->_('Survey'),
-                'multiOptions', $this->util->getTrackData()->getAllSurveysAndDescriptions()
+        $model->set('gro_id_survey',         'label', $this->translator->_('Survey'),
+                'multiOptions', $this->trackDataRepository->getAllSurveysAndDescriptions()
                 );
-        $model->set('gro_icon_file',         'label', $this->_('Icon'));
-        $model->set('gro_id_order',          'label', $this->_('Order'),
+        $model->set('gro_icon_file',         'label', $this->translator->_('Icon'));
+        $model->set('gro_id_order',          'label', $this->translator->_('Order'),
                 'default', 10,
                 'filters[digits]', 'Digits',
                 'required', true,
                 'validators[uni]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track'))
                 );
-        $model->set('gro_round_description', 'label', $this->_('Description'),
+        $model->set('gro_round_description', 'label', $this->translator->_('Description'),
                 'size', '30'
                 );
 
         $list = $this->trackEvents->listRoundChangedEvents();
         if (count($list) > 1) {
-            $model->set('gro_changed_event', 'label', $this->_('After change'),   'multiOptions', $list);
+            $model->set('gro_changed_event', 'label', $this->translator->_('After change'),   'multiOptions', $list);
         }
         $list = $this->trackEvents->listSurveyDisplayEvents();
         if (count($list) > 1) {
-            $model->set('gro_display_event', 'label', $this->_('Answer display'),
+            $model->set('gro_display_event', 'label', $this->translator->_('Answer display'),
                     'multiOptions', $list
                     );
         }
-        $model->set('gro_active',            'label', $this->_('Active'),
+        $model->set('gro_active',            'label', $this->translator->_('Active'),
                 'elementClass', 'checkbox',
                 'multiOptions', $this->translatedUtil->getYesNo()
                 );
-        $model->setIfExists('gro_code',      'label', $this->_('Round code'),
-                'description', $this->_('Optional code name to link the field to program code.'),
+        $model->setIfExists('gro_code',      'label', $this->translator->_('Round code'),
+                'description', $this->translator->_('Optional code name to link the field to program code.'),
                 'size', 10
                 );
 
@@ -954,21 +852,21 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
             'org_specific_round');
         $model->addColumn('gro_organizations', 'organizations');
 
-        $model->set('organizations', 'label', $this->_('Organizations'),
+        $model->set('organizations', 'label', $this->translator->_('Organizations'),
                 'elementClass', 'MultiCheckbox',
-                'multiOptions', $this->util->getDbLookup()->getOrganizations(),
+                'multiOptions', $this->organizationRepository->getOrganizations(),
                 'data-source', 'org_specific_round'
                 );
-        $tp = new \MUtil\Model\Type\ConcatenatedRow('|', $this->_(', '));
+        $tp = new ConcatenatedRow('|', $this->translator->_(', '));
         $tp->apply($model, 'organizations');
 
         $model->set('gro_condition',
-                'label', $this->_('Condition'),
+                'label', $this->translator->_('Condition'),
                 'elementClass', 'Select',
                 'multiOptions', $this->conditionLoader->getConditionsFor(ConditionLoader::ROUND_CONDITION)
                 );
 
-        $model->set('condition_display', 'label', $this->_('Condition help'), 'elementClass', 'Hidden', 'no_text_search', true, 'noSort', true);
+        $model->set('condition_display', 'label', $this->translator->_('Condition help'), 'elementClass', 'Hidden', 'no_text_search', true, 'noSort', true);
 
         $model->addDependency('Condition\\RoundDependency');
 
@@ -988,7 +886,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
                         'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->_getAvailableIcons()
                         );
                 $model->set('org_specific_round',
-                        'label', $this->_('Organization specific round'),
+                        'label', $this->translator->_('Organization specific round'),
                         'default', 0,
                         'multiOptions', $this->translatedUtil->getYesNo(),
                         'elementClass', 'radio',
@@ -1011,7 +909,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return array of roundId => \Gems\Tracker\Round
      */
-    public function getRounds()
+    public function getRounds(): array
     {
         $this->_ensureRounds();
 
@@ -1028,9 +926,9 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return array of string snippet names
      */
-    public function getRoundShowSnippetNames()
+    public function getRoundShowSnippetNames(): array
     {
-        return array('Tracker\\Rounds\\ShowRoundStepSnippet', 'Survey\\SurveyQuestionsSnippet');
+        return ['Tracker\\Rounds\\ShowRoundStepSnippet', 'Survey\\SurveyQuestionsSnippet'];
     }
 
     /**
@@ -1038,7 +936,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return StandardTokenModel
      */
-    public function getTokenModel()
+    public function getTokenModel(): StandardTokenModel
     {
         return $this->tracker->getTokenModel();
     }
@@ -1048,18 +946,19 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return TrackCalculationEventInterface | null
      */
-    public function getTrackCalculationEvent()
+    public function getTrackCalculationEvent(): ?TrackCalculationEventInterface
     {
         if (isset($this->_trackData['gtr_calculation_event']) && $this->_trackData['gtr_calculation_event']) {
             return $this->trackEvents->loadTrackCalculationEvent($this->_trackData['gtr_calculation_event']);
         }
+        return null;
     }
 
     /**
      *
      * @return string The gems track code
      */
-    public function getTrackCode()
+    public function getTrackCode(): string
     {
         return $this->_trackData['gtr_code'];
     }
@@ -1069,18 +968,19 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return TrackCompletedEventInterface|null
      */
-    public function getTrackCompletionEvent()
+    public function getTrackCompletionEvent(): ?TrackCompletedEventInterface
     {
         if (isset($this->_trackData['gtr_completed_event']) && $this->_trackData['gtr_completed_event']) {
             return $this->trackEvents->loadTrackCompletionEvent($this->_trackData['gtr_completed_event']);
         }
+        return null;
     }
 
     /**
      *
      * @return int The track id
      */
-    public function getTrackId()
+    public function getTrackId(): int
     {
         return $this->_trackId;
     }
@@ -1089,7 +989,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      *
      * @return string The gems track name
      */
-    public function getTrackName()
+    public function getTrackName(): string
     {
         return $this->_trackData['gtr_track_name'];
     }
@@ -1098,9 +998,9 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * Is the field an appointment type
      *
      * @param string $fieldName
-     * @return boolean
+     * @return bool
      */
-    public function isAppointmentField($fieldName)
+    public function isAppointmentField(string $fieldName): bool
     {
         return $this->_fieldsDefinition->isAppointment($fieldName);
     }
@@ -1109,24 +1009,25 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * Remove the unanswered tokens for inactive rounds.
      *
      * @param \Gems\Tracker\RespondentTrack $respTrack The respondent track to check
-     * @param int $userId Id of the user who takes the action (for logging)
      * @return int The number of tokens changed by this code
      */
-    protected function removeInactiveRounds(\Gems\Tracker\RespondentTrack $respTrack, $userId)
+    protected function removeInactiveRounds(RespondentTrack $respTrack): int
     {
-        $qTrackId     = $this->db->quote($this->_trackId);
-        $qRespTrackId = $this->db->quote($respTrack->getRespondentTrackId());
-        $orgId        = $this->db->quote($respTrack->getOrganizationId());
-
-        $where = "gto_start_time IS NULL AND
-            gto_id_respondent_track = $qRespTrackId AND
+        $sql = "DELETE FROM gems__tokens WHERE gto_start_time IS NULL AND
+            gto_id_respondent_track = ? AND
             gto_id_round != 0 AND
             gto_id_round IN (SELECT gro_id_round
                     FROM gems__rounds
-                    WHERE (gro_active = 0 OR gro_organizations NOT LIKE CONCAT('%|',$orgId,'|%')) AND
-                        gro_id_track = $qTrackId)";
+                    WHERE (gro_active = 0 OR gro_organizations NOT LIKE CONCAT('%|',?,'|%')) AND
+                        gro_id_track = ?)";
 
-        return $this->db->delete('gems__tokens', $where);
+        $statement = $this->resultFetcher->query($sql, [
+            $respTrack->getRespondentTrackId(),
+            $respTrack->getOrganizationId(),
+            $this->_trackId,
+        ]);
+
+        return $statement->getFieldCount();
     }
 
     /**
@@ -1135,7 +1036,7 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    public function updateRoundCount($userId)
+    public function updateRoundCount(int $userId): int
     {
         $values['gtr_survey_rounds'] = $this->calculateRoundCount();
 

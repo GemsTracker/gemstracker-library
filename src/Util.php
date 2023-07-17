@@ -11,6 +11,8 @@
 
 namespace Gems;
 
+use Gems\Repository\ReceptionCodeRepository;
+use Gems\Tracker\ReceptionCode;
 use Gems\User\User;
 use IPLib\Factory as IpFactory;
 use IPLib\Address\AddressInterface;
@@ -82,12 +84,6 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
      * @var \Gems\Project\ProjectSettings
      */
     protected $project;
-
-    /**
-     *
-     * @var \Gems\Util\ReceptionCodeLibrary
-     */
-    protected $receptionCodeLibrary;
 
     /**
      *
@@ -357,14 +353,15 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
      * Returns a single reception code object.
      *
      * @param string $code
-     * @return \Gems\Util\ReceptionCode
+     * @return ReceptionCode
      */
     public function getReceptionCode($code)
     {
         static $codes = array();
 
         if (! isset($codes[$code])) {
-            $codes[$code] = $this->_loadClass('receptionCode', true, array($code));
+            $receptionCodeRepository = $this->getReceptionCodeRepository();
+            $receptionCodeRepository->getReceptionCode($code);
         }
 
         return $codes[$code];
@@ -378,6 +375,11 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
     public function getReceptionCodeLibrary()
     {
         return $this->containerLoad('receptionCodeLibrary');
+    }
+
+    public function getReceptionCodeRepository(): ReceptionCodeRepository
+    {
+        return $this->containerLoad(ReceptionCodeRepository::class);
     }
 
     /**

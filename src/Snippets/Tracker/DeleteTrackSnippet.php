@@ -13,9 +13,10 @@ namespace Gems\Snippets\Tracker;
 
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Repository\ReceptionCodeRepository;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
 use Gems\Tracker;
-use Gems\Util\ReceptionCodeLibrary;
+use Gems\Tracker\ReceptionCode;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
@@ -96,7 +97,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
-        protected ReceptionCodeLibrary $receptionCodeLibrary,
+        protected ReceptionCodeRepository $receptionCodeRepository,
         protected Tracker $tracker,
     )
     {
@@ -148,10 +149,10 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     public function getReceptionCodes()
     {
         if ($this->unDelete) {
-            return $this->receptionCodeLibrary->getTrackRestoreCodes();
+            return $this->receptionCodeRepository->getTrackRestoreCodes();
         }
 
-        return $this->receptionCodeLibrary->getTrackDeletionCodes();
+        return $this->receptionCodeRepository->getTrackDeletionCodes();
     }
 
     /**
@@ -194,9 +195,9 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     public function setReceptionCode($newCode, $userId)
     {
         $oldCode = $this->respondentTrack->getReceptionCode();
-        
-        if (! $newCode instanceof \Gems\Util\ReceptionCode) {
-            $newCode = $this->receptionCodeLibrary->getReceptionCode($newCode);
+
+        if (! $newCode instanceof ReceptionCode) {
+            $newCode = $this->receptionCodeRepository->getReceptionCode($newCode);
         }
 
         // Use the repesondent track function as that cascades the consent code
@@ -205,9 +206,9 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
         if ($this->unDelete) {
             $this->addMessage($this->_('Track restored.'));
 
-            if (isset($this->formData['restore_tokens']) && $this->formData['restore_tokens']) {                
+            if (isset($this->formData['restore_tokens']) && $this->formData['restore_tokens']) {
                 $count = $this->respondentTrack->restoreTokens($oldCode, $newCode);
-                
+
                 $this->addMessage(sprintf($this->plural(
                         '%d token reception codes restored.',
                         '%d tokens reception codes restored.',

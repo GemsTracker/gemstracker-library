@@ -12,6 +12,10 @@
 namespace Gems\Tracker\Engine;
 
 use DateTimeInterface;
+use Gems\Tracker\Model\RoundModel;
+use Gems\Tracker\RespondentTrack;
+use Gems\Tracker\Token;
+use Zalt\Model\MetaModelInterface;
 
 /**
  * Step engine that can select any previous round for begin date and any round for calculating the end date.
@@ -22,17 +26,17 @@ use DateTimeInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
+class AnyStepEngine extends StepEngineAbstract
 {
 
     /**
      * Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)
      *
-     * @param \MUtil\Model\ModelAbstract $model The round model
+     * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
-     * @param boolean True if the update changed values (usually by changed selection lists).
+     * @return bool True if the update changed values (usually by changed selection lists).
      */
-    protected function applySurveyListValidAfter(\MUtil\Model\ModelAbstract $model, array &$itemData)
+    protected function applySurveyListValidAfter(MetaModelInterface $model, array &$itemData): bool
     {
         $this->_ensureRounds();
 
@@ -54,7 +58,7 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param array $itemData    The current items data
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function applySurveyListValidFor(\MUtil\Model\ModelAbstract $model, array &$itemData)
+    protected function applySurveyListValidFor(MetaModelInterface $model, array &$itemData): bool
     {
         $this->_ensureRounds();
 
@@ -64,11 +68,11 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
         }
 
         if (!empty($itemData['gro_id_round'])) {
-            $rounds[$itemData['gro_id_round']] = $this->_('This round');
+            $rounds[$itemData['gro_id_round']] = $this->translator->_('This round');
         } else {
             // For new rounds we use 0. The snippet will update this on save
             // to the new roundid
-            $rounds['0'] = $this->_('This round');
+            $rounds['0'] = $this->translator->_('This round');
         }
         return $this->_applyOptions($model, 'gro_valid_for_id', $rounds, $itemData);
     }
@@ -83,7 +87,7 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param \Gems\Tracker\Token $skipToken Optional token to skip in the recalculation
      * @return int The number of tokens changed by this code
      */
-    public function checkTokensFrom(\Gems\Tracker\RespondentTrack $respTrack, \Gems\Tracker\Token $startToken, $userId, \Gems\Tracker\Token $skipToken = null)
+    public function checkTokensFrom(RespondentTrack $respTrack, Token $startToken, $userId, ?Token $skipToken = null): int
     {
         $changed = parent::checkTokensFrom($respTrack, $respTrack->getFirstToken(), $userId, $skipToken);
 
@@ -95,9 +99,9 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      *
      * @return string Name
      */
-    public function getDescription()
+    public function getDescription(): string
     {
-        return $this->_('Engine for tracks where a rounds activation can depend on any previous survey.');
+        return $this->translator->_('Engine for tracks where a rounds activation can depend on any previous survey.');
     }
 
     /**
@@ -105,9 +109,9 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      *
      * @return string Name
      */
-    public function getName()
+    public function getName(): string
     {
-        return $this->_('Previous Survey');
+        return $this->translator->_('Previous Survey');
     }
 
     /**
@@ -115,7 +119,7 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      *
      * @return array Of fieldname => default
      */
-    public function getRoundDefaults()
+    public function getRoundDefaults(): array
     {
         $defaults = parent::getRoundDefaults();
 
@@ -141,7 +145,7 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param string $action The current action
      * @return \MUtil\Model\ModelAbstract
      */
-    public function getRoundModel($detailed, $action)
+    public function getRoundModel(bool $detailed, string $action): RoundModel
     {
         $model = parent::getRoundModel($detailed, $action);
 
@@ -161,9 +165,9 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param \Gems\Tracker\RespondentTrack $respTrack
      * @return ?DateTimeInterface date time or null
      */
-    protected function getValidFromDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack)
+    protected function getValidFromDate(string $fieldSource, string $fieldName, int $prevRoundId, Token $token, RespondentTrack $respTrack): ?DateTimeInterface
     {
-        return $this->getValidUntilDate($fieldSource, $fieldName, $prevRoundId, $token, $respTrack, false);
+        return $this->getValidUntilDate($fieldSource, $fieldName, $prevRoundId, $token, $respTrack, null);
     }
 
     /**
@@ -177,7 +181,7 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param ?DateTimeInterface $validFrom The calculated new valid from value
      * @return ?DateTimeInterface date time or null
      */
-    protected function getValidUntilDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack, $validFrom)
+    protected function getValidUntilDate(string $fieldSource, string $fieldName, int $prevRoundId, Token $token, RespondentTrack $respTrack, ?DateTimeInterface $validFrom = null): ?DateTimeInterface
     {
         $date = null;
 

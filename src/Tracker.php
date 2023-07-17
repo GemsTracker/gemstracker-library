@@ -11,14 +11,37 @@
 
 namespace Gems;
 
+use Gems\Agenda\Agenda;
+use Gems\Agenda\Appointment;
+use Gems\Db\ResultFetcher;
+use Gems\Exception\Coding;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\ReceptionCodeRepository;
+use Gems\Repository\SurveyRepository;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Tracker\Engine\TrackEngineInterface;
+use Gems\Tracker\Form\AskTokenForm;
+use Gems\Tracker\Model\RespondentTrackModel;
+use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Model\TrackModel;
+use Gems\Tracker\RespondentTrack;
+use Gems\Tracker\Source\SourceInterface;
+use Gems\Tracker\Survey;
+use Gems\Tracker\SurveyModel;
+use Gems\Tracker\Token;
+use Gems\Tracker\Token\TokenFilter;
 use Gems\Tracker\Token\TokenLibrary;
 use Gems\Tracker\Token\TokenSelect;
 use Gems\Tracker\Token\TokenValidator;
+use Gems\Tracker\TrackerInterface;
 use Gems\User\Mask\MaskRepository;
-use Gems\Util\ReceptionCodeLibrary;
+use Gems\User\UserLoader;
+use Laminas\Db\Adapter\Driver\Pdo\Pdo;
+use Laminas\Db\Sql\Expression;
 use Mezzio\Session\SessionInterface;
+use MUtil\Ra;
+use MUtil\Translate\Translator;
 use Zalt\Loader\ProjectOverloader;
 
 /**
@@ -43,106 +66,64 @@ use Zalt\Loader\ProjectOverloader;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker\TrackerInterface
+class Tracker implements TrackerInterface
 {
-    const DB_DATE_FORMAT = 'Y-m-d';
-    const DB_DATETIME_FORMAT = 'Y-m-d H:i:s';
+    public const DB_DATE_FORMAT = 'Y-m-d';
+    public const DB_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
      *
      * @var array of \Gems\Tracker\RespondentTrack
      */
-    private $_respTracks = array();
+    private array $_respTracks = [];
 
     /**
      * This variable holds all registered source classes, may be changed in derived classes
      *
      * @var array Of classname => description
      */
-    protected $_sourceClasses = array(
+    protected array $_sourceClasses = [
         'LimeSurvey3m00Database' => 'Lime Survey 3.00 DB',
         'LimeSurvey5m00Database' => 'Lime Survey 5.00 DB',
-        );
+    ];
 
     /**
      *
      * @var array of \Gems\Tracker_SourceInterface
      */
-    private $_sources = array();
+    private array $_sources = [];
 
     /**
      *
      * @var array of \Gems_Survey
      */
-    private $_surveys = array();
+    private array $_surveys = [];
 
     /**
      *
      * @var TokenLibrary
      */
-    private $_tokenLibrary;
+    private ?TokenLibrary $_tokenLibrary = null;
 
     /**
      *
      * @var array of \Gems\Tracker\Model\StandardTokenModel
      */
-    private $_tokenModels = array();
+    private array $_tokenModels = [];
 
     /**
      *
      * @var array of \Gems\Tracker\Token
      */
-    private $_tokens = array();
+    private array $_tokens = [];
 
     /**
      *
      * @var array of \Gems\Tracker\Engine\TrackEngineInterface
      */
-    private $_trackEngines = array();
+    private array $_trackEngines = [];
 
-    /**
-     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
-     *
-     * @var string $cascade An optional subdirectory where this subclass always loads from.
-     */
-    protected ?string $cascade = 'Tracker';
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * @var ProjectOverloader
-     */
-    protected $overLoader;
-
-    protected MaskRepository $maskRepository;
-
-    /**
-     *
-     * @var \Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     *
-     * @var \Zend_Session
-     */
-    protected $session;
+    protected ?int $currentUserId = null;
 
     /**
      * Set to true to get detailed information on all tracker actions
@@ -151,34 +132,36 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      */
     public static $verbose = false;
 
+    public function __construct(
+        protected readonly Translator $translator,
+        protected readonly MaskRepository $maskRepository,
+        protected readonly ProjectOverloader $overLoader,
+        protected readonly Agenda $agenda,
+        CurrentUserRepository $currentUserRepository,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly Model $modelLoader,
+        protected readonly SurveyRepository $surveyRepository,
+    )
+    {
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
+    }
+
     /**
      * Replaces a null or empty userId with that of the current user
      *
      * @param int $userId
      * @return int
      */
-    private function _checkUserId($userId = null)
+    private function _checkUserId(int|null $userId = null): int
     {
-        if (empty($userId) && $this->currentUser instanceof \Gems\User\User) {
-            $userId = $this->currentUser->getUserId();
-            if (0 === $userId) {
-                $userId = null;
-            }
+        if ($userId) {
+            return $userId;
         }
-        return $userId;
-    }
+        if ($this->currentUserId) {
+            return $this->currentUserId;
+        }
 
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        // Load version 2 variables here
-        $container = $this->_overLoader->getContainer();
-        $this->maskRepository = $container->get(MaskRepository::class);
+        return UserLoader::UNKNOWN_USER_ID;
     }
 
     /**
@@ -186,9 +169,10 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @param array $stack classname / description array of sourceclasses
      */
-    public function addSourceClasses($stack) {
+    /*public function addSourceClasses(array $stack): void
+    {
         $this->_sourceClasses = array_merge($this->_sourceClasses, $stack);
-    }
+    }*/
 
     /**
      * Checks tracks for changes to the track and round definitions
@@ -210,27 +194,31 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         $batch->minimalStepDurationMs = 3000;
 
         if (! $batch->isLoaded()) {
-            $respTrackSelect = $this->db->select();
-            $respTrackSelect->from('gems__respondent2track', array('gr2t_id_respondent_track'));
-            $respTrackSelect->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', array());
-            $respTrackSelect->join('gems__tracks', 'gr2t_id_track = gtr_id_track', array());
+            $respTrackSelect = $this->resultFetcher->getSelect();
+            $respTrackSelect->from('gems__respondent2track')
+                ->columns(['gr2t_id_respondent_track'])
+                ->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', [])
+                ->join('gems__tracks', 'gr2t_id_track = gtr_id_track', []);
 
             if ($cond) {
-                $respTrackSelect->where($cond, $param);
+                $respTrackSelect->where([$cond => $param]);
             }
-            $respTrackSelect->where('gr2t_active = 1');
-            $respTrackSelect->where('grc_success = 1');
-            $respTrackSelect->where('gtr_active = 1');
+            $respTrackSelect->where([
+                'gr2t_active' => 1,
+                'grc_success' => 1,
+                'gtr_active' => 1,
+            ]);
             // Also recaclulate when track was completed: there may be new rounds!
             // $respTrackSelect->where('gr2t_count != gr2t_completed');
 
-            $statement = $respTrackSelect->query();
+            $statement = $this->resultFetcher->query($respTrackSelect);
 
             //Process one item at a time to prevent out of memory errors for really big resultsets
-            while ($respTrackData = $statement->fetch()) {
+            while ($respTrackData = $statement->current()) {
                 $respTrackId = $respTrackData['gr2t_id_respondent_track'];
                 $batch->setTask('Tracker\\CheckTrackRounds', 'trkchk-' . $respTrackId, $respTrackId, $userId);
                 $batch->addToCounter('resptracks');
+                $statement->next();
             }
         }
 
@@ -248,7 +236,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param SessionInterface $session
      * @return \Gems\Tracker\RespondentTrack The newly created track
      */
-    public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = array(), array $trackFieldsData = array(), SessionInterface $session = null)
+    public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int $userId, int|array|null $respTrackData = [], array $trackFieldsData = [], SessionInterface $session = null): RespondentTrack
     {
         $trackEngine = $this->getTrackEngine($trackId);
 
@@ -265,7 +253,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         $respTrackData['gr2t_id_organization'] = $organizationId;
         if (! array_key_exists('gr2t_reception_code', $respTrackData)) {
             // The start date has to exist.
-            $respTrackData['gr2t_reception_code'] = ReceptionCodeLibrary::RECEPTION_OK;
+            $respTrackData['gr2t_reception_code'] = ReceptionCodeRepository::RECEPTION_OK;
         }
 
         // Create the filter values for creating the track
@@ -303,7 +291,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param int $userId Id of the user who takes the action (for logging)
      * @return string
      */
-    public function createToken(array $tokenData, $userId = null)
+    public function createToken(array $tokenData, $userId = null): string
     {
         $userId = $this->_checkUserId($userId);
         return $this->getTokenLibrary()->createToken($tokenData, $userId);
@@ -317,12 +305,16 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param mixed $param2
      * @return object
      */
-    public function createTrackClass($className, $param1 = null, $param2 = null)
+    public function createTrackClass(string $className, mixed $param1 = null, mixed $param2 = null): object
     {
         $params = func_get_args();
         array_shift($params);
 
-        return $this->_loadClass($className, true, $params);
+        if (!class_exists($className)) {
+            $className = "Tracker\\$className";
+        }
+
+        return $this->overLoader->create($className, ...$params);
     }
 
     /**
@@ -332,7 +324,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param array $newValues
      * @return array
      */
-    public function filterChangesOnly(array $oldValues, array &$newValues)
+    public function filterChangesOnly(array $oldValues, array &$newValues): array
     {
         if ($newValues && $oldValues) {
             // \MUtil\EchoOut\EchoOut::track($newValues);
@@ -367,7 +359,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param string $tokenId
      * @return string Reformatted token
      */
-    public function filterToken($tokenId)
+    public function filterToken(string $tokenId): string
     {
         return $this->getTokenLibrary()->filter($tokenId);
     }
@@ -377,7 +369,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @return array id => code
      */
-    public function getAllCodeFields()
+    public function getAllCodeFields(): array
     {
         static $fields = false; // Using static so it will be refreshed once per request
 
@@ -403,9 +395,9 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param mixed $appointmentData Appointment id or array containing appintment data
      * @return \Gems\Agenda\Appointment
      */
-    public function getAppointment($appointmentData)
+    public function getAppointment(int|array $appointmentData): Appointment
     {
-        return $this->loader->getAgenda()->getAppointment($appointmentData);
+        return $this->agenda->getAppointment($appointmentData);
     }
 
     /**
@@ -414,11 +406,13 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param mixed $args_array \MUtil\Ra::args array for Form initiation.
      * @return \Gems\Tracker\Form\AskTokenForm
      */
-    public function getAskTokenForm($args_array = null)
+    public function getAskTokenForm(mixed $args_array = null): AskTokenForm
     {
-        $args = \MUtil\Ra::args(func_get_args());
-
-        return $this->_loadClass('Form\\AskTokenForm', true, array($args));
+        $args = Ra::args(func_get_args());
+        /**
+         * @var AskTokenForm
+         */
+        return $this->overLoader->create('Tracker\\Form\\AskTokenForm', $args);
     }
 
     /**
@@ -426,7 +420,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param mixed $respTrackData Track id or array containing trackdata
      * @return \Gems\Tracker\RespondentTrack
      */
-    public function getRespondentTrack($respTrackData)
+    public function getRespondentTrack(int|array $respTrackData): RespondentTrack
     {
         if (is_array($respTrackData)) {
             $respTracksId = $respTrackData['gr2t_id_respondent_track'];
@@ -440,7 +434,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
                 $this->_respTracks[$respTracksId]->refresh($respTrackData);
             }
         } else {
-            $this->_respTracks[$respTracksId] = $this->_loadClass('respondentTrack', true, array($respTrackData));
+            $this->_respTracks[$respTracksId] = $this->overLoader->create('Tracker\\RespondentTrack', $respTrackData, $this->currentUserId);
         }
 
         return $this->_respTracks[$respTracksId];
@@ -451,11 +445,14 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @return \Gems\Tracker\Model\RespondentTrackModel
      */
-    public function getRespondentTrackModel()
+    public function getRespondentTrackModel(): RespondentTrackModel
     {
-        $model = $this->_loadClass('Model\\RespondentTrackModel', true);
+        /**
+         * @var RespondentTrackModel $model
+         */
+        $model = $this->overLoader->create('Tracker\\Model\\RespondentTrackModel');
 
-        $model->setMaskRepository($this->loader->getMaskRepository());
+        $model->setMaskRepository($this->maskRepository);
 
         return $model;
     }
@@ -470,19 +467,24 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param mixed $order The column(s) and direction to order by
      * @return \Gems\Tracker\RespondentTrack[]
      */
-    public function getRespondentTracks($respondentId, $organizationId, $order = array('gr2t_start_date'))
+    public function getRespondentTracks(int $respondentId, int $organizationId, string|array|Expression $order = ['gr2t_start_date']): array
     {
-        $select = $this->db->select()
-                ->from('gems__respondent2track')
-                ->joinInner('gems__tracks', 'gr2t_id_track = gtr_id_track')
-                ->joinInner('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code')
-                ->where('gr2t_id_user = ? AND gr2t_id_organization = ?');
+        $select = $this->resultFetcher->getSelect('gems__respondent2track')
+            ->join('gems__tracks', 'gr2t_id_track = gtr_id_track')
+            ->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code')
+            ->where([
+                'gr2t_id_user' => $respondentId,
+                'gr2t_id_organization' => $organizationId,
+            ]);
+
+
+
         if (!is_null($order)) {
             $select->order($order);
         }
-        $rows   = $this->db->fetchAll($select, array($respondentId, $organizationId));
-        $tracks = array();
+        $rows   = $this->resultFetcher->fetchAll($select);
 
+        $tracks = [];
         foreach ($rows as $row) {
             $tracks[$row['gr2t_id_respondent_track']] = $this->getRespondentTrack($row);
         }
@@ -499,7 +501,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param mixed $sourceData \Gems source id or array containing gems source data
      * @return \Gems\Tracker\Source\SourceInterface
      */
-    public function getSource($sourceData)
+    public function getSource(int|array $sourceData): SourceInterface
     {
         if (is_array($sourceData)) {
             $sourceId = $sourceData['gso_id_source'];
@@ -510,15 +512,18 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
 
         if (! isset($this->_sources[$sourceId])) {
             if (! $sourceData) {
-
-                $sourceData = $this->db->fetchRow("SELECT * FROM gems__sources WHERE gso_id_source = ?", $sourceId);
+                $select = $this->resultFetcher->getSelect('gems__sources')
+                    ->where([
+                       'gso_id_source' => $sourceId,
+                    ]);
+                $sourceData = $this->resultFetcher->fetchRow($select);
             }
 
             if (! isset($sourceData['gso_ls_class'])) {
                 throw new \Gems\Exception\Coding('Missing source class for source ID: ' . $sourceId);
             }
 
-            $this->_sources[$sourceId] = $this->_loadClass('source_' . $sourceData['gso_ls_class'], true, array($sourceData, $this->db));
+            $this->_sources[$sourceId] = $this->overLoader->create('Tracker\\Source\\' . $sourceData['gso_ls_class'], $sourceData);
         }
 
         return $this->_sources[$sourceId];
@@ -529,7 +534,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @return array Of classname => description
      */
-    public function getSourceClasses()
+    public function getSourceClasses(): array
     {
         return $this->_sourceClasses;
     }
@@ -539,31 +544,33 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @return array Of classname => description
      */
-    public function getSourceDatabaseClasses()
+    public function getSourceDatabaseClasses(): array
     {
         // TODO: this should be moved to \Gems\Tracker\Source\SourceInterface,
         // but do not have time to implement is of minor importance at this moment.
 
         // If the project uses Pdo database, use Pdo classes, otherwise MySQL
-        if (stripos(get_class($this->db), '_Pdo_')) {
-            return array(
+        if ($this->resultFetcher->getAdapter()->getDriver() instanceof Pdo) {
+            return [
                 '' => '-- none --',
                 'Pdo_Mysql' => 'MySQL (PDO)',
-                'Pdo_Mssql' => 'SQL Server (PDO)');
+                'Pdo_Mssql' => 'SQL Server (PDO)',
+            ];
         } else {
-            return array(
+            return [
                 '' => '-- none --',
                 'Mysqli' => 'MySQL',
-                'Sqlsrv' => 'SQL Server');
+                'Sqlsrv' => 'SQL Server',
+            ];
         }
     }
 
     /**
      *
      * @param mixed $surveyData \Gems survey id or array containing gems survey data
-     * @return \Gems\Tracker\Survey
+     * @return Survey
      */
-    public function getSurvey($surveyData)
+    public function getSurvey(int|array $surveyData): Survey
     {
         if (is_array($surveyData)) {
             $surveyId = $surveyData['gsu_id_survey'];
@@ -572,7 +579,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         }
 
         if ($surveyId == null || ! isset($this->_surveys[$surveyId])) {
-            $this->_surveys[$surveyId] = $this->_loadClass('survey', true, array($surveyData));
+            $this->_surveys[$surveyId] = $this->surveyRepository->getSurvey($surveyData);
         }
 
         return $this->_surveys[$surveyId];
@@ -582,18 +589,24 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @param mixed $sourceSurveyId The source survey id
      * @param int $sourceId The gems source id of the source
-     * @return \Gems\Tracker\Survey
+     * @return Survey
      */
-    public function getSurveyBySourceId($sourceSurveyId, $sourceId)
+    public function getSurveyBySourceId(int|string $sourceSurveyId, int $sourceId): Survey
     {
-        $surveyData = $this->db->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_source = ? AND gsu_surveyor_id = ?", array($sourceId, $sourceSurveyId));
+        $select = $this->resultFetcher->getSelect('gems__surveys');
+        $select->where([
+            'gsu_id_source' => $sourceId,
+            'gsu_surveyor_id' => $sourceSurveyId,
+        ]);
 
-        if (! is_array($surveyData)) {
-            \Gems\Tracker\Survey::$newSurveyCount++;
-            $surveyData['gsu_id_survey']   = -\Gems\Tracker\Survey::$newSurveyCount;
+        $surveyData = $this->resultFetcher->fetchRow($select);
+
+
+        if (!is_array($surveyData)) {
+            Survey::$newSurveyCount++;
+            $surveyData['gsu_id_survey'] = -Survey::$newSurveyCount;
             $surveyData['gsu_surveyor_id'] = $sourceSurveyId;
-            $surveyData['gsu_id_source']   = $sourceId;
-
+            $surveyData['gsu_id_source'] = $sourceId;
             // \MUtil\EchoOut\EchoOut::track($surveyData);
         }
 
@@ -602,29 +615,32 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
 
     /**
      *
-     * @param \Gems\Tracker\Survey $survey
-     * @param \Gems\Tracker\Source\SourceInterface $source
-     * @return \Gems\Tracker\SurveyModel
+     * @param Survey $survey
+     * @param SourceInterface $source
+     * @return SurveyModel
      */
-    public function getSurveyModel(\Gems\Tracker\Survey $survey, \Gems\Tracker\Source\SourceInterface $source)
+    public function getSurveyModel(Survey $survey, SourceInterface $source): SurveyModel
     {
-        return $this->_loadClass('SurveyModel', true, array($survey, $source));
+        /**
+         * @var SurveyModel
+         */
+        return $this->overLoader->create('Tracker\\SurveyModel', $survey, $source);
     }
 
     /**
      *
-     * @param mixed $tokenData Token id or array containing tokendata
-     * @return \Gems\Tracker\Token
+     * @param int|array $tokenData Token id or array containing tokendata
+     * @return Token
      */
-    public function getToken($tokenData)
+    public function getToken(string|array $tokenData): Token
     {
         if (! $tokenData) {
-            throw new \Gems\Exception\Coding('Provide at least the token when requesting a token');
+            throw new Coding('Provide at least the token when requesting a token');
         }
 
         if (is_array($tokenData)) {
              if (!isset($tokenData['gto_id_token'])) {
-                 throw new \Gems\Exception\Coding(
+                 throw new Coding(
                          '$tokenData array should at least have a key "gto_id_token" containing the requested token id'
                          );
              }
@@ -634,7 +650,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         }
 
         if (! isset($this->_tokens[$tokenId])) {
-            $this->_tokens[$tokenId] = $this->_loadClass('token', true, array($tokenData));
+            $this->_tokens[$tokenId] = $this->overLoader->create('Tracker\\Token', $tokenData);
         }
 
         return $this->_tokens[$tokenId];
@@ -642,22 +658,29 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
 
     /**
      *
-     * @return \Gems\Tracker\Token\TokenFilter
+     * @return TokenFilter
      */
-    public function getTokenFilter()
+    public function getTokenFilter(): TokenFilter
     {
-        return $this->_loadClass('Token\\TokenFilter', true, array($this->getTokenLibrary()));
+        /**
+         * @var TokenFilter
+         */
+        return $this->overLoader->create('Tracker\\Token', $this->getTokenLibrary());
     }
 
     /**
      * Use this function only within \Gems\Tracker!!
      *
-     * @return \Gems\Tracker\Token\TokenLibrary
+     * @return TokenLibrary
      */
-    public function getTokenLibrary()
+    public function getTokenLibrary(): TokenLibrary
     {
         if (! $this->_tokenLibrary) {
-            $this->_tokenLibrary = $this->_loadClass('Token\\TokenLibrary', true);
+            /**
+             * @var $tokenLibrary TokenLibrary
+             */
+            $tokenLibrary = $this->overLoader->create('Tracker\\Token\\TokenLibrary');
+            $this->_tokenLibrary = $tokenLibrary;
         }
 
         return $this->_tokenLibrary;
@@ -667,15 +690,19 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * Returns a token model of the specified class with full display information
      *
      * @param string $modelClass Optional class to use instead of StandardTokenModel. Must be subclass.
-     * @return \Gems\Tracker\Model\StandardTokenModel
+     * @return StandardTokenModel
      */
-    public function getTokenModel($modelClass = 'StandardTokenModel')
+    public function getTokenModel(string $modelClass = 'StandardTokenModel'): StandardTokenModel
     {
         if (! isset($this->_tokenModels[$modelClass])) {
-            $this->_tokenModels[$modelClass] = $this->_loadClass('Model_' . $modelClass, true);
-            $this->_tokenModels[$modelClass]->setMaskRepository($this->loader->getMaskRepository());
+            /**
+             * @var StandardTokenModel $model
+             */
+            $model = $this->overLoader->create('Tracker\\Model\\' . $modelClass);
+            $this->_tokenModels[$modelClass] = $model;
+            $this->_tokenModels[$modelClass]->setMaskRepository($this->maskRepository);
             $this->_tokenModels[$modelClass]->applyFormatting();
-            $this->loader->getModels()->addDatabaseTranslations($this->_tokenModels[$modelClass]);
+            $this->modelLoader->addDatabaseTranslations($this->_tokenModels[$modelClass]);
         }
 
         return $this->_tokenModels[$modelClass];
@@ -684,14 +711,14 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
     /**
      * Create a select statement on the token table
      *
-     * @return \Gems\Tracker\Token\TokenSelect
+     * @return TokenSelect
      */
-    public function getTokenSelect($fields = '*')
+    public function getTokenSelect(string|array $fields = '*'): TokenSelect
     {
         /**
-         * @var TokenSelect
+         * @var TokenSelect $tokenSelect
          */
-        $tokenSelect = $this->_loadClass('Token\\TokenSelect', true, array($this->db, $this->loader->getUtil()));
+        $tokenSelect = $this->overLoader->create('Tracker\\Token\\TokenSelect');
 
         $tokenSelect->columns($fields);
         return $tokenSelect;
@@ -699,14 +726,14 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
 
     /**
      *
-     * @return \Gems\Tracker\Token\TokenValidator
+     * @return TokenValidator
      */
-    public function getTokenValidator(string $clientIpAddress = null)
+    public function getTokenValidator(string $clientIpAddress = null): TokenValidator
     {
         /**
          * @var $tokenValidator TokenValidator
          */
-        $tokenValidator = $this->containerLoad('Token\\TokenValidator');
+        $tokenValidator = $this->overLoader->create('Tracker\\Token\\TokenValidator');
         if ($clientIpAddress !== null) {
             $tokenValidator->setClientIp($clientIpAddress);
         }
@@ -718,21 +745,21 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @return array
      */
-    public function getTrackDisplayGroups()
+    public function getTrackDisplayGroups(): array
     {
-        return array(
-            'tracks'      => $this->translate->_('Tracks'),
-            'respondents' => $this->translate->_('Respondent'),
-            'staff'       => $this->translate->_('Staff'),
-        );
+        return [
+            'tracks'      => $this->translator->_('Tracks'),
+            'respondents' => $this->translator->_('Respondent'),
+            'staff'       => $this->translator->_('Staff'),
+        ];
     }
 
     /**
      *
-     * @param mixed $trackData \Gems track id or array containing gems track data
-     * @return \Gems\Tracker\Engine\TrackEngineInterface
+     * @param int|array $trackData \Gems track id or array containing gems track data
+     * @return TrackEngineInterface
      */
-    public function getTrackEngine($trackData)
+    public function getTrackEngine(int|array $trackData): TrackEngineInterface
     {
         if (is_array($trackData)) {
             $trackId   = $trackData['gtr_id_track'];
@@ -743,14 +770,19 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
 
         if (! isset($this->_trackEngines[$trackId])) {
             if (! $trackData) {
-                $trackData = $this->db->fetchRow("SELECT * FROM gems__tracks WHERE gtr_id_track = ?", $trackId);
+                $select = $this->resultFetcher->getSelect('gems__tracks');
+                $select->where([
+                   'gtr_id_track' => $trackId,
+                ]);
+
+                $trackData = $this->resultFetcher->fetchRow($select);
             }
 
             if (! isset($trackData['gtr_track_class'])) {
                 $trackData['gtr_track_class'] = 'AnyStepEngine';
             }
 
-            $this->_trackEngines[$trackId] = $this->_loadClass('Engine_' . $trackData['gtr_track_class'], true, array($trackData));
+            $this->_trackEngines[$trackId] = $this->overLoader->create('Tracker\\Engine\\' . $trackData['gtr_track_class'], $trackData);
         }
 
         return $this->_trackEngines[$trackId];
@@ -761,16 +793,16 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param string $trackCode Track code or whole word part of code to find track by
      * @return \Gems\Tracker\Engine\TrackEngineInterface|null or null when not found
      */
-    public function getTrackEngineByCode($trackCode)
+    public function getTrackEngineByCode(string $trackCode): TrackEngineInterface|null
     {
-        $trackData = $this->db->fetchRow(
+        $trackData = $this->resultFetcher->fetchRow(
                 "SELECT * FROM gems__tracks
                     WHERE CONCAT(' ', gtr_code, ' ') LIKE ? AND
                         gtr_active = 1 AND
                         gtr_date_start <= CURRENT_DATE AND
                         (gtr_date_until IS NULL OR gtr_date_until <= CURRENT_DATE)
                     ORDER BY gtr_date_start",
-                "% $trackCode %"
+                '% $trackCode %'
                 );
 
         if ($trackData) {
@@ -790,9 +822,9 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @see getTrackEngineClassNames()
      *
      * @static $dummyClasses Cache array
-     * @return \Gems\Tracker\Engine\TrackEngineInterface[]
+     * @return TrackEngineInterface[]
      */
-    public function getTrackEngineClasses()
+    public function getTrackEngineClasses(): array
     {
         static $dummyClasses;
 
@@ -800,7 +832,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
             $dummyTrackData['gtr_id_track'] = 0;
 
             foreach ($this->getTrackEngineClassNames() as $className) {
-                $dummyClasses[$className] = $this->_loadClass('Engine_' . $className, true, array($dummyTrackData));
+                $dummyClasses[$className] = $this->overLoader->create('Tracker\\Engine\\' . $className, $dummyTrackData);
             }
         }
 
@@ -812,12 +844,12 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @return array Of classname
      */
-    protected function getTrackEngineClassNames()
+    protected function getTrackEngineClassNames(): array
     {
-        return array(
-                'AnyStepEngine',
-                'NextStepEngine',
-            );
+        return [
+            'AnyStepEngine',
+            //'NextStepEngine',
+        ];
     }
 
     /**
@@ -825,9 +857,9 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @return array of snippet names for creating a new track engine
      */
-    public function getTrackEngineEditSnippets()
+    public function getTrackEngineEditSnippets(): array
     {
-        return array('Tracker\\EditTrackEngineSnippet');
+        return ['Tracker\\EditTrackEngineSnippet'];
     }
 
     /**
@@ -837,10 +869,9 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param boolean $userCreatableOnly Return only the classes that can be created by the user interface
      * @return array Of classname => description
      */
-    public function getTrackEngineList($extended = false, $userCreatableOnly = false)
+    public function getTrackEngineList(bool $extended = false, bool $userCreatableOnly = false): array
     {
-        $results = array();
-        $dummyTrackData['gtr_id_track'] = 0;
+        $results = [];
 
         foreach ($this->getTrackEngineClasses() as $className => $cls) {
             if ((! $userCreatableOnly) || $cls->isUserCreatable()) {
@@ -859,11 +890,14 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
     /**
      * Simple function for a default track model.
      *
-     * @return \Gems\Tracker\Model\TrackModel
+     * @return TrackModel
      */
-    public function getTrackModel()
+    public function getTrackModel(): TrackModel
     {
-        return $this->_loadClass('Model\\TrackModel', true);
+        /**
+         * @var TrackModel
+         */
+        return $this->overLoader->create('Tracker\\Model\\TrackModel');
     }
 
     /**
@@ -882,14 +916,14 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
      * @return void
      */
-    public function loadCompletedTokensBatch(TaskRunnerBatch $batch, $respondentId = null, $userId = null, $orgId = null, $quickCheck = false)
+    public function loadCompletedTokensBatch(TaskRunnerBatch $batch, int $respondentId = null, int $userId = null, int $orgId = null, bool $quickCheck = false): void
     {
         $userId = $this->_checkUserId($userId);
 
-        $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
+        $tokenSelect = $this->getTokenSelect(['gto_id_token']);
         $tokenSelect->onlyActive($quickCheck)
                     ->forRespondent($respondentId)
-                    ->andSurveys(array('gsu_surveyor_id'))
+                    ->andSurveys(['gsu_surveyor_id'])
                     ->forWhere('gsu_surveyor_active = 1')
                     ->order('gsu_surveyor_id');
 
@@ -899,7 +933,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
 
         $statement = $tokenSelect->getSelect()->query();
         //Process one row at a time to prevent out of memory errors for really big resultsets
-        $tokens = array();
+        $tokens = [];
         $tokencount = 0;
         $activeId = 0;
         $maxCount = 100;    // Arbitrary value, change as needed
@@ -913,7 +947,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
                 }
 
                 $activeId = $surveyorId;
-                $tokens = array();
+                $tokens = [];
             }
             $tokens[] = $tokenId;
 
@@ -968,11 +1002,11 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * Does not reflect changes to tracks or rounds.
      *
      * @param string $batch_id A unique identifier for the current batch
-     * @param \Gems\Tracker\Token\TokenSelect Select statements selecting tokens
+     * @param TokenSelect Select statements selecting tokens
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    protected function processTokensBatch(SessionInterface $session, $batchId, \Gems\Tracker\Token\TokenSelect $tokenSelect, $userId): TaskRunnerBatch
+    protected function processTokensBatch(SessionInterface $session, $batchId, TokenSelect $tokenSelect, $userId): TaskRunnerBatch
     {
         $where = implode(' ', $tokenSelect->getSelect()->getPart(\Zend_Db_Select::WHERE));
 
@@ -1003,9 +1037,9 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param string $batch_id A unique identifier for the current batch
      * @param int $userId Id of the user who takes the action (for logging)
      * @param string $cond
-     * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
+     * @return TaskRunnerBatch A batch to process the changes
      */
-    public function recalculateTokens(SessionInterface $session, $batch_id, $userId = null, $cond = null, $bind = null): TaskRunnerBatch
+    public function recalculateTokens(SessionInterface $session, string $batch_id, int $userId = null, string $cond = null, mixed $bind = null): TaskRunnerBatch
     {
         $userId = $this->_checkUserId($userId);
         $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
@@ -1031,21 +1065,24 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @param string $batchId A unique identifier for the current batch
      * @param string $cond Optional where statement for selecting tracks
-     * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
+     * @return TaskRunnerBatch A batch to process the changes
      */
     public function recalcTrackFields(SessionInterface $session, string $batchId, ?string $cond = null, ?string $param = null): TaskRunnerBatch
     {
-        $respTrackSelect = $this->db->select();
-        $respTrackSelect->from('gems__respondent2track', array('gr2t_id_respondent_track'));
-        $respTrackSelect->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', array());
-        $respTrackSelect->join('gems__tracks', 'gr2t_id_track = gtr_id_track', array());
+        $respTrackSelect = $this->resultFetcher->getSelect();
+        $respTrackSelect->from('gems__respondent2track');
+        $respTrackSelect->columns(['gr2t_id_respondent_track'])
+            ->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code')
+            ->join('gems__tracks', 'gr2t_id_track = gtr_id_track');
 
         if ($cond) {
             $respTrackSelect->where($cond, $param);
         }
-        $respTrackSelect->where('gr2t_active = 1');
-        $respTrackSelect->where('grc_success = 1');
-        $respTrackSelect->where('gtr_active = 1');
+        $respTrackSelect->where([
+            'gr2t_active' => 1,
+            'grc_success' => 1,
+            'gtr_active' => 1,
+        ]);
         // Also recaclulate when track was completed: there may be new rounds!
         // $respTrackSelect->where('gr2t_count != gr2t_completed');
 
@@ -1054,12 +1091,13 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         $batch->minimalStepDurationMs = 3000;
 
         if (! $batch->isLoaded()) {
-            $statement = $respTrackSelect->query();
+            $statement = $this->resultFetcher->query($respTrackSelect);
             //Process one item at a time to prevent out of memory errors for really big resultsets
-            while ($respTrackData  = $statement->fetch()) {
+            while ($respTrackData  = $statement->current()) {
                 $respTrackId = $respTrackData['gr2t_id_respondent_track'];
                 $batch->setTask('Tracker\\RecalculateFields', 'trkfcalc-' . $respTrackId, $respTrackId);
                 $batch->addToCounter('resptracks');
+                $statement->next();
             }
         }
 
@@ -1071,7 +1109,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @param string $batch_id A unique identifier for the current batch
      * @param string $cond An optional where statement
-     * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
+     * @return TaskRunnerBatch A batch to process the changes
      */
     public function refreshTokenAttributes(SessionInterface $session, string $batchId, ?string $cond = null, mixed $bind = null): TaskRunnerBatch
     {
@@ -1092,9 +1130,10 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
                         ->andConsents(array())
                         ->forWhere($cond, $bind);
             }
-            $tokens = $this->db->fetchCol($tokenSelect->getSelect());
+
+            $tokens = $tokenSelect->fetchAll();
             foreach ($tokens as $token) {
-                $batch->addTask('Tracker\\RefreshTokenAttributes', $token);
+                $batch->addTask('Tracker\\RefreshTokenAttributes', $token['gto_id_token']);
             }
         }
         self::$verbose = true;
@@ -1105,12 +1144,12 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
     /**
      * Remove token from cache for saving memory
      *
-     * @param string|\Gems\Tracker\Token $token
-     * @return \Gems\Tracker (continuation pattern)
+     * @param string|Token $token
+     * @return self (continuation pattern)
      */
-    public function removeToken($token)
+    public function removeToken(string|Token $token): self
     {
-        if ($token instanceof \Gems\Tracker\Token) {
+        if ($token instanceof Token) {
             $tokenId = $token->getTokenId();
         } else {
             $tokenId = $token;
@@ -1139,10 +1178,11 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
             if ($sourceId) {
                 $sources = array($sourceId);
             } else {
-                $select = $this->db->select();
-                $select->from('gems__sources', ['gso_id_source'])
-                        ->where('gso_active = 1');
-                $sources = $this->db->fetchCol($select);
+                $select = $this->resultFetcher->getSelect('gems__sources');
+                $select->columns(['gso_id_source'])
+                    ->where(['gso_active' => 1]);
+
+                $sources = $this->resultFetcher->fetchCol($select);
             }
 
             foreach ($sources as $source) {

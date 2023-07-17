@@ -270,7 +270,7 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
         $respTrackId = $this->request->getAttribute(\Gems\Model::RESPONDENT_TRACK);
 
         if ($respTrackId) {
-            $respTrack = $this->tracker->getRespondentTrack($respTrackId);
+            $respTrack = $this->tracker->getRespondentTrack((int) $respTrackId);
         } else {
             throw new Exception($this->_('No track specified for respondent!'));
         }

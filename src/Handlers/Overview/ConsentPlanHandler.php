@@ -14,11 +14,11 @@ namespace Gems\Handlers\Overview;
 use Gems\Html;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\ReceptionCodeRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelTableSnippet;
-use Gems\Util\ReceptionCodeLibrary;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -96,7 +96,7 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
         protected \Zend_Db_Adapter_Abstract $db,
-        protected ReceptionCodeLibrary $receptionCodeLibrary,
+        protected ReceptionCodeRepository $receptionCodeRepository,
         protected RespondentRepository $respondentRepository,
     ) {
         parent::__construct($responder, $translate);
@@ -123,7 +123,7 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
         }
 
         $consents = $this->respondentRepository->getRespondentConsents();
-        $deleteds = $this->receptionCodeLibrary->getRespondentDeletionCodes();
+        $deleteds = $this->receptionCodeRepository->getRespondentDeletionCodes();
         $sql      = "SUM(CASE WHEN grc_success = 1 AND gr2o_consent = '%s' THEN 1 ELSE 0 END)";
         foreach ($consents as $consent => $translated) {
             $fields[$translated] = new \Zend_Db_Expr(sprintf($sql, $consent));

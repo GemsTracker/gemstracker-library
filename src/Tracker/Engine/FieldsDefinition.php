@@ -14,10 +14,12 @@ namespace Gems\Tracker\Engine;
 use Gems\Tracker\Field\FieldInterface;
 use Gems\Tracker\Model\Dependency\FieldDataDependency;
 use Gems\Tracker\Model\FieldDataModel;
+use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Tracker\Model\LogFieldDataModel;
 use MUtil\Model\Dependency\OffOnElementsDependency;
-use MUtil\Registry\TargetAbstract;
-use Zalt\Base\TranslateableTrait;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\Dependency\DependencyInterface;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -27,10 +29,8 @@ use Zalt\Base\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class FieldsDefinition extends TargetAbstract
+class FieldsDefinition
 {
-    use TranslateableTrait;
-
     /**
      * Field key separator
      */
@@ -56,93 +56,72 @@ class FieldsDefinition extends TargetAbstract
      *
      * @var \Gems\Tracker\Model\FieldDataModel
      */
-    protected $_dataModel;
+    protected ?FieldDataModel $_dataModel = null;
 
     /**
      * Array of Fieldobjects Can be an empty array.
      *
      * @var \Gems\Tracker\Field\FieldInterface[]
      */
-    protected $_fields = false;
+    protected ?array $_fields = null;
 
     /**
      * Cache for appointment fields check
      *
      * @var boolean
      */
-    private $_hasAppointmentFields = null;
+    private bool|null $_hasAppointmentFields = null;
 
     /**
      * @var LogFieldDataModel
      */
-    protected $_logModel;
+    protected ?LogFieldDataModel $_logModel = null;
 
     /**
      * Stores the models for each action
      *
      * @var array
      */
-    protected $_maintenanceModels = array();
+    protected array $_maintenanceModels = [];
 
     /**
      * Can be an empty array.
      *
      * @var array The gems__track_fields + gems__track_appointments data
      */
-    protected $_trackFields = false;
-
-    /**
-     *
-     * @var int
-     */
-    protected $_trackId;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    protected array $_trackFields = [];
 
     /**
      * True when the fields have changed during the last call to processBeforeSave
      *
      * @var boolean
      */
-    public $changed = false;
+    public bool $changed = false;
 
     /**
      * True when there exist fields
      *
      * @var boolean
      */
-    public $exists = false;
+    public bool $exists = false;
 
     /**
      *
      * @var int Maximum length of the track info field
      */
-    protected $maxTrackInfoChars = 250;
-
-    /**
-     *
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    protected int $maxTrackInfoChars = 250;
 
     /**
      * Construct the defintion for this gems__tracks track id.
      *
      * @param int $trackId The track id from gems__tracks
      */
-    public function __construct($trackId)
+    public function __construct(
+        protected readonly int $trackId,
+        protected readonly ProjectOverloader $projectOverloader,
+    )
     {
-        $this->_trackId = $trackId;
+        $this->_ensureTrackFields();
     }
 
     /**
@@ -152,44 +131,31 @@ class FieldsDefinition extends TargetAbstract
     {
         if (! is_array($this->_fields)) {
             // Check for cases where the track id is zero, but there is a field for track 0 in the db
-            if ($this->_trackId) {
+            if ($this->trackId) {
                 $model  = $this->getMaintenanceModel();
-                $fields = $model->load(array('gtf_id_track' => $this->_trackId), array('gtf_id_order' => SORT_ASC));
+                $fields = $model->load(['gtf_id_track' => $this->trackId], ['gtf_id_order' => SORT_ASC]);
             } else {
                 $fields = false;
             }
 
-            $this->_fields      = array();
-            $this->_trackFields = array();
+            $this->_fields      = [];
+            $this->_trackFields = [];
             if (is_array($fields)) {
                 $this->exists = true;
 
                 foreach ($fields as $field) {
                     $key = self::makeKey($field['sub'], $field['gtf_id_field']);
 
-                    $class = 'Field\\' . ucfirst($field['gtf_field_type']) . 'Field';
-                    $this->_fields[$key] = $this->tracker->createTrackClass($class, $this->_trackId, $key, $field);
+                    $class = 'Tracker\\Field\\' . ucfirst($field['gtf_field_type']) . 'Field';
+                    $this->_fields[$key] = $this->projectOverloader->create($class, $this->trackId, $key, $field);
 
                     $this->_trackFields[$key] = $field;
                 }
                 // \MUtil\EchoOut\EchoOut::track($this->_trackFields);
             } else {
-                $this->exists       = false;
+                $this->exists = false;
             }
         }
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->_ensureTrackFields();
     }
 
     /**
@@ -198,13 +164,13 @@ class FieldsDefinition extends TargetAbstract
      * @param array $data The field values
      * @return string The description to save as track_info
      */
-    public function calculateFieldsInfo(array $data)
+    public function calculateFieldsInfo(array $data): ?string
     {
         if (! $this->exists) {
             return null;
         }
 
-        $output = array();
+        $output = [];
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
@@ -234,10 +200,10 @@ class FieldsDefinition extends TargetAbstract
     /**
      * Get model dependency that changes model settings for each row when loaded
      *
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return array of \MUtil\Model\Dependency\DependencyInterface
+     * @param MetaModelInterface $model
+     * @return DependencyInterface[]|null
      */
-    public function getDataModelDependencies(\MUtil\Model\ModelAbstract $model)
+    public function getDataModelDependencies(MetaModelInterface $model): ?array
     {
         if (! $this->exists) {
             return null;
@@ -249,8 +215,8 @@ class FieldsDefinition extends TargetAbstract
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
                 if ($field->hasManualSetOption()) {
-                    $mkey = $field->getManualKey();
-                    $output[] = new OffOnElementsDependency($mkey, $key, 'readonly', $model);
+                    $mKey = $field->getManualKey();
+                    $output[] = new OffOnElementsDependency($mKey, $key, 'readonly', $model);
                 }
                 $dependsOn = $field->getDataModelDependsOn();
 
@@ -272,13 +238,13 @@ class FieldsDefinition extends TargetAbstract
      *
      * @return array fieldname => array(settings)
      */
-    public function getDataModelSettings()
+    public function getDataModelSettings(): array
     {
         if (! $this->exists) {
-            return array();
+            return [];
         }
 
-        $fieldSettings = array();
+        $fieldSettings = [];
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
@@ -299,10 +265,14 @@ class FieldsDefinition extends TargetAbstract
      *
      * @return \Gems\Tracker\Model\FieldDataModel
      */
-    public function getDataStorageModel()
+    public function getDataStorageModel(): FieldDataModel
     {
         if (! $this->_dataModel instanceof FieldDataModel) {
-            $this->_dataModel = $this->tracker->createTrackClass('Model\\FieldDataModel');
+            /**
+             * @var FieldDataModel $dataModel
+             */
+            $dataModel = $this->projectOverloader->create('Tracker\\Model\\FieldDataModel');
+            $this->_dataModel = $dataModel;
         }
 
         return $this->_dataModel;
@@ -314,7 +284,7 @@ class FieldsDefinition extends TargetAbstract
      * @param string $key
      * @return \Gems\Tracker\Field\FieldInterface|null
      */
-    public function getField($key)
+    public function getField(string $key): ?FieldInterface
     {
         if (isset($this->_fields[$key])) {
             return $this->_fields[$key];
@@ -328,7 +298,7 @@ class FieldsDefinition extends TargetAbstract
      * @param string $code
      * @return \Gems\Tracker\Field\FieldInterface
      */
-    public function getFieldByCode($code)
+    public function getFieldByCode(string $code): ?FieldInterface
     {
         foreach ($this->_fields as $field) {
             if ($field instanceof FieldInterface) {
@@ -347,7 +317,7 @@ class FieldsDefinition extends TargetAbstract
      * @param int $order
      * @return \Gems\Tracker\Field\FieldInterface
      */
-    public function getFieldByOrder($order)
+    public function getFieldByOrder(int $order): ?FieldInterface
     {
         foreach ($this->_fields as $field) {
             if ($field instanceof FieldInterface) {
@@ -366,7 +336,7 @@ class FieldsDefinition extends TargetAbstract
      *
      * @return array fieldid => fieldcode
      */
-    public function getFieldCodes()
+    public function getFieldCodes(): array
     {
         $output = [];
 
@@ -383,9 +353,9 @@ class FieldsDefinition extends TargetAbstract
      *
      * @return array fieldid => fieldcode
      */
-    public function getFieldDefaults()
+    public function getFieldDefaults(): array
     {
-        $output = array();
+        $output = [];
 
         foreach ($this->_trackFields as $key => $field) {
             if (array_key_exists('gtf_field_default', $field)) {
@@ -402,9 +372,9 @@ class FieldsDefinition extends TargetAbstract
      *
      * @return array fieldid => fieldcode
      */
-    public function getFieldNames()
+    public function getFieldNames(): array
     {
-        $fields = array();
+        $fields = [];
 
         $this->_ensureTrackFields();
 
@@ -421,7 +391,7 @@ class FieldsDefinition extends TargetAbstract
      * @param string|array $fieldType One or more field types
      * @return array name => code
      */
-    public function getFieldCodesOfType($fieldType)
+    public function getFieldCodesOfType(array|string $fieldType): array
     {
         return $this->getFieldsOfType($fieldType, 'gtf_field_code');
     }
@@ -432,7 +402,7 @@ class FieldsDefinition extends TargetAbstract
      * @param string|array $fieldType One or more field types
      * @return array name => code
      */
-    public function getFieldLabelsOfType($fieldType)
+    public function getFieldLabelsOfType(array|string $fieldType): array
     {
         return $this->getFieldsOfType($fieldType, 'gtf_field_name');
     }
@@ -442,7 +412,7 @@ class FieldsDefinition extends TargetAbstract
      *
      * @return \Gems\Tracker\Field\FieldInterface[] of the existing fields for this track
      */
-    public function getFields()
+    public function getFields(): array
     {
         return $this->_fields;
     }
@@ -453,10 +423,10 @@ class FieldsDefinition extends TargetAbstract
      * @param int $respTrackId \Gems respondent track id or null when new
      * @return array of the existing field values for this respondent track
      */
-    public function getFieldsDataFor($respTrackId)
+    public function getFieldsDataFor(int $respTrackId): array
     {
         if (! $this->_fields) {
-            return array();
+            return [];
         }
 
         // Set the default values to empty as we currently do not store default values for fields
@@ -467,7 +437,7 @@ class FieldsDefinition extends TargetAbstract
         }
 
         $model = $this->getDataStorageModel();
-        $rows  = $model->load(array('gr2t2f_id_respondent_track' => $respTrackId));
+        $rows  = $model->load(['gr2t2f_id_respondent_track' => $respTrackId]);
 
         if ($rows) {
             foreach ($rows as $row) {
@@ -496,9 +466,9 @@ class FieldsDefinition extends TargetAbstract
      * @param string|array $fieldType One or more field types
      * @return array name => $element
      */
-    protected function getFieldsOfType($fieldType, $element)
+    protected function getFieldsOfType(array|string $fieldType, string $element): array
     {
-        $output     = array();
+        $output     = [];
         $fieldArray = (array) $fieldType;
 
         foreach ($this->_trackFields as $key => $field) {
@@ -515,10 +485,15 @@ class FieldsDefinition extends TargetAbstract
      *
      * @return LogFieldDataModel
      */
-    public function getLogStorageModel()
+    public function getLogStorageModel(): LogFieldDataModel
     {
         if (! $this->_logModel instanceof LogFieldDataModel) {
-            $this->_logModel = $this->tracker->createTrackClass('Model\\LogFieldDataModel');
+            /**
+             * @var LogFieldDataModel $logFieldDataModel
+             */
+            $logFieldDataModel = $this->projectOverloader->create('Tracker\\Model\\LogFieldDataModel');
+            $this->_logModel = $logFieldDataModel;
+
         }
 
         return $this->_logModel;
@@ -531,27 +506,30 @@ class FieldsDefinition extends TargetAbstract
      * @param string $action The current action
      * @return \Gems\Tracker\Model\FieldMaintenanceModel
      */
-    public function getMaintenanceModel($detailed = false, $action = 'index')
+    public function getMaintenanceModel(bool $detailed = false, string $action = 'index'): FieldMaintenanceModel
     {
         if (isset($this->_maintenanceModels[$action])) {
             return $this->_maintenanceModels[$action];
         }
 
-        $model = $this->tracker->createTrackClass('Model\\FieldMaintenanceModel');
+        /**
+         * @var FieldMaintenanceModel $model
+         */
+        $model = $this->projectOverloader->create('Tracker\\Model\\FieldMaintenanceModel');
 
         if ($detailed) {
             if (('edit' === $action) || ('create' === $action)) {
                 $model->applyEditSettings();
 
                 if ('create' === $action) {
-                    $model->set('gtf_id_track', 'default', $this->_trackId);
+                    $model->set('gtf_id_track', 'default', $this->trackId);
 
                     // Set the default round order
 
                     // Load last row
                     $row = $model->loadFirst(
-                            array('gtf_id_track' => $this->_trackId),
-                            array('gtf_id_order' => SORT_DESC),
+                            ['gtf_id_track' => $this->trackId],
+                            ['gtf_id_order' => SORT_DESC],
                             false // Make sure this does not trigger type dependency
                             );
 
@@ -578,7 +556,7 @@ class FieldsDefinition extends TargetAbstract
      *
      * @return array manual_field_name => null
      */
-    public function getManualFields()
+    public function getManualFields(): array
     {
         $output = [];
         foreach ($this->_fields as $key => $field) {
@@ -597,7 +575,7 @@ class FieldsDefinition extends TargetAbstract
      *
      * @return boolean
      */
-    public function hasAppointmentFields()
+    public function hasAppointmentFields(): bool
     {
         if (null === $this->_hasAppointmentFields) {
             $this->_hasAppointmentFields = false;
@@ -619,7 +597,7 @@ class FieldsDefinition extends TargetAbstract
      * @param string $fieldName
      * @return boolean
      */
-    public function isAppointment($fieldName)
+    public function isAppointment(string $fieldName): bool
     {
         return isset($this->_trackFields[$fieldName]) &&
             (self::TYPE_APPOINTMENT == $this->_trackFields[$fieldName]['gtf_field_type']);
@@ -632,7 +610,7 @@ class FieldsDefinition extends TargetAbstract
      * @param int $fieldId
      * @return string
      */
-    public static function makeKey($sub, $fieldId)
+    public static function makeKey(string $sub, int $fieldId): string
     {
         return $sub . self::FIELD_KEY_SEPARATOR . $fieldId;
     }
@@ -644,7 +622,7 @@ class FieldsDefinition extends TargetAbstract
      * @param array $trackData The currently available track data (track id may be empty)
      * @return array The processed data
      */
-    public function processBeforeSave(array $fieldData, array $trackData)
+    public function processBeforeSave(array $fieldData, array $trackData): ?array
     {
         $this->changed = false;
 
@@ -658,7 +636,7 @@ class FieldsDefinition extends TargetAbstract
             }
         }
 
-        $output = array();
+        $output = [];
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
@@ -702,7 +680,7 @@ class FieldsDefinition extends TargetAbstract
      * @param array $fieldData The values to save, only the key is used, not the code
      * @return int The number of changed fields
      */
-    public function saveFields($respTrackId, array $fieldData)
+    public function saveFields(int $respTrackId, array $fieldData): int
     {
         $saves  = [];
         $logs   = [];
@@ -714,12 +692,12 @@ class FieldsDefinition extends TargetAbstract
             if ($field instanceof FieldInterface) {
                 $manual = $oldManual = false;
                 if ($field->hasManualSetOption()) {
-                    $mkey = $field->getManualKey();
-                    if (array_key_exists($mkey, $fieldData)) {
-                        $manual = (boolean) $fieldData[$mkey];
+                    $mKey = $field->getManualKey();
+                    if (array_key_exists($mKey, $fieldData)) {
+                        $manual = (boolean) $fieldData[$mKey];
                     }
-                    if (array_key_exists($mkey, $oldFieldData)) {
-                        $oldManual = (boolean)$oldFieldData[$mkey];
+                    if (array_key_exists($mKey, $oldFieldData)) {
+                        $oldManual = (boolean)$oldFieldData[$mKey];
                     }
                 }
 
@@ -732,13 +710,13 @@ class FieldsDefinition extends TargetAbstract
 
                 $saveVal = $field->onFieldDataSave($inVal, $fieldData);
 
-                $saves[] = array(
+                $saves[] = [
                     'sub'                        => $field->getFieldSub(),
                     'gr2t2f_id_respondent_track' => $respTrackId,
                     'gr2t2f_id_field'            => $field->getFieldId(),
                     'gr2t2f_value'               => $saveVal,
                     'gr2t2f_value_manual'        => $manual ? 1 : 0,
-                );
+                ];
                 
                 // \MUtil\EchoOut\EchoOut::track(array_key_exists($key, $oldFieldData), $saveVal, $oldFieldData[$key], $manual, $oldManual);
                 if ((! array_key_exists($key, $oldFieldData)) || ($saveVal != $oldFieldData[$key])  || ($manual != $oldManual)) {
@@ -766,20 +744,13 @@ class FieldsDefinition extends TargetAbstract
         return $model->getChanged();
     }
 
-    /**
-     * Split an external field key in component parts
-     *
-     * @param string $sub
-     * @param int $fieldId
-     * @return array 'sub' => suIdb, 'gtf_id_field; => fieldId
-     */
-    public static function splitKey($key)
+    public static function splitKey(string $key): ?array
     {
         if (strpos($key, self::FIELD_KEY_SEPARATOR) === false) {
             return null;
         }
         list($sub, $fieldId) = explode(self::FIELD_KEY_SEPARATOR, $key, 2);
 
-        return array('sub' => $sub, 'gtf_id_field' => $fieldId);
+        return ['sub' => $sub, 'gtf_id_field' => $fieldId];
     }
 }

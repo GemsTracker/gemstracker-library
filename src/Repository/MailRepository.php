@@ -2,57 +2,64 @@
 
 namespace Gems\Repository;
 
-use Gems\Legacy\CurrentUserRepository;
-use Gems\Task\TaskRunnerBatch;
-use Gems\Tracker;
-use Mezzio\Session\SessionInterface;
-use MUtil\Translate\Translator;
-use Psr\Log\LoggerInterface;
-use Zalt\Loader\ProjectOverloader;
+use Gems\Db\CachedResultFetcher;
+use Gems\Translate\CachedDbTranslationRepository;
 
 class MailRepository
 {
-    protected int $currentUserId;
-
     public function __construct(
-        protected Tracker $tracker,
-        protected Translator $translator,
-        CurrentUserRepository $currentUserRepository
+        protected readonly CachedResultFetcher $cachedResultFetcher,
+        protected readonly CachedDbTranslationRepository $cachedDbTranslationRepository,
     )
     {
-        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
-    /**
-     * Perform automatic job mail
-     */
-    public function getCronBatch($id, ProjectOverloader $loader, SessionInterface $session, ?LoggerInterface $cronLog = null)
+    public function getRespondentMailCodes(): array
     {
-        $batch = new TaskRunnerBatch($id, $loader, $session);
-        if ($cronLog) {
-            $batch->setMessageLogger($cronLog);
-        }
-        $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
+        $select = $this->cachedResultFetcher->getResultFetcher()->getSelect('gems__mail_codes');
+        $select->columns(['gmc_id', 'gmc_mail_to_target'])
+            ->where([
+                'gmc_for_respondents' => 1,
+                'gmc_active' => 1,
+            ]);
 
-        if (! $batch->isLoaded()) {
-            $this->loadCronBatch($batch);
-        }
+        $result = $this->cachedResultFetcher->fetchAll('respondentMailCodes', $select, null, ['mailcodes']);
 
-        return $batch;
+        $translatedResult = $this->cachedDbTranslationRepository->translateTable('respondentMailCodes', 'gems__mail_codes', 'gmc_id', $result);
+
+        $pairs = array_column($translatedResult, 'gmc_mail_to_target', 'gmc_id');
+        ksort($pairs);
+        return $pairs;
     }
 
-    /**
-     * Perform the actions and load the tasks needed to start the cron batch
-     *
-     * @param TaskRunnerBatch $batch
-     */
-    protected function loadCronBatch(TaskRunnerBatch $batch)
+    public function getRespondentTrackMailCodes(): array
     {
-        $batch->addMessage(sprintf($this->translator->_("Starting mail jobs")));
-        $batch->addTask('Mail\\AddAllMailJobsTask');
+        $select = $this->cachedResultFetcher->getResultFetcher()->getSelect('gems__mail_codes');
+        $select->columns(['gmc_id', 'gmc_mail_to_target'])
+            ->where([
+               'gmc_for_tracks' => 1,
+               'gmc_active' => 1,
+            ]);
 
-        // Check for unprocessed tokens,
-        $this->tracker->loadCompletedTokensBatch($batch, null, $this->currentUserId);
+        $result = $this->cachedResultFetcher->fetchAll('respondentTrackMailCodes', $select, null, ['mailcodes'],);
+        $translatedResult = $this->cachedDbTranslationRepository->translateTable('respondentMailCodes', 'gems__mail_codes', 'gmc_id', $result);
+
+        $pairs = array_column($translatedResult, 'gmc_mail_to_target', 'gmc_id');
+        ksort($pairs);
+        return $pairs;
+    }
+    public function getRespondentTrackNoMailCodeValue(): int
+    {
+        $mailCodes = $this->getRespondentTrackMailCodes();
+        reset($mailCodes);
+        return (int)key($mailCodes);
+    }
+
+    public function getRespondentNoMailCodeValue()
+    {
+        $mailCodes = $this->getRespondentMailCodes();
+        reset($mailCodes);
+        return key($mailCodes);
     }
 
     public function getMailTargets(): array

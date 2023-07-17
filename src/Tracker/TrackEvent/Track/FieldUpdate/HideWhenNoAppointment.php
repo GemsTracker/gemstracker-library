@@ -12,9 +12,9 @@
 namespace Gems\Tracker\TrackEvent\Track\FieldUpdate;
 
 use Gems\Agenda\Agenda;
+use Gems\Repository\ReceptionCodeRepository;
 use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
-use Gems\Util\ReceptionCode;
 use MUtil\Translate\Translator;
 
 /**
@@ -76,13 +76,13 @@ class HideWhenNoAppointment implements TrackFieldUpdateEventInterface
                 }
 
                 if ($appointment && $appointment->isActive()) {
-                    $newCode = ReceptionCode::RECEPTION_OK;
+                    $newCode = ReceptionCodeRepository::RECEPTION_OK;
                     $newText = null;
                 } else {
                     $newCode = 'skip';
                     $newText = $this->translator->_('Skipped until appointment is set');
                 }
-                $oldCode = ReceptionCode::RECEPTION_OK === $newCode ? 'skip' : ReceptionCode::RECEPTION_OK;
+                $oldCode = ReceptionCodeRepository::RECEPTION_OK === $newCode ? 'skip' : ReceptionCodeRepository::RECEPTION_OK;
                 $curCode = $token->getReceptionCode()->getCode();
                 // \MUtil\EchoOut\EchoOut::track($token->getTokenId(), $curCode, $oldCode, $newCode);
                 if (($oldCode === $curCode) && ($curCode !== $newCode)) {

@@ -21,6 +21,7 @@ use Gems\Menu\RouteHelper;
 use Gems\Tracker;
 use Gems\Util\Translated;
 use MUtil\Model;
+use MUtil\Translate\Translator;
 use Zalt\Html\Html;
 
 /**
@@ -39,14 +40,14 @@ class AppointmentField extends FieldAbstract
      *
      * @var array Null or an array of respondent track fields.
      */
-    protected $_dependsOn = array('gr2t_id_user', 'gr2t_id_organization');
+    protected array|null $_dependsOn = ['gr2t_id_user', 'gr2t_id_organization'];
 
     /**
      * Model settings for this field that may change depending on the dependsOn fields.
      *
      * @var array Null or an array of model settings that change for this field
      */
-    protected $_effecteds = array('multiOptions');
+    protected array|null $_effecteds = ['multiOptions'];
 
     /**
      * The last active appointment in any field
@@ -55,7 +56,7 @@ class AppointmentField extends FieldAbstract
      *
      * @var array of \Gems\Agenda\Appointment)
      */
-    protected static $_lastActiveAppointment = array();
+    protected static array  $_lastActiveAppointment = [];
 
     /**
      * The last active appointment in any field
@@ -64,7 +65,7 @@ class AppointmentField extends FieldAbstract
      *
      * @var array of $_lastActiveKey => array(appId => appId)
      */
-    protected static $_lastActiveAppointmentIds = array();
+    protected static array $_lastActiveAppointmentIds = [];
 
     /**
      * The key for the current calculation to self::$_lastActiveAppointment  and
@@ -75,26 +76,23 @@ class AppointmentField extends FieldAbstract
     protected $_lastActiveKey;
 
     /**
-     * @var Agenda
-     */
-    protected $agenda;
-
-    /**
      * The format string for outputting appointments
      *
      * @var string
      */
     protected string $appointmentTimeFormat = 'j M Y H:i';
 
-    /**
-     * @var RouteHelper
-     */
-    protected $routeHelper;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    public function __construct(
+        int $trackId,
+        string $fieldKey,
+        array $fieldDefinition,
+        Translator $translator,
+        Translated $translatedUtil,
+        protected readonly Agenda $agenda,
+        protected readonly RouteHelper $routeHelper,
+    ) {
+        parent::__construct($trackId, $fieldKey, $fieldDefinition, $translator, $translatedUtil);
+    }
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -103,10 +101,10 @@ class AppointmentField extends FieldAbstract
      *
      * @param array $settings The settings set so far
      */
-    protected function addModelSettings(array &$settings)
+    protected function addModelSettings(array &$settings): void
     {
         $settings['elementClass']   = 'Select';
-        $settings['formatFunction'] = array($this, 'showAppointment');
+        $settings['formatFunction'] = [$this, 'showAppointment'];
     }
 
     /**
@@ -116,7 +114,7 @@ class AppointmentField extends FieldAbstract
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $fieldData)
+    public function calculateFieldInfo(mixed $currentValue, array $fieldData): mixed
     {
         if (! $currentValue) {
             return $currentValue;
@@ -143,10 +141,10 @@ class AppointmentField extends FieldAbstract
      * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
      */
-    public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
+    public function calculateFieldValue(mixed $currentValue, array $fieldData, array $trackData): mixed
     {
-        if ($currentValue || isset($this->_fieldDefinition['gtf_filter_id'])) {
-            if ($this->_lastActiveKey && isset($this->_fieldDefinition['gtf_filter_id'])) {
+        if ($currentValue || isset($this->fieldDefinition['gtf_filter_id'])) {
+            if ($this->_lastActiveKey && isset($this->fieldDefinition['gtf_filter_id'])) {
                 $fromDate   = false;
                 $lastActive = self::$_lastActiveAppointment[$this->_lastActiveKey];
 
@@ -166,33 +164,33 @@ class AppointmentField extends FieldAbstract
                 }
 
                 if ($fromDate instanceof DateTimeInterface) {
-                    $select = $this->agenda->createAppointmentSelect(array('gap_id_appointment'));
+                    $select = $this->agenda->createAppointmentSelect(['gap_id_appointment']);
                     $select->onlyActive()
-                            ->forFilterId($this->_fieldDefinition['gtf_filter_id'])
+                            ->forFilterId($this->fieldDefinition['gtf_filter_id'])
                             ->forRespondent($trackData['gr2t_id_user'], $trackData['gr2t_id_organization']);
 
                     $minDate = Period::applyPeriod(
                             $fromDate,
-                            $this->_fieldDefinition['gtf_min_diff_unit'],
-                            (int)$this->_fieldDefinition['gtf_min_diff_length']
+                            $this->fieldDefinition['gtf_min_diff_unit'],
+                            (int)$this->fieldDefinition['gtf_min_diff_length']
                             );
-                    if ($this->_fieldDefinition['gtf_max_diff_exists']) {
+                    if ($this->fieldDefinition['gtf_max_diff_exists']) {
                         $maxDate = Period::applyPeriod(
                                 $fromDate,
-                                $this->_fieldDefinition['gtf_max_diff_unit'],
-                                (int)$this->_fieldDefinition['gtf_max_diff_length']
+                                $this->fieldDefinition['gtf_max_diff_unit'],
+                                (int)$this->fieldDefinition['gtf_max_diff_length']
                                 );
                     } else {
                         $maxDate = null;
                     }
-                    if ($this->_fieldDefinition['gtf_min_diff_length'] > 0) {
+                    if ($this->fieldDefinition['gtf_min_diff_length'] > 0) {
                         $select->forPeriod($minDate, $maxDate, true);
                     } else {
                         $select->forPeriod($maxDate, $minDate, false);
                     }
 
-                    if ($this->_fieldDefinition['gtf_uniqueness']) {
-                        switch ($this->_fieldDefinition['gtf_uniqueness']) {
+                    if ($this->fieldDefinition['gtf_uniqueness']) {
+                        switch ($this->fieldDefinition['gtf_uniqueness']) {
                             case 1: // Track instances may link only once to an appointment
                                 $select->uniqueInTrackInstance(
                                         self::$_lastActiveAppointmentIds[$this->_lastActiveKey]
@@ -206,7 +204,7 @@ class AppointmentField extends FieldAbstract
                                     $respTrackId = null;
                                 }
                                 $select->uniqueForTrackId(
-                                        $this->_trackId,
+                                        $this->trackId,
                                         $respTrackId,
                                         self::$_lastActiveAppointmentIds[$this->_lastActiveKey]
                                         );
@@ -246,7 +244,7 @@ class AppointmentField extends FieldAbstract
      * @param array $trackData The currently available track data (track id may be empty)
      * @return \Gems\Tracker\Field\FieldAbstract
      */
-    public function calculationStart(array $trackData)
+    public function calculationStart(array $trackData): FieldAbstract
     {
         if (isset($trackData['gr2t_id_respondent_track'])) {
             $this->_lastActiveKey = $trackData['gr2t_id_respondent_track'];
@@ -257,7 +255,7 @@ class AppointmentField extends FieldAbstract
         }
         if ($this->_lastActiveKey) {
             self::$_lastActiveAppointment[$this->_lastActiveKey]    = null;
-            self::$_lastActiveAppointmentIds[$this->_lastActiveKey] = array();
+            self::$_lastActiveAppointmentIds[$this->_lastActiveKey] = [];
         }
 
         return $this;
@@ -281,7 +279,7 @@ class AppointmentField extends FieldAbstract
      * @param boolean $new True when the item is a new record not yet saved
      * @return array (setting => value)
      */
-    public function getDataModelDependyChanges(array $context, $new)
+    public function getDataModelDependencyChanges(array $context, bool $new): array|null
     {
         if ($this->isReadOnly()) {
             return null;
@@ -301,9 +299,9 @@ class AppointmentField extends FieldAbstract
      *
      * @return boolean When this field can be calculated, but also set manually
      */
-    public function hasManualSetOption()
+    public function hasManualSetOption(): bool
     {
-        return (! $this->isReadOnly()) && $this->_fieldDefinition['gtf_filter_id'];
+        return (! $this->isReadOnly()) && $this->fieldDefinition['gtf_filter_id'];
     }
 
     /**
@@ -315,7 +313,7 @@ class AppointmentField extends FieldAbstract
     public function showAppointment($value)
     {
         if (! $value) {
-            return $this->_('Unknown');
+            return $this->translator->_('Unknown');
         }
         if ($value instanceof Appointment) {
             $appointment = $value;
