@@ -514,7 +514,7 @@ class LimeSurvey3m00FieldMap
                 LEFT JOIN ' . $surveyTable . ' AS s ON s.sid = q.sid AND q.language = s.language
                 WHERE s.sid = ?';
 
-            $attributes = $this->lsDb->fetchAll($sql, $this->sourceSurveyId);
+            $attributes = $this->lsResultFetcher->fetchAll($sql, [$this->sourceSurveyId]);
 
             if (null === $attributes) {
                 // If DB lookup failed, return the default
