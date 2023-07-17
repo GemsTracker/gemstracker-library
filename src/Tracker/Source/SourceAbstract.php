@@ -36,20 +36,6 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     public static $metaFields = [];
 
     /**
-     * The database connection to \Gems itself
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    private $_gemsDb;
-
-    /**
-     * The information from the gems__sources for this source
-     *
-     * @var array
-     */
-    private $_sourceData;
-
-    /**
      * The database connection to the source, usedable by all implementations that use a database
      */
     private Adapter $_sourceDb;
@@ -66,15 +52,17 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     protected $valueEncryptor;
 
     /**
-     * Standard constructor for sources
+     * Standard constructor for sources.
+     * We do not want to copy db using registry because that is public and
+     * this should be private.
      *
-     * @param array $sourceData The information from gems__sources for this source.
-     * @param \Zend_Db_Adapter_Abstract $gemsDb Do not want to copy db using registry because that is public and this should be private
+     * @param array $sourceData                 The information from gems__sources for this source.
+     * @param \Zend_Db_Adapter_Abstract $gemsDb The database connection to \Gems itself
      */
-    public function __construct(array $sourceData, \Zend_Db_Adapter_Abstract $gemsDb)
-    {
-        $this->_sourceData = $sourceData;
-        $this->_gemsDb     = $gemsDb;
+    public function __construct(
+        private array $_sourceData,
+        private \Zend_Db_Adapter_Abstract $_gemsDb
+    ) {
     }
 
     /**

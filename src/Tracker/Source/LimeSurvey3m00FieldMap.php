@@ -42,74 +42,28 @@ class LimeSurvey3m00FieldMap
     protected $_fieldMap;
     protected $_hardAnswers;
     protected $_titlesMap;
-
-    /**
-     * @var HelperAdapter
-     */
-    protected HelperAdapter $cache;
-
-    /**
-     * The language of this fieldmap
-     *
-     * @var string
-     */
-    protected string $language;
-
-    /**
-     * Limesurvey database adapter
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected \Zend_Db_Adapter_Abstract $lsDb;
-
     protected $tableMetaData;
-
-    /**
-     * Prefix to add to standard table name
-     *
-     * @var string
-     */
-    protected string $tablePrefix;
-
-    /**
-     *
-     * @var Translator
-     */
-    protected Translator $translate;
-
-    /**
-     * The Lime-survey survey Id
-     *
-     * @var int
-     */
-    protected int $sourceSurveyId;
-
-    /**
-     * The GemsTracker source id
-     *
-     * @var int
-     */
-    protected int $sourceId;
 
     /**
      * Construct a fieldmap object to add LS source code knowledge and interpretation to the database data about a survey.
      *
-     * @param int $sourceSurveyId            Survey ID
-     * @param string $language               (ISO) Language
+     * @param int $sourceSurveyId            The LimeSurvey survey Id
+     * @param string $language               (ISO) Language of this fieldmap
      * @param \Zend_Db_Adapter_Abstract $lsDb The Lime Survey database connection
      * @param Translator $translate           A translate object
      * @param string $tablePrefix              The prefix to use for all LS tables (in this installation)
      * @param \Gems\Cache\HelperAdapter $cache
+     * @param int $sourceId                   The GemsTracker source id
      */
-    public function __construct(int $sourceSurveyId, string $language, \Zend_Db_Adapter_Abstract $lsDb, Translator $translate, string $tablePrefix, HelperAdapter $cache, int $sourceId)
-    {
-        $this->sourceSurveyId = $sourceSurveyId;
-        $this->language       = $language;
-        $this->lsDb           = $lsDb;
-        $this->translate      = $translate;
-        $this->tablePrefix    = $tablePrefix;
-        $this->cache          = $cache;
-        $this->sourceId       = $sourceId;
+    public function __construct(
+        protected int $sourceSurveyId,
+        protected string $language,
+        protected \Zend_Db_Adapter_Abstract $lsDb,
+        protected Translator $translate,
+        protected string $tablePrefix,
+        protected HelperAdapter $cache,
+        protected int $sourceId
+    ) {
     }
 
     /**
