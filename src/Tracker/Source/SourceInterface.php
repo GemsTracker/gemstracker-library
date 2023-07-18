@@ -150,7 +150,7 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * @param int|string|null $sourceSurveyId Optional Survey Id used by source
      * @return array fieldname => label
      */
-    public function getQuestionList($language, int|string $surveyId, int|string|null $sourceSurveyId = null): array;
+    public function getQuestionList(string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): array;
 
     /**
      * Returns the answers in simple raw array format, without value processing etc.
@@ -162,7 +162,7 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * @param int|string|null $sourceSurveyId Optional Survey Id used by source
      * @return array Field => Value array
      */
-    public function getRawTokenAnswerRow($tokenId, int|string $surveyId, int|string|null $sourceSurveyId = null): array;
+    public function getRawTokenAnswerRow(string $tokenId, int|string $surveyId, int|string|null $sourceSurveyId = null): array;
 
     /**
      * Returns the answers of multiple tokens in simple raw nested array format,

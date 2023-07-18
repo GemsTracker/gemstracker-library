@@ -1028,10 +1028,10 @@ class LimeSurvey3m00Database extends SourceAbstract
      * tokens.
      *
      * @param array $tokenIds
-     * @param int $sourceSurveyId
-     * @return non-empty-array<int<0, max>, string>
+     * @param int|string $sourceSurveyId
+     * @return array
      */
-    public function getCompletedTokens($tokenIds, $sourceSurveyId): array
+    public function getCompletedTokens(array $tokenIds, int|string $sourceSurveyId): array
     {
         $lsResultFetcher = $this->getSourceResultFetcher();
         $lsToken   = $this->_getTokenTableName($sourceSurveyId);
@@ -1073,7 +1073,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return array{string: string}  Fieldname => label
      */
-    public function getDatesList($language, $surveyId, $sourceSurveyId = null): array
+    public function getDatesList($language, $surveyId, int|string|null $sourceSurveyId = null): array
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1104,11 +1104,11 @@ class LimeSurvey3m00Database extends SourceAbstract
      *                  nothing for no answer
      *
      * @param string $language   (ISO) language string
-     * @param int $surveyId \Gems Survey Id
-     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @param int|string $surveyId \Gems Survey Id
+     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
      * @return array Nested array
      */
-    public function getQuestionInformation($language, $surveyId, $sourceSurveyId = null)
+    public function getQuestionInformation(string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): array
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1123,11 +1123,11 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Used in dropdown list etc..
      *
      * @param string $language   (ISO) language string
-     * @param int $surveyId \Gems Survey Id
-     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @param int|string $surveyId \Gems Survey Id
+     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
      * @return array fieldname => label
      */
-    public function getQuestionList($language, $surveyId, $sourceSurveyId = null)
+    public function getQuestionList(string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): array
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1142,11 +1142,11 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Function may return more fields than just the answers.
      *
      * @param string $tokenId \Gems Token Id
-     * @param int $surveyId \Gems Survey Id
-     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @param int|string $surveyId \Gems Survey Id
+     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
      * @return array Field => Value array
      */
-    public function getRawTokenAnswerRow($tokenId, $surveyId, $sourceSurveyId = null)
+    public function getRawTokenAnswerRow(string $tokenId, int|string $surveyId, int|string|null $sourceSurveyId = null): array
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1183,7 +1183,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return array Of nested Field => Value arrays indexed by tokenId
      */
-    public function getRawTokenAnswerRows(array $filter, $surveyId, $sourceSurveyId = null)
+    public function getRawTokenAnswerRows(array $filter, $surveyId, $sourceSurveyId = null): array
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1261,10 +1261,10 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Get the select object to use for RawTokenAnswerRows
      *
      * @param array $filter
-     * @param int $surveyId
-     * @param int $sourceSurveyId
+     * @param int|string $surveyId
+     * @param int|string|null $sourceSurveyId
      */
-    public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null): Select
+    public function getRawTokenAnswerRowsSelect(array $filter, int|string $surveyId, int|string|null $sourceSurveyId = null): Select
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1331,11 +1331,11 @@ class LimeSurvey3m00Database extends SourceAbstract
      * track by itself.
      *
      * @param \Gems\Tracker\Token $token \Gems token object
-     * @param int $surveyId \Gems Survey Id
-     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @param int|string $surveyId \Gems Survey Id
+     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
      * @return ?DateTimeInterface date time or null
      */
-    public function getStartTime(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null): ?DateTimeInterface
+    public function getStartTime(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface
     {
         // Always return null!
         // The 'startdate' field is the time of the first save, not the time the user started
@@ -1347,11 +1347,11 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Returns a model for the survey answers
      *
      * @param \Gems\Tracker\Survey $survey
-     * @param string $language Optional (ISO) language string
-     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @param ?string $language Optional (ISO) language string
+     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
      * @return \MUtil\Model\ModelAbstract
      */
-    public function getSurveyAnswerModel(\Gems\Tracker\Survey $survey, $language = null, $sourceSurveyId = null): \MUtil\Model\ModelAbstract
+    public function getSurveyAnswerModel(\Gems\Tracker\Survey $survey, ?string $language = null, int|string|null $sourceSurveyId = null): \MUtil\Model\ModelAbstract
     {
         static $cache = array();        // working with 'real' cache produces out of memory error
 
@@ -1374,12 +1374,12 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Retrieve all fields stored in the token table, and store them in the tokencache
      *
      * @param \Gems\Tracker\Token $token
-     * @param int $surveyId
-     * @param ?int $sourceSurveyId
+     * @param int|string $surveyId
+     * @param int|string|null $sourceSurveyId
      * @param array $fields
      * @return array
      */
-    public function getTokenInfo(\Gems\Tracker\Token $token, $surveyId, ?int $sourceSurveyId, array $fields = null)
+    public function getTokenInfo(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId, array $fields = null)
     {
         if (! $token->cacheHas(self::CACHE_TOKEN_INFO)) {
             if (null === $sourceSurveyId) {
