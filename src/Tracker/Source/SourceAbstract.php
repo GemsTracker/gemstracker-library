@@ -63,8 +63,8 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * We do not want to copy db using registry because that is public and
      * this should be private.
      *
-     * @param array $sourceData                 The information from gems__sources for this source.
-     * @param \Zend_Db_Adapter_Abstract $gemsDb The database connection to \Gems itself
+     * @param array $_sourceData                 The information from gems__sources for this source.
+     * @param \Zend_Db_Adapter_Abstract $_gemsDb The database connection to \Gems itself
      */
     public function __construct(
         private array $_sourceData,
@@ -242,7 +242,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
             $offset = (int) $filter['offset'];
             unset($filter['offset']);
         }
-        $select->limit($limit, $offset);
+        $select->limit($limit)->offset($offset);
     }
 
     /**

@@ -986,7 +986,7 @@ class LimeSurvey3m00FieldMap
     /**
      * Get the table structure of the token table
      *
-     * @return array<string, array<TABLE_NAME: string, DATA_TYPE: string>>
+     * @return array{string: array{'TABLE_NAME': string, 'DATA_TYPE': string}}
      */
     public function getTokenTableStructure(): array
     {
@@ -1078,7 +1078,7 @@ class LimeSurvey3m00FieldMap
      * Return an array with a table structure, modeled on the Zend Db metadata.
      *
      * @param string $tableName
-     * @return array<string, array<TABLE_NAME: string, DATA_TYPE: string>>
+     * @return array{string: array{'TABLE_NAME': string, 'DATA_TYPE': string}}
      */
     private function getZendAlikeTableStructure(string $tableName): array
     {

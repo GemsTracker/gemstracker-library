@@ -1274,7 +1274,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         $quotedSurveyTable = $lsPlatform->quoteIdentifier($lsSurveyTable . '.token');
 
         $select = new Select;
-        $select->from($lsTokenTable, $this->_attributeMap)
+        $select->from($lsTokenTable)->columns(array_values($this->_attributeMap))
                ->join($lsSurveyTable, $quotedTokenTable . ' = ' . $quotedSurveyTable);
 
         //Now process the filters
