@@ -1515,7 +1515,8 @@ class LimeSurvey3m00Database extends SourceAbstract
             $sourceSurveyId = $this->_getSid($surveyId);
         }
 
-        $lsDb      = $this->getSourceDatabase();
+        $lsAdapter = $this->getSourceDatabase();
+        $lsResultFetcher = $this->getSourceResultFetcher();
         $lsTab     = $this->_getSurveyTableName($sourceSurveyId);
         $lsTokenId = $this->_getToken($token->getTokenId());
 
@@ -1526,10 +1527,12 @@ class LimeSurvey3m00Database extends SourceAbstract
 
         // \MUtil\EchoOut\EchoOut::track($answers);
 
-        if ($lsDb->fetchOne("SELECT token FROM $lsTab WHERE token = ?", $lsTokenId)) {
-            $where = $lsDb->quoteInto("token = ?", $lsTokenId);
+        $sql = new Sql($lsAdapter);
+        if ($lsResultFetcher->fetchOne("SELECT token FROM $lsTab WHERE token = ?", [$lsTokenId])) {
             if ($answers) {
-                return $lsDb->update($lsTab, $answers, $where);
+                $update = $sql->update($lsTab)->set($answers)->where(['token' => $lsTokenId]);
+                $rows = $sql->prepareStatementForSqlObject($update)->execute()->getAffectedRows();
+                return ($rows > 0);
             }
         } else {
             $current = new \MUtil\Db\Expr\CurrentTimestamp();
@@ -1539,7 +1542,8 @@ class LimeSurvey3m00Database extends SourceAbstract
             $answers['datestamp']     = $current;
             $answers['startdate']     = $current;
 
-            $lsDb->insert($lsTab, $answers);
+            $insert = $sql->insert($lsTab)->values($answers);
+            $sql->prepareStatementForSqlObject($insert)->execute();
 
             return true;
         }
