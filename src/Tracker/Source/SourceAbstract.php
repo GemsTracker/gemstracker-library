@@ -181,37 +181,36 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    protected function _updateSource(array $values, $userId)
+    protected function _updateSource(array $values, $userId): int
     {
-        if ($this->tracker->filterChangesOnly($this->_sourceData, $values)) {
-
-
-            if (\Gems\Tracker::$verbose) {
-                $echo = '';
-                foreach ($values as $key => $val) {
-                    $echo .= $key . ': ' . $this->_sourceData[$key] . ' => ' . $val . "\n";
-                }
-                \MUtil\EchoOut\EchoOut::r($echo, 'Updated values for ' . $this->getId());
-            }
-
-            if (! isset($values['gso_changed'])) {
-                $values['gso_changed'] = new \MUtil\Db\Expr\CurrentTimestamp();
-            }
-            if (! isset($values['gso_changed_by'])) {
-                $values['gso_changed_by'] = $userId;
-            }
-
-            // Update values in this object
-            $this->_sourceData = $values + $this->_sourceData;
-
-            // return 1;
-            $sql = new Sql($this->_gemsDb);
-            $update = $sql->update('gems__sources')->set($values)->where(['gso_id_source' => $this->getId()]);
-            $sql->prepareStatementForSqlObject($update)->execute();
-
-        } else {
+        if (! $this->tracker->filterChangesOnly($this->_sourceData, $values)) {
             return 0;
         }
+
+        if (\Gems\Tracker::$verbose) {
+            $echo = '';
+            foreach ($values as $key => $val) {
+                $echo .= $key . ': ' . $this->_sourceData[$key] . ' => ' . $val . "\n";
+            }
+            \MUtil\EchoOut\EchoOut::r($echo, 'Updated values for ' . $this->getId());
+        }
+
+        if (! isset($values['gso_changed'])) {
+            $values['gso_changed'] = new \MUtil\Db\Expr\CurrentTimestamp();
+        }
+        if (! isset($values['gso_changed_by'])) {
+            $values['gso_changed_by'] = $userId;
+        }
+
+        // Update values in this object
+        $this->_sourceData = $values + $this->_sourceData;
+
+        // return 1;
+        $sql = new Sql($this->_gemsDb);
+        $update = $sql->update('gems__sources')->set($values)->where(['gso_id_source' => $this->getId()]);
+        $sql->prepareStatementForSqlObject($update)->execute();
+
+        return 1;
     }
 
     /**
