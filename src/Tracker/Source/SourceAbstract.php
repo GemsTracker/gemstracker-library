@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Source;
 
 use Gems\Db\Dsn;
+use Laminas\Db\Sql\Sql;
 use Gems\Db\ResultFetcher;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Adapter\Adapter;
@@ -48,6 +49,11 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     private ResultFetcher $_sourceResultFetcher;
 
     /**
+     * ResultFetcher interface to the Gems database.
+     */
+    private ResultFetcher $_gemsResultFetcher;
+
+    /**
      *
      * @var \Gems\Tracker
      */
@@ -63,13 +69,14 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * We do not want to copy db using registry because that is public and
      * this should be private.
      *
-     * @param array $_sourceData                 The information from gems__sources for this source.
-     * @param \Zend_Db_Adapter_Abstract $_gemsDb The database connection to \Gems itself
+     * @param array $_sourceData The information from gems__sources for this source.
+     * @param Adapter $_gemsDb   The database connection to \Gems itself
      */
     public function __construct(
         private array $_sourceData,
-        private \Zend_Db_Adapter_Abstract $_gemsDb
+        private Adapter $_gemsDb
     ) {
+        $this->_gemsResultFetcher = new ResultFetcher($this->_gemsDb);
     }
 
     /**
@@ -79,12 +86,13 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      */
     protected function _getGemsSurveysForSynchronisation()
     {
-        $select = $this->_gemsDb->select();
-        $select->from('gems__surveys', array('gsu_id_survey', 'gsu_surveyor_id'))
-            ->where('gsu_id_source = ?', $this->getId())
+        $select = $this->_gemsResultFetcher->getSelect();
+        $select->from('gems__surveys')
+            ->columns(['gsu_id_survey', 'gsu_surveyor_id'])
+            ->where(['gsu_id_source' => $this->getId()])
             ->order('gsu_surveyor_id');
 
-        return $this->_gemsDb->fetchPairs($select);
+        return $this->_gemsResultFetcher->fetchPairs($select);
     }
 
     /**
@@ -147,7 +155,8 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      */
     protected function _updateGemsSurveyExists(array $surveyorSids, $userId)
     {
-        $sqlWhere = 'gsu_id_source = ' . $this->_gemsDb->quote($this->getId()) . '
+        $platform = $this->_gemsDb->getPlatform();
+        $sqlWhere = 'gsu_id_source = ' . $platform->quoteValue(strval($this->getId())) . '
                 AND (gsu_status IS NULL OR gsu_active = 1 OR gsu_surveyor_active = 1)
                 AND gsu_surveyor_id NOT IN (' . implode(', ', $surveyorSids) . ')';
 
@@ -158,9 +167,11 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
         $data['gsu_changed']         = new \MUtil\Db\Expr\CurrentTimestamp();
         $data['gsu_changed_by']      = $userId;
 
-        $this->_gemsDb->update('gems__surveys', $data, $sqlWhere);
+        $sql = new Sql($this->_gemsDb);
+        $update = $sql->update('gems__surveys')->set($data)->where($sqlWhere);
+        $sql->prepareStatementForSqlObject($update)->execute();
 
-        return $this->_gemsDb->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE ' . $sqlWhere);
+        return $this->_gemsResultFetcher->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE ' . $sqlWhere);
     }
 
     /**
@@ -194,7 +205,9 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
             $this->_sourceData = $values + $this->_sourceData;
 
             // return 1;
-            return $this->_gemsDb->update('gems__sources', $values, array('gso_id_source = ?' => $this->getId()));
+            $sql = new Sql($this->_gemsDb);
+            $update = $sql->update('gems__sources')->set($values)->where(['gso_id_source' => $this->getId()]);
+            $sql->prepareStatementForSqlObject($update)->execute();
 
         } else {
             return 0;
@@ -267,7 +280,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int The source Id of this source
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->_sourceData['gso_id_source'];
     }
@@ -299,8 +312,10 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
             if ($dbConfig['dbname'] = $this->_sourceData['gso_ls_database']) {
 
                 // Default config values from gemsDb
-                $gemsConfig = $this->_gemsDb->getConfig();
-                $gemsName   = $gemsConfig['dbname'];
+                /** @var AbstractConnection */
+                $connection = $this->_gemsDb->driver->getConnection();
+                $gemsConfig = $connection->getConnectionParameters();
+                $gemsName   = $gemsConfig['database'];
 
                 if (($dbConfig['dbname'] != $gemsName) &&
                     ($driver = $this->_sourceData['gso_ls_adapter'])) {
@@ -373,10 +388,9 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
         static $cache = array();
 
         if (! isset($cache[$surveyId])) {
-            $cache[$surveyId] = $this->_gemsDb->fetchRow(
+            $cache[$surveyId] = $this->_gemsResultFetcher->fetchRow(
                 'SELECT * FROM gems__surveys WHERE gsu_id_survey = ? LIMIT 1',
-                $surveyId,
-                \Zend_Db::FETCH_ASSOC
+                [$surveyId]
             );
         }
 
@@ -401,12 +415,13 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     public function synchronizeSurveyBatch(\Gems\Task\TaskRunnerBatch $batch, $userId)
     {
         // Surveys in \Gems
-        $select = $this->_gemsDb->select();
-        $select->from('gems__surveys', ['gsu_id_survey', 'gsu_surveyor_id'])
-            ->where('gsu_id_source = ?', $this->getId())
+        $select = $this->_gemsResultFetcher->getSelect();
+        $select->from('gems__surveys')
+            ->columns(['gsu_id_survey', 'gsu_surveyor_id'])
+            ->where(['gsu_id_source' => $this->getId()])
             ->order('gsu_surveyor_id');
 
-        $gemsSurveys = $this->_gemsDb->fetchPairs($select);
+        $gemsSurveys = $this->_gemsResultFetcher->fetchPairs($select);
         if (!$gemsSurveys) {
             $gemsSurveys = [];
         }
@@ -449,14 +464,21 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     protected function updateTokens($userId, $updateTokens = true)
     {
         $tokenLib = $this->tracker->getTokenLibrary();
+        $sourceId = $this->_gemsDb->getPlatform()->quoteValue($this->getId());
 
-        $sql = 'UPDATE gems__tokens
-                    SET gto_id_token = ' . $this->_getTokenFromToSql($tokenLib->getFrom(), $tokenLib->getTo(), 'gto_id_token') . ',
-                        gto_changed = CURRENT_TIMESTAMP,
-                        gto_changed_by = ' . $this->_gemsDb->quote($userId) . '
-                    WHERE ' . $this->_getTokenFromSqlWhere($tokenLib->getFrom(), 'gto_id_token') . ' AND
-                        gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ' . $this->_gemsDb->quote($this->getId()) . ')';
+        $sql = new Sql($this->_gemsDb);
+        $update = $sql->update('gems__tokens')
+                ->set([
+                    'gto_id_token' => $this->_getTokenFromToSql($tokenLib->getFrom(), $tokenLib->getTo(), 'gto_id_token'),
+                    'gto_changed' => new \Laminas\Db\Sql\Expression('CURRENT_TIMESTAMP'),
+                    'gto_changed_by' => $userId,
+                ])
+                ->where(
+                    $this->_getTokenFromSqlWhere($tokenLib->getFrom(), 'gto_id_token')
+                    . ' AND gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ' . $sourceId . ')'
+                );
+        $result = $sql->prepareStatementForSqlObject($update)->execute();
 
-        return $this->_gemsDb->query($sql)->rowCount();
+        return $result->getAffectedRows();
     }
 }

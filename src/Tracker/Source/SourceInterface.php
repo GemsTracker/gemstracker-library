@@ -27,11 +27,13 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
 {
     /**
      * Standard constructor for sources
+     * We do not want to copy db using registry because that is public and
+     * this should be private.
      *
-     * @param array $sourceData The information from gems__sources for this source.
-     * @param \Zend_Db_Adapter_Abstract $gemsDb Do not want to copy db using registry because that is public and this should be private
+     * @param array $_sourceData The information from gems__sources for this source.
+     * @param Adapter $_gemsDb   The database connection to \Gems itself
      */
-    public function __construct(array $sourceData, \Zend_Db_Adapter_Abstract $gemsDb);
+    public function __construct(array $_sourceData, Adapter $_gemsDb);
 
     /**
      * @return boolean When true can export when survey inactive in source
