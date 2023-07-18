@@ -20,6 +20,7 @@ use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Tracker;
 use Gems\Util\Translated;
+use Laminas\Db\Sql\Expression;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
 use MUtil\Legacy\RequestHelper;
@@ -149,10 +150,13 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     public function checkAction()
     {
         $sourceId = $this->getSourceId();
-        $where    = 'gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ?)';
 
-        $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->recalculateTokens($session, 'sourceCheck' . $sourceId, $this->currentUserId, $where, $sourceId);
+        $batch = $this->tracker->recalculateTokens(
+            $this->request->getAttribute(SessionInterface::class),
+            'sourceCheck' . $sourceId,
+            $this->currentUserId,
+            [new Expression(sprintf('gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = %d)', $sourceId))]
+        );
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Checking all surveys in the %s source for answers.'),
@@ -178,8 +182,11 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function checkAllAction()
     {
-        $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->recalculateTokens($session, 'surveyCheckAll', $this->currentUserId);
+        $batch = $this->tracker->recalculateTokens(
+            $this->request->getAttribute(SessionInterface::class),
+            'surveyCheckAll',
+            $this->currentUserId
+        );
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = $this->_('Checking all surveys for all sources for answers.');
@@ -338,9 +345,9 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @return int
      */
-    private function getSourceId()
+    private function getSourceId(): int
     {
-        $sourceId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID);
+        $sourceId = intval($this->request->getAttribute(\MUtil\Model::REQUEST_ID));
 
         return $sourceId;
     }

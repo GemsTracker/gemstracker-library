@@ -1646,7 +1646,7 @@ class Token
      */
     public function hasAnswersLoaded(): bool
     {
-        return (bool) $this->_sourceDataRaw;
+        return (bool) isset($this->_sourceDataRaw);
     }
 
     /**

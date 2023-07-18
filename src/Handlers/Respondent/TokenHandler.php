@@ -204,13 +204,11 @@ class TokenHandler extends TokenSearchHandlerAbstract
     {
         $token       = $this->getToken();
         $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-        $where       = 'gto_id_token = ?';
         $batch = $this->tracker->recalculateTokens(
             $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'answersCheckToken__' . $token->getTokenId(),
             $currentUser->getUserId(),
-            $where,
-            $token->getTokenId()
+            ['gto_id_token' => $token->getTokenId()]
         );
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 

@@ -32,6 +32,7 @@ use Gems\Tracker\SurveyModel;
 use Gems\Tracker\Token;
 use Gems\Tracker\Token\TokenFilter;
 use Gems\Tracker\Token\TokenLibrary;
+use Gems\Tracker\Token\LaminasTokenSelect;
 use Gems\Tracker\Token\TokenSelect;
 use Gems\Tracker\Token\TokenValidator;
 use Gems\Tracker\TrackerInterface;
@@ -166,27 +167,9 @@ class Tracker implements TrackerInterface
     }
 
     /**
-     * Add one or more survey sourceclasses
-     *
-     * @param array $stack classname / description array of sourceclasses
+     * @inheritdoc
      */
-    /*public function addSourceClasses(array $stack): void
-    {
-        $this->_sourceClasses = array_merge($this->_sourceClasses, $stack);
-    }*/
-
-    /**
-     * Checks tracks for changes to the track and round definitions
-     * and corrects them.
-     *
-     * Does recalculate changed tracks
-     *
-     * @param string $batchId A unique identifier for the current batch
-     * @param int $userId Id of the user who takes the action (for logging)
-     * @param string $cond Optional where statement for selecting tracks
-     * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
-     */
-    public function checkTrackRounds(SessionInterface $session, string $batchId, ?int $userId = null, ?string $cond = null, ?string $param = null): TaskRunnerBatch
+    public function checkTrackRounds(SessionInterface $session, string $batchId, ?int $userId = null, array $cond = []): TaskRunnerBatch
     {
         $userId = $this->_checkUserId($userId);
 
@@ -202,7 +185,7 @@ class Tracker implements TrackerInterface
                 ->join('gems__tracks', 'gr2t_id_track = gtr_id_track', []);
 
             if ($cond) {
-                $respTrackSelect->where([$cond => $param]);
+                $respTrackSelect->where($cond);
             }
             $respTrackSelect->where([
                 'gr2t_active' => 1,
@@ -212,14 +195,17 @@ class Tracker implements TrackerInterface
             // Also recaclulate when track was completed: there may be new rounds!
             // $respTrackSelect->where('gr2t_count != gr2t_completed');
 
-            $statement = $this->resultFetcher->query($respTrackSelect);
+            $resultSet = $this->resultFetcher->query($respTrackSelect);
 
-            //Process one item at a time to prevent out of memory errors for really big resultsets
-            while ($respTrackData = $statement->current()) {
-                $respTrackId = $respTrackData['gr2t_id_respondent_track'];
-                $batch->setTask('Tracker\\CheckTrackRounds', 'trkchk-' . $respTrackId, $respTrackId, $userId);
-                $batch->addToCounter('resptracks');
-                $statement->next();
+            if ($resultSet instanceof ResultSet) {
+                //Process one item at a time to prevent out of memory errors for really big resultsets
+                while ($resultSet->valid()) {
+                    $respTrackData = $resultSet->current();
+                    $respTrackId = $respTrackData['gr2t_id_respondent_track'];
+                    $batch->setTask('Tracker\\CheckTrackRounds', 'trkchk-' . $respTrackId, $respTrackId, $userId);
+                    $batch->addToCounter('resptracks');
+                    $resultSet->next();
+                }
             }
         }
 
@@ -375,7 +361,7 @@ class Tracker implements TrackerInterface
         static $fields = false; // Using static so it will be refreshed once per request
 
         if ($fields === false) {
-            $fields = array();
+            $fields = [];
             $model  = $this->createTrackClass('Model\\FieldMaintenanceModel');
             $rows   = $model->load(array('gtf_field_code IS NOT NULL'), array('gtf_field_code' => SORT_ASC));
 
@@ -1003,26 +989,28 @@ class Tracker implements TrackerInterface
      * Does not reflect changes to tracks or rounds.
      *
      * @param string $batch_id A unique identifier for the current batch
-     * @param TokenSelect Select statements selecting tokens
+     * @param LaminasTokenSelect Select statements selecting tokens
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    protected function processTokensBatch(SessionInterface $session, $batchId, TokenSelect $tokenSelect, $userId): TaskRunnerBatch
+    protected function processTokensBatch(SessionInterface $session, $batchId, LaminasTokenSelect $tokenSelect, $userId): TaskRunnerBatch
     {
-        $where = implode(' ', $tokenSelect->getSelect()->getPart(\Zend_Db_Select::WHERE));
-
         $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
 
         //Now set the step duration
         $batch->minimalStepDurationMs = 3000;
 
         if (! $batch->isLoaded()) {
-            $statement = $tokenSelect->getSelect()->query();
-            //Process one row at a time to prevent out of memory errors for really big resultsets
-            while ($tokenData  = $statement->fetch()) {
-                $tokenId = $tokenData['gto_id_token'];
-                $batch->setTask('Tracker\\CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
-                $batch->addToCounter('tokens');
+            $resultSet = $this->resultFetcher->query($tokenSelect->getSelect());
+            if ($resultSet instanceof ResultSet) {
+                //Process one row at a time to prevent out of memory errors for really big resultsets
+                while ($resultSet->valid()) {
+                    $tokenData = $resultSet->current();
+                    $tokenId = $tokenData['gto_id_token'];
+                    $batch->setTask('Tracker\\CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
+                    $batch->addToCounter('tokens');
+                    $resultSet->next();
+                }
             }
         }
 
@@ -1030,30 +1018,22 @@ class Tracker implements TrackerInterface
     }
 
     /**
-     * Recalculates all token dates, timing and results
-     * and outputs text messages.
-     *
-     * Does not reflect changes to tracks or rounds.
-     *
-     * @param string $batch_id A unique identifier for the current batch
-     * @param int $userId Id of the user who takes the action (for logging)
-     * @param string $cond
-     * @return TaskRunnerBatch A batch to process the changes
+     * @inheritdoc
      */
-    public function recalculateTokens(SessionInterface $session, string $batch_id, int $userId = null, string $cond = null, mixed $bind = null): TaskRunnerBatch
+    public function recalculateTokens(SessionInterface $session, string $batch_id, int $userId = null, array $cond = []): TaskRunnerBatch
     {
         $userId = $this->_checkUserId($userId);
-        $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
-        $tokenSelect->andReceptionCodes(array())
-                    ->andRespondents(array())
-                    ->andRespondentOrganizations(array())
-                    ->andConsents(array());
+        $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
+        $tokenSelect->andReceptionCodes([])
+                    ->andRespondents([])
+                    ->andRespondentOrganizations([])
+                    ->andConsents([]);
         if ($cond) {
-            $tokenSelect->forWhere($cond, $bind);
+            $tokenSelect->forWhere($cond);
         }
         //Only select surveys that are active in the source (so we can recalculate inactive in \Gems)
-        $tokenSelect->andSurveys(array());
-        $tokenSelect->forWhere('gsu_surveyor_active = 1');
+        $tokenSelect->andSurveys([]);
+        $tokenSelect->forWhere(['gsu_surveyor_active' => 1]);
 
         self::$verbose = true;
         return $this->processTokensBatch($session, $batch_id, $tokenSelect, $userId);
@@ -1118,16 +1098,16 @@ class Tracker implements TrackerInterface
         if (! $batch->isLoaded()) {
 
             $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
-            $tokenSelect->andSurveys(array())
+            $tokenSelect->andSurveys([])
                         ->forWhere('gsu_surveyor_active = 1')
                         ->forWhere('gto_in_source = 1');
 
             if ($cond) {
                 // Add all connections for filtering, but select only surveys that are active in the source
-                $tokenSelect->andReceptionCodes(array())
-                        ->andRespondents(array())
-                        ->andRespondentOrganizations(array())
-                        ->andConsents(array())
+                $tokenSelect->andReceptionCodes([])
+                        ->andRespondents([])
+                        ->andRespondentOrganizations([])
+                        ->andConsents([])
                         ->forWhere($cond, $bind);
             }
 

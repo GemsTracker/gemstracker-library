@@ -171,12 +171,14 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function checkAction(): ?ResponseInterface
     {
-        $session = $this->request->getAttribute(SessionInterface::class);
-
         $surveyId = $this->getSurveyId();
-        $where    = 'gto_id_survey = ?';
 
-        $batch = $this->tracker->recalculateTokens($session, 'surveyCheck' . $surveyId, $this->currentUserId, $where, $surveyId);
+        $batch = $this->tracker->recalculateTokens(
+            $this->request->getAttribute(SessionInterface::class),
+            'surveyCheck' . $surveyId,
+            $this->currentUserId,
+            ['gto_id_survey' => $surveyId]
+        );
         $batch->setBaseUrl($this->requestInfo->getBasePath());
         $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));
 
@@ -198,9 +200,11 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function checkAllAction(): ?ResponseInterface
     {
-        $session = $this->request->getAttribute(SessionInterface::class);
-
-        $batch = $this->tracker->recalculateTokens($session,'surveyCheckAll', $this->currentUserId);
+        $batch = $this->tracker->recalculateTokens(
+            $this->request->getAttribute(SessionInterface::class),
+            'surveyCheckAll',
+            $this->currentUserId
+        );
         $batch->setBaseUrl($this->requestInfo->getBasePath());
         $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));
 

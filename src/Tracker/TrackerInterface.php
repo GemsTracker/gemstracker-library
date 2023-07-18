@@ -65,10 +65,10 @@ interface TrackerInterface
      *
      * @param string $batchId A unique identifier for the current batch
      * @param int $userId Id of the user who takes the action (for logging)
-     * @param string $cond Optional where statement for selecting tracks
+     * @param array $cond Optional where statement for selecting track rounds
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function checkTrackRounds(SessionInterface $session, string $batchId, ?int $userId = null, ?string $cond = null): TaskRunnerBatch;
+    public function checkTrackRounds(SessionInterface $session, string $batchId, ?int $userId = null, array $cond = []): TaskRunnerBatch;
 
     /**
      * Create a new track for a patient
@@ -344,10 +344,10 @@ interface TrackerInterface
      * @param SessionInterface $session
      * @param string $batch_id A unique identifier for the current batch
      * @param int $userId    Id of the user who takes the action (for logging)
-     * @param string $cond
+     * @param array $cond Optional filter
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function recalculateTokens(SessionInterface $session, string $batch_id, ?int $userId = null, string $cond = null, mixed $bind = null): TaskRunnerBatch;
+    public function recalculateTokens(SessionInterface $session, string $batch_id, ?int $userId = null, array $cond = []): TaskRunnerBatch;
 
     /**
      * Recalculates the fields in tracks.

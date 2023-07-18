@@ -126,13 +126,11 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
         $respondent  = $this->getRespondent();
         $respTrackId = $this->getRespondentTrackId();
         $trackEngine = $this->getTrackEngine();
-        $where       = 'gr2t_id_respondent_track = ?';
         $batch = $this->tracker->checkTrackRounds(
             $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'trackCheckRoundsFor_' . $respTrackId,
             $this->currentUser->getUserId(),
-            $where,
-            (string)$respTrackId
+            ['gr2t_id_respondent_track' => $respTrackId]
         );
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
@@ -165,13 +163,11 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
         $respondent  = $this->getRespondent();
         $respTrackId = $this->getRespondentTrackId();
         $trackEngine = $this->getTrackEngine();
-        $where       = 'gto_id_respondent_track = ?';
         $batch = $this->tracker->recalculateTokens(
             $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'answersCheckAllFor__' . $respTrackId,
             $this->currentUser->getUserId(),
-            $where,
-            $respTrackId
+            ['gto_id_respondent_track' => $respTrackId]
         );
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
