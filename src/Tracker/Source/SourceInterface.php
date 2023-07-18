@@ -53,12 +53,12 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
     /**
      * Survey source synchronization check function
      *
-     * @param string $sourceSurveyId
-     * @param int $surveyId
+     * @param int|string|null $sourceSurveyId
+     * @param int|string $surveyId
      * @param int $userId
      * @return array message string or array of messages
      */
-    public function checkSurvey($sourceSurveyId, $surveyId, $userId): array;
+    public function checkSurvey(int|string|null $sourceSurveyId, int|string $surveyId, int $userId): array;
 
     /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
@@ -84,12 +84,12 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * @param int|string|null $sourceSurveyId Optional Survey Id used by source
      * @return ?DateTimeInterface date time or null
      */
-    public function getAnswerDateTime($fieldName, \Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface;
+    public function getAnswerDateTime(string $fieldName, \Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface;
 
     /**
      * Returns all the gemstracker names for attributes stored in source for a token
      *
-     * @return array{string: string}
+     * @return array<int, string>
      */
     public function getAttributes(): array;
 

@@ -111,7 +111,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param string $fieldName Name of database field to use
      * @return string
      */
-    protected function _getTokenFromSqlWhere($from, $fieldName)
+    protected function _getTokenFromSqlWhere(string $from, string $fieldName): string
     {
         $lsPlatform = $this->getSourceDatabase()->getPlatform();
         $tokField = $lsPlatform->quoteIdentifier($fieldName);
@@ -132,7 +132,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param string $fieldName Name of database field to use
      * @return string
      */
-    protected function _getTokenFromToSql($from, $to, $fieldName)
+    protected function _getTokenFromToSql(string $from, string $to, string $fieldName): string
     {
         $lsPlatform = $this->getSourceDatabase()->getPlatform();
         if ($from) {
@@ -154,7 +154,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param int $userId   Id of the user who takes the action (for logging)
      * @return array The names of the surveys that no longer exist
      */
-    protected function _updateGemsSurveyExists(array $surveyorSids, $userId)
+    protected function _updateGemsSurveyExists(array $surveyorSids, int $userId): array
     {
         $platform = $this->_gemsDb->getPlatform();
         $sqlWhere = 'gsu_id_source = ' . $platform->quoteValue(strval($this->getId())) . '
@@ -182,7 +182,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    protected function _updateSource(array $values, $userId): int
+    protected function _updateSource(array $values, int $userId): int
     {
         if (! $this->tracker->filterChangesOnly($this->_sourceData, $values)) {
             return 0;
@@ -221,7 +221,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param bool $addDatabaseName Optional, when true (= default) and there is a database name then it is prepended to the name.
      * @return string
      */
-    protected function addDatabasePrefix($tableName, $addDatabaseName = true): string
+    protected function addDatabasePrefix(string $tableName, bool $addDatabaseName = true): string
     {
         return ($addDatabaseName && $this->_sourceData['gso_ls_database'] ? $this->_sourceData['gso_ls_database'] . '.' : '') .
             $this->_sourceData['gso_ls_table_prefix'] .
@@ -261,7 +261,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     /**
      * Returns all the gemstracker names for attributes stored in source for a token
      *
-     * @return array<string, string>
+     * @return array<int, string>
      */
     public function getAttributes(): array
     {
@@ -293,11 +293,11 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * as possible.
      *
      * @param array $filter filter array
-     * @param int $surveyId \Gems Survey Id
-     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @param int|string $surveyId \Gems Survey Id
+     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
      * @return int
      */
-    public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null): int
+    public function getRawTokenAnswerRowsCount(array $filter, int|string $surveyId, int|string|null $sourceSurveyId = null): int
     {
         $answers = $this->getRawTokenAnswerRows($filter, $surveyId, $sourceSurveyId);
         return count($answers);
@@ -380,11 +380,11 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * Uses internal caching to prevent multiple db lookups during a program run (so no caching
      * beyond page generation time)
      *
-     * @param int $surveyId
-     * @param string $field Optional field to retrieve data for
+     * @param int|string $surveyId
+     * @param ?string $field Optional field to retrieve data for
      * @return array|int|string|null
      */
-    protected function getSurveyData($surveyId, $field = null): array|int|string|null
+    protected function getSurveyData(int|string $surveyId, ?string $field = null): array|int|string|null
     {
         static $cache = array();
 
@@ -413,7 +413,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return array Returns an array of messages
      */
-    public function synchronizeSurveyBatch(\Gems\Task\TaskRunnerBatch $batch, $userId): array
+    public function synchronizeSurveyBatch(\Gems\Task\TaskRunnerBatch $batch, int $userId): array
     {
         // Surveys in \Gems
         $select = $this->_gemsResultFetcher->getSelect();
@@ -462,7 +462,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return int The number of tokens changed
      */
-    protected function updateTokens($userId, $updateTokens = true): int
+    protected function updateTokens(int $userId, $updateTokens = true): int
     {
         $tokenLib = $this->tracker->getTokenLibrary();
 
