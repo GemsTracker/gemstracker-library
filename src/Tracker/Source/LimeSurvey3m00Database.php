@@ -162,22 +162,23 @@ class LimeSurvey3m00Database extends SourceAbstract
         $lsSurvLang = $this->_getSurveyLanguagesTableName();
         $sql = 'SELECT surveyls_language FROM ' . $lsSurvLang . ' WHERE surveyls_survey_id = ?';
 
-        $lsDb = $this->getSourceDatabase();
+        $lsAdapter = $this->getSourceDatabase();
+        $lsResultFetcher = $this->getSourceResultFetcher();
 
-        $languages = $lsDb->fetchAll($sql, array($sourceSurveyId));
+        $languages = $lsResultFetcher->fetchAll($sql, [$sourceSurveyId]);
         $langChanges = 0;
+        $sql = new Sql($lsAdapter);
         foreach ($languages as $language)
         {
-            $langChanges = $langChanges + $lsDb->update(
-                $lsSurvLang,
-                array(
-                    'surveyls_urldescription' => $this->_getReturnURIDescription($language['surveyls_language'])
-                    ),
-                array(
-                    'surveyls_survey_id = ?' => $sourceSurveyId,
-                    'surveyls_language = ?'  => $language
-                    )
-                );
+            $update = $sql->update($lsSurvLang)
+                ->set([
+                    'surveyls_urldescription' => $this->_getReturnURIDescription($language['surveyls_language']),
+                ])->where([
+                    'surveyls_survey_id' => $sourceSurveyId,
+                    'surveyls_language'  => $language,
+                ]);
+            $result = $sql->prepareStatementForSqlObject($update)->execute();
+            $langChanges = $langChanges + $result->getAffectedRows();
         }
 
         if ($langChanges > 0) {
