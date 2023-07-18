@@ -762,7 +762,8 @@ class LimeSurvey3m00Database extends SourceAbstract
         }
 
         $language   = $this->_getLanguage($sourceSurveyId, $language);
-        $lsDb       = $this->getSourceDatabase();
+        $lsAdapter  = $this->getSourceDatabase();
+        $lsResultFetcher = $this->getSourceResultFetcher();
         $lsSurvLang = $this->_getSurveyLanguagesTableName();
         $lsSurveys  = $this->_getSurveysTableName();
         $lsTokens   = $this->_getTokenTableName($sourceSurveyId);
@@ -780,10 +781,10 @@ class LimeSurvey3m00Database extends SourceAbstract
                 AND surveyls_language = ?
                 AND active='Y'
              LIMIT 1";
-        $currentUrl = $lsDb->fetchOne($sql, array($sourceSurveyId, $language));
+        $currentUrl = $lsResultFetcher->fetchOne($sql, [$sourceSurveyId, $language]);
 
         // No field was returned
-        if (false === $currentUrl) {
+        if (null === $currentUrl) {
             throw new \Gems\Tracker\Source\SurveyNotFoundException(sprintf('The survey with id %d for token %s does not exist.', $surveyId, $tokenId), sprintf('The Lime Survey id is %s', $sourceSurveyId));
         }
 
@@ -803,12 +804,15 @@ class LimeSurvey3m00Database extends SourceAbstract
                 //$where = $lsDb->quoteInto('surveyls_survey_id = ? AND ', $sourceSurveyId) .
                 //    $lsDb->quoteInto('surveyls_language = ?', $language);
 
-                $lsDb->update($lsSurvLang,
-                    array('surveyls_url' => $newUrl),
-                    array(
-                        'surveyls_survey_id = ?' => $sourceSurveyId,
-                        'surveyls_language = ?' =>  $language
-                        ));
+                $sql = new Sql($lsAdapter);
+                $update = $sql->update($lsSurvLang)
+                    ->set([
+                        'surveyls_url' => $newUrl,
+                    ])->where([
+                        'surveyls_survey_id' => $sourceSurveyId,
+                        'surveyls_language' =>  $language,
+                    ]);
+                $sql->prepareStatementForSqlObject($update)->execute();
 
                 if (\Gems\Tracker::$verbose) {
                     \MUtil\EchoOut\EchoOut::r("From $currentUrl\n to $newUrl", "Changed return url for $language version of $surveyId.");
@@ -832,8 +836,8 @@ class LimeSurvey3m00Database extends SourceAbstract
             }
         }
 
-        $result = 0;
-        if ($oldValues = $lsDb->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", $tokenId)) {
+        $rows = 0;
+        if ($oldValues = $lsResultFetcher->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", [$tokenId])) {
             if ($this->tracker->filterChangesOnly($oldValues, $values)) {
                 /*if (\Gems\Tracker::$verbose) {
                     $echo = '';
@@ -843,7 +847,9 @@ class LimeSurvey3m00Database extends SourceAbstract
                     \MUtil\EchoOut\EchoOut::r($echo, "Updated limesurvey values for $tokenId");
                 }*/
 
-                $result = $lsDb->update($lsTokens, $values, array('token = ?' => $tokenId));
+                $sql = new Sql($lsAdapter);
+                $update = $sql->update($lsTokens)->set($values)->where(['token' => $tokenId]);
+                $rows = $sql->prepareStatementForSqlObject($update)->execute()->getAffectedRows();
             }
         } else {
             /*if (\Gems\Tracker::$verbose) {
@@ -851,15 +857,17 @@ class LimeSurvey3m00Database extends SourceAbstract
             }*/
             $values['token'] = $tokenId;
 
-            $result = $lsDb->insert($lsTokens, $values);
+            $sql = new Sql($lsAdapter);
+            $insert = $sql->insert($lsTokens)->values($values);
+            $rows = $sql->prepareStatementForSqlObject($insert)->execute()->getAffectedRows();
         }
 
-        if ($result) {
+        if ($rows) {
             //If we have changed something, invalidate the cache
             $token->cacheReset();
         }
 
-        return $result;
+        return $rows ? 1 : 0;
     }
 
     /**
