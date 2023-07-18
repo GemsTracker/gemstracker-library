@@ -1219,9 +1219,10 @@ class LimeSurvey3m00Database extends SourceAbstract
             }
         }
 
+        $lsResultFetcher = $this->getSourceResultFetcher();
         // Prevent failure when survey no longer active
         try {
-            $rows = $select->query()->fetchAll(\Zend_Db::FETCH_ASSOC);
+            $rows = $lsResultFetcher->fetchAll($select);
         } catch (\Exception $exc) {
             $rows = false;
         }
@@ -1256,15 +1257,18 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param array $filter filter array
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return int
      */
-    public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null) {
+    public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null): int
+    {
         $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
 
-        $p = new \Zend_Paginator_Adapter_DbSelect($select);
-        $count = $p->getCountSelect()->query()->fetchColumn();
+        $select->columns([
+            'count' => new \Laminas\Db\Sql\Expression('COUNT(*)'),
+        ]);
+        $lsResultFetcher = $this->getSourceResultFetcher();
+        $count = $lsResultFetcher->fetchOne($select);
 
-        return $count;
+        return intval($count);
     }
 
     /**
@@ -1404,8 +1408,8 @@ class LimeSurvey3m00Database extends SourceAbstract
                 WHERE token = ? LIMIT 1';
 
             try {
-                $result = $this->getSourceDatabase()->fetchRow($sql, $tokenId);
-            } catch (\Zend_Db_Statement_Exception $exception) {
+                $result = $this->getSourceResultFetcher()->fetchRow($sql, [$tokenId]);
+            } catch (\RuntimeException $exception) {
                 $this->logger->error(LogHelper::getMessageFromException($exception, $this->request));
                 $result = false;
             }
