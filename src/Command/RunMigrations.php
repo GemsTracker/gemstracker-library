@@ -44,6 +44,14 @@ class RunMigrations extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (!$this->tableRepository->hasMigrationTable()) {
+            $io = new SymfonyStyle($input, $output);
+            $result = $io->confirm('Migration table missing. Should the migration table be created?');
+            if ($result) {
+                $this->tableRepository->createMigrationTable();
+            }
+        }
+
         $command = $input->getArgument('all');
 
         $result = match($command) {

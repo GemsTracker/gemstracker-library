@@ -12,7 +12,19 @@ class TableRepository extends MigrationRepositoryAbstract
 {
     protected int $defaultOrder = 1000;
 
+    protected string $migrationTableName = 'gems__migration_logs';
+
     protected string $modelName = 'databaseTableModel';
+
+    public function createMigrationTable()
+    {
+        $tablesInfo = $this->getTableInfoFromFiles();
+        if (isset($tablesInfo[$this->migrationTableName])) {
+            $this->createTable($tablesInfo[$this->migrationTableName]);
+            return;
+        }
+        throw new MigrationException(sprintf('Migration table %s could not be created', $this->migrationTableName));
+    }
 
     public function createTable(array $tableInfo): void
     {
@@ -185,5 +197,14 @@ class TableRepository extends MigrationRepositoryAbstract
     public function getTablesDirectories(): array
     {
         return $this->getResourceDirectories('tables');
+    }
+
+    public function hasMigrationTable(): bool
+    {
+        $tableData = $this->getTableInfoFromDb();
+        if (isset($tableData[$this->migrationTableName])) {
+            return true;
+        }
+        return false;
     }
 }
