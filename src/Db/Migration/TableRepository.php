@@ -145,7 +145,6 @@ class TableRepository extends MigrationRepositoryAbstract
                 $matchingLog = $tablesLog[$tableName];
                 $tables[$tableName]['status'] = $matchingLog['gml_status'];
                 $tables[$tableName]['executed'] = $matchingLog['gml_created'];
-                $tables[$tableName]['sql'] = $matchingLog['gml_sql'];
                 $tables[$tableName]['comment'] = $matchingLog['gml_comment'];
             }
         }
