@@ -1106,6 +1106,6 @@ class LimeSurvey3m00FieldMap
      */
     public function lsDbQuery($sql, $bindValues=array())
     {
-        $this->lsDb->query($sql, $bindValues);
+        $this->lsAdapter->query($sql, $bindValues);
     }
 }
