@@ -18,6 +18,7 @@ use Laminas\Db\Sql\Select;
 use Laminas\Db\Adapter\Adapter;
 use Gems\Encryption\ValueEncryptor;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
+use Laminas\Db\Adapter\Driver\AbstractConnection;
 
 /**
  * Abstract implementation of SourceInterface containing basic utilities and logical
@@ -82,9 +83,9 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     /**
      * Returns all surveys for synchronization
      *
-     * @return array Pairs gemsId => sourceId
+     * @return array:{int: int} Pairs gemsId => sourceId
      */
-    protected function _getGemsSurveysForSynchronisation()
+    protected function _getGemsSurveysForSynchronisation(): array
     {
         $select = $this->_gemsResultFetcher->getSelect();
         $select->from('gems__surveys')
@@ -220,7 +221,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param boolean $addDatabaseName Optional, when true (= default) and there is a database name then it is prepended to the name.
      * @return string
      */
-    protected function addDatabasePrefix($tableName, $addDatabaseName = true)
+    protected function addDatabasePrefix($tableName, $addDatabaseName = true): string
     {
         return ($addDatabaseName && $this->_sourceData['gso_ls_database'] ? $this->_sourceData['gso_ls_database'] . '.' : '') .
             $this->_sourceData['gso_ls_table_prefix'] .
@@ -259,18 +260,17 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
 
     /**
      * Returns all the gemstracker names for attributes stored in source for a token
-     *
-     * @return array
      */
-    public function getAttributes() {
-        return array();
+    public function getAttributes(): array
+    {
+        return [];
     }
 
     /**
      *
      * @return string Base url for source
      */
-    protected function getBaseUrl()
+    protected function getBaseUrl(): string
     {
         return $this->_sourceData['gso_ls_url'];
     }
@@ -295,7 +295,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return int
      */
-    public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null)
+    public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null): int
     {
         $answers = $this->getRawTokenAnswerRows($filter, $surveyId, $sourceSurveyId);
         return count($answers);
@@ -380,9 +380,9 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      *
      * @param int $surveyId
      * @param string $field Optional field to retrieve data for
-     * @return array
+     * @return array|int|string|null
      */
-    protected function getSurveyData($surveyId, $field = null)
+    protected function getSurveyData($surveyId, $field = null): array|int|string|null
     {
         static $cache = array();
 
@@ -411,7 +411,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return array Returns an array of messages
      */
-    public function synchronizeSurveyBatch(\Gems\Task\TaskRunnerBatch $batch, $userId)
+    public function synchronizeSurveyBatch(\Gems\Task\TaskRunnerBatch $batch, $userId): array
     {
         // Surveys in \Gems
         $select = $this->_gemsResultFetcher->getSelect();
@@ -460,10 +460,9 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return int The number of tokens changed
      */
-    protected function updateTokens($userId, $updateTokens = true)
+    protected function updateTokens($userId, $updateTokens = true): int
     {
         $tokenLib = $this->tracker->getTokenLibrary();
-        $sourceId = $this->_gemsDb->getPlatform()->quoteValue($this->getId());
 
         $sql = new Sql($this->_gemsDb);
         $update = $sql->update('gems__tokens')
@@ -474,7 +473,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
                 ])
                 ->where(
                     $this->_getTokenFromSqlWhere($tokenLib->getFrom(), 'gto_id_token')
-                    . ' AND gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ' . $sourceId . ')'
+                    . ' AND gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ' . $this->getId() . ')'
                 );
         $result = $sql->prepareStatementForSqlObject($update)->execute();
 
