@@ -1149,15 +1149,15 @@ class LimeSurvey3m00Database extends SourceAbstract
             $sourceSurveyId = $this->_getSid($surveyId);
         }
 
-        $lsDb   = $this->getSourceDatabase();
+        $lsResultFetcher   = $this->getSourceResultFetcher();
         $lsTab  = $this->_getSurveyTableName($sourceSurveyId);
         $token  = $this->_getToken($tokenId);
 
         try {
             // Order by ID desc to get the same answers used as in the row retrieved by
             // getRawTokenAnswerRows() in case of double rows
-            $values = $lsDb->fetchRow("SELECT * FROM $lsTab WHERE token = ? ORDER BY id DESC", $token);
-        } catch (\Zend_Db_Statement_Exception $exception) {
+            $values = $lsResultFetcher->fetchRow("SELECT * FROM $lsTab WHERE token = ? ORDER BY id DESC", [$token]);
+        } catch (\RuntimeException $exception) {
             $this->logger->error(LogHelper::getMessageFromException($exception, $this->request));
             $values = false;
         }
