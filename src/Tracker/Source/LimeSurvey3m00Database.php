@@ -1088,26 +1088,6 @@ class LimeSurvey3m00Database extends SourceAbstract
     }
 
     /**
-     * Returns an array containing fieldname => label for each answerable question in the survey.
-     *
-     * Used in dropdown list etc..
-     *
-     * @param string $language   (ISO) language string
-     * @param int $surveyId \Gems Survey Id
-     * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return array fieldname => label
-     * @deprecated since version 1.8.4 remove in 1.8.5
-     */
-    public function getFullQuestionList($language, $surveyId, $sourceSurveyId = null)
-    {
-        if (null === $sourceSurveyId) {
-            $sourceSurveyId = $this->_getSid($surveyId);
-        }
-
-        return $this->_getFieldMap($sourceSurveyId, $language)->getFullQuestionList();
-    }
-
-    /**
      * Returns an array of arrays with the structure:
      *      question => string,
      *      class    => question|question_sub
