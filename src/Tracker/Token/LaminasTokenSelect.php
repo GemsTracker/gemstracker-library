@@ -15,10 +15,13 @@ namespace Gems\Tracker\Token;
 
 use Gems\Db\ResultFetcher;
 use Gems\Repository\TokenRepository;
-use Laminas\Db\Adapter\Adapter;
+use Gems\Tracker\Token;
 use Laminas\Db\Sql\Predicate\Expression;
+use Laminas\Db\Sql\Predicate\Operator;
+use Laminas\Db\Sql\Predicate\Predicate;
+use Laminas\Db\Sql\Predicate\PredicateSet;
 use Laminas\Db\Sql\Select;
-use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Where;
 
 /**
  * Helps building select statements for the Token model
@@ -259,7 +262,7 @@ class LaminasTokenSelect
     {
         $this->select->limit(1);
 
-        return $this->resultFetcher->fetchRow($this->select);
+        return $this->resultFetcher->fetchRow($this->select) ?? false;
     }
 
     /**
@@ -299,24 +302,31 @@ class LaminasTokenSelect
     }
 
     /**
-     * Select the token before the current token
+     * Select the token after the passed token
      *
-     * @param string $tokenId
+     * @param Token $token
      * @return self
      */
-    public function forPreviousTokenId(string $tokenId): self
+    public function forPreviousToken(Token $token): self
     {
-        $this->select->join('gems__tokens as ct',
-            'gems__tokens.gto_id_respondent_track = ct.gto_id_respondent_track AND
-                    gems__tokens.gto_id_token != ct.gto_id_token AND
-                        ((gems__tokens.gto_round_order > ct.gto_round_order) OR
-                            (gems__tokens.gto_round_order = ct.gto_round_order AND gems__tokens.gto_created > ct.gto_created))',
-            array());
+        $where = new Where();
+        $where->equalTo('gto_id_respondent_track', $token->getRespondentTrackId());
+        $where->notEqualTo('gto_id_token', $token->getTokenId());
 
-        $this->select
-            ->where(['ct.gto_id_token' => $tokenId])
-            ->order(['gems__tokens.gto_round_order',
-                'gems__tokens.gto_created']);
+        // The next toke should have either a later round order order
+        $laterOrder    = new Operator('gto_round_order', Operator::OP_GT,  $token->getRoundOrder());
+
+        // Or the same order
+        $sameOrder     = new Operator('gto_round_order', Operator::OPERATOR_EQUAL_TO,  $token->getRoundOrder());
+        // And being created later
+        $laterCreation = new Operator('gto_created', Operator::OP_GT,  $token->getCreationDate());
+
+        $sameRound  = new Predicate([$sameOrder, $laterCreation], PredicateSet::COMBINED_BY_AND);
+        $roundWhere = new Predicate([$laterOrder, $sameRound], PredicateSet::COMBINED_BY_OR);
+        $where->andPredicate($roundWhere);
+
+        $this->select->where($where)
+            ->order(['gto_round_order', 'gto_created']);
 
         return $this;
     }

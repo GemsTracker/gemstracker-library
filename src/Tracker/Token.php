@@ -97,7 +97,7 @@ class Token
      *
      * @var Token
      */
-    private Token|null $_nextToken = null;
+    private Token|bool|null $_nextToken = null;
 
     /**
      *
@@ -747,6 +747,16 @@ class Token
     }
 
     /**
+     * Returns the creation date of this token.
+     *
+     * @return string
+     */
+    public function getCreationDate(): String
+    {
+        return $this->_gemsData['gto_created'];
+    }
+
+    /**
      *
      * @param string $fieldName
      * @return ?DateTimeInterface
@@ -859,13 +869,13 @@ class Token
      *
      * @return \Gems\Tracker\Token
      */
-    public function getNextToken(): Token
+    public function getNextToken(): ?Token
     {
         if (null === $this->_nextToken) {
             $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
             $tokenSelect
                     ->andReceptionCodes()
-                    ->forPreviousTokenId($this->_tokenId);
+                    ->forPreviousToken($this);
 
             if ($tokenData = $tokenSelect->fetchRow()) {
                 $this->_nextToken = $this->tracker->getToken($tokenData);
@@ -875,6 +885,9 @@ class Token
             }
         }
 
+        if (false === $this->_nextToken) {
+            return null;
+        }
         return $this->_nextToken;
     }
 
@@ -1918,14 +1931,16 @@ class Token
     /**
      * Sets the next token in this track
      *
-     * @param Token $token
+     * @param Token|bool $token
      * @return self (continuation pattern)
      */
-    public function setNextToken(Token $token): self
+    public function setNextToken(Token|bool $token): self
     {
         $this->_nextToken = $token;
 
-        $token->_previousToken = $this;
+        if ($token instanceof Token) {
+            $token->_previousToken = $this;
+        }
 
         return $this;
     }

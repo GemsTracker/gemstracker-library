@@ -436,21 +436,21 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         $changed = 0;
         $token = $startToken;
         while ($token) {
-            // \MUtil\EchoOut\EchoOut::track($token->getTokenId());
-            //Only process the token when linked to a round
-            $round   = false;
-            $changes = 0;
-            if (array_key_exists($token->getRoundId(), $this->_rounds)) {
-                $round = $this->_rounds[$token->getRoundId()];
-            }
-
-            if ($round && $token !== $skipToken) {
-                $changes = $this->checkTokenCondition($token, $round, $userId, $respTrack);
-                $changes += $this->checkTokenDates($token, $round, $userId, $respTrack);
-            }
-
-            // If condition changed and dates changed, we only signal one change
-            $changed += min($changes, 1);
+//            // \MUtil\EchoOut\EchoOut::track($token->getTokenId());
+//            //Only process the token when linked to a round
+//            $round   = false;
+//            $changes = 0;
+//            if (array_key_exists($token->getRoundId(), $this->_rounds)) {
+//                $round = $this->_rounds[$token->getRoundId()];
+//            }
+//
+//            if ($round && $token !== $skipToken) {
+//                $changes = $this->checkTokenCondition($token, $round, $userId, $respTrack);
+//                $changes += $this->checkTokenDates($token, $round, $userId, $respTrack);
+//            }
+//
+//            // If condition changed and dates changed, we only signal one change
+//            $changed += min($changes, 1);
             $token = $token->getNextToken();
         }
 

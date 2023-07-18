@@ -7,6 +7,7 @@ use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\SqlInterface;
 use Laminas\Db\Sql\TableIdentifier;
 
 class ResultFetcher
@@ -92,6 +93,11 @@ class ResultFetcher
     public function getPlatform(): PlatformInterface
     {
         return $this->db->getPlatform();
+    }
+
+    public function getQueryString(SqlInterface $select): string
+    {
+        return $select->getSqlString($this->dfb);
     }
 
     public function getSelect(null|string|TableIdentifier $table = null): Select

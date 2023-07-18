@@ -370,12 +370,11 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
         $respondent  = $this->getRespondent();
         $respTrackId = $this->getRespondentTrackId();
         $trackEngine = $this->getTrackEngine();
-        $where       = 'gr2t_id_respondent_track = ?';
+
         $batch = $this->tracker->recalcTrackFields(
             $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'trackRecalcFieldsFor_' . $respTrackId,
-            $where,
-            $respTrackId
+            ['gr2t_id_respondent_track' => $respTrackId]
         );
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 

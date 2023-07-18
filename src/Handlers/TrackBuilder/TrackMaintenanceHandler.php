@@ -418,12 +418,11 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
     {
         $id    = $this->_getIdParam();
         $track = $this->getTrackEngine();
-        $where = 'gr2t_id_track = ?';
+
         $batch = $this->tracker->recalcTrackFields(
             $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'trackRecalcAllFields',
-            $where,
-            $id
+            ['gr2t_id_track' => $id]
         );
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 

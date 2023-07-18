@@ -595,7 +595,7 @@ class RespondentTrack
         } elseif ($this->_checkStart) {
             $count += $engine->checkTokensFrom($this, $this->_checkStart, $userId);
         } else {
-            $count += $engine->checkTokensFromStart($this, $userId);
+             $count += $engine->checkTokensFromStart($this, $userId);
         }
         $connection->commit();
 
@@ -1086,6 +1086,7 @@ class RespondentTrack
                 }
                 $prevToken = $token;
             }
+            $token->setNextToken(false);
         }
 
         return $this->_tokens;

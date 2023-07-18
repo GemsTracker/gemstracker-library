@@ -38,6 +38,7 @@ use Gems\Tracker\TrackerInterface;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
+use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Expression;
 use Mezzio\Session\SessionInterface;
 use MUtil\Ra;
@@ -1064,40 +1065,39 @@ class Tracker implements TrackerInterface
      * Does recalculate changed tracks
      *
      * @param string $batchId A unique identifier for the current batch
-     * @param string $cond Optional where statement for selecting tracks
+     * @param array $cond Optional where statement for selecting tracks
      * @return TaskRunnerBatch A batch to process the changes
      */
-    public function recalcTrackFields(SessionInterface $session, string $batchId, ?string $cond = null, ?string $param = null): TaskRunnerBatch
+    public function recalcTrackFields(SessionInterface $session, string $batchId, array $cond = []): TaskRunnerBatch
     {
         $respTrackSelect = $this->resultFetcher->getSelect();
         $respTrackSelect->from('gems__respondent2track');
         $respTrackSelect->columns(['gr2t_id_respondent_track'])
-            ->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code')
-            ->join('gems__tracks', 'gr2t_id_track = gtr_id_track');
+            ->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', [])
+            ->join('gems__tracks', 'gr2t_id_track = gtr_id_track', []);
 
-        if ($cond) {
-            $respTrackSelect->where($cond, $param);
-        }
-        $respTrackSelect->where([
-            'gr2t_active' => 1,
-            'grc_success' => 1,
-            'gtr_active' => 1,
-        ]);
-        // Also recaclulate when track was completed: there may be new rounds!
-        // $respTrackSelect->where('gr2t_count != gr2t_completed');
+        $cond['gr2t_active'] = 1;
+        $cond['grc_success'] = 1;
+        $cond['gtr_active'] = 1;
+        $respTrackSelect->where($cond);
 
         $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
         //Now set the step duration
         $batch->minimalStepDurationMs = 3000;
 
         if (! $batch->isLoaded()) {
-            $statement = $this->resultFetcher->query($respTrackSelect);
-            //Process one item at a time to prevent out of memory errors for really big resultsets
-            while ($respTrackData  = $statement->current()) {
-                $respTrackId = $respTrackData['gr2t_id_respondent_track'];
-                $batch->setTask('Tracker\\RecalculateFields', 'trkfcalc-' . $respTrackId, $respTrackId);
-                $batch->addToCounter('resptracks');
-                $statement->next();
+            $resultSet = $this->resultFetcher->query($respTrackSelect);
+
+            $count = 1;
+            if ($resultSet instanceof ResultSet) {
+                // Process one item at a time to prevent out of memory errors for really big resultsets
+                while ($resultSet->valid()) {
+                    $respTrackData = $resultSet->current();
+                    $respTrackId   = $respTrackData['gr2t_id_respondent_track'];
+                    $batch->setTask('Tracker\\RecalculateFields', 'trkfcalc-' . $respTrackId, $respTrackId);
+                    $batch->addToCounter('resptracks');
+                    $resultSet->next();
+                }
             }
         }
 

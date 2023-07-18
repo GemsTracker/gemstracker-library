@@ -356,10 +356,10 @@ interface TrackerInterface
      *
      * @param SessionInterface $session
      * @param string $batchId A unique identifier for the current batch
-     * @param string $cond Optional where statement for selecting tracks
+     * @param array $cond Optional where statement for selecting tracks
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function recalcTrackFields(SessionInterface $session, string $batchId, ?string $cond = null): TaskRunnerBatch;
+    public function recalcTrackFields(SessionInterface $session, string $batchId, array $cond = []): TaskRunnerBatch;
 
     /**
      * Refreshes the tokens in the source
