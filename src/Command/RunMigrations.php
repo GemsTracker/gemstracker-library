@@ -39,7 +39,7 @@ class RunMigrations extends Command
 
     protected function configure()
     {
-        $this->addArgument('command', InputArgument::OPTIONAL, sprintf('use \'all\' Directy run all migrations'));
+        $this->addArgument('type', InputArgument::OPTIONAL, sprintf('use \'all\' Directy run all migrations'));
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
@@ -52,7 +52,7 @@ class RunMigrations extends Command
             }
         }
 
-        $command = $input->getArgument('all');
+        $command = $input->getArgument('type');
 
         $result = match($command) {
             'all', '~' => $this->runAll($input, $output),
