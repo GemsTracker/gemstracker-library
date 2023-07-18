@@ -392,10 +392,9 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         if ($this->enableScreens) {
             $edit = false;
-            $org  = $this->getRespondent()->getOrganization();
-            if (! $org) {
-                $org = $this->currentUser->getCurrentOrganization();
-            }
+
+            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId());
+            $org = $this->organizationRepository->getOrganization($organizationId);
 
             if ($org) {
                 $edit = $org->getRespondentEditScreen();
@@ -755,7 +754,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
 
             }
         }
-        
+
         if (isset($filter['locations'])) {
             $filter[] = sprintf(
                 "(gr2o_id_user, gr2o_id_organization) IN (
