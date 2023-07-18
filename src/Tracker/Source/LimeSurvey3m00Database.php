@@ -803,7 +803,7 @@ class LimeSurvey3m00Database extends SourceAbstract
 
         // No field was returned
         if (null === $currentUrl) {
-            throw new \Gems\Tracker\Source\SurveyNotFoundException(sprintf('The survey with id %d for token %s does not exist.', $surveyId, $tokenId), sprintf('The Lime Survey id is %s', $sourceSurveyId));
+            throw new \Gems\Tracker\Source\SurveyNotFoundException(sprintf('The survey with id %d for token %s does not exist.', $surveyId, $tokenId) . ' ' . sprintf('The Lime Survey id is %s', $sourceSurveyId));
         }
 
         /*****************************
