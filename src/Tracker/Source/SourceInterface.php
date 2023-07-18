@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Source;
 
 use DateTimeInterface;
+use Laminas\Db\Adapter\Adapter;
 
 /**
  * Interface description of SourceInterface for (external) survey sources.
@@ -198,7 +199,7 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
     /**
      * Get the db adapter for this source
      *
-     * @return \Zend_Db_Adapter_Abstract
+     * @return Adapter
      */
     public function getSourceDatabase();
 

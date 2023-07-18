@@ -241,11 +241,11 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param string $typeDescr E.g. int(11) or varchar(36)
      * @return int In case 11 or 36
      */
-    private function _extractFieldLength($typeDescr)
+    private function _extractFieldLength($typeDescr): int
     {
         $lengths = array();
         if (preg_match('/\(([^\)]+)\)/', $typeDescr, $lengths)) {
-            return $lengths[1];
+            return intval($lengths[1]);
         }
 
         return $this->attributeSize;    // When type is text there is no size
@@ -489,14 +489,14 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param string $language       (ISO) Language
      * @return boolean True when the language is an existing language
      */
-    protected function _isLanguage($sourceSurveyId, $language)
+    protected function _isLanguage($sourceSurveyId, $language): bool
     {
         if ($language && strlen($language)) {
             // Check for availability of language
             $sql = 'SELECT surveyls_language FROM ' . $this->_getSurveyLanguagesTableName() . ' WHERE surveyls_survey_id = ? AND surveyls_language = ?';
             $lsResultFetcher = $this->getSourceResultFetcher();
 
-            return $lsResultFetcher->fetchOne($sql, [$sourceSurveyId, $language]);
+            return !is_null($lsResultFetcher->fetchOne($sql, [$sourceSurveyId, $language]));
         }
 
         return false;
