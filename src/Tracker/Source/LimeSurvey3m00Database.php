@@ -882,7 +882,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected function fixTokenAttributeDescriptions($sourceSurveyId)
     {
-        $lsDb = $this->getSourceDatabase();
+        $lsAdapter = $this->getSourceDatabase();
 
         $fieldData = array();
         foreach($this->_attributeMap as $fieldName)
@@ -903,7 +903,11 @@ class LimeSurvey3m00Database extends SourceAbstract
             $this->_attributeDescriptionsField => json_encode($fieldData)
                 );
 
-        return (boolean) $lsDb->update($this->_getSurveysTableName(), $fields, $lsDb->quoteInto('sid = ?', $sourceSurveyId));
+        $sql = new Sql($lsAdapter);
+        $update = $sql->update($this->_getSurveysTableName())->set($fields)->where(['sid' => $sourceSurveyId]);
+        $rows = $sql->prepareStatementForSqlObject($update)->execute()->getAffectedRows();
+
+        return (boolean) $rows;
     }
 
     /**
