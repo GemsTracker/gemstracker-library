@@ -1,0 +1,16 @@
+gems__consents:
+  - gco_description: Yes
+    gco_order: 10
+    gco_code: consent given
+    gco_changed_by: 1
+    gco_created_by: 1
+  - gco_description: No
+    gco_order: 20
+    gco_code: do not use
+    gco_changed_by: 1
+    gco_created_by: 1
+  - gco_description: Unknown
+    gco_order: 30
+    gco_code: do not use
+    gco_changed_by: 1
+    gco_created_by: 1

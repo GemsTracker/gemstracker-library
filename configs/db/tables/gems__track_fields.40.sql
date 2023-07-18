@@ -5,15 +5,15 @@ CREATE TABLE if not exists gems__track_fields (
 
         gtf_id_order            int not null default 10,
 
-        gtf_field_name          varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
-        gtf_field_code          varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
-        gtf_field_description   varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
+        gtf_field_name          varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null,
+        gtf_field_code          varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' null,
+        gtf_field_description   varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' null,
 
-        gtf_field_values        text CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
-        gtf_field_default       varchar(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
-        gtf_calculate_using     varchar(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        gtf_field_values        text CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' null,
+        gtf_field_default       varchar(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' null,
+        gtf_calculate_using     varchar(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci',
 
-        gtf_field_type          varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
+        gtf_field_type          varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null,
 
         gtf_to_track_info       boolean not null default true,
         gtf_track_info_label    boolean not null default false,
@@ -22,7 +22,7 @@ CREATE TABLE if not exists gems__track_fields (
 
         gtf_changed             timestamp not null default current_timestamp on update current_timestamp,
         gtf_changed_by          bigint unsigned not null,
-        gtf_created             timestamp not null,
+        gtf_created             timestamp not null default current_timestamp,
         gtf_created_by          bigint unsigned not null,
 
         PRIMARY KEY (gtf_id_field),
@@ -31,5 +31,5 @@ CREATE TABLE if not exists gems__track_fields (
     )
     ENGINE=InnoDB
 	AUTO_INCREMENT = 60000
-    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
 

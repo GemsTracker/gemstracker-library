@@ -1,7 +1,7 @@
 
 CREATE TABLE if not exists gems__reception_codes (
-      grc_id_reception_code varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
-      grc_description       varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
+      grc_id_reception_code varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null,
+      grc_description       varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null,
 
       grc_success           boolean not null default 0,
 
@@ -14,7 +14,7 @@ CREATE TABLE if not exists gems__reception_codes (
 
       grc_changed    timestamp not null default current_timestamp on update current_timestamp,
       grc_changed_by bigint unsigned not null,
-      grc_created    timestamp not null,
+      grc_created    timestamp not null default current_timestamp,
       grc_created_by bigint unsigned not null,
 
       PRIMARY KEY (grc_id_reception_code),
@@ -22,16 +22,4 @@ CREATE TABLE if not exists gems__reception_codes (
    )
    ENGINE=InnoDB
    auto_increment = 1
-   CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
-
-INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_success,
-      grc_for_surveys, grc_redo_survey, grc_for_tracks, grc_for_respondents, grc_overwrite_answers, grc_active,
-      grc_changed, grc_changed_by, grc_created, grc_created_by)
-    VALUES
-    ('OK', '', 1, 1, 0, 1, 1, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('redo', 'Redo survey', 0, 1, 2, 0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('refused', 'Survey refused', 0, 1, 0, 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('retract', 'Consent retracted', 0, 0, 0, 1, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('skip', 'Skipped by calculation', 0, 1, 0, 0, 0, 1, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('stop', 'Stopped participating', 0, 2, 0, 1, 1, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('moved', 'Moved to new survey', 0, 1, 0, 0, 0, 1, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+   CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';

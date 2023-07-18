@@ -9,12 +9,12 @@ CREATE TABLE if not exists gems__respondent2track2appointment (
 
         gr2t2a_changed              timestamp not null default current_timestamp on update current_timestamp,
         gr2t2a_changed_by           bigint unsigned not null,
-        gr2t2a_created              timestamp not null,
+        gr2t2a_created              timestamp not null default current_timestamp,
         gr2t2a_created_by           bigint unsigned not null,
 
         PRIMARY KEY(gr2t2a_id_respondent_track, gr2t2a_id_app_field),
         INDEX (gr2t2a_id_appointment)
     )
     ENGINE=InnoDB
-    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
 

@@ -1,0 +1,6 @@
+gems__organizations:
+  -
+    gor_id_organization: 70
+    gor_name: 'New organization'
+    gor_changed_by: 1
+    gor_created_by: 1

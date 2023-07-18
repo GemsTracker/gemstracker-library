@@ -1,0 +1,81 @@
+gems__roles:
+  -
+    grl_id_role: 800
+    grl_name: nologin
+    grl_description: nologin
+    grl_parents: null
+    grl_privileges: 'pr.contact.bugs,pr.contact.support,pr.cron.job,pr.nologin,pr.respondent.ask,pr.respondent.lost'
+    grl_changed_by: 1
+    grl_created_by: 1
+  -
+    grl_id_role: 801
+    grl_name: guest
+    grl_description: guest
+    grl_parents: null
+    grl_privileges: 'pr.contact.bugs,pr.contact.gems,pr.contact.support,pr.cron.job,pr.islogin,pr.respondent,pr.respondent.ask,pr.ask'
+    grl_changed_by: 1
+    grl_created_by: 1
+  -
+    grl_id_role: 802
+    grl_name: respondent
+    grl_description: respondent
+    grl_parents: null
+    grl_privileges: 'pr.ask,pr.contact.bugs,pr.contact.gems,pr.contact.support,pr.cron.job,pr.islogin'
+    grl_changed_by: 1
+    grl_created_by: 1
+  -
+    grl_id_role: 803
+    grl_name: security
+    grl_description: security
+    grl_parents: '801'
+    grl_privileges: "pr.log,pr.log.files,pr.log.files.download,pr.log.maintenance,pr.log.maintenance.edit,\r\n    ,pr.mail.log,\r\n    ,pr.option.edit,pr.option.password,\r\n    ,pr.respondent.show-deleted,pr.respondent.who,\r\n    ,pr.respondent-commlog,pr.respondent-log,\r\n    ,pr.staff,pr.staff.see.all,\r\n    ,pr.staff-log"
+    grl_changed_by: 1
+    grl_created_by: 1
+  -
+    grl_id_role: 804
+    grl_name: staff
+    grl_description: staff
+    grl_parents: '801'
+    grl_privileges: "pr.option.edit,pr.option.password,\r\n    ,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.fields,pr.plan.respondent,pr.plan.summary,pr.plan.token,\r\n    ,pr.project,pr.project.questions,\r\n    ,pr.respondent.create,pr.respondent.change-consent,pr.respondent.edit,pr.respondent.select-on-track,pr.respondent.who,\r\n    ,pr.respondent-commlog,pr.respondent-log,\r\n    ,pr.survey,\r\n    ,pr.token,pr.token.answers,pr.token.correct,pr.token.delete,pr.token.edit,pr.token.mail,pr.token.print,\r\n    ,pr.track,pr.track.answers,pr.track.create,pr.track.delete,pr.track.edit"
+    grl_changed_by: 1
+    grl_created_by: 1
+  -
+    grl_id_role: 805
+    grl_name: physician
+    grl_description: physician
+    grl_parents: '804'
+    grl_privileges: ''
+    grl_changed_by: 1
+    grl_created_by: 1
+  -
+    grl_id_role: 806
+    grl_name: researcher
+    grl_description: researcher
+    grl_parents: null
+    grl_privileges: "pr.contact.bugs,pr.contact.gems,pr.contact.support,\r\n    ,pr.cron.job,\r\n    ,pr.export,pr.export.export,\r\n    ,pr.islogin,\r\n    ,pr.plan.consent,pr.plan.consent.export,\r\n    ,pr.upgrade,\r\n    ,pr.option.password,pr.option.edit,pr.organization-switch,\r\n    ,pr.plan.compliance,pr.plan.consent,pr.plan.overview,pr.plan.fields,pr.plan.respondent,pr.plan.summary,pr.plan.token"
+    grl_changed_by: 1
+    grl_created_by: 1
+  -
+    grl_id_role: 807
+    grl_name: admin
+    grl_description: 'local admin'
+    grl_parents: '801,803,804,805,806'
+    grl_privileges: "pr.comm.job,\r\n    ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,\r\n    ,pr.consent,pr.consent.create,pr.consent.edit,\r\n    ,pr.export,pr.export.export,pr.export-html,pr.export.code-book-export,\r\n    ,pr.group,\r\n    ,pr.mail.log,\r\n    ,pr.organization,pr.organization-switch,\r\n    ,pr.plan.compliance.export,pr.plan.overview.export,pr.plan.fields.export,\r\n    ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,\r\n    ,pr.project-information,\r\n    ,pr.reception,pr.reception.create,pr.reception.edit,\r\n    ,pr.respondent.delete,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,\r\n    ,pr.role,\r\n    ,pr.staff,pr.staff.create,pr.staff.deactivate,pr.staff.edit,pr.staff.reactivate,pr.staff.see.all,\r\n    ,pr.staff-log,\r\n    ,pr.source,\r\n    ,pr.survey-maintenance,pr.survey-maintenance.answer-import,\r\n    ,pr.token.mail.freetext,pr.token.undelete,\r\n    ,pr.track.check,pr.track.insert,pr.track.undelete,\r\n    ,pr.track-maintenance,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,\r\n    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg,\r\n    ,pr.conditions,pr.conditions.create,pr.conditions.edit"
+    grl_changed_by: 1
+    grl_created_by: 1
+  -
+    grl_id_role: 808
+    grl_name: siteadmin
+    grl_description: 'site admin'
+    grl_parents: '801,803,804,805,806,807'
+    grl_privileges: "pr.comm.job,\r\n    ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,\r\n    ,pr.consent,pr.consent.create,pr.consent.edit,\r\n    ,pr.export,pr.export.export,pr.export-html,\r\n    ,pr.group,pr.group.switch,\r\n    ,pr.mail.log,\r\n    ,pr.maintenance.clean-cache,\r\n    ,pr.organization,pr.organization.check-all,pr.organization.check-org,pr.organization-switch,\r\n    ,pr.plan.compliance.export,pr.plan.overview.export,pr.plan.fields.export,\r\n    ,pr.plan.respondent,pr.plan.respondent.export,pr.plan.summary.export,pr.plan.token.export,\r\n    ,pr.project-information,\r\n    ,pr.reception,pr.reception.create,pr.reception.edit,\r\n    ,pr.respondent.change-org,pr.respondent.delete,pr.respondent.export-html,pr.respondent.result,pr.respondent.show-deleted,pr.respondent.undelete,\r\n    ,pr.role,\r\n    ,pr.staff,pr.staff.create,pr.staff.deactivate,pr.staff.edit,pr.staff.edit.all,pr.staff.reactivate,pr.staff.see.all,\r\n    ,pr.staff-log,\r\n    ,pr.source,pr.source.check-answers,pr.source.check-answers-all,pr.source.check-attributes,pr.source.check-attributes-all,pr.source.synchronize,pr.source.synchronize-all,\r\n    ,pr.survey-maintenance,pr.survey-maintenance.answer-import,pr.survey-maintenance.answer-import,pr.survey-maintenance.check,pr.survey-maintenance.check-all,pr.survey-maintenance.edit.\r\n    ,pr.token.mail.freetext,pr.token.undelete,\r\n    ,pr.track.check,pr.track.insert,pr.track.undelete,\r\n    ,pr.track-maintenance,pr.track-maintenance.check,pr.track-maintenance.check-all,pr.track-maintenance.create,pr.track-maintenance.edit,pr.track-maintenance.export,\r\n    ,pr.track-maintenance.import,pr.track-maintenance.trackperorg,\r\n    ,pr.conditions,pr.conditions.create,pr.conditions.edit"
+    grl_changed_by: 1
+    grl_created_by: 1
+  -
+    grl_id_role: 809
+    grl_name: super
+    grl_description: super
+    grl_parents: '801,803,804,805,806,807,808'
+    grl_privileges: "pr.agenda-activity,pr.agenda-activity.cleanup,pr.agenda-activity.create,pr.agenda-activity.delete,pr.agenda-activity.edit,\r\n    ,pr.agenda-filters,pr.agenda-filters.create,pr.agenda-filters.delete,pr.agenda-filters.edit,\r\n    ,pr.agenda-procedure,pr.agenda-procedure.cleanup,pr.agenda-procedure.create,pr.agenda-procedure.delete,pr.agenda-procedure.edit,\r\n    ,pr.agenda-staff,pr.agenda-staff.create,pr.agenda-staff.delete,pr.agenda-staff.edit,\r\n    ,pr.comm.job.create,pr.comm.job.edit,pr.comm.job.delete,\r\n    ,pr.consent.delete,\r\n    ,pr.database,pr.database.create,pr.database.delete,pr.database.execute,pr.database.patches,\r\n    ,pr.episodes.rawdata,\r\n    ,pr.file-import,pr.file-import.import,\r\n    ,pr.group.create,pr.group.edit,\r\n    ,pr.locations,pr.locations.cleanup,pr.locations.create,pr.locations.delete,pr.locations.edit,\r\n    ,pr.log.files,pr.log.files.download,\r\n    ,pr.mail.server,pr.mail.server.create,pr.mail.server.delete,pr.mail.server.edit,\r\n    ,pr.maintenance.maintenance-mode,\r\n    ,pr.organization.create,pr.organization.edit,\r\n    ,pr.plan.mail-as-application,pr.reception.delete,\r\n    ,pr.respondent.multiorg,\r\n    ,pr.role.create,pr.role.edit,\r\n    ,pr.site-maint,pr.site-maint.create,pr.site-maint.delete,,pr.site-maint.edit,,pr.site-maint.lock,\r\n    ,pr.source.check-attributes,pr.source.check-attributes-all,pr.source.create,pr.source.edit,pr.source.synchronize,\r\n    ,pr.source.synchronize-all,\r\n    ,pr.staff.edit.all,pr.staff.switch-user,\r\n    ,pr.systemuser,pr.systemuser.create,pr.systemuser.deactivate,pr.systemuser.edit,pr.staff.systemuser,pr.systemuser.see.all,\r\n    ,pr.survey-maintenance.edit,\r\n    ,pr.templates,\r\n    ,pr.track-maintenance.trackperorg,pr.track-maintenance.delete,\r\n    ,pr.conditions.delete,\r\n    ,pr.upgrade,pr.upgrade.all,pr.upgrade.one,pr.upgrade.from,pr.upgrade.to"
+    grl_changed_by: 1
+    grl_created_by: 1
