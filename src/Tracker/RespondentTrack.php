@@ -1086,7 +1086,7 @@ class RespondentTrack
                 }
                 $prevToken = $token;
             }
-            $token->setNextToken(false);
+            $prevToken->setNextToken(false);
         }
 
         return $this->_tokens;

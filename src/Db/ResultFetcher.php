@@ -97,7 +97,7 @@ class ResultFetcher
 
     public function getQueryString(SqlInterface $select): string
     {
-        return $select->getSqlString($this->dfb);
+        return $select->getSqlString($this->db);
     }
 
     public function getSelect(null|string|TableIdentifier $table = null): Select
