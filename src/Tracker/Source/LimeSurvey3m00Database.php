@@ -260,13 +260,13 @@ class LimeSurvey3m00Database extends SourceAbstract
     protected function _fillAttributeMap(\Gems\Tracker\Token $token)
     {
         $values[$this->_attributeMap['respondentid']]   =
-                substr($token->getRespondentId(), 0, $this->attributeSize);
+                substr(strval($token->getRespondentId()), 0, $this->attributeSize);
         $values[$this->_attributeMap['organizationid']] =
-                substr($token->getOrganizationId(), 0, $this->attributeSize);
+                substr(strval($token->getOrganizationId()), 0, $this->attributeSize);
         $values[$this->_attributeMap['consentcode']]    =
                 substr($token->getConsentCode(), 0, $this->attributeSize);
         $values[$this->_attributeMap['resptrackid']]    =
-                substr($token->getRespondentTrackId(), 0, $this->attributeSize);
+                substr(strval($token->getRespondentTrackId()), 0, $this->attributeSize);
 
         // Added in LS 1.91
         // Not really an attribute, but it is the best place to set this
