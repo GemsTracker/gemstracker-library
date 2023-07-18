@@ -652,7 +652,7 @@ class Tracker implements TrackerInterface
         /**
          * @var TokenFilter
          */
-        return $this->overLoader->create('Tracker\\Token', $this->getTokenLibrary());
+        return $this->overLoader->create('Tracker\\Token\\TokenFilter', $this->getTokenLibrary());
     }
 
     /**
