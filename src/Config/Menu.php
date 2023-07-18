@@ -542,6 +542,109 @@ class Menu
                     ],
                 ],
                 [
+                    'name' => 'setup.database',
+                    'label' => $this->translator->trans('Database'),
+                    'type' => 'container',
+                    'children' => [
+                        [
+                            'name' => 'setup.database.tables.index',
+                            'label' => $this->translator->trans('Tables'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.database.tables.new',
+                                    'label' => $this->translator->trans('New tables'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.database.tables.create',
+                                            'label' => $this->translator->trans('Create table'),
+                                            'type' => 'route-link-item',
+                                            'children' => [],
+                                        ],
+                                        [
+                                            'name' => 'setup.database.tables.create-all',
+                                            'label' => $this->translator->trans('Create all new tables'),
+                                            'type' => 'route-link-item',
+                                            'children' => [],
+                                        ],
+                                    ],
+                                ],
+                                [
+                                    'name' => 'setup.database.tables.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'setup.database.patches.index',
+                            'label' => $this->translator->trans('Patches'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.database.patches.new',
+                                    'label' => $this->translator->trans('New patches'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.database.patches.run',
+                                            'label' => $this->translator->trans('Execute patch'),
+                                            'type' => 'route-link-item',
+                                            'children' => [],
+                                        ],
+                                        [
+                                            'name' => 'setup.database.patches.run-all',
+                                            'label' => $this->translator->trans('Execute all new patches'),
+                                            'type' => 'route-link-item',
+                                            'children' => [],
+                                        ],
+                                    ],
+                                ],
+                                [
+                                    'name' => 'setup.database.patches.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'setup.database.seeds.index',
+                            'label' => $this->translator->trans('Seeds'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.database.seeds.new',
+                                    'label' => $this->translator->trans('New seeds'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.database.seeds.run',
+                                            'label' => $this->translator->trans('Execute patch'),
+                                            'type' => 'route-link-item',
+                                            'children' => [],
+                                        ],
+                                        [
+                                            'name' => 'setup.database.seeds.run-all',
+                                            'label' => $this->translator->trans('Execute all new seeds'),
+                                            'type' => 'route-link-item',
+                                            'children' => [],
+                                        ],
+                                    ],
+                                ],
+                                [
+                                    'name' => 'setup.database.seeds.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                [
                     'name' => 'setup.codes',
                     'label' => $this->translator->trans('Codes'),
                     'type' => 'container',
