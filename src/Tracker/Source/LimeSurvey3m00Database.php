@@ -16,6 +16,8 @@ use DateTimeInterface;
 use Gems\Log\LogHelper;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Ddl\AlterTable;
+use Laminas\Db\Sql\Ddl\Column\Varchar;
 use MUtil\Model;
 
 /**
@@ -549,18 +551,19 @@ class LimeSurvey3m00Database extends SourceAbstract
                 $messages[] = sprintf($this->_('The \'%s\' survey is no longer active. The survey was removed from LimeSurvey!'), $survey->getName());
             }
         } else {
-            $lsDb = $this->getSourceDatabase();
+            $lsAdapter = $this->getSourceDatabase();
+            $lsResultFetcher = $this->getSourceResultFetcher();
 
             // SELECT sid, surveyls_title AS short_title, surveyls_description AS description, active, datestamp, ' . $this->_anonymizedField . '
-            $select = $lsDb->select();
+            $select = $lsResultFetcher->getSelect();
             // 'alloweditaftercompletion' ?
-            $select->from($this->_getSurveysTableName(), array('active', 'datestamp', 'language', 'additional_languages', 'autoredirect', 'alloweditaftercompletion', 'allowregister', 'listpublic', 'tokenanswerspersistence', 'expires', $this->_anonymizedField))
-                    ->joinInner(
-                            $this->_getSurveyLanguagesTableName(),
-                            'sid = surveyls_survey_id AND language = surveyls_language',
-                            array('surveyls_title', 'surveyls_description'))
-                    ->where('sid = ?', $sourceSurveyId);
-            $lsSurvey = $lsDb->fetchRow($select);
+            $select->from($this->_getSurveysTableName())
+                    ->columns(['active', 'datestamp', 'language', 'additional_languages', 'autoredirect', 'alloweditaftercompletion', 'allowregister', 'listpublic', 'tokenanswerspersistence', 'expires', $this->_anonymizedField])
+                    ->join($this->_getSurveyLanguagesTableName(),
+                           'sid = surveyls_survey_id AND language = surveyls_language',
+                           ['surveyls_title', 'surveyls_description'])
+                    ->where(['sid' => $sourceSurveyId]);
+            $lsSurvey = $lsResultFetcher->fetchRow($select);
 
             $surveyor_title = mb_substr(\MUtil\Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_title'])), 0, 100);
             $surveyor_description = mb_substr(\MUtil\Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 100);
@@ -590,10 +593,23 @@ class LimeSurvey3m00Database extends SourceAbstract
                     // The answers already in the table can only be linked to the response based on the completion time
                     // this requires a manual action as token table only hold minuts while survey table holds seconds
                     // and we might have responses with the same timestamp.
-                    $lsDb->query("UPDATE " . $this->_getSurveysTableName() . " SET `" . $this->_anonymizedField . "` = 'N' WHERE sid = ?;", $sourceSurveyId);
+                    $sql = new Sql($lsAdapter);
+                    $update = $sql->update($this->_getSurveysTableName())
+                            ->set([
+                                $this->_anonymizedField => 'N',
+                            ])
+                            ->where([
+                                'sid' => $sourceSurveyId,
+                            ]);
+                    $sql->prepareStatementForSqlObject($update)->execute();
                     $messages[] = sprintf($this->_("Corrected anonymization for survey '%s'"), $surveyor_title);
 
-                    $lsDb->query("ALTER TABLE " . $this->_getSurveyTableName($sourceSurveyId) . " ADD `token` varchar(36) default NULL;");
+                    $table = new AlterTable($this->_getSurveyTableName($sourceSurveyId));
+                    $table->addColumn(new Varchar('token', 36));
+                    $lsAdapter->query(
+                        $sql->buildSqlString($table),
+                        $lsAdapter::QUERY_MODE_EXECUTE
+                    );
             }
 
             // DATESTAMP
@@ -609,8 +625,8 @@ class LimeSurvey3m00Database extends SourceAbstract
             // IS ACTIVE
             if ($lsSurvey['active'] == 'Y') {
                 try {
-                    $tokenTable = $lsDb->fetchAssoc('SHOW COLUMNS FROM ' . $this->_getTokenTableName($sourceSurveyId));
-                } catch (\Zend_Exception $e) {
+                    $tokenTable = $lsResultFetcher->fetchAll('SHOW COLUMNS FROM ' . $this->_getTokenTableName($sourceSurveyId));
+                } catch (\RuntimeException $e) {
                     $tokenTable = false;
                 }
 
@@ -622,9 +638,10 @@ class LimeSurvey3m00Database extends SourceAbstract
                         $fields = implode($this->_(', '), array_keys($missingFields));
                         // \MUtil\EchoOut\EchoOut::track($missingFields, $sql);
                         try {
-                            $lsDb->query($sql);
+                            // FIXME: This is not platform agnostic!
+                            $lsAdapter->query($sql, $lsAdapter::QUERY_MODE_EXECUTE);
                             $messages[] = sprintf($this->_("Added to token table '%s' the field(s): %s"), $surveyor_title, $fields);
-                        } catch (\Zend_Exception $e) {
+                        } catch (\RuntimeException $e) {
                             $surveyor_status .= 'Token attributes could not be created. ';
                             $surveyor_status .= $e->getMessage() . ' ';
 
