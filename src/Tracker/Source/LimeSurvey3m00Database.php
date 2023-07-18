@@ -14,6 +14,7 @@ namespace Gems\Tracker\Source;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Log\LogHelper;
+use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Select;
 use MUtil\Model;
 
@@ -1545,11 +1546,12 @@ class LimeSurvey3m00Database extends SourceAbstract
             $sourceSurveyId = $this->_getSid($surveyId);
         }
 
-        $lsDb      = $this->getSourceDatabase();
+        $lsAdapter = $this->getSourceDatabase();
+        $lsResultFetcher = $this->getSourceResultFetcher();
         $lsTabSurv = $this->_getSurveyTableName($sourceSurveyId);
         $lsTabTok  = $this->_getTokenTableName($sourceSurveyId);
         $lsTokenId = $this->_getToken($token->getTokenId());
-        $where     = $lsDb->quoteInto("token = ?", $lsTokenId);
+        $where     = ['token' => $lsTokenId];
         $current   = new \MUtil\Db\Expr\CurrentTimestamp();
 
         if ($completionTime instanceof \DateTimeInterface) {
@@ -1561,8 +1563,10 @@ class LimeSurvey3m00Database extends SourceAbstract
         }
 
         // Set for the survey
-        if ($lsDb->fetchOne("SELECT token FROM $lsTabSurv WHERE token = ?", $lsTokenId)) {
-            $lsDb->update($lsTabSurv, $answers, $where);
+        $sql = new Sql($lsAdapter);
+        if ($lsResultFetcher->fetchOne("SELECT token FROM $lsTabSurv WHERE token = ?", [$lsTokenId])) {
+            $update = $sql->update($lsTabSurv)->set($answers)->where($where);
+            $sql->prepareStatementForSqlObject($update)->execute();
 
         } elseif ($completionTime instanceof \DateTimeInterface) {
             $answers['token']         = $lsTokenId;
@@ -1570,19 +1574,22 @@ class LimeSurvey3m00Database extends SourceAbstract
             $answers['datestamp']     = $current;
             $answers['startdate']     = $current;
 
-            $lsDb->insert($lsTabSurv, $answers);
+            $insert = $sql->insert($lsTabSurv)->values($answers);
+            $sql->prepareStatementForSqlObject($insert)->execute();
         }
 
         // Set for the token
-        if ($lsDb->fetchOne("SELECT token FROM $lsTabTok WHERE token = ?", $lsTokenId)) {
-            $lsDb->update($lsTabTok, $tokenData, $where);
+        if ($lsResultFetcher->fetchOne("SELECT token FROM $lsTabTok WHERE token = ?", [$lsTokenId])) {
+            $update = $sql->update($lsTabTok)->set($tokenData)->where($where);
+            $sql->prepareStatementForSqlObject($update)->execute();
 
         } elseif ($completionTime instanceof \DateTimeImmutable) {
 
             $tokenData['token'] = $lsTokenId;
             $tokenData = $tokenData + $this->_fillAttributeMap($token);
 
-            $lsDb->insert($lsTabTok, $tokenData);
+            $insert = $sql->insert($lsTabTok)->values($tokenData);
+            $sql->prepareStatementForSqlObject($insert)->execute();
         }
         $token->cacheReset();
     }
@@ -1602,7 +1609,8 @@ class LimeSurvey3m00Database extends SourceAbstract
             $sourceSurveyId = $this->_getSid($surveyId);
         }
 
-        $lsDb     = $this->getSourceDatabase();
+        $lsAdapter = $this->getSourceDatabase();
+        $lsResultFetcher = $this->getSourceResultFetcher();
         $lsTokens = $this->_getTokenTableName($sourceSurveyId);
         $tokenId  = $this->_getToken($token->getTokenId());
 
@@ -1611,7 +1619,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         }
         $values[$this->_attributeMap['consentcode']] = $consentCode;
 
-        if ($oldValues = $lsDb->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", $tokenId)) {
+        if ($oldValues = $lsResultFetcher->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", [$tokenId])) {
 
             if ($this->tracker->filterChangesOnly($oldValues, $values)) {
                 if (\Gems\Tracker::$verbose) {
@@ -1622,13 +1630,16 @@ class LimeSurvey3m00Database extends SourceAbstract
                     \MUtil\EchoOut\EchoOut::r($echo, "Updated limesurvey values for $tokenId");
                 }
 
-                $result = $lsDb->update($lsTokens, $values, array('token = ?' => $tokenId));
+                $sql = new Sql($lsAdapter);
+                $update = $sql->update($lsTokens)->set($values)->where(['token' => $tokenId]);
+                $result = $sql->prepareStatementForSqlObject($update)->execute();
 
-                if ($result) {
+                $rows = $result->getAffectedRows();
+                if ($rows) {
                     //If we have changed something, invalidate the cache
                     $token->cacheReset('tokenInfo');
                 }
-                return $result;
+                return $rows;
             }
         }
 
