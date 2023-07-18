@@ -347,13 +347,13 @@ class LimeSurvey3m00Database extends SourceAbstract
             if ($language && $this->_isLanguage($sourceSurveyId, $language)) {
                 $this->_languageMap[$sourceSurveyId][$language] = $language;
             } else {
-                $lsDb = $this->getSourceDatabase();
+                $lsResultFetcher = $this->getSourceResultFetcher();
 
                 $sql = 'SELECT language
                     FROM ' . $this->_getSurveysTableName() . '
                     WHERE sid = ?';
 
-                $this->_languageMap[$sourceSurveyId][$language] = $lsDb->fetchOne($sql, $sourceSurveyId);
+                $this->_languageMap[$sourceSurveyId][$language] = $lsResultFetcher->fetchOne($sql, [$sourceSurveyId]);
             }
         }
 
@@ -411,13 +411,14 @@ class LimeSurvey3m00Database extends SourceAbstract
     protected function _getSourceSurveysForSynchronisation()
     {
         // Surveys in LS
-        $lsDb = $this->getSourceDatabase();
+        $lsResultFetcher = $this->getSourceResultFetcher();
 
-        $select = $lsDb->select();
-        $select->from($this->_getSurveysTableName(), 'sid')
+        $select = $lsResultFetcher->getSelect();
+        $select->from($this->_getSurveysTableName())
+                ->columns(['sid'])
                 ->order('sid');
 
-        return $lsDb->fetchCol($select);
+        return $lsResultFetcher->fetchCol($select);
     }
 
     /**
