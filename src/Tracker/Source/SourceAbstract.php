@@ -37,7 +37,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     /**
      * @var array meta data fields that are included in a survey table
      */
-    public static $metaFields = [];
+    public static array $metaFields = [];
 
     /**
      * The database connection to the source, usedable by all implementations that use a database
@@ -218,7 +218,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
      * Adds database (if needed) and tablename prefix to the table name
      *
      * @param string $tableName
-     * @param boolean $addDatabaseName Optional, when true (= default) and there is a database name then it is prepended to the name.
+     * @param bool $addDatabaseName Optional, when true (= default) and there is a database name then it is prepended to the name.
      * @return string
      */
     protected function addDatabasePrefix($tableName, $addDatabaseName = true): string
@@ -229,9 +229,9 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     * @return boolean When true can export when survey inactive in source
+     * @return bool When true can export when survey inactive in source
      */
-    public function canExportInactive()
+    public function canExportInactive(): bool
     {
         return false;
     }
@@ -260,6 +260,8 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
 
     /**
      * Returns all the gemstracker names for attributes stored in source for a token
+     *
+     * @return array<string, string>
      */
     public function getAttributes(): array
     {

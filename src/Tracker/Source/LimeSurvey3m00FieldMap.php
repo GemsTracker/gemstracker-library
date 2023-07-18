@@ -40,11 +40,11 @@ class LimeSurvey3m00FieldMap
     const INTERNAL           = 'stamp';
 
     protected array $_answers = [];
-    protected $_attributes;
+    protected array $_attributes;
     protected ?array $_fieldMap = null;
     protected array $_hardAnswers;
-    protected $_titlesMap;
-    protected $tableMetaData;
+    protected array $_titlesMap;
+    protected array $tableMetaData;
 
     /**
      * Resultfetcher for the LimeSurvey database connection.
@@ -81,7 +81,7 @@ class LimeSurvey3m00FieldMap
      *
      * @return string name of the answers table
      */
-    protected function _getAnswersTableName()
+    protected function _getAnswersTableName(): string
     {
         return $this->tablePrefix . self::ANSWERS_TABLE;
     }
@@ -91,12 +91,12 @@ class LimeSurvey3m00FieldMap
      *
      * @return string name of the groups table
      */
-    protected function _getGroupsTableName()
+    protected function _getGroupsTableName(): string
     {
         return $this->tablePrefix . self::GROUPS_TABLE;
     }
 
-    protected function _getFixedAnswers($type)
+    protected function _getFixedAnswers($type): array|false
     {
         switch ($type) {
             case ':':
@@ -140,7 +140,7 @@ class LimeSurvey3m00FieldMap
      * @param integer    $qid        Question ID
      * @param integer    $scaleId    Scale ID
      */
-    protected function _getHardAnswers($qid, $scaleId): array|bool
+    protected function _getHardAnswers($qid, $scaleId): array|false
     {
         if (! isset($this->_hardAnswers)) {
             $this->_setHardAnswers();
@@ -173,6 +173,9 @@ class LimeSurvey3m00FieldMap
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function _getMap(): array
     {
         $cacheId = 'lsFieldMap'.$this->sourceId . '_'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
@@ -974,9 +977,9 @@ class LimeSurvey3m00FieldMap
     /**
      * Get the survey table structure (meta data)
      *
-     * @return array Table meta data
+     * @return array<string, array{'TABLE_NAME': string, 'DATA_TYPE': string}>
      */
-    public function getSurveyTableStructure()
+    public function getSurveyTableStructure(): array
     {
         $metaData = $this->loadTableMetaData();
 
@@ -996,14 +999,17 @@ class LimeSurvey3m00FieldMap
     /**
      * Function to cast numbers as float, but leave null intact
      * @param $value The number to cast to float
-     * @return float
+     * @return ?float
      */
-    public function handleFloat($value)
+    public function handleFloat($value): ?float
     {
         return is_null($value) ? null : (float)$value;
     }
 
-    protected function loadTableMetaData()
+    /**
+     * @return array<string, array{'TABLE_NAME': string, 'DATA_TYPE': string}>
+     */
+    protected function loadTableMetaData(): array
     {
         try {
             $metadata = $this->getZendAlikeTableStructure($this->_getSurveyTableName());
@@ -1078,7 +1084,7 @@ class LimeSurvey3m00FieldMap
      * Return an array with a table structure, modeled on the Zend Db metadata.
      *
      * @param string $tableName
-     * @return array{string: array{'TABLE_NAME': string, 'DATA_TYPE': string}}
+     * @return array<string, array{'TABLE_NAME': string, 'DATA_TYPE': string}>
      */
     private function getZendAlikeTableStructure(string $tableName): array
     {
