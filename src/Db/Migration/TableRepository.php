@@ -50,6 +50,7 @@ class TableRepository extends MigrationRepositoryAbstract
                 $start,
                 microtime(true),
             );
+            $this->eventDispatcher->dispatch($event);
         } catch (\Exception $e) {
             $event = new CreateTableMigrationEvent(
                 'table',
@@ -62,9 +63,9 @@ class TableRepository extends MigrationRepositoryAbstract
                 $start,
                 microtime(true),
             );
+            $this->eventDispatcher->dispatch($event);
             throw new MigrationException($e->getMessage());
         }
-        $this->eventDispatcher->dispatch($event);
     }
 
     protected function getGroupName(string $name): ?string

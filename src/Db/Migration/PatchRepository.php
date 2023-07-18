@@ -173,6 +173,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                 $start,
                 microtime(true),
             );
+            $this->eventDispatcher->dispatch($event);
 
         } catch(Exception $e) {
             $event = new RunPatchMigrationEvent(
@@ -186,8 +187,10 @@ class PatchRepository extends MigrationRepositoryAbstract
                 $start,
                 microtime(true),
             );
+            $this->eventDispatcher->dispatch($event);
+            throw new MigrationException($e->getMessage());
         }
-        $this->eventDispatcher->dispatch($event);
+
     }
 
     public function setAsSkipped(array $patchInfo): void
