@@ -626,7 +626,7 @@ class LimeSurvey3m00Database extends SourceAbstract
                             $surveyor_status .= $e->getMessage() . ' ';
 
                             $messages[] = sprintf($this->_("Attribute fields not created for token table for '%s'"), $surveyor_title);
-                            $messages[] = sprintf($this->_('Required fields: %s', $fields));
+                            $messages[] = sprintf($this->_('Required fields: %s'), $fields);
                             $messages[] = $e->getMessage();
 
                             // Maximum reporting for this case
