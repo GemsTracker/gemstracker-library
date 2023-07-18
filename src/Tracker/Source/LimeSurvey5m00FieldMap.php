@@ -30,27 +30,6 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         return $this->tablePrefix . self::GROUPS_TRANSLATE_TABLE;
     }
 
-    /**
-     * Returns the answers for a matrix or list type question from the answers table
-     *
-     * Uses 1 query to retrieve all answers and serves them as needed
-     *
-     * @param integer    $qid        Question ID
-     * @param integer    $scaleId    Scale ID
-     */
-    protected function _getHardAnswers($qid, $scaleId): array|bool
-    {
-        if (! isset($this->_hardAnswers)) {
-            $this->_setHardAnswers();
-        }
-
-        if (array_key_exists($qid, $this->_hardAnswers) && array_key_exists($scaleId, $this->_hardAnswers[$qid])) {
-            return $this->_hardAnswers[$qid][$scaleId];
-        }
-
-        return false;
-    }
-
     private function _setHardAnswers()
     {
         $qaTable = $this->_getAnswersTableName();
