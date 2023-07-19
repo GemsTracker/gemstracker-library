@@ -158,9 +158,12 @@ class PatchRepository extends MigrationRepositoryAbstract
         $start = microtime(true);
 
         try {
+            $connection = $resultFetcher->getAdapter()->getDriver()->getConnection();
+            $connection->beginTransaction();
             foreach($patchInfo['sql'] as $sqlQuery) {
                 $resultFetcher->query($sqlQuery);
             }
+            $connection->commit();
 
             $event = new RunPatchMigrationEvent(
                 'patch',
@@ -175,7 +178,7 @@ class PatchRepository extends MigrationRepositoryAbstract
             );
             $this->eventDispatcher->dispatch($event);
 
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             $event = new RunPatchMigrationEvent(
                 'patch',
                 1,

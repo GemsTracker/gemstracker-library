@@ -225,14 +225,19 @@ class SeedRepository extends MigrationRepositoryAbstract
         $generatedValues = [];
 
         try {
+            $connection = $resultFetcher->getAdapter()->getDriver()->getConnection();
+            $connection->beginTransaction();
             foreach($seedInfo['data'] as $seedTable => $seedRows) {
                 $sqlQueries = $this->getQueriesFromRows($adapter, $seedTable, $this->resolveReferences($seedRows, $generatedValues));
+
                 foreach($sqlQueries as $index => $sqlQuery) {
                     $resultFetcher->query($sqlQuery);
                     $generatedValues[$seedTable.'.'.$index] = $resultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
                     $finalQueries[] = $sqlQuery;
                 }
             }
+
+            $connection->commit();
 
             /*foreach($sqlQueriesPerTable as $table => $sqlQueries) {
                 foreach($sqlQueries as $index => $sqlQuery) {
@@ -255,7 +260,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 microtime(true),
             );
             $this->eventDispatcher->dispatch($event);
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             $event = new RunSeedMigrationEvent(
                 'seed',
                 1,
@@ -268,6 +273,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 microtime(true),
             );
             $this->eventDispatcher->dispatch($event);
+            throw new MigrationException(sprintf('Seed %s failed, %s', $seedInfo['name'], $e->getMessage()));
         }
     }
 }
