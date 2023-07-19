@@ -1,0 +1,10 @@
+gems__sources:
+  -
+    gso_source_name: test1
+    gso_ls_url: 'http://gems-ls.test'
+    gso_ls_class: LimeSurvey5m00Database
+    gso_ls_adapter: Mysqli
+    gso_ls_database: pulse_ls
+    gso_ls_table_prefix: ls__
+    gso_changed_by: 1
+    gso_created_by: 1

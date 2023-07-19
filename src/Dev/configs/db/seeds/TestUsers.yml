@@ -1,0 +1,71 @@
+gems__user_logins:
+  -
+    gul_login: admin
+    gul_id_organization: 70
+    gul_user_class: StaffUser
+    gul_can_login: 1
+    gul_two_factor_key: null
+    gul_otp_count: 0
+    gul_otp_requested: null
+    gul_changed_by: 1
+    gul_created_by: 1
+  -
+    gul_login: jjansen
+    gul_id_organization: 70
+    gul_user_class: StaffUser
+    gul_can_login: 1
+    gul_two_factor_key: null
+    gul_otp_count: 0
+    gul_otp_requested: null
+    gul_changed_by: 1
+    gul_created_by: 1
+gems__user_passwords:
+  -
+    gup_id_user: '{{gems__user_logins.0}}'
+    gup_password: $2y$12$jR.aygK9H090RBdaWnWRAOsJxlDAfhi2aeo6HRs6a.gVmJbyoVEgK # admin
+    gup_changed_by: 1
+    gup_created_by: 1
+  -
+    gup_id_user: '{{gems__user_moo.1}}'
+    gup_password: $2y$12$ie3WvEse1HTJr9MWGisSu.3Xua2JXJ1o/1pBMsUDZoiIMkVbIq1yW # test123
+    gup_changed_by: 1
+    gup_created_by: 1
+gems__staff:
+  -
+    gsf_id_user: 3001
+    gsf_login: admin
+    gsf_id_organization: 70
+    gsf_active: 1
+    gsf_id_primary_group: 900
+    gsf_iso_lang: nl
+    gsf_logout_on_survey: 0
+    gsf_mail_watcher: 0
+    gsf_email: admin@test.test
+    gsf_first_name: Gemstracker
+    gsf_surname_prefix: null
+    gsf_last_name: Admin
+    gsf_gender: F
+    gsf_job_title: Administrator
+    gsf_phone_1: null
+    gsf_is_embedded: 0
+    gsf_changed_by: 1
+    gsf_created_by: 1
+  -
+    gsf_id_user: 3002
+    gsf_login: jjansen
+    gsf_id_organization: 70
+    gsf_active: 1
+    gsf_id_primary_group: 903
+    gsf_iso_lang: nl
+    gsf_logout_on_survey: 0
+    gsf_mail_watcher: 0
+    gsf_email: jjansen@test.test
+    gsf_first_name: Janneke
+    gsf_surname_prefix: null
+    gsf_last_name: Jansen
+    gsf_gender: F
+    gsf_job_title: Arts
+    gsf_phone_1: null
+    gsf_is_embedded: 0
+    gsf_changed_by: 1
+    gsf_created_by: 1
