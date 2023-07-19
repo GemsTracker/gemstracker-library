@@ -23,26 +23,8 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 5-mrt-2015 11:29:20
  */
-class AppointmentSelect extends \MUtil\Registry\TargetAbstract
+class AppointmentSelect
 {
-    /**
-     *
-     * @var \Zend_Db_Select
-     */
-    protected $_select;
-
-    /**
-     *
-     * @var \Gems\Agenda\Agenda
-     */
-    protected $agenda;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
     /**
      * The fields returned by the query
      *

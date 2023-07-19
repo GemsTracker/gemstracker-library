@@ -11,6 +11,8 @@
 
 namespace Gems\Agenda;
 
+use Gems\Tracker\RespondentTrack;
+
 /**
  *
  * @package    Gems
@@ -25,40 +27,40 @@ class FilterTracer
      *
      * @var boolean
      */
-    public $executeChanges = false;
+    public bool $executeChanges = false;
 
     /**
      *
      * @var array
      */
-    protected $filters;
+    protected array $filters;
 
     /**
      *
      * @var array
      */
-    protected $tracks;
+    protected array $tracks;
 
     /**
      *
      * @var boolean
      */
-    protected $skippedFilterCheck = false;
+    protected bool $skippedFilterCheck = false;
 
     /**
      *
      * @var string
      */
-    protected $skipMessage = '';
+    protected string $skipMessage = '';
 
     /**
      *
-     * @param \Gems\Agenda\AppointmentFilterInterface $filter
+     * @param AppointmentFilterInterface $filter
      * @param boolean $createTrack
-     * @param \Gems\Tracker\RespondentTrack $respTrack
-     * @return $this
+     * @param RespondentTrack $respTrack
+     * @return self
      */
-    public function addFilter(AppointmentFilterInterface $filter, $createTrack, \Gems\Tracker\RespondentTrack $respTrack = null)
+    public function addFilter(AppointmentFilterInterface $filter, bool $createTrack, RespondentTrack|null $respTrack = null): self
     {
         $this->filters[$filter->getFilterId()] = [
             'filterName'  => $filter->getName(),
@@ -81,7 +83,7 @@ class FilterTracer
      * @param int $tokensChanged
      * @return $this
      */
-    public function addTrackChecked(\Gems\Tracker\RespondentTrack $respTrack, $fieldsChanged, $tokensChanged)
+    public function addTrackChecked(RespondentTrack $respTrack, bool $fieldsChanged, int $tokensChanged): self
     {
         $this->tracks[$respTrack->getRespondentTrackId()] = [
             'trackName'     => $respTrack->getTrackName(),
@@ -98,7 +100,7 @@ class FilterTracer
      *
      * @return array filterId => [filterName, filterTrack, filterField, respTrackId, createTrack, skipMessage]
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return $this->filters;
     }
@@ -107,7 +109,7 @@ class FilterTracer
      *
      * @return array respTrackId => [trackName, trackInfo, trackStart, fieldsChanged, tokensChanged]
      */
-    public function getTracks()
+    public function getTracks(): array
     {
         return $this->tracks;
     }
@@ -116,7 +118,7 @@ class FilterTracer
      *
      * @return boolean
      */
-    public function getSkippedFilterCheck()
+    public function getSkippedFilterCheck(): bool
     {
         return $this->skippedFilterCheck;
     }
@@ -126,7 +128,7 @@ class FilterTracer
      * @param string $message
      * @return $this
      */
-    public function setSkipCreationMessage($message)
+    public function setSkipCreationMessage(string $message): self
     {
         $this->skipMessage = $message;
 
@@ -138,7 +140,7 @@ class FilterTracer
      * @param boolean $skip
      * @return $this
      */
-    public function setSkippedFilterCheck($skip = true)
+    public function setSkippedFilterCheck(bool $skip = true): self
     {
         $this->skippedFilterCheck = true;
 

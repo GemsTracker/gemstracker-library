@@ -30,27 +30,14 @@ class OrganizationAppointmentFilter extends AppointmentFilterAbstract
      *
      * @var array gor_id_organization => gor_id_organization
      */
-    protected $_organizations;
+    protected array $_organizations;
 
-    /**
-     * Override this function when you need to perform any actions when the data is loaded.
-     *
-     * Test for the availability of variables as these objects can be loaded data first after
-     * deserialization or registry variables first after normal instantiation.
-     *
-     * That is why this function called both at the end of afterRegistry() and after exchangeArray(),
-     * but NOT after unserialize().
-     *
-     * After this the object should be ready for serialization
-     */
-    protected function afterLoad()
+    public function __construct(array $_data)
     {
-        if ($this->_data && ! $this->_organizations) {
-
-            foreach (['gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3', 'gaf_filter_text4'] as $field) {
-                if ($this->_data[$field]) {
-                    $this->_organizations[$this->_data[$field]] = $this->_data[$field];
-                }
+        parent::__construct($_data);
+        foreach (['gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3', 'gaf_filter_text4'] as $field) {
+            if ($this->_data[$field]) {
+                $this->_organizations[$this->_data[$field]] = $this->_data[$field];
             }
         }
     }
@@ -60,7 +47,7 @@ class OrganizationAppointmentFilter extends AppointmentFilterAbstract
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere()
+    public function getSqlAppointmentsWhere(): string
     {
         if ($this->_organizations) {
             $where = 'gap_id_organization IN (' . implode(', ', $this->_organizations) . ')';
@@ -80,7 +67,7 @@ class OrganizationAppointmentFilter extends AppointmentFilterAbstract
      * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Appointment $appointment)
+    public function matchAppointment(Appointment $appointment): bool
     {
         if ($this->_organizations) {
             return isset($this->_organizations[$appointment->getOrganizationId()]);

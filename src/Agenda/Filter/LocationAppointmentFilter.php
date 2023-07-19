@@ -13,6 +13,7 @@ namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Appointment;
 use Gems\Agenda\AppointmentFilterAbstract;
+use Gems\Db\ResultFetcher;
 
 /**
  *
@@ -30,13 +31,15 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      *
      * @var array glo_id_location => glo_id_location
      */
-    protected $_locations;
+    protected array$_locations;
 
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    public function __construct(
+        array $_data,
+        protected readonly ResultFetcher $resultFetcher,
+    )
+    {
+        parent::__construct($_data);
+    }
 
     /**
      * Override this function when you need to perform any actions when the data is loaded.
@@ -49,11 +52,9 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      *
      * After this the object should be ready for serialization
      */
-    protected function afterLoad()
+    protected function afterLoad(): void
     {
-        if ($this->_data &&
-                $this->db instanceof \Zend_Db_Adapter_Abstract &&
-                ! $this->_locations) {
+        if ($this->_data && !$this->_locations) {
 
             if ($this->_data['gaf_filter_text1']) {
                 $sqlActivites = "SELECT glo_id_location, glo_id_location
@@ -61,7 +62,7 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
                     WHERE glo_active = 1 AND glo_name LIKE '%s'
                     ORDER BY glo_id_location";
 
-                $this->_locations = $this->db->fetchPairs(sprintf(
+                $this->_locations = $this->resultFetcher->fetchPairs(sprintf(
                         $sqlActivites,
                         addslashes($this->_data['gaf_filter_text1']))
                         );
@@ -76,7 +77,7 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere()
+    public function getSqlAppointmentsWhere(): string
     {
         if ($this->_locations && ($this->_locations !== true)) {
             $where = 'gap_id_location IN (' . implode(', ', $this->_locations) . ')';
@@ -96,7 +97,7 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Appointment $appointment)
+    public function matchAppointment(Appointment $appointment): bool
     {
         if (true !== $this->_locations) {
             if (isset($this->_locations[$appointment->getLocationId()])) {

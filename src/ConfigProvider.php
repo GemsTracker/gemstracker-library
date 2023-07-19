@@ -292,7 +292,7 @@ class ConfigProvider
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
                 ConstructorProjectOverloader::class => ProjectOverloaderFactory::class,
                 Acl::class => AclFactory::class,
-                Agenda::class => AgendaFactory::class,
+                //Agenda::class => AgendaFactory::class,
 
                 // Logs
                 'LegacyLogger' => MonologFactory::class,
@@ -439,8 +439,6 @@ class ConfigProvider
 
     protected function getLocaleSettings(): array
     {
-//        $jstUrl = $this->basepath->getBasePath() . '/gems/js';
-
         $dateFormat = [
             'dateFormat'   => 'd-m-Y',
             'description'  => 'dd-mm-yyyy',

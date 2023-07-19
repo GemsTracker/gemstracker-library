@@ -32,9 +32,9 @@ class XandModelDependency extends AndModelDependency
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = array()): string
+    public function calculateName(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): string
     {
-        $output = $this->calcultateNameOutput($value, $isNew, $name, $context);
+        $output = $this->calculateNameOutput($value, $isNew, $name, $context);
 
         if ($output) {
             return sprintf($this->_('NOT (%s)'), ucfirst(implode($this->getGlue(), $output)));

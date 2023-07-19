@@ -27,7 +27,7 @@ use Gems\Agenda\EpisodeOfCare;
  */
 class OrAppointmentFilter extends AppointmentSubFilterAbstract
 {
-    protected $glue = ' OR ';
+    protected string $glue = ' OR ';
 
     /**
      * Generate a where statement to filter the appointment model
@@ -35,10 +35,10 @@ class OrAppointmentFilter extends AppointmentSubFilterAbstract
      * @param boolean $toApps Whether to return appointment or episode SQL
      * @return string
      */
-    public function getSqlWhereBoth($toApps)
+    public function getSqlWhereBoth(bool $toApps): string
     {
-        $appWheres = array();
-        $epiWheres = array();
+        $appWheres = [];
+        $epiWheres = [];
 
         foreach ($this->_subFilters as $filterObject) {
             if ($filterObject instanceof AppointmentFilterInterface) {
@@ -97,7 +97,7 @@ class OrAppointmentFilter extends AppointmentSubFilterAbstract
      * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Appointment $appointment)
+    public function matchAppointment(Appointment $appointment): bool
     {
         foreach ($this->_subFilters as $filterObject) {
             if ($filterObject instanceof AppointmentFilterInterface) {
@@ -115,7 +115,7 @@ class OrAppointmentFilter extends AppointmentSubFilterAbstract
      * @param EpisodeOfCare $episode
      * @return boolean
      */
-    public function matchEpisode(EpisodeOfCare $episode)
+    public function matchEpisode(EpisodeOfCare $episode): bool
     {
         foreach ($this->_subFilters as $filterObject) {
             if ($filterObject instanceof AppointmentFilterInterface) {

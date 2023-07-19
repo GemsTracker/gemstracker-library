@@ -13,6 +13,7 @@ namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Appointment;
 use Gems\Agenda\AppointmentFilterAbstract;
+use Gems\Db\ResultFetcher;
 
 /**
  *
@@ -30,20 +31,22 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
      *
      * @var array activity_id => activity_id
      */
-    protected $_activities;
+    protected array|bool $_activities = false;
 
     /**
      * The procdures that this filter matches or true when not matching against procdures
      *
      * @var array procedure_id => procedure_id
      */
-    protected $_procedures;
+    protected array|bool $_procedures = false;
 
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    public function __construct(
+        readonly array $_data,
+        protected readonly ResultFetcher $resultFetcher,
+    )
+    {
+        parent::__construct($_data);
+    }
 
     /**
      * Override this function when you need to perform any actions when the data is loaded.
@@ -56,11 +59,9 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
      *
      * After this the object should be ready for serialization
      */
-    protected function afterLoad()
+    protected function afterLoad(): void
     {
-        if ($this->_data &&
-                $this->db instanceof \Zend_Db_Adapter_Abstract &&
-                !($this->_activities || $this->_procedures)) {
+        if ($this->_data && !($this->_activities || $this->_procedures)) {
 
             if ($this->_data['gaf_filter_text1'] || $this->_data['gaf_filter_text2']) {
                 $sqlActivites = "SELECT gaa_id_activity, gaa_id_activity
@@ -81,7 +82,7 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
                 }
                 $sqlActivites .= "ORDER BY gaa_id_activity";
 
-                $this->_activities = $this->db->fetchPairs($sqlActivites);
+                $this->_activities = $this->resultFetcher->fetchPairs($sqlActivites);
             } else {
                 $this->_activities = true;
             }
@@ -107,7 +108,7 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
 
                 $sqlProcedures .= "ORDER BY gapr_id_procedure";
 
-                $this->_procedures = $this->db->fetchPairs($sqlProcedures);
+                $this->_procedures = $this->resultFetcher->fetchPairs($sqlProcedures);
             } else {
                 $this->_procedures = true;
             }
@@ -119,7 +120,7 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere()
+    public function getSqlAppointmentsWhere(): string
     {
         if ($this->_activities && ($this->_activities !== true)) {
             $where = 'gap_id_activity IN (' . implode(', ', $this->_activities) . ')';
@@ -149,7 +150,7 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
      * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Appointment $appointment)
+    public function matchAppointment(Appointment $appointment): bool
     {
         if (true !== $this->_activities) {
             if (! isset($this->_activities[$appointment->getActivityId()])) {

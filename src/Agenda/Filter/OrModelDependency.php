@@ -11,8 +11,6 @@
 
 namespace Gems\Agenda\Filter;
 
-use Gems\Agenda\FilterModelDependencyAbstract;
-
 /**
  *
  *
@@ -49,7 +47,7 @@ class OrModelDependency extends AndModelDependency
      *
      * @return string
      */
-    public function getGlue()
+    public function getGlue(): string
     {
         return $this->_(' OR ');
     }

@@ -11,6 +11,8 @@
 
 namespace Gems\Agenda;
 
+use Gems\Agenda\Repository\FilterRepository;
+
 /**
  *
  *
@@ -34,11 +36,14 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
      */
     protected $_subFilters = array();
 
-    /**
-     *
-     * @var \Gems\Agenda\Agenda
-     */
-    protected $agenda;
+    public function __construct(
+        array $_data,
+        protected readonly Agenda $agenda,
+        protected readonly FilterRepository $filterRepository,
+    )
+    {
+        parent::__construct($_data);
+    }
 
     /**
      * Override this function when you need to perform any actions when the data is loaded.
@@ -51,11 +56,9 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
      *
      * After this the object should be ready for serialization
      */
-    protected function afterLoad()
+    protected function afterLoad(): void
     {
-        if ($this->_data &&
-                $this->agenda instanceof \Gems\Agenda\Agenda &&
-                ! $this->_subFilters) {
+        if ($this->_data && !$this->_subFilters) {
 
             // Flexible determination of filters to load. Save for future expansion of number of fields
             $i         = 1;
@@ -71,19 +74,13 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
 
             if ($filterIds) {
                 $preferAppBalance = 0;
-                $filterObjects  = $this->agenda->getFilters("SELECT *
-                    FROM gems__appointment_filters
-                    WHERE gaf_id IN (" . implode(', ', $filterIds) . ")
-                    ORDER BY gaf_id_order");
 
-                // The order we get the filters may not be the same as the one in which they are specified
-                foreach ($filterIds as $id) {
-                    foreach ($filterObjects as $filterObject) {
-                        if ($filterObject instanceof AppointmentFilterInterface) {
-                            if ($filterObject->getFilterId() == $id) {
-                                $this->_subFilters[$id] = $filterObject;
-                                $preferAppBalance += $filterObject->preferAppointmentSql() ? 1 : -1;
-                            }
+                foreach($filterIds as $filterId) {
+                    $filterObject = $this->filterRepository->getFilter($filterId);
+                    if ($filterObject instanceof AppointmentFilterInterface) {
+                        if ($filterObject->getFilterId() == $filterId) {
+                            $this->_subFilters[$filterId] = $filterObject;
+                            $preferAppBalance += $filterObject->preferAppointmentSql() ? 1 : -1;
                         }
                     }
                 }
@@ -98,7 +95,7 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere()
+    public function getSqlAppointmentsWhere(): string
     {
         return $this->getSqlWhereBoth(true);
     }
@@ -108,7 +105,7 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
      *
      * @return string
      */
-    public function getSqlEpisodeWhere()
+    public function getSqlEpisodeWhere(): string
     {
         return $this->getSqlWhereBoth(false);
     }
@@ -119,7 +116,7 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
      * @param boolean $toApps Whether to return appointment or episode SQL
      * @return string
      */
-    abstract public function getSqlWhereBoth($toApps);
+    abstract public function getSqlWhereBoth(bool $toApps): string;
 
     /**
      * Check a filter for a match
@@ -133,7 +130,7 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
      *
      * @return boolean When true prefer SQL statements filtering appointments
      */
-    public function preferAppointmentSql()
+    public function preferAppointmentSql(): bool
     {
         return $this->_preferAppointments;
     }

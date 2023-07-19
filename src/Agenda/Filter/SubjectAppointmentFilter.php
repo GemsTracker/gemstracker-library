@@ -30,7 +30,7 @@ class SubjectAppointmentFilter extends AppointmentFilterAbstract
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere()
+    public function getSqlAppointmentsWhere(): string
     {
         $text = $this->_data['gaf_filter_text1'];
         if ($text) {
@@ -46,7 +46,7 @@ class SubjectAppointmentFilter extends AppointmentFilterAbstract
      * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Appointment $appointment)
+    public function matchAppointment(Appointment $appointment): bool
     {
         if (! $this->_data['gaf_filter_text1']) {
             return ! $appointment->getSubject();

@@ -23,5 +23,5 @@ namespace Gems\Agenda;
  */
 interface SubFilterDependencyInterface
 {
-
+    public function calculateName(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): string;
 }

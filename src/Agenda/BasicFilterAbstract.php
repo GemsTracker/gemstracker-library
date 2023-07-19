@@ -23,7 +23,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-okt-2014 20:13:01
  */
-abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstract
+abstract class BasicFilterAbstract
     implements AppointmentFilterInterface
 {
     /**
@@ -36,12 +36,12 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
      */
     const NO_MATCH_SQL = '1=0';
 
-    /**
-     * Initial data settings
-     *
-     * @var array
-     */
-    protected $_data;
+    public function __construct(
+        protected readonly array $_data
+    )
+    {
+        $this->afterLoad();
+    }
 
     /**
      * Override this function when you need to perform any actions when the data is loaded.
@@ -54,28 +54,15 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
      *
      * After this the object should be ready for serialization
      */
-    protected function afterLoad()
+    protected function afterLoad(): void
     { }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->afterLoad();
-    }
 
     /**
      * Load the object from a data array
      *
      * @param array $data
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $data): void
     {
         $this->_data = $data;
         $this->afterLoad();
@@ -86,7 +73,7 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
      *
      * @return int
      */
-    public function getCreatorType()
+    public function getCreatorType(): int
     {
         return $this->_data['gtap_create_track'];
     }
@@ -96,7 +83,7 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
      *
      * @return string|null
      */
-    public function getFieldId()
+    public function getFieldId(): string|null
     {
         if (isset($this->_data['gtap_id_app_field']) && $this->_data['gtap_id_app_field']) {
             return FieldsDefinition::makeKey(
@@ -113,7 +100,7 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
      *
      * @return int
      */
-    public function getFilterId()
+    public function getFilterId(): int
     {
         return $this->_data['gaf_id'];
     }
@@ -123,7 +110,7 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_data['gaf_manual_name'] ? $this->_data['gaf_manual_name'] : $this->_data['gaf_calc_name'];
     }
@@ -147,7 +134,7 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
      *
      * @return int|null
      */
-    public function getTrackId()
+    public function getTrackId(): int|null
     {
         if (isset($this->_data['gtap_id_track']) && $this->_data['gtap_id_track']) {
             return $this->_data['gtap_id_track'];
@@ -160,7 +147,7 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
      *
      * @return int|null null when no track creation or no wait days
      */
-    public function getWaitDays()
+    public function getWaitDays(): int|null
     {
         if (isset($this->_data['gtap_create_wait_days'], $this->_data['gtap_create_track']) &&
                 $this->_data['gtap_create_track']) {
@@ -174,7 +161,7 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
      *
      * @return boolean
      */
-    public function isCreator()
+    public function isCreator(): bool
     {
         return isset($this->_data['gtap_create_track']) && $this->_data['gtap_create_track'];
     }
@@ -204,7 +191,7 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
      */
     public function __serialize(): array
     {
-        $data = array();
+        $data = [];
         foreach (get_object_vars($this) as $name => $value) {
             if (! $this->filterRequestNames($name)) {
                 $data[$name] = $value;

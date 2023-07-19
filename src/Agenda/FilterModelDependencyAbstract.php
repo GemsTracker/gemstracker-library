@@ -39,7 +39,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      *
      * @var int
      */
-    protected $_fieldCount = 4;
+    protected int $_fieldCount = 4;
 
     /**
      * The maximum length of the calculated name
@@ -61,14 +61,14 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      *
      * @return void
      */
-    public function afterLoad()
+    public function afterLoad(): void
     {
         $setOnSave = MetaModel::SAVE_TRANSFORMER;
         $switches  = $this->getTextSettings();
 
         // Make sure the calculated name is saved
         if (! isset($switches['gaf_calc_name'], $switches['gaf_calc_name'][$setOnSave])) {
-            $switches['gaf_calc_name'][$setOnSave] = array($this, 'calcultateAndCheckName');
+            $switches['gaf_calc_name'][$setOnSave] = array($this, 'calculateAndCheckName');
         }
 
         // Make sure the class name is always saved
@@ -95,9 +95,9 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateAndCheckName($value, $isNew = false, $name = null, array $context = array()): string
+    public function calculateAndCheckName(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): string
     {
-        return substr($this->calcultateName($value, $isNew, $name, $context), 0, $this->_maxNameCalcLength);
+        return substr($this->calculateName($value, $isNew, $name, $context), 0, $this->_maxNameCalcLength);
     }
 
     /**
@@ -111,7 +111,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    abstract public function calcultateName($value, $isNew = false, $name = null, array $context = array()): string;
+    abstract public function calculateName(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): string;
 
     /**
      * Get the class name for the filters, the part after *_Agenda_Filter_
@@ -142,7 +142,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * @param int $length
      * @return \Gems\Agenda\FilterModelDependencyAbstract
      */
-    public function setMaximumCalcLength(int $length = 200): FilterModelDependencyAbstract
+    public function setMaximumCalcLength(int $length = 200): self
     {
         $this->_maxNameCalcLength = $length;
 

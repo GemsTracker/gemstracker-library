@@ -28,43 +28,32 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
      *
      * @var array Optional array keys steps required before
      */
-    protected $_filter;
+    protected array $_filter;
 
     /**
      *
      * @var string The text value to find
      */
-    protected $_value;
+    protected string $_value;
 
-    /**
-     * Override this function when you need to perform any actions when the data is loaded.
-     *
-     * Test for the availability of variables as these objects can be loaded data first after
-     * deserialization or registry variables first after normal instantiation.
-     *
-     * That is why this function called both at the end of afterRegistry() and after exchangeArray(),
-     * but NOT after unserialize().
-     *
-     * After this the object should be ready for serialization
-     */
-    protected function afterLoad()
+    public function __construct(array $_data)
     {
-        if ($this->_data) {
-            $this->_value = $this->_data['gaf_filter_text4'];
+        parent::__construct($_data);
+        $this->_value = $this->_data['gaf_filter_text4'];
 
-            $filter[] = $this->_data['gaf_filter_text1'];
-            $filter[] = $this->_data['gaf_filter_text2'];
-            $filter[] = $this->_data['gaf_filter_text3'];
+        $filter = [];
+        $filter[] = $this->_data['gaf_filter_text1'];
+        $filter[] = $this->_data['gaf_filter_text2'];
+        $filter[] = $this->_data['gaf_filter_text3'];
 
-            $this->_filter = array_filter($filter);
-        }
+        $this->_filter = array_filter($filter);
     }
 
     /**
      *
      * @return string
      */
-    protected function getRegex()
+    protected function getRegex(): string
     {
         $regexp = $this->toRegexp($this->_value);
 
@@ -83,7 +72,7 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
      *
      * @return string
      */
-    public function getSqlEpisodeWhere()
+    public function getSqlEpisodeWhere(): string
     {
         $regex = $this->getRegex();
         return "gec_diagnosis_data REGEXP '$regex'";
@@ -95,7 +84,7 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
      * @param \Gems\Agenda\EpisodeOfCare $episode
      * @return boolean
      */
-    public function matchEpisode(EpisodeOfCare $episode)
+    public function matchEpisode(EpisodeOfCare $episode): bool
     {
         $data = $episode->getDiagnosisData();
         if (! $data) {
@@ -108,7 +97,7 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
 
         $regex = $this->getRegex();
 
-        if ((boolean) preg_match($regex, $data)) {
+        if ((bool) preg_match($regex, $data)) {
             return true;
         }
 
@@ -121,7 +110,7 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
      * @param string $value
      * @return string
      */
-    protected function toRegexp($value)
+    protected function toRegexp(string $value): string
     {
         return '"[^"]*' . str_replace(['%', '_'], ['[^"]*', '[^"]{1}'], $value) . '[^"]*"';
     }
