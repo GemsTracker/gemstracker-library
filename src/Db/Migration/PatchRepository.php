@@ -157,14 +157,19 @@ class PatchRepository extends MigrationRepositoryAbstract
 
         $start = microtime(true);
 
+        $connection = $resultFetcher->getAdapter()->getDriver()->getConnection();
+        $useTransactions = $connection->inTransaction(); // Already in a transaction?
+
         try {
-            $connection = $resultFetcher->getAdapter()->getDriver()->getConnection();
-            $connection->beginTransaction();
+            if ($useTransactions) {
+                $connection->beginTransaction();
+            }
             foreach($patchInfo['sql'] as $sqlQuery) {
                 $resultFetcher->query($sqlQuery);
             }
-            $connection->commit();
-
+            if ($useTransactions) {
+                $connection->commit();
+            }
             $event = new RunPatchMigrationEvent(
                 'patch',
                 1,
@@ -179,6 +184,9 @@ class PatchRepository extends MigrationRepositoryAbstract
             $this->eventDispatcher->dispatch($event);
 
         } catch(\Exception $e) {
+            if ($useTransactions) {
+                $connection->rollback();
+            }
             $event = new RunPatchMigrationEvent(
                 'patch',
                 1,

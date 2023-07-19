@@ -224,9 +224,12 @@ class SeedRepository extends MigrationRepositoryAbstract
         $finalQueries = [];
         $generatedValues = [];
 
+        $connection = $resultFetcher->getAdapter()->getDriver()->getConnection();
+        $useTransactions = $connection->inTransaction();
         try {
-            $connection = $resultFetcher->getAdapter()->getDriver()->getConnection();
-            $connection->beginTransaction();
+            if ($useTransactions) {
+                $connection->beginTransaction();
+            }
             foreach($seedInfo['data'] as $seedTable => $seedRows) {
                 $sqlQueries = $this->getQueriesFromRows($adapter, $seedTable, $this->resolveReferences($seedRows, $generatedValues));
 
@@ -237,7 +240,9 @@ class SeedRepository extends MigrationRepositoryAbstract
                 }
             }
 
-            $connection->commit();
+            if ($useTransactions) {
+                $connection->commit();
+            }
 
             /*foreach($sqlQueriesPerTable as $table => $sqlQueries) {
                 foreach($sqlQueries as $index => $sqlQuery) {
@@ -261,6 +266,9 @@ class SeedRepository extends MigrationRepositoryAbstract
             );
             $this->eventDispatcher->dispatch($event);
         } catch(\Exception $e) {
+            if ($useTransactions) {
+                $connection->rollback();
+            }
             $event = new RunSeedMigrationEvent(
                 'seed',
                 1,
