@@ -29,8 +29,6 @@ class RunAllSeedsSnippet extends SnippetAbstract
     {
         $model = $this->seedRepository->getModel();
 
-        $params = $this->requestInfo->getRequestMatchedParams();
-
         $items = $model->load(['status' => ['new', 'error']]);
 
         if (!$items) {
@@ -42,11 +40,11 @@ class RunAllSeedsSnippet extends SnippetAbstract
             try {
                 $this->seedRepository->runSeed($item);
                 $this->statusMessenger->addSuccess(
-                    sprintf($this->translator->_('Seed %s has been successfully executed'), $params['name'])
+                    sprintf($this->translator->_('Seed %s has been successfully executed'), $item['name'])
                 );
             } catch (\Exception $e) {
                 $this->statusMessenger->addError(
-                    sprintf($this->translator->_('Error executing seed %s. %s'), $params['name'], $e->getMessage())
+                    sprintf($this->translator->_('Error executing seed %s. %s'), $item['name'], $e->getMessage())
                 );
             }
         }
