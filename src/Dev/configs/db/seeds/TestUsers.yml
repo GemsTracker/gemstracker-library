@@ -26,7 +26,7 @@ gems__user_passwords:
     gup_changed_by: 1
     gup_created_by: 1
   -
-    gup_id_user: '{{gems__user_moo.1}}'
+    gup_id_user: '{{gems__user_logins.1}}'
     gup_password: $2y$12$ie3WvEse1HTJr9MWGisSu.3Xua2JXJ1o/1pBMsUDZoiIMkVbIq1yW # test123
     gup_changed_by: 1
     gup_created_by: 1

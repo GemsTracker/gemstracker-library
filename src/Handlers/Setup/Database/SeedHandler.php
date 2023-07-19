@@ -4,15 +4,10 @@ namespace Gems\Handlers\Setup\Database;
 
 use Gems\Db\Migration\MigrationRepositoryAbstract;
 use Gems\Db\Migration\SeedRepository;
-use Gems\Db\Migration\TableRepository;
-use Gems\Handlers\BrowseChangeHandler;
-use Gems\Snippets\Database\RunAllSeedsSnippet;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\MetaModelLoader;
-use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsHandler\CreateModelHandlerTrait;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -24,7 +19,7 @@ class SeedHandler extends MigrationHandlerAbstract
         'index' => BrowseSearchAction::class,
         'new' => BrowseNewSearchAction::class,
         'run' => RunSeedAction::class,
-        'run-all' => RunAllSeedsSnippet::class,
+        'run-all' => RunAllSeedsAction::class,
         'show' => ShowAction::class,
     ];
 
