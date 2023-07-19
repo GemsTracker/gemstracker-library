@@ -30,7 +30,7 @@ class DiagnosisEpisodeFilter extends EpisodeFilterAbstract
      *
      * @return string
      */
-    public function getSqlEpisodeWhere()
+    public function getSqlEpisodeWhere(): string
     {
         $text = $this->_data['gaf_filter_text1'];
         if ($text) {
@@ -46,7 +46,7 @@ class DiagnosisEpisodeFilter extends EpisodeFilterAbstract
      * @param \Gems\Agenda\EpisodeOfCare $episode
      * @return boolean
      */
-    public function matchEpisode(EpisodeOfCare $episode)
+    public function matchEpisode(EpisodeOfCare $episode): bool
     {
         if (! $this->_data['gaf_filter_text1']) {
             return ! $episode->getDiagnosis();

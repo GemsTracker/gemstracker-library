@@ -11,9 +11,6 @@
 
 namespace Gems\Agenda;
 
-use Gems\Tracker\Engine\FieldsDefinition;
-use Gems\Tracker\Model\FieldMaintenanceModel;
-
 /**
  *
  *
@@ -30,7 +27,7 @@ abstract class EpisodeFilterAbstract extends BasicFilterAbstract
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere()
+    public function getSqlAppointmentsWhere(): string
     {
         $where = $this->getSqlEpisodeWhere();
 
@@ -57,7 +54,7 @@ abstract class EpisodeFilterAbstract extends BasicFilterAbstract
      * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Appointment $appointment)
+    public function matchAppointment(Appointment $appointment): bool
     {
         $episode = $appointment->getEpisode();
 
@@ -80,7 +77,7 @@ abstract class EpisodeFilterAbstract extends BasicFilterAbstract
      *
      * @return boolean When true prefer SQL statements filtering appointments
      */
-    public function preferAppointmentSql()
+    public function preferAppointmentSql(): bool
     {
         return false;
     }

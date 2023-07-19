@@ -49,7 +49,7 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = []): string
+    public function calculateName(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): string
     {
         $fields = $this->agenda->getFieldLabels();
 
@@ -75,7 +75,7 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
      *
      * @return array fieldname => label
      */
-    public function getFieldLabels()
+    public function getFieldLabels(): array
     {
         $output = [
             'gap_id_organization' => $this->_('Organization'),

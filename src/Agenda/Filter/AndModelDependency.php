@@ -21,6 +21,7 @@ use MUtil\Validator\NotEqualTo;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Html\AElement;
 use Zalt\Html\HrefArrayAttribute;
+use Zalt\Html\HtmlElement;
 
 /**
  *
@@ -62,9 +63,9 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = array()): string
+    public function calculateName(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): string
     {
-        $output = $this->calcultateNameOutput($value, $isNew, $name, $context);
+        $output = $this->calculateNameOutput($value, $isNew, $name, $context);
 
         if ($output) {
             return ucfirst(implode($this->getGlue(), $output));
@@ -84,9 +85,9 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    protected function calcultateNameOutput($value, $isNew, $name, $context): array
+    protected function calculateNameOutput(mixed $value, bool $isNew, string|null $name, array $context): array
     {
-        $output = array();
+        $output = [];
 
         // Check all the fields
         for ($i = 1; $i <= $this->_fieldCount; $i++) {
@@ -105,7 +106,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      * @param int $value
      * @return \Zalt\Html\HtmlElement
      */
-    public function displayFilterLink($value, $raw)
+    public function displayFilterLink(int $value, $raw): HtmlElement
     {
         if (isset($this->_filters[$raw])) {
             $class = '';
@@ -154,7 +155,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      *
      * @return string
      */
-    public function getGlue()
+    public function getGlue(): string
     {
         return $this->_(' AND ');
     }
@@ -168,10 +169,10 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      */
     public function getTextSettings(): array
     {
-        $messages = array(
+        $messages = [
             'gaf_id' => $this->_('Sub filter may not be the same as this filter.'),
             $this->_('Filters may be chosen only once.')
-        );
+        ];
 
         return [
             'gaf_filter_text1' => [
@@ -188,7 +189,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
                 'formatFunction' => [$this, 'displayFilterLink', true],
                 'multiOptions'   => $this->_filters,
                 'required'       => true,
-                'validator'      => new NotEqualTo(array('gaf_id', 'gaf_filter_text1'), $messages),
+                'validator'      => new NotEqualTo(['gaf_id', 'gaf_filter_text1'], $messages),
             ],
             'gaf_filter_text3' => [
                 'label'          => $this->_('Filter 3'),

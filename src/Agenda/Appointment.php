@@ -13,7 +13,14 @@ namespace Gems\Agenda;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-use Gems\User\Mask\MaskRepository;
+use Gems\Agenda\Repository\ActivityRepository;
+use Gems\Agenda\Repository\LocationRepository;
+use Gems\Agenda\Repository\ProcedureRepository;
+use Gems\Repository\RespondentRepository;
+use Gems\Tracker;
+use Gems\Tracker\Respondent;
+use Gems\Tracker\RespondentTrack;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -23,73 +30,51 @@ use Gems\User\Mask\MaskRepository;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Appointment extends \MUtil\Translate\TranslateableAbstract
+class Appointment
 {
     /**
      *
      * @var int The id of the appointment
      */
-    protected $_appointmentId;
+    protected int $id;
 
     /**
      *
      * @var array The gems appointment data
      */
-    protected $_gemsData = array();
-
-    /**
-     *
-     * @var \Gems\Agenda\Agenda
-     */
-    protected $agenda;
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    protected array $data = [];
 
     /**
      * True when the token does exist.
      *
      * @var boolean
      */
-    public $exists = true;
+    public bool $exists = true;
 
     /**
      *
-     * @var \Gems\Agenda\FilterTracer
+     * @var FilterTracer
      */
-    protected $filterTracer;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    protected MaskRepository $maskRepository;
+    protected FilterTracer|null $filterTracer = null;
 
     /**
      * Creates the appointments object
      *
      * @param mixed $appointmentData Appointment Id or array containing appointment record
      */
-    public function __construct($appointmentData)
+    public function __construct(
+        protected readonly array $appointmentData,
+        protected readonly Translator $translator,
+        protected readonly Agenda $agenda,
+        protected readonly ActivityRepository $activityRepository,
+        protected readonly LocationRepository $locationRepository,
+        protected readonly ProcedureRepository $procedureRepository,
+        protected readonly RespondentRepository $respondentRepository,
+
+    )
     {
-        if (is_array($appointmentData)) {
-            $this->_gemsData      = $appointmentData;
-            $this->_appointmentId = $appointmentData['gap_id_appointment'];
-        } else {
-            $this->_appointmentId = $appointmentData;
-            // loading occurs in checkRegistryRequestAnswers
-        }
+        $this->data = $appointmentData;
+        $this->id = $appointmentData['gap_id_appointment'];
     }
 
     /**
@@ -98,50 +83,29 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
      * @param \Gems\Tracker $tracker
      */
-    protected function _createTrack($filter, $tracker)
+    protected function _createTrack(AppointmentFilterInterface $filter, Tracker $tracker): RespondentTrack
     {
-        $trackData = array('gr2t_comment' => sprintf(
-                        $this->_('Track created by %s filter'),
-                        $filter->getName()
-                        ));
+        $trackData = [
+            'gr2t_comment' => sprintf(
+                $this->translator->_('Track created by %s filter'),
+                $filter->getName()
+            ),
+        ];
 
-        $fields    = array($filter->getFieldId() => $this->getId());
+        $fields    = [
+            $filter->getFieldId() => $this->getId()
+        ];
         $trackId   = $filter->getTrackId();
         $respTrack = $tracker->createRespondentTrack(
                 $this->getRespondentId(),
                 $this->getOrganizationId(),
                 $trackId,
-                $this->currentUser->getUserId(),
+                null,
                 $trackData,
                 $fields
                 );
 
         return $respTrack;
-    }
-
-    /**
-     * Makes sure the respondent data is part of the $this->_gemsData
-     */
-    protected function _ensureRespondentOrgData()
-    {
-        if (! isset($this->_gemsData['gr2o_id_user'], $this->_gemsData['gco_code'])) {
-            $sql = "SELECT *
-                FROM gems__respondents INNER JOIN
-                    gems__respondent2org ON grs_id_user = gr2o_id_user INNER JOIN
-                    gems__consents ON gr2o_consent = gco_description
-                WHERE gr2o_id_user = ? AND gr2o_id_organization = ? LIMIT 1";
-
-            $respId = $this->_gemsData['gap_id_user'];
-            $orgId  = $this->_gemsData['gap_id_organization'];
-            // \MUtil\EchoOut\EchoOut::track($this->_gemsData);
-
-            if ($row = $this->db->fetchRow($sql, array($respId, $orgId))) {
-                $this->_gemsData = $this->_gemsData + $row;
-            } else {
-                $appId = $this->_appointmentId;
-                throw new \Gems\Exception("Respondent data missing for appointment id $appId.");
-            }
-        }
     }
 
     /**
@@ -153,7 +117,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int Number of tokenchanges
      */
-    protected function checkCreateTracks($filters, $existingTracks, $tracker)
+    protected function checkCreateTracks(AppointmentFilterInterface $filters, array $existingTracks, Tracker $tracker): int
     {
         $tokenChanges = 0;
 
@@ -172,7 +136,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
 
             foreach($tracks as $respTrack) {
                 /* @var $respTrack \Gems\Tracker\RespondentTrack */
-                if (!$respTrack->hasSuccesCode()) { continue; }
+                if (!$respTrack->hasSuccesCode()) {
+                    continue;
+                }
 
                 $createTrack = $this->$method($filter, $respTrack);
                 if ($createTrack === false) {
@@ -203,25 +169,6 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        $this->maskRepository = $this->loader->getMaskRepository();
-
-        if ($this->db && (! $this->_gemsData)) {
-            $this->refresh();
-        } else {
-            $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
-        }
-
-        return $this->exists;
-    }
-
-    /**
      * Has the track ended <wait days> ago?
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
@@ -229,7 +176,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return boolean
      */
-    public function createAfterWaitDays($filter, $respTrack)
+    public function createAfterWaitDays(AppointmentFilterInterface $filter, RespondentTrack $respTrack): bool
     {
         $createTrack = true;
         $curr        = $this->getAdmissionTime();
@@ -245,11 +192,11 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
             if ($this->filterTracer) {
                 if (! $end) {
                     $this->filterTracer->setSkipCreationMessage(
-                            $this->_('track without an end date')
+                            $this->translator->_('track without an end date')
                             );
                 } else {
                     $this->filterTracer->setSkipCreationMessage(sprintf(
-                            $this->_('%d days since previous end date, %d required'),
+                            $this->translator->_('%d days since previous end date, %d required'),
                             $diff->days,
                             $wait
                             ));
@@ -260,11 +207,11 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
             // Test to see whether this track has already been created by this filter
             $fieldId = $filter->getFieldId();
             $data    = $respTrack->getFieldData();
-            if (isset($data[$fieldId]) && ($data[$fieldId] == $this->_appointmentId)) {
+            if (isset($data[$fieldId]) && ($data[$fieldId] == $this->id)) {
                 $createTrack = false;
                 if ($this->filterTracer) {
                     $this->filterTracer->setSkipCreationMessage(
-                        $this->_('track has already been created')
+                        $this->translator->_('track has already been created')
                     );
                 }
             }
@@ -281,7 +228,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return boolean
      */
-    public function createAlways($filter, $respTrack)
+    public function createAlways(AppointmentFilterInterface $filter, RespondentTrack $respTrack): bool
     {
         $createTrack = $this->createAfterWaitDays($filter, $respTrack);
 
@@ -300,7 +247,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return boolean
      */
-    public function createAlwaysNoEndDate($filter, $respTrack)
+    public function createAlwaysNoEndDate(AppointmentFilterInterface $filter, RespondentTrack $respTrack): bool
     {
         return $this->createWhenNotInThisTrack($filter, $respTrack);
     }
@@ -312,7 +259,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      * @param \Gems\Tracker\RespondentTrack $respTrack
      * @return boolean
      */
-    public function createFromStart($filter, $respTrack)
+    public function createFromStart(AppointmentFilterInterface $filter, RespondentTrack $respTrack): bool
     {
         $createTrack = true;
         $curr        = $this->getAdmissionTime();
@@ -328,11 +275,11 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
             if ($this->filterTracer) {
                 if (! $start) {
                     $this->filterTracer->setSkipCreationMessage(
-                            $this->_('track without a startdate')
+                            $this->translator->_('track without a startdate')
                             );
                 } else {
                     $this->filterTracer->setSkipCreationMessage(sprintf(
-                            $this->_('%d days since previous startdate, %d required'),
+                            $this->translator->_('%d days since previous startdate, %d required'),
                             $diff->days,
                             $wait
                             ));
@@ -343,11 +290,11 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
             // Test to see whether this track has already been created by this filter
             $fieldId = $filter->getFieldId();
             $data    = $respTrack->getFieldData();
-            if (isset($data[$fieldId]) && ($data[$fieldId] == $this->_appointmentId)) {
+            if (isset($data[$fieldId]) && ($data[$fieldId] == $this->id)) {
                 $createTrack = false;
                 if ($this->filterTracer) {
                     $this->filterTracer->setSkipCreationMessage(
-                        $this->_('track has already been created')
+                        $this->translator->_('track has already been created')
                     );
                 }
             }
@@ -367,10 +314,10 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return boolean
      */
-    public function createNever()
+    public function createNever(): bool
     {
         if ($this->filterTracer) {
-            $this->filterTracer->setSkipCreationMessage($this->_('never create a track'));
+            $this->filterTracer->setSkipCreationMessage($this->translator->_('never create a track'));
         }
         return false;
     }
@@ -383,7 +330,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return boolean
      */
-    public function createNoOpen($filter, $respTrack)
+    public function createNoOpen(AppointmentFilterInterface $filter, RespondentTrack $respTrack): bool
     {
         // If an open track of this type exists: do not create a new one
         $createTrack = !$respTrack->isOpen();
@@ -392,7 +339,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
             $createTrack = $this->createWhenNotInThisTrack($filter, $respTrack);
         } elseif ($this->filterTracer) {
             $this->filterTracer->setSkipCreationMessage(
-                    $this->_('an open track exists')
+                    $this->translator->_('an open track exists')
                     );
         }
 
@@ -407,7 +354,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return boolean
      */
-    public function createWhenNotInThisTrack($filter, $respTrack)
+    public function createWhenNotInThisTrack(AppointmentFilterInterface $filter, RespondentTrack $respTrack): bool
     {
         $createTrack = true;
 
@@ -434,7 +381,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return boolean
      */
-    public function createWhenNoOpen($filter, $respTrack)
+    public function createWhenNoOpen(AppointmentFilterInterface $filter, RespondentTrack $respTrack): bool
     {
         // If an open track of this type exists: do not create a new one
         $createTrack = !$respTrack->isOpen();
@@ -443,7 +390,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
             $createTrack = $this->createAfterWaitDays($filter, $respTrack);
         } elseif ($this->filterTracer) {
             $this->filterTracer->setSkipCreationMessage(
-                    $this->_('an open track exists')
+                    $this->translator->_('an open track exists')
                     );
         }
 
@@ -459,22 +406,20 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return string or null when not found
      */
-    public function getActivityDescription()
+    public function getActivityDescription(): string|null
     {
-        if (! (isset($this->_gemsData['gap_id_activity']) && $this->_gemsData['gap_id_activity'])) {
-            $this->_gemsData['gaa_name'] = null;
+        if (! (isset($this->data['gap_id_activity']) && $this->data['gap_id_activity'])) {
+            $this->data['gaa_name'] = null;
         }
-        if (!array_key_exists('gaa_name', $this->_gemsData)) {
-            $sql = "SELECT gaa_name FROM gems__agenda_activities WHERE gaa_id_activity = ?";
-
-            $this->_gemsData['gaa_name'] = $this->db->fetchOne($sql, $this->_gemsData['gap_id_activity']);
+        if (!array_key_exists('gaa_name', $this->data)) {
+            $this->data['gaa_name'] = $this->activityRepository->getActivityName($this->data['gap_id_activity']);
 
             // Cleanup db result
-            if (false === $this->_gemsData['gaa_name']) {
-                $this->_gemsData['gaa_name'] = null;
+            if (false === $this->data['gaa_name']) {
+                $this->data['gaa_name'] = null;
             }
         }
-        return $this->_gemsData['gaa_name'];
+        return $this->data['gaa_name'];
     }
 
     /**
@@ -482,9 +427,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getActivityId()
+    public function getActivityId(): int
     {
-        return $this->_gemsData['gap_id_activity'];
+        return $this->data['gap_id_activity'];
     }
 
     /**
@@ -492,16 +437,17 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return ?DateTimeInterface Admission time as a date or null
      */
-    public function getAdmissionTime()
+    public function getAdmissionTime(): DateTimeInterface|null
     {
-        if (isset($this->_gemsData['gap_admission_time']) && $this->_gemsData['gap_admission_time']) {
-            if (! $this->_gemsData['gap_admission_time'] instanceof DateTimeInterface) {
-                $this->_gemsData['gap_admission_time'] =
-                        DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $this->_gemsData['gap_admission_time']);
+        if (isset($this->data['gap_admission_time']) && $this->data['gap_admission_time']) {
+            if (! $this->data['gap_admission_time'] instanceof DateTimeInterface) {
+                $this->data['gap_admission_time'] =
+                        DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $this->data['gap_admission_time']);
             }
             // Clone to make sure calculations can be performed without changing this object
-            return clone $this->_gemsData['gap_admission_time'];
+            return $this->data['gap_admission_time'];
         }
+        return null;
     }
 
     /**
@@ -509,9 +455,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getAttendedById()
+    public function getAttendedById(): int
     {
-        return $this->_gemsData['gap_id_attended_by'];
+        return $this->data['gap_id_attended_by'];
     }
 
     /**
@@ -519,9 +465,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return string
      */
-    public function getComment()
+    public function getComment(): string
     {
-        return $this->_gemsData['gap_comment'];
+        return $this->data['gap_comment'];
     }
 
     /**
@@ -530,7 +476,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      * @param int $type
      * @return string The method to call in this class
      */
-    public function getCreatorCheckMethod($type)
+    public function getCreatorCheckMethod(int $type): string
     {
         static $methods = [
             0 => 'createNever',
@@ -552,7 +498,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return string
      */
-    public function getDisplayString()
+    public function getDisplayString(): string
     {
         $results[] = $this->getAdmissionTime()->format($this->agenda->appointmentDisplayFormat);
         $results[] = $this->getActivityDescription();
@@ -560,14 +506,14 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
         $results[] = $this->getLocationDescription();
         $results[] = $this->getSubject();
 
-        return implode($this->_('; '), array_filter($results));
+        return implode($this->translator->_('; '), array_filter($results));
     }
 
     /**
      *
      * @return EpisodeOfCare|null
      */
-    public function getEpisode()
+    public function getEpisode(): EpisodeOfCare|null
     {
         $episodeId = $this->getEpisodeId();
 
@@ -582,9 +528,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getEpisodeId()
+    public function getEpisodeId(): int
     {
-        return $this->_gemsData['gap_id_episode'];
+        return $this->data['gap_id_episode'];
     }
 
     /**
@@ -592,9 +538,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
-        return $this->_appointmentId;
+        return $this->id;
     }
 
     /**
@@ -602,22 +548,20 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return string or null when not found
      */
-    public function getLocationDescription()
+    public function getLocationDescription(): string
     {
-        if (! (isset($this->_gemsData['gap_id_location']) && $this->_gemsData['gap_id_location'])) {
-            $this->_gemsData['glo_name'] = null;
+        if (! (isset($this->data['gap_id_location']) && $this->data['gap_id_location'])) {
+            $this->data['glo_name'] = null;
         }
-        if (!array_key_exists('glo_name', $this->_gemsData)) {
-            $sql = "SELECT glo_name FROM gems__locations WHERE glo_id_location = ?";
-
-            $this->_gemsData['glo_name'] = $this->db->fetchOne($sql, $this->_gemsData['gap_id_location']);
+        if (!array_key_exists('glo_name', $this->data)) {
+            $this->data['glo_name'] = $this->locationRepository->getLocationName($this->data['gap_id_location']);
 
             // Cleanup db result
-            if (false === $this->_gemsData['glo_name']) {
-                $this->_gemsData['glo_name'] = null;
+            if (false === $this->data['glo_name']) {
+                $this->data['glo_name'] = null;
             }
         }
-        return $this->_gemsData['glo_name'];
+        return $this->data['glo_name'];
     }
 
     /**
@@ -625,31 +569,31 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getLocationId()
+    public function getLocationId(): int
     {
-        return $this->_gemsData['gap_id_location'];
+        return $this->data['gap_id_location'];
     }
 
     /**
      *
      * @return int
      */
-    public function getOrganizationId()
+    public function getOrganizationId(): int
     {
-        return $this->_gemsData['gap_id_organization'];
+        return $this->data['gap_id_organization'];
     }
 
     /**
      *
      * @return string The respondents patient number
      */
-    public function getPatientNumber()
+    public function getPatientNumber(): string|null
     {
-        if (! isset($this->_gemsData['gr2o_patient_nr'])) {
-            $this->_ensureRespondentOrgData();
+        if (! isset($this->data['gr2o_patient_nr'])) {
+            $this->data['gr2o_patient_nr'] = $this->respondentRepository->getPatientNr($this->data['gap_id_user'], $this->data['gap_id_organization']);
         }
 
-        return $this->_gemsData['gr2o_patient_nr'];
+        return $this->data['gr2o_patient_nr'];
     }
 
     /**
@@ -659,20 +603,18 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      */
     public function getProcedureDescription()
     {
-        if (! (isset($this->_gemsData['gap_id_procedure']) && $this->_gemsData['gap_id_procedure'])) {
+        if (! (isset($this->data['gap_id_procedure']) && $this->data['gap_id_procedure'])) {
             return null;
         }
-        if (!array_key_exists('gapr_name', $this->_gemsData)) {
-            $sql = "SELECT gapr_name FROM gems__agenda_procedures WHERE gapr_id_procedure = ?";
-
-            $this->_gemsData['gapr_name'] = $this->db->fetchOne($sql, $this->_gemsData['gap_id_procedure']);
+        if (!array_key_exists('gapr_name', $this->data)) {
+            $this->data['gapr_name'] = $this->procedureRepository->getProcedureName($this->data['gap_id_procedure']);
 
             // Cleanup db result
-            if (false === $this->_gemsData['gapr_name']) {
-                $this->_gemsData['gapr_name'] = null;
+            if (false === $this->data['gapr_name']) {
+                $this->data['gapr_name'] = null;
             }
         }
-        return $this->_gemsData['gapr_name'];
+        return $this->data['gapr_name'];
     }
 
     /**
@@ -680,9 +622,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getProcedureId()
+    public function getProcedureId(): int|null
     {
-        return $this->_gemsData['gap_id_procedure'];
+        return $this->data['gap_id_procedure'];
     }
 
     /**
@@ -690,9 +632,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getReferredById()
+    public function getReferredById(): int|null
     {
-        return $this->_gemsData['gap_id_referred_by'];
+        return $this->data['gap_id_referred_by'];
     }
 
     /**
@@ -700,9 +642,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return \Gems\Tracker\Respondent
      */
-    public function getRespondent()
+    public function getRespondent(): Respondent
     {
-        return $this->loader->getRespondent(
+        return $this->respondentRepository->getRespondent(
                 $this->getPatientNumber(),
                 $this->getOrganizationId(),
                 $this->getRespondentId())
@@ -714,9 +656,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getRespondentId()
+    public function getRespondentId(): int
     {
-        return $this->_gemsData['gap_id_user'];
+        return $this->data['gap_id_user'];
     }
 
     /**
@@ -724,9 +666,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return string
      */
-    public function getSource()
+    public function getSource(): string
     {
-        return $this->_gemsData['gap_source'];
+        return $this->data['gap_source'];
     }
 
     /**
@@ -734,9 +676,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return string
      */
-    public function getSourceId()
+    public function getSourceId(): string|int
     {
-        return $this->_gemsData['gap_id_in_source'];
+        return $this->data['gap_id_in_source'];
     }
 
     /**
@@ -744,18 +686,18 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return string
      */
-    public function getSubject()
+    public function getSubject(): string|null
     {
-        return isset($this->_gemsData['gap_subject']) ? $this->_gemsData['gap_subject'] : null;
+        return isset($this->data['gap_subject']) ? $this->data['gap_subject'] : null;
     }
 
     /**
      *
      * @return boolean
      */
-    public function hasEpisode()
+    public function hasEpisode(): bool
     {
-        return (boolean) $this->_gemsData['gap_id_episode'];
+        return (boolean) $this->data['gap_id_episode'];
     }
 
     /**
@@ -766,35 +708,8 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
     public function isActive()
     {
         return $this->exists &&
-                isset($this->_gemsData['gap_status']) &&
-                $this->agenda->isStatusActive($this->_gemsData['gap_status']);
-    }
-
-    /**
-     *
-     * @param array $gemsData Optional, the data refresh with, otherwise refresh from database.
-     * @return \Gems\Agenda\Appointment (continuation pattern)
-     */
-    public function refresh(array $gemsData = null)
-    {
-        if (is_array($gemsData)) {
-            $this->_gemsData = $gemsData + $this->_gemsData;
-        } else {
-            $select = $this->db->select();
-            $select->from('gems__appointments')
-                    ->where('gap_id_appointment = ?', $this->_appointmentId);
-
-            $this->_gemsData = $this->db->fetchRow($select);
-            if (false == $this->_gemsData) {
-                // on failure, reset to empty array
-                $this->_gemsData = array();
-            }
-        }
-        $this->exists = isset($this->_gemsData['gap_id_appointment']);
-
-        $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
-
-        return $this;
+                isset($this->data['gap_status']) &&
+                $this->agenda->isStatusActive($this->data['gap_status']);
     }
 
     /**
@@ -802,7 +717,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      * @param FilterTracer $tracer
      * @return $this
      */
-    public function setFilterTracer(FilterTracer $tracer)
+    public function setFilterTracer(FilterTracer $tracer): self
     {
         $this->filterTracer = $tracer;
 
@@ -814,7 +729,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int The number of tokens changed by this code
      */
-    public function updateTracks()
+    public function updateTracks(): int
     {
         $tokenChanges = 0;
         $tracker      = $this->loader->getTracker();
@@ -827,7 +742,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
                         'gr2t_id_respondent_track = gr2t2a_id_respondent_track',
                         array('gr2t_id_track')
                         )
-                ->where('gr2t2a_id_appointment = ?', $this->_appointmentId)
+                ->where('gr2t2a_id_appointment = ?', $this->id)
                 ->distinct()
                 ->order('gr2t_id_track');
 

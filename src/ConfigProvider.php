@@ -295,7 +295,7 @@ class ConfigProvider
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
                 ConstructorProjectOverloader::class => ProjectOverloaderFactory::class,
                 Acl::class => AclFactory::class,
-                Agenda::class => AgendaFactory::class,
+                //Agenda::class => AgendaFactory::class,
 
                 // Logs
                 'LegacyLogger' => MonologFactory::class,
