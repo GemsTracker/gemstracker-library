@@ -71,6 +71,7 @@ class AddUser extends Command
         }
 
         $groups = array_flip($this->accessRepository->getGroups());
+
         if (isset($groups[$group])) {
             return $groups[$group];
         }
@@ -133,7 +134,7 @@ class AddUser extends Command
         $email = null;
         $phoneNumber = null;
         $jobTitle = null;
-        $gender = null;
+        $gender = 'U';
 
 
         if ($continue) {
@@ -204,8 +205,7 @@ class AddUser extends Command
             );
 
         } catch(Exception $e) {
-            $io->error('Creating user failed:');
-            $io->error($e->getMessage());
+            $io->error(sprintf('Creating user failed: %s', $e->getMessage()));
             return static::FAILURE;
         }
 
@@ -217,7 +217,7 @@ class AddUser extends Command
         $io = new SymfonyStyle($input, $output);
         $username = $input->getArgument('name');
 
-        $organizationId = $input->getArgument('organizationId');
+        $organizationId = $input->getArgument('organization');
         if ($organizationId === null) {
             $io->error('organizationId parameter missing in manual input');
             return static::FAILURE;
@@ -239,7 +239,7 @@ class AddUser extends Command
         }
         $groupId = $this->getGroupId($group);
         if ($groupId === null) {
-            $io->error(sprintf('Group %s not found', $group));
+            $io->error(sprintf('Group %s not found. Possible groups are %s', $group, join(', ', $this->accessRepository->getGroups())));
             return static::FAILURE;
         }
 
@@ -271,6 +271,7 @@ class AddUser extends Command
         } catch(Exception $e) {
             $io->error('Creating user failed:');
             $io->error($e->getMessage());
+            $io->error(get_class($e));
             return static::FAILURE;
         }
 
