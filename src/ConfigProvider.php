@@ -42,6 +42,9 @@ use Gems\Messenger\TransportFactory;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\MetaModelLoader as GemsMetaModelLoader;
 use Gems\Model\MetaModelLoaderFactory;
+use Gems\Model\Type\GemsDateTimeType;
+use Gems\Model\Type\GemsDateType;
+use Gems\Model\Type\GemsTimeType;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Session\PhpSessionPersistenceFactory;
 use Gems\SnippetsLoader\GemsSnippetResponder;
@@ -445,33 +448,33 @@ class ConfigProvider
     {
 //        $jstUrl = $this->basepath->getBasePath() . '/gems/js';
 
-        $dateFormat = [
-            'dateFormat'   => 'd-m-Y',
-            'description'  => 'dd-mm-yyyy',
-            'datePickerSettings' => [],
-            'size'         => 10,
-            'storageFormat' => 'Y-m-d',
-            ];
-
-        $timeFormat = [
-            'dateFormat'   => 'H:i',
-            'description'  => 'hh:mm',
-            'datePickerSettings' => [
-                'minutesStep'  => 5,
-            ],
-            'size'        => 6,
-            'storageFormat' => 'H:i:s',
-            ];
-
-        $dateTimeFormat = [
-            'dateFormat'   => 'd-m-Y H:i',
-            'description'  => 'dd-mm-yyyy hh:mm',
-            'datePickerSettings' => [
-                'minutesStep'  => 5,
-            ],
-            'size'         => 16,
-            'storageFormat' => 'Y-m-d H:i:s',
-        ];
+//        $dateFormat = [
+//            'dateFormat'   => 'd-m-Y',
+//            'description'  => 'dd-mm-yyyy',
+//            'datePickerSettings' => [],
+//            'size'         => 10,
+//            'storageFormat' => 'Y-m-d',
+//            ];
+//
+//        $timeFormat = [
+//            'dateFormat'   => 'H:i',
+//            'description'  => 'hh:mm',
+//            'datePickerSettings' => [
+//                'minutesStep'  => 5,
+//            ],
+//            'size'        => 6,
+//            'storageFormat' => 'H:i:s',
+//            ];
+//
+//        $dateTimeFormat = [
+//            'dateFormat'   => 'd-m-Y H:i',
+//            'description'  => 'dd-mm-yyyy hh:mm',
+//            'datePickerSettings' => [
+//                'minutesStep'  => 5,
+//            ],
+//            'size'         => 16,
+//            'storageFormat' => 'Y-m-d H:i:s',
+//        ];
 
         return [
             'availableLocales' => [
@@ -481,27 +484,27 @@ class ConfigProvider
                 'fr',
             ],
             'default' => 'en',
-            'defaultTypes' => [
-                MetaModelInterface::TYPE_DATE     => $dateFormat,
-                MetaModelInterface::TYPE_DATETIME => $dateTimeFormat,
-                MetaModelInterface::TYPE_TIME     => $timeFormat,
-            ],
-            'localeTypes' => [
-                'nl' => [
-                    MetaModelInterface::TYPE_DATE     => ['description' => 'tt-mm-jjjj'],
-                    MetaModelInterface::TYPE_DATETIME => ['description' => 'tt-mm-jjjj uu:mm'],
-                    MetaModelInterface::TYPE_TIME     => ['description' => 'uu:mm'],
-                ],
-                'de' => [
-                    MetaModelInterface::TYPE_DATE     => ['description' => 'dd-mm-jjjj'],
-                    MetaModelInterface::TYPE_DATETIME => ['description' => 'dd-mm-jjjj ss:mm'],
-                    MetaModelInterface::TYPE_TIME     => ['description' => 'ss:mm'],
-                ],
-                'fr' => [
-                    MetaModelInterface::TYPE_DATE     => ['description' => 'jj-mm-aaaa'],
-                    MetaModelInterface::TYPE_DATETIME => ['description' => 'jj-mm-aaaa hh:mm'],
-                ],
-            ],
+//            'defaultTypes' => [
+//                MetaModelInterface::TYPE_DATE     => $dateFormat,
+//                MetaModelInterface::TYPE_DATETIME => $dateTimeFormat,
+//                MetaModelInterface::TYPE_TIME     => $timeFormat,
+//            ],
+//            'localeTypes' => [
+//                'nl' => [
+//                    MetaModelInterface::TYPE_DATE     => ['description' => 'tt-mm-jjjj'],
+//                    MetaModelInterface::TYPE_DATETIME => ['description' => 'tt-mm-jjjj uu:mm'],
+//                    MetaModelInterface::TYPE_TIME     => ['description' => 'uu:mm'],
+//                ],
+//                'de' => [
+//                    MetaModelInterface::TYPE_DATE     => ['description' => 'dd-mm-jjjj'],
+//                    MetaModelInterface::TYPE_DATETIME => ['description' => 'dd-mm-jjjj ss:mm'],
+//                    MetaModelInterface::TYPE_TIME     => ['description' => 'ss:mm'],
+//                ],
+//                'fr' => [
+//                    MetaModelInterface::TYPE_DATE     => ['description' => 'jj-mm-aaaa'],
+//                    MetaModelInterface::TYPE_DATETIME => ['description' => 'jj-mm-aaaa hh:mm'],
+//                ],
+//            ],
         ];
     }
 
@@ -578,6 +581,11 @@ class ConfigProvider
     {
         $settings = MetaModelConfigProvider::getConfig();
         $settings['translateDatabaseFields'] = true;
+        $settings['modelTypes'] = [
+            MetaModelInterface::TYPE_DATE => GemsDateType::class,
+            MetaModelInterface::TYPE_DATETIME => GemsDateTimeType::class,
+            MetaModelInterface::TYPE_TIME => GemsTimeType::class,
+        ];
 
         return $settings;
     }

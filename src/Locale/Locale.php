@@ -51,34 +51,34 @@ class Locale
         return $this->getCurrentLanguage();
     }
 
-    public function getModelTypeDefaults($language = null): array
-    {
-        if ($language === null) {
-            $language = $this->getCurrentLanguage();
-        }
-
-        $typeDefaults = [
-            'lang' => $language,
-        ];
-
-        if (isset($this->config['defaultTypes'])) {
-            $typeDefaults = $this->config['defaultTypes'];
-        }
-
-        if (isset($this->config['localeTypes'][$language])) {
-            foreach($this->config['localeTypes'][$language] as $modelType => $settings) {
-                foreach($settings as $settingName => $value) {
-                    $typeDefaults[$modelType][$settingName] = $value;
-                }
-            }
-        }
-
-        foreach($typeDefaults as $modelType=>$settings) {
-            $typeDefaults[$modelType]['lang'] = $language;
-        }
-
-        return $typeDefaults;
-    }
+//    public function getModelTypeDefaults($language = null): array
+//    {
+//        if ($language === null) {
+//            $language = $this->getCurrentLanguage();
+//        }
+//
+//        $typeDefaults = [
+//            'lang' => $language,
+//        ];
+//
+//        if (isset($this->config['defaultTypes'])) {
+//            $typeDefaults = $this->config['defaultTypes'];
+//        }
+//
+//        if (isset($this->config['localeTypes'][$language])) {
+//            foreach($this->config['localeTypes'][$language] as $modelType => $settings) {
+//                foreach($settings as $settingName => $value) {
+//                    $typeDefaults[$modelType][$settingName] = $value;
+//                }
+//            }
+//        }
+//
+//        foreach($typeDefaults as $modelType=>$settings) {
+//            $typeDefaults[$modelType]['lang'] = $language;
+//        }
+//
+//        return $typeDefaults;
+//    }
 
     public function isCurrentLanguageDefault(): bool
     {
@@ -91,8 +91,5 @@ class Locale
     public function setCurrentLanguage(string $currentLanguage): void
     {
         $this->currentLanguage = $currentLanguage;
-
-        // TODO: Remove state
-        Model::addTypesDefaults($this->getModelTypeDefaults());
     }
 }

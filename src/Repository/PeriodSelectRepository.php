@@ -20,6 +20,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\TranslateableTrait;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModelLoader;
+use Zalt\Model\Type\AbstractDateType;
 
 /**
  *
@@ -64,12 +65,12 @@ class PeriodSelectRepository
     {
         // $config = $this->metaModelLoader->getModelConfig();
         $type = $this->lastUsedType ?? MetaModelInterface::TYPE_DATE;
-        $options = $this->metaModelLoader->getModelLinkedDefaults('type', $type);
+        $dateType = $this->metaModelLoader->getDefaultTypeInterface($type);
 
-        $elements['datefrom'] = new DateTimeInput('datefrom', $options);
+        $elements['datefrom'] = new DateTimeInput('datefrom', $dateType->getSettings());
 
         $options['label'] = ' ' . $this->_('until');
-        $elements['dateuntil'] = new DateTimeInput('dateuntil', $options);
+        $elements['dateuntil'] = new DateTimeInput('dateuntil', $dateType->getSettings());
     }
 
     /**
@@ -92,12 +93,12 @@ class PeriodSelectRepository
             return;
         }
 
-        $config = $this->metaModelLoader->getModelLinkedDefaults('type', MetaModelInterface::TYPE_DATE);
+        $dateType = $this->metaModelLoader->getDefaultTypeInterface(MetaModelInterface::TYPE_DATE);
         if (null === $outFormat) {
-            $outFormat = $config['storageFormat'] ?? 'Y-m-d';
+            $outFormat = $dateType instanceof AbstractDateType ? $dateType->storageFormat : 'Y-m-d';
         }
         if (null === $inFormat) {
-            $inFormat  = $config['dateFormat'] ?? 'd-m-Y';
+            $inFormat  = $dateType instanceof AbstractDateType ? $dateType->dateFormat : 'd-m-Y';
         }
 
         $this->lastUsedType = self::getFormatDataType($inFormat);

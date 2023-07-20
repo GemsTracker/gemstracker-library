@@ -13,6 +13,7 @@ namespace Gems\Snippets\Log;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\AutosearchInRespondentSnippet;
 use Gems\User\User;
@@ -38,12 +39,13 @@ class LogSearchSnippet extends AutosearchInRespondentSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
         PeriodSelectRepository $periodSelectRepository,
         protected CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger, $periodSelectRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger, $periodSelectRepository);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
     }
 

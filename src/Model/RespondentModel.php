@@ -10,6 +10,7 @@ use Gems\Tracker\ReceptionCode;
 use Gems\User\User;
 use Gems\Util\Localized;
 use Zalt\Model\MetaModelInterface;
+use Zalt\Validator\Model\BeforeDateModelValidator;
 
 /**
  *
@@ -572,7 +573,8 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         $this->setIfExists('grs_birthday',
                 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'),
                 'elementClass', 'Date',
-                'validator', new \MUtil\Validator\Date\DateBefore()
+                'validators[before]', BeforeDateModelValidator::class,
+                BeforeDateModelValidator::beforeDateMessage, $this->_("The birthday cannot be a future date. '%value%' is in the future."),
                 );
 
         $this->setIfExists('gr2o_treatment', 'size', 30);

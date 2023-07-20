@@ -13,6 +13,7 @@ namespace Gems\Snippets\Staff;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\AccessRepository;
 use Gems\Snippets\AutosearchFormSnippet;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -35,12 +36,13 @@ class StaffSearchSnippet extends AutosearchFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
         CurrentUserRepository $currentUserRepository,
         protected AccessRepository $accessRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

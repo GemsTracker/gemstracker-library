@@ -15,6 +15,7 @@ use Gems\Db\ResultFetcher;
 use Gems\Form;
 use Gems\Form\Element\DateTimeInput;
 use Gems\Html;
+use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Sql\Select;
 use MUtil\Model;
@@ -111,6 +112,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        protected MetaModelLoader $metaModelLoader,
         protected ResultFetcher $resultFetcher,
         protected StatusMessengerInterface $messenger,
         )
@@ -169,30 +171,6 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
 
         // $config = $this->metaModelLoader->getModelConfig();
         $options = ['dateFormat' => 'd-m-Y', 'datePickerSettings' => [], 'size' => 10, 'storageFormat' => 'Y-m-d'];
-        /**
-        $type = \MUtil\Model::TYPE_DATE;
-        if ($this->dateFormat) {
-            $options['dateFormat'] = $this->dateFormat;
-            list($dateFormat, $separator, $timeFormat) = DatePicker::splitTojQueryDateTimeFormat($options['dateFormat']);
-
-            if ($timeFormat) {
-                if ($dateFormat) {
-                    $type = \MUtil\Model::TYPE_DATETIME;
-                } else {
-                    $type = \MUtil\Model::TYPE_TIME;
-                }
-            }
-        }
-        $options['label'] = $fromLabel;
-        $typeInfo = Model::getTypeDefaults($type);
-        foreach (['dateFormat', 'description', 'size', 'storageFormat'] as $key) {
-            if (isset($typeInfo[$key]) && (! isset($options[$key]))) {
-                $options[$key] = $typeInfo[$key];
-            }
-        } // */
-    
-        // \MUtil\Model\Bridge\FormBridge::applyFixedOptions($type, $options);
-
         $elements['datefrom'] = new DateTimeInput('datefrom', $options);
 
         $options['label'] = ' ' . $this->_('until');

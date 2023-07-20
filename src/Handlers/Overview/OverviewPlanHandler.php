@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Overview;
 
 use Gems\Menu\RouteHelper;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Selector\TokenDateSelector;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -70,12 +71,13 @@ class OverviewPlanHandler extends TokenSearchHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        MetaModelLoader $metaModelLoader,
         Tracker $tracker,
         PeriodSelectRepository $periodSelectRepository,
         protected RouteHelper $routeHelper,
         protected TokenDateSelector $dateSelector,
     ) {
-        parent::__construct($responder, $translate, $periodSelectRepository, $tracker);
+        parent::__construct($responder, $translate, $metaModelLoader, $periodSelectRepository, $tracker);
     }
 
     /**

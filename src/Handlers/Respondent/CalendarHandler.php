@@ -19,6 +19,7 @@ use Gems\User\User;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Type\AbstractDateType;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 /**
  *
@@ -120,7 +121,10 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
 
         $format = $model->getMetaModel()->get('gap_admission_time', 'dateFormat');
         if (! $format) {
-            $format = $model->getMetaModel()->getMetaModelLoader()->getModelLinkedDefaults('type', MetaModelInterface::TYPE_DATE, 'dateFormat');
+            $dateType = $model->getMetaModel()->getMetaModelLoader()->getDefaultTypeInterface(MetaModelInterface::TYPE_DATE);
+            if ($dateType instanceof AbstractDateType) {
+                $format = $dateType->dateFormat;
+            }
         }
 
         return $format;

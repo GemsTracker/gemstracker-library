@@ -15,6 +15,7 @@ use DateTimeImmutable;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
@@ -27,6 +28,7 @@ use Mezzio\Session\SessionInterface;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 
@@ -94,6 +96,7 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        protected MetaModelLoader $metaModelLoader,
         protected PeriodSelectRepository $periodSelectRepository,
         protected Tracker $tracker,
     ) {
@@ -187,7 +190,8 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
     public function getSearchDefaults(): array
     {
         if (! $this->defaultSearchData) {
-            $format = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
+            $dateType = $this->metaModelLoader->getDefaultTypeInterface(MetaModelInterface::TYPE_DATE);
+            $format   = $dateType->getSetting('dateFormat');
             $today    = (new DateTimeImmutable('today'))->format($format);
 
             $this->defaultSearchData = array(

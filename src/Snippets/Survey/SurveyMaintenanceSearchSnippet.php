@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Survey;
 
 use Gems\Db\ResultFetcher;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\SourceRepository;
 use Gems\Repository\SurveyRepository;
@@ -40,6 +41,7 @@ class SurveyMaintenanceSearchSnippet extends AutosearchFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         Translator $translate,
+        MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
         protected Translated $translatedUtil,
@@ -50,7 +52,7 @@ class SurveyMaintenanceSearchSnippet extends AutosearchFormSnippet
         protected AccessRepository $accessRepository,
 
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger);
     }
 
     /**

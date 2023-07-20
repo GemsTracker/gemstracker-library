@@ -14,6 +14,7 @@ namespace Gems\Snippets\Agenda;
 use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\PeriodSelectRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -42,6 +43,7 @@ class CalendarSearchSnippet extends AutosearchPeriodFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
         PeriodSelectRepository $periodSelectRepository,
@@ -49,7 +51,7 @@ class CalendarSearchSnippet extends AutosearchPeriodFormSnippet
         CurrentUserRepository $currentUserRepository,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger, $periodSelectRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger, $periodSelectRepository);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

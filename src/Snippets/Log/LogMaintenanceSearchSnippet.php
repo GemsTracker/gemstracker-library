@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Log;
 
 use Gems\Db\ResultFetcher;
+use Gems\Model\MetaModelLoader;
 use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Util\Translated;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -35,11 +36,12 @@ class LogMaintenanceSearchSnippet extends AutosearchFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
         protected Translated $translatedUtil,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger);
     }
 
     /**

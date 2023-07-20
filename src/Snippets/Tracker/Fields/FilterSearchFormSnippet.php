@@ -15,6 +15,7 @@ use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\AutosearchFormSnippet;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -42,13 +43,14 @@ class FilterSearchFormSnippet extends AutosearchFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
         protected Agenda $agenda,
         protected TrackDataRepository $trackDataRepository,
         CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

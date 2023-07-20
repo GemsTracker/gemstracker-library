@@ -110,7 +110,7 @@ class TrackSurveyOverviewSnippet extends \Zalt\Snippets\TranslatableSnippetAbstr
             $this->trackEngine = $this->tracker->getTrackEngine($trackId);
         }
 
-        $roundModel = $this->trackEngine->getRoundModel(true, null);
+        $roundModel = $this->trackEngine->getRoundModel(true, 'index');
         
         // The conditions seem to break the iterator, load only fields we need for display so the conditions won't be triggered
         $roundModel->trackUsage();

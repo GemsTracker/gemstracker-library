@@ -69,13 +69,13 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
 
         // Now save the questions
         $answerModel = $survey->getAnswerModel('en');
-        
+
         $hash = $survey->calculateHash();
-        
+
         if ($survey->getHash() === $hash) {
             return;
         }
-        
+
         $survey->setHash($hash, $this->loader->getCurrentUser()->getUserId());
 
         foreach ($answerModel->getItemsOrdered() as $order => $name) {
