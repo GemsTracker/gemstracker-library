@@ -155,7 +155,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
             $this->request->getAttribute(SessionInterface::class),
             'sourceCheck' . $sourceId,
             $this->currentUserId,
-            [new Expression(sprintf('gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = %d)', $sourceId))]
+            [sprintf('gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = %d)', $sourceId)]
         );
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
