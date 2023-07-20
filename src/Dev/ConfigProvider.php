@@ -2,9 +2,14 @@
 
 namespace Gems\Dev;
 
+use Clockwork\Clockwork;
 use Gems\Communication\Http\DevMailSmsClient;
 use Gems\Communication\Http\SmsClientInterface;
+use Gems\Dev\Clockwork\Factory\ClockworkFactory;
+use Gems\Dev\Clockwork\Handlers\ClockworkApiHandler;
+use Gems\Dev\Clockwork\Middleware\ClockworkMiddleware;
 use Gems\Dev\Middleware\DebugDumperMiddleware;
+use Gems\Middleware\SecurityHeadersMiddleware;
 
 class ConfigProvider
 {
@@ -24,12 +29,27 @@ class ConfigProvider
                 ],
                 'password' => null,
                 'dependencies' => [
+                    'factories' => [
+                        Clockwork::class => ClockworkFactory::class,
+                    ],
                     'aliases' => [
                         SmsClientInterface::class => DevMailSmsClient::class,
                     ],
                 ],
                 'pipeline' => [
                     DebugDumperMiddleware::class,
+                    ClockworkMiddleware::class,
+                ],
+                'routes' => [
+                    [
+                        'name' => 'clockwork.api',
+                        'path' => '/__clockwork/{id:latest|[0-9-]+}[/{direction:previous|next}[/{count:[\d+]}]]',
+                        'allowed_methods' => ['GET'],
+                        'middleware' => [
+                            SecurityHeadersMiddleware::class,
+                            ClockworkApiHandler::class,
+                        ],
+                    ],
                 ],
             ];
         }
