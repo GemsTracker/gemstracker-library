@@ -13,6 +13,7 @@ namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Appointment;
 use Gems\Agenda\AppointmentFilterAbstract;
+use Gems\Db\ResultFetcher;
 
 /**
  *
@@ -30,13 +31,15 @@ class WithAppointmentFilter extends AppointmentFilterAbstract
      *
      * @var array gas_id_staff => gas_id_staff
      */
-    protected $_staff;
+    protected array|bool $_staff = false;
 
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    public function __construct(
+        array $_data,
+        protected readonly ResultFetcher $resultFetcher,
+    )
+    {
+        parent::__construct($_data);
+    }
 
     /**
      * Override this function when you need to perform any actions when the data is loaded.
@@ -49,11 +52,9 @@ class WithAppointmentFilter extends AppointmentFilterAbstract
      *
      * After this the object should be ready for serialization
      */
-    protected function afterLoad()
+    protected function afterLoad(): void
     {
-        if ($this->_data &&
-                $this->db instanceof \Zend_Db_Adapter_Abstract &&
-                ! $this->_staff) {
+        if ($this->_data && !$this->_staff) {
 
             if ($this->_data['gaf_filter_text1']) {
                 $sqlActivites = "SELECT gas_id_staff, gas_id_staff
@@ -61,7 +62,7 @@ class WithAppointmentFilter extends AppointmentFilterAbstract
                     WHERE gas_active = 1 AND gas_name LIKE '%s'
                     ORDER BY gas_id_staff";
 
-                $this->_staff = $this->db->fetchPairs(sprintf(
+                $this->_staff = $this->resultFetcher->fetchPairs(sprintf(
                         $sqlActivites,
                         addslashes($this->_data['gaf_filter_text1']))
                         );
@@ -76,7 +77,7 @@ class WithAppointmentFilter extends AppointmentFilterAbstract
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere()
+    public function getSqlAppointmentsWhere(): string
     {
         if ($this->_staff && ($this->_staff !== true)) {
             $where = 'gap_id_attended_by IN (' . implode(', ', $this->_staff) . ')';
@@ -96,7 +97,7 @@ class WithAppointmentFilter extends AppointmentFilterAbstract
      * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Appointment $appointment)
+    public function matchAppointment(Appointment $appointment): bool
     {
         if (true !== $this->_staff) {
             if (isset($this->_staff[$appointment->getAttendedById()])) {

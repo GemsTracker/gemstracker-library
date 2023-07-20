@@ -15,6 +15,7 @@ use Gems\Agenda\Agenda;
 use Gems\Html;
 use Gems\Menu\RouteHelper;
 use Gems\Model;
+use Zalt\Html\HtmlElement;
 
 /**
  *
@@ -57,6 +58,12 @@ class AppointmentModel extends MaskedModel
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     * @var RouteHelper
+     */
+    protected $routeHelper;
+
 
     /**
      * @var \Gems\Util\Translated
@@ -364,5 +371,30 @@ class AppointmentModel extends MaskedModel
         $this->autoTrackUpdate = $value;
 
         return $this;
+    }
+
+    /**
+     * Display the episode
+     * @param int $episodeId
+     * @return string
+     */
+    public function showEpisode(int|null $episodeId): HtmlElement|null
+    {
+        if (! $episodeId) {
+            return null;
+        }
+        $episode = $this->agenda->getEpisodeOfCare($episodeId);
+
+        if (! $episode->exists) {
+            return $episodeId;
+        }
+
+        $url = $this->routeHelper->getRouteUrl('respondent.episodes-of-care.show', [
+            \MUtil\Model::REQUEST_ID1 => $episode->getRespondent()->getPatientNumber(),
+            \MUtil\Model::REQUEST_ID2 => $episode->getOrganizationId(),
+            Model::EPISODE_ID => $episodeId,
+        ]);
+
+        return Html::create('a', $url, $episode->getDisplayString());
     }
 }

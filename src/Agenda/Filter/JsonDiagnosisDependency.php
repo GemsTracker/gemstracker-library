@@ -35,7 +35,7 @@ class JsonDiagnosisDependency extends FilterModelDependencyAbstract
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = array()): string
+    public function calculateName(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): string
     {
         $filter[] = $context['gaf_filter_text1'];
         $filter[] = $context['gaf_filter_text2'];

@@ -37,7 +37,7 @@ abstract class AppointmentFilterAbstract extends BasicFilterAbstract
      *
      * @return string
      */
-    public function getSqlEpisodeWhere()
+    public function getSqlEpisodeWhere(): string
     {
         $where = $this->getSqlAppointmentsWhere();
 
@@ -65,10 +65,10 @@ abstract class AppointmentFilterAbstract extends BasicFilterAbstract
      * @param \Gems\Agenda\EpisodeOfCare $episode
      * @return boolean
      */
-    public function matchEpisode(EpisodeOfCare $episode)
+    public function matchEpisode(EpisodeOfCare $episode): bool
     {
         foreach ($episode->getAppointments() as $appointment) {
-            if ($appointment instanceof \Gems\Agenda\Appointment) {
+            if ($appointment instanceof Appointment) {
                 if ($this->matchAppointment($appointment)) {
                     return true;
                 }
@@ -82,7 +82,7 @@ abstract class AppointmentFilterAbstract extends BasicFilterAbstract
      *
      * @return boolean When true prefer SQL statements filtering appointments
      */
-    public function preferAppointmentSql()
+    public function preferAppointmentSql(): bool
     {
         return true;
     }

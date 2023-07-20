@@ -12,8 +12,10 @@
 namespace Gems\Agenda;
 
 use DateTimeInterface;
+use Gems\Repository\RespondentRepository;
 use Gems\User\Mask\MaskRepository;
 use MUtil\Model;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -23,73 +25,55 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 16-May-2018 17:55:13
  */
-class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
+class EpisodeOfCare
 {
     /**
      *
      * @var array appointmentId => appointment object
      */
-    protected $_appointments = false;
+    protected array|null $appointments = null;
 
     /**
      *
      * @var int The id of the episode
      */
-    protected $_episodeId;
+    protected int $id;
 
     /**
      *
      * @var array The gems appointment data
      */
-    protected $_gemsData = array();
-
-    /**
-     *
-     * @var \Gems\Agenda\Agenda
-     */
-    protected $agenda;
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    protected array $data = [];
 
     /**
      * True when the token does exist.
      *
      * @var boolean
      */
-    public $exists = true;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    protected MaskRepository $maskRepository;
+    public bool $exists = true;
 
     /**
      * Creates the episode of care object
      *
-     * @param mixed $episodeData Episode Id or array containing episode record
+     * @param array $episodeData Episode Id or array containing episode record
      */
-    public function __construct($episodeData)
+    public function __construct(
+        array $episodeData,
+        protected readonly Agenda $agenda,
+        protected readonly RespondentRepository $respondentRepository,
+        protected readonly Translator $translator,
+    )
     {
-        if (is_array($episodeData)) {
-            $this->_gemsData      = $episodeData;
+        $this->data      = $episodeData;
+        $this->id     = $episodeData['gec_episode_of_care_id'];
+
+        /*if (is_array($episodeData)) {
+            $this->data      = $episodeData;
             $this->_episodeId     = $episodeData['gec_episode_of_care_id'];
         } else {
             $this->_episodeId = $episodeData;
             // loading occurs in checkRegistryRequestAnswers
-        }
+        }*/
     }
 
 
@@ -99,24 +83,24 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
      *
      * @return boolean False if required are missing.
      */
-    public function checkRegistryRequestsAnswers()
+    /*public function checkRegistryRequestsAnswers()
     {
         $this->maskRepository = $this->loader->getMaskRepository();
 
-        if ($this->db && (! $this->_gemsData)) {
+        if ($this->db && (! $this->data)) {
             $this->refresh();
         } else {
-            $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
+            $this->data = $this->maskRepository->applyMaskToRow($this->data);
         }
 
         return $this->exists;
-    }
+    }*/
 
     /**
      *
      * @return array of appointmentId => appointment object
      */
-    public function getAppointments()
+    public function getAppointments(): array
     {
         if (false === $this->_appointments) {
             $this->_appointments = $this->agenda->getAppointmentsForEpisode($this);
@@ -128,11 +112,11 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
     /**
      * The diagnosis of the episode
      *
-     * @return string
+     * @return string|null
      */
-    public function getDiagnosis()
+    public function getDiagnosis(): string|null
     {
-        return isset($this->_gemsData['gec_diagnosis']) ? $this->_gemsData['gec_diagnosis'] : null;
+        return isset($this->data['gec_diagnosis']) ? $this->data['gec_diagnosis'] : null;
     }
 
     /**
@@ -140,16 +124,16 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
      *
      * @return array of Json data
      */
-    public function getDiagnosisData()
+    public function getDiagnosisData(): array
     {
-        if (! isset($this->_gemsData['gec_diagnosis'])) {
+        if (! isset($this->data['gec_diagnosis'])) {
             return [];
         }
-        if (is_string($this->_gemsData['gec_diagnosis'])) {
-            $this->_gemsData['gec_diagnosis'] = json_decode($this->_gemsData['gec_diagnosis'], true);
+        if (is_string($this->data['gec_diagnosis'])) {
+            $this->data['gec_diagnosis'] = json_decode($this->data['gec_diagnosis'], true);
         }
 
-        return $this->_gemsData['gec_diagnosis'];
+        return $this->data['gec_diagnosis'];
     }
 
     /**
@@ -159,13 +143,13 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
      *
      * @return string
      */
-    public function getDisplayString()
+    public function getDisplayString(): string
     {
         $results[] = $this->getStartDate()->format($this->agenda->episodeDisplayFormat);
         $results[] = $this->getSubject();
         $results[] = $this->getDiagnosis();
 
-        return implode($this->_('; '), array_filter($results));
+        return implode($this->translator->_('; '), array_filter($results));
     }
 
     /**
@@ -173,16 +157,16 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
      *
      * @return array of Json data
      */
-    public function getExtraData()
+    public function getExtraData(): array
     {
-        if (! isset($this->_gemsData['gec_extra_data'])) {
+        if (! isset($this->data['gec_extra_data'])) {
             return [];
         }
-        if (is_string($this->_gemsData['gec_extra_data'])) {
-            $this->_gemsData['gec_extra_data'] = json_decode($this->_gemsData['gec_extra_data'], true);
+        if (is_string($this->data['gec_extra_data'])) {
+            $this->data['gec_extra_data'] = json_decode($this->data['gec_extra_data'], true);
         }
 
-        return $this->_gemsData['gec_extra_data'];
+        return $this->data['gec_extra_data'];
     }
 
     /**
@@ -190,18 +174,18 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
-        return $this->_episodeId;
+        return $this->id;
     }
 
     /**
      *
      * @return int
      */
-    public function getOrganizationId()
+    public function getOrganizationId(): int
     {
-        return $this->_gemsData['gec_id_organization'];
+        return $this->data['gec_id_organization'];
     }
 
     /**
@@ -211,10 +195,11 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
      */
     public function getRespondent()
     {
-        return $this->loader->getRespondent(
-                null,
-                $this->getOrganizationId(),
-                $this->getRespondentId());
+        return $this->respondentRepository->getRespondent(
+            null,
+            $this->getOrganizationId(),
+            $this->getRespondentId()
+        );
     }
 
     /**
@@ -222,9 +207,9 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getRespondentId()
+    public function getRespondentId(): int
     {
-        return $this->_gemsData['gec_id_user'];
+        return $this->data['gec_id_user'];
     }
 
     /**
@@ -232,13 +217,13 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
      *
      * @return ?DateTimeInterface Start date as a date or null
      */
-    public function getStartDate(): ?DateTimeInterface
+    public function getStartDate(): DateTimeInterface|null
     {
-        if (isset($this->_gemsData['gec_startdate']) && $this->_gemsData['gec_startdate']) {
-            if (! $this->_gemsData['gec_startdate'] instanceof DateTimeInterface) {
-                $this->_gemsData['gec_startdate'] = Model::getDateTimeInterface($this->_gemsData['gec_startdate']);
+        if (isset($this->data['gec_startdate']) && $this->data['gec_startdate']) {
+            if (! $this->data['gec_startdate'] instanceof DateTimeInterface) {
+                $this->data['gec_startdate'] = Model::getDateTimeInterface($this->data['gec_startdate']);
             }
-            return $this->_gemsData['gec_startdate'];
+            return $this->data['gec_startdate'];
         }
         return null;
     }
@@ -246,38 +231,10 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
     /**
      * The subject of the episode
      *
-     * @return string
+     * @return string|null
      */
-    public function getSubject()
+    public function getSubject(): string|null
     {
-        return isset($this->_gemsData['gec_subject']) ? $this->_gemsData['gec_subject'] : null;
-    }
-
-    /**
-     *
-     * @param array $gemsData Optional, the data refresh with, otherwise refresh from database.
-     * @return \Gems\Agenda\Appointment (continuation pattern)
-     */
-    public function refresh(array $gemsData = null)
-    {
-        if (is_array($gemsData)) {
-            $this->_gemsData = $gemsData + $this->_gemsData;
-        } else {
-            $select = $this->db->select();
-            $select->from('gems__episodes_of_care')
-                    ->where('gec_episode_of_care_id = ?', $this->_episodeId);
-
-            $this->_gemsData = $this->db->fetchRow($select);
-            if (false == $this->_gemsData) {
-                // on failure, reset to empty array
-                $this->_gemsData = array();
-            }
-        }
-        $this->exists = isset($this->_gemsData['gec_episode_of_care_id']);
-
-        $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
-        $this->_appointments = false;
-
-        return $this;
+        return isset($this->data['gec_subject']) ? $this->data['gec_subject'] : null;
     }
 }

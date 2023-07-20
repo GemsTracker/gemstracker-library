@@ -14,6 +14,7 @@ namespace Gems\Agenda\Filter;
 use Gems\Agenda\Agenda;
 use Gems\Agenda\Appointment;
 use Gems\Agenda\AppointmentFilterAbstract;
+use Gems\Db\ResultFetcher;
 
 /**
  *
@@ -27,20 +28,24 @@ use Gems\Agenda\AppointmentFilterAbstract;
 class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
 {
     /**
-     *
-     * @var Agenda
+     * @var array id => id
      */
-    protected $agenda;
+    protected array|null $_fieldList2 = null;
 
     /**
      * @var array id => id
      */
-    protected $_fieldList2;
+    protected array|null $_fieldList4 = null;
 
-    /**
-     * @var array id => id
-     */
-    protected $_fieldList4;
+    public function __construct(
+        array $_data,
+        protected readonly ResultFetcher $resultFetcher,
+    )
+    {
+        parent::__construct($_data);
+        $this->_fieldList2 = $this->loadFieldList($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2']);
+        $this->_fieldList4 = $this->loadFieldList($this->_data['gaf_filter_text3'], $this->_data['gaf_filter_text4']);
+    }
 
     /**
      * List of lookup tables for linked values
@@ -80,33 +85,6 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
             ],
     ];
 
-    /*
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     * Override this function when you need to perform any actions when the data is loaded.
-     *
-     * Test for the availability of variables as these objects can be loaded data first after
-     * deserialization or registry variables first after normal instantiation.
-     *
-     * That is why this function called both at the end of afterRegistry() and after exchangeArray(),
-     * but NOT after unserialize().
-     *
-     * After this the object should be ready for serialization
-     */
-    protected function afterLoad()
-    {
-        if ($this->_data &&
-                $this->db instanceof \Zend_Db_Adapter_Abstract) {
-
-            $this->_fieldList2 = $this->loadFieldList($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2']);
-            $this->_fieldList4 = $this->loadFieldList($this->_data['gaf_filter_text3'], $this->_data['gaf_filter_text4']);
-        }
-    }
-
     /**
      * Get the field value from an appointment object
      *
@@ -114,7 +92,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      * @param string $field
      * @return mixed
      */
-    public function getAppointmentFieldValue(Appointment $appointment, $field)
+    public function getAppointmentFieldValue(Appointment $appointment, string $field): string|int|null
     {
         switch ($field) {
             case 'gap_id_organization':
@@ -148,7 +126,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere()
+    public function getSqlAppointmentsWhere(): string
     {
         if ($this->_data['gaf_filter_text1'] && $this->_data['gaf_filter_text2']) {
             $wheres[] = $this->getSqlWhereSingle($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2'], $this->_fieldList2);
@@ -171,7 +149,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
         }
     }
 
-    protected function getSqlWhereSingle($field, $searchTxt, $fieldList)
+    protected function getSqlWhereSingle(string|null $field, string|null $searchTxt, array|null $fieldList): string
     {
         $where = '';
 
@@ -190,7 +168,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
         return $where;
     }
 
-    protected function loadFieldList($field, $searchTxt)
+    protected function loadFieldList(string|null $field, string|null $searchTxt): array|bool|null
     {
         $result = null;
 
@@ -201,7 +179,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
                 $like  = $this->_lookupTables[$field]['tableLikeFilter'];
 
                 $sql    = "SELECT $id, $id FROM $table WHERE $like ORDER BY $id";
-                $result = $this->db->fetchPairs(sprintf($sql, addslashes($searchTxt)));
+                $result = $this->resultFetcher->fetchPairs(sprintf($sql, addslashes($searchTxt)));
             }
         } else {
             $result = true;
@@ -216,7 +194,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Appointment $appointment)
+    public function matchAppointment(Appointment $appointment): bool
     {
         $result1 = $this->matchSingle(
                 $this->_data['gaf_filter_text1'],
@@ -242,7 +220,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      * @param Appointment $appointment
      * @return boolean
      */
-    protected function matchSingle($field, $searchTxt, $fieldList, $appointment)
+    protected function matchSingle(string|null $field, string|null $searchTxt, array|bool|null $fieldList, Appointment $appointment): bool
     {
         $result = true;
 
@@ -259,7 +237,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
             } else {
                 $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'), $searchTxt) . '/i';
 
-                if (! (boolean) preg_match($regex, $value)) {
+                if (! (bool) preg_match($regex, $value)) {
                     $result = false;
                 }
             }

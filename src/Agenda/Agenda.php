@@ -11,15 +11,23 @@
 
 namespace Gems\Agenda;
 
+use Gems\Agenda\Repository\ActivityRepository;
+use Gems\Agenda\Repository\FilterRepository;
+use Gems\Agenda\Repository\LocationRepository;
+use Gems\Agenda\Repository\ProcedureRepository;
+use Gems\Agenda\Repository\StaffRepository;
 use Gems\Cache\HelperAdapter;
-use Gems\Episode;
+use Gems\Db\ResultFetcher;
+use Gems\Exception\Coding;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\OrganizationRepository;
+use Gems\Tracker\Respondent;
+use Gems\User\Mask\MaskRepository;
+use Laminas\Db\Sql\Join;
+use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\TableIdentifier;
 use MUtil\Model;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Base\TranslateableTrait;
-use Zalt\Loader\DependencyResolver\ConstructorDependencyParametersResolver;
-use Zalt\Loader\DependencyResolver\ResolverInterface;
 use Zalt\Loader\ProjectOverloader;
 
 /**
@@ -32,50 +40,49 @@ use Zalt\Loader\ProjectOverloader;
  */
 class Agenda 
 {
-    use TranslateableTrait;
-    
     /**
      *
      * @var \Gems\Agenda\Appointment[]
      */
-    private $_appointments = array();
+    private array $_appointments = [];
 
     /**
      *
      * @var AppointmentFilterInterface[]
      */
-    private $_filters = array();
+    private array $_filters = [];
 
     /**
      *
      * @var string
      */
-    public $appointmentDisplayFormat = 'd-m-Y H:i';
+    public string $appointmentDisplayFormat = 'd-m-Y H:i';
 
     /**
      *
      * @var string
      */
-    public $episodeDisplayFormat = 'd-M-Y';
-
-    protected ResolverInterface $resolveByParameter;
-    protected ResolverInterface $resolveByDependecy;
+    public string $episodeDisplayFormat = 'd-M-Y';
     
     /**
      * Sets the source of variables and the first directory for snippets
      */
     public function __construct(
-        protected ProjectOverloader $subloader, 
-        TranslatorInterface $translator,
-        protected AdapterInterface $cache,
-        protected \Zend_Db_Adapter_Abstract $db,
+        protected readonly ProjectOverloader $overloader,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly TranslatorInterface $translator,
+        protected readonly HelperAdapter $cache,
+        protected readonly ActivityRepository $activityRepository,
+        protected readonly FilterRepository $filterRepository,
+
+        protected readonly LocationRepository $locationRepository,
+        protected readonly MaskRepository $maskRepository,
+        protected readonly MetaModelLoader $metaModelLoader,
         protected readonly OrganizationRepository $organizationRepository,
+        protected readonly ProcedureRepository $procedureRepository,
+        protected readonly StaffRepository $staffRepository,
     )
     {
-        $this->translate = $translator;
-
-        $this->resolveByParameter = $this->subloader->getDependencyResolver();
-        $this->resolveByDependecy = new ConstructorDependencyParametersResolver();
     }
     
     /**
@@ -83,162 +90,17 @@ class Agenda
      *
      * Allows for overruling on project level
      *
-     * @return \Zend_Db_Select
+     * @return Select
      */
-    protected function _getAppointmentSelect()
+    protected function _getAppointmentSelect(): Select
     {
-        $select = $this->db->select();
-
-        $select->from('gems__appointments')
-                ->joinLeft( 'gems__agenda_activities', 'gap_id_activity = gaa_id_activity')
-                ->joinLeft('gems__agenda_procedures',  'gap_id_procedure = gapr_id_procedure')
-                ->joinLeft('gems__locations',          'gap_id_location = glo_id_location')
+        $select = $this->resultFetcher->getSelect('gems__appointments');
+        $select->join( 'gems__agenda_activities', 'gap_id_activity = gaa_id_activity', $select::SQL_STAR, $select::JOIN_LEFT)
+                ->join('gems__agenda_procedures',  'gap_id_procedure = gapr_id_procedure', $select::SQL_STAR, $select::JOIN_LEFT)
+                ->join('gems__locations',          'gap_id_location = glo_id_location', $select::SQL_STAR, $select::JOIN_LEFT)
                 ->order('gap_admission_time DESC');
 
         return $select;
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * This function is no needed if the classes are setup correctly
-     *
-     * @return void
-     * /
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->initTranslateable();
-    }
-
-    /**
-     * Add Activities to the table
-     *
-     * Override this method for other defaults
-     *
-     * @param string $name
-     * @param int $organizationId
-     * @return array
-     */
-    public function addActivity($name, $organizationId)
-    {
-        $model = new \MUtil\Model\TableModel('gems__agenda_activities');
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gaa');
-
-        $values = array(
-            'gaa_name'            => $name,
-            'gaa_id_organization' => $organizationId,
-            'gaa_match_to'        => $name,
-            'gaa_active'          => 1,
-            'gaa_filter'          => 0,
-        );
-
-        $result = $model->save($values);
-
-        $this->cache->invalidateTags(['activity', 'activities']);
-
-        return $result;
-    }
-
-    /**
-     * Add HealthcareStaff to the table
-     *
-     * Override this method for other defaults
-     *
-     * @param string $name
-     * @param int $organizationId
-     * @return array
-     */
-    public function addHealthcareStaff($name, $organizationId)
-    {
-        $model = new \MUtil\Model\TableModel('gems__agenda_staff');
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gas');
-
-        $values = array(
-            'gas_name'            => $name,
-            'gas_id_organization' => $organizationId,
-            'gas_match_to'        => $name,
-            'gas_active'          => 1,
-            'gas_filter'          => 0,
-        );
-
-        $result = $model->save($values);
-
-        $this->cache->invalidateTags(['staff']);
-
-        return $result;
-    }
-
-    /**
-     *
-     * @param string $name
-     * @param int $organizationId
-     * @param array $matches
-     * @return array
-     */
-    public function addLocation($name, $organizationId, $matches)
-    {
-        if (empty($matches)) {
-            // A new match
-            $values = array(
-                'glo_name'          => $name,
-                'glo_organizations' => ':' . $organizationId . ':',
-                'glo_match_to'      => $name,
-                'glo_active'        => 1,
-                'glo_filter'        => 0,
-            );
-        } else {
-            // Update
-            $first = reset($matches);
-
-            // Change this match, add this organization
-            $values = array(
-                'glo_id_location'   => $first['glo_id_location'],
-                'glo_organizations' => ':' . implode(':', array_keys($matches)) . ':' .
-                    $organizationId . ':'
-            );
-        }
-
-        $model = new \MUtil\Model\TableModel('gems__locations');
-        \Gems\Model::setChangeFieldsByPrefix($model, 'glo');
-
-        $result = $model->save($values);
-
-        $this->cache->invalidateTags(['location', 'locations']);
-
-
-        return $result;
-    }
-
-    /**
-     * Add Procedure to the table
-     *
-     * Override this method for other defaults
-     *
-     * @param string $name
-     * @param int $organizationId
-     * @return array
-     */
-    public function addProcedure($name, $organizationId)
-    {
-        $model = new \MUtil\Model\TableModel('gems__agenda_procedures');
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gapr');
-
-        $values = array(
-            'gapr_name'            => $name,
-            'gapr_id_organization' => $organizationId,
-            'gapr_match_to'        => $name,
-            'gapr_active'          => 1,
-            'gapr_filter'          => 0,
-        );
-
-        $result = $model->save($values);
-
-        $this->cache->invalidateTags(['procedure', 'procedures']);
-
-        return $result;
     }
 
     /**
@@ -248,20 +110,25 @@ class Agenda
      * @param array $params
      * @return object
      */
-    public function createAgendaClass($className, ...$params)
+    public function createAgendaClass(string $className, ...$params): object
     {
-        return $this->subloader->create($className, ...$params);
+        if (!class_exists($className)) {
+            $className = "Agenda\\$className";
+        }
+        return $this->overloader->create($className, ...$params);
     }
 
     /**
      * Create agenda select
      *
      * @param string|array $fields The appointment fields to select
-     * @return \Gems\Agenda\AppointmentSelect
+     * @return LaminasAppointmentSelect
      */
-    public function createAppointmentSelect($fields = '*')
+    public function createAppointmentSelect(array|string $fields = '*'): LaminasAppointmentSelect
     {
-        return $this->subloader->create('AppointmentSelect', $fields);
+        $select = new LaminasAppointmentSelect($this->resultFetcher, $this);
+        $select->columns($fields);
+        return $select;
     }
 
     /**
@@ -273,7 +140,7 @@ class Agenda
      * @param string $where Optional extra where statement
      * @return array appointmentId => appointment description
      */
-    public function getActiveAppointments($respondentId, $organizationId, $patientNr = null, $where = null)
+    public function getActiveAppointments(int $respondentId, int $organizationId, string|null $patientNr = null, string|null $where = null): array
     {
         if ($where) {
             $where = "($where) AND ";
@@ -290,34 +157,9 @@ class Agenda
      * @param int $organizationId Optional
      * @return array activity_id => name
      */
-    public function getActivities($organizationId = null)
+    public function getActivities(int|null $organizationId = null): array
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
-
-        if ($results = $this->cache->getCacheItem($cacheId)) {
-            return $results;
-        }
-
-        $select = $this->db->select();
-        $select->from('gems__agenda_activities', array('gaa_id_activity', 'gaa_name'))
-                ->order('gaa_name');
-
-        if ($organizationId) {
-            // Check only for active when with $orgId: those are usually used
-            // with editing, while the whole list is used for display.
-            $select->where('gaa_active = 1')
-                    ->where('(
-                            gaa_id_organization IS NULL
-                        AND
-                            gaa_name NOT IN (SELECT gaa_name FROM gems__agenda_activities WHERE gaa_id_organization = ?)
-                        ) OR
-                            gaa_id_organization = ?', $organizationId);
-        }
-        // \MUtil\EchoOut\EchoOut::track($select->__toString());
-        $results = $this->db->fetchPairs($select);
-        $this->cache->setCacheItem($cacheId, $results, ['activities']);
-        return $results;
-
+        return $this->activityRepository->getActivityOptions($organizationId);
     }
 
     /**
@@ -328,7 +170,7 @@ class Agenda
      * @param array $row Row containing result select
      * @return string
      */
-    public function getAppointmentDisplay(array $row)
+    public function getAppointmentDisplay(array $row): string
     {
         $results[] = Model::reformatDate($row['gap_admission_time'], null, $this->appointmentDisplayFormat);
         if ($row['gaa_name']) {
@@ -341,7 +183,7 @@ class Agenda
             $results[] = $row['glo_name'];
         }
 
-        return implode($this->_('; '), $results);
+        return implode($this->translator->_('; '), $results);
     }
 
     /**
@@ -350,32 +192,36 @@ class Agenda
      * @param mixed $appointmentData Appointment id or array containing appointment data
      * @return \Gems\Agenda\Appointment
      */
-    public function getAppointment($appointmentData)
+    public function getAppointment(array|int $appointmentData): Appointment
     {
         if (! $appointmentData) {
-            throw new \Gems\Exception\Coding('Provide at least the apppointment id when requesting an appointment.');
+            throw new Coding('Provide at least the apppointment id when requesting an appointment.');
         }
 
         if (is_array($appointmentData)) {
              if (!isset($appointmentData['gap_id_appointment'])) {
-                 throw new \Gems\Exception\Coding(
+                 throw new Coding(
                          '$appointmentData array should atleast have a key "gap_id_appointment" containing the requested appointment id'
                          );
              }
             $appointmentId = $appointmentData['gap_id_appointment'];
         } else {
             $appointmentId = $appointmentData;
+            $appointmentData = $this->getAppointmentData($appointmentId);
         }
-        // \MUtil\EchoOut\EchoOut::track($appointmentId, $appointmentData);
 
-        if (! isset($this->_appointments[$appointmentId])) {
-            $this->_appointments[$appointmentId] = $this->subloader->create('Gems\\Agenda\\Appointment', $appointmentData);
-        } elseif (is_array($appointmentData)) {
-            // Make sure the new values are set in the object
-            $this->_appointments[$appointmentId]->refresh($appointmentData);
-        }
+        $this->_appointments[$appointmentId] = $this->overloader->create('Agenda\\Appointment', $appointmentData);
 
         return $this->_appointments[$appointmentId];
+    }
+
+    public function getAppointmentData(int $appointmentId): array
+    {
+        $select = $this->_getAppointmentSelect();
+        $select->where(['gap_id_appointment' => $appointmentId]);
+
+        $data = $this->resultFetcher->fetchRow($select);
+        return $this->maskRepository->applyMaskToRow($data);
     }
 
     /**
@@ -387,7 +233,7 @@ class Agenda
      * @param string $where Optional extra where statement
      * @return array appointmentId => appointment description
      */
-    public function getAppointments($respondentId, $organizationId, $patientNr = null, $where = null)
+    public function getAppointments(int|null $respondentId, int $organizationId, string|null $patientNr = null, string|null $where = null): array
     {
         $select = $this->_getAppointmentSelect();
 
@@ -396,17 +242,34 @@ class Agenda
         }
 
         if ($respondentId) {
-            $select->where('gap_id_user = ?', $respondentId)
-                    ->where('gap_id_organization = ?', $organizationId);
+            $select->where([
+                'gap_id_user' => $respondentId,
+                'gap_id_organization' => $organizationId,
+            ]);
         } else {
             // Join might have been created in _getAppointmentSelect
-            $from = $select->getPart(\Zend_Db_Select::FROM);
-            if (! isset($from['gems__respondent2org'])) {
-                $select->joinInner(
-                        'gems__respondent2org',
-                        'gap_id_user = gr2o_id_user AND gap_id_organization = gr2o_id_organization',
-                        array()
-                        );
+
+            /**
+             * @var Join|null
+             */
+            $joins = $select->getRawState(Select::JOINS);
+            $addRespondentTable = true;
+            if ($joins instanceof Join) {
+                foreach($joins->getJoins() as $join) {
+                    if ($join['name'] === 'gems__respondent2org'
+                        || (is_array($join['name']) && in_array('gems__respondent2org', $join['name']))
+                        || $join['name'] instanceof TableIdentifier && $join['name']->getTable() === 'gems__respondent2org') {
+                        $addRespondentTable = false;
+                    }
+                }
+            }
+
+            if ($addRespondentTable) {
+                $select->join(
+                'gems__respondent2org',
+                  'gap_id_user = gr2o_id_user AND gap_id_organization = gr2o_id_organization',
+                      []
+                );
             }
 
             $select->where('gr2o_patient_nr = ?', $patientNr)
@@ -414,13 +277,13 @@ class Agenda
         }
 
         // \MUtil\EchoOut\EchoOut::track($select->__toString());
-        $rows = $this->db->fetchAll($select);
+        $rows = $this->resultFetcher->fetchAll($select);
 
         if (! $rows) {
-            return array();
+            return [];
         }
 
-        $results = array();
+        $results = [];
         foreach ($rows as $row) {
             $results[$row['gap_id_appointment']] = $this->getAppointmentDisplay($row);
         }
@@ -433,7 +296,7 @@ class Agenda
      * @param int|EpisodeOfCare $episode Episode Id or object
      * @return array appointmentId => appointment object
      */
-    public function getAppointmentsForEpisode($episode)
+    public function getAppointmentsForEpisode(EpisodeOfCare|int $episode): array
     {
         $select = $this->_getAppointmentSelect();
 
@@ -442,16 +305,16 @@ class Agenda
         } else {
             $episodeId = $episode;
         }
-        $select->where('gap_id_episode = ?', $episodeId);
+        $select->where(['gap_id_episode' => $episodeId]);
 
         // \MUtil\EchoOut\EchoOut::track($select->__toString());
-        $rows = $this->db->fetchAll($select);
+        $rows = $this->resultFetcher->fetchAll($select);
 
         if (! $rows) {
-            return array();
+            return [];
         }
 
-        $results = array();
+        $results = [];
         foreach ($rows as $row) {
             $results[$row['gap_id_appointment']] = $this->getAppointment($row);
         }
@@ -463,11 +326,11 @@ class Agenda
      *
      * @return array code => label
      */
-    public function getDiagnosisCodingSystems()
+    public function getDiagnosisCodingSystems(): array
     {
         return [
-            'DBC'    => $this->_('DBC (Dutch Diagnosis Treatment Code)'),
-            'manual' => $this->_('Manual (organization specific)'),
+            'DBC'    => $this->translator->_('DBC (Dutch Diagnosis Treatment Code)'),
+            'manual' => $this->translator->_('Manual (organization specific)'),
         ];
     }
 
@@ -475,24 +338,36 @@ class Agenda
      * Get an appointment object
      *
      * @param mixed $episodeData Episode id or array containing episode data
-     * @return \Gems\Agenda\EpisodeOfCare
+     * @return EpisodeOfCare
      */
-    public function getEpisodeOfCare($episodeData)
+    public function getEpisodeOfCare(array|int $episodeData): EpisodeOfCare
     {
         if (! $episodeData) {
-            throw new \Gems\Exception\Coding('Provide at least the episode id when requesting an episode of care.');
+            throw new Coding('Provide at least the episode id when requesting an episode of care.');
         }
 
         if (is_array($episodeData)) {
              if (!isset($episodeData['gec_episode_of_care_id'])) {
-                 throw new \Gems\Exception\Coding(
+                 throw new Coding(
                          '$episodeData array should atleast have a key "gec_episode_of_care_id" containing the requested episode id'
                          );
              }
+        } else {
+            $episodeData = $this->getEpisodeOfCareData($episodeData);
         }
+
+
         // \MUtil\EchoOut\EchoOut::track($appointmentId, $appointmentData);
 
-        return $this->subloader->create('episodeOfCare', $episodeData);
+        return $this->overloader->create('Agenda\\EpisodeOfCare', $episodeData);
+    }
+
+    public function getEpisodeOfCareData(int $episodeId): array
+    {
+        $select = $this->resultFetcher->getSelect('gems__episodes_of_care');
+        $select->where(['gec_episode_of_care_id' => $episodeId]);
+
+        return $this->resultFetcher->fetchRow($select);
     }
 
     /**
@@ -500,7 +375,7 @@ class Agenda
      *
      * @return array code => label
      */
-    public function getEpisodeStatusCodes()
+    public function getEpisodeStatusCodes(): array
     {
         $codes = $this->getEpisodeStatusCodesActive() +
                 $this->getEpisodeStatusCodesInactive();
@@ -517,16 +392,16 @@ class Agenda
      *
      * @return array code => label
      */
-    public function getEpisodeStatusCodesActive()
+    public function getEpisodeStatusCodesActive(): array
     {
         // A => active, C => Cancelled, E => Error, F => Finished, O => Onhold, P => Planned, W => Waitlist
-        $codes = array(
-            'A' => $this->_('Active'),
-            'F' => $this->_('Finished'),
-            'O' => $this->_('On hold'),
-            'P' => $this->_('Planned'),
-            'W' => $this->_('Waitlist'),
-        );
+        $codes = [
+            'A' => $this->translator->_('Active'),
+            'F' => $this->translator->_('Finished'),
+            'O' => $this->translator->_('On hold'),
+            'P' => $this->translator->_('Planned'),
+            'W' => $this->translator->_('Waitlist'),
+        ];
 
         asort($codes);
 
@@ -538,12 +413,12 @@ class Agenda
      *
      * @return array code => label
      */
-    public function getEpisodeStatusCodesInactive()
+    public function getEpisodeStatusCodesInactive(): array
     {
-        $codes = array(
-            'C' => $this->_('Cancelled'),
-            'E' => $this->_('Erroneous input'),
-        );
+        $codes = [
+            'C' => $this->translator->_('Cancelled'),
+            'E' => $this->translator->_('Erroneous input'),
+        ];
 
         asort($codes);
 
@@ -556,7 +431,7 @@ class Agenda
      * @param array $episodes
      * @return array of $episodeId => Description
      */
-    public function getEpisodesAsOptions(array $episodes)
+    public function getEpisodesAsOptions(array $episodes): array
     {
         $options = [];
 
@@ -576,7 +451,7 @@ class Agenda
      * @param $where mixed Optional extra string or array filter
      * @return array of $episodeId => \Gems\Agenda\EpisodeOfCare
      */
-    public function getEpisodesFor(\Gems\Tracker\Respondent $respondent, $where = null)
+    public function getEpisodesFor(Respondent $respondent, string|array $where = null): array
     {
         return $this->getEpisodesForRespId($respondent->getId(), $respondent->getOrganizationId(), $where);
     }
@@ -587,23 +462,24 @@ class Agenda
      * @param int $respondentId
      * @param int $orgId
      * @param $where mixed Optional extra string or array filter
-     * @return array of $episodeId => \Gems\Agenda\EpisodeOfCare
+     * @return array of $episodeId => EpisodeOfCare
      */
-    public function getEpisodesForRespId($respondentId, $orgId, $where = null)
+    public function getEpisodesForRespId(int $respondentId, int $orgId, string|array|null $where = null): array
     {
-        $select = $this->db->select();
-        $select->from('gems__episodes_of_care')
-                ->where('gec_id_user = ?', $respondentId)
-                ->where('gec_id_organization = ?', $orgId)
-                ->order('gec_startdate DESC');
+        $select = $this->resultFetcher->getSelect('gems__episodes_of_care');
+        $select->where([
+            'gec_id_user' => $respondentId,
+            'gec_id_organization' => $orgId,
+        ])
+            ->order('gec_startdate DESC');
 
         if ($where) {
             if (is_array($where)) {
                 foreach ($where as $expr => $param) {
                     if (is_int($expr)) {
-                        $select->where($param);
+                        $select->where([$param]);
                     } else {
-                        $select->where($expr, $param);
+                        $select->where([$expr => $param]);
                     }
                 }
             } else {
@@ -612,7 +488,7 @@ class Agenda
         }
         // \MUtil\EchoOut\EchoOut::track($select->__toString());
 
-        $episodes = $this->db->fetchAll($select);
+        $episodes = $this->resultFetcher->fetchAll($select);
         $output   = [];
 
         foreach ($episodes as $episodeData) {
@@ -628,7 +504,7 @@ class Agenda
      *
      * @return array filter_id => label
      */
-    public function getFilterList()
+    public function getFilterList(): array
     {
         $cacheId = HelperAdapter::cleanupForCacheId(__CLASS__ . '_' . __FUNCTION__);
 
@@ -637,7 +513,7 @@ class Agenda
             return $output;
         }
 
-        $output = $this->db->fetchPairs("SELECT gaf_id, COALESCE(gaf_manual_name, gaf_calc_name) "
+        $output = $this->resultFetcher->fetchPairs("SELECT gaf_id, COALESCE(gaf_manual_name, gaf_calc_name) "
                 . "FROM gems__appointment_filters WHERE gaf_active = 1 ORDER BY gaf_id_order");
 
         $this->cache->setCacheItem($cacheId, $output, ['appointment_filters']);
@@ -650,7 +526,7 @@ class Agenda
      *
      * @return array fieldname => label
      */
-    public final function getFieldLabels()
+    public final function getFieldLabels(): array
     {
         $output = \MUtil\Ra::column('label', $this->getFieldData());
 
@@ -666,50 +542,50 @@ class Agenda
      */
     protected function getFieldData()
     {
-        return array(
-            'gap_id_organization' => array(
-                'label' => $this->_('Organization'),
+        return [
+            'gap_id_organization' => [
+                'label' => $this->translator->_('Organization'),
                 'tableName' => 'gems__organizations',
                 'tableId' => 'gor_id_organization',
                 'tableLikeFilter' => "gor_active = 1 AND gor_name LIKE '%s'",
-                ),
-            'gap_source' => array(
-                'label' => $this->_('Source of appointment'),
-                ),
-            'gap_id_attended_by' => array(
-                'label' => $this->_('With'),
+            ],
+            'gap_source' => [
+                'label' => $this->translator->_('Source of appointment'),
+            ],
+            'gap_id_attended_by' => [
+                'label' => $this->translator->_('With'),
                 'tableName' => 'gems__agenda_staff',
                 'tableId' => 'gas_id_staff',
                 'tableLikeFilter' => "gas_active = 1 AND gas_name LIKE '%s'",
-                ),
-            'gap_id_referred_by' => array(
-                'label' => $this->_('Referrer'),
+            ],
+            'gap_id_referred_by' => [
+                'label' => $this->translator->_('Referrer'),
                 'tableName' => 'gems__agenda_staff',
                 'tableId' => 'gas_id_staff',
                 'tableLikeFilter' => "gas_active = 1 AND gas_name LIKE '%s'",
-                ),
-            'gap_id_activity' => array(
-                'label' => $this->_('Activity'),
+            ],
+            'gap_id_activity' => [
+                'label' => $this->translator->_('Activity'),
                 'tableName' => 'gems__agenda_activities',
                 'tableId' => 'gaa_id_activity',
                 'tableLikeFilter' => "gaa_active = 1 AND gaa_name LIKE '%s'",
-                ),
-            'gap_id_procedure' => array(
-                'label' => $this->_('Procedure'),
+            ],
+            'gap_id_procedure' => [
+                'label' => $this->translator->_('Procedure'),
                 'tableName' => 'gems__agenda_procedures',
                 'tableId' => 'gapr_id_procedure',
                 'tableLikeFilter' => "gapr_active = 1 AND gapr_name LIKE '%s'",
-                ),
-            'gap_id_location' => array(
-                'label' => $this->_('Location'),
+            ],
+            'gap_id_location' => [
+                'label' => $this->translator->_('Location'),
                 'tableName' => 'gems__locations',
                 'tableId' => 'glo_id_location',
                 'tableLikeFilter' => "glo_active = 1 AND glo_name LIKE '%s'",
-                ),
-            'gap_subject' => array(
-                'label' => $this->_('Subject'),
-                ),
-        );
+            ],
+            'gap_subject' => [
+                'label' => $this->translator->_('Subject'),
+            ],
+        ];
     }
 
     /**
@@ -718,52 +594,9 @@ class Agenda
      * @param $filterId string|int Id of a single filter
      * @return AppointmentFilterInterface|null or null
      */
-    public function getFilter($filterId)
+    public function getFilter(int $filterId): AppointmentFilterInterface|null
     {
-        static $filters = array();
-
-        if (isset($filters[$filterId])) {
-            return $filters[$filterId];
-        }
-        $found = $this->getFilters("SELECT *
-                FROM gems__appointment_filters LEFT JOIN gems__track_appointments ON gaf_id = gtap_filter_id
-                WHERE gaf_active = 1 AND gaf_id = $filterId LIMIT 1");
-
-        if ($found) {
-            $filters[$filterId] = reset($found);
-            return $filters[$filterId];
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the filters from the database
-     *
-     * @param $sql string|\Zend_Db_Select SQL statement
-     * @return AppointmentFilterInterface[]
-     */
-    public function getFilters($sql)
-    {
-        $classes    = array();
-        $filterRows = $this->db->fetchAll($sql);
-        $output     = array();
-
-        // \MUtil\EchoOut\EchoOut::track($filterRows);
-        foreach ($filterRows as $key => $filter) {
-            $className = $filter['gaf_class'];
-            if (! isset($classes[$className])) {
-                $classes[$className] = $this->newFilterObject($className);
-            }
-            $filterObject = clone $classes[$className];
-            if ($filterObject instanceof AppointmentFilterInterface) {
-                $filterObject->exchangeArray($filter);
-                $output[$key] = $filterObject;
-            }
-        }
-        // \MUtil\EchoOut\EchoOut::track(count($filterRows), count($output));
-
-        return $output;
+        return $this->filterRepository->getFilter($filterId);
     }
 
     /**
@@ -773,27 +606,7 @@ class Agenda
      */
     public function getHealthcareStaff($organizationId = null)
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
-
-        if ($results = $this->cache->getCacheItem($cacheId)) {
-            return $results;
-        }
-
-        $select = $this->db->select();
-        $select->from('gems__agenda_staff', array('gas_id_staff', 'gas_name'))
-                ->order('gas_name');
-
-        if ($organizationId) {
-            // Check only for active when with $orgId: those are usually used
-            // with editing, while the whole list is used for display.
-            $select->where('gas_active = 1')
-                    ->where('gas_id_organization = ?', $organizationId);
-        }
-        // \MUtil\EchoOut\EchoOut::track($select->__toString());
-        $results = $this->db->fetchPairs($select);
-        $this->cache->setCacheItem($cacheId, $results, ['staff']);
-        return $results;
-
+        return $this->staffRepository->getAllStaffOptions($organizationId);
     }
 
     /**
@@ -802,31 +615,9 @@ class Agenda
      * @param int $orgId Optional to select for single organization
      * @return array
      */
-    public function getLocations($orgId = null)
+    public function getLocations(int $orgId = null): array
     {
-        // Make sure no invalid data gets through
-        $orgId = intval($orgId);
-
-        $cacheId = HelperAdapter::cleanupForCacheId(__CLASS__ . '_' . __FUNCTION__ . '_' . $orgId);
-
-        if ($results = $this->cache->getCacheItem($cacheId)) {
-            return $results;
-        }
-
-        $select = $this->db->select();
-        $select->from('gems__locations', array('glo_id_location', 'glo_name'))
-                ->order('glo_name');
-
-        if ($orgId) {
-            // Check only for active when with $orgId: those are usually used
-            // with editing, while the whole list is used for display.
-            $select->where('glo_active = 1');
-            $select->where("glo_organizations LIKE '%:$orgId:%'");
-        }
-
-        $results = $this->db->fetchPairs($select);
-        $this->cache->setCacheItem($cacheId, $results, ['locations']);
-        return $results;
+        return $this->locationRepository->getActiveLocationsData($orgId);
     }
 
     /**
@@ -834,7 +625,7 @@ class Agenda
      *
      * @return array loId => label
      */
-    public function getLocationsWithOrganization()
+    public function getLocationsWithOrganization(): array
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
@@ -842,26 +633,20 @@ class Agenda
             return $results;
         }
 
-        $select = $this->db->select();
-        $select->from('gems__locations', array('glo_id_location', 'glo_name', 'glo_organizations'))
-               ->order('glo_name');
-
         $orgList   = $this->organizationRepository->getOrganizations();
-        $locations = $this->db->fetchAll($select);
+        $locations = $this->locationRepository->getAllLocationData();
         $results   = [];
         if ($locations) {
             foreach ($locations as $location) {
-                $orgs = array_filter(explode(':', trim($location['glo_organizations'], ':')));
-
-                if ($orgs) {
+                if ($location['glo_organizations']) {
                     $orgNames = [];
-                    foreach ($orgs as $orgId) {
+                    foreach ($location['glo_organizations'] as $orgId) {
                         if (isset($orgList[$orgId])) {
                             $orgNames[$orgId] = $orgList[$orgId];
                         }
                     }
 
-                    $orgLabel = sprintf($this->_(' (%s)'), implode($this->_(', '), $orgNames));
+                    $orgLabel = sprintf($this->translator->_(' (%s)'), implode($this->translator->_(', '), $orgNames));
                 } else {
                     $orgLabel = '';
                 }
@@ -878,33 +663,9 @@ class Agenda
      * @param int $organizationId Optional
      * @return array activity_id => name
      */
-    public function getProcedures($organizationId = null)
+    public function getProcedures(int|null $organizationId = null): array
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
-
-        if ($results = $this->cache->getCacheItem($cacheId)) {
-            return $results;
-        }
-
-        $select = $this->db->select();
-        $select->from('gems__agenda_procedures', array('gapr_id_procedure', 'gapr_name'))
-                ->order('gapr_name');
-
-        if ($organizationId) {
-            // Check only for active when with $orgId: those are usually used
-            // with editing, while the whole list is used for display.
-            $select->where('gapr_active = 1')
-                    ->where('(
-                            gapr_id_organization IS NULL
-                        AND
-                            gapr_name NOT IN (SELECT gapr_name FROM gems__agenda_procedures WHERE gapr_id_procedure = ?)
-                        ) OR
-                            gapr_id_organization = ?', $organizationId);
-        }
-        // \MUtil\EchoOut\EchoOut::track($select->__toString());
-        $results = $this->db->fetchPairs($select);
-        $this->cache->setCacheItem($cacheId, $results, ['procedures']);
-        return $results;
+        return $this->procedureRepository->getProcedureOptions($organizationId);
     }
 
     /**
@@ -912,7 +673,7 @@ class Agenda
      *
      * @return array code => label
      */
-    public function getStatusCodes()
+    public function getStatusCodes(): array
     {
         $codes = $this->getStatusCodesActive() +
                 $this->getStatusCodesInactive();
@@ -927,11 +688,11 @@ class Agenda
      *
      * @return array code => label
      */
-    public function getStatusCodesActive()
+    public function getStatusCodesActive(): array
     {
         $codes = array(
-            'AC' => $this->_('Active appointment'),
-            'CO' => $this->_('Completed appointment'),
+            'AC' => $this->translator->_('Active appointment'),
+            'CO' => $this->translator->_('Completed appointment'),
         );
 
         asort($codes);
@@ -944,11 +705,11 @@ class Agenda
      *
      * @return array code => label
      */
-    public function getStatusCodesInactive()
+    public function getStatusCodesInactive(): array
     {
         $codes = array(
-            'AB' => $this->_('Aborted appointment'),
-            'CA' => $this->_('Cancelled appointment'),
+            'AB' => $this->translator->_('Aborted appointment'),
+            'CA' => $this->translator->_('Cancelled appointment'),
         );
 
         asort($codes);
@@ -961,7 +722,7 @@ class Agenda
      *
      * @return array nr => code
      */
-    public function getStatusKeysActive()
+    public function getStatusKeysActive(): array
     {
         return array_keys($this->getStatusCodesActive());
     }
@@ -971,11 +732,14 @@ class Agenda
      *
      * @return \Zend_Db_Expr
      */
-    public function getStatusKeysActiveDbQuoted()
+    public function getStatusKeysActiveDbQuoted(): \Zend_Db_Expr
     {
-        $codes = array();
+        $codes = [];
+
+        $platform = $this->resultFetcher->getPlatform();
+
         foreach ($this->getStatusKeysActive() as $key) {
-            $codes[] = $this->db->quote($key);
+            $codes[] = $platform->quoteValue($key);
         }
         return new \Zend_Db_Expr(implode(", ", $codes));
     }
@@ -985,7 +749,7 @@ class Agenda
      *
      * @return array nr => code
      */
-    public function getStatusKeysInactive()
+    public function getStatusKeysInactive(): array
     {
         return array_keys($this->getStatusCodesInactive());
     }
@@ -995,11 +759,14 @@ class Agenda
      *
      * @return \Zend_Db_Expr
      */
-    public function getStatusKeysInactiveDbQuoted()
+    public function getStatusKeysInactiveDbQuoted(): \Zend_Db_Expr
     {
-        $codes = array();
+        $codes = [];
+
+        $platform = $this->resultFetcher->getPlatform();
+
         foreach ($this->getStatusKeysInactive() as $key) {
-            $codes[] = $this->db->quote($key);
+            $codes[] = $platform->quoteValue($key);
         }
         return new \Zend_Db_Expr(implode(", ", $codes));
     }
@@ -1012,12 +779,12 @@ class Agenda
      *
      * @return array For element setting
      */
-    public function getTrackCreateElement()
+    public function getTrackCreateElement(): array
     {
         return [
             'elementClass' => 'Radio',
             'multiOptions' => $this->getTrackCreateOptions(),
-            'label'        => $this->_('When not assigned'),
+            'label'        => $this->translator->_('When not assigned'),
             'onclick'      => 'this.form.submit();',
             ];
     }
@@ -1030,15 +797,15 @@ class Agenda
      *
      * @return array Code => label
      */
-    public function getTrackCreateOptions()
+    public function getTrackCreateOptions(): array
     {
         return [
-            0 => $this->_('Do nothing'),
-            4 => $this->_('Create new on minimum start date difference'),
-            3 => $this->_('Create always (unless the appointment already assigned)'),
-            2 => $this->_('Create new on minimum end date difference'),
-            5 => $this->_('Create new when all surveys have been completed'),
-            1 => $this->_('Create new when all surveys have been completed and on minimum end date'),
+            0 => $this->translator->_('Do nothing'),
+            4 => $this->translator->_('Create new on minimum start date difference'),
+            3 => $this->translator->_('Create always (unless the appointment already assigned)'),
+            2 => $this->translator->_('Create new on minimum end date difference'),
+            5 => $this->translator->_('Create new when all surveys have been completed'),
+            1 => $this->translator->_('Create new when all surveys have been completed and on minimum end date'),
             ];
     }
     /**
@@ -1046,16 +813,16 @@ class Agenda
      *
      * @return array code => label
      */
-    public function getTypeCodes()
+    public function getTypeCodes(): array
     {
         return array(
-            'A' => $this->_('Ambulatory'),
-            'E' => $this->_('Emergency'),
-            'F' => $this->_('Field'),
-            'H' => $this->_('Home'),
-            'I' => $this->_('Inpatient'),
-            'S' => $this->_('Short stay'),
-            'V' => $this->_('Virtual'),
+            'A' => $this->translator->_('Ambulatory'),
+            'E' => $this->translator->_('Emergency'),
+            'F' => $this->translator->_('Field'),
+            'H' => $this->translator->_('Home'),
+            'I' => $this->translator->_('Inpatient'),
+            'S' => $this->translator->_('Short stay'),
+            'V' => $this->translator->_('Virtual'),
         );
     }
 
@@ -1065,7 +832,7 @@ class Agenda
      * @param string $code
      * @return boolean
      */
-    public function isStatusActive($code)
+    public function isStatusActive(string $code): bool
     {
         $stati = $this->getStatusCodesActive();
 
@@ -1077,35 +844,13 @@ class Agenda
      *
      * @return AppointmentFilterInterface[]
      */
-    protected function loadDefaultFilters()
+    protected function loadDefaultFilters(): array
     {
         if ($this->_filters) {
             return $this->_filters;
         }
 
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-
-        $output = $this->cache->getCacheItem($cacheId);
-        if ($output) {
-            foreach ($output as $key => $filterObject) {
-                // Filterobjects should not serialize anything loaded from a source
-                if ($filterObject instanceof \MUtil\Registry\TargetInterface) {
-                    $this->subloader->applyToLegacyTarget($filterObject);
-                }
-                $this->_filters[$key] = $filterObject;
-            }
-            return $this->_filters;
-        }
-
-        $this->_filters = $this->getFilters("SELECT *
-                FROM gems__appointment_filters INNER JOIN
-                    gems__track_appointments ON gaf_id = gtap_filter_id INNER JOIN
-                    gems__tracks ON gtap_id_track = gtr_id_track
-                WHERE gaf_active = 1 AND gtr_active = 1 AND gtr_date_start <= CURRENT_DATE AND
-                    (gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE)
-                ORDER BY gaf_id_order, gtap_id_order, gtap_id_track");
-
-        $this->cache->setCacheItem($cacheId, $this->_filters, ['appointment_filters', 'tracks']);
+        $this->_filters = $this->filterRepository->getAllActivelyUsedFilters();
 
         return $this->_filters;
     }
@@ -1118,48 +863,9 @@ class Agenda
      * @param boolean $create Create a match when it does not exist
      * @return int or null
      */
-    public function matchActivity($name, $organizationId, $create = true)
+    public function matchActivity(string $name, int $organizationId, bool $create = true): int|null
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-        $matches = $this->cache->getCacheItem($cacheId);
-
-        if (! $matches) {
-            $matches = array();
-            $select  = $this->db->select();
-            $select->from('gems__agenda_activities', array(
-                'gaa_id_activity', 'gaa_match_to', 'gaa_id_organization', 'gaa_filter',
-                ));
-
-            $result = $this->db->fetchAll($select);
-            foreach ($result as $row) {
-                if (null === $row['gaa_id_organization']) {
-                    $key = 'null';
-                } else {
-                    $key = $row['gaa_id_organization'];
-                }
-                foreach (explode('|', $row['gaa_match_to']) as $match) {
-                    $matches[$match][$key] = $row['gaa_filter'] ? false : $row['gaa_id_activity'];
-                }
-            }
-            $this->cache->setCacheItem($cacheId, $matches, ['activities']);
-        }
-
-        if (isset($matches[$name])) {
-            if (isset($matches[$name][$organizationId])) {
-                return $matches[$name][$organizationId];
-            }
-            if (isset($matches[$name]['null'])) {
-                return $matches[$name]['null'];
-            }
-        }
-
-        if (! $create) {
-            return null;
-        }
-
-        $result = $this->addActivity($name, $organizationId);
-
-        return $result['gaa_filter'] ? false : $result['gaa_id_activity'];
+        return $this->activityRepository->matchActivity($name, $organizationId, $create);
     }
 
     /**
@@ -1167,12 +873,12 @@ class Agenda
      * @param mixed $to \Gems\Agenda\Appointment:EpsiodeOfCare
      * @return AppointmentFilterInterface[]
      */
-    public function matchFilters($to)
+    public function matchFilters(Appointment|EpisodeOfCare $to): AppointmentFilterInterface
     {
         $filters = $this->loadDefaultFilters();
         $output  = array();
 
-        if ($to instanceof \Gems\Agenda\Appointment) {
+        if ($to instanceof Appointment) {
             foreach ($filters as $filter) {
                 if ($filter instanceof AppointmentFilterInterface) {
                     if ($filter->matchAppointment($to)) {
@@ -1188,8 +894,6 @@ class Agenda
                     }
                 }
             }
-        } else {
-            throw new \Gems\Exception\Coding('The $to paramater must be either an appointment or an episode object.');
         }
 
         return $output;
@@ -1203,44 +907,9 @@ class Agenda
      * @param boolean $create Create a match when it does not exist
      * @return int gas_id_staff staff id
      */
-    public function matchHealthcareStaff($name, $organizationId, $create = true)
+    public function matchHealthcareStaff(string $name, int $organizationId, bool $create = true): int|null
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-        $matches = $this->cache->getCacheItem($cacheId);
-
-        if (! $matches) {
-            $matches = array();
-            $select     = $this->db->select();
-            $select->from('gems__agenda_staff')
-                    ->order('gas_name');
-
-            $result = $this->db->fetchAll($select);
-            foreach ($result as $row) {
-                foreach (explode('|', $row['gas_match_to']) as $match) {
-                    $matches[$match][$row['gas_id_organization']] = $row['gas_filter'] ? false : $row['gas_id_staff'];
-                }
-            }
-            $this->cache->setCacheItem($cacheId, $matches, ['staff']);
-        }
-
-        if (isset($matches[$name])) {
-            if ($organizationId) {
-                if (isset($matches[$name][$organizationId])) {
-                    return $matches[$name][$organizationId];
-                }
-            } else {
-                // Return the first location among the organizations
-                return reset($matches[$name]);
-            }
-        }
-
-        if (! $create) {
-            return null;
-        }
-
-        $result = $this->addHealthcareStaff($name, $organizationId);
-
-        return $result['gas_filter'] ? false : $result['gas_id_staff'];
+        return $this->staffRepository->matchStaff($name, $organizationId, $create);
     }
 
     /**
@@ -1251,49 +920,9 @@ class Agenda
      * @param boolean $create Create a match when it does not exist
      * @return array location
      */
-    public function matchLocation($name, $organizationId, $create = true)
+    public function matchLocation(string $name, int $organizationId, bool $create = true): int|null
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-        $matches = $this->cache->getCacheItem($cacheId);
-
-        if (! $matches) {
-            $matches = array();
-            $select     = $this->db->select();
-            $select->from('gems__locations')
-                    ->order('glo_name');
-
-            $result = $this->db->fetchAll($select);
-            foreach ($result as $row) {
-                foreach (explode('|', $row['glo_match_to']) as $match) {
-                    foreach (explode(':', trim($row['glo_organizations'], ':')) as $subOrg) {
-                        $matches[$match][$subOrg] = $row;
-                    }
-                }
-            }
-            $this->cache->setCacheItem($cacheId, $matches, ['locations']);
-        }
-
-        if (isset($matches[$name])) {
-            if ($organizationId) {
-                if (isset($matches[$name][$organizationId])) {
-                    return $matches[$name][$organizationId];
-                }
-                // Not in this organization, if we create we update the record
-            } else {
-                // Return the first location among the organizations
-                return reset($matches[$name]);
-            }
-        } else {
-            $matches[$name] = null;
-        }
-
-        if (! $create) {
-            return null;
-        }
-
-        $result = $this->addLocation($name, $organizationId, $matches[$name]);
-
-        return $result;
+        return $this->locationRepository->matchLocation($name, $organizationId, $create);
     }
 
     /**
@@ -1304,48 +933,9 @@ class Agenda
      * @param boolean $create Create a match when it does not exist
      * @return int or null
      */
-    public function matchProcedure($name, $organizationId, $create = true)
+    public function matchProcedure(string $name, int $organizationId, bool $create = true): int|null
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-        $matches = $this->cache->getCacheItem($cacheId);
-
-        if (! $matches) {
-            $matches = array();
-            $select  = $this->db->select();
-            $select->from('gems__agenda_procedures', array(
-                'gapr_id_procedure', 'gapr_match_to', 'gapr_id_organization', 'gapr_filter',
-                ));
-
-            $result = $this->db->fetchAll($select);
-            foreach ($result as $row) {
-                if (null === $row['gapr_id_organization']) {
-                    $key = 'null';
-                } else {
-                    $key = $row['gapr_id_organization'];
-                }
-                foreach (explode('|', $row['gapr_match_to']) as $match) {
-                    $matches[$match][$key] = $row['gapr_filter'] ? false : $row['gapr_id_procedure'];
-                }
-            }
-            $this->cache->setCacheItem($cacheId, $matches, ['procedures']);
-        }
-
-        if (isset($matches[$name])) {
-            if (isset($matches[$name][$organizationId])) {
-                return $matches[$name][$organizationId];
-            }
-            if (isset($matches[$name]['null'])) {
-                return $matches[$name]['null'];
-            }
-        }
-
-        if (! $create) {
-            return null;
-        }
-
-        $result = $this->addProcedure($name, $organizationId);
-
-        return $result['gapr_filter'] ? false : $result['gapr_id_procedure'];
+        return $this->procedureRepository->matchProcedure($name, $organizationId, $create);
     }
 
     /**
@@ -1354,12 +944,9 @@ class Agenda
      * @param string $className The part after *_Agenda_Filter_
      * @return object
      */
-    public function newFilterObject($className)
+    public function newFilterObject(string $className): object
     {
-        $this->subloader->setDependencyResolver($this->resolveByDependecy);
-        $output = $this->subloader->create("Filter\\$className");
-        $this->subloader->setDependencyResolver($this->resolveByParameter);
-        return $output;
+        return $this->overloader->create("Agenda\\Filter\\$className");
     }
 
     /**
@@ -1368,10 +955,7 @@ class Agenda
      */
     public function newFilterModel(): AppointmentFilterModel
     {
-        $this->subloader->setDependencyResolver($this->resolveByDependecy);
-        $output = $this->subloader->create('AppointmentFilterModel');
-        $this->subloader->setDependencyResolver($this->resolveByParameter);
-        return $output;
+        return $this->overloader->create("Agenda\\AppointmentFilterModel");
     }
 
     /**
@@ -1379,7 +963,7 @@ class Agenda
      *
      * @return $this
      */
-    public function reset()
+    public function reset(): self
     {
         $this->_appointments = [];
         $this->_filters = [];

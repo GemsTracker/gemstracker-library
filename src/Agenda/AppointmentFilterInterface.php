@@ -27,70 +27,70 @@ interface AppointmentFilterInterface
      *
      * @param array $data
      */
-    public function exchangeArray(array $data);
+    public function exchangeArray(array $data): void;
 
     /**
      * Return the type of track creator this filter is
      *
      * @return int
      */
-    public function getCreatorType();
+    public function getCreatorType(): int;
 
     /**
      * The field id as it is recognized be the track engine
      *
      * @return string
      */
-    public function getFieldId();
+    public function getFieldId(): string|null;
 
     /**
      * The filter id
      *
      * @return int
      */
-    public function getFilterId();
+    public function getFilterId(): int;
 
     /**
      * The name of the filter
      *
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * Generate a where statement to filter an appointment model
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere();
+    public function getSqlAppointmentsWhere(): string;
 
     /**
      * Generate a where statement to filter an episode model
      *
      * @return string
      */
-    public function getSqlEpisodeWhere();
+    public function getSqlEpisodeWhere(): string;
 
     /**
      * The track id for the filter
      *
      * @return int
      */
-    public function getTrackId();
+    public function getTrackId(): int|null;
 
     /**
      * The number of days to wait between track creation
      *
      * @return int or null when no track creation or no wait days
      */
-    public function getWaitDays();
+    public function getWaitDays(): int|null;
 
     /**
      * Should this track be created when it does not exist?
      *
      * @return boolean
      */
-    public function isCreator();
+    public function isCreator(): bool;
 
     /**
      * Check a filter for a match
@@ -98,7 +98,7 @@ interface AppointmentFilterInterface
      * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Appointment $appointment);
+    public function matchAppointment(Appointment $appointment): bool;
 
     /**
      * Check a filter for a match
@@ -106,11 +106,11 @@ interface AppointmentFilterInterface
      * @param EpisodeOfCare $episode
      * @return boolean
      */
-    public function matchEpisode(EpisodeOfCare $episode);
+    public function matchEpisode(EpisodeOfCare $episode): bool;
 
     /**
      *
      * @return boolean When true prefer SQL statements filtering appointments
      */
-    public function preferAppointmentSql();
+    public function preferAppointmentSql(): bool;
 }

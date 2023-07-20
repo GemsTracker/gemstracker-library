@@ -30,7 +30,7 @@ class XandAppointmentFilter extends AndAppointmentFilter
      * @param string $where
      * @return string
      */
-    protected function fixSql($where)
+    protected function fixSql(string $where): string
     {
         if ($where == parent::NO_MATCH_SQL) {
             return parent::MATCH_ALL_SQL;
@@ -46,7 +46,7 @@ class XandAppointmentFilter extends AndAppointmentFilter
      *
      * @return string
      */
-    public function getSqlAppointmentsWhere()
+    public function getSqlAppointmentsWhere(): string
     {
         return $this->fixSql(parent::getSqlAppointmentsWhere());
     }
@@ -56,7 +56,7 @@ class XandAppointmentFilter extends AndAppointmentFilter
      *
      * @return string
      */
-    public function getSqlEpisodeWhere()
+    public function getSqlEpisodeWhere(): string
     {
         return $this->fixSql(parent::getSqlEpisodeWhere());
     }
@@ -67,7 +67,7 @@ class XandAppointmentFilter extends AndAppointmentFilter
      * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Appointment $appointment)
+    public function matchAppointment(Appointment $appointment): bool
     {
         return ! parent::matchAppointment($appointment);
     }
@@ -78,7 +78,7 @@ class XandAppointmentFilter extends AndAppointmentFilter
      * @param EpisodeOfCare $episode
      * @return boolean
      */
-    public function matchEpisode(EpisodeOfCare $episode)
+    public function matchEpisode(EpisodeOfCare $episode): bool
     {
         return ! parent::matchEpisode($episode);
     }

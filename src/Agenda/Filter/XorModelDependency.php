@@ -46,7 +46,7 @@ class XorModelDependency extends XandModelDependency
      *
      * @return string
      */
-    public function getGlue()
+    public function getGlue(): string
     {
         return $this->_(' OR ');
     }

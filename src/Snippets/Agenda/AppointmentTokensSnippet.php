@@ -59,7 +59,7 @@ class AppointmentTokensSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         $appId = $this->requestInfo->getParam(Model::APPOINTMENT_ID);
 
         if ($appId) {
-            $appKeyPrefix = $this->db->quote(FieldsDefinition::makeKey(FieldMaintenanceModel::APPOINTMENTS_NAME, ''));
+            $appKeyPrefix = $this->db->quote(FieldsDefinition::makeKey(FieldMaintenanceModel::APPOINTMENTS_NAME, null));
             $appSource = $this->db->quote(StepEngineAbstract::APPOINTMENT_TABLE);
 
             $or[] = $this->db->quoteInto(
