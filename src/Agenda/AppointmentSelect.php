@@ -33,10 +33,19 @@ class AppointmentSelect
     protected $fields = "*";
 
     /**
+     * @var \Zend_Db_Select
+     */
+    protected $_select;
+
+    /**
      *
      * @param string|array $fields Optional select fieldlist
      */
-    public function __construct($fields = null)
+    public function __construct(
+        array|string|null $fields = null,
+        protected readonly Agenda $agenda,
+        protected readonly \Zend_Db_Adapter_Abstract $db,
+    )
     {
         if (null !== $fields) {
             $this->fields = $fields;

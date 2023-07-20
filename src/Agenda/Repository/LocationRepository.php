@@ -27,7 +27,7 @@ class LocationRepository
     public function changeLocationOrganization(int $oldLocationId, int $newOrganizationId): int|null
     {
         $locationName = $this->getLocationName($oldLocationId);
-        return $this->matchActivity($locationName, $newOrganizationId, true);
+        return $this->matchLocation($locationName, $newOrganizationId, true);
     }
 
     /**

@@ -119,6 +119,8 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
             case 'gap_subject':
                 return $appointment->getSubject();
         }
+
+        return null;
     }
 
     /**

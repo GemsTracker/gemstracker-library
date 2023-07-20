@@ -10,6 +10,8 @@ use MUtil\Model;
 
 class LaminasAppointmentSelect
 {
+    protected array $columns = [Select::SQL_STAR];
+
     protected Select $select;
 
     public function __construct(

@@ -365,7 +365,7 @@ class Appointment
 
             if ($this->filterTracer) {
                 $this->filterTracer->setSkipCreationMessage(
-                        $this->_('appointment used in track')
+                        $this->translator->_('appointment used in track')
                         );
             }
         }

@@ -37,7 +37,7 @@ abstract class BasicFilterAbstract
     const NO_MATCH_SQL = '1=0';
 
     public function __construct(
-        protected readonly array $_data
+        protected array $_data
     )
     {
         $this->afterLoad();
@@ -57,11 +57,6 @@ abstract class BasicFilterAbstract
     protected function afterLoad(): void
     { }
 
-    /**
-     * Load the object from a data array
-     *
-     * @param array $data
-     */
     public function exchangeArray(array $data): void
     {
         $this->_data = $data;
@@ -193,7 +188,7 @@ abstract class BasicFilterAbstract
     {
         $data = [];
         foreach (get_object_vars($this) as $name => $value) {
-            if (! $this->filterRequestNames($name)) {
+            if (str_starts_with($name, '_')) {
                 $data[$name] = $value;
             }
         }
