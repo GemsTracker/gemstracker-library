@@ -463,7 +463,7 @@ class RespondentTrack
         // relation is defined.
         $this->_ensureRounds();
         $relationFields = $this->getFieldData();
-        $fieldPrefix = FieldsDefinition::makeKey(FieldMaintenanceModel::FIELDS_NAME, '');
+        $fieldPrefix = FieldsDefinition::makeKey(FieldMaintenanceModel::FIELDS_NAME, null);
         $changes = 0;
         foreach ($this->getTokens() as $token) {
             /* @var $token \Gems\Tracker\Token */

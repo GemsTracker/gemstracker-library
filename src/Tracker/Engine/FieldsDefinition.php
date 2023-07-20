@@ -610,9 +610,13 @@ class FieldsDefinition
      * @param int $fieldId
      * @return string
      */
-    public static function makeKey(string $sub, int $fieldId): string
+    public static function makeKey(string $sub, int|null $fieldId = null): string
     {
-        return $sub . self::FIELD_KEY_SEPARATOR . $fieldId;
+        $key = $sub . self::FIELD_KEY_SEPARATOR;
+        if ($fieldId !== null) {
+            $key .= $fieldId;
+        }
+        return $key;
     }
 
     /**

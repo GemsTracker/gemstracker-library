@@ -359,7 +359,7 @@ class Agenda
 
         // \MUtil\EchoOut\EchoOut::track($appointmentId, $appointmentData);
 
-        return $this->overloader->create('episodeOfCare', $episodeData);
+        return $this->overloader->create('Agenda\\EpisodeOfCare', $episodeData);
     }
 
     public function getEpisodeOfCareData(int $episodeId): array
