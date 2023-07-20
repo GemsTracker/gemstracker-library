@@ -349,7 +349,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
         $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
 
         $metaModelLoader = $this->prophesize(MetaModelLoader::class);
-        $model = new IteratorModel(new MetaModel('databaseTableModel', [], $metaModelLoader->reveal()));
+        $model = new IteratorModel(new MetaModel('databaseTableModel', $metaModelLoader->reveal()));
         $metaModelLoader->createModel(IteratorModel::class, 'databaseTableModel')->willReturn($model);
 
         return new TableRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $metaModelLoader->reveal());

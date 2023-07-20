@@ -15,6 +15,7 @@ use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Exception;
 use Gems\Handlers\Overview\TokenSearchHandlerAbstract;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
@@ -142,12 +143,13 @@ class TokenHandler extends TokenSearchHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         Tracker $tracker,
+        MetaModelLoader $metaModelLoader,
         PeriodSelectRepository $periodSelectRepository,
         protected RespondentRepository $respondentRepository,
         protected OrganizationRepository $organizationRepository,
         protected BatchRunnerLoader $batchRunnerLoader,
     ) {
-        parent::__construct($responder, $translate, $periodSelectRepository, $tracker);
+        parent::__construct($responder, $translate, $metaModelLoader, $periodSelectRepository, $tracker);
     }
 
     public function answerAction()
