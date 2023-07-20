@@ -18,8 +18,8 @@ use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\Token\PlanRespondentSnippet;
 use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\Tracker;
-use Gems\Tracker\Model\StandardTokenModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -71,9 +71,9 @@ class RespondentPlanHandler extends TokenSearchHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return StandardTokenModel
+     * @return DataReaderInterface
      */
-    public function createModel(bool $detailed, string $action): StandardTokenModel
+    public function createModel(bool $detailed, string $action): DataReaderInterface
     {
         $model = parent::createModel($detailed, $action);
 

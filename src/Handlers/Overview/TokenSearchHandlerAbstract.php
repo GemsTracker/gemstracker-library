@@ -26,6 +26,7 @@ use Gems\Tracker\Model\StandardTokenModel;
 use Mezzio\Session\SessionInterface;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 
@@ -110,7 +111,7 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
      * @param string $action The current action.
      * @return StandardTokenModel
      */
-    public function createModel(bool $detailed, string $action): StandardTokenModel
+    public function createModel(bool $detailed, string $action): DataReaderInterface
     {
         // \MUtil\Model::$verbose = true;
         $model = $this->tracker->getTokenModel();
