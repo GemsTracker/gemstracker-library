@@ -137,6 +137,7 @@ class Agenda
             $trackId     = $filter->getTrackId();
             $tracks      = array_key_exists($trackId, $existingTracks) ? $existingTracks[$trackId] : [];
 
+            $respTrack = null;
             foreach($tracks as $respTrack) {
                 /* @var $respTrack RespondentTrack */
                 if (!$respTrack->hasSuccesCode()) {

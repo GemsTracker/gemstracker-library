@@ -41,7 +41,7 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
     protected array|bool $_procedures = false;
 
     public function __construct(
-        readonly array $_data,
+        array $_data,
         protected readonly ResultFetcher $resultFetcher,
     )
     {

@@ -35,11 +35,12 @@ class FilterCreateTrackChecker
         $end         = $respTrack->getEndDate();
         $wait        = $filter->getWaitDays();
 
+        $diff = null;
         if ($curr && $end) {
             $diff = $curr->diff($end);
         }
 
-        if ((! $end) || ($diff->days <= $wait)) {
+        if ((! $end) || ($diff && $diff->days <= $wait)) {
             $createTrack = false;
             if ($filterTracer) {
                 if (! $end) {
@@ -133,11 +134,12 @@ class FilterCreateTrackChecker
         $start       = $respTrack->getStartDate();
         $wait        = $filter->getWaitDays();
 
+        $diff = null;
         if ($curr && $start) {
             $diff = $curr->diff($start);
         }
 
-        if ((! $start) || ($diff->days <= $wait)) {
+        if ((! $start) || ($diff && $diff->days <= $wait)) {
             $createTrack = false;
             if ($filterTracer) {
                 if (! $start) {
