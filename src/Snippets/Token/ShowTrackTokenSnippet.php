@@ -433,7 +433,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         $urlParams = $this->token->getMenuUrlParameters();
 
         $link = Html::actionLink(
-            $this->menuSnippetHelper->getRouteUrl('respondent.tracks.edit', $urlParams),
+            $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.edit', $urlParams),
             $this->_('Edit'));
 
         $bridge->addWithThird(
