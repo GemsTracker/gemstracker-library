@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gems\Model\Type;
 
 use Zalt\Base\TranslateableTrait;
+use Zalt\Model\Type\AbstractDateType;
 use Zalt\Validator\Model\IsDateModelValidator;
 
 /**
@@ -26,8 +27,9 @@ trait GemsDateTypeTrait
     protected function getExtraSettings(): array
     {
         return [
+            AbstractDateType::$whenDateEmptyClassKey => 'disabled',
             'validators[isDate]' => IsDateModelValidator::class,
-            IsDateModelValidator::notDateMessage => $this->_("'%value%' is not a valid date in the format '%format%'."),
+            IsDateModelValidator::$notDateMessageKey => $this->_("'%value%' is not a valid date in the format '%format%'."),
             ];
     }
 }
