@@ -49,7 +49,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        MenuSnippetHelper $menuSnippetHelper,
+        protected MenuSnippetHelper $menuSnippetHelper,
         private readonly array $config,
         private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly LayoutSettings $layoutSettings,
