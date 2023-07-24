@@ -21,7 +21,6 @@ class SurveyRepository
         'gsu_code' => null,
         'gsu_valid_for_length' => 6,
         'gsu_valid_for_unit' => 'M',
-        'ggp_member_type' => 'respondent'
     ];
 
     /**
@@ -94,14 +93,14 @@ class SurveyRepository
                 ORDER BY gsu_survey_name");
     }
 
-    public function getSurvey(array|int $surveyData): Survey
+    public function getSurvey(array|int|null $surveyData): Survey
     {
         $surveyData = $this->getSurveyData($surveyData);
 
         return $this->projectOverloader->create('Tracker\\Survey', $surveyData);
     }
 
-    public function getSurveyData(array|int $surveyData): array
+    public function getSurveyData(array|int|null $surveyData): array
     {
         $data = null;
         $surveyId = $surveyData;
@@ -116,17 +115,24 @@ class SurveyRepository
         }
 
         if (!$data) {
-            $select = $this->cachedResultFetcher->getSelect('gems__surveys');
-            $select->join('gems__groups', 'ggp_id_group = gsu_id_primary_group', [
-                'ggp_member_type',
-            ])
-                ->where(['gsu_id_survey' => $surveyId]);
+            if ($surveyId !== null) {
+                $select = $this->cachedResultFetcher->getSelect('gems__surveys');
+                $select->join('gems__groups', 'ggp_id_group = gsu_id_primary_group', [
+                    'ggp_member_type',
+                ], $select::JOIN_LEFT)
+                    ->where(['gsu_id_survey' => $surveyId]);
 
-            $data = $this->cachedResultFetcher->fetchRow('getSurveyData' . $surveyId, $select, null, $this->cacheTags);
+                $data = $this->cachedResultFetcher->fetchRow(
+                    'getSurveyData' . $surveyId,
+                    $select,
+                    null,
+                    $this->cacheTags
+                );
+            }
 
             if (!$data) {
                 self::$newSurveyCount++;
-                return ['gsu_id_survey' => $surveyId] + $this->defaultData;
+                return ['gsu_id_survey' => -self::$newSurveyCount] + $this->defaultData;
             }
         }
 

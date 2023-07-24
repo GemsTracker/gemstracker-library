@@ -546,7 +546,7 @@ class Tracker implements TrackerInterface
      * @param mixed $surveyData \Gems survey id or array containing gems survey data
      * @return Survey
      */
-    public function getSurvey(int|array $surveyData): Survey
+    public function getSurvey(int|array|null $surveyData): Survey
     {
         if (is_array($surveyData)) {
             $surveyId = $surveyData['gsu_id_survey'];
