@@ -14,6 +14,7 @@ namespace Gems\Tracker;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\TokenEvent;
 use Gems\Event\Application\RespondentTrackFieldUpdateEvent;
@@ -131,6 +132,7 @@ class RespondentTrack
         protected readonly Translator $translate,
         protected readonly RespondentRepository $respondentRepository,
         protected readonly Locale $locale,
+        protected readonly Agenda $agenda,
         protected readonly int $currentUserId,
     )
     {
@@ -784,7 +786,7 @@ class RespondentTrack
                 $date = $this->_fieldData[$fieldName];
 
                 if ($this->getTrackEngine()->isAppointmentField($fieldName)) {
-                    $appointment = $this->tracker->getAppointment($date);
+                    $appointment = $this->agenda->getAppointment($date);
                     if ($appointment->isActive()) {
                         $date = $appointment->getAdmissionTime();
                     } else {

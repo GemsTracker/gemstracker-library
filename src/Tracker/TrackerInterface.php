@@ -128,14 +128,6 @@ interface TrackerInterface
     public function getAllCodeFields(): array;
 
     /**
-     * Get an appointment object
-     *
-     * @param int|array $appointmentData Appointment id or array containing appintment data
-     * @return \Gems\Agenda\Appointment
-     */
-    public function getAppointment(int|array $appointmentData): Appointment;
-
-    /**
      * Returns a form to ask for a token
      *
      * @param mixed $args_array \MUtil\Ra::args array for Form initiation.

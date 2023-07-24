@@ -138,7 +138,6 @@ class Tracker implements TrackerInterface
         protected readonly Translator $translator,
         protected readonly MaskRepository $maskRepository,
         protected readonly ProjectOverloader $overLoader,
-        protected readonly Agenda $agenda,
         CurrentUserRepository $currentUserRepository,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly Model $modelLoader,
@@ -375,17 +374,6 @@ class Tracker implements TrackerInterface
         }
 
         return $fields;
-    }
-
-    /**
-     * Get an appointment object
-     *
-     * @param mixed $appointmentData Appointment id or array containing appintment data
-     * @return \Gems\Agenda\Appointment
-     */
-    public function getAppointment(int|array $appointmentData): Appointment
-    {
-        return $this->agenda->getAppointment($appointmentData);
     }
 
     /**
