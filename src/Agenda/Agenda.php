@@ -717,7 +717,8 @@ class Agenda
      */
     public function getLocations(int $orgId = null): array
     {
-        return $this->locationRepository->getActiveLocationsData($orgId);
+        $locations = $this->locationRepository->getActiveLocationsData($orgId);
+        return array_column($locations,'glo_name', 'glo_id_location');
     }
 
     /**

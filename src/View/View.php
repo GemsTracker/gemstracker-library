@@ -17,7 +17,12 @@ class View extends \Zend_View
             return $var;
         }
         if (in_array($this->_escape, ['htmlspecialchars', 'htmlentities'])) {
-            return call_user_func($this->_escape, $var, ENT_COMPAT, $this->_encoding);
+            $encoding = $this->_encoding;
+            if (is_array($var)) {
+                dump($var);
+                return call_user_func($this->_escape, implode('', $var), ENT_COMPAT, $encoding);
+            }
+            return call_user_func($this->_escape, $var, ENT_COMPAT, $encoding);
         }
 
         if (1 == func_num_args()) {

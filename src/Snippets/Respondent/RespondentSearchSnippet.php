@@ -88,11 +88,11 @@ class RespondentSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
             $lineBreak = false;
         }
 
-        if (true || $this->currentUser->hasPrivilege('pr.respondent.show-deleted')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.show-deleted')) {
             $elements['grc_success'] = $this->_createCheckboxElement('grc_success', $this->_('Show active'));
         }
 
-        if (true || $this->currentUser->hasPrivilege('pr.respondent.multiorg')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.multiorg')) {
             $element = $this->_createSelectElement(
                     \MUtil\Model::REQUEST_ID2,
                     $this->currentUser->getRespondentOrganizations(),
@@ -107,7 +107,7 @@ class RespondentSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
             $elements[\MUtil\Model::REQUEST_ID2] = $element;
         }
 
-        if (true || $this->currentUser->hasPrivilege('pr.respondent.multilocation')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.multilocation')) {
             $elements['locations'] = $this->_createSelectElement(
                 'locations',
                 $this->agenda->getLocations(),
