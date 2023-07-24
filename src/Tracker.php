@@ -169,7 +169,7 @@ class Tracker implements TrackerInterface
     /**
      * @inheritdoc
      */
-    public function checkTrackRounds(SessionInterface $session, string $batchId, ?int $userId = null, array $cond = []): TaskRunnerBatch
+    public function checkTrackRounds(SessionInterface $session, string $batchId, int|null $userId = null, array $cond = []): TaskRunnerBatch
     {
         $userId = $this->_checkUserId($userId);
 
@@ -223,8 +223,9 @@ class Tracker implements TrackerInterface
      * @param SessionInterface $session
      * @return \Gems\Tracker\RespondentTrack The newly created track
      */
-    public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int $userId, int|array|null $respTrackData = [], array $trackFieldsData = [], SessionInterface $session = null): RespondentTrack
+    public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int|null $userId = null, int|array|null $respTrackData = [], array $trackFieldsData = [], SessionInterface $session = null): RespondentTrack
     {
+        $userId = $this->_checkUserId($userId);
         $trackEngine = $this->getTrackEngine($trackId);
 
         // Process $respTrackData and gr2t_start_date values
@@ -278,7 +279,7 @@ class Tracker implements TrackerInterface
      * @param int $userId Id of the user who takes the action (for logging)
      * @return string
      */
-    public function createToken(array $tokenData, $userId = null): string
+    public function createToken(array $tokenData, int|null $userId = null): string
     {
         $userId = $this->_checkUserId($userId);
         return $this->getTokenLibrary()->createToken($tokenData, $userId);
@@ -789,7 +790,7 @@ class Tracker implements TrackerInterface
                         gtr_date_start <= CURRENT_DATE AND
                         (gtr_date_until IS NULL OR gtr_date_until <= CURRENT_DATE)
                     ORDER BY gtr_date_start",
-                '% $trackCode %'
+                ['% $trackCode %']
                 );
 
         if ($trackData) {
@@ -903,7 +904,7 @@ class Tracker implements TrackerInterface
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
      * @return void
      */
-    public function loadCompletedTokensBatch(TaskRunnerBatch $batch, int $respondentId = null, int $userId = null, int $orgId = null, bool $quickCheck = false): void
+    public function loadCompletedTokensBatch(TaskRunnerBatch $batch, int $respondentId = null, int|null $userId = null, int $orgId = null, bool $quickCheck = false): void
     {
         $userId = $this->_checkUserId($userId);
 
@@ -960,7 +961,7 @@ class Tracker implements TrackerInterface
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
      * @return bool               Did we find new answers?
      */
-    public function processCompletedTokens(SessionInterface $session, ?int $respondentId, ?int $userId = null, ?int $orgId = null, bool $quickCheck = false): bool
+    public function processCompletedTokens(SessionInterface $session, ?int $respondentId, int|null $userId = null, ?int $orgId = null, bool $quickCheck = false): bool
     {
         $batch = new TaskRunnerBatch('completed', $this->overLoader, $session);
 

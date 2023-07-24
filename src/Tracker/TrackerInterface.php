@@ -68,7 +68,7 @@ interface TrackerInterface
      * @param array $cond Optional where statement for selecting track rounds
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function checkTrackRounds(SessionInterface $session, string $batchId, ?int $userId = null, array $cond = []): TaskRunnerBatch;
+    public function checkTrackRounds(SessionInterface $session, string $batchId, int|null $userId = null, array $cond = []): TaskRunnerBatch;
 
     /**
      * Create a new track for a patient
@@ -82,7 +82,7 @@ interface TrackerInterface
      * @param SessionInterface $session
      * @return \Gems\Tracker\RespondentTrack The newly created track
      */
-    public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int $userId, int|array|null $respTrackData = null, array $trackFieldsData = [], SessionInterface $session = null): RespondentTrack;
+    public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int|null $userId, int|array|null $respTrackData = null, array $trackFieldsData = [], SessionInterface $session = null): RespondentTrack;
 
     /**
      * Dynamically load and create a [Gems|Project]_Tracker class
@@ -333,7 +333,7 @@ interface TrackerInterface
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
      * @return bool               Did we find new answers?
      */
-    public function processCompletedTokens(SessionInterface $session, ?int $respondentId, ?int $userId = null, ?int $orgId = null, bool $quickCheck = false): bool;
+    public function processCompletedTokens(SessionInterface $session, ?int $respondentId, int|null $userId = null, ?int $orgId = null, bool $quickCheck = false): bool;
 
     /**
      * Recalculates all token dates, timing and results
@@ -347,7 +347,7 @@ interface TrackerInterface
      * @param array $cond Optional filter
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function recalculateTokens(SessionInterface $session, string $batch_id, ?int $userId = null, array $cond = []): TaskRunnerBatch;
+    public function recalculateTokens(SessionInterface $session, string $batch_id, int|null $userId = null, array $cond = []): TaskRunnerBatch;
 
     /**
      * Recalculates the fields in tracks.

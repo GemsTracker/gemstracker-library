@@ -3,8 +3,11 @@
 namespace Gems\Agenda\Repository;
 
 use Carbon\CarbonImmutable;
+use Gems\Agenda\Appointment;
 use Gems\Agenda\AppointmentFilterInterface;
+use Gems\Agenda\FilterTracer;
 use Gems\Db\CachedResultFetcher;
+use Gems\Tracker\RespondentTrack;
 use Zalt\Loader\Exception\LoadException;
 use Zalt\Loader\ProjectOverloader;
 
@@ -17,6 +20,7 @@ class FilterRepository
     public function __construct(
         protected readonly CachedResultFetcher $cachedResultFetcher,
         protected readonly ProjectOverloader $projectOverloader,
+        protected readonly FilterCreateTrackChecker $createTrackChecker,
     )
     {}
 
@@ -97,5 +101,15 @@ class FilterRepository
                     ORDER BY gaf_id_order';
 
         return $this->cachedResultFetcher->fetchAll('allAppointmentFilters', $sql, null, $this->cacheTags);
+    }
+
+    public function shouldCreateTrack(
+        Appointment $appointment,
+        AppointmentFilterInterface $filter,
+        RespondentTrack $respTrack,
+        FilterTracer|null $filterTracer = null
+    ): bool
+    {
+        return $this->createTrackChecker->shouldCreateTrack($appointment, $filter, $respTrack, $filterTracer);
     }
 }

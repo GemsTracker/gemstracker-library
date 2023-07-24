@@ -21,7 +21,9 @@ use Gems\Db\ResultFetcher;
 use Gems\Exception\Coding;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\OrganizationRepository;
+use Gems\Tracker;
 use Gems\Tracker\Respondent;
+use Gems\Tracker\RespondentTrack;
 use Gems\User\Mask\MaskRepository;
 use Laminas\Db\Sql\Join;
 use Laminas\Db\Sql\Select;
@@ -81,6 +83,8 @@ class Agenda
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly ProcedureRepository $procedureRepository,
         protected readonly StaffRepository $staffRepository,
+
+        protected readonly Tracker $tracker,
     )
     {
     }
@@ -101,6 +105,70 @@ class Agenda
                 ->order('gap_admission_time DESC');
 
         return $select;
+    }
+
+    /**
+     * Check if a track should be created for any of the filters
+     *
+     * @param AppointmentFilterInterface[] $filters
+     * @param array $existingTracks Of $trackId => [RespondentTrack objects]
+     * @param Tracker $tracker
+     *
+     * @return int Number of tokenchanges
+     */
+    protected function checkCreateTracksFromFilter(
+        Appointment $appointment,
+        AppointmentFilterInterface $filters,
+        array $existingTracks,
+        FilterTracer|null $filterTracer
+    ): int
+    {
+        $tokenChanges = 0;
+
+        // Check for tracks that should be created
+        foreach ($filters as $filter) {
+            if (!$filter->isCreator()) {
+                continue;
+            }
+
+            $createTrack = true;
+
+            // Find the method to use for this creator type
+            $trackId     = $filter->getTrackId();
+            $tracks      = array_key_exists($trackId, $existingTracks) ? $existingTracks[$trackId] : [];
+
+            foreach($tracks as $respTrack) {
+                /* @var $respTrack RespondentTrack */
+                if (!$respTrack->hasSuccesCode()) {
+                    continue;
+                }
+
+                $createTrack = $this->filterRepository->shouldCreateTrack($appointment, $filter, $respTrack, $filterTracer);
+                if ($createTrack === false) {
+                    break;  // Stop checking
+                }
+            }
+            if ($filterTracer) {
+                $filterTracer->addFilter($filter, $createTrack, $respTrack);
+
+                if (! $filterTracer->executeChanges) {
+                    $createTrack = false;
+                }
+            }
+
+            // \MUtil\EchoOut\EchoOut::track($trackId, $createTrack, $filter->getName(), $filter->getSqlAppointmentsWhere(), $filter->getFilterId());
+            if ($createTrack) {
+                $respTrack = $this->_createTrack($appointment, $filter);
+                $existingTracks[$trackId][] = $respTrack;
+
+                $tokenChanges += $respTrack->getCount();
+                if ($filterTracer) {
+                    $filterTracer->addFilter($filter, $createTrack, $respTrack);
+                }
+            }
+        }
+
+        return $tokenChanges;
     }
 
     /**
@@ -129,6 +197,37 @@ class Agenda
         $select = new LaminasAppointmentSelect($this->resultFetcher, $this);
         $select->columns($fields);
         return $select;
+    }
+
+    /**
+     * Create a new track for this appointment and the given filter
+     *
+     * @param AppointmentFilterInterface $filter
+     * @param Tracker $tracker
+     */
+    protected function _createTrack(Appointment $appointment, AppointmentFilterInterface $filter): RespondentTrack
+    {
+        $trackData = [
+            'gr2t_comment' => sprintf(
+                $this->translator->_('Track created by %s filter'),
+                $filter->getName()
+            ),
+        ];
+
+        $fields    = [
+            $filter->getFieldId() => $appointment->getId()
+        ];
+        $trackId   = $filter->getTrackId();
+        $respTrack = $this->tracker->createRespondentTrack(
+            $appointment->getRespondentId(),
+            $appointment->getOrganizationId(),
+            $trackId,
+            null,
+            $trackData,
+            $fields
+        );
+
+        return $respTrack;
     }
 
     /**
@@ -969,5 +1068,77 @@ class Agenda
         $this->_filters = [];
 
         return $this;
+    }
+
+    public function updateTracksForAppointment(Appointment $appointment, FilterTracer|null $filterTracer = null): int
+    {
+        $tokenChanges = 0;
+
+        // Find all the fields that use this agenda item
+        $select = $this->resultFetcher->getSelect('gems__respondent2track2appointment');
+        $select->columns(['gr2t2a_id_respondent_track'])
+            ->join('gems__respondent2track', 'gr2t_id_respondent_track = gr2t2a_id_respondent_track', ['gr2t_id_track'])
+            ->quantifier($select::QUANTIFIER_DISTINCT)
+            ->order('gr2t_id_track');
+
+        $nestedWhere = $select->where->nest();
+
+        $nestedWhere->equalTo('gr2t2a_id_appointment', $appointment->getId());
+
+        // AND find the filters for any new fields to fill
+        $filters = $this->matchFilters($this);
+        if ($filters) {
+            $ids = array_map(function ($value) {
+                return $value->getTrackId();
+            }, $filters);
+
+            $respId = $appointment->getRespondentId();
+            $orgId  = $appointment->getOrganizationId();
+
+            $nestedWhere->or->nest()
+                ->equalTo('gr2t_id_user', $respId)
+                ->equalTo('gr2t_id_organization', $orgId)
+                ->in('gr2t_id_track', $ids)
+                ->unnest();
+        }
+
+        $nestedWhere->unnest();
+
+        // Now find all the existing tracks that should be checked
+        $respTracks = $this->resultFetcher->fetchPairs($select);
+
+        // \MUtil\EchoOut\EchoOut::track($respTracks);
+        $existingTracks = [];
+        if ($respTracks) {
+            foreach ($respTracks as $respTrackId => $trackId) {
+                $respTrack = $this->tracker->getRespondentTrack($respTrackId);
+
+                // Recalculate this track
+                $fieldsChanged = false;
+                if ((! $filterTracer) || $filterTracer->executeChanges) {
+                    $changed = $respTrack->recalculateFields($fieldsChanged);
+                } else {
+                    $changed = 0;
+                }
+                if ($filterTracer) {
+                    $filterTracer->addTrackChecked($respTrack, $fieldsChanged, $changed);
+                }
+                $tokenChanges += $changed;
+
+                // Store the track for creation checking
+                $existingTracks[$trackId][] = $respTrack;
+            }
+        }
+
+        // Only check if we need to create when this appointment is active and today or later
+        if ($appointment->isActive() && ($appointment->getAdmissionTime()->getTimestamp() >= time())) {
+            $tokenChanges += $this->checkCreateTracksFromFilter($appointment, $filters, $existingTracks, $filterTracer);
+        } else {
+            if ($filterTracer) {
+                $filterTracer->setSkippedFilterCheck();
+            }
+        }
+
+        return $tokenChanges;
     }
 }

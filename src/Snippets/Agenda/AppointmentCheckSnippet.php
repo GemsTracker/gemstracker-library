@@ -115,8 +115,6 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
         }
         $this->tracer      = new FilterTracer();
         $this->tracker     = $this->loader->getTracker();
-
-        $this->appointment->setFilterTracer($this->tracer);
     }
 
     /**
@@ -339,7 +337,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
 
         $this->tracer->executeChanges = $this->formData['runmode'];
 
-        $this->appointment->updateTracks();
+        $this->agenda->updateTracksForAppointment($this->appointment, $this->tracer);
 
         $seq->h1($this->_('Result'));
         $this->appendCheckedTracks($seq);
