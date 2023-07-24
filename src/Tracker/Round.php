@@ -125,7 +125,7 @@ class Round
      *
      * @return \Gems\Tracker\Survey
      */
-    public function getSurvey(): Survey
+    public function getSurvey():? Survey
     {
         if (false !== $this->_survey) {
             return $this->_survey;
