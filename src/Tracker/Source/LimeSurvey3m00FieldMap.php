@@ -176,7 +176,7 @@ class LimeSurvey3m00FieldMap
      * @param integer    $qid        Question ID
      * @param integer    $scaleId    Scale ID
      */
-    private function _getHardAnswers($qid, $scaleId)
+    protected function _getHardAnswers($qid, $scaleId)
     {
         if (! is_array($this->_hardAnswers)) {
             $qaTable = $this->_getAnswersTableName();
