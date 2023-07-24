@@ -135,7 +135,8 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
 
             $this->_rounds  = [];
             foreach ($this->resultFetcher->fetchAll($roundSelect) as $round) {
-                $this->_rounds[$round['gro_id_round']] = $round;
+                $roundId = intval($round['gro_id_round']);
+                $this->_rounds[$roundId] = $round;
             }
         }
     }
@@ -652,7 +653,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
      * @param int|null $roundOrder Optional extra round order, for when the current round may have changed.
      * @return int|null \Gems round id
      */
-    public function getPreviousRoundId(int $roundId, int|null $roundOrder = null): ?int
+    public function getPreviousRoundId(mixed $roundId, int|null $roundOrder = null): ?int
     {
        $this->_ensureRounds();
 
@@ -687,7 +688,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
      * @param int $roundId  \Gems round id
      * @return Round|null
      */
-    public function getRound(int $roundId): ?Round
+    public function getRound(mixed $roundId): ?Round
     {
         $this->_ensureRounds();
 
