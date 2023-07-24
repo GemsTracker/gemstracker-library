@@ -360,6 +360,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
         $metaModelLoader = $this->prophesize(MetaModelLoader::class);
         $model = new IteratorModel(new MetaModel('databasePatchesModel', $metaModelLoader->reveal()));
         $metaModelLoader->createModel(IteratorModel::class, 'databasePatchesModel')->willReturn($model);
+        $metaModelLoader->getDefaultTypeInterface(Argument::type('int'))->willReturn(null);
 
         return new PatchRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $metaModelLoader->reveal(), $overloader);
     }

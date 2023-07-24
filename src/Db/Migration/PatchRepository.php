@@ -158,16 +158,16 @@ class PatchRepository extends MigrationRepositoryAbstract
         $start = microtime(true);
 
         $connection = $resultFetcher->getAdapter()->getDriver()->getConnection();
-        $useTransactions = $connection->inTransaction(); // Already in a transaction?
+        $inTransaction = $connection->inTransaction(); // Already in a transaction?
 
         try {
-            if ($useTransactions) {
+            if (!$inTransaction) {
                 $connection->beginTransaction();
             }
             foreach($patchInfo['sql'] as $sqlQuery) {
                 $resultFetcher->query($sqlQuery);
             }
-            if ($useTransactions) {
+            if (!$inTransaction) {
                 $connection->commit();
             }
             $event = new RunPatchMigrationEvent(
@@ -184,7 +184,7 @@ class PatchRepository extends MigrationRepositoryAbstract
             $this->eventDispatcher->dispatch($event);
 
         } catch(\Exception $e) {
-            if ($useTransactions) {
+            if (!$inTransaction) {
                 $connection->rollback();
             }
             $event = new RunPatchMigrationEvent(

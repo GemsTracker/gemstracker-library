@@ -5,8 +5,18 @@ namespace GemsTest\Agenda;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Gems\Agenda\Agenda;
+use Gems\Agenda\Appointment;
+use Gems\Agenda\Repository\ActivityRepository;
+use Gems\Agenda\Repository\LocationRepository;
+use Gems\Agenda\Repository\ProcedureRepository;
+use Gems\Db\ResultFetcher;
+use Gems\Repository\RespondentRepository;
 use Gems\Tracker\RespondentTrack;
+use MUtil\Translate\Translator;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * Description of AppointmentTest
@@ -15,6 +25,8 @@ use PHPUnit\Framework\TestCase;
  */
 class AppointmentTest extends TestCase
 {
+
+    use ProphecyTrait;
 
     /**
      * Get a mock for the respondentTrack
@@ -61,17 +73,18 @@ class AppointmentTest extends TestCase
             $respTrack = $this->_getRespondentTrack();
         }
 
-        $appointment = new \Gems\Agenda\Appointment([
+        $appointment = $this->getAppointment([
             'gap_id_appointment' => 1,
             'gap_admission_time' => $appointmentDate
         ]);
 
-        $filter = new \Gems\Agenda\Filter\SubjectAppointmentFilter();
-        $filter->exchangeArray([
-            'gtap_create_track'     => 1,
-            'gtap_id_track'         => 2,
-            'gtap_create_wait_days' => $waitDays
-        ]);
+        $filter = new \Gems\Agenda\Filter\SubjectAppointmentFilter(
+            [
+                'gtap_create_track'     => 1,
+                'gtap_id_track'         => 2,
+                'gtap_create_wait_days' => $waitDays
+            ]
+        );
 
         $this->assertEquals($expected, $appointment->createAfterWaitDays($filter, $respTrack));
     }
@@ -105,13 +118,12 @@ class AppointmentTest extends TestCase
             $respTrack = $this->_getRespondentTrack();
         }
 
-        $appointment = new \Gems\Agenda\Appointment([
+        $appointment = $this->getAppointment([
             'gap_id_appointment' => 1,
             'gap_admission_time' => $appointmentDate
         ]);
 
-        $filter = new \Gems\Agenda\Filter\SubjectAppointmentFilter();
-        $filter->exchangeArray([
+        $filter = new \Gems\Agenda\Filter\SubjectAppointmentFilter([
             'gtap_create_track'     => 1,
             'gtap_id_track'         => 2,
             'gtap_create_wait_days' => $waitDays
@@ -132,13 +144,38 @@ class AppointmentTest extends TestCase
 
     public function testCreateNever()
     {
-        $appointment = new \Gems\Agenda\Appointment(1);
-        $filter      = new \Gems\Agenda\Filter\SubjectAppointmentFilter();
-        $filter->exchangeArray(['gtap_create_track' => 0]);
+        $appointment = $this->getAppointment([
+            'gap_id_appointment' => 1
+        ]);
+        $filter      = new \Gems\Agenda\Filter\SubjectAppointmentFilter(['gtap_create_track' => 0]);
 
         $respTrack = $this->_getRespondentTrack();
 
         $this->assertEquals(false, $appointment->createNever($filter, $respTrack));
+    }
+
+    protected function getAppointment(array $appointmentData)
+    {
+        $translatorProphecy = $this->prophesize(Translator::class);
+        $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
+
+        $agendaPropecy = $this->prophesize(Agenda::class);
+
+        $resultFetcherProphecy = $this->prophesize(ResultFetcher::class);
+        $activityRepositoryProphecy = $this->prophesize(ActivityRepository::class);
+        $locationRepositoryProphecy = $this->prophesize(LocationRepository::class);
+        $procedureRepositoryProphecy = $this->prophesize(ProcedureRepository::class);
+        $respondentRepositoryProphecy = $this->prophesize(RespondentRepository::class);
+
+        return new Appointment(
+            $appointmentData,
+            $translatorProphecy->reveal(),
+            $agendaPropecy->reveal(),
+            $activityRepositoryProphecy->reveal(),
+            $locationRepositoryProphecy->reveal(),
+            $procedureRepositoryProphecy->reveal(),
+            $respondentRepositoryProphecy->reveal(),
+        );
     }
 
 }

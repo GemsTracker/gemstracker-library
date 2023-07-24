@@ -447,6 +447,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
         $metaModelLoader = $this->prophesize(MetaModelLoader::class);
         $model = new IteratorModel(new MetaModel('databaseSeedModel', $metaModelLoader->reveal()));
         $metaModelLoader->createModel(IteratorModel::class, 'databaseSeedModel')->willReturn($model);
+        $metaModelLoader->getDefaultTypeInterface(Argument::type('int'))->willReturn(null);
 
         return new SeedRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $metaModelLoader->reveal(), $overloader);
     }

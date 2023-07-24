@@ -351,6 +351,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
         $metaModelLoader = $this->prophesize(MetaModelLoader::class);
         $model = new IteratorModel(new MetaModel('databaseTableModel', $metaModelLoader->reveal()));
         $metaModelLoader->createModel(IteratorModel::class, 'databaseTableModel')->willReturn($model);
+        $metaModelLoader->getDefaultTypeInterface(Argument::type('int'))->willReturn(null);
 
         return new TableRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $metaModelLoader->reveal());
     }
