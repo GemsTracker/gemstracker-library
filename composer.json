@@ -112,6 +112,7 @@
         "twig/twig": "^3.4"
     },
     "require-dev": {
+        "itsgoingd/clockwork": "^5.1",
         "phing/phing": "^2.17.3",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "1.10.22",
