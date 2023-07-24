@@ -23,9 +23,8 @@ use Gems\Snippets\Token\PlanSearchSnippet;
 use Gems\Snippets\Token\PlanTokenSnippet;
 use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\Tracker;
-use Gems\Tracker\Model\StandardTokenModel;
+// use Gems\Tracker\Model\TokenModel;
 use Mezzio\Session\SessionInterface;
-use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
@@ -112,30 +111,33 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return StandardTokenModel
+     * @return DataReaderInterface
      */
     public function createModel(bool $detailed, string $action): DataReaderInterface
     {
+        // $model = $this->metaModelLoader->createModel(TokenModel::class);
+
         // \MUtil\Model::$verbose = true;
         $model = $this->tracker->getTokenModel();
         $model->setCreate(false);
 
-        $model->set('gr2o_patient_nr',       [
+        $metaModel = $model->getMetaModel();
+        $metaModel->set('gr2o_patient_nr',       [
             'label' => $this->_('Respondent'),
         ]);
-        $model->set('gto_round_description', [
+        $metaModel->set('gto_round_description', [
             'label' => $this->_('Round / Details'),
         ]);
-        $model->set('gto_valid_from',        [
+        $metaModel->set('gto_valid_from',        [
             'label' => $this->_('Valid from'),
         ]);
-        $model->set('gto_valid_until',       [
+        $metaModel->set('gto_valid_until',       [
             'label' => $this->_('Valid until'),
         ]);
-        $model->set('gto_mail_sent_date',    [
+        $metaModel->set('gto_mail_sent_date',    [
             'label' => $this->_('Contact date'),
         ]);
-        $model->set('respondent_name',       [
+        $metaModel->set('respondent_name',       [
             'label' => $this->_('Name'),
         ]);
 

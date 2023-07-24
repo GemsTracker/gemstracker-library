@@ -13,6 +13,7 @@ namespace Gems\Tracker\Snippets;
 
 use Gems\Html;
 use Gems\Tracker;
+use Gems\Tracker\Model\StandardTokenModel;
 use Gems\User\Mask\MaskRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -87,7 +88,9 @@ abstract class ShowTokenSnippetAbstract extends ModelDetailTableSnippetAbstract
     {
         $model = $this->token->getModel();
 
-        $model->applyFormatting();
+        if ($model instanceof StandardTokenModel) {
+            $model->applyFormatting();
+        }
         if ($this->useFakeForm && $this->token->getReceptionCode()->isSuccess() && (! $this->token->isCompleted())) {
             $model->set('gto_id_token', 'formatFunction', array(__CLASS__, 'makeFakeForm'));
         } else {

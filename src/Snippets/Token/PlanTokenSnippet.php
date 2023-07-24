@@ -57,6 +57,8 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
+        $metaModel = $dataModel->getMetaModel();
+
         // Add link to patient to overview
         $respondentRoute = $this->menuHelper->getRelatedRoute('respondent.show');
         if ($respondentRoute) {
@@ -65,13 +67,13 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
             $aElem->setOnEmpty('');
 
             // Make sure org is known
-            $dataModel->get('gr2o_id_organization');
+            $metaModel->get('gr2o_id_organization');
 
-            $dataModel->set('gr2o_patient_nr', 'itemDisplay', $aElem);
-            $dataModel->set('respondent_name', 'itemDisplay', $aElem);
+            $metaModel->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+            $metaModel->set('respondent_name', 'itemDisplay', $aElem);
         }
 
-        $dataModel->set('gto_id_token', 'formatFunction', 'strtoupper');
+        $metaModel->set('gto_id_token', 'formatFunction', 'strtoupper');
 
         $bridge->setDefaultRowClass(TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $tr1 = $bridge->tr();
@@ -87,7 +89,7 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
         $bridge->addSortable('gto_id_token');
         // $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'))->rowspan = 2;
 
-        $this->addRespondentCell($bridge, $dataModel);
+        $this->addRespondentCell($bridge);
         $bridge->addMultiSort('ggp_name', [$this->createActionButtons($bridge)]);
 
         $tr2 = $bridge->tr();
@@ -97,8 +99,8 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
         $bridge->addSortable('gto_completion_time');
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
-        $dataModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
-        $dataModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
         $bridge->addMultiSort(
             'gtr_track_name', 'gr2t_track_info',
             array($bridge->gtr_track_name->if(Html::raw(' &raquo; ')), ' '),
@@ -113,7 +115,7 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
      * @param TableBridge $bridge
      * @param ModelAbstract $model
      */
-    protected function addRespondentCell(TableBridge $bridge, ModelAbstract $model)
+    protected function addRespondentCell(TableBridge $bridge)
     {
         $bridge->addMultiSort('gr2o_patient_nr', Html::raw('; '), 'respondent_name');
     }

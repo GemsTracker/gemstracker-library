@@ -574,7 +574,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'),
                 'elementClass', 'Date',
                 'validators[before]', BeforeDateModelValidator::class,
-                BeforeDateModelValidator::beforeDateMessage, $this->_("The birthday cannot be a future date. '%value%' is in the future."),
+                BeforeDateModelValidator::$beforeDateMessageKey, $this->_("The birthday cannot be a future date. '%value%' is in the future."),
                 );
 
         $this->setIfExists('gr2o_treatment', 'size', 30);
