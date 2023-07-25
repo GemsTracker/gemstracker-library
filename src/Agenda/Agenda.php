@@ -1088,7 +1088,7 @@ class Agenda
         $nestedWhere->equalTo('gr2t2a_id_appointment', $appointment->getId());
 
         // AND find the filters for any new fields to fill
-        $filters = $this->matchFilters($this);
+        $filters = $this->matchFilters($appointment);
         if ($filters) {
             $ids = array_map(function ($value) {
                 return $value->getTrackId();
