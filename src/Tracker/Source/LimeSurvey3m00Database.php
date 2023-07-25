@@ -623,10 +623,11 @@ class LimeSurvey3m00Database extends SourceAbstract
             if ($lsSurvey['active'] == 'Y') {
                 try {
                     $tokenTable = $lsResultFetcher->fetchAll('SHOW COLUMNS FROM ' . $this->_getTokenTableName($sourceSurveyId));
+                    // Re-index the tokenTable data by column name instead of by numeric index.
+                    $tokenTable = $this->indexByField($tokenTable);
                 } catch (\RuntimeException $e) {
                     $tokenTable = false;
                 }
-
                 if ($tokenTable) {
                     $missingFields   = $this->_checkTokenTable($tokenTable);
 
@@ -1703,5 +1704,21 @@ class LimeSurvey3m00Database extends SourceAbstract
     public function lsDbQuery(int|string $sourceSurveyId, mixed $sql, ?array $bindValues=[])
     {
         $this->_getFieldMap($sourceSurveyId)->lsDbQuery($sql, $bindValues);
+    }
+
+    /**
+     * Return data indexed by the value of the Field key.
+     *
+     * @param array $tableData
+     */
+    private function indexByField(array $tableData): array
+    {
+        $newData = [];
+        foreach ($tableData as $index => $row) {
+            $newIndex = $row['Field'];
+            $newData[$newIndex] = $row;
+        }
+
+        return $newData;
     }
 }
