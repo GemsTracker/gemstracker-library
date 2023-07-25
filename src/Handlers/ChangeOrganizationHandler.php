@@ -8,6 +8,7 @@ use Gems\CookieResponse;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Repository\OrganizationRepository;
 use Gems\Site\SiteUtil;
+use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
 use Psr\Http\Message\ResponseInterface;
@@ -16,7 +17,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ChangeOrganizationHandler implements RequestHandlerInterface
 {
-    public function __construct(private SiteUtil $siteUtil, private UrlHelper $urlHelper, private OrganizationRepository $organizationRepository)
+    public function __construct(
+        private SiteUtil $siteUtil,
+        private UrlHelper $urlHelper,
+        private OrganizationRepository $organizationRepository
+    )
     {
     }
 
@@ -27,12 +32,17 @@ class ChangeOrganizationHandler implements RequestHandlerInterface
         $queryParams = $request->getQueryParams();
 
         if (isset($queryParams['org'])) {
-            /**
-             * @var $identity AuthenticationIdentityInterface
-             */
-            $identity = $request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE);
-            $baseOrganizationId = $identity->getOrganizationId();
-            $allowedOrganizations = $this->organizationRepository->getAllowedOrganizationsFor($baseOrganizationId);
+            $user = $request->getAttribute('current_user');
+            if ($user instanceof User && $user->isActive()) {
+                $allowedOrganizations = $user->getAllowedOrganizations();
+            } else {
+                /**
+                 * @var $identity AuthenticationIdentityInterface
+                 */
+                $identity = $request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE);
+                $baseOrganizationId = $identity->getOrganizationId();
+                $allowedOrganizations = $this->organizationRepository->getAllowedOrganizationsFor($baseOrganizationId);
+            }
             if (isset($allowedOrganizations[$queryParams['org']])) {
                 $response = CookieResponse::addCookieToResponse(
                     $request,
