@@ -24,6 +24,14 @@ trait GemsDateTypeTrait
 {
     use TranslateableTrait;
 
+    public function checkValue(mixed $value)
+    {
+        if ($value instanceof \Zend_Db_Expr) {
+            return (string) $value;
+        }
+        return parent::checkValue($value);
+    }
+
     protected function getExtraSettings(): array
     {
         return [

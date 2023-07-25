@@ -21,7 +21,6 @@ use Gems\Event\Application\RespondentTrackFieldUpdateEvent;
 use Gems\Event\Application\RespondentTrackFieldEvent;
 use Gems\Exception;
 use Gems\Locale\Locale;
-use Gems\Registry\TargetAbstract;
 use Gems\Repository\MailRepository;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Repository\RespondentRepository;
@@ -31,8 +30,6 @@ use Gems\Tracker\Engine\StepEngineAbstract;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Tracker\Token\LaminasTokenSelect;
-use Gems\Translate\DbTranslateUtilTrait;
-
 use Gems\Translate\DbTranslationRepository;
 use Gems\User\Mask\MaskRepository;
 use Laminas\Db\Sql\Expression;
@@ -40,7 +37,6 @@ use Laminas\Db\TableGateway\TableGateway;
 use MUtil\Model;
 use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Zalt\Base\TranslateableTrait;
 
 /**
  * Object representing a track assignment to a respondent.
@@ -866,7 +862,7 @@ class RespondentTrack
     public function getFirstToken(): Token
     {
         if (! $this->_firstToken) {
-            if (! $this->_tokens) {
+            if (! isset($this->_tokens)) {
                 //No cache yet, but we might need all tokens later
                 $this->getTokens();
             }
@@ -883,7 +879,7 @@ class RespondentTrack
      */
     public function getLastToken(): Token
     {
-        if (! $this->_tokens) {
+        if (! isset($this->_tokens)) {
             //No cache yet, but we might need all tokens later
             $this->getTokens();
         }
@@ -1059,12 +1055,12 @@ class RespondentTrack
      */
     public function getTokens(bool $refresh = false): array
     {
-        if (! $this->_tokens || $refresh) {
+        if (! isset($this->_tokens) || $refresh) {
             if ($refresh) {
                 $this->_firstToken = null;
             }
-            $this->_tokens       = array();
-            $this->_activeTokens = array();
+            $this->_tokens       = [];
+            $this->_activeTokens = [];
             $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
             $tokenSelect->andReceptionCodes()
                 ->forRespondentTrack($this->_respTrackId);

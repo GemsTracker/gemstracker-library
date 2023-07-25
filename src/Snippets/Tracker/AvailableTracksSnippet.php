@@ -103,11 +103,11 @@ class AvailableTracksSnippet extends ModelTableSnippetAbstract
         $model->set('gtr_track_name',    'label', $this->_('Track'));
         $model->set('gtr_survey_rounds', 'label', $this->_('Survey #'));
         $model->set('gtr_date_start',    'label', $this->_('From'),
-                'dateFormat', $this->translatedUtil->formatDate,
+                'formatFunction', $this->translatedUtil->formatDate,
                 'tdClass', 'date'
                 );
         $model->set('gtr_date_until',    'label', $this->_('Until'),
-                'dateFormat', $this->translatedUtil->formatDateForever,
+                'formatFunction', $this->translatedUtil->formatDateForever,
                 'tdClass', 'date'
                 );
 
