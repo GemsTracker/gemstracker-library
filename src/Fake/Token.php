@@ -87,7 +87,7 @@ class Token extends \Gems\Tracker\Token
 
     public function getRespondentTrack(): RespondentTrack
     {
-        return $this->projectOverloader->create(RespondentTrack::class);
+        return $this->projectOverloader->create(RespondentTrack::class, ['gr2t_id_respondent_track' => 0], $this->currentUser->getUserId());
     }
 
     public function getSurvey(): Survey

@@ -315,11 +315,7 @@ class Survey
      */
     public function getExternalName(): string|null
     {
-        if ($this->data['gsu_external_description']) {
-            return $this->data['gsu_external_description'] ?? null;
-        }
-
-        return $this->getName();
+        return $this->data['gsu_external_description'] ?? $this->getName();
     }
 
     /**
