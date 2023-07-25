@@ -400,11 +400,11 @@ class AppointmentFilterModel extends JoinModel
 
             $trackUrl = $this->routeHelper->getRouteUrl(
                 'track-builder.track-maintenance.show',
-                [\MUtil\Model::REQUEST_ID => $row['gtr_id_track']]
+                ['trackId' => $row['gtr_id_track']]
             );
 
             $trackFieldUrl = $this->routeHelper->getRouteUrl(
-                'track-builder.track-maintenance.track-fields',
+                'track-builder.track-maintenance.track-fields.show',
                 [
                     'trackId' => $row['gtr_id_track'],
                     \Gems\Model::FIELD_ID => $row['gtap_id_app_field'],
