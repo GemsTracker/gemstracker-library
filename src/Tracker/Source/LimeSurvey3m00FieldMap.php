@@ -506,7 +506,7 @@ class LimeSurvey3m00FieldMap
      */
     protected function _getQuestionAttribute($qid, $attribute, $default = null)
     {
-        if (! is_array($this->_attributes)) {
+        if (! isset($this->_attributes)) {
             $this->_attributes = [];
             $attributesTable  = $this->_getQuestionAttributesTableName();
             $questionsTable   = $this->_getQuestionsTableName();
@@ -830,7 +830,7 @@ class LimeSurvey3m00FieldMap
 
     protected function getFieldTableDataType($fieldname)
     {
-        if (!$this->tableMetaData) {
+        if (isset($this->tableMetaData)) {
             $this->loadTableMetaData();
         }
 

@@ -243,7 +243,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
      */
     protected function _getQuestionAttribute($qid, $attribute, $default = null)
     {
-        if (! is_array($this->_attributes)) {
+        if (! isset($this->_attributes)) {
             $this->_attributes = [];
             $attributesTable  = $this->_getQuestionAttributesTableName();
             $questionsTable   = $this->_getQuestionsTableName();
