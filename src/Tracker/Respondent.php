@@ -240,7 +240,7 @@ class Respondent
      *
      * @return string|null
      */
-    public function getEmailAddress(): ?string
+    public function getEmailAddress(): string|null
     {
         return $this->_gemsData['gr2o_email'];
     }
@@ -249,7 +249,7 @@ class Respondent
      * Get First name of respondent
      * @return string
      */
-    public function getFirstName(): string
+    public function getFirstName(): string|null
     {
         return $this->_gemsData['grs_first_name'];
     }
