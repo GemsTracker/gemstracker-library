@@ -394,31 +394,39 @@ class AppointmentFilterModel extends JoinModel
             return Html::create('em', $this->_('Not used in tracks'));
         }
 
-        $menuTrack  = $this->menu->findAllowedController('track-maintenance', 'show');
-        $menuField  = $this->menu->findAllowedController('track-fields', 'show');
-
         $list = Html::create('ol');
         foreach ($value as $row) {
             $li = $list->li();
 
-            if ($menuTrack) {
+            $trackUrl = $this->routeHelper->getRouteUrl(
+                'track-builder.track-maintenance.show',
+                [\MUtil\Model::REQUEST_ID => $row['gtr_id_track']]
+            );
+
+            $trackFieldUrl = $this->routeHelper->getRouteUrl(
+                'track-builder.track-maintenance.track-fields',
+                [
+                    'trackId' => $row['gtr_id_track'],
+                    \Gems\Model::FIELD_ID => $row['gtap_id_app_field'],
+                    'sub' => FieldMaintenanceModel::APPOINTMENTS_NAME
+                ],
+            );
+
+            if ($trackUrl) {
                 $li->em()->a(
-                        $menuTrack->toHRefAttribute([\MUtil\Model::REQUEST_ID => $row['gtr_id_track']]),
-                        $row['gtr_track_name']
-                        );
+                    $trackUrl,
+                    $row['gtr_track_name']
+                );
             } else {
                 $li->em($row['gtr_track_name']);
             }
             $li->append($this->_(': '));
-            if ($menuField) {
+
+            if ($trackFieldUrl) {
                 $li->em()->a(
-                        $menuField->toHRefAttribute([
-                            'gtf_id_track' => $row['gtr_id_track'],
-                            'gtf_id_field' => $row['gtap_id_app_field'],
-                             'sub' => FieldMaintenanceModel::APPOINTMENTS_NAME,
-                            ]),
-                        $row['gtap_field_name']
-                        );
+                    $trackFieldUrl,
+                    $row['gtap_field_name']
+                );
             } else {
                 $li->em($row['gtap_field_name']);
             }
