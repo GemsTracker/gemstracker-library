@@ -100,7 +100,7 @@ class FilterRepository
                     LEFT JOIN gems__track_appointments ON gaf_id = gtap_filter_id
                     ORDER BY gaf_id_order';
 
-        return $this->cachedResultFetcher->fetchAll('allAppointmentFilters', $sql, null, $this->cacheTags);
+        return $this->cachedResultFetcher->fetchAll('allAppointmentFilters', $sql, null, $this->cacheTags) ?? [];
     }
 
     public function shouldCreateTrack(

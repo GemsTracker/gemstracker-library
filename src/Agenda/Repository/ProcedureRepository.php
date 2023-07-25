@@ -105,11 +105,7 @@ class ProcedureRepository
             'gapr_active',
             'gapr_filter',
         ]);
-        $result = $this->cachedResultFetcher->fetchAll('agendaProcedures', $select, null, $this->proceduresCacheTags);
-        if ($result !== null) {
-            return $result;
-        }
-        return [];
+        return $this->cachedResultFetcher->fetchAll('agendaProcedures', $select, null, $this->proceduresCacheTags) ?? [];
     }
 
     public function getProcedureOptions(int|null $organizationId = null): array

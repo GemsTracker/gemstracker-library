@@ -105,11 +105,7 @@ class ActivityRepository
             'gaa_active',
             'gaa_filter',
         ]);
-        $result = $this->cachedResultFetcher->fetchAll('agendaActivities', $select, null, $this->activitiesCacheTags);
-        if ($result !== null) {
-            return $result;
-        }
-        return [];
+        return $this->cachedResultFetcher->fetchAll('agendaActivities', $select, null, $this->activitiesCacheTags) ?? [];
     }
 
     public function getActivityOptions(int|null $organizationId = null): array
