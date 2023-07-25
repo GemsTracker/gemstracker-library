@@ -338,7 +338,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 'formatFunction', $this->translatedUtil->describeDateFromNow);
         $this->setIfExists('gr2o_consent',
                 'label', $this->_('Consent'),
-                'multiOptions', $this->consentRepository->getUserConsents()
+                'multiOptions', $this->consentRepository->getUserConsentOptions()
                 );
 
         $this->applyMask();
