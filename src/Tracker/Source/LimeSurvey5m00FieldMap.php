@@ -30,7 +30,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         return $this->tablePrefix . self::GROUPS_TRANSLATE_TABLE;
     }
 
-    private function _setHardAnswers()
+    protected function _setHardAnswers(): void
     {
         $qaTable = $this->_getAnswersTableName();
         $qatTable = $this->_getAnswersTranslateTableName();
@@ -52,7 +52,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
         }
     }
 
-    private function _setMap(): void
+    protected function _setMap(): void
     {
         $aTable = $this->_getQuestionAttributesTableName();
         $cTable = $this->_getQuestionConditonsTableName();

@@ -153,7 +153,7 @@ class LimeSurvey3m00FieldMap
         return false;
     }
 
-    private function _setHardAnswers(): void
+    protected function _setHardAnswers(): void
     {
         $qaTable = $this->_getAnswersTableName();
         $qTable  = $this->_getQuestionsTableName();
@@ -189,7 +189,7 @@ class LimeSurvey3m00FieldMap
         return $this->_fieldMap;
     }
 
-    private function _setMap(): void
+    protected function _setMap(): void
     {
         $aTable = $this->_getQuestionAttributesTableName();
         $cTable = $this->_getQuestionConditonsTableName();
