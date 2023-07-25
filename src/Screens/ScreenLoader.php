@@ -11,7 +11,7 @@
 
 namespace Gems\Screens;
 
-use Zalt\Loader\ConstructorProjectOverloader;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  *
@@ -50,7 +50,7 @@ class ScreenLoader
         ];
 
     public function __construct(
-        protected ConstructorProjectOverloader $overloader,
+        protected readonly ProjectOverloader $overloader,
     )
     {}
 

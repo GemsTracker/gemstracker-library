@@ -4,8 +4,6 @@ namespace Gems;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
-use Gems\Agenda\Agenda;
-use Gems\Agenda\AgendaFactory;
 use Gems\Auth\Acl\AclFactory;
 use Gems\Auth\Acl\DbGroupAdapter;
 use Gems\Auth\Acl\DbRoleAdapter;
@@ -98,7 +96,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
-use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelConfigProvider;
 use Zalt\Model\MetaModelInterface;
@@ -293,7 +290,6 @@ class ConfigProvider
             'factories'  => [
                 EventDispatcher::class => EventDispatcherFactory::class,
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
-                ConstructorProjectOverloader::class => ProjectOverloaderFactory::class,
                 Acl::class => AclFactory::class,
                 //Agenda::class => AgendaFactory::class,
 

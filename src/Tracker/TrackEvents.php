@@ -24,7 +24,7 @@ use Gems\Tracker\TrackEvent\TrackCalculationEventInterface;
 use Gems\Tracker\TrackEvent\TrackCompletedEventInterface;
 use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
 use Gems\Util\Translated;
-use Zalt\Loader\ConstructorProjectOverloader;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  * Per project overruleable event processing engine
@@ -50,9 +50,9 @@ class TrackEvents
     protected array $config = [];
 
     public function __construct(
-        protected Translated $translatedUtil,
-        protected HelperAdapter $cache,
-        protected ConstructorProjectOverloader $overloader,
+        protected readonly Translated $translatedUtil,
+        protected readonly HelperAdapter $cache,
+        protected readonly ProjectOverloader $overloader,
         array $config, )
     {
         if (isset($config['tracker'], $config['tracker']['trackEvents'])) {

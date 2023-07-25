@@ -17,7 +17,7 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Vue\CreateEditSnippet;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Loader\ConstructorProjectOverloader;
+use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -65,7 +65,7 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
-        protected ConstructorProjectOverloader $overloader,
+        protected readonly ProjectOverloader $overloader,
     )
     {
         parent::__construct($responder, $translate);

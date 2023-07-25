@@ -143,7 +143,7 @@ class Loader extends LoaderAbstract
         /**
          * @var Agenda
          */
-        return $this->loadByDependency('Gems\\Agenda\\Agenda');
+        return $this->containerLoad('Gems\\Agenda\\Agenda');
     }
 
     /**
@@ -184,7 +184,7 @@ class Loader extends LoaderAbstract
         /**
          * @var EmbedLoader
          */
-        return $this->loadByDependency('User\\Embed\\EmbedLoader');
+        return $this->containerLoad('User\\Embed\\EmbedLoader');
     }
 
     /**
@@ -364,7 +364,7 @@ class Loader extends LoaderAbstract
      */
     public function getScreenLoader()
     {
-        return $this->loadByDependency(ScreenLoader::class);
+        return $this->containerLoad(ScreenLoader::class);
     }
 
     /**

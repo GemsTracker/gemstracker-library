@@ -12,28 +12,12 @@
 namespace Gems\Condition;
 
 use Gems\Cache\HelperAdapter;
-use Gems\Condition\Comparator\Between;
 use Gems\Condition\Comparator\ComparatorInterface;
-use Gems\Condition\Comparator\Contains;
-use Gems\Condition\Comparator\EqualLess;
-use Gems\Condition\Comparator\EqualMore;
-use Gems\Condition\Comparator\Equals;
-use Gems\Condition\Comparator\In;
-use Gems\Condition\Comparator\NotEquals;
-use Gems\Condition\Round\AgeCondition;
-use Gems\Condition\Round\AndCondition;
-use Gems\Condition\Round\GenderCondition;
-use Gems\Condition\Round\LastAnswerCondition;
-use Gems\Condition\Round\OrCondition;
-use Gems\Condition\Round\TrackFieldCondition;
-use Gems\Condition\Track\LocationCondition;
-use Gems\Condition\Track\OrganizationCondition;
 use Gems\Exception\Coding;
 use Gems\Model\ConditionModel;
 use Gems\Util\Translated;
 use MUtil\Translate\TranslateableTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Loader\Exception\LoadException;
 use Zalt\Loader\ProjectOverloader;
 
@@ -86,7 +70,6 @@ class ConditionLoader
 
     public function __construct(
         protected ProjectOverloader $overloader,
-        protected ConstructorProjectOverloader $conditionLoader,
         TranslatorInterface $translator,
         protected Translated $translatedUtil,
         protected HelperAdapter $cache,
@@ -158,7 +141,7 @@ class ConditionLoader
             /**
              * @var $condition ConditionInterface
              */
-            $condition = $this->conditionLoader->create($conditionClassName);
+            $condition = $this->overloader->create($conditionClassName);
         } catch (LoadException) {
             throw new Coding("The condition '$conditionClassName' of type '$conditionType' can not be found");
         }

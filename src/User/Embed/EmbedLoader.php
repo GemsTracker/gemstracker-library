@@ -13,7 +13,7 @@ namespace Gems\User\Embed;
 
 use Gems\Exception\Coding;
 use MUtil\Translate\Translator;
-use Zalt\Loader\ConstructorProjectOverloader;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  *
@@ -46,8 +46,8 @@ class EmbedLoader
     ];
 
     public function __construct(
-        protected ConstructorProjectOverloader $overloader,
-        protected Translator $translator,
+        protected readonly ProjectOverloader $overloader,
+        protected readonly Translator $translator,
         protected array $config,
     )
     {}

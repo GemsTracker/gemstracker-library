@@ -9,12 +9,11 @@ use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use MUtil\Translate\Translator;
-use PHPUnit\Exception;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
-use Zalt\Loader\ConstructorProjectOverloader;
+use Zalt\Loader\ProjectOverloader;
 
 class SeedRepository extends MigrationRepositoryAbstract
 {
@@ -27,7 +26,7 @@ class SeedRepository extends MigrationRepositoryAbstract
         Translator $translator,
         EventDispatcherInterface $eventDispatcher,
         MetaModelLoader $metaModelLoader,
-        protected readonly ConstructorProjectOverloader $overloader,
+        protected readonly ProjectOverloader $overloader,
     ) {
         parent::__construct($config, $databases, $translator, $eventDispatcher, $metaModelLoader);
     }

@@ -9,10 +9,9 @@ use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Adapter;
 use MUtil\Parser\Sql\WordsParser;
 use MUtil\Translate\Translator;
-use PHPUnit\Exception;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
-use Zalt\Loader\ConstructorProjectOverloader;
+use Zalt\Loader\ProjectOverloader;
 
 class PatchRepository extends MigrationRepositoryAbstract
 {
@@ -24,7 +23,7 @@ class PatchRepository extends MigrationRepositoryAbstract
         Translator $translator,
         EventDispatcherInterface $eventDispatcher,
         MetaModelLoader $metaModelLoader,
-        protected readonly ConstructorProjectOverloader $overloader,
+        protected readonly ProjectOverloader $overloader,
     ) {
         parent::__construct($config, $databases, $translator, $eventDispatcher, $metaModelLoader);
     }
