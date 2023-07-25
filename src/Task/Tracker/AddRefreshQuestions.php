@@ -80,7 +80,7 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
 
         foreach ($answerModel->getItemsOrdered() as $order => $name) {
             if (true === $answerModel->get($name, 'survey_question')) {
-                $batch->addTask('Tracker\\RefreshQuestion', $surveyId, $name, $order);
+                $batch->addTask('Tracker\\RefreshQuestion', $survey->getSurveyId(), $name, $order);
             }
         }
 
