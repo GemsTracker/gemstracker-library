@@ -124,23 +124,6 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
     }
 
     /**
-     * The automatically filtered result
-     *
-     * @param $resetMvc bool When true only the filtered resulsts
-     */
-    public function autofilterAction($resetMvc = true)
-    {
-        parent::autofilterAction($resetMvc);
-
-        //If allowed, add the sort action
-        /*if ($this->menu->findAllowedController($this->getRequest()->getControllerName(), 'sort')) {
-            $buttons = $this->_helper->SortableTable('sort', 'id');
-            // First element is the wrapper
-            $this->html[0]->append($buttons);
-        }*/
-    }
-
-    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -157,9 +140,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
          * @var $model CommJobModel
          */
 
-        $overloader = clone $this->overloader;
-        $overloader->setDependencyResolver(new ConstructorDependencyResolver());
-        $model = $overloader->create(CommJobModel::class);
+        $model = $this->overloader->create(CommJobModel::class);
 
         if ($detailed) {
             $model->applyDetailSettings();
