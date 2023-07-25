@@ -427,7 +427,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected function _getSurveyLanguagesTableName(): string
     {
-        return $this->addDatabasePrefix(self::SURVEYS_LANG_TABLE);
+        return $this->addDatabasePrefix(self::SURVEYS_LANG_TABLE, false);
     }
 
     /**
@@ -438,7 +438,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected function _getSurveyTableName(int|string $sourceSurveyId): string
     {
-        return $this->addDatabasePrefix(self::SURVEY_TABLE . $sourceSurveyId);
+        return $this->addDatabasePrefix(self::SURVEY_TABLE . $sourceSurveyId, false);
     }
 
     /**
@@ -448,7 +448,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected function _getSurveysTableName(): string
     {
-        return $this->addDatabasePrefix(self::SURVEYS_TABLE);
+        return $this->addDatabasePrefix(self::SURVEYS_TABLE, false);
     }
 
     /**
