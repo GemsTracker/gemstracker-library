@@ -474,8 +474,10 @@ class Survey
      */
     public function getSource(): SourceInterface
     {
-        if (! $this->_source && isset($this->data['gsu_id_source'])) {
-            $this->_source = $this->tracker->getSource($this->data['gsu_id_source']);
+        if (! $this->_source) {
+            if (isset($this->data['gsu_id_source'])) {
+                $this->_source = $this->tracker->getSource($this->data['gsu_id_source']);
+            }
 
             if (! $this->_source) {
                 throw new \Gems\Exception('No source for exists for source ' . $this->data['gsu_id_source'] . '.');
