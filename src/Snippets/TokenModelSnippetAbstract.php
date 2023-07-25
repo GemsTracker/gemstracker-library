@@ -103,6 +103,8 @@ class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
     {
         if ($this->model instanceof StandardTokenModel) {
             $model = $this->model;
+        } elseif ($this->model instanceof Tracker\Model\TokenModel) {
+            $model = $this->model;
         } else {
             $model = $this->tracker->getTokenModel();
         }

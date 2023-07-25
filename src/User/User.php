@@ -1695,7 +1695,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
 
             $birthdayElem = new \Gems\JQuery\Form\Element\DatePicker('birthday');
             $birthdayElem->setLabel($label)
-                    ->setOptions(\MUtil\Model\Bridge\FormBridge::getFixedOptions('date'))
+                    ->setOptions(Model::getTypeDefaults(Model::TYPE_DATE))
                     ->setRequired(true)
                     ->setStorageFormat('yyyy-MM-dd');
 
