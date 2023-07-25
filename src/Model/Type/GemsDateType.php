@@ -25,6 +25,6 @@ class GemsDateType extends \Zalt\Model\Type\DateType
     {
         $this->translate = $translate;
 
-        $this->description = $this->_('dd-mXm-yyyy');
+        $this->description = $this->_('dd-mm-yyyy');
     }
 }

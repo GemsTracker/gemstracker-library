@@ -599,9 +599,9 @@ class Route
                     \Gems\Model::RESPONDENT_TRACK => '\d+',
                 ],
                 postRoutes: [
-                    'delete-track',
-                    'undelete-track',
-                    'edit-track',
+                    'delete',
+                    'undelete',
+                    'edit',
                 ]
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tracks.token',

@@ -664,6 +664,13 @@ class FieldsDefinition
                         } else {
                             $changedNow = true;
                         }
+                    } elseif (($inVal instanceof \DateTimeInterface) || ($outVal instanceof \DateTimeInterface)) {
+                        dump($inVal, $outVal);
+                        if (($inVal instanceof \DateTimeInterface) && ($outVal instanceof \DateTimeInterface)) {
+                            $changedNow = $inVal->getTimestamp() != $outVal->getTimestamp();
+                        } else {
+                            $changedNow = true;
+                        }
                     } else {
                         $changedNow = ((string) $inVal !== (string) $outVal);
                     }
@@ -728,7 +735,7 @@ class FieldsDefinition
                         'glrtf_id_respondent_track' => $respTrackId,
                         'glrtf_id_sub'              => $field->getFieldSub(),
                         'glrtf_id_field'            => $field->getFieldId(),
-                        'glrtf_old_value'           => isset($oldFieldData[$key]) ? $oldFieldData[$key] : null,
+                        'glrtf_old_value'           => isset($oldFieldData[$key]) ? $field->onFieldDataSave($oldFieldData[$key], $oldFieldData) : null,
                         'glrtf_old_value_manual'    => $oldManual ? 1 : 0,
                         'glrtf_new_value'           => $saveVal,
                         'glrtf_new_value_manual'    => $manual ? 1 : 0,

@@ -19,6 +19,7 @@ use Gems\Util\Translated;
 use Laminas\Db\Sql\Expression;
 use MUtil\Model;
 use MUtil\Translate\Translator;
+use Zalt\Model\Type\AbstractDateType;
 
 /**
  *
@@ -94,7 +95,7 @@ class DateField extends FieldAbstract
         if ((null === $currentValue) ||
                 ($currentValue instanceof \Zend_Db_Expr) ||
                 ($currentValue instanceof Expression) ||
-                str_starts_with($currentValue, 'current_')) {
+                (is_string($currentValue) && str_starts_with($currentValue, 'current_'))) {
             return null;
         }
 
@@ -192,19 +193,22 @@ class DateField extends FieldAbstract
         if ((null === $currentValue) ||
                 ($currentValue instanceof \Zend_Db_Expr) ||
                 ($currentValue instanceof Expression) ||
-                str_starts_with($currentValue, 'current_')) {
+                (is_string($currentValue) && str_starts_with($currentValue, 'current_'))) {
             return $currentValue;
+        }
+        if ('' == $currentValue) {
+            return null;
         }
 
         $saveFormat = $this->getStorageFormat();
 
-        if ($currentValue instanceof DateTimeInterface) {
+        if ($currentValue instanceof \DateTimeInterface) {
             return $currentValue->format($saveFormat);
 
         } else {
             $displayFormat = $this->getDateFormat();
 
-            $saveDate = Model::getDateTimeInterface($currentValue, [$displayFormat, $saveFormat, Tracker::DB_DATETIME_FORMAT]);
+            $saveDate = AbstractDateType::toDate($currentValue, $saveFormat, $displayFormat, true);
             if ($saveDate instanceof \DateTimeInterface) {
                 return $saveDate->format($saveFormat);
             }
