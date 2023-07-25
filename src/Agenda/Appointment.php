@@ -102,7 +102,7 @@ class Appointment
      *
      * @return int
      */
-    public function getActivityId(): int
+    public function getActivityId(): int|null
     {
         return $this->data['gap_id_activity'];
     }
@@ -130,7 +130,7 @@ class Appointment
      *
      * @return int
      */
-    public function getAttendedById(): int
+    public function getAttendedById(): int|null
     {
         return $this->data['gap_id_attended_by'];
     }
@@ -182,7 +182,7 @@ class Appointment
      *
      * @return int
      */
-    public function getEpisodeId(): int
+    public function getEpisodeId(): int|null
     {
         return $this->data['gap_id_episode'];
     }
@@ -223,7 +223,7 @@ class Appointment
      *
      * @return int
      */
-    public function getLocationId(): int
+    public function getLocationId(): int|null
     {
         return $this->data['gap_id_location'];
     }

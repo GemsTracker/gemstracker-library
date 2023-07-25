@@ -859,14 +859,17 @@ class RespondentTrack
      *
      * @return \Gems\Tracker\Token
      */
-    public function getFirstToken(): Token
+    public function getFirstToken(): Token|null
     {
         if (! $this->_firstToken) {
             if (! isset($this->_tokens)) {
                 //No cache yet, but we might need all tokens later
                 $this->getTokens();
             }
-            $this->_firstToken = reset($this->_tokens);
+            $firstToken = reset($this->_tokens);
+            if ($firstToken) {
+                $this->_firstToken = $firstToken;
+            }
         }
 
         return $this->_firstToken;

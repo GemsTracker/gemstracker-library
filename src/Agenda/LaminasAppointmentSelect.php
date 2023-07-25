@@ -19,7 +19,7 @@ class LaminasAppointmentSelect
         protected readonly Agenda $agenda,
     )
     {
-        $this->select = $this->resultFetcher->getSelect('gems__tokens');
+        $this->select = $this->resultFetcher->getSelect('gems__appointments');
         $this->columns();
     }
 

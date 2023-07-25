@@ -118,7 +118,7 @@ class Agenda
      */
     protected function checkCreateTracksFromFilter(
         Appointment $appointment,
-        AppointmentFilterInterface $filters,
+        array $filters,
         array $existingTracks,
         FilterTracer|null $filterTracer
     ): int
@@ -974,7 +974,7 @@ class Agenda
      * @param mixed $to \Gems\Agenda\Appointment:EpsiodeOfCare
      * @return AppointmentFilterInterface[]
      */
-    public function matchFilters(Appointment|EpisodeOfCare $to): AppointmentFilterInterface
+    public function matchFilters(Appointment|EpisodeOfCare $to): array
     {
         $filters = $this->loadDefaultFilters();
         $output  = array();

@@ -665,7 +665,6 @@ class FieldsDefinition
                             $changedNow = true;
                         }
                     } elseif (($inVal instanceof \DateTimeInterface) || ($outVal instanceof \DateTimeInterface)) {
-                        dump($inVal, $outVal);
                         if (($inVal instanceof \DateTimeInterface) && ($outVal instanceof \DateTimeInterface)) {
                             $changedNow = $inVal->getTimestamp() != $outVal->getTimestamp();
                         } else {

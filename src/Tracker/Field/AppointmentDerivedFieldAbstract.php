@@ -152,7 +152,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
      * @param \Gems\Agenda\Appointment $appointment
      * @return int
      */
-    abstract protected function getId(Appointment $appointment): int;
+    abstract protected function getId(Appointment $appointment): int|null;
             
     /**
      * Return the lookup array for this field

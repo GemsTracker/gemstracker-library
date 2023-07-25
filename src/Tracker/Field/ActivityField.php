@@ -30,7 +30,7 @@ class ActivityField extends AppointmentDerivedFieldAbstract
      * @param \Gems\Agenda\Appointment $appointment
      * @return int
      */
-    protected function getId(Appointment $appointment): int
+    protected function getId(Appointment $appointment): int|null
     {
         return $appointment->getActivityId();
     }
