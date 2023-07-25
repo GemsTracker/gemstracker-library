@@ -104,7 +104,6 @@ class SurveyRepository
     {
         $data = null;
         $surveyId = $surveyData;
-        $cacheId = 'getSurveyData' . $surveyId;
 
         if (is_array($surveyData) && isset($surveyData['gsu_id_survey'])) {
             $data = $surveyData;
@@ -113,6 +112,8 @@ class SurveyRepository
             }
             $surveyId = $surveyData['gsu_id_survey'];
         }
+
+        $cacheId = 'getSurveyData' . $surveyId;
 
         if (!$data) {
             if ($surveyId !== null) {
