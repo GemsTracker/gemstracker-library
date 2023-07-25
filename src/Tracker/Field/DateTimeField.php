@@ -47,7 +47,7 @@ class DateTimeField extends DateField
      */
     protected function getDateFormat(): string
     {
-        return FormBridge::getFixedOption('datetime', 'dateFormat');
+        return Model::getTypeDefault(Model::TYPE_DATETIME, 'dateFormat');
     }
 
     /**
