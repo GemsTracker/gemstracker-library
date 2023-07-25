@@ -169,6 +169,11 @@ class Menu
                             'type' => 'route-link-item',
                             'children' => [
                                 [
+                                    'name' => 'respondent.tracks.survey.insert',
+                                    'label' => $this->translator->trans('Insert'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
                                     'name' => 'respondent.tracks.create',
                                     'label' => $this->translator->trans('New'),
                                     'type' => 'route-link-item',
