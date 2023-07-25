@@ -46,7 +46,7 @@ class LocationRepository
         $table = new TableGateway('gems__locations', $this->cachedResultFetcher->getAdapter());
         $result = $table->insert([
             'glo_name' => $name,
-            'glo_id_organization' => static::ORGANIZATION_SEPARATOR . $organizationId . static::ORGANIZATION_SEPARATOR,
+            'glo_organizations' => static::ORGANIZATION_SEPARATOR . $organizationId . static::ORGANIZATION_SEPARATOR,
             'glo_match_to' => $name,
             'glo_changed' => new Expression('NOW()'),
             'glo_changed_by' => $this->currentUserId,
@@ -87,11 +87,11 @@ class LocationRepository
     {
         $allLocations = $this->getAllLocationData();
 
-        return array_filter($allLocations, function($activity) use ($organizationId) {
+        return array_filter($allLocations, function($location) use ($organizationId) {
             if ($organizationId) {
-                return ($activity['glo_active']) && in_array($organizationId, $activity['glo_id_organization']);
+                return ($location['glo_active']) && in_array($organizationId, $location['glo_organizations']);
             }
-            return (bool)$activity['glo_active'];
+            return (bool)$location['glo_active'];
         });
     }
 
@@ -140,11 +140,11 @@ class LocationRepository
         $activeLocations = $this->getActiveLocationsData();
 
         $sortedActivities = [];
-        foreach ($activeLocations as $activity) {
-            if ($activity['glo_match_to'] !== null) {
-                foreach (explode('|', $activity['glo_match_to']) as $match) {
-                    foreach($activity['glo_organizations'] as $organizationId) {
-                        $sortedActivities[$match][$organizationId] = $activity['glo_id_location'];
+        foreach ($activeLocations as $location) {
+            if ($location['glo_match_to'] !== null) {
+                foreach (explode('|', $location['glo_match_to']) as $match) {
+                    foreach($location['glo_organizations'] as $organizationId) {
+                        $sortedActivities[$match][$organizationId] = $location['glo_id_location'];
                     }
                 }
             }
@@ -159,7 +159,7 @@ class LocationRepository
      * @param $name string Location name
      * @param $organizationId int Organization ID
      * @param $create bool Should the resource be created if it is not known
-     * @return int|null activity ID that was matched or null
+     * @return int|null Location ID that was matched or null
      */
     public function matchLocation(string $name, int $organizationId, bool $create = true): int|null
     {
