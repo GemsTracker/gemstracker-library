@@ -310,7 +310,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     {
         if (! isset($this->_sourceDb)) {
 
-            if ($dbConfig['dbname'] = $this->_sourceData['gso_ls_database']) {
+            if ($dbConfig['database'] = $this->_sourceData['gso_ls_database']) {
 
                 // Default config values from gemsDb
                 /** @var AbstractConnection */
@@ -318,7 +318,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
                 $gemsConfig = $connection->getConnectionParameters();
                 $gemsName   = $gemsConfig['database'];
 
-                if (($dbConfig['dbname'] != $gemsName) &&
+                if (($dbConfig['database'] != $gemsName) &&
                     ($driver = $this->_sourceData['gso_ls_adapter'])) {
                     $dbConfig['driver'] = $driver;
 
