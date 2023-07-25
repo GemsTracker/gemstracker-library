@@ -43,6 +43,7 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $autofilterParameters = [
+        'extraFilter' => 'getPatientFilter',
         'extraSort'   => ['gec_admission_time' => SORT_DESC],
     ];
 
@@ -136,15 +137,7 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
                 $model->applyDetailSettings();
             }
         } else {
-            $keys[Model::EPISODE_ID] = 'gec_episode_of_care_id';
-            $keys[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
-            $keys[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
             $model->applyBrowseSettings();
-            $model->setKeys($keys);
-            $model->addFilter(array(
-                'gec_id_user'         => $respondent->getId(),
-                'gec_id_organization' => $respondent->getOrganizationId(),
-                ));
         }
 
         return $model;
@@ -176,6 +169,15 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
     public function getIndexTitle(): string
     {
         return $this->_('Episodes of care');
+    }
+
+    public function getPatientFilter()
+    {
+        $params = $this->requestInfo->getRequestMatchedParams();
+        return [
+            'gr2o_patient_nr' => $params[\MUtil\Model::REQUEST_ID1],
+            'gr2o_id_organization' => $params[\MUtil\Model::REQUEST_ID2],
+        ];
     }
 
     /**
