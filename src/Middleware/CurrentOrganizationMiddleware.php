@@ -58,9 +58,14 @@ class CurrentOrganizationMiddleware implements MiddlewareInterface
             $baseOrganizationId = $identity->getOrganizationId();
 
             if ($currentOrganizationId) {
-                $allowedOrganizations = $this->organizationRepository->getAllowedOrganizationsFor(
-                    $baseOrganizationId
-                );
+                $user = $request->getAttribute('current_user');
+                if ($user instanceof User && $user->isActive()) {
+                    $allowedOrganizations = $user->getAllowedOrganizations();
+                } else {
+                    $allowedOrganizations = $this->organizationRepository->getAllowedOrganizationsFor(
+                        $baseOrganizationId
+                    );
+                }
                 if (isset($allowedOrganizations[$currentOrganizationId])) {
                     return $currentOrganizationId;
                 }
