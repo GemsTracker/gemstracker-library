@@ -228,7 +228,7 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function getEditTitle(): string
     {
-        $data    = $this->getModel()->loadFirst();
+        $data    = $this->getModel()->loadFirst(['gor_id_organization' => $this->_getIdParam()]);
         $subject = $data['gor_name'];
 
         //Add location to the subject when not empty
