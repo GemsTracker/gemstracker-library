@@ -64,7 +64,7 @@ class FilterRepository
 
         $filters = [];
         foreach($filterData as $filter) {
-            $filters[] = $this->getFilter($filter);
+            $filters[] = $this->getFilterFromData($filter);
         }
 
         return $filters;
