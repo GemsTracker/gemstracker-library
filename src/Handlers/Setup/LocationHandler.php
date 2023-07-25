@@ -11,6 +11,7 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\Agenda\Repository\LocationRepository;
 use Gems\Html;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -154,7 +155,7 @@ class LocationHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 'multiOptions', $this->util->getDbLookup()->getOrganizations(),
                 'noSort', true
                 );
-        $tp = new \MUtil\Model\Type\ConcatenatedRow(':', ', ');
+        $tp = new \MUtil\Model\Type\ConcatenatedRow(LocationRepository::ORGANIZATION_SEPARATOR, ', ');
         $tp->apply($model, 'glo_organizations');
 
         $model->setIfExists('glo_match_to',        'label', $this->_('Import matches'),
