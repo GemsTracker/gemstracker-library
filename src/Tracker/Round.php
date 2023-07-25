@@ -56,7 +56,7 @@ class Round
         }
 
         $descr        = $this->getRoundDescription();
-        $hasDescr     = strlen(trim($descr));
+        $hasDescr     = ($descr !== null && strlen(trim($descr)));
         $order        = $this->getRoundOrder();
         $survey       = $this->getSurvey();
         $surveyExists = $survey ? $survey->exists : false;

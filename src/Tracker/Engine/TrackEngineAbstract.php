@@ -128,7 +128,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
     {
         if (! is_array($this->_rounds)) {
             $roundSelect = $this->resultFetcher->getSelect('gems__rounds')
-                ->where(['gro_id_track', $this->_trackId])
+                ->where(['gro_id_track' => $this->_trackId])
                 ->order(['gro_id_order']);
 
             // \MUtil\EchoOut\EchoOut::track((string) $roundSelect, $this->_trackId);
