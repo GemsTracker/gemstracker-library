@@ -46,8 +46,10 @@ class PlanRespondentSnippet extends PlanTokenSnippet
 
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
+        $metaModel = $dataModel->getMetaModel();
+
         // Make sure org is known
-        $dataModel->get('gr2o_id_organization');
+        $metaModel->get('gr2o_id_organization');
 
         $respondentRoute = $this->menuHelper->getRelatedRoute('respondent.show');
         if ($respondentRoute) {
@@ -56,8 +58,8 @@ class PlanRespondentSnippet extends PlanTokenSnippet
             $aElem->setOnEmpty('');
 
 
-//            $dataModel->set('gr2o_patient_nr', 'itemDisplay', $aElem);
-//            $dataModel->set('respondent_name', 'itemDisplay', $aElem);
+//            $metaModel->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+//            $metaModel->set('respondent_name', 'itemDisplay', $aElem);
         }
 
         $bridge->gr2t_id_respondent_track; // Data needed for edit button
@@ -89,7 +91,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         $bridge->addSortable('grs_birthday');
         $bridge->addMultiSort('grs_city', array($respondentButton));
 
-        $dataModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
 
         // Row with track info
         $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
@@ -108,7 +110,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
 
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
-        $dataModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
         $bridge->addMultiSort('gsu_survey_name', 'gto_round_description')->colspan = 2;
 
         $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));

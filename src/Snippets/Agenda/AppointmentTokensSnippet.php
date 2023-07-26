@@ -13,6 +13,7 @@ namespace Gems\Snippets\Agenda;
 
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
@@ -41,12 +42,13 @@ class AppointmentTokensSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         MenuSnippetHelper                   $menuHelper,
         TranslatorInterface                 $translate,
         MaskRepository                      $maskRepository,
+        MetaModelLoader                     $metaModelLoader,
         Tracker                             $tracker,
         TokenRepository                     $tokenRepository,
         protected \Zend_Db_Adapter_Abstract $db
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $maskRepository, $tracker, $tokenRepository);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $maskRepository, $metaModelLoader, $tracker, $tokenRepository);
 
         $this->caption = $this->_("Tokens set by this appointment");
         $this->onEmpty = $this->_("No tokens are set by this appointment");
