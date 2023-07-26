@@ -247,6 +247,16 @@ class Menu
                                         ],
                                     ],
                                 ],
+                                [
+                                    'name' => 'respondent.tracks.delete',
+                                    'type' => 'alias',
+                                    'alias' => 'respondent.tracks.show',
+                                ],
+                                [
+                                    'name' => 'respondent.tracks.undelete',
+                                    'type' => 'alias',
+                                    'alias' => 'respondent.tracks.show',
+                                ],
                             ],
                         ],
                         [
