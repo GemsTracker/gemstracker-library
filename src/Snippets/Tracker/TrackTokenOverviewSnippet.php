@@ -14,6 +14,7 @@ namespace Gems\Snippets\Tracker;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\TokenRepository;
 use Gems\Snippets\TokenModelSnippetAbstract;
 use Gems\Tracker;
@@ -85,12 +86,13 @@ class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
-        protected MaskRepository $maskRepository,
+        MaskRepository $maskRepository,
+        MetaModelLoader $metaModelLoader,
         Tracker $tracker,
         TokenRepository $tokenRepository,
         protected CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $maskRepository,$tracker, $tokenRepository);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $maskRepository, $metaModelLoader, $tracker, $tokenRepository);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
     }
 

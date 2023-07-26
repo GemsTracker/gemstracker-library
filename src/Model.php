@@ -602,7 +602,7 @@ class Model
         $created_by_field = $prefix . '_created_by';
 
         foreach (array($changed_field, $changed_by_field, $created_field, $created_by_field) as $field) {
-            $model->set($field, 'elementClass', 'none');
+            $model->set($field, 'elementClass', 'None');
         }
 
         $model->setOnSave($changed_field, new CurrentTimestamp());

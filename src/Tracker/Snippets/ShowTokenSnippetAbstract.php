@@ -12,7 +12,10 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Html;
+use Gems\Model\Bridge\ThreeColumnTableBridge;
+use Gems\Model\MetaModelLoader;
 use Gems\Tracker;
+use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\Model\StandardTokenModel;
 use Gems\User\Mask\MaskRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -34,6 +37,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 abstract class ShowTokenSnippetAbstract extends ModelDetailTableSnippetAbstract
 {
+    protected string $bridgeClass = ThreeColumnTableBridge::class;
+
     /**
      * Shortfix to add class attribute
      *
@@ -72,6 +77,7 @@ abstract class ShowTokenSnippetAbstract extends ModelDetailTableSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        protected MetaModelLoader $metaModelLoader,
         protected MaskRepository $maskRepository,
         protected Tracker $tracker,
         protected StatusMessengerInterface $messenger,
@@ -86,18 +92,18 @@ abstract class ShowTokenSnippetAbstract extends ModelDetailTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
+//        $model = $this->metaModelLoader->createModel(TokenModel::class);
         $model = $this->token->getModel();
 
         if ($model instanceof StandardTokenModel) {
             $model->applyFormatting();
         }
+        $metaModel = $model->getMetaModel();
         if ($this->useFakeForm && $this->token->getReceptionCode()->isSuccess() && (! $this->token->isCompleted())) {
-            $model->set('gto_id_token', 'formatFunction', array(__CLASS__, 'makeFakeForm'));
+            $metaModel->set('gto_id_token', 'formatFunction', array(__CLASS__, 'makeFakeForm'));
         } else {
-            $model->set('gto_id_token', 'formatFunction', 'strtoupper');
+            $metaModel->set('gto_id_token', 'formatFunction', 'strtoupper');
         }
-        $model->setBridgeFor('itemTable', 'ThreeColumnTableBridge');
-        $model->applyParameters(['gto_id_token' => $this->tokenId]);
 
         return $model;
     }

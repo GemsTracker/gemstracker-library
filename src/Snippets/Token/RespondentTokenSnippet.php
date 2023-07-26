@@ -89,6 +89,8 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
+        $metaModel = $dataModel->getMetaModel();
+
         // \MUtil\Model::$verbose = true;
         //
         // Initiate data retrieval for stuff needed by links
@@ -98,8 +100,8 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
 
         $HTML = Html::create();
 
-        $dataModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
-        $dataModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
 
         $roundIcon[] = \MUtil\Lazy::iif($bridge->gto_icon_file, Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
                 \MUtil\Lazy::iif($bridge->gro_icon_file, Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));

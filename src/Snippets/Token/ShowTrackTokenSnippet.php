@@ -14,14 +14,13 @@ namespace Gems\Snippets\Token;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
-use Gems\Model;
 use Gems\Model\Bridge\ThreeColumnTableBridge;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\Tracker\Snippets\ShowTokenSnippetAbstract;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
-use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\StatusMessengerInterface;
@@ -46,6 +45,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MetaModelLoader $metaModelLoader,
         MaskRepository $maskRepository,
         Tracker $tracker,
         StatusMessengerInterface $messenger,
@@ -53,7 +53,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         protected MenuSnippetHelper $menuSnippetHelper,
         protected CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $maskRepository, $tracker, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $maskRepository, $tracker, $messenger);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
     }
 
@@ -312,16 +312,15 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
      * having to recode the core table building code.
      *
      * @param ThreeColumnTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @param \Gems\Menu\MenuList $links
+     * @param DataReaderInterface $model
      * @return boolean True when there was row output
      */
-    protected function addRespondentGroup(ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addRespondentGroup(ThreeColumnTableBridge $bridge, DataReaderInterface $model)
     {
         $urlParams = $this->token->getMenuUrlParameters();
 
         $href = $this->menuSnippetHelper->getRouteUrl('respondent.show', $urlParams);
-        $model->set('gr2o_patient_nr', 'itemDisplay', \Zalt\Html\Html::create('a', $href));
+        $model->getMetaModel()->set('gr2o_patient_nr', 'itemDisplay', \Zalt\Html\Html::create('a', $href));
 
         // ThreeColumnTableBridge->add()
         $bridge->add('gr2o_patient_nr');
@@ -397,16 +396,15 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @param \Gems\Menu\MenuList $links
+     * @param DataReaderInterface $model
      * @return boolean True when there was row output
      */
-    protected function addTrackGroup(ThreeColumnTableBridge $bridge, ModelAbstract $model)
+    protected function addTrackGroup(ThreeColumnTableBridge $bridge, DataReaderInterface $model)
     {
         $urlParams = $this->token->getMenuUrlParameters();
 
         $href = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.show', $urlParams);
-        $model->set('gtr_track_name', 'itemDisplay', \Zalt\Html\Html::create('a', $href));
+        $model->getMetaModel()->set('gtr_track_name', 'itemDisplay', \Zalt\Html\Html::create('a', $href));
 
         // ThreeColumnTableBridge->add()
         $bridge->add('gtr_track_name');

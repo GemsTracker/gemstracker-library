@@ -97,8 +97,9 @@ class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
             $this->model = $this->modelLoader->createAppointmentModel($this->agenda);
             $this->model->applyDetailSettings();
         }
-        $this->model->set('gap_admission_time', 'formatFunction', array($this, 'displayDate'));
-        $this->model->set('gap_discharge_time', 'formatFunction', array($this, 'displayDate'));
+        $metaModel = $this->model->getMetaModel();
+        $metaModel->set('gap_admission_time', 'formatFunction', array($this, 'displayDate'));
+        $metaModel->set('gap_discharge_time', 'formatFunction', array($this, 'displayDate'));
 
         return $this->model;
     }

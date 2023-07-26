@@ -13,14 +13,15 @@ namespace Gems\Snippets;
 
 
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
+use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\Model\StandardTokenModel;
 use Gems\User\Mask\MaskRepository;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -58,6 +59,7 @@ class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         protected MaskRepository $maskRepository,
+        protected MetaModelLoader $metaModelLoader,
         protected Tracker $tracker,
         protected TokenRepository $tokenRepository,
     )
@@ -106,7 +108,8 @@ class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
         } elseif ($this->model instanceof Tracker\Model\TokenModel) {
             $model = $this->model;
         } else {
-            $model = $this->tracker->getTokenModel();
+//            $model = $this->metaModelLoader->createModel(TokenModel::class);
+             $model = $this->tracker->getTokenModel();
         }
         $model->addColumn(
             'CASE WHEN gto_completion_time IS NULL THEN gto_valid_from ELSE gto_completion_time END',
