@@ -46,12 +46,18 @@ class DoctrineDbalFactory implements FactoryInterface
             ];
         }
 
-        return [
+        $options = [
             'driver' => strtolower($config['driver']),
             'host' => $config['host'],
             'user' => $config['username'],
             'password' => $config['password'],
             'dbname' => $config['database'],
         ];
+
+        if (isset($config['options'])) {
+            $options['driverOptions'] = $config['options'];
+        }
+
+        return $options;
     }
 }
