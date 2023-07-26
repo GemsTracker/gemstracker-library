@@ -106,7 +106,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      * @param int $value
      * @return \Zalt\Html\HtmlElement
      */
-    public function displayFilterLink(int $value, $raw): HtmlElement
+    public function displayFilterLink(int|string|null $value, $raw): HtmlElement
     {
         if (isset($this->_filters[$raw])) {
             $class = '';
