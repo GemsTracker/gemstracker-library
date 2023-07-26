@@ -144,7 +144,7 @@ abstract class FieldAbstract implements FieldInterface
      *
      * @return string The field code
      */
-    public function getCode(): string
+    public function getCode(): string|null
     {
         return $this->fieldDefinition['gtf_field_code'];
     }

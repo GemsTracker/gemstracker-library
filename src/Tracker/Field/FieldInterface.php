@@ -53,7 +53,7 @@ interface FieldInterface
      *
      * @return string The field code
      */
-    public function getCode(): string;
+    public function getCode(): string|null;
 
     /**
      * Respondent track fields that this field's settings are dependent on.
