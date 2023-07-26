@@ -124,7 +124,7 @@ class Token
      *
      * @var array The answers in raw format
      */
-    private array|null $_sourceDataRaw;
+    private array|null $_sourceDataRaw = null;
 
     /**
      *
