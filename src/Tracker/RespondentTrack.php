@@ -610,7 +610,7 @@ class RespondentTrack
      * @param \Gems\Tracker\Token $token Optional token to add as a round (for speed optimization)
      * @return \Gems\Tracker\Token
      */
-    public function getActiveRoundToken(int $roundId, ?Token $token = null): ?Token
+    public function getActiveRoundToken(int|null $roundId, ?Token $token = null): ?Token
     {
         if ((null !== $token) && $token->getReceptionCode()->isSuccess()) {
             // Cache the token
@@ -1087,7 +1087,9 @@ class RespondentTrack
                 }
                 $prevToken = $token;
             }
-            $prevToken->setNextToken(false);
+            if ($prevToken) {
+                $prevToken->setNextToken(false);
+            }
         }
 
         return $this->_tokens;

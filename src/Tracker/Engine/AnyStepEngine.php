@@ -165,7 +165,7 @@ class AnyStepEngine extends StepEngineAbstract
      * @param \Gems\Tracker\RespondentTrack $respTrack
      * @return ?DateTimeInterface date time or null
      */
-    protected function getValidFromDate(string $fieldSource, string $fieldName, int $prevRoundId, Token $token, RespondentTrack $respTrack): ?DateTimeInterface
+    protected function getValidFromDate(string $fieldSource, string $fieldName, int|null $prevRoundId, Token $token, RespondentTrack $respTrack): ?DateTimeInterface
     {
         return $this->getValidUntilDate($fieldSource, $fieldName, $prevRoundId, $token, $respTrack, null);
     }
@@ -181,7 +181,7 @@ class AnyStepEngine extends StepEngineAbstract
      * @param ?DateTimeInterface $validFrom The calculated new valid from value
      * @return ?DateTimeInterface date time or null
      */
-    protected function getValidUntilDate(string $fieldSource, string $fieldName, int $prevRoundId, Token $token, RespondentTrack $respTrack, ?DateTimeInterface $validFrom = null): ?DateTimeInterface
+    protected function getValidUntilDate(string $fieldSource, string $fieldName, int|null $prevRoundId, Token $token, RespondentTrack $respTrack, ?DateTimeInterface $validFrom = null): ?DateTimeInterface
     {
         $date = null;
 
