@@ -69,6 +69,7 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
         'addCurrentParent'   => true,
         'addCurrentSiblings' => true,
         'formTitle'          => null,
+        'requestUndelete'    => false,
         'respondentTrack'    => 'getRespondentTrack',
         'respondentTrackId'  => 'getRespondentTrackId',
         'trackEngine'        => 'getTrackEngine',

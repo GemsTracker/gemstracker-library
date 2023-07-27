@@ -81,7 +81,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @var string
      */
-    protected $routeAction = 'show-track';
+    protected $routeAction = 'show';
 
     /**
      * Optional
