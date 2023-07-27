@@ -658,7 +658,7 @@ class Token
      *
      * @return string
      */
-    public function getComment(): string
+    public function getComment(): string|null
     {
         return $this->_gemsData['gto_comment'];
     }
