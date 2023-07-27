@@ -89,12 +89,10 @@ class CommTemplateModel extends JoinModel
             ],
         ];
 
-        if (isset($config['email'], $config['email']['multiLanguage']) && $config['email']['multiLanguage'] === true) {
-            $languages = $this->locale->getAvailableLanguages();
-            $requiredRows = [];
-            foreach ($languages as $code) {
-                $requiredRows[]['gctt_lang'] = $code;
-            }
+        $languages = $this->getEmailLanguages();
+        $requiredRows = [];
+        foreach ($languages as $code) {
+            $requiredRows[]['gctt_lang'] = $code;
         }
 
         $requiredRowsTransformer = new Model\Transform\SubmodelRequiredRows('translations');
@@ -102,16 +100,25 @@ class CommTemplateModel extends JoinModel
         $this->addTransformer($requiredRowsTransformer);
     }
 
+    protected function getEmailLanguages(): array
+    {
+        if (isset($this->config['email'], $this->config['email']['multiLanguage']) && $this->config['email']['multiLanguage'] === true) {
+            return $this->locale->getAvailableLanguages();
+        }
+
+        return [$this->locale->getDefaultLanguage()];
+    }
+
     protected function getSubModel(): DataReaderInterface
     {
+
+        $languages = array_combine($this->getEmailLanguages(), $this->getEmailLanguages());
+
         $subModel = new TableModel('gems__comm_template_translations');
         $subModel->set('gctt_lang', [
             'label' => $this->translator->_('Language'),
             'apiName' => 'language',
-            'multiOptions' => array_combine(
-                $this->locale->getAvailableLanguages(),
-                $this->locale->getAvailableLanguages()
-            ),
+            'multiOptions' => $languages,
             'elementClass' => 'Html',
         ]);
         $subModel->set('gctt_subject', [
