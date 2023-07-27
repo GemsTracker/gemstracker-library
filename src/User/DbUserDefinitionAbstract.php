@@ -298,7 +298,7 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
         } else {
             $data['gup_reset_key'] = $this->createResetKey();
         }
-        $data['gup_reset_requested'] = new \MUtil\Db\Expr\CurrentTimestamp();
+        $data['gup_reset_requested'] = 'CURRENT_TIMESTAMP';
 
         // Loop for case when hash is not unique
         while (true) {
