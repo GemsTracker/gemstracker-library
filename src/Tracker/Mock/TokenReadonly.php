@@ -295,7 +295,7 @@ class TokenReadonly extends Token
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */
-    public function setValidFrom(DateTimeInterface|string $validFrom, DateTimeInterface|string|null $validUntil, int $userId): int
+    public function setValidFrom(DateTimeInterface|string|null $validFrom, DateTimeInterface|string|null $validUntil, int $userId): int
     {
         $this->_changes[__FUNCTION__] = ['validFrom' => $validFrom, 'validUntil' => $validUntil, 'userId' => $userId];
 

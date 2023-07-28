@@ -44,6 +44,7 @@ use MUtil\Translate\Translator;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Dependency\DependencyInterface;
 use Zalt\Model\MetaModelInterface;
+use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
  * Utility class containing functions used by most track engines.
@@ -647,6 +648,18 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
     }
 
     /**
+     * @return array Of organization ids
+     */
+    public function getOrganizationIds(): array
+    {
+        if (is_string($this->_trackData['gtr_organizations'])) {
+            $this->_trackData['gtr_organizations'] = array_filter(explode('|', $this->_trackData['gtr_organizations']));
+        }
+
+        return $this->_trackData['gtr_organizations'];
+    }
+
+    /**
      * Look up the round id for the previous round
      *
      * @param int $roundId  \Gems round id
@@ -820,7 +833,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
                 'default', 10,
                 'filters[digits]', 'Digits',
                 'required', true,
-                'validators[uni]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track'))
+                'validators[uni]', [ModelUniqueValidator::class, true, ['with' => 'gro_id_track']]
                 );
         $model->set('gro_round_description', 'label', $this->translator->_('Description'),
                 'size', '30'

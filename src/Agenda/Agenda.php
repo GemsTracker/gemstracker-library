@@ -159,12 +159,15 @@ class Agenda
 
             // \MUtil\EchoOut\EchoOut::track($trackId, $createTrack, $filter->getName(), $filter->getSqlAppointmentsWhere(), $filter->getFilterId());
             if ($createTrack) {
-                $respTrack = $this->_createTrack($appointment, $filter);
-                $existingTracks[$trackId][] = $respTrack;
+                $engine = $this->tracker->getTrackEngine($filter->getTrackId());
+                if (in_array($appointment->getOrganizationId(), $engine->getOrganizationIds())) {
+                    $respTrack = $this->_createTrack($appointment, $filter);
+                    $existingTracks[$trackId][] = $respTrack;
 
-                $tokenChanges += $respTrack->getCount();
-                if ($filterTracer) {
-                    $filterTracer->addFilter($filter, $createTrack, $respTrack);
+                    $tokenChanges += $respTrack->getCount();
+                    if ($filterTracer) {
+                        $filterTracer->addFilter($filter, $createTrack, $respTrack);
+                    }
                 }
             }
         }

@@ -294,7 +294,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param int $period
      * @return ?DateTimeInterface
      */
-    protected function calculateFromDate(DateTimeInterface|null $startDate, string $type, int $period): DateTimeInterface
+    protected function calculateFromDate(DateTimeInterface|null $startDate, string $type, int $period): ?DateTimeInterface
     {
         return Period::applyPeriod($startDate, $type, $period);
     }

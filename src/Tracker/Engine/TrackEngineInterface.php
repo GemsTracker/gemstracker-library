@@ -217,6 +217,11 @@ interface TrackEngineInterface
     public function getNextRoundId(int $roundId): ?int;
 
     /**
+     * @return array Of organization ids
+     */
+    public function getOrganizationIds(): array;
+
+    /**
      * Look up the round id for the previous round
      *
      * @param int $roundId  \Gems round id
