@@ -555,7 +555,9 @@ class Tracker implements TrackerInterface
         }
 
         if ($surveyId == null || ! isset($this->_surveys[$surveyId])) {
-            $this->_surveys[$surveyId] = $this->surveyRepository->getSurvey($surveyData);
+            $survey = $this->surveyRepository->getSurvey($surveyData);
+            $surveyId = $survey->getSurveyId();
+            $this->_surveys[$surveyId] = $survey;
         }
 
         return $this->_surveys[$surveyId];

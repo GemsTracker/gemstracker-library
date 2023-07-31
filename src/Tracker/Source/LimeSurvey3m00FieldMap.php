@@ -11,7 +11,9 @@
 
 namespace Gems\Tracker\Source;
 
+use Gems\Db\ResultFetcher;
 use Gems\Cache\HelperAdapter;
+use Laminas\Db\Adapter\Adapter;
 use MUtil\Translate\Translator;
 
 /**
@@ -37,79 +39,41 @@ class LimeSurvey3m00FieldMap
      */
     const INTERNAL           = 'stamp';
 
-    protected $_answers;
-    protected $_attributes;
-    protected $_fieldMap;
-    protected $_hardAnswers;
-    protected $_titlesMap;
+    protected array $_answers = [];
+    protected array $_attributes;
+    protected ?array $_fieldMap = null;
+    protected array $_hardAnswers;
+    protected array $_titlesMap;
+    protected array $tableMetaData;
 
     /**
-     * @var HelperAdapter
-     */
-    protected HelperAdapter $cache;
-
-    /**
-     * The language of this fieldmap
+     * Resultfetcher for the LimeSurvey database connection.
      *
-     * @var string
+     * @var ResultFetcher
      */
-    protected string $language;
-
-    /**
-     * Limesurvey database adapter
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected \Zend_Db_Adapter_Abstract $lsDb;
-
-    protected $tableMetaData;
-
-    /**
-     * Prefix to add to standard table name
-     *
-     * @var string
-     */
-    protected string $tablePrefix;
-
-    /**
-     *
-     * @var Translator
-     */
-    protected Translator $translate;
-
-    /**
-     * The Lime-survey survey Id
-     *
-     * @var int
-     */
-    protected int $sourceSurveyId;
-
-    /**
-     * The GemsTracker source id
-     *
-     * @var int
-     */
-    protected int $sourceId;
+    protected ResultFetcher $lsResultFetcher;
 
     /**
      * Construct a fieldmap object to add LS source code knowledge and interpretation to the database data about a survey.
      *
-     * @param int $sourceSurveyId            Survey ID
-     * @param string $language               (ISO) Language
-     * @param \Zend_Db_Adapter_Abstract $lsDb The Lime Survey database connection
+     * @param int $sourceSurveyId            The LimeSurvey survey Id
+     * @param string $language               (ISO) Language of this fieldmap
+     * @param Adapter $lsAdapter             The Lime Survey database connection
      * @param Translator $translate           A translate object
      * @param string $tablePrefix              The prefix to use for all LS tables (in this installation)
      * @param \Gems\Cache\HelperAdapter $cache
+     * @param int $sourceId                   The GemsTracker source id
      */
-    public function __construct(int $sourceSurveyId, string $language, \Zend_Db_Adapter_Abstract $lsDb, Translator $translate, string $tablePrefix, HelperAdapter $cache, int $sourceId)
-    {
-        $this->sourceSurveyId = $sourceSurveyId;
-        $this->language       = $language;
-        $this->lsDb           = $lsDb;
-        $this->translate      = $translate;
-        $this->tablePrefix    = $tablePrefix;
-        $this->cache          = $cache;
-        $this->sourceId       = $sourceId;
+    public function __construct(
+        protected int $sourceSurveyId,
+        protected string $language,
+        protected Adapter $lsAdapter,
+        protected Translator $translate,
+        protected string $tablePrefix,
+        protected HelperAdapter $cache,
+        protected int $sourceId
+    ) {
+        $this->lsResultFetcher = new ResultFetcher($lsAdapter);
     }
 
     /**
@@ -117,7 +81,7 @@ class LimeSurvey3m00FieldMap
      *
      * @return string name of the answers table
      */
-    protected function _getAnswersTableName()
+    protected function _getAnswersTableName(): string
     {
         return $this->tablePrefix . self::ANSWERS_TABLE;
     }
@@ -127,12 +91,12 @@ class LimeSurvey3m00FieldMap
      *
      * @return string name of the groups table
      */
-    protected function _getGroupsTableName()
+    protected function _getGroupsTableName(): string
     {
         return $this->tablePrefix . self::GROUPS_TABLE;
     }
 
-    protected function _getFixedAnswers($type)
+    protected function _getFixedAnswers($type): array|false
     {
         switch ($type) {
             case ':':
@@ -176,25 +140,10 @@ class LimeSurvey3m00FieldMap
      * @param integer    $qid        Question ID
      * @param integer    $scaleId    Scale ID
      */
-    protected function _getHardAnswers($qid, $scaleId)
+    protected function _getHardAnswers($qid, $scaleId): array|false
     {
-        if (! is_array($this->_hardAnswers)) {
-            $qaTable = $this->_getAnswersTableName();
-            $qTable  = $this->_getQuestionsTableName();
-
-            $sql = 'SELECT a.*, q.other FROM ' . $qaTable . ' AS a
-                LEFT JOIN ' . $qTable . ' AS q ON q.qid = a.qid AND q.language = a.language
-                WHERE q.sid = ? AND q.language = ? ORDER BY a.qid, a.scale_id, sortorder';
-
-            $this->_hardAnswers = array();
-            if ($rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
-                foreach ($rows as $row) {
-                    $this->_hardAnswers[$row['qid']][$row['scale_id']][$row['code']] = $this->removeMarkup($row['answer']);
-                    if ($row['other']=='Y') {
-                        $this->_hardAnswers[$row['qid']][$row['scale_id']]['-oth-'] = $this->removeMarkup($this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other')));
-                    }
-                }
-            }
+        if (! isset($this->_hardAnswers)) {
+            $this->_setHardAnswers();
         }
 
         if (array_key_exists($qid, $this->_hardAnswers) && array_key_exists($scaleId, $this->_hardAnswers[$qid])) {
@@ -204,196 +153,229 @@ class LimeSurvey3m00FieldMap
         return false;
     }
 
-    protected function _getMap()
+    protected function _setHardAnswers(): void
+    {
+        $qaTable = $this->_getAnswersTableName();
+        $qTable  = $this->_getQuestionsTableName();
+
+        $sql = 'SELECT a.*, q.other FROM ' . $qaTable . ' AS a
+            LEFT JOIN ' . $qTable . ' AS q ON q.qid = a.qid AND q.language = a.language
+            WHERE q.sid = ? AND q.language = ? ORDER BY a.qid, a.scale_id, sortorder';
+
+        $this->_hardAnswers = [];
+        if ($rows = $this->lsResultFetcher->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
+            foreach ($rows as $row) {
+                $this->_hardAnswers[$row['qid']][$row['scale_id']][$row['code']] = $this->removeMarkup($row['answer']);
+                if ($row['other']=='Y') {
+                    $this->_hardAnswers[$row['qid']][$row['scale_id']]['-oth-'] = $this->removeMarkup($this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other')));
+                }
+            }
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function _getMap(): array
     {
         $cacheId = 'lsFieldMap'.$this->sourceId . '_'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
         $this->_fieldMap = $this->cache->getCacheItem($cacheId);
 
-        if (false === $this->_fieldMap) {
-            $aTable = $this->_getQuestionAttributesTableName();
-            $cTable = $this->_getQuestionConditonsTableName();
-            $gTable = $this->_getGroupsTableName();
-            $qTable = $this->_getQuestionsTableName();
-
-            $sql    = "
-                SELECT q.sid, q.type, q.qid, q.gid, q.question, q.title, q.help,
-                    q.other, q.question_order,
-                    g.group_order, g.group_name, g.description,
-                    sq.title AS sq_title, sq.question_order, sq.question AS sq_question, sq.scale_id,                
-                    at.value AS hidden, 
-                    CASE WHEN q.relevance IS NULL OR q.relevance = '' OR q.relevance = 1 OR NOT EXISTS (SELECT * FROM $cTable AS cn WHERE cn.qid = q.qid) THEN 0 ELSE 1 END AS hasConditon
-                FROM $qTable AS q
-                    LEFT JOIN $gTable AS g ON q.sid = g.sid AND q.gid = g.gid AND q.language=g.language
-                    LEFT JOIN $qTable AS sq ON q.qid = sq.parent_qid AND q.language = sq.language
-                    LEFT JOIN (SELECT * FROM $aTable WHERE attribute = 'hidden' AND (language = ''  OR language IS NULL)) AS at ON q.qid = at.qid
-                WHERE g.sid = ? AND g.language = ? AND q.parent_qid = 0
-                ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
-
-            // \MUtil\EchoOut\EchoOut::track($sql, $this->sourceSurveyId, $this->language);
-            $rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language));
-
-            $rowscount = count($rows);
-            foreach($rows as &$row) {
-                $row['sgq'] = $row['sid'] . 'X' . $row['gid'] . 'X' . $row['qid'];
-            }
-            unset($row);    // To prevent strange error
-
-            $map = array();
-            for ($i = 0; $i < $rowscount; $i++) {
-                $row = $rows[$i];
-                $other  = ($row['other'] == 'Y');
-                $row['hidden']      = (boolean) (1 == $row['hidden']);
-                $row['hasConditon'] = (boolean) (1 == $row['hasConditon']);
-
-                switch ($row['type']) {
-                    case '1':        //Dual scale
-                        //Check scale header in attributes table
-                        $row1 = $row;
-                        $row1['sgq'] .= $row['sq_title'] . '#0';
-                        $row1['code'] = $row['title'] . '_' . $row['sq_title'] . '#0';
-                        $row1['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerA', 'scale 1');
-                        $map[$row1['sgq']] = $row1;
-
-                        $row2 = $row;
-                        $row2['scale_id'] = 1;
-                        $row2['sgq'] .= $row['sq_title'] . '#1';
-                        $row2['code'] = $row['title'] . '_' . $row['sq_title'] . '#1';
-                        $row2['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerB', 'scale 2');
-                        $map[$row2['sgq']] = $row2;
-                        break;
-
-                    case 'R':     //Ranking question
-                        //Check the needed slots in attributes table
-                        $possibleAnswers = count($this->_getMultiOptions($row));
-                        $maxAnswers      = $this->_getQuestionAttribute($row['qid'], 'max_answers', $possibleAnswers);
-                        $slots           = min($maxAnswers, $possibleAnswers);
-
-                        for ($a = 1; $a <= $slots; $a++) {
-                            $row1 = $row;
-                            $row1['code'] = $row['title'] . '_' . $a;
-                            $row1['sgq'] = $row['sgq'] . $a;
-                            $row1['sq_title'] = $a;
-                            $row1['sq_question'] = sprintf($this->translate->_('Rank %d'), $a);
-                            $map[$row1['sgq']] = $row1;
-                        }
-                        break;
-
-                    case 'M':    //Multiple options with other
-                    case 'O':    //List with comment
-                    case 'P':    //Multiple options with other and comment
-                        do {
-                            $row = $rows[$i];
-                            $row['sgq'] .= $row['sq_title'];
-                            if ($rows[$i]['type'] === 'O') {    // List, only one answer don't add _
-                                $row['code'] = $row['title'];
-                            } else {
-                                $row['code'] = $row['title'] . '_' . $row['sq_title'];
-                            }
-                            $map[$row['sgq']] = $row;
-                            $row1 = $row;
-                            if ($row['type'] !== 'M') {
-                                $row1['sgq'] .= 'comment';
-                                $row1['code'] .= 'comment';
-                                $row1['sq_title'] .= 'comment';
-                                $row1['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
-                                $row1['type'] = 'S';
-                                $map[$row1['sgq']] = $row1;
-                            }
-                            $i++;
-                        } while ($i<$rowscount && $rows[$i]['qid']==$row['qid']);
-                        $i--;
-                        if ($other) {
-                            $row = $rows[$i];
-                            $row['sgq'] .= 'other';
-                            $row['sq_title'] = 'other';
-                            $row['code'] = $row['title'] . '_' . $row['sq_title'];
-                            $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
-                            if ($row['type'] === 'P' || $row['type'] === 'M') {
-                                $row['type'] = 'S';
-                            }
-                            $map[$row['sgq']] = $row;
-
-                            if ($rows[$i]['type'] == 'P') {
-                                $row['sgq'] .= 'comment';
-                                $row['code'] .= 'comment';
-                                $row['sq_title'] .= 'comment';
-                                $row['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
-                                $row['type'] = 'S';
-                                $map[$row['sgq']] = $row;
-                            }
-                        }
-                        break;
-
-                    case ':':    //Multi flexi numbers
-                    case ';':    //Multi flexi text
-                        $tmprow = array();
-                        do {
-                            $tmprow[] = $rows[$i];
-                            $i++;
-                        } while ($rows[$i]['scale_id']=='1');
-                        do {
-                            foreach($tmprow as $row2) {
-                                $row1 = $rows[$i];
-                                $row1['sgq'] .= $row1['sq_title'] . '_' . $row2['sq_title'];
-                                $row1['code'] = $row1['title']. '_' .$row1['sq_title'] . '_' . $row2['sq_title'];
-                                $row1['sq_question1'] = $row2['sq_question'];
-                                $map[$row1['sgq']] = $row1;
-                            }
-                            $i++;
-                        } while ($i<$rowscount && $rows[$i]['qid']==$row1['qid']);
-                        $i--;
-                        break;
-
-                    case '*':   //Equation type
-                        $row['code'] = $row['title'];
-
-                        // Since there is no question text (it contains the equation)
-                        // We use the help text for that, but in case that is empty we use
-                        // The question code
-                        $row['equation'] = $row['question'];
-                        $row['question'] = $row['help'];
-                        $row['help']     = '';
-                        if (empty($row['question'])) {
-                            $row['question'] = $row['code'];
-                        }
-                        $map[$row['sgq']] = $row;
-                        break;
-
-                    default:
-                        $row['code'] = $row['title'];
-                        if (!is_null($row['sq_title'])) {
-                            $row['sgq'] .= $row['sq_title'];
-                            $row['code'] .= '_' . $row['sq_title'];
-                        }
-                        $map[$row['sgq']] = $row;
-                        if ($other) {
-                            $row['sgq'] .= 'other';
-                            $row['code'] .= 'other';
-                            $row['sq_title'] = 'other';
-                            $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
-                            $row['type'] = 'S';
-                            $map[$row['sgq']] = $row;
-                        }
-                }
-            }
-            // now add some default fields that need a datetime stamp
-            $map = array(
-                'startdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
-                'submitdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
-                'datestamp' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
-            ) + $map;
-
-            $this->_fieldMap = $map;
-            // \MUtil\EchoOut\EchoOut::track($map);
-            // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
-            // 60*60*24=86400
-            $item = $this->cache->getItem($cacheId);
-            $item->expiresAfter(new \DateInterval('P1D'));
-            $item->set($this->_fieldMap);
-            $this->cache->save($item);
+        if (null === $this->_fieldMap) {
+            $this->_setMap();
+            $this->_cacheFieldMap($cacheId);
         }
 
         return $this->_fieldMap;
+    }
+
+    protected function _setMap(): void
+    {
+        $aTable = $this->_getQuestionAttributesTableName();
+        $cTable = $this->_getQuestionConditonsTableName();
+        $gTable = $this->_getGroupsTableName();
+        $qTable = $this->_getQuestionsTableName();
+
+        $sql    = "
+            SELECT q.sid, q.type, q.qid, q.gid, q.question, q.title, q.help,
+                q.other, q.question_order,
+                g.group_order, g.group_name, g.description,
+                sq.title AS sq_title, sq.question_order, sq.question AS sq_question, sq.scale_id,                
+                at.value AS hidden, 
+                CASE WHEN q.relevance IS NULL OR q.relevance = '' OR q.relevance = 1 OR NOT EXISTS (SELECT * FROM $cTable AS cn WHERE cn.qid = q.qid) THEN 0 ELSE 1 END AS hasConditon
+            FROM $qTable AS q
+                LEFT JOIN $gTable AS g ON q.sid = g.sid AND q.gid = g.gid AND q.language=g.language
+                LEFT JOIN $qTable AS sq ON q.qid = sq.parent_qid AND q.language = sq.language
+                LEFT JOIN (SELECT * FROM $aTable WHERE attribute = 'hidden' AND (language = ''  OR language IS NULL)) AS at ON q.qid = at.qid
+            WHERE g.sid = ? AND g.language = ? AND q.parent_qid = 0
+            ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
+
+        // \MUtil\EchoOut\EchoOut::track($sql, $this->sourceSurveyId, $this->language);
+        $rows = $this->lsResultFetcher->fetchAll($sql, [$this->sourceSurveyId, $this->language]);
+
+        $rowscount = count($rows);
+        foreach($rows as &$row) {
+            $row['sgq'] = $row['sid'] . 'X' . $row['gid'] . 'X' . $row['qid'];
+        }
+        unset($row);    // To prevent strange error
+
+        $map = array();
+        for ($i = 0; $i < $rowscount; $i++) {
+            $row = $rows[$i];
+            $other  = ($row['other'] == 'Y');
+            $row['hidden']      = (boolean) (1 == $row['hidden']);
+            $row['hasConditon'] = (boolean) (1 == $row['hasConditon']);
+
+            switch ($row['type']) {
+                case '1':        //Dual scale
+                    //Check scale header in attributes table
+                    $row1 = $row;
+                    $row1['sgq'] .= $row['sq_title'] . '#0';
+                    $row1['code'] = $row['title'] . '_' . $row['sq_title'] . '#0';
+                    $row1['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerA', 'scale 1');
+                    $map[$row1['sgq']] = $row1;
+
+                    $row2 = $row;
+                    $row2['scale_id'] = 1;
+                    $row2['sgq'] .= $row['sq_title'] . '#1';
+                    $row2['code'] = $row['title'] . '_' . $row['sq_title'] . '#1';
+                    $row2['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerB', 'scale 2');
+                    $map[$row2['sgq']] = $row2;
+                    break;
+
+                case 'R':     //Ranking question
+                    //Check the needed slots in attributes table
+                    $possibleAnswers = count($this->_getMultiOptions($row));
+                    $maxAnswers      = $this->_getQuestionAttribute($row['qid'], 'max_answers', $possibleAnswers);
+                    $slots           = min($maxAnswers, $possibleAnswers);
+
+                    for ($a = 1; $a <= $slots; $a++) {
+                        $row1 = $row;
+                        $row1['code'] = $row['title'] . '_' . $a;
+                        $row1['sgq'] = $row['sgq'] . $a;
+                        $row1['sq_title'] = $a;
+                        $row1['sq_question'] = sprintf($this->translate->_('Rank %d'), $a);
+                        $map[$row1['sgq']] = $row1;
+                    }
+                    break;
+
+                case 'M':    //Multiple options with other
+                case 'O':    //List with comment
+                case 'P':    //Multiple options with other and comment
+                    do {
+                        $row = $rows[$i];
+                        $row['sgq'] .= $row['sq_title'];
+                        if ($rows[$i]['type'] === 'O') {    // List, only one answer don't add _
+                            $row['code'] = $row['title'];
+                        } else {
+                            $row['code'] = $row['title'] . '_' . $row['sq_title'];
+                        }
+                        $map[$row['sgq']] = $row;
+                        $row1 = $row;
+                        if ($row['type'] !== 'M') {
+                            $row1['sgq'] .= 'comment';
+                            $row1['code'] .= 'comment';
+                            $row1['sq_title'] .= 'comment';
+                            $row1['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
+                            $row1['type'] = 'S';
+                            $map[$row1['sgq']] = $row1;
+                        }
+                        $i++;
+                    } while ($i<$rowscount && $rows[$i]['qid']==$row['qid']);
+                    $i--;
+                    if ($other) {
+                        $row = $rows[$i];
+                        $row['sgq'] .= 'other';
+                        $row['sq_title'] = 'other';
+                        $row['code'] = $row['title'] . '_' . $row['sq_title'];
+                        $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
+                        if ($row['type'] === 'P' || $row['type'] === 'M') {
+                            $row['type'] = 'S';
+                        }
+                        $map[$row['sgq']] = $row;
+
+                        if ($rows[$i]['type'] == 'P') {
+                            $row['sgq'] .= 'comment';
+                            $row['code'] .= 'comment';
+                            $row['sq_title'] .= 'comment';
+                            $row['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
+                            $row['type'] = 'S';
+                            $map[$row['sgq']] = $row;
+                        }
+                    }
+                    break;
+
+                case ':':    //Multi flexi numbers
+                case ';':    //Multi flexi text
+                    $tmprow = array();
+                    do {
+                        $tmprow[] = $rows[$i];
+                        $i++;
+                    } while ($rows[$i]['scale_id']=='1');
+                    do {
+                        foreach($tmprow as $row2) {
+                            $row1 = $rows[$i];
+                            $row1['sgq'] .= $row1['sq_title'] . '_' . $row2['sq_title'];
+                            $row1['code'] = $row1['title']. '_' .$row1['sq_title'] . '_' . $row2['sq_title'];
+                            $row1['sq_question1'] = $row2['sq_question'];
+                            $map[$row1['sgq']] = $row1;
+                        }
+                        $i++;
+                    } while ($i<$rowscount && $rows[$i]['qid']==$row1['qid']);
+                    $i--;
+                    break;
+
+                case '*':   //Equation type
+                    $row['code'] = $row['title'];
+
+                    // Since there is no question text (it contains the equation)
+                    // We use the help text for that, but in case that is empty we use
+                    // The question code
+                    $row['equation'] = $row['question'];
+                    $row['question'] = $row['help'];
+                    $row['help']     = '';
+                    if (empty($row['question'])) {
+                        $row['question'] = $row['code'];
+                    }
+                    $map[$row['sgq']] = $row;
+                    break;
+
+                default:
+                    $row['code'] = $row['title'];
+                    if (!is_null($row['sq_title'])) {
+                        $row['sgq'] .= $row['sq_title'];
+                        $row['code'] .= '_' . $row['sq_title'];
+                    }
+                    $map[$row['sgq']] = $row;
+                    if ($other) {
+                        $row['sgq'] .= 'other';
+                        $row['code'] .= 'other';
+                        $row['sq_title'] = 'other';
+                        $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
+                        $row['type'] = 'S';
+                        $map[$row['sgq']] = $row;
+                    }
+            }
+        }
+        // now add some default fields that need a datetime stamp
+        $map = array(
+            'startdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
+            'submitdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
+            'datestamp' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
+        ) + $map;
+
+        $this->_fieldMap = $map;
+        // \MUtil\EchoOut\EchoOut::track($map);
+    }
+
+    protected function _cacheFieldMap(string $cacheId): void
+    {
+        // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
+        // 60*60*24=86400
+        $item = $this->cache->getItem($cacheId);
+        $item->expiresAfter(new \DateInterval('P1D'));
+        $item->set($this->_fieldMap);
+        $this->cache->save($item);
     }
 
     /**
@@ -401,7 +383,7 @@ class LimeSurvey3m00FieldMap
      *
      * @param array $field    Field from getFieldMap function
      */
-    protected function _getMultiOptions($field)
+    protected function _getMultiOptions($field): array|bool
     {
         $scaleId = isset($field['scale_id']) ? $field['scale_id'] : 0;
         $qid     = $field['qid'];
@@ -446,7 +428,7 @@ class LimeSurvey3m00FieldMap
      *
      * @param $field    Field from getFieldMap function
      */
-    private function _getPossibleAnswers($field)
+    private function _getPossibleAnswers($field): array|string|bool
     {
         $scaleId = isset($field['scale_id']) ? $field['scale_id'] : 0;
         $code    = $field['code'];
@@ -524,7 +506,7 @@ class LimeSurvey3m00FieldMap
      */
     protected function _getQuestionAttribute($qid, $attribute, $default = null)
     {
-        if (! is_array($this->_attributes)) {
+        if (! isset($this->_attributes)) {
             $this->_attributes = [];
             $attributesTable  = $this->_getQuestionAttributesTableName();
             $questionsTable   = $this->_getQuestionsTableName();
@@ -535,7 +517,7 @@ class LimeSurvey3m00FieldMap
                 LEFT JOIN ' . $surveyTable . ' AS s ON s.sid = q.sid AND q.language = s.language
                 WHERE s.sid = ?';
 
-            $attributes = $this->lsDb->fetchAll($sql, $this->sourceSurveyId);
+            $attributes = $this->lsResultFetcher->fetchAll($sql, [$this->sourceSurveyId]);
 
             if (null === $attributes) {
                 // If DB lookup failed, return the default
@@ -848,7 +830,7 @@ class LimeSurvey3m00FieldMap
 
     protected function getFieldTableDataType($fieldname)
     {
-        if (!$this->tableMetaData) {
+        if (isset($this->tableMetaData)) {
             $this->loadTableMetaData();
         }
 
@@ -995,9 +977,9 @@ class LimeSurvey3m00FieldMap
     /**
      * Get the survey table structure (meta data)
      *
-     * @return array Table meta data
+     * @return array<string, array{'TABLE_NAME': string, 'DATA_TYPE': string}>
      */
-    public function getSurveyTableStructure()
+    public function getSurveyTableStructure(): array
     {
         $metaData = $this->loadTableMetaData();
 
@@ -1007,40 +989,35 @@ class LimeSurvey3m00FieldMap
     /**
      * Get the table structure of the token table
      *
-     * @return array List of \Zend_DB Table metadata
+     * @return array{string: array{'TABLE_NAME': string, 'DATA_TYPE': string}}
      */
-    public function getTokenTableStructure()
+    public function getTokenTableStructure(): array
     {
-        $tableName = $this->_getTokenTableName();
-
-        $table = new \Zend_Db_Table(['name' => $tableName, 'db' => $this->lsDb]);
-        $info = $table->info();
-        $metaData = $info['metadata'];
-
-        return $metaData;
+        return $this->getZendAlikeTableStructure($this->_getTokenTableName());
     }
 
     /**
      * Function to cast numbers as float, but leave null intact
      * @param $value The number to cast to float
-     * @return float
+     * @return ?float
      */
-    public function handleFloat($value)
+    public function handleFloat($value): ?float
     {
         return is_null($value) ? null : (float)$value;
     }
 
-    protected function loadTableMetaData()
+    /**
+     * @return array<string, array{'TABLE_NAME': string, 'DATA_TYPE': string}>
+     */
+    protected function loadTableMetaData(): array
     {
         try {
-            $tableName = $this->_getSurveyTableName();
-            $table = new \Zend_Db_Table(array('name' => $tableName, 'db' => $this->lsDb));
-            $info = $table->info();
+            $metadata = $this->getZendAlikeTableStructure($this->_getSurveyTableName());
         } catch (\Exception $exc) {
-            $info = array('metadata'=>array());
+            $metadata = [];
         }
 
-        $this->tableMetaData = $info['metadata'];
+        $this->tableMetaData = $metadata;
 
         return $this->tableMetaData;
     }
@@ -1104,6 +1081,30 @@ class LimeSurvey3m00FieldMap
     }
 
     /**
+     * Return an array with a table structure, modeled on the Zend Db metadata.
+     *
+     * @param string $tableName
+     * @return array<string, array{'TABLE_NAME': string, 'DATA_TYPE': string}>
+     */
+    private function getZendAlikeTableStructure(string $tableName): array
+    {
+        $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->lsAdapter);
+        $table = $metadata->getTable($tableName);
+
+        // Modeled on Zend/Db
+        $structure = [];
+        foreach ($table->getColumns() as $column) {
+            $columnName = $column->getName();
+            $structure[$columnName] = [
+                'TABLE_NAME' => $tableName,
+                'DATA_TYPE' => $column->getDataType(),
+            ];
+        }
+
+        return $structure;
+    }
+
+    /**
      * Execute a Database query on the limesurvey Database
      *
      * @param $sql mixed SQL query to perform on the limesurvey database
@@ -1111,6 +1112,6 @@ class LimeSurvey3m00FieldMap
      */
     public function lsDbQuery($sql, $bindValues=array())
     {
-        $this->lsDb->query($sql, $bindValues);
+        $this->lsAdapter->query($sql, $bindValues);
     }
 }
