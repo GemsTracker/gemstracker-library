@@ -476,7 +476,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected function _getTokenTableName(int|string $sourceSurveyId): string
     {
-        return $this->addDatabasePrefix(self::TOKEN_TABLE . $sourceSurveyId);
+        return $this->addDatabasePrefix(self::TOKEN_TABLE . $sourceSurveyId, false);
     }
 
     /**
