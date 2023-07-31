@@ -1,5 +1,6 @@
 
 CREATE TABLE if not exists gems__mail_servers (
+        gms_id_server  bigint unsigned not null auto_increment,
         gms_from       varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null,
 
         gms_server     varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null,
@@ -8,16 +9,14 @@ CREATE TABLE if not exists gems__mail_servers (
         gms_user       varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' null,
         gms_password   varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' null,
 
-        -- deprecated in 1.8.6  method was never used, now saved with password
-        gms_encryption varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' null,
-        -- end deprecated
-
         gms_changed    timestamp not null default current_timestamp on update current_timestamp,
         gms_changed_by bigint unsigned not null,
         gms_created    timestamp not null default current_timestamp,
         gms_created_by bigint unsigned not null,
 
-        PRIMARY KEY (gms_from)
+        PRIMARY KEY (gms_id_server),
+        UNIQUE INDEX (gms_from)
+
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 20

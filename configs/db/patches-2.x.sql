@@ -48,11 +48,10 @@ INSERT INTO `gems__comm_template_translations` (`gctt_id_template`, `gctt_lang`,
 
 -- PATCH: Add id to mailservers
 ALTER TABLE `gems__mail_servers`
-    ADD `ggp_code` bigint unsigned not null auto_increment FIRST
-    ADD PRIMARY KEY `gms_id_server` (`gms_id_server`),
-    ADD UNIQUE `gms_from` (`gms_from`),
+    ADD `gms_id_server` bigint unsigned not null auto_increment FIRST,
     DROP INDEX `PRIMARY`,
-    DROP INDEX `gms_id_server`;
+    ADD PRIMARY KEY `gms_id_server` (`gms_id_server`),
+    ADD UNIQUE `gms_from` (`gms_from`);
 
 -- PATCH: Add sites to organizations
 ALTER TABLE `gems__organizations`
