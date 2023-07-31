@@ -118,10 +118,10 @@ class RespondentConsentLogSnippet extends ModelTableSnippetAbstract
         ]);
 
         if ($this->respondent && $this->respondent->exists) {
-            $model->addFilter([
+            $this->extraFilter = [
                 'glrc_id_user' => $this->respondent->getId(),
                 'glrc_id_organization' => $this->respondent->getOrganizationId(),
-            ]);
+            ];
         }
 
 
