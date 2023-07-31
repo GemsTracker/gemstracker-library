@@ -255,7 +255,9 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
             $offset = (int) $filter['offset'];
             unset($filter['offset']);
         }
-        $select->limit($limit)->offset($offset);
+        if (is_int($limit) && is_int($offset)) {
+            $select->limit($limit)->offset($offset);
+        }
     }
 
     /**
