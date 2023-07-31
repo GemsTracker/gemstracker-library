@@ -183,7 +183,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     protected function applyDatesValidAfter(MetaModelInterface $model, array &$itemData, string $language): bool
     {
         // Set the after date fields that can be chosen for the current values
-        $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_after_source'], $itemData['gro_valid_after_id'], $language, true);
+        $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_after_source'], $itemData['gro_valid_after_id'], $language);
 
         return $this->_applyOptions($model, 'gro_valid_after_field', $dateOptions, $itemData);
     }
@@ -198,7 +198,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      */
     protected function applyDatesValidFor(MetaModelInterface $model, array &$itemData, string $language): bool
     {
-        $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_for_source'], $itemData['gro_valid_for_id'], $language, true);
+        $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_for_source'], $itemData['gro_valid_for_id'], $language);
 
         if ($itemData['gro_id_round'] == $itemData['gro_valid_for_id']) {
             // Cannot use the valid until of the same round to calculate that valid until
@@ -313,7 +313,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         if ($date instanceof DateTimeImmutable) {
             if (Period::isDateType($type)) {
                 // Make sure day based units are valid until the end of the day.
-                $date->setTime(23,59,59);
+                return $date->setTime(23,59,59);
             }
             return $date;
         }
@@ -485,7 +485,6 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     public function displayDateCalculation(mixed $value, bool $new, string $name, array $context = []): string
     {
         $fieldBase = substr($name, 0, -5);  // Strip field
-        $validAfter = (bool) strpos($fieldBase, 'after');
 
         // When always valid, just return nothing
         if ($context[$fieldBase . 'source'] == self::NO_TABLE) return '';
@@ -493,8 +492,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         $fields = $this->getDateOptionsFor(
                 $context[$fieldBase . 'source'],
                 $context[$fieldBase . 'id'],
-                $this->locale->getLanguage(),
-                $validAfter
+                $this->locale->getLanguage()
                 );
 
         if (isset($fields[$context[$fieldBase . 'field']])) {
@@ -560,10 +558,9 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param string $source The date list source as defined by this object
      * @param int $roundId  \Gems round id
      * @param string $language   (ISO) language string
-     * @param boolean $validAfter True if it concenrs _valid_after_ dates
      * @return array
      */
-    protected function getDateOptionsFor(string $sourceType, int|null $roundId, string $language, bool $validAfter): array
+    protected function getDateOptionsFor(string $sourceType, int|null $roundId, string $language): array
     {
         switch ($sourceType) {
             case self::NO_TABLE:
@@ -969,33 +966,6 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     public function isUserCreatable(): bool
     {
         return true;
-    }
-
-    /**
-     * The logic to set the display of the valid_X_field date list field.
-     *
-     * @param MetaModelInterface $model The round model
-     * @param string $fieldName The valid_X_field to set
-     * @param string $source The date list source as defined by this object
-     * @param int $roundId Optional a round id
-     * @param string $language   (ISO) language string
-     * @param boolean $validAfter True if it concerns _valid_after_ dates
-     */
-    protected function setDateListFor(MetaModelInterface $model, string $fieldName, string $source, int $roundId, string $language, bool $validAfter): void
-    {
-        $dateOptions = $this->getDateOptionsFor($source, $roundId, $language, $validAfter);
-
-        switch (count($dateOptions)) {
-            case 0:
-                $model->del($fieldName, 'label');
-                break;
-            case 1:
-                $model->set($fieldName, 'elementClass', 'exhibitor');
-                // Intentional fall through
-            default:
-                $model->set($fieldName, 'multiOptions', $dateOptions);
-                break;
-        }
     }
 
     /**
