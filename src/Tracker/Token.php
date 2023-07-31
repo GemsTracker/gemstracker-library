@@ -1451,7 +1451,7 @@ class Token
 
     public function getTrackName(): string
     {
-        $trackData = $this->resultFetcher->fetchRow("SELECT gtr_track_name FROM gems__tracks WHERE gtr_id_track = ?", $this->getTrackId());
+        $trackData = $this->resultFetcher->fetchRow("SELECT gtr_track_name FROM gems__tracks WHERE gtr_id_track = ?", [$this->getTrackId()]);
         return $trackData['gtr_track_name'];
     }
 
