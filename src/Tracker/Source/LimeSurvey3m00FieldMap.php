@@ -923,12 +923,17 @@ class LimeSurvey3m00FieldMap
                 if (isset($tmpres['question'])) {
                     $tmpres['answers'] = ['']; // Empty array prevents "n/a" display
 
+                    $parent = $tmpres;
+                    $parent['id'] = $field['sid'] . 'X' . $field['gid'] . 'X' . $field['qid'];
+
                     // Add non answered question for grouping
-                    $result[$field['title']] = $tmpres;
+                    $result[$field['title']] = $parent;
                     // "Next" question
                 }
+                $tmpres['parent'] = $field['title'];
                 $tmpres['question'] = $this->removeMarkup($field['sq_question']);
                 $tmpres['class'] = SurveyModel::CLASS_SUB_QUESTION;
+                $tmpres['code'] = $field['code'] .= '_' . $field['sq_title'];
             }
             $tmpres['answers'] = $this->_getPossibleAnswers($field);
 
