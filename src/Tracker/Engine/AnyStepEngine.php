@@ -181,7 +181,7 @@ class AnyStepEngine extends StepEngineAbstract
      * @param ?DateTimeInterface $validFrom The calculated new valid from value
      * @return ?DateTimeInterface date time or null
      */
-    protected function getValidUntilDate(string $fieldSource, string $fieldName, int|null $prevRoundId, Token $token, RespondentTrack $respTrack, ?DateTimeInterface $validFrom = null): ?DateTimeInterface
+    protected function getValidUntilDate(string $fieldSource, string|null $fieldName, int|null $prevRoundId, Token $token, RespondentTrack $respTrack, ?DateTimeInterface $validFrom = null): ?DateTimeInterface
     {
         $date = null;
 

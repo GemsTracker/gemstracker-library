@@ -400,7 +400,7 @@ class Survey
      */
     public function getQuestionList(string|null $language = null): array
     {
-        return $this->getSource()->getQuestionList($language, $this->id, $this->getSourceSurveyId());
+        return $this->getSource()->getQuestionList($this->id, $language, $this->getSourceSurveyId());
     }
 
     /**

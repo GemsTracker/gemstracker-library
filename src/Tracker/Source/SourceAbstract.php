@@ -11,14 +11,17 @@
 
 namespace Gems\Tracker\Source;
 
-use Gems\Db\Dsn;
+use Gems\Task\TaskRunnerBatch;
+use Gems\Tracker;
+use Gems\Tracker\Token\TokenLibrary;
+use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use Gems\Db\ResultFetcher;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Adapter\Adapter;
 use Gems\Encryption\ValueEncryptor;
-use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 use Laminas\Db\Adapter\Driver\AbstractConnection;
+use MUtil\Translate\Translator;
 
 /**
  * Abstract implementation of SourceInterface containing basic utilities and logical
@@ -30,17 +33,18 @@ use Laminas\Db\Adapter\Driver\AbstractConnection;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
-    implements \Gems\Tracker\Source\SourceInterface
+abstract class SourceAbstract implements SourceInterface
 {
 
+    private readonly array $_gemsDbConfig;
+
     /**
-     * @var array meta data fields that are included in a survey table
+     * @var array metadata fields that are included in a survey table
      */
     public static array $metaFields = [];
 
     /**
-     * The database connection to the source, usedable by all implementations that use a database
+     * The database connection to the source, usable by all implementations that use a database
      */
     private Adapter $_sourceDb;
 
@@ -50,34 +54,22 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     private ResultFetcher $_sourceResultFetcher;
 
     /**
-     * ResultFetcher interface to the Gems database.
-     */
-    private ResultFetcher $_gemsResultFetcher;
-
-    /**
-     *
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
-
-    /**
-     * @var ValueEncryptor
-     */
-    protected $valueEncryptor;
-
-    /**
      * Standard constructor for sources.
      * We do not want to copy db using registry because that is public and
      * this should be private.
      *
      * @param array $_sourceData The information from gems__sources for this source.
-     * @param Adapter $_gemsDb   The database connection to \Gems itself
      */
     public function __construct(
         private array $_sourceData,
-        private Adapter $_gemsDb
+        private readonly ResultFetcher $_gemsResultFetcher,
+        protected readonly Translator $translate,
+        protected readonly TokenLibrary $tokenLibrary,
+        protected readonly Tracker $tracker,
+        private readonly ValueEncryptor $valueEncryptor,
+        array $config,
     ) {
-        $this->_gemsResultFetcher = new ResultFetcher($this->_gemsDb);
+        $this->_gemsDbConfig = $config['db'];
     }
 
     /**
@@ -99,9 +91,9 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     /**
      * Returns all surveys for synchronization
      *
-     * @return array of sourceId values or false
+     * @return array|null of sourceId values or false
      */
-    abstract protected function _getSourceSurveysForSynchronisation();
+    abstract protected function _getSourceSurveysForSynchronisation(): array|null;
 
     /**
      * Creates a where filter statement for tokens that do not
@@ -116,6 +108,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
         $lsPlatform = $this->getSourceDatabase()->getPlatform();
         $tokField = $lsPlatform->quoteIdentifier($fieldName);
 
+        $checks = [];
         foreach (str_split($from) as $check) {
             $checks[] = 'LOCATE(' . $lsPlatform->quoteValue($check) . ', ' . $tokField . ')';
         }
@@ -148,15 +141,15 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
 
     /**
      * This helper function updates the surveys in the gems_surveys table that
-     * no longer exist in in the source and returns a list of their names.
+     * no longer exist in the source and returns a list of their names.
      *
      * @param array $surveyorSids The gsu_surveyor_id's that ARE in the source
-     * @param int $userId   Id of the user who takes the action (for logging)
+     * @param int $userId   ID of the user who takes the action (for logging)
      * @return array The names of the surveys that no longer exist
      */
     protected function _updateGemsSurveyExists(array $surveyorSids, int $userId): array
     {
-        $platform = $this->_gemsDb->getPlatform();
+        $platform = $this->_gemsResultFetcher->getPlatform();
         $sqlWhere = 'gsu_id_source = ' . $platform->quoteValue(strval($this->getId())) . '
                 AND (gsu_status IS NULL OR gsu_active = 1 OR gsu_surveyor_active = 1)
                 AND gsu_surveyor_id NOT IN (' . implode(', ', $surveyorSids) . ')';
@@ -165,10 +158,10 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
         $data['gsu_active']          = 0;
         $data['gsu_surveyor_active'] = 0;
         $data['gsu_status']          = 'Survey was removed from source.';
-        $data['gsu_changed']         = new \MUtil\Db\Expr\CurrentTimestamp();
+        $data['gsu_changed']         = new Expression('CURRENT_TIMESTAMP');
         $data['gsu_changed_by']      = $userId;
 
-        $sql = new Sql($this->_gemsDb);
+        $sql = new Sql($this->_gemsResultFetcher->getAdapter());
         $update = $sql->update('gems__surveys')->set($data)->where($sqlWhere);
         $sql->prepareStatementForSqlObject($update)->execute();
 
@@ -188,7 +181,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
             return 0;
         }
 
-        if (\Gems\Tracker::$verbose) {
+        if (Tracker::$verbose) {
             $echo = '';
             foreach ($values as $key => $val) {
                 $echo .= $key . ': ' . $this->_sourceData[$key] . ' => ' . $val . "\n";
@@ -197,7 +190,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
         }
 
         if (! isset($values['gso_changed'])) {
-            $values['gso_changed'] = new \MUtil\Db\Expr\CurrentTimestamp();
+            $values['gso_changed'] = new Expression('CURRENT_TIMESTAMP');
         }
         if (! isset($values['gso_changed_by'])) {
             $values['gso_changed_by'] = $userId;
@@ -207,7 +200,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
         $this->_sourceData = $values + $this->_sourceData;
 
         // return 1;
-        $sql = new Sql($this->_gemsDb);
+        $sql = new Sql($this->_gemsResultFetcher->getAdapter());
         $update = $sql->update('gems__sources')->set($values)->where(['gso_id_source' => $this->getId()]);
         $sql->prepareStatementForSqlObject($update)->execute();
 
@@ -215,7 +208,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     * Adds database (if needed) and tablename prefix to the table name
+     * Adds database (if needed) and table-name prefix to the table name
      *
      * @param string $tableName
      * @param bool $addDatabaseName Optional, when true (= default) and there is a database name then it is prepended to the name.
@@ -261,7 +254,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     * Returns all the gemstracker names for attributes stored in source for a token
+     * Returns all the GemsTracker names for attributes stored in source for a token
      *
      * @return array<int, string>
      */
@@ -281,7 +274,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
-     * @return int The source Id of this source
+     * @return int The source ID of this source
      */
     public function getId(): int
     {
@@ -289,17 +282,17 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     * Returns the recordcount for a given filter
+     * Returns the record-count for a given filter
      *
      * Abstract implementation is not efficient, sources should handle this as efficient
      * as possible.
      *
      * @param array $filter filter array
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return int
      */
-    public function getRawTokenAnswerRowsCount(array $filter, int|string $surveyId, int|string|null $sourceSurveyId = null): int
+    public function getRawTokenAnswerRowsCount(array $filter, int $surveyId, int|string|null $sourceSurveyId = null): int
     {
         $answers = $this->getRawTokenAnswerRows($filter, $surveyId, $sourceSurveyId);
         return count($answers);
@@ -315,44 +308,35 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
             if ($dbConfig['database'] = $this->_sourceData['gso_ls_database']) {
 
                 // Default config values from gemsDb
-                /** @var AbstractConnection */
-                $connection = $this->_gemsDb->driver->getConnection();
-                $gemsConfig = $connection->getConnectionParameters();
-                $gemsName   = $gemsConfig['database'];
 
-                if (($dbConfig['database'] != $gemsName) &&
-                    ($driver = $this->_sourceData['gso_ls_adapter'])) {
-                    $dbConfig['driver'] = $driver;
 
-                    //If upgrade has run and we have a 'charset' use it
+                if ($dbConfig['database'] != $this->_gemsDbConfig['database']) {
+                    $dbConfig['driver'] = $this->_sourceData['gso_ls_adapter'] ?? $this->_gemsDbConfig['driver'] ?? null;
+
+                    //If upgrade has run, and we have a 'charset' use it
                     if (array_key_exists('gso_ls_charset', $this->_sourceData)) {
-                        $dbConfig['charset'] = $this->_sourceData['gso_ls_charset']
-                            ? $this->_sourceData['gso_ls_charset']
-                            : $gemsConfig['charset'];
+                        $dbConfig['charset'] = $this->_sourceData['gso_ls_charset'] ?? $this->_gemsDbConfig['charset'] ?? null;
                     }
-                    $dbConfig['host']     = $this->_sourceData['gso_ls_dbhost']
-                        ? $this->_sourceData['gso_ls_dbhost']
-                        : $gemsConfig['host'];
+                    $dbConfig['host']     = $this->_sourceData['gso_ls_dbhost'] ?? $this->_gemsDbConfig['host'] ?? null;
                     if (isset($this->_sourceData['gso_ls_dbport'])) {
                         $dbConfig['port'] = $this->_sourceData['gso_ls_dbport'];
-                    } elseif (isset($gemsConfig['port'])) {
-                        $dbConfig['port'] = $gemsConfig['port'];
+                    } elseif (isset($this->_gemsDbConfig['port'])) {
+                        $dbConfig['port'] = $this->_gemsDbConfig['port'];
                     }
-                    $dbConfig['username'] = $this->_sourceData['gso_ls_username']
-                        ? $this->_sourceData['gso_ls_username']
-                        : $gemsConfig['username'];
+                    $dbConfig['username'] = $this->_sourceData['gso_ls_username'] ?? $this->_gemsDbConfig['username'] ?? null;
                     $dbConfig['password'] = $this->_sourceData['gso_ls_password']
                         ? $this->valueEncryptor->decrypt($this->_sourceData['gso_ls_password'])
-                        : $gemsConfig['password'];
+                        : $this->_gemsDbConfig['password'] ?? null;
 
-                    $this->_sourceDb = new Adapter(new Pdo(new \Pdo(Dsn::fromConfig($dbConfig))));
+                    $dbConfig = array_filter($dbConfig);
+
+                    $this->_sourceDb = new Adapter($dbConfig);
                 }
             }
 
-            // In all other cases use $_gemsDb
-            // FIXME _gemsDb is still \Zend_Db_Adapter_Abstract
+            // In all other cases use gems default adapter
             if (! isset($this->_sourceDb)) {
-                $this->_sourceDb = $this->_gemsDb;
+                $this->_sourceDb = $this->_gemsResultFetcher->getAdapter();
             }
         }
 
@@ -377,16 +361,16 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     * Returns all info from the \Gems surveys table for a givens \Gems Survey Id
+     * Returns all info from the \Gems surveys table for a givens \Gems Survey ID
      *
      * Uses internal caching to prevent multiple db lookups during a program run (so no caching
      * beyond page generation time)
      *
-     * @param int|string $surveyId
+     * @param int $surveyId
      * @param ?string $field Optional field to retrieve data for
      * @return array|int|string|null
      */
-    protected function getSurveyData(int|string $surveyId, ?string $field = null): array|int|string|null
+    protected function getSurveyData(int $surveyId, ?string $field = null): array|int|string|null
     {
         static $cache = array();
 
@@ -399,10 +383,8 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
 
         if (null === $field) {
             return $cache[$surveyId];
-        } else {
-            if (isset($cache[$surveyId][$field])) {
-                return $cache[$surveyId][$field];
-            }
+        } elseif (isset($cache[$surveyId][$field])) {
+            return $cache[$surveyId][$field];
         }
 
         return [];
@@ -411,11 +393,11 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     /**
      * Updates the gems database with the latest information about the surveys in this source adapter
      *
-     * @param \Gems\Task\TaskRunnerBatch $batch
-     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param TaskRunnerBatch $batch
+     * @param int $userId    ID of the user who takes the action (for logging)
      * @return array Returns an array of messages
      */
-    public function synchronizeSurveyBatch(\Gems\Task\TaskRunnerBatch $batch, int $userId): array
+    public function synchronizeSurveyBatch(TaskRunnerBatch $batch, int $userId): array
     {
         // Surveys in \Gems
         $select = $this->_gemsResultFetcher->getSelect();
@@ -461,22 +443,20 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     /**
      * Updates the gems__tokens table so all tokens stick to the (possibly) new token name rules.
      *
-     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param int $userId    ID of the user who takes the action (for logging)
      * @return int The number of tokens changed
      */
-    protected function updateTokens(int $userId, $updateTokens = true): int
+    protected function updateTokens(int $userId/*, $updateTokens = true*/): int
     {
-        $tokenLib = $this->tracker->getTokenLibrary();
-
-        $sql = new Sql($this->_gemsDb);
+        $sql = new Sql($this->_gemsResultFetcher->getAdapter());
         $update = $sql->update('gems__tokens')
                 ->set([
-                    'gto_id_token' => $this->_getTokenFromToSql($tokenLib->getFrom(), $tokenLib->getTo(), 'gto_id_token'),
-                    'gto_changed' => new \Laminas\Db\Sql\Expression('CURRENT_TIMESTAMP'),
+                    'gto_id_token' => $this->_getTokenFromToSql($this->tokenLibrary->getFrom(), $this->tokenLibrary->getTo(), 'gto_id_token'),
+                    'gto_changed' => new Expression('CURRENT_TIMESTAMP'),
                     'gto_changed_by' => $userId,
                 ])
                 ->where(
-                    $this->_getTokenFromSqlWhere($tokenLib->getFrom(), 'gto_id_token')
+                    $this->_getTokenFromSqlWhere($this->tokenLibrary->getFrom(), 'gto_id_token')
                     . ' AND gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ' . $this->getId() . ')'
                 );
         $result = $sql->prepareStatementForSqlObject($update)->execute();

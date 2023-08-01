@@ -11,7 +11,10 @@
 namespace Gems\Tracker\Source;
 
 use Gems\Tracker\Source\LimeSurvey3m00Database as LSSingleSource;
+use Gems\Tracker\Token;
+use Gems\User\Organization;
 use Laminas\Db\Sql\Select;
+use MUtil\Model;
 
 /**
  * This source allows to share one LimeSurvey with multiple satellite GemsTracker installations.
@@ -57,7 +60,7 @@ class LimeSurvey3m00MultiSource extends LSSingleSource {
      * @param \Gems\Tracker\Token $token
      * @return string[] Of fieldname => value type
      */
-    protected function _fillAttributeMap(\Gems\Tracker\Token $token): array
+    protected function _fillAttributeMap(Token $token): array
     {
         $values = parent::_fillAttributeMap($token);
 
@@ -84,7 +87,7 @@ class LimeSurvey3m00MultiSource extends LSSingleSource {
      */
     protected function _getSite(): string
     {
-        $siteUri   = $this->util->getCurrentURI();
+        $siteUri   = $this->currentUrlRepository->getCurrentUrl();
         $siteParts = explode('/', $siteUri);
         return array_pop($siteParts);
     }
@@ -96,7 +99,7 @@ class LimeSurvey3m00MultiSource extends LSSingleSource {
      * @param bool $reverse
      * @return string
      */
-    protected function _getToken($tokenId, $reverse = false): string
+    protected function _getToken(string $tokenId, bool $reverse = false): string
     {
         $newTokenId = parent::_getToken($tokenId, $reverse);
 
@@ -114,7 +117,7 @@ class LimeSurvey3m00MultiSource extends LSSingleSource {
      * @param int $surveyId
      * @param int $sourceSurveyId
      */
-    public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null): Select
+    public function getRawTokenAnswerRowsSelect(array $filter, int $surveyId, int|string|null $sourceSurveyId = null): Select
     {
         // Add the extra site attribute
         $filter['site'] = $this->_getSite();
@@ -129,9 +132,9 @@ class LimeSurvey3m00MultiSource extends LSSingleSource {
      * 
      * @return string
      */
-    protected function _getReturnURI(\Gems\User\Organization $organization = null): string
+    protected function _getReturnURI(Organization|null $organization = null): string
     {
-        return substr($this->util->getCurrentURI(), 0, -strlen($this->_getSite())) . '{TOKEN:ATTRIBUTE_5}/ask/return/' . \MUtil\Model::REQUEST_ID . '/{substr(TOKEN,strlen(TOKEN:ATTRIBUTE_5))}';
+        return substr($this->currentUrlRepository->getCurrentUrl(), 0, -strlen($this->_getSite())) . '{TOKEN:ATTRIBUTE_5}/ask/return/' . Model::REQUEST_ID . '/{substr(TOKEN,strlen(TOKEN:ATTRIBUTE_5))}';
     }
 
     /**
@@ -139,13 +142,12 @@ class LimeSurvey3m00MultiSource extends LSSingleSource {
      * 
      * @return string
      */
-    protected function _getReturnURIDescription($language): string
+    protected function _getReturnURIDescription(string $language): string
     {
         return sprintf(
-                $this->translate->_('Back to %s', $language),
+                $this->translate->_('Back to %s', [], null, $language),
                 //$this->project->getName()
                 '{TOKEN:ATTRIBUTE_6}'
         );
     }
-
 }

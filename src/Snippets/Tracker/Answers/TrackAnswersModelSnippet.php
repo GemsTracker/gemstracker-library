@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker\Answers;
 
+use Gems\Tracker\Snippets\AnswerModelSnippetGeneric;
+
 /**
  * Show all answers for one survey within a track
  *
@@ -20,7 +22,7 @@ namespace Gems\Snippets\Tracker\Answers;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class TrackAnswersModelSnippet extends \Gems\Tracker\Snippets\AnswerModelSnippetGeneric
+class TrackAnswersModelSnippet extends AnswerModelSnippetGeneric
 {
     /**
      * Use compact view and show all tokens of the same surveyId in
@@ -30,24 +32,16 @@ class TrackAnswersModelSnippet extends \Gems\Tracker\Snippets\AnswerModelSnippet
      */
     public $grouped = true;
 
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
+    public function hasHtmlOutput(): bool
     {
-        if ($this->request) {
-            $this->processSortOnly($model);
-
-            if ($this->grouped) {
-                $filter['gto_id_respondent_track'] = $this->token->getRespondentTrackId();
-                $filter['gto_id_survey']           = $this->token->getSurveyId();
-            } else {
-                $filter['gto_id_token']            = $this->token->getTokenId();
-            }
-
-            $model->setFilter($filter);
+        $result = parent::hasHtmlOutput();
+        if ($this->grouped) {
+            $this->extraFilter['gto_id_respondent_track'] = $this->token->getRespondentTrackId();
+            $this->extraFilter['gto_id_survey']           = $this->token->getSurveyId();
+        } else {
+            $this->extraFilter['gto_id_token']            = $this->token->getTokenId();
         }
+
+        return $result;
     }
 }

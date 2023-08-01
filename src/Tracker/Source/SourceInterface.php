@@ -12,6 +12,9 @@
 namespace Gems\Tracker\Source;
 
 use DateTimeInterface;
+use Gems\Task\TaskRunnerBatch;
+use Gems\Tracker\Survey;
+use Gems\Tracker\Token;
 use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
 
@@ -24,28 +27,18 @@ use MUtil\Model\ModelAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-interface SourceInterface extends \MUtil\Registry\TargetInterface
+interface SourceInterface
 {
-    /**
-     * Standard constructor for sources
-     * We do not want to copy db using registry because that is public and
-     * this should be private.
-     *
-     * @param array $_sourceData The information from gems__sources for this source.
-     * @param Adapter $_gemsDb   The database connection to \Gems itself
-     */
-    public function __construct(array $_sourceData, Adapter $_gemsDb);
-
     /**
      * @return bool When true can export when survey inactive in source
      */
     public function canExportInactive(): bool;
     
     /**
-     * Checks wether this particular source is active or not and should handle updating the gems-db
+     * Checks whether this particular source is active or not and should handle updating the gems-db
      * with the right information about this source
      *
-     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param int $userId    ID of the user who takes the action (for logging)
      * @return bool
      */
     public function checkSourceActive(int $userId): bool;
@@ -54,37 +47,37 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * Survey source synchronization check function
      *
      * @param int|string|null $sourceSurveyId
-     * @param int|string $surveyId
+     * @param int $surveyId
      * @param int $userId
      * @return array message string or array of messages
      */
-    public function checkSurvey(int|string|null $sourceSurveyId, int|string $surveyId, int $userId): array;
+    public function checkSurvey(int|string|null $sourceSurveyId, int $surveyId, int $userId): array;
 
     /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      * @param string $language
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return int 1 of the token was inserted or changed, 0 otherwise
-     * @throws \Gems\Tracker\Source\SurveyNotFoundException
+     * @throws SurveyNotFoundException
      */
-    public function copyTokenToSource(\Gems\Tracker\Token $token, string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): int;
+    public function copyTokenToSource(Token $token, string $language, int $surveyId, int|string|null $sourceSurveyId = null): int;
 
 
     /**
      * Returns a field from the raw answers as a date object.
      *
-     * A seperate function as only the source knows what format the date/time value has.
+     * A separate function as only the source knows what format the date/time value has.
      *
      * @param string $fieldName Name of answer field
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token \Gems token object
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return ?DateTimeInterface date time or null
      */
-    public function getAnswerDateTime(string $fieldName, \Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface;
+    public function getAnswerDateTime(string $fieldName, Token $token, int $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface;
 
     /**
      * Returns all the gemstracker names for attributes stored in source for a token
@@ -97,33 +90,33 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * Gets the time the survey was completed according to the source
      *
      * A source always return null when it does not know this time (or does not know
-     * it well enough). In the case \Gems\Tracker\Token will do it's best to keep
+     * it well enough). In the case Token will do it's best to keep
      * track by itself.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token \Gems token object
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return ?DateTimeInterface date time or null
      */
-    public function getCompletionTime(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface;
+    public function getCompletionTime(Token $token, int $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface;
 
     /**
-     * Returns an array containing fieldname => label for each date field in the survey.
+     * Returns an array containing field-name => label for each date field in the survey.
      *
-     * Used in dropdown list etc..
+     * Used in dropdown list etc.
      *
      * @param string $language   (ISO) language string
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
-     * @return array fieldname => label
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
+     * @return array field-name => label
      */
-    public function getDatesList(string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): array;
+    public function getDatesList(string $language, int $surveyId, int|string|null $sourceSurveyId = null): array;
 
     /**
      *
-     * @return int The source Id of this source
+     * @return int The source ID of this source
      */
-    public function getId();
+    public function getId(): int;
 
     /**
      * Returns an array of arrays with the structure:
@@ -136,33 +129,34 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      *                  nothing for no answer
      *
      * @param string $language   (ISO) language string
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return array Nested array
      */
-    public function getQuestionInformation(string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): array;
+    public function getQuestionInformation(string $language, int $surveyId, int|string|null $sourceSurveyId = null): array;
 
     /**
-     * Returns an array containing fieldname => label for dropdown list etc..
+     * Returns an array containing field-name => label for dropdown list etc.
      *
-     * @param string $language   (ISO) language string
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
-     * @return array fieldname => label
+
+     * @param int $surveyId \Gems Survey ID
+     * @param string|null $language   (ISO) language string
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
+     * @return array field-name => label
      */
-    public function getQuestionList(string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): array;
+    public function getQuestionList(int $surveyId, string|null $language = null, int|string|null $sourceSurveyId = null): array;
 
     /**
      * Returns the answers in simple raw array format, without value processing etc.
      *
      * Function may return more fields than just the answers.
      *
-     * @param string $tokenId \Gems Token Id
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param string $tokenId \Gems Token ID
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return array Field => Value array
      */
-    public function getRawTokenAnswerRow(string $tokenId, int|string $surveyId, int|string|null $sourceSurveyId = null): array;
+    public function getRawTokenAnswerRow(string $tokenId, int $surveyId, int|string|null $sourceSurveyId = null): array;
 
     /**
      * Returns the answers of multiple tokens in simple raw nested array format,
@@ -183,21 +177,21 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * while a filter of [organizationid] => 70 will return all results for this organization.
      *
      * @param array $filter filter array
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return array Of nested Field => Value arrays indexed by tokenId
      */
-    public function getRawTokenAnswerRows(array $filter, int|string $surveyId, int|string|null $sourceSurveyId = null): array;
+    public function getRawTokenAnswerRows(array $filter, int $surveyId, int|string|null $sourceSurveyId = null): array;
 
     /**
-     * Returns the recordcount for a given filter
+     * Returns the record-count for a given filter
      *
      * @param array $filter filter array
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return int
      */
-    public function getRawTokenAnswerRowsCount(array $filter, int|string $surveyId, int|string|null $sourceSurveyId = null): int;
+    public function getRawTokenAnswerRowsCount(array $filter, int $surveyId, int|string|null $sourceSurveyId = null): int;
 
     /**
      * Get the db adapter for this source
@@ -210,95 +204,95 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * Gets the time the survey was started according to the source.
      *
      * A source always return null when it does not know this time (or does not know
-     * it well enough). In the case \Gems\Tracker\Token will do it's best to keep
+     * it well enough). In the case Token will do it's best to keep
      * track by itself.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token \Gems token object
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return ?DateTimeInterface date time or null
      */
-    public function getStartTime(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface;
+    public function getStartTime(Token $token, int $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface;
 
     /**
      * Returns a model for the survey answers
      *
-     * @param \Gems\Tracker\Survey $survey
+     * @param Survey $survey
      * @param ?string $language Optional (ISO) language string
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Model\ModelAbstract
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
+     * @return ModelAbstract
      */
-    public function getSurveyAnswerModel(\Gems\Tracker\Survey $survey, string $language = null, int|string|null $sourceSurveyId = null): ModelAbstract;
+    public function getSurveyAnswerModel(Survey $survey, string $language = null, int|string|null $sourceSurveyId = null): ModelAbstract;
 
     /**
      * Returns the url that (should) start the survey for this token
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param Token $token \Gems token object
      * @param string $language
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return string The url to start the survey
      */
-    public function getTokenUrl(\Gems\Tracker\Token $token, string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): string;
+    public function getTokenUrl(Token $token, string $language, int $surveyId, int|string|null $sourceSurveyId = null): string;
 
     /**
      * Checks whether the token is in the source.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
-     * @return boolean
+     * @param Token $token \Gems token object
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
+     * @return bool
      */
-    public function inSource(\Gems\Tracker\Token $token, int|string $surveyId, null|int|string $sourceSurveyId = null): bool;
+    public function inSource(Token $token, int $surveyId, int|string|null $sourceSurveyId = null): bool;
 
     /**
      * Returns true if the survey was completed according to the source
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
-     * @return boolean True if the token has completed
+     * @param Token $token \Gems token object
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
+     * @return bool True if the token has completed
      */
-    public function isCompleted(\Gems\Tracker\Token $token, int|string $surveyId, null|int|string $sourceSurveyId = null): bool;
+    public function isCompleted(Token $token, int $surveyId, int|string|null $sourceSurveyId = null): bool;
 
     /**
      * Sets the answers passed on.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param Token $token \Gems token object
      * @param $answers array Field => Value array
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return true When answers changed
      */
-    public function setRawTokenAnswers(\Gems\Tracker\Token $token, array $answers, int|string $surveyId, null|int|string $sourceSurveyId = null): bool;
+    public function setRawTokenAnswers(Token $token, array $answers, int $surveyId, int|string|null $sourceSurveyId = null): bool;
 
     /**
      * Sets the completion time.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param \DateTimeInterface|null $completionTime \DateTimeInterface or null
-     * @param int $surveyId \Gems Survey Id (actually required)
-     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token \Gems token object
+     * @param DateTimeInterface|null $completionTime \DateTimeInterface or null
+     * @param int $surveyId \Gems Survey ID (actually required)
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      */
-    public function setTokenCompletionTime(\Gems\Tracker\Token $token, ?DateTimeInterface $completionTime, int|string $surveyId, int|string|null $sourceSurveyId = null);
+    public function setTokenCompletionTime(Token $token, ?DateTimeInterface $completionTime, int $surveyId, int|string|null $sourceSurveyId = null);
 
     /**
      * Updates the gems database with the latest information about the surveys in this source adapter
      *
-     * @param \Gems\Task\TaskRunnerBatch $batch
-     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param TaskRunnerBatch $batch
+     * @param int $userId    ID of the user who takes the action (for logging)
      * @return array Returns an array of messages
      */
-    public function synchronizeSurveyBatch(\Gems\Task\TaskRunnerBatch $batch, int $userId);
+    public function synchronizeSurveyBatch(TaskRunnerBatch $batch, int $userId): array;
 
     /**
-     * Updates the consent code of the the token in the source (if needed)
+     * Updates the consent code of the token in the source (if needed)
      *
-     * @param \Gems\Tracker\Token $token
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @param ?string $consentCode Optional consent code, otherwise code from token is used.
      * @return int 1 of the token was inserted or changed, 0 otherwise
      */
-    public function updateConsent(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null, ?string $consentCode = null): int;
+    public function updateConsent(Token $token, int $surveyId, int|string|null $sourceSurveyId = null, ?string $consentCode = null): int;
 }

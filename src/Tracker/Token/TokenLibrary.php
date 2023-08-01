@@ -11,6 +11,12 @@
 
 namespace Gems\Tracker\Token;
 
+use Gems\Db\ResultFetcher;
+use Gems\Exception\Coding;
+use Gems\Tracker;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\TableGateway;
+
 /**
  * Utility functions for token string functions
  *
@@ -20,70 +26,66 @@ namespace Gems\Tracker\Token;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class TokenLibrary extends \Gems\Registry\TargetAbstract
+class TokenLibrary
 {
-    /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    protected bool $tokenCaseSensitive;
 
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
+    protected string $tokenChars;
 
-    protected $tokenCaseSensitive;
-    protected $tokenDisplayFormat;
-    protected $tokenFormat;
-    protected $tokenFrom;
-    protected $tokenReuse;
-    protected $tokenTo;
-    
+    protected readonly array $tokenConfig;
+    protected string $tokenDisplayFormat;
+    protected string $tokenFormat;
+    protected string|null $tokenFrom;
+
     /**
      * The number of days a used token is valid to answer other tokens
-     * 
-     * -1 not at all, this breaks the tokenloop
-     * 0 default only the same day
-     * 1 yesterdays tokens can still be used
-     * etc.
-     * 
-     * @var int 
-     */
-    protected $_defaultReuse = 0;
-
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
      *
-     * @return boolean False if required values are missing.
+     * -1 not at all, this breaks the token-loop
+     * 0 default only the same day
+     * 1 yesterday's tokens can still be used
+     * etc.
+     *
+     * @var int
      */
-    public function checkRegistryRequestsAnswers()
+    protected int $tokenReuse = 0;
+    protected string|null $tokenTo;
+
+    public function __construct(
+        protected readonly ResultFetcher $resultFetcher,
+        array $config,
+
+    )
     {
-        if (isset($this->project->tokens['chars'])) {
-            $this->tokenChars = $this->project->tokens['chars'];
+
+        $this->tokenConfig = $config['tokens'] ?? [];
+        $this->initSettings();
+    }
+
+    public function initSettings(): void
+    {
+        if (isset($this->tokenConfig['chars'])) {
+            $this->tokenChars = $this->tokenConfig['chars'];
         } else {
-            throw new \Gems\Exception\Coding('Required project.ini setting "tokens.chars" is missing.');
+            throw new Coding('Required config setting "tokens.chars" is missing.');
         }
 
-        if (isset($this->project->tokens['format'])) {
-            $this->tokenFormat = $this->project->tokens['format'];
+        if (isset($this->tokenConfig['format'])) {
+            $this->tokenFormat = $this->tokenConfig['format'];
             $this->tokenDisplayFormat = str_replace("\t", '\\', str_replace(array('\\\\', '\\'), array("\t", ''), $this->tokenFormat));
         } else {
-            throw new \Gems\Exception\Coding('Required project.ini setting "tokens.format" is missing.');
+            throw new Coding('Required config setting "tokens.format" is missing.');
         }
 
-        if (isset($this->project->tokens['from'])) {
-            $this->tokenFrom = $this->project->tokens['from'];
+        if (isset($this->tokenConfig['from'])) {
+            $this->tokenFrom = $this->tokenConfig['from'];
 
-            if (isset($this->project->tokens['to'])) {
-                $this->tokenTo = $this->project->tokens['to'];
+            if (isset($this->tokenConfig['to'])) {
+                $this->tokenTo = $this->tokenConfig['to'];
             } else {
                 $this->tokenTo = null;
             }
             if (strlen($this->tokenFrom) != strlen($this->tokenTo)) {
-                throw new \Gems\Exception\Coding('Project.ini setting "token.from" does not have the same length as argument "token.to".');
+                throw new Coding('config setting "token.from" does not have the same length as argument "token.to".');
             }
 
         } else {
@@ -91,31 +93,27 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
             $this->tokenTo = null;
         }
 
-        if (isset($this->project->tokens['case'])) {
-            $this->tokenCaseSensitive = $this->project->tokens['case'];
+        if (isset($this->tokenConfig['case'])) {
+            $this->tokenCaseSensitive = (bool)$this->tokenConfig['case'];
         } else {
             $this->tokenCaseSensitive = ! ($this->tokenChars === strtolower($this->tokenChars));
         }
 
-        if (isset($this->project->tokens['reuse'])) {
-            $this->tokenReuse = intval($this->project->tokens['reuse']);
-        } else {
-            $this->tokenReuse = $this->_defaultReuse;
+        if (isset($this->tokenConfig['reuse'])) {
+            $this->tokenReuse = intval($this->tokenConfig['reuse']);
         }
-
-        return true;
     }
 
     /**
-     * Creates a new token with a new random token Id
+     * Creates a new token with a new random token ID
      *
      * @param array $tokenData
-     * @param int $userId Id of the user who takes the action (for logging)
-     * @return string The new token Id
+     * @param int $userId ID of the user who takes the action (for logging)
+     * @return string The new token ID
      */
-    public function createToken(array $tokenData, $userId)
+    public function createToken(array $tokenData, int $userId): string
     {
-        $current = new \MUtil\Db\Expr\CurrentTimestamp();
+        $current = new Expression('CURRENT_TIMESTAMP');
 
         $tokenData['gto_changed']    = $current;
         $tokenData['gto_changed_by'] = $userId;
@@ -125,9 +123,10 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
         // Wait till the last nanosecond with creating the token id
         $tokenData['gto_id_token']   = $this->createTokenId();
 
-        $this->db->insert('gems__tokens', $tokenData);
+        $table = new TableGateway('gems__tokens', $this->resultFetcher->getAdapter());
+        $table->insert($tokenData);
 
-        if (\Gems\Tracker::$verbose) {
+        if (Tracker::$verbose) {
             \MUtil\EchoOut\EchoOut::r($tokenData, 'Created token: ' . $tokenData['gto_id_token']);
         }
 
@@ -139,7 +138,7 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
      *
      * @return string A non-existing token
      */
-    protected function createTokenId()
+    protected function createTokenId(): string
     {
         $max = strlen($this->tokenChars) - 1;
         $len = strlen($this->tokenFormat);
@@ -155,7 +154,7 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
                 }
             }
 
-        } while ($this->db->fetchOne('SELECT gto_id_token FROM gems__tokens WHERE gto_id_token = ?', $out));
+        } while ($this->resultFetcher->fetchOne('SELECT gto_id_token FROM gems__tokens WHERE gto_id_token = ?', [$out]));
 
         return $out;
     }
@@ -163,10 +162,10 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
     /**
      * Removes all unacceptable characters from the input token and inserts any fixed characters left out
      *
-     * @param string $token
-     * @return string Reformatted token
+     * @param string|null $token
+     * @return string|null Reformatted token
      */
-    public function filter($token)
+    public function filter(string|null $token): string|null
     {
         if (null === $token) {
             return null;
@@ -177,7 +176,7 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
             $token = strtr($token, $this->tokenFrom, $this->tokenTo);
         }
         
-        // If not case sensitive, convert to lowercase
+        // If not case-sensitive, convert to lowercase
         if (! $this->tokenCaseSensitive) {
             $token = strtolower($token);
         }
@@ -187,7 +186,7 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
         $filteredToken = '';
         
         for ($tokenPos = 0; ($tokenPos < $tokenLength); $tokenPos++) {
-            if (strpos($this->tokenChars, $token[$tokenPos]) !== false) {
+            if (str_contains($this->tokenChars, $token[$tokenPos])) {
                 $filteredToken .= $token[$tokenPos];
             }
         }
@@ -209,7 +208,7 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
             }
         }
         
-        // Separate extra chars with a space and a questionmark
+        // Separate extra chars with a space and a question-mark
         if ($tokenPos < $tokenLength) {
             $resultToken .= ' ?' . substr($filteredToken, $tokenPos);
         }
@@ -219,9 +218,9 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
 
     /**
      *
-     * @return boolean True if case sensitive
+     * @return bool True if case-sensitive
      */
-    public function getCaseSensitive()
+    public function getCaseSensitive(): bool
     {
         return $this->tokenCaseSensitive;
     }
@@ -231,7 +230,7 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
      *
      * @return string
      */
-    public function getFormat()
+    public function getFormat(): string
     {
         return $this->tokenDisplayFormat;
     }
@@ -241,9 +240,9 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
      *
      * @see getFrom
      *
-     * @return string
+     * @return string|null
      */
-    public function getFrom()
+    public function getFrom(): string|null
     {
         return $this->tokenFrom;
     }
@@ -252,7 +251,7 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
      *
      * @return int The length a token is allowed to have.
      */
-    public function getLength()
+    public function getLength(): int
     {
         return strlen($this->tokenDisplayFormat);
     }
@@ -262,7 +261,7 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
      *
      * @return int
      */
-    public function getReuse()
+    public function getReuse(): int
     {
         return $this->tokenReuse;
     }
@@ -272,9 +271,9 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
      *
      * @see getFrom()
      *
-     * @return string
+     * @return string|null
      */
-    public function getTo()
+    public function getTo(): string|null
     {
         return $this->tokenTo;
     }
@@ -282,9 +281,9 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
     /**
      * True if after completion a token can be used to look up other not completed tokens
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasReuse()
+    public function hasReuse(): bool
     {
         return $this->tokenReuse >= 0;
     }
