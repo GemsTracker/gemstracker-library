@@ -25,7 +25,7 @@ class ZendDbDataSource extends DataSource
                 $pos = strpos($sql, '?');
 
                 $value = $parameterValue;
-                if (!is_numeric($parameterValue)) {
+                if (!is_numeric($value) && $value !== null) {
                     $value = $this->adapter->quote($value);
                 }
                 if ($pos !== false) {
