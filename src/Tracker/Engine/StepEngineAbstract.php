@@ -255,7 +255,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                 $model->set('ggp_name', 'label', $this->translator->_('Assigned to'), 'elementClass', 'Exhibitor', 'order', 25);
                 $model->set('gro_id_relationfield', 'elementClass', 'hidden');
 
-                $itemData['ggp_name'] = $this->resultFetcher->fetchOne('select ggp_name from gems__groups join gems__surveys on ggp_id_group = gsu_id_primary_group and gsu_id_survey = ?', $itemData['gro_id_survey']);
+                $itemData['ggp_name'] = $this->resultFetcher->fetchOne('select ggp_name from gems__groups join gems__surveys on ggp_id_group = gsu_id_primary_group and gsu_id_survey = ?', [$itemData['gro_id_survey']]);
                 if (!is_null($itemData['gro_id_relationfield'])) {
                     $itemData['gro_id_relationfield'] = null;
                 }
