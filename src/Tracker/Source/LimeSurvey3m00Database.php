@@ -13,13 +13,30 @@ namespace Gems\Tracker\Source;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use Gems\Cache\HelperAdapter;
+use Gems\Db\ResultFetcher;
+use Gems\Encryption\ValueEncryptor;
+use Gems\Html;
+use Gems\Locale\Locale;
+use Gems\Log\ErrorLogger;
 use Gems\Log\LogHelper;
-use Gems\Tracker\Source\LimeSurvey3m00FieldMap;
+use Gems\Repository\CurrentUrlRepository;
+use Gems\Tracker;
+use Gems\Tracker\Survey;
+use Gems\Tracker\Token;
+use Gems\Tracker\Token\TokenLibrary;
+use Gems\User\Organization;
+use Laminas\Db\Adapter\Driver\StatementInterface;
+use Laminas\Db\Metadata\Source\Factory;
+use Laminas\Db\ResultSet\ResultSet;
+use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Ddl\AlterTable;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
 use MUtil\Model;
+use MUtil\Model\ModelAbstract;
+use MUtil\Translate\Translator;
 
 /**
  * LimeSurvey3m00Database is a Source interface that enables the use of LimeSurvey 3.x
@@ -33,20 +50,20 @@ use MUtil\Model;
  */
 class LimeSurvey3m00Database extends SourceAbstract
 {
-    const CACHE_TOKEN_INFO = 'tokenInfo';
+    public const CACHE_TOKEN_INFO = 'tokenInfo';
 
-    const LS_DB_COMPLETION_FORMAT = 'Y-m-d H:i';
-    const LS_DB_DATE_FORMAT       = 'Y-m-d';
-    const LS_DB_DATETIME_FORMAT   = 'Y-m-d H:i:s';
+    public const LS_DB_COMPLETION_FORMAT = 'Y-m-d H:i';
+    public const LS_DB_DATE_FORMAT       = 'Y-m-d';
+    public const LS_DB_DATETIME_FORMAT   = 'Y-m-d H:i:s';
 
-    const QUESTIONS_TABLE    = 'questions';
-    const SURVEY_TABLE       = 'survey_';
-    const SURVEYS_LANG_TABLE = 'surveys_languagesettings';
-    const SURVEYS_TABLE      = 'surveys';
-    const TOKEN_TABLE        = 'tokens_';
+    public const QUESTIONS_TABLE    = 'questions';
+    public const SURVEY_TABLE       = 'survey_';
+    public const SURVEYS_LANG_TABLE = 'surveys_languagesettings';
+    public const SURVEYS_TABLE      = 'surveys';
+    public const TOKEN_TABLE        = 'tokens_';
 
     /**
-     * @var string[] meta data fields that are included in a survey table
+     * @var string[] metadata fields that are included in a survey table
      */
     public static array $metaFields = [
         'id',
@@ -89,67 +106,48 @@ class LimeSurvey3m00Database extends SourceAbstract
      *
      * @var array of \Gems\Tracker\Source\LimeSurvey3m00FieldMap
      */
-    private $_fieldMaps;
+    private array $_fieldMaps = [];
 
     /**
      *
      * @var array of string
      */
-    private $_languageMap;
+    private array $_languageMap = [];
 
     /**
      * The default text length attribute fields should have.
      *
      * @var int
      */
-    protected $attributeSize = 255;
-
-    /**
-     *
-     * @var \Gems\Cache\HelperAdapter
-     */
-    protected $cache;
-
-    /**
-     * @var array
-     */
-    protected $config;
+    protected int $attributeSize = 255;
 
     /**
      *
      * @var string class name for creating field maps
      */
-    protected $fieldMapClass = '\\Gems\\Tracker\\Source\\LimeSurvey3m00FieldMap';
+    protected string $fieldMapClass = LimeSurvey3m00FieldMap::class;
 
-    /**
-     *
-     * @var \Zend_Locale
-     */
-    protected $locale;
+    protected string|null $siteName = null;
 
-    /**
-     *
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected $logger;
+    public function __construct(
+        array $_sourceData,
+        ResultFetcher $_gemsResultFetcher,
+        Translator $translate,
+        TokenLibrary $tokenLibrary,
+        Tracker $tracker,
+        ValueEncryptor $valueEncryptor,
+        array $config,
+        protected readonly HelperAdapter $cache,
+        protected readonly Locale $locale,
+        protected readonly ErrorLogger $logger,
+        protected readonly CurrentUrlRepository $currentUrlRepository,
+    ) {
+        parent::__construct($_sourceData, $_gemsResultFetcher, $translate, $tokenLibrary, $tracker, $valueEncryptor, $config);
 
-    /**
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
-
-    /**
-     *
-     * @var \Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+        if (isset($config['app']['name'])) {
+            $this->siteName = $config['app']['name'];
+        }
+    }
 
     /**
      * Checks the return URI in LimeSurvey and sets it to the correct one when needed
@@ -157,10 +155,10 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @see checkSurvey()
      *
      * @param int|string $sourceSurveyId
-     * @param \Gems\Tracker\Survey $survey
+     * @param Survey $survey
      * @param array $messages
      */
-    protected function _checkReturnURI(int|string $sourceSurveyId, \Gems\Tracker\Survey $survey, array &$messages): void
+    protected function _checkReturnURI(int|string $sourceSurveyId, Survey $survey, array &$messages): void
     {
         $lsSurvLang = $this->_getSurveyLanguagesTableName();
         $sql = 'SELECT surveyls_language FROM ' . $lsSurvLang . ' WHERE surveyls_survey_id = ?';
@@ -185,7 +183,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         }
 
         if ($langChanges > 0) {
-            $messages[] = sprintf($this->_('The description of the exit url description was changed for %s languages in survey \'%s\'.'), $langChanges, $survey->getName());
+            $messages[] = sprintf($this->translate->_('The description of the exit url description was changed for %s languages in survey \'%s\'.'), $langChanges, $survey->getName());
         }
     }
 
@@ -200,9 +198,8 @@ class LimeSurvey3m00Database extends SourceAbstract
         $missingFields = array();
 
         $tokenLength = $this->_extractFieldLength($tokenTable['token']['Type']);
-        $token_library = $this->tracker->getTokenLibrary();
-        if ($tokenLength < $token_library->getLength()) {
-            $tokenLength = $token_library->getLength();
+        if ($tokenLength < $this->tokenLibrary->getLength()) {
+            $tokenLength = $this->tokenLibrary->getLength();
             $missingFields['token'] = 'CHANGE COLUMN `token` `token` varchar(' . $tokenLength .
                     ") CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL";
         }
@@ -255,10 +252,10 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Returns a list of field names that should be set in a newly inserted token.
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      * @return array{string: string|int}  Fieldname => value type
      */
-    protected function _fillAttributeMap(\Gems\Tracker\Token $token): array
+    protected function _fillAttributeMap(Token $token): array
     {
         $values[$this->_attributeMap['respondentid']]   =
                 substr(strval($token->getRespondentId()), 0, $this->attributeSize);
@@ -337,10 +334,10 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Uses the requested language if it exists for the survey, the default language for the survey otherwise
      *
      * @param int|string $sourceSurveyId Survey ID
-     * @param string $language       (ISO) Language
+     * @param string|null $language       (ISO) Language
      * @return string (ISO) Language
      */
-    protected function _getLanguage(int|string $sourceSurveyId, string $language): string
+    protected function _getLanguage(int|string $sourceSurveyId, string|null $language): string
     {
         if (! isset($this->_languageMap[$sourceSurveyId][$language])) {
             if ($language && $this->_isLanguage($sourceSurveyId, $language)) {
@@ -362,15 +359,15 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Get the return URI to return from LimeSurvey to GemsTracker
      *
-     * @param \Gems\User\Organization|null $organization
+     * @param Organization|null $organization
      * @return string
      */
-    protected function _getReturnURI(\Gems\User\Organization $organization = null): string
+    protected function _getReturnURI(Organization|null $organization = null): string
     {
         if ($organization) {
             $currentUrl = $organization->getPreferredSiteUrl();
         } else {
-            $currentUrl = $this->util->getCurrentURI();
+            $currentUrl = $this->currentUrlRepository->getCurrentUrl();
         }
         return $currentUrl . '/ask/return/{TOKEN}';
     }
@@ -384,20 +381,20 @@ class LimeSurvey3m00Database extends SourceAbstract
     protected function _getReturnURIDescription(string $language): string
     {
         $message = $this->translate->_('Back', [], null, $language);
-        if (isset($this->config['app']['name'])) {
-            $message = sprintf($this->translate->_('Back to %s', [], null, $language), $this->config['app']['name']);
+        if ($this->siteName) {
+            $message = sprintf($this->translate->_('Back to %s', [], null, $language), $this->siteName);
         }
 
         return $message;
     }
 
     /**
-     * Looks up the LimeSurvey Survey Id
+     * Looks up the LimeSurvey Survey ID
      *
-     * @param int|string $surveyId
+     * @param int $surveyId
      * @return int
      */
-    protected function _getSid(int|string $surveyId): int
+    protected function _getSid(int $surveyId): int
     {
         return $this->tracker->getSurvey($surveyId)->getSourceSurveyId();
     }
@@ -455,7 +452,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Replaces hyphen with underscore so LimeSurvey won't choke on it
      *
      * @param string $tokenId
-     * @param boolean $reverse  Reverse the action to go from limesurvey to GemsTracker token (default is false)
+     * @param bool $reverse  Reverse the action to go from limesurvey to GemsTracker token (default is false)
      * @return string
      */
     protected function _getToken(string $tokenId, bool $reverse = false): string
@@ -484,7 +481,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      *
      * @param int|string $sourceSurveyId Survey ID
      * @param string $language       (ISO) Language
-     * @return boolean True when the language is an existing language
+     * @return bool True when the language is an existing language
      */
     protected function _isLanguage(int|string $sourceSurveyId, string $language): bool
     {
@@ -503,15 +500,15 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Check if the tableprefix exists in the source database, and change the status of this
      * adapter in the gems_sources table accordingly
      *
-     * @param int $userId    Id of the user who takes the action (for logging)
-     * @return boolean  True if the source is active
+     * @param int $userId    ID of the user who takes the action (for logging)
+     * @return bool  True if the source is active
      */
     public function checkSourceActive(int $userId): bool
     {
         // The only method to check if it is active is by getting all the tables,
         // since the surveys table may be empty so we just check for existence.
         $sourceDb  = $this->getSourceDatabase();
-        $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($sourceDb);
+        $metadata = Factory::createSourceFromAdapter($sourceDb);
         $tables    = array_map('strtolower', $metadata->getTableNames());
         $tableName = $this->addDatabasePrefix(self::SURVEYS_TABLE, false); // Get name without database prefix.
 
@@ -545,31 +542,30 @@ class LimeSurvey3m00Database extends SourceAbstract
             $values['gsu_status'] = 'Survey was removed from source.';
 
             if ($survey->saveSurvey($values, $userId)) {
-                $messages[] = sprintf($this->_('The \'%s\' survey is no longer active. The survey was removed from LimeSurvey!'), $survey->getName());
+                $messages[] = sprintf($this->translate->_('The \'%s\' survey is no longer active. The survey was removed from LimeSurvey!'), $survey->getName());
             }
         } else {
             $lsAdapter = $this->getSourceDatabase();
             $lsResultFetcher = $this->getSourceResultFetcher();
 
             // SELECT sid, surveyls_title AS short_title, surveyls_description AS description, active, datestamp, ' . $this->_anonymizedField . '
-            $select = $lsResultFetcher->getSelect();
+            $select = $lsResultFetcher->getSelect($this->_getSurveysTableName());
             // 'alloweditaftercompletion' ?
-            $select->from($this->_getSurveysTableName())
-                    ->columns(['active', 'datestamp', 'language', 'additional_languages', 'autoredirect', 'alloweditaftercompletion', 'allowregister', 'listpublic', 'tokenanswerspersistence', 'expires', $this->_anonymizedField])
+            $select->columns(['active', 'datestamp', 'language', 'additional_languages', 'autoredirect', 'alloweditaftercompletion', 'allowregister', 'listpublic', 'tokenanswerspersistence', 'expires', $this->_anonymizedField])
                     ->join($this->_getSurveyLanguagesTableName(),
                            'sid = surveyls_survey_id AND language = surveyls_language',
                            ['surveyls_title', 'surveyls_description'])
                     ->where(['sid' => $sourceSurveyId]);
             $lsSurvey = $lsResultFetcher->fetchRow($select);
 
-            $surveyor_title = mb_substr(\MUtil\Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_title'])), 0, 100);
-            $surveyor_description = mb_substr(\MUtil\Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 100);
+            $surveyor_title = mb_substr(Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_title'])), 0, 100);
+            $surveyor_description = mb_substr(Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 100);
             $surveyor_status = '';
             $surveyor_warnings = '';
 
             // AVAILABLE LANGUAGES
-            $surveyor_languages = mb_substr(\MUtil\Html::removeMarkup(html_entity_decode($lsSurvey['language'])), 0, 100);
-            $surveyor_additional_languages = mb_substr(\MUtil\Html::removeMarkup(html_entity_decode($lsSurvey['additional_languages'])), 0, 100);
+            $surveyor_languages = mb_substr(Html::removeMarkup(html_entity_decode($lsSurvey['language'])), 0, 100);
+            $surveyor_additional_languages = mb_substr(Html::removeMarkup(html_entity_decode($lsSurvey['additional_languages'])), 0, 100);
             if ($surveyor_additional_languages) {
                 $array = explode(' ', $surveyor_additional_languages);
                 foreach ($array as $value) {
@@ -599,7 +595,7 @@ class LimeSurvey3m00Database extends SourceAbstract
                                 'sid' => $sourceSurveyId,
                             ]);
                     $sql->prepareStatementForSqlObject($update)->execute();
-                    $messages[] = sprintf($this->_("Corrected anonymization for survey '%s'"), $surveyor_title);
+                    $messages[] = sprintf($this->translate->_("Corrected anonymization for survey '%s'"), $surveyor_title);
 
                     $table = new AlterTable($this->_getSurveyTableName($sourceSurveyId));
                     $table->addColumn(new Varchar('token', 36));
@@ -633,18 +629,18 @@ class LimeSurvey3m00Database extends SourceAbstract
 
                     if ($missingFields) {
                         $sql    = "ALTER TABLE " . $this->_getTokenTableName($sourceSurveyId) . " " . implode(', ', $missingFields);
-                        $fields = implode($this->_(', '), array_keys($missingFields));
+                        $fields = implode($this->translate->_(', '), array_keys($missingFields));
                         // \MUtil\EchoOut\EchoOut::track($missingFields, $sql);
                         try {
                             // FIXME: This is not platform agnostic!
                             $lsAdapter->query($sql, $lsAdapter::QUERY_MODE_EXECUTE);
-                            $messages[] = sprintf($this->_("Added to token table '%s' the field(s): %s"), $surveyor_title, $fields);
+                            $messages[] = sprintf($this->translate->_("Added to token table '%s' the field(s): %s"), $surveyor_title, $fields);
                         } catch (\RuntimeException $e) {
                             $surveyor_status .= 'Token attributes could not be created. ';
                             $surveyor_status .= $e->getMessage() . ' ';
 
-                            $messages[] = sprintf($this->_("Attribute fields not created for token table for '%s'"), $surveyor_title);
-                            $messages[] = sprintf($this->_('Required fields: %s'), $fields);
+                            $messages[] = sprintf($this->translate->_("Attribute fields not created for token table for '%s'"), $surveyor_title);
+                            $messages[] = sprintf($this->translate->_('Required fields: %s'), $fields);
                             $messages[] = $e->getMessage();
 
                             // Maximum reporting for this case
@@ -654,7 +650,7 @@ class LimeSurvey3m00Database extends SourceAbstract
                     }
 
                     if ($this->fixTokenAttributeDescriptions($sourceSurveyId)) {
-                        $messages[] = sprintf($this->_("Updated token attribute descriptions for '%s'"), $surveyor_title);
+                        $messages[] = sprintf($this->translate->_("Updated token attribute descriptions for '%s'"), $surveyor_title);
                     }
                 } else {
                     $surveyor_status .= 'No token table created. ';
@@ -690,66 +686,64 @@ class LimeSurvey3m00Database extends SourceAbstract
                 if ($survey->isActiveInSource() != $surveyor_active) {
                     $values['gsu_surveyor_active'] = $surveyor_active ? 1 : 0;
 
-                    $messages[] = sprintf($this->_('The status of the \'%s\' survey has changed.'), $survey->getName());
+                    $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed.'), $survey->getName());
                 }
 
                 // Reset to inactive if the surveyor survey has become inactive.
                 if ($survey->isActive() && $surveyor_status) {
                     $values['gsu_active'] = 0;
-                    $messages[] = sprintf($this->_('Survey \'%s\' IS NO LONGER ACTIVE!!!'), $survey->getName());
+                    $messages[] = sprintf($this->translate->_('Survey \'%s\' IS NO LONGER ACTIVE!!!'), $survey->getName());
                 }
 
                 if (mb_substr($surveyor_status,  0,  127) != (string) $survey->getStatus()) {
                     if ($surveyor_status) {
                         $values['gsu_status'] = mb_substr($surveyor_status,  0,  127);
-                        $messages[] = sprintf($this->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
+                        $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
                     } elseif ($survey->getStatus() != 'OK') {
                         $values['gsu_status'] = 'OK';
-                        $messages[] = sprintf($this->_('The status warning for the \'%s\' survey was removed.'), $survey->getName());
+                        $messages[] = sprintf($this->translate->_('The status warning for the \'%s\' survey was removed.'), $survey->getName());
                     }
                 }
 
                 if ($survey->getName() != $surveyor_title) {
                     $values['gsu_survey_name'] = $surveyor_title;
-                    $messages[] = sprintf($this->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
+                    $messages[] = sprintf($this->translate->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
                 }
 
                 if ($survey->getDescription() != $surveyor_description) {
                     $values['gsu_survey_description'] = $surveyor_description;
-                    $messages[] = sprintf($this->_('The description of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_description);
+                    $messages[] = sprintf($this->translate->_('The description of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_description);
                 }
 
                 if ($survey->getAvailableLanguages() != $surveyor_languages) {
                     $values['gsu_survey_languages'] = $surveyor_languages;
-                    $messages[] = sprintf($this->_('The available languages of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_languages);
+                    $messages[] = sprintf($this->translate->_('The available languages of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_languages);
                 }
 
                 if ($surveyor_warnings) {
                     if ($survey->getSurveyWarnings() != $surveyor_warnings) {
                         $values['gsu_survey_warnings'] = $surveyor_warnings;
-                        $messages[] = sprintf($this->_('The warning messages of the \'%s\' survey have been changed to \'%s\'.'), $survey->getName(), $surveyor_warnings);
+                        $messages[] = sprintf($this->translate->_('The warning messages of the \'%s\' survey have been changed to \'%s\'.'), $survey->getName(), $surveyor_warnings);
                     }
                 }  elseif (!is_null($survey->getSurveyWarnings())) {
                     $values['gsu_survey_warnings'] = NULL;
-                    $messages[] = sprintf($this->_('The warning messages of the \'%s\' survey have been cleared.'), $survey->getName());
+                    $messages[] = sprintf($this->translate->_('The warning messages of the \'%s\' survey have been cleared.'), $survey->getName());
                 }
 
-            } else { // New record
-                if (is_null($lsSurvey['expires'])) {
-                    $values['gsu_survey_name']        = $surveyor_title;
-                    $values['gsu_survey_description'] = $surveyor_description;
-                    $values['gsu_survey_languages']   = $surveyor_languages;
-                    $values['gsu_survey_warnings']    = $surveyor_warnings ? $surveyor_warnings : 'OK';
-                    $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
-                    $values['gsu_active']             = 0;
-                    $values['gsu_status']             = $surveyor_status ? $surveyor_status : 'OK';
-                    $values['gsu_surveyor_id']        = $sourceSurveyId;
-                    $values['gsu_id_source']          = $this->getId();
+            } elseif (is_null($lsSurvey['expires'])) {
+                $values['gsu_survey_name']        = $surveyor_title;
+                $values['gsu_survey_description'] = $surveyor_description;
+                $values['gsu_survey_languages']   = $surveyor_languages;
+                $values['gsu_survey_warnings']    = $surveyor_warnings ?: 'OK';
+                $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
+                $values['gsu_active']             = 0;
+                $values['gsu_status']             = $surveyor_status ?: 'OK';
+                $values['gsu_surveyor_id']        = $sourceSurveyId;
+                $values['gsu_id_source']          = $this->getId();
 
-                    $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);
-                } else {
-                    $messages[] = sprintf($this->_('Skipped the \'%s\' survey because it has an expiry date.'), $surveyor_title);
-                }
+                $messages[] = sprintf($this->translate->_('Imported the \'%s\' survey.'), $surveyor_title);
+            } else {
+                $messages[] = sprintf($this->translate->_('Skipped the \'%s\' survey because it has an expiry date.'), $surveyor_title);
             }
             $survey->saveSurvey($values, $userId);
 
@@ -763,14 +757,14 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      * @param string $language
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return int 1 of the token was inserted or changed, 0 otherwise
-     * @throws \Gems\Tracker\Source\SurveyNotFoundException
+     * @throws SurveyNotFoundException
      */
-    public function copyTokenToSource(\Gems\Tracker\Token $token, string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): int
+    public function copyTokenToSource(Token $token, string $language, int $surveyId, int|string|null $sourceSurveyId = null): int
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -800,7 +794,7 @@ class LimeSurvey3m00Database extends SourceAbstract
 
         // No field was returned
         if (null === $currentUrl) {
-            throw new \Gems\Tracker\Source\SurveyNotFoundException(sprintf('The survey with id %d for token %s does not exist.', $surveyId, $tokenId) . ' ' . sprintf('The Lime Survey id is %s', $sourceSurveyId));
+            throw new SurveyNotFoundException(sprintf('The survey with id %d for token %s does not exist.', $surveyId, $tokenId) . ' ' . sprintf('The Lime Survey id is %s', $sourceSurveyId));
         }
 
         /*****************************
@@ -829,7 +823,7 @@ class LimeSurvey3m00Database extends SourceAbstract
                     ]);
                 $sql->prepareStatementForSqlObject($update)->execute();
 
-                if (\Gems\Tracker::$verbose) {
+                if (Tracker::$verbose) {
                     \MUtil\EchoOut\EchoOut::r("From $currentUrl\n to $newUrl", "Changed return url for $language version of $surveyId.");
                 }
             }
@@ -846,7 +840,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         $values['completed'] = 'N';
         if ($token->isCompleted()) {
             $completionTime = $token->getCompletionTime();
-            if ($completionTime instanceof \DateTimeInterface) {
+            if ($completionTime instanceof DateTimeInterface) {
                 $values['completed'] = $completionTime->format(self::LS_DB_COMPLETION_FORMAT);
             }
         }
@@ -903,7 +897,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         foreach($this->_attributeMap as $fieldName)
         {
             // Only add the attribute fields
-            if (substr($fieldName, 0, 10) == 'attribute_') {
+            if (str_starts_with($fieldName, 'attribute_')) {
                 $fieldData[$fieldName] = array(
                     'description' => $fieldName,
                     'mandatory'   => 'N',
@@ -931,12 +925,12 @@ class LimeSurvey3m00Database extends SourceAbstract
      * A seperate function as only the source knows what format the date/time value has.
      *
      * @param string $fieldName Name of answer field
-     * @param \Gems\Tracker\Token  $token \Gems token object
-     * @param int $surveyId \Gems Survey Id
-     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @param Token  $token \Gems token object
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return ?DateTimeInterface date time or null
      */
-    public function getAnswerDateTime(string $fieldName, \Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface
+    public function getAnswerDateTime(string $fieldName, Token $token, int $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface
     {
         $answers = $token->getRawAnswers();
 
@@ -961,15 +955,15 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Gets the time the survey was completed according to the source
      *
      * A source always return null when it does not know this time (or does not know
-     * it well enough). In the case \Gems\Tracker\Token will do it's best to keep
+     * it well enough). In the case Token will do it's best to keep
      * track by itself.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token \Gems token object
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return ?DateTimeInterface date time or null
      */
-    public function getCompletionTime(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface
+    public function getCompletionTime(Token $token, int $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface
     {
         if ($token->cacheHas('submitdate')) {
             // Use cached value when it exists
@@ -1036,12 +1030,12 @@ class LimeSurvey3m00Database extends SourceAbstract
         // Make sure we use tokens in the format LimeSurvey likes
         $tokens = array_map(array($this, '_getToken'), $tokenIds);
 
-        $select = new Select;
-        $select->from([$lsToken, 'token'])
-                ->where([
-                    'token' => $tokens,
-                    'completed' => 'N',
-                ]);
+        $select = $lsResultFetcher->getSelect($lsToken);
+        $select->columns(['token'])
+            ->where([
+                'token' => $tokens,
+                'completed' => 'N',
+            ]);
 
         $completedTokens = $lsResultFetcher->fetchCol($select);
 
@@ -1066,18 +1060,18 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Used in dropdown list etc..
      *
      * @param string $language   (ISO) language string
-     * @param int $surveyId \Gems Survey Id
-     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return array{string: string}  Fieldname => label
      */
-    public function getDatesList(string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): array
+    public function getDatesList(string $language, int $surveyId, int|string|null $sourceSurveyId = null): array
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
         }
 
         // Not a question but it is a valid date choice
-        // $results['submitdate'] = $this->_('Submitdate');
+        // $results['submitdate'] = $this->translate->_('Submitdate');
 
         $results = $this->_getFieldMap($sourceSurveyId, $language)->getQuestionList('D');
 
@@ -1101,11 +1095,11 @@ class LimeSurvey3m00Database extends SourceAbstract
      *                  nothing for no answer
      *
      * @param string $language   (ISO) language string
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return array Nested array
      */
-    public function getQuestionInformation(string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): array
+    public function getQuestionInformation(string $language, int $surveyId, int|string|null $sourceSurveyId = null): array
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1119,12 +1113,12 @@ class LimeSurvey3m00Database extends SourceAbstract
      *
      * Used in dropdown list etc..
      *
-     * @param string $language   (ISO) language string
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param string|null $language   (ISO) language string
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return array fieldname => label
      */
-    public function getQuestionList(string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): array
+    public function getQuestionList(int $surveyId, string|null $language = null, int|string|null $sourceSurveyId = null): array
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1138,12 +1132,12 @@ class LimeSurvey3m00Database extends SourceAbstract
      *
      * Function may return more fields than just the answers.
      *
-     * @param string $tokenId \Gems Token Id
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param string $tokenId \Gems Token ID
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return array Field => Value array
      */
-    public function getRawTokenAnswerRow(string $tokenId, int|string $surveyId, int|string|null $sourceSurveyId = null): array
+    public function getRawTokenAnswerRow(string $tokenId, int $surveyId, int|string|null $sourceSurveyId = null): array
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1158,7 +1152,7 @@ class LimeSurvey3m00Database extends SourceAbstract
             // getRawTokenAnswerRows() in case of double rows
             $values = $lsResultFetcher->fetchRow("SELECT * FROM $lsTab WHERE token = ? ORDER BY id DESC", [$token]);
         } catch (\RuntimeException $exception) {
-            $this->logger->error(LogHelper::getMessageFromException($exception, $this->request));
+            $this->logger->error(LogHelper::getMessageFromException($exception));
             $values = false;
         }
 
@@ -1176,11 +1170,11 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Function may return more fields than just the answers.
      *
      * @param array $filter XXXXX
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return array Of nested Field => Value arrays indexed by tokenId
      */
-    public function getRawTokenAnswerRows(array $filter, int|string $surveyId, int|string|null $sourceSurveyId = null): array
+    public function getRawTokenAnswerRows(array $filter, int $surveyId, int|string|null $sourceSurveyId = null): array
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1190,23 +1184,22 @@ class LimeSurvey3m00Database extends SourceAbstract
         //Now process the filters
         $lsSurveyTable = $this->_getSurveyTableName($sourceSurveyId);
         $tokenField    = $lsSurveyTable . '.token';
-        if (is_array($filter)) {
-            //first preprocess the tokens
-            if (isset($filter['token'])) {
-                foreach ((array) $filter['token'] as $key => $tokenId) {
-                    $token = $this->_getToken($tokenId);
 
-                    $filter[$tokenField][$key] = $token;
-                }
-                unset($filter['token']);
+        //first preprocess the tokens
+        if (isset($filter['token'])) {
+            foreach ((array) $filter['token'] as $key => $tokenId) {
+                $token = $this->_getToken($tokenId);
+
+                $filter[$tokenField][$key] = $token;
             }
+            unset($filter['token']);
         }
 
         $lsResultFetcher = $this->getSourceResultFetcher();
         // Prevent failure when survey no longer active
         try {
             $rows = $lsResultFetcher->fetchAll($select);
-        } catch (\Exception $exc) {
+        } catch (\Exception $e) {
             $rows = false;
         }
 
@@ -1221,14 +1214,13 @@ class LimeSurvey3m00Database extends SourceAbstract
                     $token = $this->_getToken($values['token'], true);  // Reverse map
                     $results[$token] = $map->mapKeysToTitles($values);
                 }
-                return $results;
             } else {
                 //@@TODO If we do the mapping in the select statement, maybe we can gain some performance here
                 foreach ($rows as $values) {
                     $results[] = $map->mapKeysToTitles($values);
                 }
-                return $results;
             }
+            return $results;
         }
 
         return array();
@@ -1238,15 +1230,15 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Returns the recordcount for a given filter
      *
      * @param array $filter filter array
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      */
-    public function getRawTokenAnswerRowsCount(array $filter, int|string $surveyId, int|string|null $sourceSurveyId = null): int
+    public function getRawTokenAnswerRowsCount(array $filter, int $surveyId, int|string|null $sourceSurveyId = null): int
     {
         $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
 
         $select->columns([
-            'count' => new \Laminas\Db\Sql\Expression('COUNT(*)'),
+            'count' => new Expression('COUNT(*)'),
         ]);
         $lsResultFetcher = $this->getSourceResultFetcher();
         $count = $lsResultFetcher->fetchOne($select);
@@ -1258,46 +1250,45 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Get the select object to use for RawTokenAnswerRows
      *
      * @param array $filter
-     * @param int|string $surveyId
+     * @param int $surveyId
      * @param int|string|null $sourceSurveyId
+     * @return Select
      */
-    public function getRawTokenAnswerRowsSelect(array $filter, int|string $surveyId, int|string|null $sourceSurveyId = null): Select
+    public function getRawTokenAnswerRowsSelect(array $filter, int $surveyId, int|string|null $sourceSurveyId = null): Select
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
         }
 
-        $lsAdapter = $this->getSourceDatabase();
-        $lsPlatform = $lsAdapter->getPlatform();
+        $sourceResultFetcher = $this->getSourceResultFetcher();
+
         $lsSurveyTable = $this->_getSurveyTableName($sourceSurveyId);
         $lsTokenTable  = $this->_getTokenTableName($sourceSurveyId);
         $tokenField    = $lsSurveyTable . '.token';
 
-        $quotedTokenTable  = $lsPlatform->quoteIdentifier($lsTokenTable . '.token');
-        $quotedSurveyTable = $lsPlatform->quoteIdentifier($lsSurveyTable . '.token');
+        $quotedTokenTable  = $lsTokenTable . '.token';
+        $quotedSurveyTable = $lsSurveyTable . '.token';
 
-        $select = new Select;
-        $select->from($lsTokenTable)->columns(array_values($this->_attributeMap))
-               ->join($lsSurveyTable, $quotedTokenTable . ' = ' . $quotedSurveyTable);
+        $select = $sourceResultFetcher->getSelect($lsTokenTable);
+        $select->columns(array_values($this->_attributeMap))
+            ->join($lsSurveyTable, $quotedTokenTable . ' = ' . $quotedSurveyTable);
 
         //Now process the filters
-        if (is_array($filter)) {
-            //first preprocess the tokens
-            if (isset($filter['token'])) {
-                foreach ((array) $filter['token'] as $key => $tokenId) {
-                    $token = $this->_getToken($tokenId);
+        //first preprocess the tokens
+        if (isset($filter['token'])) {
+            foreach ((array) $filter['token'] as $key => $tokenId) {
+                $token = $this->_getToken($tokenId);
 
-                    $filter[$tokenField][$key] = $token;
-                }
-                unset($filter['token']);
+                $filter[$tokenField][$key] = $token;
             }
+            unset($filter['token']);
+        }
 
-            // now map the attributes to the right fields
-            foreach ($this->_attributeMap as $name => $field) {
-                if (isset($filter[$name])) {
-                    $filter[$field] = $filter[$name];
-                    unset($filter[$name]);
-                }
+        // now map the attributes to the right fields
+        foreach ($this->_attributeMap as $name => $field) {
+            if (isset($filter[$name])) {
+                $filter[$field] = $filter[$name];
+                unset($filter[$name]);
             }
         }
 
@@ -1305,7 +1296,6 @@ class LimeSurvey3m00Database extends SourceAbstract
         $this->filterLimitOffset($filter, $select);
 
         foreach ($filter as $field => $values) {
-            $field = $lsPlatform->quoteIdentifier($field);
             if (is_array($values)) {
                 $select->where([$field => array_values($values)]);
             } else {
@@ -1313,7 +1303,7 @@ class LimeSurvey3m00Database extends SourceAbstract
             }
         }
 
-        if (\Gems\Tracker::$verbose) {
+        if (Tracker::$verbose) {
             \MUtil\EchoOut\EchoOut::r($select->getSqlString(), 'Select');
         }
 
@@ -1324,15 +1314,15 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Gets the time the survey was started according to the source
      *
      * A source always return null when it does not know this time (or does not know
-     * it well enough). In the case \Gems\Tracker\Token will do it's best to keep
+     * it well enough). In the case Token will do it's best to keep
      * track by itself.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token \Gems token object
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return ?DateTimeInterface date time or null
      */
-    public function getStartTime(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface
+    public function getStartTime(Token $token, int $surveyId, int|string|null $sourceSurveyId = null): ?DateTimeInterface
     {
         // Always return null!
         // The 'startdate' field is the time of the first save, not the time the user started
@@ -1343,12 +1333,12 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Returns a model for the survey answers
      *
-     * @param \Gems\Tracker\Survey $survey
+     * @param Survey $survey
      * @param ?string $language Optional (ISO) language string
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Model\ModelAbstract
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
+     * @return ModelAbstract
      */
-    public function getSurveyAnswerModel(\Gems\Tracker\Survey $survey, ?string $language = null, int|string|null $sourceSurveyId = null): \MUtil\Model\ModelAbstract
+    public function getSurveyAnswerModel(Survey $survey, ?string $language = null, int|string|null $sourceSurveyId = null): ModelAbstract
     {
         static $cache = array();        // working with 'real' cache produces out of memory error
 
@@ -1360,7 +1350,7 @@ class LimeSurvey3m00Database extends SourceAbstract
 
         if (!array_key_exists($cacheId, $cache)) {
             $model           = $this->tracker->getSurveyModel($survey, $this);
-            $fieldMap        = $this->_getFieldMap($sourceSurveyId, $language)->applyToModel($model);
+            $this->_getFieldMap($sourceSurveyId, $language)->applyToModel($model);
             $cache[$cacheId] = $model;
         }
 
@@ -1370,13 +1360,13 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Retrieve all fields stored in the token table, and store them in the tokencache
      *
-     * @param \Gems\Tracker\Token $token
-     * @param int|string $surveyId
+     * @param Token $token
+     * @param int $surveyId
      * @param int|string|null $sourceSurveyId
-     * @param array $fields
-     * @return array
+     * @param array|null $fields
+     * @return array|null
      */
-    public function getTokenInfo(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId, array $fields = null)
+    public function getTokenInfo(Token $token, int $surveyId, int|string|null $sourceSurveyId, array|null $fields = null): array|null
     {
         if (! $token->cacheHas(self::CACHE_TOKEN_INFO)) {
             if (null === $sourceSurveyId) {
@@ -1393,8 +1383,8 @@ class LimeSurvey3m00Database extends SourceAbstract
             try {
                 $result = $this->getSourceResultFetcher()->fetchRow($sql, [$tokenId]);
             } catch (\RuntimeException $exception) {
-                $this->logger->error(LogHelper::getMessageFromException($exception, $this->request));
-                $result = false;
+                $this->logger->error(LogHelper::getMessageFromException($exception));
+                $result = null;
             }
 
             $token->cacheSet(self::CACHE_TOKEN_INFO, $result);
@@ -1410,13 +1400,13 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Returns the url that (should) start the survey for this token
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param Token $token \Gems token object
      * @param string $language
-     * @param int $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return string The url to start the survey
      */
-    public function getTokenUrl(\Gems\Tracker\Token $token, string $language, int|string $surveyId, int|string|null $sourceSurveyId = null): string
+    public function getTokenUrl(Token $token, string $language, int $surveyId, int|string|null $sourceSurveyId = null): string
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1432,16 +1422,16 @@ class LimeSurvey3m00Database extends SourceAbstract
         // <base>/index.php/survey/index/sid/834486/token/234/lang/en
         $baseurl = $this->getBaseUrl();
         $start = $this->config['survey']['limesurvey']['tokenUrlStart'] ?? 'index.php';
-        return $baseurl . ('/' == substr($baseurl, -1) ? '' : '/') . $start . 'survey/index/sid/' . $sourceSurveyId . '/token/' . $tokenId . $langUrl . '/newtest/Y';
+        return $baseurl . (str_ends_with($baseurl, '/') ? '' : '/') . $start . 'survey/index/sid/' . $sourceSurveyId . '/token/' . $tokenId . $langUrl . '/newtest/Y';
     }
 
     /**
      * Get valid from/to dates to send to LimeSurvey depending on the dates of the token
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      * @return array<string, string>
      */
-    public function getValidDates(\Gems\Tracker\Token $token): array
+    public function getValidDates(Token $token): array
     {
         $now = new DateTimeImmutable();
         // For extra protection, we add valid from/to dates as needed instead of leaving them in GemsTracker only
@@ -1474,26 +1464,27 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Checks whether the token is in the source.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token \Gems token object
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return bool
      */
-    public function inSource(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): bool
+    public function inSource(Token $token, int $surveyId, int|string|null $sourceSurveyId = null): bool
     {
         $tokenInfo = $this->getTokenInfo($token, $surveyId, $sourceSurveyId);
-        return (bool) $tokenInfo;
+        $result = (bool) $tokenInfo;
+        return $result;
     }
 
     /**
      * Returns true if the survey was completed according to the source
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token \Gems token object
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return bool True if the token has completed
      */
-    public function isCompleted(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null): bool
+    public function isCompleted(Token $token, int $surveyId, int|string|null $sourceSurveyId = null): bool
     {
         $tokenInfo = $this->getTokenInfo($token, $surveyId, $sourceSurveyId);
         if (isset($tokenInfo['completed']) && $tokenInfo['completed'] != 'N') {
@@ -1506,13 +1497,13 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Sets the answers passed on.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param Token $token \Gems token object
      * @param array $answers Field => Value array
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return bool true When answers changed
      */
-    public function setRawTokenAnswers(\Gems\Tracker\Token $token, array $answers, int|string $surveyId, int|string|null $sourceSurveyId = null): bool
+    public function setRawTokenAnswers(Token $token, array $answers, int $surveyId, int|string|null $sourceSurveyId = null): bool
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1538,7 +1529,7 @@ class LimeSurvey3m00Database extends SourceAbstract
                 return ($rows > 0);
             }
         } else {
-            $current = new \MUtil\Db\Expr\CurrentTimestamp();
+            $current = new Expression('CURRENT_TIMESTAMP');
 
             $answers['token']         = $lsTokenId;
             $answers['startlanguage'] = $this->locale->getLanguage();
@@ -1556,12 +1547,12 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Sets the completion time.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param \DateTimeInterface|null $completionTime \DateTimeInterface or null
-     * @param int|string $surveyId \Gems Survey Id (actually required)
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token \Gems token object
+     * @param DateTimeInterface|null $completionTime DateTimeInterface or null
+     * @param int $surveyId \Gems Survey ID (actually required)
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      */
-    public function setTokenCompletionTime(\Gems\Tracker\Token $token, ?DateTimeInterface $completionTime, int|string $surveyId, int|string|null $sourceSurveyId = null): void
+    public function setTokenCompletionTime(Token $token, ?DateTimeInterface $completionTime, int $surveyId, int|string|null $sourceSurveyId = null): void
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1573,9 +1564,9 @@ class LimeSurvey3m00Database extends SourceAbstract
         $lsTabTok  = $this->_getTokenTableName($sourceSurveyId);
         $lsTokenId = $this->_getToken($token->getTokenId());
         $where     = ['token' => $lsTokenId];
-        $current   = new \MUtil\Db\Expr\CurrentTimestamp();
+        $current   = new Expression('CURRENT_TIMESTAMP');
 
-        if ($completionTime instanceof \DateTimeInterface) {
+        if ($completionTime instanceof DateTimeInterface) {
             $answers['submitdate']  = $completionTime->format(self::LS_DB_DATETIME_FORMAT);
             $tokenData['completed'] = $completionTime->format(self::LS_DB_COMPLETION_FORMAT);
         } else {
@@ -1589,7 +1580,7 @@ class LimeSurvey3m00Database extends SourceAbstract
             $update = $sql->update($lsTabSurv)->set($answers)->where($where);
             $sql->prepareStatementForSqlObject($update)->execute();
 
-        } elseif ($completionTime instanceof \DateTimeInterface) {
+        } elseif ($completionTime instanceof DateTimeInterface) {
             $answers['token']         = $lsTokenId;
             $answers['startlanguage'] = $this->locale->getLanguage();
             $answers['datestamp']     = $current;
@@ -1604,7 +1595,7 @@ class LimeSurvey3m00Database extends SourceAbstract
             $update = $sql->update($lsTabTok)->set($tokenData)->where($where);
             $sql->prepareStatementForSqlObject($update)->execute();
 
-        } elseif ($completionTime instanceof \DateTimeImmutable) {
+        } elseif ($completionTime instanceof DateTimeImmutable) {
 
             $tokenData['token'] = $lsTokenId;
             $tokenData = $tokenData + $this->_fillAttributeMap($token);
@@ -1616,15 +1607,15 @@ class LimeSurvey3m00Database extends SourceAbstract
     }
 
     /**
-     * Updates the consent code of the the token in the source (if needed)
+     * Updates the consent code of the token in the source (if needed)
      *
-     * @param \Gems\Tracker\Token $token
-     * @param int|string $surveyId \Gems Survey Id
-     * @param int|string|null $sourceSurveyId Optional Survey Id used by source
+     * @param Token $token
+     * @param int $surveyId \Gems Survey ID
+     * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @param ?string $consentCode Optional consent code, otherwise code from token is used.
      * @return int 1 of the token was inserted or changed, 0 otherwise
      */
-    public function updateConsent(\Gems\Tracker\Token $token, int|string $surveyId, int|string|null $sourceSurveyId = null, ?string $consentCode = null): int
+    public function updateConsent(Token $token, int $surveyId, int|string|null $sourceSurveyId = null, ?string $consentCode = null): int
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
@@ -1636,14 +1627,14 @@ class LimeSurvey3m00Database extends SourceAbstract
         $tokenId  = $this->_getToken($token->getTokenId());
 
         if (null === $consentCode) {
-            $consentCode = (string) $token->getConsentCode();
+            $consentCode = $token->getConsentCode();
         }
         $values[$this->_attributeMap['consentcode']] = $consentCode;
 
         if ($oldValues = $lsResultFetcher->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", [$tokenId])) {
 
             if ($this->tracker->filterChangesOnly($oldValues, $values)) {
-                if (\Gems\Tracker::$verbose) {
+                if (Tracker::$verbose) {
                     $echo = '';
                     foreach ($values as $key => $val) {
                         $echo .= $key . ': ' . $oldValues[$key] . ' => ' . $val . "\n";
@@ -1674,7 +1665,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param int|string $sourceSurveyId Limesurvey survey ID
      * @return array List of table structure
      */
-    public function getSurveyTableStructure(int|string $sourceSurveyId)
+    public function getSurveyTableStructure(int|string $sourceSurveyId): array
     {
         $tableStructure = $this->_getFieldMap($sourceSurveyId)->getSurveyTableStructure();
 
@@ -1687,7 +1678,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param int|string $sourceSurveyId Limesurvey survey ID
      * @return array List of table structure of survey token table
      */
-    public function getTokenTableStructure(int|string $sourceSurveyId)
+    public function getTokenTableStructure(int|string $sourceSurveyId): array
     {
         $tableStructure = $this->_getFieldMap($sourceSurveyId)->getTokenTableStructure();
 
@@ -1701,15 +1692,16 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param mixed $sql SQL query to perform on the limesurvey database
      * @param ?array $bindValues optional bind values for the Query
      */
-    public function lsDbQuery(int|string $sourceSurveyId, mixed $sql, ?array $bindValues=[])
+    public function lsDbQuery(int|string $sourceSurveyId, mixed $sql, ?array $bindValues=[]): StatementInterface|ResultSet
     {
-        $this->_getFieldMap($sourceSurveyId)->lsDbQuery($sql, $bindValues);
+        return $this->_getFieldMap($sourceSurveyId)->lsDbQuery($sql, $bindValues);
     }
 
     /**
      * Return data indexed by the value of the Field key.
      *
      * @param array $tableData
+     * @return array
      */
     private function indexByField(array $tableData): array
     {

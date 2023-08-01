@@ -11,9 +11,19 @@
 
 namespace Gems\Tracker\Source;
 
+use DateInterval;
+use Exception;
 use Gems\Db\ResultFetcher;
 use Gems\Cache\HelperAdapter;
+use Gems\Html;
+use Gems\Tracker\SurveyModel;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\Driver\StatementInterface;
+use Laminas\Db\Metadata\Source\Factory;
+use Laminas\Db\ResultSet\ResultSet;
+use MUtil\Model;
+use MUtil\Model\ModelAbstract;
+use MUtil\StringUtil\StringUtil;
 use MUtil\Translate\Translator;
 
 /**
@@ -28,22 +38,22 @@ use MUtil\Translate\Translator;
  */
 class LimeSurvey3m00FieldMap
 {
-    const ANSWERS_TABLE      = 'answers';
-    const ATTRIBUTES_TABLE   = 'question_attributes';
-    const CONDITIONS_TABLE   = 'conditions';
-    const GROUPS_TABLE       = 'groups';
-    const QUESTIONS_TABLE    = 'questions';
+    public const ANSWERS_TABLE      = 'answers';
+    public const ATTRIBUTES_TABLE   = 'question_attributes';
+    public const CONDITIONS_TABLE   = 'conditions';
+    public const GROUPS_TABLE       = 'groups';
+    public const QUESTIONS_TABLE    = 'questions';
 
     /**
      * Internal type, used for startdate, submitdate, datestamp fields
      */
-    const INTERNAL           = 'stamp';
+    public const INTERNAL           = 'stamp';
 
     protected array $_answers = [];
     protected array $_attributes;
     protected ?array $_fieldMap = null;
     protected array $_hardAnswers;
-    protected array $_titlesMap;
+    protected array|null $_titlesMap = null;
     protected array $tableMetaData;
 
     /**
@@ -56,12 +66,12 @@ class LimeSurvey3m00FieldMap
     /**
      * Construct a fieldmap object to add LS source code knowledge and interpretation to the database data about a survey.
      *
-     * @param int $sourceSurveyId            The LimeSurvey survey Id
+     * @param int $sourceSurveyId            The LimeSurvey survey ID
      * @param string $language               (ISO) Language of this fieldmap
      * @param Adapter $lsAdapter             The Lime Survey database connection
      * @param Translator $translate           A translate object
      * @param string $tablePrefix              The prefix to use for all LS tables (in this installation)
-     * @param \Gems\Cache\HelperAdapter $cache
+     * @param HelperAdapter $cache
      * @param int $sourceId                   The GemsTracker source id
      */
     public function __construct(
@@ -137,10 +147,10 @@ class LimeSurvey3m00FieldMap
      *
      * Uses 1 query to retrieve all answers and serves them as needed
      *
-     * @param integer    $qid        Question ID
-     * @param integer    $scaleId    Scale ID
+     * @param int    $qid        Question ID
+     * @param int    $scaleId    Scale ID
      */
-    protected function _getHardAnswers($qid, $scaleId): array|false
+    protected function _getHardAnswers(int $qid, int $scaleId): array|false
     {
         if (! isset($this->_hardAnswers)) {
             $this->_setHardAnswers();
@@ -189,7 +199,7 @@ class LimeSurvey3m00FieldMap
         return $this->_fieldMap;
     }
 
-    protected function _setMap(): void
+    protected function getQuestionMapRows(): array
     {
         $aTable = $this->_getQuestionAttributesTableName();
         $cTable = $this->_getQuestionConditonsTableName();
@@ -202,7 +212,9 @@ class LimeSurvey3m00FieldMap
                 g.group_order, g.group_name, g.description,
                 sq.title AS sq_title, sq.question_order, sq.question AS sq_question, sq.scale_id,                
                 at.value AS hidden, 
-                CASE WHEN q.relevance IS NULL OR q.relevance = '' OR q.relevance = 1 OR NOT EXISTS (SELECT * FROM $cTable AS cn WHERE cn.qid = q.qid) THEN 0 ELSE 1 END AS hasConditon
+                CASE WHEN q.relevance IS NULL OR q.relevance = '' OR q.relevance = 1 OR NOT EXISTS (SELECT * FROM $cTable AS cn WHERE cn.qid = q.qid) THEN 0 ELSE 1 END AS hasConditon,
+                q.relevance AS relevance,
+                q.mandatory AS required
             FROM $qTable AS q
                 LEFT JOIN $gTable AS g ON q.sid = g.sid AND q.gid = g.gid AND q.language=g.language
                 LEFT JOIN $qTable AS sq ON q.qid = sq.parent_qid AND q.language = sq.language
@@ -211,7 +223,12 @@ class LimeSurvey3m00FieldMap
             ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
 
         // \MUtil\EchoOut\EchoOut::track($sql, $this->sourceSurveyId, $this->language);
-        $rows = $this->lsResultFetcher->fetchAll($sql, [$this->sourceSurveyId, $this->language]);
+        return $this->lsResultFetcher->fetchAll($sql, [$this->sourceSurveyId, $this->language]);
+    }
+
+    protected function _setMap(): void
+    {
+        $rows = $this->getQuestionMapRows();
 
         $rowscount = count($rows);
         foreach($rows as &$row) {
@@ -219,12 +236,13 @@ class LimeSurvey3m00FieldMap
         }
         unset($row);    // To prevent strange error
 
-        $map = array();
+        $map = [];
         for ($i = 0; $i < $rowscount; $i++) {
             $row = $rows[$i];
             $other  = ($row['other'] == 'Y');
-            $row['hidden']      = (boolean) (1 == $row['hidden']);
-            $row['hasConditon'] = (boolean) (1 == $row['hasConditon']);
+            $row['hidden']      = (1 == $row['hidden']);
+            $row['hasConditon'] = (1 == $row['hasConditon']);
+            $row['required']    = ('Y' == $row['required']);
 
             switch ($row['type']) {
                 case '1':        //Dual scale
@@ -307,7 +325,7 @@ class LimeSurvey3m00FieldMap
 
                 case ':':    //Multi flexi numbers
                 case ';':    //Multi flexi text
-                    $tmprow = array();
+                    $tmprow = [];
                     do {
                         $tmprow[] = $rows[$i];
                         $i++;
@@ -358,11 +376,11 @@ class LimeSurvey3m00FieldMap
             }
         }
         // now add some default fields that need a datetime stamp
-        $map = array(
-            'startdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
-            'submitdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
-            'datestamp' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
-        ) + $map;
+        $map = [
+            'startdate' => ['type' => self::INTERNAL, 'qid' => 0, 'gid' => 0],
+            'submitdate' => ['type' => self::INTERNAL, 'qid' => 0, 'gid' => 0],
+            'datestamp' => ['type' => self::INTERNAL, 'qid' => 0, 'gid' => 0],
+            ] + $map;
 
         $this->_fieldMap = $map;
         // \MUtil\EchoOut\EchoOut::track($map);
@@ -373,7 +391,7 @@ class LimeSurvey3m00FieldMap
         // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
         // 60*60*24=86400
         $item = $this->cache->getItem($cacheId);
-        $item->expiresAfter(new \DateInterval('P1D'));
+        $item->expiresAfter(new DateInterval('P1D'));
         $item->set($this->_fieldMap);
         $this->cache->save($item);
     }
@@ -383,9 +401,9 @@ class LimeSurvey3m00FieldMap
      *
      * @param array $field    Field from getFieldMap function
      */
-    protected function _getMultiOptions($field): array|bool
+    protected function _getMultiOptions(array $field): array|bool
     {
-        $scaleId = isset($field['scale_id']) ? $field['scale_id'] : 0;
+        $scaleId = $field['scale_id'] ?? 0;
         $qid     = $field['qid'];
 
         switch ($field['type']) {
@@ -426,11 +444,11 @@ class LimeSurvey3m00FieldMap
     /**
      * Return an array with all possible answers for a given sid/field combination
      *
-     * @param $field    Field from getFieldMap function
+     * @param array $field    Field from getFieldMap function
      */
-    private function _getPossibleAnswers($field): array|string|bool
+    private function _getPossibleAnswers(array $field): array|string|bool
     {
-        $scaleId = isset($field['scale_id']) ? $field['scale_id'] : 0;
+        $scaleId = $field['scale_id'] ?? 0;
         $code    = $field['code'];
 
         if (isset($this->_answers[$code][$scaleId])) {
@@ -453,7 +471,7 @@ class LimeSurvey3m00FieldMap
                     $maxvalue  = $this->_getQuestionAttribute($qid, 'multiflexible_max', 10);
                     $minvalue  = $this->_getQuestionAttribute($qid, 'multiflexible_min', 1);
                     $stepvalue = $this->_getQuestionAttribute($qid, 'multiflexible_step', ($minvalue > $maxvalue ? 1 : -1));
-                    $answers   = (array) range($minvalue, $maxvalue, $stepvalue);
+                    $answers   = range($minvalue, $maxvalue, $stepvalue);
                     $answers   = array_combine($answers, $answers);
                     break;
                 case '5':
@@ -499,12 +517,12 @@ class LimeSurvey3m00FieldMap
     /**
      * Return a certain question attribute or the default value if it does not exist.
      *
-     * @param string $qid
+     * @param int $qid
      * @param string $attribute
      * @param mixed $default
      * @return mixed
      */
-    protected function _getQuestionAttribute($qid, $attribute, $default = null)
+    protected function _getQuestionAttribute(int $qid, string $attribute, mixed $default = null): mixed
     {
         if (! isset($this->_attributes)) {
             $this->_attributes = [];
@@ -541,7 +559,7 @@ class LimeSurvey3m00FieldMap
      *
      * @return string name of the question attributes table
      */
-    protected function _getQuestionAttributesTableName()
+    protected function _getQuestionAttributesTableName(): string
     {
         return $this->tablePrefix . self::ATTRIBUTES_TABLE;
     }
@@ -551,7 +569,7 @@ class LimeSurvey3m00FieldMap
      *
      * @return string name of the question attributes table
      */
-    protected function _getQuestionConditonsTableName()
+    protected function _getQuestionConditonsTableName(): string
     {
         return $this->tablePrefix . self::CONDITIONS_TABLE;
     }
@@ -563,7 +581,7 @@ class LimeSurvey3m00FieldMap
      *
      * @return string name of the questions table
      */
-    protected function _getQuestionsTableName()
+    protected function _getQuestionsTableName(): string
     {
         return $this->tablePrefix . self::QUESTIONS_TABLE;
     }
@@ -573,9 +591,9 @@ class LimeSurvey3m00FieldMap
      *
      * @return string name of the surveys table
      */
-    protected function _getSurveysTableName()
+    protected function _getSurveysTableName(): string
     {
-        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey3m00Database::SURVEYS_TABLE;
+        return $this->tablePrefix . LimeSurvey3m00Database::SURVEYS_TABLE;
     }
 
     /**
@@ -583,9 +601,9 @@ class LimeSurvey3m00FieldMap
      *
      * @return string Name of survey table for this survey
      */
-    protected function _getSurveyTableName()
+    protected function _getSurveyTableName(): string
     {
-        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey3m00Database::SURVEY_TABLE . $this->sourceSurveyId;
+        return $this->tablePrefix . LimeSurvey3m00Database::SURVEY_TABLE . $this->sourceSurveyId;
     }
 
     /**
@@ -593,9 +611,9 @@ class LimeSurvey3m00FieldMap
      *
      * @return string Name of survey table for this survey
      */
-    protected function _getTokenTableName()
+    protected function _getTokenTableName(): string
     {
-        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey3m00Database::TOKEN_TABLE . $this->sourceSurveyId;
+        return $this->tablePrefix . LimeSurvey3m00Database::TOKEN_TABLE . $this->sourceSurveyId;
     }
 
     /**
@@ -603,7 +621,8 @@ class LimeSurvey3m00FieldMap
      *
      * @return array
      */
-    private function _getTitlesMap() {
+    private function _getTitlesMap(): array
+    {
         if (! is_array($this->_titlesMap)) {
             $map    = $this->_getMap();
             $result = array();
@@ -626,24 +645,26 @@ class LimeSurvey3m00FieldMap
     /**
      * Returns
      *
-     * @param $field    Field from _getMap function
-     * @return int \MUtil\Model::TYPE_ constant
+     * @param array $field    Field from _getMap function
+     * @return int Model::TYPE_ constant
      */
-    protected function _getType($field)
+    protected function _getType(array $field): int
     {
         switch ($field['type']) {
             case ':':
                 //Get the labels that could apply!
                 if ($this->_getQuestionAttribute($field['qid'], 'multiflexible_checkbox')) {
-                    return \MUtil\Model::TYPE_STRING;
+                    return Model::TYPE_STRING;
                 }
+                return Model::TYPE_NUMERIC;
+                break;
 
             case '5':
             case 'A':
             case 'B':
             case 'K':
             case 'N':
-                return \MUtil\Model::TYPE_NUMERIC;
+                return Model::TYPE_NUMERIC;
 
             case 'D':
                 //date_format
@@ -663,33 +684,33 @@ class LimeSurvey3m00FieldMap
                     }
 
                     if ($date && !$time) {
-                        return \MUtil\Model::TYPE_DATE;
+                        return Model::TYPE_DATE;
                     } elseif (!$date && $time) {
-                        return \MUtil\Model::TYPE_TIME;
+                        return Model::TYPE_TIME;
                     } else {
-                        return \MUtil\Model::TYPE_DATETIME;
+                        return Model::TYPE_DATETIME;
                     }
                 }
-                return \MUtil\Model::TYPE_DATE;
+                return Model::TYPE_DATE;
 
             case 'X':
-                return \MUtil\Model::TYPE_NOVALUE;
+                return Model::TYPE_NOVALUE;
 
             case self::INTERNAL:
-                // Not a limesurvey type, used internally for meta data
-                return \MUtil\Model::TYPE_DATETIME;
+                // Not a limesurvey type, used internally for metadata
+                return Model::TYPE_DATETIME;
 
             default:
-                return \MUtil\Model::TYPE_STRING;
+                return Model::TYPE_STRING;
         }
     }
 
     /**
      * Applies the fieldmap data to the model
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param ModelAbstract $model
      */
-    public function applyToModel(\MUtil\Model\ModelAbstract $model)
+    public function applyToModel(ModelAbstract $model): void
     {
         $map    = $this->_getMap();
         $oldfld = null;
@@ -698,7 +719,7 @@ class LimeSurvey3m00FieldMap
         foreach ($map as $name => $field) {
 
             $tmpres = array();
-            $tmpres['thClass']         = \Gems\Tracker\SurveyModel::CLASS_MAIN_QUESTION;
+            $tmpres['thClass']         = SurveyModel::CLASS_MAIN_QUESTION;
             if (isset($field['hidden']) && $field['hidden']) {
                 $tmpres['thClass']      .= ' hideAlwaysQuestion';
                 $tmpres['alwaysHidden'] = $field['hidden'];
@@ -714,7 +735,7 @@ class LimeSurvey3m00FieldMap
             $tmpres['survey_question'] = true;
             $tmpres['sourceId']        = $name;
 
-            if ($tmpres['type'] === \MUtil\Model::TYPE_DATETIME || $tmpres['type'] === \MUtil\Model::TYPE_DATE || $tmpres['type'] === \MUtil\Model::TYPE_TIME) {
+            if ($tmpres['type'] === Model::TYPE_DATETIME || $tmpres['type'] === Model::TYPE_DATE || $tmpres['type'] === Model::TYPE_TIME) {
                 if ($dateFormats = $this->getDateFormats($name, $tmpres['type'])) {
                     $tmpres = $tmpres + $dateFormats;
                 }
@@ -724,7 +745,7 @@ class LimeSurvey3m00FieldMap
                 $tmpres['multiOptions'] = $options;
 
                 // Limesurvey defines numeric options as string, maybe we can convert it back
-                if ($tmpres['type'] === \MUtil\Model::TYPE_STRING) {
+                if ($tmpres['type'] === Model::TYPE_STRING) {
                     $changeType = true;
                     foreach(array_keys($options) as $key) {
                         // But if we find a numeric = false, we leave as is
@@ -733,13 +754,13 @@ class LimeSurvey3m00FieldMap
                             break;
                         }
                     }
-                    if ($changeType == true) {
-                        $tmpres['type'] = \MUtil\Model::TYPE_NUMERIC;
+                    if ($changeType === true) {
+                        $tmpres['type'] = Model::TYPE_NUMERIC;
                     }
                 }
             }
 
-            if ($tmpres['type'] === \MUtil\Model::TYPE_NUMERIC && !isset($tmpres['multiOptions'])) {
+            if ($tmpres['type'] === Model::TYPE_NUMERIC && !isset($tmpres['multiOptions'])) {
                 $tmpres['formatFunction'] = array($this, 'handleFloat');
             }
 
@@ -751,7 +772,7 @@ class LimeSurvey3m00FieldMap
                 $tmpres['description'] = \MUtil\Html::raw($this->removeMarkup($field['help']));
             }
 
-            $oldQid = isset($oldfld['qid']) ? $oldfld['qid'] : 0;
+            $oldQid = $oldfld['qid'] ?? 0;
             // Juggle the labels for sub-questions etc..
             if (isset($field['sq_question'])) {
                 if ($oldQid !== $field['qid']) {
@@ -759,7 +780,7 @@ class LimeSurvey3m00FieldMap
                     //$parent = '_' . $name . '_';
                     $parent = $field['title'];
                     $model->set($parent, $tmpres);
-                    $model->set($parent, 'type', \MUtil\Model::TYPE_NOVALUE);
+                    $model->set($parent, 'type', Model::TYPE_NOVALUE);
                 }
                 if (isset($field['sq_question1'])) {
                     $tmpres['label'] = \MUtil\Html::raw(sprintf(
@@ -767,16 +788,16 @@ class LimeSurvey3m00FieldMap
                             $this->removeMarkup($field['sq_question']),
                             $this->removeMarkup($field['sq_question1'])
                             ));
-                    $tmpres['label_raw'] = \MUtil\Html::raw(sprintf(
+                    $tmpres['label_raw'] = Html::raw(sprintf(
                             $this->translate->_('%s: %s'),
                             $field['sq_question'],
                             $field['sq_question1']
                             ));
                 } else {
-                    $tmpres['label'] = \MUtil\Html::raw($this->removeMarkup($field['sq_question']));
-                    $tmpres['label_raw'] = \MUtil\Html::raw($field['sq_question']);
+                    $tmpres['label'] = Html::raw($this->removeMarkup($field['sq_question']));
+                    $tmpres['label_raw'] = Html::raw($field['sq_question']);
                 }
-                $tmpres['thClass'] = \Gems\Tracker\SurveyModel::CLASS_SUB_QUESTION;
+                $tmpres['thClass'] = SurveyModel::CLASS_SUB_QUESTION;
             }
 
             // Code does not have to be unique. So if a title is used
@@ -786,7 +807,7 @@ class LimeSurvey3m00FieldMap
             }
 
             // Parent storage
-            if (\Gems\Tracker\SurveyModel::CLASS_SUB_QUESTION !== $tmpres['thClass']) {
+            if (SurveyModel::CLASS_SUB_QUESTION !== $tmpres['thClass']) {
                 $parent = $name;
             } elseif ($parent) {
                 // Add the name of the parent item
@@ -809,19 +830,17 @@ class LimeSurvey3m00FieldMap
             } elseif ($dataType == 'date') {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd';
             }
-        } else {
-            if ($type === \MUtil\Model::TYPE_DATETIME || $type === \MUtil\Model::TYPE_TIME) {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
-            } elseif ($type === \MUtil\Model::TYPE_DATE) {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd';
-            }
+        } elseif ($type === Model::TYPE_DATETIME || $type === Model::TYPE_TIME) {
+            $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
+        } elseif ($type === Model::TYPE_DATE) {
+            $tmpres['storageFormat'] = 'yyyy-MM-dd';
         }
 
-        if ($type === \MUtil\Model::TYPE_DATETIME) {
+        if ($type === Model::TYPE_DATETIME) {
             $tmpres['dateFormat']    = 'dd MMMM yyyy HH:mm';
-        } elseif ($type === \MUtil\Model::TYPE_DATE) {
+        } elseif ($type === Model::TYPE_DATE) {
             $tmpres['dateFormat']    = 'dd MMMM yyyy';
-        } elseif ($type === \MUtil\Model::TYPE_TIME) {
+        } elseif ($type === Model::TYPE_TIME) {
             $tmpres['dateFormat']    = 'HH:mm:ss';
         }
 
@@ -853,11 +872,11 @@ class LimeSurvey3m00FieldMap
      *
      * @return array Nested array
      */
-    public function getQuestionInformation()
+    public function getQuestionInformation(): array
     {
         $map    = $this->_getMap();
         $oldfld = null;
-        $result = array();
+        $result = [];
 
         foreach ($map as $name => $field) {
             if ($field['type'] == self::INTERNAL) {
@@ -865,19 +884,33 @@ class LimeSurvey3m00FieldMap
             }
 
             // \MUtil\EchoOut\EchoOut::track($field);
-            $tmpres = array();
+            $tmpres = [];
             $tmpres['alwaysHidden'] = $field['hidden'];
-            $tmpres['class']        = \Gems\Tracker\SurveyModel::CLASS_MAIN_QUESTION;
+            $tmpres['class']        = SurveyModel::CLASS_MAIN_QUESTION;
             $tmpres['group']        = $field['gid'];
             $tmpres['groupName']    = $this->removeMarkup($field['group_name']);
+            $tmpres['groupDescription'] = $field['description'];
             $tmpres['hasConditon']  = $field['hasConditon'];
             $tmpres['type']         = $field['type'];
             $tmpres['title']        = $field['title'];
+            $tmpres['code']        = $field['code'];
+            $tmpres['help']         = $field['help'];
+            $tmpres['relevance']    = $field['relevance'];
+            $tmpres['required']    = $field['required'];
             if (array_key_exists('equation', $field)) {
                 $tmpres['equation'] = $field['equation'];
             }
+            if ($tmpres['relevance'] == 1) {
+                $tmpres['relevance'] = null;
+            }
+            if (empty(trim($tmpres['help']))) {
+                $tmpres['help'] = null;
+            }
+            if (empty(trim($tmpres['groupDescription']))) {
+                $tmpres['groupDescription'] = null;
+            }
 
-            $oldQid = isset($oldfld['qid']) ? $oldfld['qid'] : 0;
+            $oldQid = $oldfld['qid'] ?? 0;
             if ($oldQid !== $field['qid']) {
                 $tmpres['question'] = $this->removeMarkup($field['question']);
             }
@@ -887,18 +920,20 @@ class LimeSurvey3m00FieldMap
                 if (isset($field['sq_question1'])) {
                     $field['sq_question'] = sprintf($this->translate->_('%s: %s'), $field['sq_question'], $field['sq_question1']);
                 }
-                if (! isset($tmpres['question'])) {
-                    $tmpres['question'] = $this->removeMarkup($field['sq_question']);
-                } else {
-                    $tmpres['answers'] = array(''); // Empty array prevents "n/a" display
+                if (isset($tmpres['question'])) {
+                    $tmpres['answers'] = ['']; // Empty array prevents "n/a" display
+
+                    $parent = $tmpres;
+                    $parent['id'] = $field['sid'] . 'X' . $field['gid'] . 'X' . $field['qid'];
 
                     // Add non answered question for grouping
-                    $result[$field['title']] = $tmpres;
-
+                    $result[$field['title']] = $parent;
                     // "Next" question
-                    $tmpres['question'] = $this->removeMarkup($field['sq_question']);
                 }
-                $tmpres['class'] = \Gems\Tracker\SurveyModel::CLASS_SUB_QUESTION;
+                $tmpres['parent'] = $field['title'];
+                $tmpres['question'] = $this->removeMarkup($field['sq_question']);
+                $tmpres['class'] = SurveyModel::CLASS_SUB_QUESTION;
+                $tmpres['code'] = $field['code'] .= '_' . $field['sq_title'];
             }
             $tmpres['answers'] = $this->_getPossibleAnswers($field);
 
@@ -926,10 +961,10 @@ class LimeSurvey3m00FieldMap
      * @param string|bool $forType Optional type filter
      * @return array fieldname => label
      */
-    public function getQuestionList($forType = false)
+    public function getQuestionList(bool|string $forType = false): array
     {
         $map     = $this->_getMap();
-        $results = array();
+        $results = [];
 
         $question = null;
         foreach ($map as $name => $field) {
@@ -957,7 +992,7 @@ class LimeSurvey3m00FieldMap
                 }
 
                 if ($question && $squestion) {
-                    $results[$name] = sprintf($this->translate->_('%s - %s'), $question, $squestion);;
+                    $results[$name] = sprintf($this->translate->_('%s - %s'), $question, $squestion);
 
                 } elseif ($question) {
                     $results[$name] = $question;
@@ -975,7 +1010,7 @@ class LimeSurvey3m00FieldMap
     }
 
     /**
-     * Get the survey table structure (meta data)
+     * Get the survey table structure (metadata)
      *
      * @return array<string, array{'TABLE_NAME': string, 'DATA_TYPE': string}>
      */
@@ -998,10 +1033,10 @@ class LimeSurvey3m00FieldMap
 
     /**
      * Function to cast numbers as float, but leave null intact
-     * @param $value The number to cast to float
+     * @param float|int|string|null $value The number to cast to float
      * @return ?float
      */
-    public function handleFloat($value): ?float
+    public function handleFloat(float|int|string|null $value): ?float
     {
         return is_null($value) ? null : (float)$value;
     }
@@ -1013,7 +1048,7 @@ class LimeSurvey3m00FieldMap
     {
         try {
             $metadata = $this->getZendAlikeTableStructure($this->_getSurveyTableName());
-        } catch (\Exception $exc) {
+        } catch (Exception $exc) {
             $metadata = [];
         }
 
@@ -1027,12 +1062,13 @@ class LimeSurvey3m00FieldMap
      * also available in LimeSurvey
      *
      * @param array $values
+     * @return array
      */
-    public function mapKeysToTitles(array $values)
+    public function mapKeysToTitles(array $values): array
     {
         $map = array_flip($this->_getTitlesMap());
 
-        $result = array();
+        $result = [];
         foreach ($values as $key => $value) {
             if (isset($map[$key])) {
                 $result[$map[$key]] = $value;
@@ -1051,12 +1087,13 @@ class LimeSurvey3m00FieldMap
      * also available in LimeSurvey
      *
      * @param array $values
+     * @return array
      */
-    public function mapTitlesToKeys(array $values)
+    public function mapTitlesToKeys(array $values): array
     {
         $titlesMap = $this->_getTitlesMap();
 
-        $result = array();
+        $result = [];
         foreach ($values as $key => $value) {
             if (isset($titlesMap[$key])) {
                 $result[$titlesMap[$key]] = $value;
@@ -1075,9 +1112,9 @@ class LimeSurvey3m00FieldMap
      * @param string $text Input possibly containing html
      * @return string
      */
-    public function removeMarkup($text)
+    public function removeMarkup(string $text): string
     {
-        return trim(\MUtil\StringUtil\StringUtil::beforeChars(\MUtil\Html::removeMarkup($text, 'b|i|u|em|strong'), '{'));
+        return trim(StringUtil::beforeChars(Html::removeMarkup($text, 'b|i|u|em|strong'), '{'));
     }
 
     /**
@@ -1088,7 +1125,7 @@ class LimeSurvey3m00FieldMap
      */
     private function getZendAlikeTableStructure(string $tableName): array
     {
-        $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->lsAdapter);
+        $metadata = Factory::createSourceFromAdapter($this->lsAdapter);
         $table = $metadata->getTable($tableName);
 
         // Modeled on Zend/Db
@@ -1110,8 +1147,8 @@ class LimeSurvey3m00FieldMap
      * @param $sql mixed SQL query to perform on the limesurvey database
      * @param array $bindValues optional bind values for the Query
      */
-    public function lsDbQuery($sql, $bindValues=array())
+    public function lsDbQuery(string $sql, array $bindValues = []): StatementInterface|ResultSet
     {
-        $this->lsAdapter->query($sql, $bindValues);
+        return $this->lsAdapter->query($sql, $bindValues);
     }
 }
