@@ -8,6 +8,10 @@
 
 namespace GemsTest\Tracker;
 
+use Gems\Db\ResultFetcher;
+use Gems\Tracker\Token\TokenLibrary;
+use Prophecy\PhpUnit\ProphecyTrait;
+
 /**
  * Description of TokenLibraryTest
  *
@@ -15,6 +19,8 @@ namespace GemsTest\Tracker;
  */
 class TokenLibraryTest extends \PHPUnit\Framework\TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var array
      */
@@ -31,19 +37,19 @@ class TokenLibraryTest extends \PHPUnit\Framework\TestCase
      *
      * @var \Gems\Tracker\Token\TokenLibrary
      */
-    protected $object;
+    protected $tokenLibrary;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $object = new \Gems\Tracker\Token\TokenLibrary();
+        $resultFetcherProphecy = $this->prophesize(ResultFetcher::class);
+        $tokenLibrary = new TokenLibrary(
+            $resultFetcherProphecy->reveal(),
+            $this->testConfig
+        );
 
-        $project = new \Gems\Project\ProjectSettings($this->testConfig);
-        $object->answerRegistryRequest('project', $project);
-        $object->checkRegistryRequestsAnswers();
-
-        $this->object = $object;
+        $this->tokenLibrary = $tokenLibrary;
     }
 
     /**
@@ -52,7 +58,7 @@ class TokenLibraryTest extends \PHPUnit\Framework\TestCase
      * @dataProvider filterProvider
      */
     public function testFilter($token, $expected) {
-        $this->assertEquals($expected, $this->object->filter($token));
+        $this->assertEquals($expected, $this->tokenLibrary->filter($token));
     }
 
     public static function filterProvider() {
