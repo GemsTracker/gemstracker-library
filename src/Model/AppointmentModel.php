@@ -351,8 +351,8 @@ class AppointmentModel extends MaskedModel
         if ($this->getChanged() && ($this->getChanged() !== $oldChanged)) {
             if ($this->isAutoTrackUpdate()) {
                 $appointment = $this->agenda->getAppointment($returnValues);
-
-                $this->_changedTokenCount += $this->agenda->updateTracksForAppointment($appointment);
+                $event = $this->agenda->appointmentChanged($appointment, $this->agenda);
+                $this->_changedTokenCount += $event->getTokensChanged();
             }
         }
         // \MUtil\EchoOut\EchoOut::track($this->_changedTokenCount);

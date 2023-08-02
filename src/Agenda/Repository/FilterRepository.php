@@ -2,12 +2,9 @@
 
 namespace Gems\Agenda\Repository;
 
-use Carbon\CarbonImmutable;
-use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterInterface;
-use Gems\Agenda\FilterTracer;
+use Gems\Agenda\Filter\AppointmentFilterInterface;
+use Gems\Cache\HelperAdapter;
 use Gems\Db\CachedResultFetcher;
-use Gems\Tracker\RespondentTrack;
 use Zalt\Loader\Exception\LoadException;
 use Zalt\Loader\ProjectOverloader;
 
@@ -15,21 +12,38 @@ class FilterRepository
 {
     protected array $cacheTags = [
         'appointment_filters',
-        'tracks',
     ];
     public function __construct(
+        protected readonly HelperAdapter $cache,
         protected readonly CachedResultFetcher $cachedResultFetcher,
         protected readonly ProjectOverloader $projectOverloader,
-        protected readonly FilterCreateTrackChecker $createTrackChecker,
     )
-    {}
-
+    {
+    }
 
     public function getFilterFromData(array $data): AppointmentFilterInterface|null
     {
+        $cacheKey = 'appointmentFilter.' . $data['gaf_id'];
+        if ($this->cache->hasItem($cacheKey)) {
+            return $this->cache->getCacheItem($cacheKey);
+        }
+
         if ($data['gaf_class']) {
             try {
-                $filter = $this->projectOverloader->create('Agenda\\Filter\\' . $data['gaf_class'], $data);
+                $filter = $this->projectOverloader->create('Agenda\\Filter\\' . $data['gaf_class'],
+                    $data['gaf_id'],
+                    $data['gaf_calc_name'],
+                    $data['gaf_id_order'],
+                    (bool)$data['gaf_active'],
+                    $data['gaf_manual_name'],
+                    $data['gaf_filter_text1'],
+                    $data['gaf_filter_text2'],
+                    $data['gaf_filter_text3'],
+                    $data['gaf_filter_text4']
+                );
+
+                $this->cache->setCacheItem($cacheKey, $filter);
+
                 return $filter;
             } catch(LoadException) {
             }
@@ -47,27 +61,6 @@ class FilterRepository
             }
         }
         return null;
-    }
-
-    public function getAllActivelyUsedFilters(): array
-    {
-        $sql = 'SELECT * FROM gems__appointment_filters
-                    INNER JOIN gems__track_appointments ON gaf_id = gtap_filter_id
-                    INNER JOIN gems__tracks ON gtap_id_track = gtr_id_track
-                    WHERE gaf_active = 1 
-                      AND gtr_active = 1 
-                      AND gtr_date_start <= CURRENT_DATE 
-                      AND (gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE)
-                    ORDER BY gaf_id_order, gtap_id_order, gtap_id_track';
-
-        $filterData = $this->cachedResultFetcher->fetchAll('allActivelyUsedAppointmentFilters', $sql, null, $this->cacheTags);
-
-        $filters = [];
-        foreach($filterData as $filter) {
-            $filters[] = $this->getFilterFromData($filter);
-        }
-
-        return $filters;
     }
 
     public function getAllActiveFilterData(int|null $organizationId = null): array
@@ -96,20 +89,8 @@ class FilterRepository
 
     public function getAllFilterData(): array
     {
-        $sql = 'SELECT * FROM gems__appointment_filters 
-                    LEFT JOIN gems__track_appointments ON gaf_id = gtap_filter_id
-                    ORDER BY gaf_id_order';
+        $sql = 'SELECT * FROM gems__appointment_filters ORDER BY gaf_id_order';
 
         return $this->cachedResultFetcher->fetchAll('allAppointmentFilters', $sql, null, $this->cacheTags) ?? [];
-    }
-
-    public function shouldCreateTrack(
-        Appointment $appointment,
-        AppointmentFilterInterface $filter,
-        RespondentTrack $respTrack,
-        FilterTracer|null $filterTracer = null
-    ): bool
-    {
-        return $this->createTrackChecker->shouldCreateTrack($appointment, $filter, $respTrack, $filterTracer);
     }
 }

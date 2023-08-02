@@ -12,7 +12,6 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterAbstract;
 use Gems\Db\ResultFetcher;
 
 /**
@@ -34,11 +33,18 @@ class WithAppointmentFilter extends AppointmentFilterAbstract
     protected array|bool $_staff = false;
 
     public function __construct(
-        array $_data,
+        int $id,
+        string $calculatedName,
+        int $order,
+        bool $active,
+        ?string $manualName,
+        ?string $text1,
+        ?string $text2,
+        ?string $text3,
+        ?string $text4,
         protected readonly ResultFetcher $resultFetcher,
-    )
-    {
-        parent::__construct($_data);
+    ) {
+        parent::__construct($id, $calculatedName, $order, $active, $manualName, $text1, $text2, $text3, $text4);
     }
 
     /**
@@ -54,9 +60,9 @@ class WithAppointmentFilter extends AppointmentFilterAbstract
      */
     protected function afterLoad(): void
     {
-        if ($this->_data && !$this->_staff) {
+        if (!$this->_staff) {
 
-            if ($this->_data['gaf_filter_text1']) {
+            if ($this->text1) {
                 $sqlActivites = "SELECT gas_id_staff, gas_id_staff
                     FROM gems__agenda_staff
                     WHERE gas_active = 1 AND gas_name LIKE '%s'
@@ -64,7 +70,7 @@ class WithAppointmentFilter extends AppointmentFilterAbstract
 
                 $this->_staff = $this->resultFetcher->fetchPairs(sprintf(
                         $sqlActivites,
-                        addslashes($this->_data['gaf_filter_text1']))
+                        addslashes($this->text1))
                         );
             } else {
                 $this->_staff = true;

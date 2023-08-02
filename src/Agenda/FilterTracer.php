@@ -11,6 +11,7 @@
 
 namespace Gems\Agenda;
 
+use Gems\Agenda\Filter\TrackFieldFilterCalculationInterface;
 use Gems\Tracker\RespondentTrack;
 
 /**
@@ -55,15 +56,16 @@ class FilterTracer
 
     /**
      *
-     * @param AppointmentFilterInterface $filter
+     * @param TrackFieldFilterCalculationInterface $filter
      * @param boolean $createTrack
      * @param RespondentTrack $respTrack
      * @return self
      */
-    public function addFilter(AppointmentFilterInterface $filter, bool $createTrack, RespondentTrack|null $respTrack = null): self
+    public function addFilter(TrackFieldFilterCalculationInterface $filter, bool $createTrack, RespondentTrack|null $respTrack = null): self
     {
-        $this->filters[$filter->getFilterId()] = [
-            'filterName'  => $filter->getName(),
+        $appointmentFilter = $filter->getAppointmentFilter();
+        $this->filters[$appointmentFilter->getFilterId()] = [
+            'filterName'  => $appointmentFilter->getName(),
             'filterTrack' => $filter->getTrackId(),
             'filterField' => $filter->getFieldId(),
             'respTrackId' => $respTrack ? $respTrack->getRespondentTrackId() : null,

@@ -12,7 +12,6 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterAbstract;
 
 /**
  *
@@ -32,7 +31,7 @@ class SubjectAppointmentFilter extends AppointmentFilterAbstract
      */
     public function getSqlAppointmentsWhere(): string
     {
-        $text = $this->_data['gaf_filter_text1'];
+        $text = $this->text1;
         if ($text) {
             return "gap_subject LIKE '$text'";
         } else {
@@ -48,11 +47,11 @@ class SubjectAppointmentFilter extends AppointmentFilterAbstract
      */
     public function matchAppointment(Appointment $appointment): bool
     {
-        if (! $this->_data['gaf_filter_text1']) {
+        if (! $this->text1) {
             return ! $appointment->getSubject();
         }
 
-        $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'),$this->_data['gaf_filter_text1']) . '/i';
+        $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'),$this->text1) . '/i';
 
         return (boolean) preg_match($regex, $appointment->getSubject());
     }

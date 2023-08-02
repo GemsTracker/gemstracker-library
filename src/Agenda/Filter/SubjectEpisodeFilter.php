@@ -32,7 +32,7 @@ class SubjectEpisodeFilter extends EpisodeFilterAbstract
      */
     public function getSqlEpisodeWhere(): string
     {
-        $text = $this->_data['gaf_filter_text1'];
+        $text = $this->text1;
         if ($text) {
             return "gec_subject LIKE '$text'";
         } else {
@@ -48,11 +48,11 @@ class SubjectEpisodeFilter extends EpisodeFilterAbstract
      */
     public function matchEpisode(EpisodeOfCare $episode): bool
     {
-        if (! $this->_data['gaf_filter_text1']) {
+        if (! $this->text1) {
             return ! $episode->getSubject();
         }
 
-        $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'),$this->_data['gaf_filter_text1']) . '/i';
+        $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'),$this->text1) . '/i';
 
         return (boolean) preg_match($regex, $episode->getSubject());
     }

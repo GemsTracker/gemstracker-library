@@ -11,9 +11,7 @@
 
 namespace Gems\Agenda\Filter;
 
-use Gems\Agenda\Agenda;
 use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterAbstract;
 use Gems\Db\ResultFetcher;
 
 /**
@@ -38,13 +36,21 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     protected array|null $_fieldList4 = null;
 
     public function __construct(
-        array $_data,
+        int $id,
+        string $calculatedName,
+        int $order,
+        bool $active,
+        ?string $manualName,
+        ?string $text1,
+        ?string $text2,
+        ?string $text3,
+        ?string $text4,
         protected readonly ResultFetcher $resultFetcher,
-    )
-    {
-        parent::__construct($_data);
-        $this->_fieldList2 = $this->loadFieldList($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2']);
-        $this->_fieldList4 = $this->loadFieldList($this->_data['gaf_filter_text3'], $this->_data['gaf_filter_text4']);
+    ) {
+        parent::__construct($id, $calculatedName, $order, $active, $manualName, $text1, $text2, $text3, $text4);
+
+        $this->_fieldList2 = $this->loadFieldList($this->text1, $this->text2);
+        $this->_fieldList4 = $this->loadFieldList($this->text3, $this->text4);
     }
 
     /**
@@ -130,11 +136,11 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      */
     public function getSqlAppointmentsWhere(): string
     {
-        if ($this->_data['gaf_filter_text1'] && $this->_data['gaf_filter_text2']) {
-            $wheres[] = $this->getSqlWhereSingle($this->_data['gaf_filter_text1'], $this->_data['gaf_filter_text2'], $this->_fieldList2);
+        if ($this->text1 && $this->text2) {
+            $wheres[] = $this->getSqlWhereSingle($this->text1, $this->text2, $this->_fieldList2);
         }
-        if ($this->_data['gaf_filter_text3'] && $this->_data['gaf_filter_text4']) {
-            $wheres[] = $this->getSqlWhereSingle($this->_data['gaf_filter_text3'], $this->_data['gaf_filter_text4'], $this->_fieldList4);
+        if ($this->text3 && $this->text4) {
+            $wheres[] = $this->getSqlWhereSingle($this->text3, $this->text4, $this->_fieldList4);
         }
         foreach ($wheres as $key => $where) {
             if ($where == parent::NO_MATCH_SQL) {
@@ -199,14 +205,14 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     public function matchAppointment(Appointment $appointment): bool
     {
         $result1 = $this->matchSingle(
-                $this->_data['gaf_filter_text1'],
-                $this->_data['gaf_filter_text2'],
+                $this->text1,
+                $this->text2,
                 $this->_fieldList2,
                 $appointment);
 
         $result2 = $this->matchSingle(
-                $this->_data['gaf_filter_text3'],
-                $this->_data['gaf_filter_text4'],
+                $this->text3,
+                $this->text4,
                 $this->_fieldList4,
                 $appointment);
 

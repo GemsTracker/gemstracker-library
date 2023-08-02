@@ -12,7 +12,6 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\AppointmentSubFilterAbstract;
 use Gems\Agenda\EpisodeOfCare;
 

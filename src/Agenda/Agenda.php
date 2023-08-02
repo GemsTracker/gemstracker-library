@@ -11,8 +11,12 @@
 
 namespace Gems\Agenda;
 
+use Gems\Agenda\Event\AppointmentChangedEvent;
+use Gems\Agenda\Filter\AppointmentFilterInterface;
+use Gems\Agenda\Filter\TrackFieldFilterCalculationInterface;
 use Gems\Agenda\Repository\ActivityRepository;
 use Gems\Agenda\Repository\FilterRepository;
+use Gems\Agenda\Repository\TrackFieldFilterRepository;
 use Gems\Agenda\Repository\LocationRepository;
 use Gems\Agenda\Repository\ProcedureRepository;
 use Gems\Agenda\Repository\StaffRepository;
@@ -29,6 +33,7 @@ use Laminas\Db\Sql\Join;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\TableIdentifier;
 use MUtil\Model;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -76,6 +81,7 @@ class Agenda
         protected readonly HelperAdapter $cache,
         protected readonly ActivityRepository $activityRepository,
         protected readonly FilterRepository $filterRepository,
+        protected readonly TrackFieldFilterRepository $trackFieldFilterRepository,
 
         protected readonly LocationRepository $locationRepository,
         protected readonly MaskRepository $maskRepository,
@@ -85,8 +91,16 @@ class Agenda
         protected readonly StaffRepository $staffRepository,
 
         protected readonly Tracker $tracker,
+        protected readonly EventDispatcherInterface $eventDispatcher,
     )
     {
+    }
+
+    public function appointmentChanged(Appointment $appointment): AppointmentChangedEvent
+    {
+        $event = new AppointmentChangedEvent($appointment);
+        $this->eventDispatcher->dispatch($event);
+        return $event;
     }
     
     /**
@@ -110,7 +124,7 @@ class Agenda
     /**
      * Check if a track should be created for any of the filters
      *
-     * @param AppointmentFilterInterface[] $filters
+     * @param TrackFieldFilterCalculationInterface[] $filters
      * @param array $existingTracks Of $trackId => [RespondentTrack objects]
      * @param Tracker $tracker
      *
@@ -144,7 +158,7 @@ class Agenda
                     continue;
                 }
 
-                $createTrack = $this->filterRepository->shouldCreateTrack($appointment, $filter, $respTrack, $filterTracer);
+                $createTrack = $this->trackFieldFilterRepository->shouldCreateTrack($appointment, $filter, $respTrack, $filterTracer);
                 if ($createTrack === false) {
                     break;  // Stop checking
                 }
@@ -206,15 +220,15 @@ class Agenda
     /**
      * Create a new track for this appointment and the given filter
      *
-     * @param AppointmentFilterInterface $filter
+     * @param TrackFieldFilterCalculationInterface $filter
      * @param Tracker $tracker
      */
-    protected function _createTrack(Appointment $appointment, AppointmentFilterInterface $filter): RespondentTrack
+    protected function _createTrack(Appointment $appointment, TrackFieldFilterCalculationInterface $filter): RespondentTrack
     {
         $trackData = [
             'gr2t_comment' => sprintf(
                 $this->translator->_('Track created by %s filter'),
-                $filter->getName()
+                $filter->getAppointmentFilter()->getName()
             ),
         ];
 
@@ -980,7 +994,7 @@ class Agenda
     public function matchFilters(Appointment|EpisodeOfCare $to): array
     {
         $filters = $this->loadDefaultFilters();
-        $output  = array();
+        $output  = [];
 
         if ($to instanceof Appointment) {
             foreach ($filters as $filter) {
@@ -1091,10 +1105,10 @@ class Agenda
         $nestedWhere->equalTo('gr2t2a_id_appointment', $appointment->getId());
 
         // AND find the filters for any new fields to fill
-        $filters = $this->matchFilters($appointment);
+        $filters = $this->trackFieldFilterRepository->matchFilters($appointment);
         if ($filters) {
-            $ids = array_map(function ($value) {
-                return $value->getTrackId();
+            $ids = array_map(function ($filter) {
+                return $filter->getTrackId();
             }, $filters);
 
             $respId = $appointment->getRespondentId();
