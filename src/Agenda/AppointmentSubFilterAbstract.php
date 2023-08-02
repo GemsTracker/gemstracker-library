@@ -11,6 +11,8 @@
 
 namespace Gems\Agenda;
 
+use Gems\Agenda\Filter\AppointmentFilterInterface;
+use Gems\Agenda\Filter\BasicFilterAbstract;
 use Gems\Agenda\Repository\FilterRepository;
 
 /**
@@ -34,15 +36,22 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
      *
      * @var array of AppointmentFilterInterface instances
      */
-    protected $_subFilters = array();
+    protected $_subFilters = [];
 
     public function __construct(
-        array $_data,
+        int $id,
+        string $calculatedName,
+        int $order,
+        bool $active,
+        ?string $manualName,
+        ?string $text1,
+        ?string $text2,
+        ?string $text3,
+        ?string $text4,
         protected readonly Agenda $agenda,
         protected readonly FilterRepository $filterRepository,
-    )
-    {
-        parent::__construct($_data);
+    ) {
+        parent::__construct($id, $calculatedName, $order, $active, $manualName, $text1, $text2, $text3, $text4);
     }
 
     /**
@@ -58,19 +67,14 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
      */
     protected function afterLoad(): void
     {
-        if ($this->_data && !$this->_subFilters) {
-
+        if (!$this->_subFilters) {
             // Flexible determination of filters to load. Save for future expansion of number of fields
-            $i         = 1;
-            $field     = 'gaf_filter_text' . $i;
-            $filterIds = array();
-            while (array_key_exists($field, $this->_data)) {
-                if ($this->_data[$field]) {
-                    $filterIds[] = intval($this->_data[$field]);
-                }
-                $i++;
-                $field = 'gaf_filter_text' . $i;
-            }
+            $filterIds = array_filter([
+                $this->text1,
+                $this->text2,
+                $this->text3,
+                $this->text4,
+            ]);
 
             if ($filterIds) {
                 $preferAppBalance = 0;

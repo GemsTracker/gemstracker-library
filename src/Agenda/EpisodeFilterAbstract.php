@@ -11,6 +11,8 @@
 
 namespace Gems\Agenda;
 
+use Gems\Agenda\Filter\BasicFilterAbstract;
+
 /**
  *
  *

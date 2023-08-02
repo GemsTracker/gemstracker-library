@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Agenda;
 
 use Gems\Agenda\Agenda;
-use Gems\Agenda\AppointmentFilterInterface;
+use Gems\Agenda\Filter\AppointmentFilterInterface;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;

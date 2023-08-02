@@ -13,6 +13,7 @@ namespace Gems\Agenda;
 
 use DateTimeInterface;
 use MUtil\Model;
+use Gems\Agenda\Filter\AppointmentFilterInterface;
 
 /**
  *

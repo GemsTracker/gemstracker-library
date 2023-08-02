@@ -12,7 +12,6 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterAbstract;
 
 /**
  *
@@ -32,12 +31,11 @@ class OrganizationAppointmentFilter extends AppointmentFilterAbstract
      */
     protected array $_organizations;
 
-    public function __construct(array $_data)
+    protected function afterLoad(): void
     {
-        parent::__construct($_data);
-        foreach (['gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3', 'gaf_filter_text4'] as $field) {
-            if ($this->_data[$field]) {
-                $this->_organizations[$this->_data[$field]] = $this->_data[$field];
+        foreach (['text1', 'text2', 'text3', 'text4'] as $field) {
+            if ($this->$field) {
+                $this->_organizations[$this->$field] = $this->$field;
             }
         }
     }

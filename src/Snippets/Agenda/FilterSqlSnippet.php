@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Agenda;
 
-use Gems\Agenda\AppointmentFilterInterface;
+use Gems\Agenda\Filter\AppointmentFilterInterface;
 
 /**
  *

@@ -12,7 +12,6 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterAbstract;
 use Gems\Db\ResultFetcher;
 
 /**
@@ -29,23 +28,30 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
     /**
      * The activities that this filter matches or true when not matching against activities
      *
-     * @var array activity_id => activity_id
+     * @var array|bool activity_id => activity_id
      */
     protected array|bool $_activities = false;
 
     /**
-     * The procdures that this filter matches or true when not matching against procdures
+     * The procedures that this filter matches or true when not matching against procedures
      *
-     * @var array procedure_id => procedure_id
+     * @var array|bool procedure_id => procedure_id
      */
     protected array|bool $_procedures = false;
 
     public function __construct(
-        array $_data,
+        int $id,
+        string $calculatedName,
+        int $order,
+        bool $active,
+        ?string $manualName,
+        ?string $text1,
+        ?string $text2,
+        ?string $text3,
+        ?string $text4,
         protected readonly ResultFetcher $resultFetcher,
-    )
-    {
-        parent::__construct($_data);
+    ) {
+        parent::__construct($id, $calculatedName, $order, $active, $manualName, $text1, $text2, $text3, $text4);
     }
 
     /**
@@ -61,48 +67,48 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
      */
     protected function afterLoad(): void
     {
-        if ($this->_data && !($this->_activities || $this->_procedures)) {
+        if (!($this->_activities || $this->_procedures)) {
 
-            if ($this->_data['gaf_filter_text1'] || $this->_data['gaf_filter_text2']) {
-                $sqlActivites = "SELECT gaa_id_activity, gaa_id_activity
+            if ($this->text1 || $this->text2) {
+                $sqlActivities = "SELECT gaa_id_activity, gaa_id_activity
                     FROM gems__agenda_activities
                     WHERE gaa_active = 1 ";
 
-                if ($this->_data['gaf_filter_text1']) {
-                    $sqlActivites .= sprintf(
+                if ($this->text1) {
+                    $sqlActivities .= sprintf(
                             " AND gaa_name LIKE '%s' ",
-                             addslashes($this->_data['gaf_filter_text1'])
+                             addslashes($this->text1)
                             );
                 }
-                if ($this->_data['gaf_filter_text2']) {
-                    $sqlActivites .= sprintf(
+                if ($this->text2) {
+                    $sqlActivities .= sprintf(
                             " AND gaa_name NOT LIKE '%s' ",
-                             addslashes($this->_data['gaf_filter_text2'])
+                             addslashes($this->text2)
                             );
                 }
-                $sqlActivites .= "ORDER BY gaa_id_activity";
+                $sqlActivities .= "ORDER BY gaa_id_activity";
 
-                $this->_activities = $this->resultFetcher->fetchPairs($sqlActivites);
+                $this->_activities = $this->resultFetcher->fetchPairs($sqlActivities);
             } else {
                 $this->_activities = true;
             }
 
-            if ($this->_data['gaf_filter_text3'] || $this->_data['gaf_filter_text4']) {
+            if ($this->text3 || $this->text4) {
                 $sqlProcedures = "SELECT gapr_id_procedure, gapr_id_procedure
                     FROM gems__agenda_procedures
                     WHERE gapr_active = 1 ";
 
 
-                if ($this->_data['gaf_filter_text3']) {
+                if ($this->text3) {
                     $sqlProcedures .= sprintf(
                             " AND gapr_name LIKE '%s' ",
-                             addslashes($this->_data['gaf_filter_text3'])
+                             addslashes($this->text3)
                             );
                 }
-                if ($this->_data['gaf_filter_text4']) {
+                if ($this->text4) {
                     $sqlProcedures .= sprintf(
                             " AND gapr_name NOT LIKE '%s' ",
-                             addslashes($this->_data['gaf_filter_text4'])
+                             addslashes($this->text4)
                             );
                 }
 
@@ -148,7 +154,7 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
      * Check a filter for a match
      *
      * @param Appointment $appointment
-     * @return boolean
+     * @return bool
      */
     public function matchAppointment(Appointment $appointment): bool
     {

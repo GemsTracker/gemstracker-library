@@ -12,7 +12,6 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterAbstract;
 use Gems\Db\ResultFetcher;
 
 /**
@@ -31,14 +30,21 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      *
      * @var array glo_id_location => glo_id_location
      */
-    protected array$_locations;
+    protected array $_locations;
 
     public function __construct(
-        array $_data,
+        int $id,
+        string $calculatedName,
+        int $order,
+        bool $active,
+        ?string $manualName,
+        ?string $text1,
+        ?string $text2,
+        ?string $text3,
+        ?string $text4,
         protected readonly ResultFetcher $resultFetcher,
-    )
-    {
-        parent::__construct($_data);
+    ) {
+        parent::__construct($id, $calculatedName, $order, $active, $manualName, $text1, $text2, $text3, $text4);
     }
 
     /**
@@ -54,9 +60,9 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      */
     protected function afterLoad(): void
     {
-        if ($this->_data && !$this->_locations) {
+        if (!$this->_locations) {
 
-            if ($this->_data['gaf_filter_text1']) {
+            if ($this->text1) {
                 $sqlActivites = "SELECT glo_id_location, glo_id_location
                     FROM gems__locations
                     WHERE glo_active = 1 AND glo_name LIKE '%s'
@@ -64,7 +70,7 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
 
                 $this->_locations = $this->resultFetcher->fetchPairs(sprintf(
                         $sqlActivites,
-                        addslashes($this->_data['gaf_filter_text1']))
+                        addslashes($this->text1))
                         );
             } else {
                 $this->_locations = true;

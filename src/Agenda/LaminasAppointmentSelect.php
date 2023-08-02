@@ -7,6 +7,7 @@ use Gems\Db\ResultFetcher;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
 use MUtil\Model;
+use Gems\Agenda\Filter\AppointmentFilterInterface;
 
 class LaminasAppointmentSelect
 {

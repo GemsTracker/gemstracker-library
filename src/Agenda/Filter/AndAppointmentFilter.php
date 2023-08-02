@@ -12,7 +12,6 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\AppointmentSubFilterAbstract;
 use Gems\Agenda\EpisodeOfCare;
 
@@ -37,8 +36,8 @@ class AndAppointmentFilter extends AppointmentSubFilterAbstract
      */
     public function getSqlWhereBoth(bool $toApps): string
     {
-        $appWheres = array();
-        $epiWheres = array();
+        $appWheres = [];
+        $epiWheres = [];
 
         foreach ($this->_subFilters as $filterObject) {
             if ($filterObject instanceof AppointmentFilterInterface) {

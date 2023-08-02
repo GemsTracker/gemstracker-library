@@ -36,15 +36,14 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
      */
     protected string $_value;
 
-    public function __construct(array $_data)
+    protected function afterLoad(): void
     {
-        parent::__construct($_data);
-        $this->_value = $this->_data['gaf_filter_text4'];
+        $this->_value = $this->text4;
 
         $filter = [];
-        $filter[] = $this->_data['gaf_filter_text1'];
-        $filter[] = $this->_data['gaf_filter_text2'];
-        $filter[] = $this->_data['gaf_filter_text3'];
+        $filter[] = $this->text1;
+        $filter[] = $this->text2;
+        $filter[] = $this->text3;
 
         $this->_filter = array_filter($filter);
     }

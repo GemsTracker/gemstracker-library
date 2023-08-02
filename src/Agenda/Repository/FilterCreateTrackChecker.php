@@ -3,7 +3,7 @@
 namespace Gems\Agenda\Repository;
 
 use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterInterface;
+use Gems\Agenda\Filter\TrackFieldFilterCalculationInterface;
 use Gems\Agenda\FilterTracer;
 use Gems\Tracker\RespondentTrack;
 use MUtil\Translate\Translator;
@@ -18,14 +18,14 @@ class FilterCreateTrackChecker
     /**
      * Has the track ended <wait days> ago?
      *
-     * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems\Tracker\RespondentTrack $respTrack
+     * @param TrackFieldFilterCalculationInterface $filter
+     * @param RespondentTrack $respTrack
      *
-     * @return boolean
+     * @return bool
      */
     public function createAfterWaitDays(
         Appointment $appointment,
-        AppointmentFilterInterface $filter,
+        TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool
@@ -76,14 +76,14 @@ class FilterCreateTrackChecker
     /**
      * Always report the track should be created
      *
-     * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems\Tracker\RespondentTrack $respTrack
+     * @param TrackFieldFilterCalculationInterface $filter
+     * @param RespondentTrack $respTrack
      *
      * @return boolean
      */
     public function createAlways(
         Appointment $appointment,
-        AppointmentFilterInterface $filter,
+        TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool
@@ -100,14 +100,14 @@ class FilterCreateTrackChecker
     /**
      * Always report the track should be created
      *
-     * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems\Tracker\RespondentTrack $respTrack
+     * @param TrackFieldFilterCalculationInterface $filter
+     * @param RespondentTrack $respTrack
      *
      * @return boolean
      */
     public function createAlwaysNoEndDate(
         Appointment $appointment,
-        AppointmentFilterInterface $filter,
+        TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool
@@ -118,13 +118,13 @@ class FilterCreateTrackChecker
     /**
      * Always report the track should be created
      *
-     * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems\Tracker\RespondentTrack $respTrack
+     * @param TrackFieldFilterCalculationInterface $filter
+     * @param RespondentTrack $respTrack
      * @return boolean
      */
     public function createFromStart(
         Appointment $appointment,
-        AppointmentFilterInterface $filter,
+        TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool
@@ -178,14 +178,14 @@ class FilterCreateTrackChecker
      * This should never be called as 0 is not a creator, the code is here just
      * to make sure calling without checking has the correct result
      *
-     * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems\Tracker\RespondentTrack $respTrack
+     * @param TrackFieldFilterCalculationInterface $filter
+     * @param RespondentTrack $respTrack
      *
      * @return boolean
      */
     public function createNever(
         Appointment $appointment,
-        AppointmentFilterInterface $filter,
+        TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool
@@ -199,14 +199,14 @@ class FilterCreateTrackChecker
     /**
      * Only return true when no open track exists
      *
-     * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems\Tracker\RespondentTrack $respTrack
+     * @param TrackFieldFilterCalculationInterface $filter
+     * @param RespondentTrack $respTrack
      *
      * @return boolean
      */
     public function createNoOpen(
         Appointment $appointment,
-        AppointmentFilterInterface $filter,
+        TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool
@@ -228,14 +228,14 @@ class FilterCreateTrackChecker
     /**
      * Only return true when no open track exists
      *
-     * @param AppointmentFilterInterface $filter
+     * @param TrackFieldFilterCalculationInterface $filter
      * @param RespondentTrack $respTrack
      *
      * @return boolean
      */
     public function createWhenNoOpen(
         Appointment $appointment,
-        AppointmentFilterInterface $filter,
+        TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool
@@ -261,14 +261,14 @@ class FilterCreateTrackChecker
     /**
      * Create when current appointment is not assigned to this field already
      *
-     * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems\Tracker\RespondentTrack $respTrack
+     * @param TrackFieldFilterCalculationInterface $filter
+     * @param RespondentTrack $respTrack
      *
      * @return boolean
      */
     public function createWhenNotInThisTrack(
         Appointment $appointment,
-        AppointmentFilterInterface $filter,
+        TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool
@@ -292,7 +292,7 @@ class FilterCreateTrackChecker
 
     public function shouldCreateTrack(
         Appointment $appointment,
-        AppointmentFilterInterface $filter,
+        TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool

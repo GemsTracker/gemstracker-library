@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Gems\Agenda\Agenda;
 use Gems\Agenda\Appointment;
 use Gems\Agenda\Filter\SubjectAppointmentFilter;
+use Gems\Agenda\Filter\TrackFieldFilterCalculation;
 use Gems\Agenda\Repository\ActivityRepository;
 use Gems\Agenda\Repository\FilterCreateTrackChecker;
 use Gems\Agenda\Repository\LocationRepository;
@@ -57,13 +58,9 @@ class FilterCreateTrackCheckerTest extends TestCase
 
         $checker = $this->getChecker();
 
-        $filter = new SubjectAppointmentFilter(
-            [
-                'gtap_create_track'     => 1,
-                'gtap_id_track'         => 2,
-                'gtap_create_wait_days' => $waitDays
-            ]
-        );
+        $appointmentFilter = new SubjectAppointmentFilter(1, 'createTestFilter', 10, true, null, null, null, null, null);
+
+        $filter = new TrackFieldFilterCalculation(1,2, $appointmentFilter, 1, $waitDays);
 
         $this->assertEquals($expected, $checker->createAfterWaitDays($appointment, $filter, $respTrack));
     }
@@ -104,11 +101,10 @@ class FilterCreateTrackCheckerTest extends TestCase
 
         $checker = $this->getChecker();
 
-        $filter = new SubjectAppointmentFilter([
-            'gtap_create_track'     => 1,
-            'gtap_id_track'         => 2,
-            'gtap_create_wait_days' => $waitDays
-        ]);
+        $appointmentFilter = new SubjectAppointmentFilter(1, 'createTestFilter', 10, true, null, null, null, null, null);
+
+        $filter = new TrackFieldFilterCalculation(1,2, $appointmentFilter, 1, $waitDays);
+
 
         $this->assertEquals($expected, $checker->createFromStart($appointment, $filter, $respTrack));
     }
@@ -130,7 +126,9 @@ class FilterCreateTrackCheckerTest extends TestCase
         ]);
         $checker = $this->getChecker();
 
-        $filter      = new SubjectAppointmentFilter(['gtap_create_track' => 0]);
+        $appointmentFilter = new SubjectAppointmentFilter(1, 'createTestFilter', 10, true, null, null, null, null, null);
+
+        $filter = new TrackFieldFilterCalculation(1,2, $appointmentFilter, 0, 180);
 
         $respTrack = $this->_getRespondentTrack();
 
@@ -144,13 +142,10 @@ class FilterCreateTrackCheckerTest extends TestCase
 
         $agendaPropecy = $this->prophesize(Agenda::class);
 
-        $resultFetcherProphecy = $this->prophesize(ResultFetcher::class);
         $activityRepositoryProphecy = $this->prophesize(ActivityRepository::class);
         $locationRepositoryProphecy = $this->prophesize(LocationRepository::class);
         $procedureRepositoryProphecy = $this->prophesize(ProcedureRepository::class);
         $respondentRepositoryProphecy = $this->prophesize(RespondentRepository::class);
-
-        $trackerProphecy = $this->prophesize(Tracker::class);
 
         return new Appointment(
             $appointmentData,
