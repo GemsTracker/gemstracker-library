@@ -32,6 +32,7 @@ use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MaintenanceModeMiddleware;
 use Gems\Middleware\MenuMiddleware;
+use Gems\Middleware\RateLimitMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Middleware\SiteGateMiddleware;
 use Gems\Model;
@@ -56,6 +57,7 @@ class Route
         MenuMiddleware::class,
         AclMiddleware::class,
         MaintenanceModeMiddleware::class,
+        RateLimitMiddleware::class,
         CurrentOrganizationMiddleware::class,
         AuditLogMiddleware::class,
     ];
@@ -69,6 +71,7 @@ class Route
         LocaleMiddleware::class,
         MaybeAuthenticatedMiddleware::class,
         MaintenanceModeMiddleware::class,
+        RateLimitMiddleware::class,
         AclMiddleware::class,
         CurrentOrganizationMiddleware::class,
         AuditLogMiddleware::class,
