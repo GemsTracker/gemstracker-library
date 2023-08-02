@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Gems\Middleware;
 
+use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Cache\RateLimiter;
 use Laminas\Diactoros\Response\EmptyResponse;
-use Mezzio\Router\RouteResult;
-use RuntimeException;
 use Mezzio\Router\Route;
+use Mezzio\Router\RouteResult;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use RuntimeException;
 
 /**
  * Limit the amount of requests that are possible on this endpoint, or api in general
@@ -47,31 +49,37 @@ class RateLimitMiddleware implements MiddlewareInterface
     }
 
     /**
-     * Get the request cache key based on either the login details or the IP
+     * Get the request cache key based on the route and either the login
+     * details or the IP address.
      *
      * @param ServerRequestInterface $request
-     * @return string
      */
-    protected function getRequestKey(ServerRequestInterface $request)
+    protected function getRequestKey(ServerRequestInterface $request): string
     {
-
-        // TODO Get username from auth class.. preferred in plain, not in user object
-        $username = $request->getAttribute('auth_username');
-        $group = $request->getAttribute('auth_group');
-        $request->getAttribute('auth_username');
-
-        if ($username !== null && $group !== null) {
-            return sha1($username . UserRepository::$delimiter . $group . '.rate-limit');
-        }
-
         $routeResult = $request->getAttribute(RouteResult::class);
         $route = $routeResult->getMatchedRoute();
+        $method = $request->getMethod();
 
-        $server = $request->getServerParams();
+        // Now we check if this is an authenticated session.
+        $currentIdentity = $request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE);
+        if (is_null($currentIdentity)) {
+            $currentIdentity = $request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE);
+        }
 
-        // TODO server params from request object
-        if ($route instanceof Route && isset($server['REMOTE_ADDR'])) {
-            return sha1($route->getName() . $server['REMOTE_ADDR']  . '.rate-limit');
+        // Either use the username or the IP address as session identifier in the hash.
+        $sessionPart = null;
+        if ($currentIdentity instanceOf AuthenticationIdentityInterface) {
+            // Use the username as session part.
+            $sessionPart = $currentIdentity->getLoginName();
+        } else {
+            // Use the client IP address as session part.
+            $sessionPart = $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE);
+
+        }
+
+        if ($route instanceof Route && !is_null($sessionPart)) {
+            $key = implode('.', [$route->getName(), $method, $sessionPart, 'rate-limit']);
+            return sha1($key);
         }
 
         throw new RuntimeException('Unable to generate request key.');
