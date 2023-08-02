@@ -6,21 +6,17 @@ use Symfony\Component\Cache\CacheItem;
 
 class RateLimiter
 {
-    /**
-     * @var HelperAdapter
-     */
-    protected $cache;
-
-    protected $tags = [];
+    protected array $tags = [];
 
     /**
      * @var string Suffix for the cache key for the timer function
      */
-    protected $timerSuffix = '_timer';
+    protected string $timerSuffix = '_timer';
 
-    public function __construct(HelperAdapter $cache)
+    public function __construct(
+        protected readonly HelperAdapter $cache
+    )
     {
-        $this->cache = $cache;
     }
 
     /**
@@ -29,7 +25,7 @@ class RateLimiter
      * @param string $key
      * @return int
      */
-    public function attempts($key)
+    public function attempts(string $key): int
     {
         if ($this->cache->hasItem($key)) {
             return $this->cache->getCacheItem($key);
@@ -43,7 +39,7 @@ class RateLimiter
      * @param string $key
      * @return int
      */
-    public function availableIn($key)
+    public function availableIn(string $key): int
     {
         $availableAt = $this->cache->getCacheItem($key . $this->timerSuffix);
         if ($availableAt instanceof \DateTimeInterface) {
@@ -58,7 +54,7 @@ class RateLimiter
      *
      * @param string $key
      */
-    public function clear($key)
+    public function clear(string $key): void
     {
         $this->resetAttempts($key);
 
@@ -72,7 +68,7 @@ class RateLimiter
      * @param int $decaySeconds
      * @return int
      */
-    public function hit($key, $decaySeconds = 60)
+    public function hit(string $key, int $decaySeconds = 60): int
     {
         $now = new \DateTimeImmutable();
         $addTimeInterval = new \DateInterval('PT'. $decaySeconds . 'S');
@@ -98,7 +94,7 @@ class RateLimiter
      * @param string $key
      * @return bool
      */
-    public function resetAttempts($key)
+    public function resetAttempts(string $key): bool
     {
         return $this->cache->deleteItem($key);
     }
@@ -110,7 +106,7 @@ class RateLimiter
      * @param int $maxAttempts
      * @return int
      */
-    public function retriesLeft($key, $maxAttempts)
+    public function retriesLeft(string $key, int $maxAttempts): int
     {
         $attempts = $this->attempts($key);
 
@@ -124,7 +120,7 @@ class RateLimiter
      * @param int $maxAttempts
      * @return bool
      */
-    public function tooManyAttempts($key, $maxAttempts)
+    public function tooManyAttempts(string $key, int $maxAttempts): bool
     {
         if ($this->attempts($key) >= $maxAttempts) {
             if ($this->cache->hasItem($key.$this->timerSuffix)) {
