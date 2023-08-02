@@ -129,6 +129,8 @@ class LimeSurvey3m00Database extends SourceAbstract
 
     protected string|null $siteName = null;
 
+    protected array $surveyConfig;
+
     public function __construct(
         array $_sourceData,
         ResultFetcher $_gemsResultFetcher,
@@ -144,9 +146,9 @@ class LimeSurvey3m00Database extends SourceAbstract
     ) {
         parent::__construct($_sourceData, $_gemsResultFetcher, $translate, $tokenLibrary, $tracker, $valueEncryptor, $config);
 
-        if (isset($config['app']['name'])) {
-            $this->siteName = $config['app']['name'];
-        }
+        $this->siteName = $config['app']['name'] ?? null;
+
+        $this->surveyConfig = $config['survey'] ?? [];
     }
 
     /**
@@ -1421,7 +1423,7 @@ class LimeSurvey3m00Database extends SourceAbstract
 
         // <base>/index.php/survey/index/sid/834486/token/234/lang/en
         $baseurl = $this->getBaseUrl();
-        $start = $this->config['survey']['limesurvey']['tokenUrlStart'] ?? 'index.php';
+        $start = $this->surveyConfig['limesurvey']['tokenUrlStart'] ?? 'index.php';
         return $baseurl . (str_ends_with($baseurl, '/') ? '' : '/') . $start . 'survey/index/sid/' . $sourceSurveyId . '/token/' . $tokenId . $langUrl . '/newtest/Y';
     }
 
