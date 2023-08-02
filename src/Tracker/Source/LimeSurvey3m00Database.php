@@ -1040,20 +1040,17 @@ class LimeSurvey3m00Database extends SourceAbstract
             ]);
 
         $completedTokens = $lsResultFetcher->fetchCol($select);
+        $translatedTokens = [];
 
         // Now make sure we return tokens GemsTracker likes
         if ($completedTokens) {
-            $translatedTokens = array();
-
             // Can not use the map function here since we need a second parameter
             foreach($completedTokens as $token) {
                 $translatedTokens[] = $this->_getToken($token, true);
             }
-
-            return $translatedTokens;
         }
 
-        return $completedTokens;
+        return $translatedTokens;
     }
 
     /**
