@@ -144,7 +144,7 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
      */
     protected function getAnswersFieldsFromSurvey(\Gems\Tracker\Token $token)
     {
-        return array_fill_keys(array_keys($token->getSurvey()->getQuestionList($this->locale)), null);
+        return array_fill_keys(array_keys($token->getSurvey()->getQuestionList($this->locale->getLanguage())), null);
     }
 
     /**
