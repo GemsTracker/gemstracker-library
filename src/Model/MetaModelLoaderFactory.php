@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gems\Model;
 
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\Bridge\GemsFormBridge;
 use Psr\Container\ContainerInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -34,5 +35,4 @@ class MetaModelLoaderFactory extends \Zalt\Model\MetaModelLoaderFactory
         }
         return new MetaModelLoader($overloader->createSubFolderOverloader('Model'), $config['model'], $userRepos);
     }
-
 }

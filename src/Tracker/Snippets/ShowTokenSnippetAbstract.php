@@ -92,8 +92,11 @@ abstract class ShowTokenSnippetAbstract extends ModelDetailTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
-//        $model = $this->metaModelLoader->createModel(TokenModel::class);
-        $model = $this->token->getModel();
+        if (TokenModel::$useTokenModel) {
+            $model = $this->metaModelLoader->createModel(TokenModel::class);
+        } else {
+            $model = $this->token->getModel();
+        }
 
         if ($model instanceof StandardTokenModel) {
             $model->applyFormatting();

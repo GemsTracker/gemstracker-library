@@ -16,7 +16,7 @@ use Gems\Project\ProjectSettings;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Engine\TrackEngineInterface;
-use MUtil\Bootstrap\Form\Element\ToggleCheckboxes;
+use MUtil\Form\Element\ToggleCheckboxes;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
@@ -78,6 +78,8 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
      */
     protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $dataModel)
     {
+        $metaModel = $dataModel->getMetaModel();
+
         if (! $this->createData) {
             $bridge->addHidden('gtr_id_track');
             $bridge->addHidden('table_keys');
@@ -113,7 +115,7 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
             $options = $this->tracker->getTrackEngineList(true, true);
             $classEdit = true;
         }
-        $dataModel->set('gtr_track_class', 'multiOptions', $options, 'escape', false);
+        $metaModel->set('gtr_track_class', 'multiOptions', $options, 'escape', false);
         if ($classEdit) {
             $bridge->addRadio(    'gtr_track_class');
         } else {
@@ -125,26 +127,25 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
         //if (! $this->createData) {
             $bridge->addCheckbox('gtr_active');
         //}
-        if ($dataModel->has('gtr_code')) {
+        if ($metaModel->has('gtr_code')) {
             $bridge->addText('gtr_code');
         }
-        if ($dataModel->has('gtr_calculation_event', 'label')) {
+        if ($metaModel->has('gtr_calculation_event', 'label')) {
             $bridge->add('gtr_calculation_event');
         }
-        if ($dataModel->has('gtr_completed_event', 'label')) {
+        if ($metaModel->has('gtr_completed_event', 'label')) {
             $bridge->add('gtr_completed_event');
         }
-        if ($dataModel->has('gtr_beforefieldupdate_event', 'label')) {
+        if ($metaModel->has('gtr_beforefieldupdate_event', 'label')) {
             $bridge->add('gtr_beforefieldupdate_event');
         }
-        if ($dataModel->has('gtr_fieldupdate_event', 'label')) {
+        if ($metaModel->has('gtr_fieldupdate_event', 'label')) {
             $bridge->add('gtr_fieldupdate_event');
         }
         $bridge->add('gtr_organizations');
 
-        $element = new ToggleCheckboxes('toggleOrg', ['selectorName'=>'gtr_organizations']);
-
-        $element->setLabel($this->_('Toggle'));
+        $element = new ToggleCheckboxes('toggleOrg', ['selectorName' => 'gtr_organizations']);
+        $element->setLabel(sprintf('Toggle %s',$metaModel->get('gtr_organizations', 'label')));
         $bridge->addElement($element);
     }
 

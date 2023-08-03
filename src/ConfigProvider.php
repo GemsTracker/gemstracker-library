@@ -38,6 +38,7 @@ use Gems\Menu\RouteHelperFactory;
 use Gems\Messenger\MessengerFactory;
 use Gems\Messenger\TransportFactory;
 use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Model\Bridge\GemsFormBridge;
 use Gems\Model\MetaModelLoader as GemsMetaModelLoader;
 use Gems\Model\MetaModelLoaderFactory;
 use Gems\Model\Type\GemsDateTimeType;
@@ -576,12 +577,17 @@ class ConfigProvider
     protected function getModelSettings(): array
     {
         $settings = MetaModelConfigProvider::getConfig();
-        $settings['translateDatabaseFields'] = true;
+        $settings['bridges']['form'] = GemsFormBridge::class;
         $settings['modelTypes'] = [
             MetaModelInterface::TYPE_DATE => GemsDateType::class,
             MetaModelInterface::TYPE_DATETIME => GemsDateTimeType::class,
             MetaModelInterface::TYPE_TIME => GemsTimeType::class,
         ];
+        $settings['translateDatabaseFields'] = true;
+
+        foreach ($settings['bridges'] as $name => $className) {
+            \MUtil\Model::setDefaultBridge($name, $className);
+        }
 
         return $settings;
     }

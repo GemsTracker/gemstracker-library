@@ -11,11 +11,10 @@
 
 namespace Gems;
 
-use Gems\Agenda\Agenda;
-use Gems\Agenda\Appointment;
 use Gems\Db\ResultFetcher;
 use Gems\Exception\Coding;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Repository\SurveyRepository;
 use Gems\Task\TaskRunnerBatch;
@@ -24,6 +23,7 @@ use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Tracker\Form\AskTokenForm;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\Model\TrackModel;
 use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\Source\SourceInterface;
@@ -140,6 +140,7 @@ class Tracker implements TrackerInterface
         protected readonly ProjectOverloader $overLoader,
         CurrentUserRepository $currentUserRepository,
         protected readonly ResultFetcher $resultFetcher,
+        protected readonly MetaModelLoader $metaModelLoader,
         protected readonly Model $modelLoader,
         protected readonly SurveyRepository $surveyRepository,
     )
@@ -672,6 +673,11 @@ class Tracker implements TrackerInterface
      */
     public function getTokenModel(string $modelClass = 'StandardTokenModel'): StandardTokenModel
     {
+        if (TokenModel::$useTokenModel) {
+            // dump('Token model laoded through tracker.');
+            return $this->metaModelLoader->createModel(TokenModel::class);
+        }
+
         if (! isset($this->_tokenModels[$modelClass])) {
             /**
              * @var StandardTokenModel $model

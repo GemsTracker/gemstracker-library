@@ -115,11 +115,13 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
      */
     public function createModel(bool $detailed, string $action): DataReaderInterface
     {
-//         $model = $this->metaModelLoader->createModel(TokenModel::class);
-
-        // \MUtil\Model::$verbose = true;
-        $model = $this->tracker->getTokenModel();
+        if (TokenModel::$useTokenModel) {
+            $model = $this->metaModelLoader->createModel(TokenModel::class);
+        } else {
+            // \MUtil\Model::$verbose = true;
+            $model = $this->tracker->getTokenModel();
 //        $model->setCreate(false);
+        }
 
         $metaModel = $model->getMetaModel();
         $metaModel->set('gr2o_patient_nr',       [

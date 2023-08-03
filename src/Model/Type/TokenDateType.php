@@ -19,8 +19,10 @@ use Zalt\Model\Type\OverwritingTypeInterface;
  * @subpackage Tracker\Model\Type
  * @since      Class available since version 1.0
  */
-class TokenDateType extends GemsDateType implements OverwritingTypeInterface
+class TokenDateType extends GemsDateTimeType implements OverwritingTypeInterface
 {
+    // public string $dateFormat = 'd-m-Y';
+
     public function __construct(
         TranslatorInterface $translator,
         protected TokenRepository $tokenRepository,
@@ -29,5 +31,4 @@ class TokenDateType extends GemsDateType implements OverwritingTypeInterface
         parent::__construct($translator);
         //if ($this->tokenRepository->)
     }
-
 }

@@ -274,11 +274,13 @@ abstract class FieldAbstract implements FieldInterface
     {
         if ($this->hasManualSetOption()) {
             return [
-                'label'        => sprintf($this->translator->_('Set %s'), strtolower($this->getLabel())),
-                'description'  => $this->translator->_('Manually set fields will never be (re)calculated.'),
-                'elementClass' => 'Radio',
-                'multiOptions' => $this->translatedUtil->getDateCalculationOptions(),
-                'separator'    => ' ',
+                'label'          => sprintf($this->translator->_('Set %s'), strtolower($this->getLabel())),
+                'description'    => $this->translator->_('Manually set fields will never be (re)calculated.'),
+                'elementClass'   => 'OnOffEdit',
+                'onOffEditFor'   => $this->getFieldKey(),
+                'onOffEditValue' => 1,
+                'multiOptions'   => $this->translatedUtil->getDateCalculationOptions(),
+                'separator'      => ' ',
                 ];
         }
         return [];

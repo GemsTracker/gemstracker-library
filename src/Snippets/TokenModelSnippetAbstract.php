@@ -105,11 +105,14 @@ class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
     {
         if ($this->model instanceof StandardTokenModel) {
             $model = $this->model;
-        } elseif ($this->model instanceof Tracker\Model\TokenModel) {
+        } elseif ($this->model instanceof TokenModel) {
             $model = $this->model;
         } else {
-//            $model = $this->metaModelLoader->createModel(TokenModel::class);
-             $model = $this->tracker->getTokenModel();
+            if (TokenModel::$useTokenModel) {
+                $model = $this->metaModelLoader->createModel(TokenModel::class);
+            } else {
+                $model = $this->tracker->getTokenModel();
+            }
         }
         $model->addColumn(
             'CASE WHEN gto_completion_time IS NULL THEN gto_valid_from ELSE gto_completion_time END',

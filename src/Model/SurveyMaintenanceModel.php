@@ -407,11 +407,11 @@ class SurveyMaintenanceModel extends JoinModel
 
         $order = $this->getOrder('gsu_insert_organizations') + 1;
 
-        $this->set('toggleOrg',
-                    'elementClass', 'ToggleCheckboxes',
-                    'selectorName', 'gsu_insert_organizations',
-                    'order', $order
-                    );
+        $this->set('toggleOrg', [
+            'elementClass' => 'ToggleCheckboxes',
+            'selectorName' => 'gsu_insert_organizations',
+            'order'        => $order,
+            ]);
 
         $this->set('gsu_survey_pdf', 'label', 'Pdf',
                         'accept', 'application/pdf',

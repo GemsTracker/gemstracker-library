@@ -16,9 +16,11 @@ use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
 use Gems\Tracker;
+use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\Token;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -103,6 +105,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
+        protected MetaModelLoader $metaModelLoader,
         protected ReceptionCodeRepository $receptionCodeRepository,
         protected Tracker $tracker,
     ) {
@@ -128,7 +131,11 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
-        $model = $this->token->getModel();
+        if (TokenModel::$useTokenModel) {
+            $model = $this->metaModelLoader->createModel(TokenModel::class);
+        } else {
+            $model = $this->token->getModel();
+        }
 
         $model->set('gto_reception_code', [
             'label' => $model->get('grc_description', 'label'),

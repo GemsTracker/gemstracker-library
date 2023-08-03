@@ -11,8 +11,6 @@
 
 namespace Gems\Tracker\Model;
 
-use DateTime;
-
 use Gems\Loader;
 use Gems\Model\HiddenOrganizationModel;
 use Gems\Tracker\Engine\TrackEngineInterface;
@@ -20,7 +18,6 @@ use Gems\Util;
 use Gems\Util\Translated;
 use MUtil\JQuery\Form\Element\DatePicker;
 use MUtil\Model;
-use MUtil\Model\Dependency\OffOnElementsDependency;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Zalt\Model\MetaModelInterface;
@@ -125,19 +122,6 @@ class RespondentTrackModel extends HiddenOrganizationModel
     }
 
     /**
-     * Add tracking off manual end date changes by the user
-     *
-     * @param mixed $value The value to store when the tracked field has changed
-     * @return self
-     */
-    public function addEditTracking()
-    {
-        $this->addDependency(new OffOnElementsDependency('gr2t_end_date_manual',  'gr2t_end_date', 'readonly', $this));
-
-        return $this;
-    }
-
-    /**
      * Set those settings needed for the browse display
      *
      * @return self
@@ -217,12 +201,15 @@ class RespondentTrackModel extends HiddenOrganizationModel
         // Integrate fields
         $trackEngine->addFieldsToModel($this, $edit);
 
-        $this->set('gr2t_end_date_manual', 'label', $this->_('Set ending on'),
-            'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
-            'elementClass', 'Radio',
-            'multiOptions', $this->translatedUtil->getDateCalculationOptions(),
-            'separator', ' '
-        );
+        $this->set('gr2t_end_date_manual', [
+            'label' => $this->_('Set ending on'),
+            'description' => $this->_('Manually set dates are fixed and will never be (re)calculated.'),
+            'elementClass' => 'OnOffEdit',
+            'onOffEditFor' => 'gr2t_end_date',
+            'onOffEditValue' => 1,
+            'multiOptions' => $this->translatedUtil->getDateCalculationOptions(),
+            'separator' => ' ',
+            ]);
         $this->set('gr2t_end_date',        'label', $this->_('Ending on'),
             'dateFormat', 'd-m-Y',
             'formatFunction', $formatDate);
@@ -245,7 +232,6 @@ class RespondentTrackModel extends HiddenOrganizationModel
     public function applyEditSettings(TrackEngineInterface $trackEngine)
     {
         $this->applyDetailSettings($trackEngine, true);
-        $this->addEditTracking();
 
         $this->set('gr2t_id_user', [
             'elementClass' => 'Hidden',

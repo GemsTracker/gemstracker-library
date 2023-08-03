@@ -19,6 +19,7 @@ use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Model\MetaModelLoader;
 use Gems\Tracker;
 use Gems\Tracker\Snippets\EditTokenSnippetAbstract;
 use MUtil\Model\Type\ChangeTracker;
@@ -48,10 +49,11 @@ class EditTrackTokenSnippet extends EditTokenSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
+        MetaModelLoader $metaModelLoader,
         Tracker $tracker,
         CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $tracker);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $metaModelLoader, $tracker);
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
@@ -66,20 +68,21 @@ class EditTrackTokenSnippet extends EditTokenSnippetAbstract
      */
     protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $dataModel)
     {
-        $dataModel->set('reset_mail', [
+        $metaModel = $dataModel->getMetaModel();
+
+        $metaModel->set('reset_mail', [
             'label'        => $this->_('Reset sent mail'),
             'description'  => $this->_('Set to zero mails sent'),
             'elementClass' => 'Checkbox',                
         ]);
-        
+
         $onOffFields = array('gr2t_track_info', 'gto_round_description', 'grc_description');
         foreach ($onOffFields as $field) {
             if (! (isset($this->formData[$field]) && $this->formData[$field])) {
-                $dataModel->set($field, 'elementClass', 'None');
+                $metaModel->set($field, 'elementClass', 'None');
             }
         }
 
-        $metaModel = $this->getModel()->getMetaModel();
         $this->initItems($metaModel);
 
         //And any remaining item

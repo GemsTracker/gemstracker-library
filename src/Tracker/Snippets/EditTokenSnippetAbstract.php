@@ -12,9 +12,12 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\Bridge\GemsFormBridge;
+use Gems\Model\MetaModelLoader;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Model\TokenModel;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -60,6 +63,7 @@ abstract class EditTokenSnippetAbstract extends ModelFormSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
+        protected MetaModelLoader $metaModelLoader,
         protected Tracker $tracker,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
@@ -72,11 +76,13 @@ abstract class EditTokenSnippetAbstract extends ModelFormSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
-        $model = $this->token->getModel();
+        if (TokenModel::$useTokenModel) {
+            $model = $this->metaModelLoader->createModel(TokenModel::class);
+        } else {
+            $model = $this->token->getModel();
+        }
 
         if ($model instanceof StandardTokenModel) {
-            $model->addEditTracking();
-
             if ($this->createData) {
                 $model->applyInsertionFormatting();
             }

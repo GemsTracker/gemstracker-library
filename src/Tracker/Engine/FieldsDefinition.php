@@ -16,7 +16,6 @@ use Gems\Tracker\Model\Dependency\FieldDataDependency;
 use Gems\Tracker\Model\FieldDataModel;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Tracker\Model\LogFieldDataModel;
-use MUtil\Model\Dependency\OffOnElementsDependency;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Dependency\DependencyInterface;
 use Zalt\Model\MetaModelInterface;
@@ -214,10 +213,6 @@ class FieldsDefinition
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
-                if ($field->hasManualSetOption()) {
-                    $mKey = $field->getManualKey();
-                    $output[] = new OffOnElementsDependency($mKey, $key, 'readonly', $model);
-                }
                 $dependsOn = $field->getDataModelDependsOn();
 
                 if ($field->hasDataModelDependencies()) {

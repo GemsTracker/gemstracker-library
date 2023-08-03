@@ -1,0 +1,121 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @package    GemsTest
+ * @subpackage Model\Type
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ */
+
+namespace GemsTest\Model\Type;
+
+//include_once "/home/mjong/gems2/lib/gemstracker/gemstracker/vendor/magnafacta/zalt-model/test/MetaModelTestTrait.php";
+//include_once "/home/mjong/gems2/lib/gemstracker/gemstracker/vendor/magnafacta/zalt-util/test/Mock/MockTranslator.php";
+
+use Gems\Locale\Locale;
+use Gems\Model\Type\TokenDateType;
+use Gems\Repository\TokenRepository;
+use Gems\Translate\TranslationFactory;
+use GemsTest\Repository\MockTokenRepository;
+use MUtil\Translate\Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Mock\MockTranslator;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\MetaModelTestTrait;
+use Zalt\Model\Ra\PhpArrayModel;
+
+/**
+ * @package    GemsTest
+ * @subpackage Model\Type
+ * @since      Class available since version 1.0
+ */
+class TokenModelTypeTest extends \PHPUnit\Framework\TestCase
+{
+    use MetaModelTestTrait;
+
+    protected TokenDateType $tokenType;
+
+    public function getModelLoaded($rows): PhpArrayModel
+    {
+        // Add required classes to the service manager
+        $sm = $this->getServiceManager();
+        $sm->set(TranslatorInterface::class, new MockTranslator());
+        $sm->set(Locale::class, new Locale([]));
+        $tf = new TranslationFactory();
+        $sm->set(Translator::class, $tf($sm, ''));
+        $sm->set(TokenRepository::class, new MockTokenRepository($sm->get(Translator::class)));
+
+        $loader = $this->getModelLoader();
+        $this->tokenType = $loader->createType(TokenDateType::class);
+
+        if ($rows instanceof \ArrayObject) {
+            $data = $rows;
+        } else {
+            $data = new \ArrayObject($rows);
+        }
+        $model = $loader->createModel(PhpArrayModel::class, 'test', $data);
+
+        $metaModel = $model->getMetaModel();
+        $metaModel->set('gto_id_token', [MetaModelInterface::TYPE_ID => MetaModelInterface::TYPE_STRING]);
+        $metaModel->set('gto_valid_from', [MetaModelInterface::TYPE_ID => $this->tokenType]);
+        $metaModel->set('gto_valid_until', [MetaModelInterface::TYPE_ID => $this->tokenType]);
+        $metaModel->set('gro_valid_after_unit', [MetaModelInterface::TYPE_ID => MetaModelInterface::TYPE_STRING]);
+        $metaModel->set('gro_valid_for_unit', [MetaModelInterface::TYPE_ID => MetaModelInterface::TYPE_STRING]);
+
+        return $model;
+    }
+
+    public static function provideValidFrom(): array
+    {
+        return [
+            'fullDate' => ['2023-03-01 12:13:14', 'H', '01-03-2023 12:13', '2023-03-01 12:13:00'],
+            'dayOnly'  => ['2023-03-01 12:13:14', 'D', '01-03-2023 12:13', '2023-03-01 12:13:00'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideValidFrom
+     *
+     * @param string $from
+     * @param string $period
+     * @param string $storage
+     * @return void
+     */
+    public function testValidFrom(string $from, string $period, string $display, string $storage): void
+    {
+        $row = [
+            'gto_id_token' => 1,
+            'gto_valid_from' => $from,
+            'gto_valid_until' => '2023-03-04 23:59:59',
+            'gro_valid_after_unit' => $period,
+            'gro_valid_for_unit' => 'D'
+        ];
+        $model  = $this->getModelLoaded([$row]);
+        $data = $model->loadFirst(['gto_id_token' => 1]);
+        // print_r($data);
+
+        $metaModel = $model->getMetaModel();
+
+        // Check onLoad
+        $this->assertInstanceOf(\DateTimeImmutable::class, $data['gto_valid_from']);
+
+        // Check display value
+        $bridge = $model->getBridgeFor('display');
+        $this->assertEquals($display, $bridge->format('gto_valid_from', $data['gto_valid_from']));
+
+        // Check storage of original data (no change)
+        $save = $metaModel->processRowBeforeSave($data);
+        $this->assertEquals($from, $save['gto_valid_from']);
+
+        // Mimioc post
+        $data['gto_valid_from'] = $display;
+        $post = $model->loadPostData($data, false);
+        $this->assertInstanceOf(\DateTimeImmutable::class, $post['gto_valid_from']);
+        $this->assertEquals($display, $bridge->format('gto_valid_from', $post['gto_valid_from']));
+
+        // Save post
+        $save = $metaModel->processRowBeforeSave($post);
+        $this->assertEquals($storage, $save['gto_valid_from']);
+    }
+}

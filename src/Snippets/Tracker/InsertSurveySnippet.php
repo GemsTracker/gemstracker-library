@@ -185,8 +185,6 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
         $model = $this->tracker->getTokenModel();
 
         if ($model instanceof StandardTokenModel) {
-            $model->addEditTracking();
-
             if ($this->createData) {
                 $model->applyInsertionFormatting();
             }

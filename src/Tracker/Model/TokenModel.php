@@ -21,6 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\AbstractDateType;
+use Zalt\Validator\Model\AfterDateModelValidator;
 
 /**
  * @package    Gems
@@ -32,6 +33,11 @@ class TokenModel extends GemsJoinModel
     use MaskedModelTrait;
 
     public static string $modelName = 'gems__tokens';
+
+    /**
+     * @var bool Temporary switch to enable / disable use of TokenModel
+     */
+    public static $useTokenModel = false;
 
     public function __construct(
         MetaModelInterface $metaModel,
@@ -164,29 +170,38 @@ class TokenModel extends GemsJoinModel
 
         // Token, editable part
         $manual = $this->translatedUtil->getDateCalculationOptions();
-        $this->metaModel->set('gto_valid_from_manual',  'label', $this->_('Set valid from'),
-            'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
-            'elementClass', 'Radio',
-            'multiOptions', $manual,
-            'separator', ' '
-        );
+        $this->metaModel->set('gto_valid_from_manual',  [
+            'label' => $this->_('Set valid from'),
+            'description' => $this->_('Manually set dates are fixed and will never be (re)calculated.'),
+            'elementClass' => 'OnOffEdit',
+            'multiOptions' => $manual,
+            'onOffEditFor' => 'gto_valid_from',
+            'onOffEditValue' => 1,
+            'separator' => ' ',
+            ]);
         $this->metaModel->set('gto_valid_from', [
             'label' => $this->_('Valid from'),
             'tdClass' => 'date',
             AbstractDateType::$whenDateEmptyKey => $this->_('never'),
             MetaModelInterface::TYPE_ID => TokenDateType::class,
             ]);
-        $this->metaModel->set('gto_valid_until_manual', 'label', $this->_('Set valid until'),
-            'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
-            'elementClass', 'Radio',
-            'multiOptions', $manual,
-            'separator', ' '
-        );
+        $this->metaModel->set('gto_valid_until_manual', [
+            'label' => $this->_('Set valid until'),
+            'description' => $this->_('Manually set dates are fixed and will never be (re)calculated.'),
+            'elementClass' => 'OnOffEdit',
+            'onOffEditFor' => 'gto_valid_until',
+            'onOffEditValue' => 1,
+            'multiOptions' => $manual,
+            'separator' => ' ',
+            ]);
         $this->metaModel->set('gto_valid_until', [
             'label' => $this->_('Valid until'),
             'tdClass' => 'date',
             AbstractDateType::$whenDateEmptyKey => $this->_('forever'),
             MetaModelInterface::TYPE_ID => TokenDateType::class,
+            AfterDateModelValidator::$afterDateFieldKey => 'gto_valid_from',
+            AfterDateModelValidator::$afterDateMessageKey => $this->_('The valid after date should be later than the valid for date!'),
+            'validator[after]' => AfterDateModelValidator::class
             ]);
         $this->metaModel->set('gto_comment',            'label', $this->_('Comments'),
             'cols', 50,
