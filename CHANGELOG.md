@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Fixed
 - Activity search snippet shows result when non should be there (#736)
+- AgeCondition should revert to today when valid from not set (#818)
 - Answers in traffic light screen do not show up inline (#722)
 - Canvas nodes in Dossier Export corrupt Word document (#717)
 - Birthday sometimes stored incorrectly (#666)
@@ -76,6 +77,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - When using RespondentTrack->setEndDate the date should be set to manual (#670)
 
 ### Interface improvements
+- Better error handling when respondent does not exists during Rounds checking (#819)
 - By period Token overview totals do not match (#685)
 - Document the db (#16)
 - Dossier export cannot open in a new tab in EPD environments (#691)

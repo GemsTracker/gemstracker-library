@@ -118,18 +118,18 @@ class AgeCondition extends RoundConditionAbstract
         $ageUnit = $this->_data['gcon_condition_text2'];
 
         $validFrom = $token->getValidFrom();
-        if (!is_null($validFrom)) {
-            $respondent = $token->getRespondent();
-            $months = false;
-            if ($ageUnit == 'M') {
-                $months = true;
-            }
-            $age = $respondent->getAge($validFrom, $months);
-            $comparator = $this->getActiveComparator();
-            return $comparator->isValid($age);
+        if (null === $validFrom) {
+            $validFrom = new \DateTimeImmutable();
         }
 
-        return true;
+        $respondent = $token->getRespondent();
+        $months = false;
+        if ($ageUnit == 'M') {
+            $months = true;
+        }
+        $age = $respondent->getAge($validFrom, $months);
+        $comparator = $this->getActiveComparator();
+        return $comparator->isValid($age);
     }
 
     /**
