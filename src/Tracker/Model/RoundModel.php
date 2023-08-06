@@ -36,6 +36,8 @@ class RoundModel extends JoinModel
     public function __construct()
     {
         parent::__construct('rounds', 'gems__rounds', 'gro', true);
+
+        $this->db = $this->getAdapter();
     }
 
     /**
@@ -104,7 +106,7 @@ class RoundModel extends JoinModel
         }
 
         $sql = "SELECT COUNT(*) FROM gems__tokens WHERE gto_id_round = ? AND gto_start_time IS NOT NULL";
-        return $this->db->fetchOne($sql, $roundId);
+        return $this->db->fetchOne($sql, [$roundId]);
     }
     
     /**

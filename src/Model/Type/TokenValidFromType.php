@@ -12,6 +12,7 @@ namespace Gems\Model\Type;
 
 use Gems\Repository\TokenRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Type\MaybeTimeType;
 use Zalt\Model\Type\OverwritingTypeInterface;
 
 /**
@@ -19,16 +20,17 @@ use Zalt\Model\Type\OverwritingTypeInterface;
  * @subpackage Tracker\Model\Type
  * @since      Class available since version 1.0
  */
-class TokenDateType extends GemsDateTimeType implements OverwritingTypeInterface
+class TokenValidFromType extends MaybeTimeType implements OverwritingTypeInterface
 {
-    // public string $dateFormat = 'd-m-Y';
+    use GemsDateTypeTrait;
 
     public function __construct(
         TranslatorInterface $translator,
         protected TokenRepository $tokenRepository,
     )
     {
-        parent::__construct($translator);
-        //if ($this->tokenRepository->)
+        $this->translate = $translator;
+
+        $this->description = $this->_('dd-mm-yyyy hh:mm');
     }
 }

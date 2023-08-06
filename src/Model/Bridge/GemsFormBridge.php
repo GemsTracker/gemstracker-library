@@ -35,6 +35,19 @@ class GemsFormBridge extends \Zalt\Snippets\ModelBridge\ZendFormBridge
         } else {
             $options['class'] .= ' on-off-edit';
         }
+        if (! isset($options['onOffEditFor'])) {
+            if (str_ends_with($name, '_manual')) {
+                $options['onOffEditFor'] = trim(substr($name, 0, -6), '_');
+            }
+        }
+        if (! isset($options['onOffEditValue'])) {
+            if (isset($options['multiOptions'])) {
+                $choices = $options['multiOptions'];
+                $options['onOffEditValue'] = array_key_last($choices);
+            } else {
+                $options['onOffEditValue'] = 1;
+            }
+        }
 
         return $this->_addToForm($name, 'Radio', $options);
     }

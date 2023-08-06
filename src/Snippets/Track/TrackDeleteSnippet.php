@@ -11,12 +11,18 @@
 
 namespace Gems\Snippets\Track;
 
-use Gems\Loader;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract;
+use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
+use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -29,13 +35,6 @@ use Zalt\Snippets\ModelBridge\DetailTableBridge;
  */
 class TrackDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
 {
-    
-    /**
-     *
-     * @var Loader
-     */
-    protected $loader;
-    
     /**
      *
      * @var TrackModel
@@ -55,6 +54,19 @@ class TrackDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
      */
     protected $useCount = 0;
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        CacheItemPoolInterface $cache,
+        protected Tracker $tracker
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger, $cache);
+    }
+
     /**
      * Creates the model
      *
@@ -63,7 +75,7 @@ class TrackDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
     protected function createModel(): FullDataInterface
     {
         if (! $this->model instanceof TrackModel) {
-            $this->model = $this->loader->getTracker()->getTrackModel();
+            $this->model = $this->tracker->getTrackModel();
         }
 
         return $this->model;

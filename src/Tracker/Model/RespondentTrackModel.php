@@ -205,8 +205,6 @@ class RespondentTrackModel extends HiddenOrganizationModel
             'label' => $this->_('Set ending on'),
             'description' => $this->_('Manually set dates are fixed and will never be (re)calculated.'),
             'elementClass' => 'OnOffEdit',
-            'onOffEditFor' => 'gr2t_end_date',
-            'onOffEditValue' => 1,
             'multiOptions' => $this->translatedUtil->getDateCalculationOptions(),
             'separator' => ' ',
             ]);

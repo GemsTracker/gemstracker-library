@@ -12,7 +12,8 @@ namespace Gems\Tracker\Model;
 
 use Gems\Model\GemsJoinModel;
 use Gems\Model\MaskedModelTrait;
-use Gems\Model\Type\TokenDateType;
+use Gems\Model\Type\TokenValidFromType;
+use Gems\Model\Type\TokenValidUntilType;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\TokenRepository;
 use Gems\User\Mask\MaskRepository;
@@ -175,30 +176,28 @@ class TokenModel extends GemsJoinModel
             'description' => $this->_('Manually set dates are fixed and will never be (re)calculated.'),
             'elementClass' => 'OnOffEdit',
             'multiOptions' => $manual,
-            'onOffEditFor' => 'gto_valid_from',
-            'onOffEditValue' => 1,
             'separator' => ' ',
             ]);
         $this->metaModel->set('gto_valid_from', [
             'label' => $this->_('Valid from'),
+            'elementClass' => 'Date',
             'tdClass' => 'date',
             AbstractDateType::$whenDateEmptyKey => $this->_('never'),
-            MetaModelInterface::TYPE_ID => TokenDateType::class,
+            MetaModelInterface::TYPE_ID => TokenValidFromType::class,
             ]);
         $this->metaModel->set('gto_valid_until_manual', [
             'label' => $this->_('Set valid until'),
             'description' => $this->_('Manually set dates are fixed and will never be (re)calculated.'),
             'elementClass' => 'OnOffEdit',
-            'onOffEditFor' => 'gto_valid_until',
-            'onOffEditValue' => 1,
             'multiOptions' => $manual,
             'separator' => ' ',
             ]);
         $this->metaModel->set('gto_valid_until', [
             'label' => $this->_('Valid until'),
+            'elementClass' => 'Date',
             'tdClass' => 'date',
             AbstractDateType::$whenDateEmptyKey => $this->_('forever'),
-            MetaModelInterface::TYPE_ID => TokenDateType::class,
+            MetaModelInterface::TYPE_ID => TokenValidUntilType::class,
             AfterDateModelValidator::$afterDateFieldKey => 'gto_valid_from',
             AfterDateModelValidator::$afterDateMessageKey => $this->_('The valid after date should be later than the valid for date!'),
             'validator[after]' => AfterDateModelValidator::class

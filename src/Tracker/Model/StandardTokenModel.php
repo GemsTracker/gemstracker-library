@@ -15,7 +15,8 @@ use DateTimeImmutable;
 use DateTimeInterface;
 
 use Gems\Date\Period;
-use Gems\Model\Type\TokenDateType;
+use Gems\Model\Type\TokenValidFromType;
+use Gems\Model\Type\TokenValidUntilType;
 use Gems\Tracker\Model\Dependency\TokenModelTimeDependency;
 use Gems\User\User;
 use Gems\Util\Translated;
@@ -334,13 +335,14 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
             'description' => $this->_('Manually set dates are fixed and will never be (re)calculated.'),
             'elementClass' => 'OnOffEdit',
             'multiOptions' => $manual,
-            'onOffEditFor' => 'gto_valid_from',
-            'onOffEditValue' => 1,
             'separator' => ' ',
         ]);
-        $this->set('gto_valid_from',         'label', $this->_('Valid from'),
-                'elementClass', 'Date',
-                'tdClass', 'date');
+        $this->set('gto_valid_from', [
+            'label' => $this->_('Valid from'),
+            'elementClass' => 'Date',
+            'tdClass' => 'date',
+            MetaModelInterface::TYPE_ID => TokenValidFromType::class,
+            ]);
         $this->set('gto_valid_from', $this->getTokenDateSettings(true));
         $this->setOnLoad('gto_valid_from', [$this, 'formatValidFromDate']);
 
@@ -349,18 +351,16 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
             'description' => $this->_('Manually set dates are fixed and will never be (re)calculated.'),
             'elementClass' => 'OnOffEdit',
             'multiOptions' => $manual,
-            'onOffEditFor' => 'gto_valid_until',
-            'onOffEditValue' => 1,
             'separator' => ' ',
         ]);
         $this->set('gto_valid_until', [
             'label' => $this->_('Valid until'),
             'tdClass' => 'date',
             AbstractDateType::$whenDateEmptyKey => $this->_('forever'),
-            MetaModelInterface::TYPE_ID => TokenDateType::class,
+            MetaModelInterface::TYPE_ID => TokenValidUntilType::class,
             AfterDateModelValidator::$afterDateFieldKey => 'gto_valid_from',
             AfterDateModelValidator::$afterDateMessageKey => $this->_('The valid after date should be later than the valid for date!'),
-            'validator[after]' => AfterDateModelValidator::class
+            'validator[after]' => AfterDateModelValidator::class,
         ]);
         $this->set('gto_valid_until', $this->getTokenDateSettings(false));
         $this->setOnLoad('gto_valid_until', [$this, 'formatValidUntilDate']);
