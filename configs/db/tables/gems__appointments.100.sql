@@ -37,6 +37,8 @@ CREATE TABLE if not exists gems__appointments (
         gap_subject             varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' null default null,
         gap_comment             TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' null default null,
 
+        gap_info                json NULL;
+
         gap_changed             timestamp not null default current_timestamp on update current_timestamp,
         gap_changed_by          bigint unsigned not null,
         gap_created             timestamp not null default current_timestamp,

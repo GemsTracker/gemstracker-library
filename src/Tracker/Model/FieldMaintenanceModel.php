@@ -63,20 +63,21 @@ class FieldMaintenanceModel extends UnionModel
      *
      * @var array fieldType => dependency class name (without path elements)
      */
-    protected $dependencies = array(
-        'activity'    => 'FromAppointmentsMaintenanceDependency',
-        'appointment' => 'AppointmentMaintenanceDependency',
-        'boolean'     => 'BooleanMaintenanceDependency',
-        'caretaker'   => 'FromAppointmentsMaintenanceDependency',
-        'date'        => 'FromAppointmentsMaintenanceDependency',
-        'datetime'    => 'FromAppointmentsMaintenanceDependency',
-        'location'    => 'FromAppointmentsMaintenanceDependency',
-        'multiselect' => 'ValuesMaintenanceDependency',
-        'select'      => 'ValuesMaintenanceDependency',
-        'text'        => 'DefaultTextDependency',
-        'textarea'    => 'DefaultTextDependency',
-        'procedure'   => 'FromAppointmentsMaintenanceDependency',
-        );
+    protected $dependencies = [
+        'activity'          => 'FromAppointmentsMaintenanceDependency',
+        'appointment'       => 'AppointmentMaintenanceDependency',
+        'appointmentInfo'   => 'ValuesAsReferenceDependency',
+        'boolean'           => 'BooleanMaintenanceDependency',
+        'caretaker'         => 'FromAppointmentsMaintenanceDependency',
+        'date'              => 'FromAppointmentsMaintenanceDependency',
+        'datetime'          => 'FromAppointmentsMaintenanceDependency',
+        'location'          => 'FromAppointmentsMaintenanceDependency',
+        'multiselect'       => 'ValuesMaintenanceDependency',
+        'select'            => 'ValuesMaintenanceDependency',
+        'text'              => 'DefaultTextDependency',
+        'textarea'          => 'DefaultTextDependency',
+        'procedure'         => 'FromAppointmentsMaintenanceDependency',
+    ];
 
     /**
      * @var EventDispatcherInterface
@@ -195,7 +196,7 @@ class FieldMaintenanceModel extends UnionModel
             // Now add the type specific dependency (if any)
             $class = $this->getTypeDependencyClass($row['gtf_field_type']);
             if ($class) {
-                $dependency = $this->tracker->createTrackClass($class, $row['gtf_id_track']);
+                $dependency = $this->tracker->createTrackClass($class, (int)$row['gtf_id_track']);
                 $this->addDependency($dependency, null, null, 'row');
             }
         }
@@ -505,22 +506,23 @@ class FieldMaintenanceModel extends UnionModel
     public function getFieldTypes()
     {
         $output = [
-            'activity'      => $this->_('Activity'),
-            'appointment'   => $this->_('Appointment'),
-            'boolean'       => $this->_('Boolean'),
-            'caretaker'     => $this->_('Caretaker'),
-            'consent'       => $this->_('Consent'),
-            'date'          => $this->_('Date'),
-            'text'          => $this->_('Free text'),
-            'textarea'      => $this->_('Long free text'),
-            'location'      => $this->_('Location'),
-            'datetime'      => $this->_('Moment in time'),
-            'procedure'     => $this->_('Procedure'),
-            'relatedTracks' => $this->_('Related tracks'),
-            'relation'      => $this->_('Relation'),
-            'select'        => $this->_('Select one'),
-            'multiselect'   => $this->_('Select multiple'),
-            'track'         => $this->_('Track'),
+            'activity'          => $this->_('Activity'),
+            'appointment'       => $this->_('Appointment'),
+            'appointmentInfo'   => $this->_('Appointment info'),
+            'boolean'           => $this->_('Boolean'),
+            'caretaker'         => $this->_('Caretaker'),
+            'consent'           => $this->_('Consent'),
+            'date'              => $this->_('Date'),
+            'text'              => $this->_('Free text'),
+            'textarea'          => $this->_('Long free text'),
+            'location'          => $this->_('Location'),
+            'datetime'          => $this->_('Moment in time'),
+            'procedure'         => $this->_('Procedure'),
+            'relatedTracks'     => $this->_('Related tracks'),
+            'relation'          => $this->_('Relation'),
+            'select'            => $this->_('Select one'),
+            'multiselect'       => $this->_('Select multiple'),
+            'track'             => $this->_('Track'),
         ];
 
         $event = new TranslatableNamedArrayEvent($output);

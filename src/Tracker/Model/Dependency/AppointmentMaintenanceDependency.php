@@ -18,7 +18,8 @@ use Gems\Util\Translated;
 use Laminas\Validator\GreaterThan;
 use Laminas\Validator\LessThan;
 use MUtil\Model;
-use MUtil\Model\Dependency\DependencyAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Dependency\DependencyAbstract;
 use MUtil\Validator\IsNot;
 use Zalt\Html\AElement;
 
@@ -40,7 +41,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = ['description', 'elementClass', 'label', 'multiOptions', 'onchange', 'onclick',
+    protected array $_defaultEffects = ['description', 'elementClass', 'label', 'multiOptions', 'onchange', 'onclick',
         'filters', 'validators',
     ];
 
@@ -51,7 +52,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = ['gtf_id_track', 'gtf_id_order', 'gtf_filter_id', 'gtf_max_diff_exists', 'gtf_min_diff_length', 'gtf_create_track'];
+    protected array $_dependentOn = ['gtf_id_track', 'gtf_id_order', 'gtf_filter_id', 'gtf_max_diff_exists', 'gtf_min_diff_length', 'gtf_create_track'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -60,31 +61,23 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = [
+    protected array $_effecteds = [
         'gtf_id_order', 'htmlCalc', 'gtf_filter_id', 'gtf_min_diff_unit', 'gtf_min_diff_length',
         'gtf_max_diff_exists', 'gtf_max_diff_unit', 'gtf_max_diff_length', 'htmlCreate', 'gtf_uniqueness',
         'gtf_create_track', 'gtf_create_wait_days',
     ];
 
-    /**
-     * @var Agenda
-     */
-    protected $agenda;
+    public function __construct(
+        TranslatorInterface $translate,
+        protected readonly Agenda $agenda,
+        protected readonly Translated $translatedUtil,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly RouteHelper $routeHelper,
 
-    /**
-     * @var ResultFetcher
-     */
-    protected $resultFetcher;
-
-    /**
-     * @var RouteHelper
-     */
-    protected $routeHelper;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    )
+    {
+        parent::__construct($translate);
+    }
 
     /**
      * Returns the changes that must be made in an array consisting of

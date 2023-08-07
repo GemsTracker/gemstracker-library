@@ -3,11 +3,13 @@
 
 namespace Gems\Tracker\Model\Dependency;
 
-
+use Gems\Db\ResultFetcher;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Field\FieldAbstract;
 use Gems\Tracker\Model\FieldMaintenanceModel;
-use MUtil\Model\Dependency\DependencyAbstract;
+use Laminas\Db\Sql\Expression;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Dependency\DependencyAbstract;
 use Zalt\Model\MetaModelInterface;
 
 class OtherFieldValuesDependency extends DependencyAbstract
@@ -19,7 +21,7 @@ class OtherFieldValuesDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = ['gtf_field_type', 'gtf_field_values', 'gtf_id_track'];
+    protected array $_dependentOn = ['gtf_field_type', 'gtf_field_values', 'gtf_id_track'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -28,7 +30,7 @@ class OtherFieldValuesDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = [
+    protected array $_effecteds = [
         'htmlCalc' => ['elementClass', 'label'],
         'gtf_calculate_using' => ['description', 'elementClass', 'formatFunction', 'label', 'multiOptions'],
         'gtf_field_values' => [
@@ -39,38 +41,13 @@ class OtherFieldValuesDependency extends DependencyAbstract
         ],
     ];
 
-    /**
-     * The current trackId
-     * @var int
-     */
-    protected $_trackId;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    /**
-     *
-     * @param int $trackId The trackId for this dependency
-     */
-    public function __construct($trackId)
+    public function __construct(
+        protected readonly int $trackId,
+        TranslatorInterface $translate,
+        protected readonly ResultFetcher $resultFetcher,
+    )
     {
-        $this->_trackId = $trackId;
-
-        parent::__construct();
+        parent::__construct($translate);
     }
 
     /**
@@ -87,7 +64,7 @@ class OtherFieldValuesDependency extends DependencyAbstract
      * @param string $value
      * @return string
      */
-    public function formatValues($value)
+    public function formatValues(string $value): string
     {
         $options = $this->getOptions();
         if (is_array($value)) {
@@ -158,42 +135,41 @@ class OtherFieldValuesDependency extends DependencyAbstract
      * @param int $trackId
      * @return array
      */
-    protected function getOptions($trackId = null)
+    protected function getOptions(int|null $trackId = null): array
     {
         if (null === $trackId) {
-            $trackId = $this->_trackId;
+            $trackId = $this->trackId;
         }
 
         $trackFieldPrefix = FieldMaintenanceModel::FIELDS_NAME . FieldsDefinition::FIELD_KEY_SEPARATOR;
-        $trackfieldSelect = $this->db->select();
-        $trackfieldSelect->from('gems__track_fields', [])
+        $trackfieldSelect = $this->resultFetcher->getSelect('gems__track_fields');
+        $trackfieldSelect
             ->columns(
                 [
-                    'field' => new \Zend_Db_Expr('CONCAT(\''.$trackFieldPrefix.'\', gtf_id_field)'),
+                    'field' => new Expression('CONCAT(\''.$trackFieldPrefix.'\', gtf_id_field)'),
                     'name' => 'gtf_field_name',
                     'order' => 'gtf_id_order',
                 ]
             )
-            ->where('gtf_id_track = ?', $trackId);
+            ->where(['gtf_id_track' => $trackId]);
 
         $appointmentFieldPrefix = FieldMaintenanceModel::APPOINTMENTS_NAME . FieldsDefinition::FIELD_KEY_SEPARATOR;
-        $appointmentFieldSelect = $this->db->select();
-        $appointmentFieldSelect->from('gems__track_appointments', [])
+        $appointmentFieldSelect = $this->resultFetcher->getSelect('gems__track_appointments');
+        $appointmentFieldSelect
             ->columns(
                 [
-                    'field' => new \Zend_Db_Expr('CONCAT(\''.$appointmentFieldPrefix.'\', gtap_id_app_field)'),
+                    'field' => new Expression('CONCAT(\''.$appointmentFieldPrefix.'\', gtap_id_app_field)'),
                     'name' => 'gtap_field_name',
                     'order' => 'gtap_id_order',
                 ]
             )
             ->where('gtap_id_track = ?', $trackId);
 
-        $select = $this->db->select();
-        $select->union([$trackfieldSelect, $appointmentFieldSelect])
+        $trackfieldSelect->combine($appointmentFieldSelect)
             ->order('order');
 
-        $options = $this->db->fetchPairs($select);
+        $options = $this->resultFetcher->fetchPairs($trackfieldSelect);
 
-        return $options;
+        return $options ?? [];
     }
 }

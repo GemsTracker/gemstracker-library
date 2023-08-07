@@ -2,17 +2,13 @@
 
 namespace Gems\Agenda\Repository;
 
-use Carbon\CarbonImmutable;
 use Gems\Agenda\Appointment;
-use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\EpisodeOfCare;
 use Gems\Agenda\Filter\TrackFieldFilterCalculation;
 use Gems\Agenda\Filter\TrackFieldFilterCalculationInterface;
 use Gems\Agenda\FilterTracer;
 use Gems\Db\CachedResultFetcher;
 use Gems\Tracker\RespondentTrack;
-use Zalt\Loader\Exception\LoadException;
-use Zalt\Loader\ProjectOverloader;
 
 class TrackFieldFilterRepository
 {
@@ -22,7 +18,6 @@ class TrackFieldFilterRepository
     ];
     public function __construct(
         protected readonly CachedResultFetcher $cachedResultFetcher,
-        protected readonly ProjectOverloader $projectOverloader,
         protected readonly FilterRepository $filterRepository,
         protected readonly FilterCreateTrackChecker $createTrackChecker,
     )
@@ -42,7 +37,7 @@ class TrackFieldFilterRepository
         $filterDataList = $this->cachedResultFetcher->fetchAll('allActivelyUsedAppointmentFilters', $sql, null, $this->cacheTags);
 
         $filters = [];
-        foreach($filterDataList as $filterData) {
+        foreach((array)$filterDataList as $filterData) {
             $appointmentFilter = $this->filterRepository->getFilterFromData($filterData);
             $filters[] = new TrackFieldFilterCalculation(
                 $filterData['gtap_id_app_field'],
@@ -58,7 +53,7 @@ class TrackFieldFilterRepository
 
     /**
      *
-     * @param mixed $to \Gems\Agenda\Appointment:EpsiodeOfCare
+     * @param Appointment|EpisodeOfCare $to
      * @return TrackFieldFilterCalculationInterface[]
      */
     public function matchFilters(Appointment|EpisodeOfCare $to): array

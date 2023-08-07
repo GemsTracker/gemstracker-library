@@ -15,6 +15,7 @@ use Gems\Agenda\Agenda;
 use Gems\Html;
 use Gems\Menu\RouteHelper;
 use Gems\Model;
+use MUtil\Model\Type\JsonData;
 use Zalt\Html\HtmlElement;
 
 /**
@@ -251,6 +252,11 @@ class AppointmentModel extends MaskedModel
         $this->setIfExists('gap_subject',         'label', $this->_('Subject'));
         $this->setIfExists('gap_comment',         'label', $this->_('Comment'));
 
+        $jsonType = new JsonData(10);
+        $jsonType->apply($this, 'gap_info', true);
+
+        $this->setIfExists('gap_info', 'label', $this->_('Additional info'));
+
         if ($setMulti) {
             $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $this->agenda->getActivities());
             $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $this->agenda->getProcedures());
@@ -283,6 +289,7 @@ class AppointmentModel extends MaskedModel
         $this->setIfExists('gap_discharge_time',  'elementClass', 'Date');
         $this->setIfExists('gap_status',          'required', true);
         $this->setIfExists('gap_comment',         'elementClass', 'Textarea', 'rows', 5);
+        $this->setIfExists('gap_info', 'elementClass', 'Exhibitor');
 
         $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $this->agenda->getActivities($orgId));
         $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $this->agenda->getProcedures($orgId));

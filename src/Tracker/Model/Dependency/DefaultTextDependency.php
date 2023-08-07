@@ -11,7 +11,7 @@
 
 namespace Gems\Tracker\Model\Dependency;
 
-use MUtil\Model\Dependency\DependencyAbstract;
+use Zalt\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -30,7 +30,7 @@ class DefaultTextDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gtf_field_type');
+    protected array $_dependentOn = ['gtf_field_type'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -39,11 +39,11 @@ class DefaultTextDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array(
-        'gtf_field_default' => array(
+    protected array $_effecteds = [
+        'gtf_field_default' => [
             'description', 'elementClass', 'label',
-            ),
-        );
+        ],
+    ];
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -68,11 +68,11 @@ class DefaultTextDependency extends DependencyAbstract
     public function getChanges(array $context, bool $new = false): array
     {
         return array(
-            'gtf_field_default' => array(
+            'gtf_field_default' => [
                 'label'        => $this->_('Default'),
                 'description'  => $this->_('Enter a default value'),
                 'elementClass' => 'Text',
-                ),
+            ],
             );
     }
 }

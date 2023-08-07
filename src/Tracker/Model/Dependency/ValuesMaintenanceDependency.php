@@ -13,7 +13,9 @@ namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Tracker\Field\FieldAbstract;
 use Gems\Util\Translated;
-use MUtil\Model\Dependency\DependencyAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Html\Sequence;
+use Zalt\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -33,7 +35,7 @@ class ValuesMaintenanceDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gtf_field_type', 'gtf_field_values');
+    protected array $_dependentOn = ['gtf_field_type', 'gtf_field_values'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -42,29 +44,32 @@ class ValuesMaintenanceDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array(
-        'gtf_field_values' => array(
+    protected array $_effecteds = [
+        'gtf_field_values' => [
             'description', 'elementClass', 'formatFunction', 'label', 'minlength', 'rows', 'required',
-            ),
-        'gtf_field_default' => array(
+        ],
+        'gtf_field_default' => [
             'description', 'elementClass', 'label', 'multiOptions',
-            ),
-        );
+        ],
+    ];
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    public function __construct(
+        TranslatorInterface $translate,
+        protected readonly Translated $translatedUtil,
+    )
+    {
+        parent::__construct($translate);
+    }
 
     /**
      * Put each value on a separate line
      *
      * @param string $values
-     * @return \MUtil\Html\Sequence
+     * @return Sequence
      */
     public function formatValues($values)
     {
-        return new \MUtil\Html\Sequence(array('glue' => '<br/>'), explode('|', (string)$values));
+        return new Sequence(['glue' => '<br/>'], explode('|', (string)$values));
     }
 
     /**
@@ -91,21 +96,21 @@ class ValuesMaintenanceDependency extends DependencyAbstract
     {
         $multi = explode(FieldAbstract::FIELD_SEP, $context['gtf_field_values']);
 
-        return array(
-            'gtf_field_values' => array(
+        return [
+            'gtf_field_values' => [
                 'label'          => $this->_('Values'),
                 'description'    => $this->_('Separate multiple values with a vertical bar (|)'),
                 'elementClass'   => 'Textarea',
-                'formatFunction' => array($this, 'formatValues'),
+                'formatFunction' => [$this, 'formatValues'],
                 'minlength'      => 3,// At least two single chars and a separator
                 'rows'           => 4,
                 'required'       => true,
-                ),
-            'translations_gtf_field_values' => array(
+            ],
+            'translations_gtf_field_values' => [
                 'model' => [
                     'gtrs_translation' => [
                             'elementClass'   => 'Textarea',
-                            'formatFunction' => array($this, 'formatValues'),
+                            'formatFunction' => [$this, 'formatValues'],
                             'minlength'      => 3,// At least two single chars and a separator
                             'rows'           => 4,
                     ],
@@ -113,13 +118,13 @@ class ValuesMaintenanceDependency extends DependencyAbstract
                         'elementClass' => 'Exhibitor',
                     ],
                 ]
-            ),
-            'gtf_field_default' => array(
+            ],
+            'gtf_field_default' => [
                 'label'        => $this->_('Default'),
                 'description'  => $this->_('Choose the default value'),
                 'elementClass' => 'Select',
                 'multiOptions' => $this->translatedUtil->getEmptyDropdownArray() + array_combine($multi, $multi),
-                ),
-            );
+            ],
+        ];
     }
 }

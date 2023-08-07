@@ -29,7 +29,7 @@ class ZendDbDataSource extends DataSource
                     $value = $this->adapter->quote($value);
                 }
                 if ($pos !== false) {
-                    $sql = substr_replace($sql, $value, $pos, 1);
+                    $sql = substr_replace($sql, (string)$value, $pos, 1);
                 }
             }
         }

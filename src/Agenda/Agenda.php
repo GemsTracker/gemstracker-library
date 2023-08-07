@@ -16,6 +16,7 @@ use Gems\Agenda\Filter\AppointmentFilterInterface;
 use Gems\Agenda\Filter\TrackFieldFilterCalculationInterface;
 use Gems\Agenda\Repository\ActivityRepository;
 use Gems\Agenda\Repository\FilterRepository;
+use Gems\Agenda\Repository\InfoFilterRepository;
 use Gems\Agenda\Repository\TrackFieldFilterRepository;
 use Gems\Agenda\Repository\LocationRepository;
 use Gems\Agenda\Repository\ProcedureRepository;
@@ -34,6 +35,7 @@ use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\TableIdentifier;
 use MUtil\Model;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Pulse\Agenda\Filter\LinkFilterContainer\LinkFilterContainer;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -82,6 +84,7 @@ class Agenda
         protected readonly ActivityRepository $activityRepository,
         protected readonly FilterRepository $filterRepository,
         protected readonly TrackFieldFilterRepository $trackFieldFilterRepository,
+        protected readonly InfoFilterRepository $infoFilterRepository,
 
         protected readonly LocationRepository $locationRepository,
         protected readonly MaskRepository $maskRepository,
@@ -98,7 +101,7 @@ class Agenda
 
     public function appointmentChanged(Appointment $appointment): AppointmentChangedEvent
     {
-        $event = new AppointmentChangedEvent($appointment);
+        $event = new AppointmentChangedEvent($appointment, $this);
         $this->eventDispatcher->dispatch($event);
         return $event;
     }
@@ -1087,6 +1090,14 @@ class Agenda
         $this->_filters = [];
 
         return $this;
+    }
+
+    public function updateAppointmentInfo(Appointment $appointment): void
+    {
+        $filters = $this->infoFilterRepository->matchFilters($appointment);
+        foreach($filters as $filter) {
+            $this->infoFilterRepository->addInfoToAppointment($appointment, $filter);
+        }
     }
 
     public function updateTracksForAppointment(Appointment $appointment, FilterTracer|null $filterTracer = null): int

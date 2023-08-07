@@ -97,7 +97,7 @@ class ResultFetcher
 
     public function getQueryString(SqlInterface $select): string
     {
-        return $select->getSqlString($this->db);
+        return $select->getSqlString($this->db->getPlatform());
     }
 
     public function getSelect(null|string|TableIdentifier $table = null): Select
@@ -109,7 +109,6 @@ class ResultFetcher
     {
         $resultSet = new ResultSet(ResultSet::TYPE_ARRAY);
         if ($select instanceof Select) {
-            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' . $select->getSqlString($this->db->getPlatform()) . "\n", FILE_APPEND);
             $statement = $this->sql->prepareStatementForSqlObject($select);
             $result = $statement->execute($params);
             $resultSet->initialize($result);

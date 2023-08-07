@@ -13,7 +13,6 @@ namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Tracker\Field\BooleanField;
 use Gems\Tracker\Field\FieldAbstract;
-use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -33,7 +32,7 @@ class BooleanMaintenanceDependency extends ValuesMaintenanceDependency
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = ['gtf_field_type', 'gtf_field_values', 'gtf_required'];
+    protected array $_dependentOn = ['gtf_field_type', 'gtf_field_values', 'gtf_required'];
     
     /**
      * Returns the changes that must be made in an array consisting of
