@@ -643,6 +643,9 @@ class ConfigProvider
                 'notAlphaNumCount' => 0,
                 'maxAge' => 365,
             ],
+            'researcher' => [
+                'maxAge' => 7,
+            ],
         ];
     }
 
