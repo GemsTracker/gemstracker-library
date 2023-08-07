@@ -7,6 +7,7 @@ namespace Gems\Middleware;
 use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Cache\RateLimiter;
+use Gems\Log\Loggers;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
@@ -26,17 +27,28 @@ use RuntimeException;
  */
 class RateLimitMiddleware implements MiddlewareInterface
 {
+    /** The name of the route this request was routed to. */
     private string $routeName;
 
+    /** The request method of the request (GET, POST) */
     private string $requestMethod;
 
+    /** The IP address of the client that made the request. */
+    private string $ipAddress;
+
+    /** The username if the request was authenticated, unset if unauthenticated. */
+    private string $identity;
+
+    /** The default interval that the number of requests is calculated for. */
     protected int $decayTimeInSeconds = 60;
 
+    /** The default maximum nuber of requests allowed for this route and user or ip per interval. */
     protected int $maxAttempts = 120;
 
 
     public function __construct(
         protected readonly RateLimiter $limiter,
+        protected readonly Loggers $loggers,
         protected readonly array $config,
     )
     {
@@ -55,6 +67,9 @@ class RateLimitMiddleware implements MiddlewareInterface
         $key = $this->getRequestKey($request);
 
         if ($this->limiter->tooManyAttempts($key, $this->maxAttempts)) {
+            $message = $this->getLogMessage();
+            $this->loggers->getLogger('LegacyLogger')->log('warning', $message);
+
             return new EmptyResponse(429);
         }
 
@@ -97,15 +112,19 @@ class RateLimitMiddleware implements MiddlewareInterface
             $currentIdentity = $request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE);
         }
 
+        $this->ipAddress = $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE);
+        if ($currentIdentity instanceOf AuthenticationIdentityInterface) {
+            $this->identity = $currentIdentity->getLoginName();
+        }
+
         // Either use the username or the IP address as session identifier in the hash.
         $sessionPart = null;
-        if ($currentIdentity instanceOf AuthenticationIdentityInterface) {
+        if (isset($this->identity)) {
             // Use the username as session part.
-            $sessionPart = $currentIdentity->getLoginName();
+            $sessionPart = $this->identity;
         } else {
             // Use the client IP address as session part.
-            $sessionPart = $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE);
-
+            $sessionPart = $this->ipAddress;
         }
 
         if (!is_null($sessionPart)) {
@@ -187,5 +206,24 @@ class RateLimitMiddleware implements MiddlewareInterface
         $this->decayTimeInSeconds = intval($values[1]);
 
         return true;
+    }
+
+    /**
+     * Return the message that should be logged if the rate limiter is hit.
+     *
+     * @param ServerRequestInterface $request
+     * @return string
+     */
+    private function getLogMessage(): string
+    {
+        $message = sprintf('%s request to %s from %s at %s exceeded rate limit of %d requests per %d seconds',
+            $this->requestMethod,
+            $this->routeName,
+            isset($this->identity) ? $this->identity : 'unauthenticated',
+            $this->ipAddress,
+            $this->maxAttempts,
+            $this->decayTimeInSeconds);
+
+        return $message;
     }
 }
