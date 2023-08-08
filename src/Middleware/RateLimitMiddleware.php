@@ -8,6 +8,8 @@ use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Cache\RateLimiter;
 use Gems\Log\Loggers;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
@@ -67,8 +69,11 @@ class RateLimitMiddleware implements MiddlewareInterface
         $key = $this->getRequestKey($request);
 
         if ($this->limiter->tooManyAttempts($key, $this->maxAttempts)) {
+            $this->logToDatabase();
+            /*
             $message = $this->getLogMessage();
             $this->loggers->getLogger('LegacyLogger')->log('warning', $message);
+            */
 
             return new EmptyResponse(429);
         }
@@ -225,5 +230,26 @@ class RateLimitMiddleware implements MiddlewareInterface
             $this->decayTimeInSeconds);
 
         return $message;
+    }
+
+    /**
+     * Log a rate limit hit to the database.
+     *
+     * @return void
+     */
+    private function logToDatabase(): void
+    {
+        $adapter = new Adapter($this->config['db']);
+        $sql = new Sql($adapter);
+        $values = [
+            'glr_ip' => $this->ipAddress,
+            'glr_identity' => isset($this->identity) ? $this->identity : null,
+            'glr_method' => $this->requestMethod,
+            'glr_route' => $this->routeName,
+            'glr_max_requests' => $this->maxAttempts,
+            'glr_time_sec' => $this->decayTimeInSeconds,
+        ];
+        $insert = $sql->insert('gems__log_ratelimit')->values($values);
+        $sql->prepareStatementForSqlObject($insert)->execute();
     }
 }
