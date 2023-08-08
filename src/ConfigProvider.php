@@ -149,6 +149,7 @@ class ConfigProvider
             'password'      => $this->getPasswordSettings(),
             'supplementary_privileges'   => $this->getSupplementaryPrivileges(),
             'routes'        => $routeSettings(),
+            'ratelimit'     => $this->getRatelimitSettings(),
             'security'      => $this->getSecuritySettings(),
             'session'       => $this->getSession(),
             'sites'         => $this->getSitesSettings(),
@@ -643,6 +644,35 @@ class ConfigProvider
                 'notAlphaNumCount' => 0,
                 'maxAge' => 365,
             ],
+        ];
+    }
+
+    /**
+     * The rate limit settings.
+     * This is a one-dimensional array. The keys are route names, with or
+     * without the uppercase request method appended. The value can be false
+     * or a string like '10/60', indicating the rate limit allows 10 requests
+     * per 60 seconds for this route.
+     * A match is applied to the route and all its children, so configuring
+     * 'contact.GET' => '5/60' will apply a rate limit of 5 requests per minute
+     * for GET requests to 'contact.index', 'contact.about', etc.
+     * Rate limits are applied per user or, if the request is not authenticated,
+     * per IP address.
+     *
+     * Default rate limits can be configured with the 'default.GET',
+     * 'default.POST' or 'default' keys.
+     *
+     * Note that a cache must be configured for rate limiting to work!
+     *
+     * @return array<string>
+     */
+    protected function getRatelimitSettings(): array
+    {
+        return [
+            'default.GET' => false, // No rate limiting
+            'default.POST' => '60/60',
+            'participate.subscribe.POST' => '10/60',
+            'participate.unsubscribe.POST' => '10/60',
         ];
     }
 
