@@ -199,6 +199,8 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
                 }
             }
         }
+
+        return null;
     }
 
     /**
@@ -218,6 +220,8 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
                 return $prev;
             }
         }
+
+        return null;
     }
 
     /**
