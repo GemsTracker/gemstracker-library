@@ -1,7 +1,7 @@
 
 CREATE TABLE if not exists gems__log_setup (
         gls_id_action       int unsigned not null auto_increment,
-        gls_name            varchar(64) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null unique,
+        gls_name            varchar(64) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null unique,
 
         gls_when_no_user    boolean not null default 0,
         gls_on_action       boolean not null default 0,
@@ -18,4 +18,4 @@ CREATE TABLE if not exists gems__log_setup (
     )
     ENGINE=InnoDB
     auto_increment = 70
-    CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';

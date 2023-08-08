@@ -1,7 +1,7 @@
 
 CREATE TABLE if not exists gems__reception_codes (
-      grc_id_reception_code varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null,
-      grc_description       varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null,
+      grc_id_reception_code varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
+      grc_description       varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
 
       grc_success           boolean not null default 0,
 
@@ -22,4 +22,4 @@ CREATE TABLE if not exists gems__reception_codes (
    )
    ENGINE=InnoDB
    auto_increment = 1
-   CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
+   CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';

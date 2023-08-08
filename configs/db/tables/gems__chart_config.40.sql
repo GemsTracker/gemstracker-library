@@ -3,9 +3,9 @@ CREATE TABLE IF NOT EXISTS `gems__chart_config` (
   `gcc_tid` bigint(20) NULL,
   `gcc_rid` bigint(20) NULL,
   `gcc_sid` bigint(20) NULL,
-  `gcc_code` varchar(16) COLLATE utf8mb4_general_ci NULL,
-  `gcc_config` text COLLATE utf8mb4_general_ci NULL,
-  `gcc_description` varchar(64) COLLATE utf8mb4_general_ci NULL,
+  `gcc_code` varchar(16) COLLATE utf8mb4_unicode_ci NULL,
+  `gcc_config` text COLLATE utf8mb4_unicode_ci NULL,
+  `gcc_description` varchar(64) COLLATE utf8mb4_unicode_ci NULL,
 
   `gcc_changed`          timestamp not null default current_timestamp on update current_timestamp,
   `gcc_changed_by`       bigint unsigned not null,
@@ -22,4 +22,4 @@ CREATE TABLE IF NOT EXISTS `gems__chart_config` (
     ENGINE = InnoDB
     auto_increment = 101
     CHARACTER SET 'utf8mb4'
-    COLLATE utf8mb4_general_ci;
+    COLLATE utf8mb4_unicode_ci;

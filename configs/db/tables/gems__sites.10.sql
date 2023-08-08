@@ -3,16 +3,16 @@
 CREATE TABLE if not exists gems__sites (
     gsi_id                      bigint unsigned not null auto_increment,
 
-    gsi_url                     varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null,
+    gsi_url                     varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
     gsi_order                   int not null default 100,
 
     gsi_select_organizations    boolean not null default 0,
-    gsi_organizations           varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null default '||',
+    gsi_organizations           varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null default '||',
 
-    gsi_style                   varchar(15)  CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null default 'gems',
+    gsi_style                   varchar(15)  CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null default 'gems',
     gsi_style_fixed             boolean not null default 0,
 
-    gsi_iso_lang                char(2) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' not null default 'en',
+    gsi_iso_lang                char(2) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null default 'en',
 
     gsi_active                  boolean not null default 1,
     gsi_blocked                 boolean not null default 0,
@@ -28,4 +28,4 @@ CREATE TABLE if not exists gems__sites (
 )
 ENGINE=InnoDB
 auto_increment = 200
-CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
+CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';

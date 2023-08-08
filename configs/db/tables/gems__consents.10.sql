@@ -12,4 +12,4 @@ CREATE TABLE if not exists gems__consents (
       PRIMARY KEY (gco_description)
     )
     ENGINE=InnoDB
-    CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
