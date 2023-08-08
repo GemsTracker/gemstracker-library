@@ -123,6 +123,7 @@ class Route
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
@@ -142,6 +143,7 @@ class Route
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
@@ -157,8 +159,8 @@ class Route
                 'allowed_methods' => ['GET'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
-                    LocaleMiddleware::class,
                     ClientIpMiddleware::class,
+                    LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,
@@ -174,6 +176,7 @@ class Route
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     EmbedLoginHandler::class,
@@ -185,6 +188,7 @@ class Route
                 'allowed_methods' => ['GET'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
@@ -197,6 +201,7 @@ class Route
                 'allowed_methods' => ['POST'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
@@ -209,6 +214,7 @@ class Route
                 'allowed_methods' => ['GET'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     ChangeLanguageHandler::class,
@@ -220,6 +226,7 @@ class Route
                 'allowed_methods' => ['GET'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     LocaleMiddleware::class,
@@ -233,6 +240,7 @@ class Route
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
@@ -248,6 +256,7 @@ class Route
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
@@ -269,6 +278,7 @@ class Route
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     LocaleMiddleware::class,
                     HandlerCsrfMiddleware::class,
                     ChangePasswordHandler::class,
