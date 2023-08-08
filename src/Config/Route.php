@@ -1066,6 +1066,9 @@ class Route
                     'check-filter',
                 ],
             ),
+            ...$this->createHandlerRoute(baseName: 'setup.agenda.info',
+                controllerClass: \Gems\Handlers\Setup\AppointmentInfoFilterHandler::class,
+            ),
             ...$this->createSnippetRoutes(baseName: 'setup.log.maintenance',
                 controllerClass: \Gems\Handlers\Setup\LogMaintenanceHandler::class,
                 pages: [

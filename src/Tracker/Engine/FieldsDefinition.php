@@ -209,7 +209,7 @@ class FieldsDefinition
         }
 
         $output     = [];
-        $dependency = new FieldDataDependency();
+        $dependency = $this->projectOverloader->create(FieldDataDependency::class);
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {

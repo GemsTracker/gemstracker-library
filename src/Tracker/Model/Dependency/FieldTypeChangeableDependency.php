@@ -11,8 +11,10 @@
 
 namespace Gems\Tracker\Model\Dependency;
 
+use Gems\Db\ResultFetcher;
 use Gems\Tracker\Model\FieldMaintenanceModel;
-use MUtil\Model\Dependency\DependencyAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Dependency\DependencyAbstract;
 
 /**
  * Class that checks whether changing the field type is allowed.
@@ -25,7 +27,7 @@ use MUtil\Model\Dependency\DependencyAbstract;
  */
 class FieldTypeChangeableDependency extends DependencyAbstract
 {
-    protected $_dependentOn = ['gtf_id_field'];
+    protected array $_dependentOn = ['gtf_id_field'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -34,15 +36,7 @@ class FieldTypeChangeableDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = ['gtf_field_type' => ['elementClass', 'onchange']];
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    protected string $fieldName;
+    protected array $_effecteds = ['gtf_field_type' => ['elementClass', 'onchange']];
 
     /**
      * Required
@@ -55,12 +49,21 @@ class FieldTypeChangeableDependency extends DependencyAbstract
      *
      * @param string $dependsOn the model field to depend on
      */
-    public function __construct($fieldName)
+    /*public function __construct($fieldName)
     {
         $this->_dependentOn[] = $fieldName;
         $this->fieldName = $fieldName;
 
         parent::__construct();
+    }*/
+    public function __construct(
+        protected readonly string $fieldName,
+        TranslatorInterface $translate,
+        protected readonly ResultFetcher $resultFetcher,
+    )
+    {
+        $this->_dependentOn[] = $fieldName;
+        parent::__construct($translate);
     }
 
     /**
@@ -93,16 +96,18 @@ class FieldTypeChangeableDependency extends DependencyAbstract
                 $fid = $context['gtf_id_field'];
 
                 if ($sql && $fid) {
-                    $subChange = ! $this->db->fetchOne($sql, $fid);
+                    $subChange = ! $this->resultFetcher->fetchOne($sql, [$fid]);
                 }
             }
         }
 
         if ($subChange) {
-            return array('gtf_field_type' => array(
+            return [
+                'gtf_field_type' => [
                 'elementClass' => 'Select',
                 'onchange'     => 'this.form.submit();',
-            ));
+                ]
+            ];
         }
 
         return [];
@@ -112,10 +117,10 @@ class FieldTypeChangeableDependency extends DependencyAbstract
      * Adapt/extend this function if you need different queries
      * for other types
      *
-     * @param string $subId The current sub type of field
-     * @return string|boolean An sql statement or false
+     * @param string $subId The current subtype of field
+     * @return bool|string An sql statement or false
      */
-    protected function getSql($subId)
+    protected function getSql(string $subId): string|null
     {
         if ($subId == FieldMaintenanceModel::FIELDS_NAME) {
             return "SELECT gr2t2f_id_field
@@ -129,6 +134,6 @@ class FieldTypeChangeableDependency extends DependencyAbstract
                 WHERE gr2t2a_id_app_field = ?";
         }
 
-        return false;
+        return null;
     }
 }

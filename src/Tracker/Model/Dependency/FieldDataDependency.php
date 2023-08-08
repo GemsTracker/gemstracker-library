@@ -12,7 +12,7 @@
 namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Tracker\Field\FieldInterface;
-use MUtil\Model\Dependency\DependencyAbstract;
+use Zalt\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -29,7 +29,7 @@ class FieldDataDependency extends DependencyAbstract
      *
      * @var array of \Gems\Tracker\Field\FieldInterface
      */
-    protected $_fields = [];
+    protected array $_fields = [];
 
     /**
      * Add a field to this dependency
@@ -37,7 +37,7 @@ class FieldDataDependency extends DependencyAbstract
      * @param FieldInterface $field
      * @return self
      */
-    public function addField(FieldInterface $field)
+    public function addField(FieldInterface $field): self
     {
         $key = $field->getFieldKey();
 
@@ -91,7 +91,7 @@ class FieldDataDependency extends DependencyAbstract
      *
      * @return int
      */
-    public function getFieldCount()
+    public function getFieldCount(): int
     {
         return count($this->_fields);
     }

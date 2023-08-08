@@ -10,9 +10,17 @@ class EventSubscriber implements EventSubscriberInterface
     {
         return [
             AppointmentChangedEvent::class => [
-                'updateTracksForAppointment',
+                ['updateTracksForAppointment'],
+                ['updateAppointmentInfo'],
             ],
         ];
+    }
+
+    public function updateAppointmentInfo(AppointmentChangedEvent $event)
+    {
+        $agenda = $event->getAgenda();
+        $appointment = $event->getAppointment();
+        $agenda->updateAppointmentInfo($appointment);
     }
 
     public function updateTracksForAppointment(AppointmentChangedEvent $event)

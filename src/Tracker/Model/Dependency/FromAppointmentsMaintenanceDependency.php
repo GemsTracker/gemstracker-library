@@ -11,9 +11,11 @@
 
 namespace Gems\Tracker\Model\Dependency;
 
+use Gems\Db\ResultFetcher;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
-use MUtil\Model\Dependency\DependencyAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Dependency\DependencyAbstract;
 use Zalt\Model\MetaModelInterface;
 
 /**
@@ -34,7 +36,7 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gtf_id_track');
+    protected array $_dependentOn = ['gtf_id_track'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -43,32 +45,18 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array(
-        'htmlCalc' => array('elementClass', 'label'),
-        'gtf_calculate_using' => array('description', 'elementClass', 'formatFunction', 'label', 'multiOptions')
-        );
+    protected array $_effecteds = [
+        'htmlCalc' => ['elementClass', 'label'],
+        'gtf_calculate_using' => ['description', 'elementClass', 'formatFunction', 'label', 'multiOptions']
+    ];
 
-    /**
-     * The current trackId
-     * @var int
-     */
-    protected $_trackId;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @param int $trackId The trackId for this dependency
-     */
-    public function __construct($trackId)
+    public function __construct(
+        protected readonly int $trackId,
+        TranslatorInterface $translate,
+        protected readonly ResultFetcher $resultFetcher,
+    )
     {
-        $this->_trackId = $trackId;
-
-        parent::__construct();
+        parent::__construct($translate);
     }
 
     /**
@@ -76,7 +64,7 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
      *
      * @param MetaModelInterface $metaModel Try not to store the model as variabe in the dependency (keep it simple)
      */
-    public function applyToModel(MetaModelInterface $metaModel)
+    public function applyToModel(MetaModelInterface $metaModel): void
     {
         $metaModel->set('gtf_calculate_using', 'elementClass', 'MultiCheckbox', 'description', null);
     }
@@ -87,7 +75,7 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
      * @param string $value
      * @return string
      */
-    public function formatValues($value)
+    public function formatValues(string|array $value): string
     {
         $options = $this->getOptions();
         if (is_array($value)) {
@@ -133,17 +121,17 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
         if ($options) {
             // formatFunction is needed because the options are not set before the concatenated row
             return array(
-                'htmlCalc' => array(
+                'htmlCalc' => [
                     'label'        => ' ',
                     'elementClass' => 'Exhibitor',
-                    ),
-                'gtf_calculate_using' => array(
+                ],
+                'gtf_calculate_using' => [
                     'label'          => $this->_('Calculate from'),
                     'description'    => $this->_('Automatically calculate this field using other fields'),
                     'elementClass'   => 'MultiCheckbox',
-                    'formatFunction' => array($this, 'formatValues'),
+                    'formatFunction' => [$this, 'formatValues'],
                     'multiOptions'   => $this->getOptions($context['gtf_id_track']),
-                    ),
+                ],
                 );
         }
         
@@ -156,19 +144,19 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
      * @param int $trackId
      * @return array
      */
-    protected function getOptions($trackId = null)
+    protected function getOptions(int $trackId = null): array
     {
         if (null === $trackId) {
-            $trackId = $this->_trackId;
+            $trackId = $this->trackId;
         }
 
-        $appFields = $this->db->fetchPairs("
+        $appFields = $this->resultFetcher->fetchPairs("
             SELECT gtap_id_app_field, gtap_field_name
                 FROM gems__track_appointments
                 WHERE gtap_id_track = ?
-                ORDER BY gtap_id_order", $trackId);
+                ORDER BY gtap_id_order", [$trackId]);
 
-        $options = array();
+        $options = [];
 
         if ($appFields) {
             foreach ($appFields as $id => $label) {
@@ -178,6 +166,5 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
         }
 
         return $options;
-
     }
 }

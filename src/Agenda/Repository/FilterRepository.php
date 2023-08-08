@@ -93,4 +93,16 @@ class FilterRepository
 
         return $this->cachedResultFetcher->fetchAll('allAppointmentFilters', $sql, null, $this->cacheTags) ?? [];
     }
+
+    public function getAllFilterOptions(int|null $organizationId = null): array
+    {
+        $allActiveFilterData = $this->getAllActiveFilterData($organizationId);
+
+        $filterOptions = [];
+        foreach($allActiveFilterData as $filterData) {
+            $filterOptions[$filterData['gaf_id']] = $filterData['gaf_manual_name'] ?? $filterData['gaf_calc_name'];
+        }
+
+        return $filterOptions;
+    }
 }

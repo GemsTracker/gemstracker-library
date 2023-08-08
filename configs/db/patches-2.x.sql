@@ -56,3 +56,7 @@ ALTER TABLE `gems__mail_servers`
 -- PATCH: Add sites to organizations
 ALTER TABLE `gems__organizations`
     ADD `gor_sites` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `gor_url_base`;
+
+-- PATCH: Add info field to appointments
+ALTER TABLE `gems__appointments`
+    ADD `gap_info` json NULL AFTER `gap_comment`;

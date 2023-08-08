@@ -198,11 +198,24 @@ class Appointment
     }
 
     /**
+     * Return the appointment info array
+     *
+     * @return array
+     */
+    public function getInfo(): array
+    {
+        if (isset($this->data['gap_info'])) {
+            return json_decode($this->data['gap_info'], true);
+        }
+        return [];
+    }
+
+    /**
      * Return the description of the current location
      *
      * @return string or null when not found
      */
-    public function getLocationDescription(): string
+    public function getLocationDescription(): string|null
     {
         if (! (isset($this->data['gap_id_location']) && $this->data['gap_id_location'])) {
             $this->data['glo_name'] = null;
