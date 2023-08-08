@@ -18,7 +18,6 @@ use Gems\Tracker\TrackEvents;
 use Gems\User\Embed\EmbedLoader;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
-use Gems\Validator\SubscriptionThrottleValidator;
 use Zalt\Loader\DependencyResolver\ConstructorDependencyParametersResolver;
 
 /**
@@ -387,15 +386,6 @@ class Loader extends LoaderAbstract
         //now add the calling class as a container
         $class->getSource()->addRegistryContainer($container);
         return $class;
-    }
-
-    /**
-     *
-     * @return SubscriptionThrottleValidator
-     */
-    public function getSubscriptionThrottleValidator()
-    {
-        return $this->_loadClass('Validate\\SubscriptionThrottleValidator', true);
     }
 
     /**

@@ -95,8 +95,6 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
                 ->setAttrib('size', 30)
                 ->setRequired(true)
                 ->addValidator('SimpleEmail');
-                // FIXME Roel
-//                ->addValidator($this->loader->getSubscriptionThrottleValidator());
 
         $form->addElement($element);
 
