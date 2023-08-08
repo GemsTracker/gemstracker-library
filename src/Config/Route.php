@@ -602,6 +602,7 @@ class Route
                     'delete',
                     'undelete',
                     'edit',
+                    'index',
                 ]
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tracks.token',
