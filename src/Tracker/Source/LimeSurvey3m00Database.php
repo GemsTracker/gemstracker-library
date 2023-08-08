@@ -1036,7 +1036,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         $select->columns(['token'])
             ->where([
                 'token' => $tokens,
-                'completed' => 'N',
+                'completed != \'N\'',
             ]);
 
         $completedTokens = $lsResultFetcher->fetchCol($select);
