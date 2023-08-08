@@ -1009,7 +1009,7 @@ class Token
             $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
             $tokenSelect
                     ->andReceptionCodes()
-                    ->forNextTokenId($this->_tokenId);
+                    ->forNextToken($this);
 
             if ($tokenData = $tokenSelect->fetchRow()) {
                 $this->_previousToken = $this->tracker->getToken($tokenData);
