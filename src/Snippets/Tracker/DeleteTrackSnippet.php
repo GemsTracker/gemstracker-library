@@ -177,9 +177,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     {
         // Default is just go to the index
         if ($this->respondentTrack && ! $this->afterSaveRouteUrl) {
-            $urlParams = $this->respondentTrack->getMenuUrlParameters();
-
-            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.show-track', $urlParams);
+            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.show', $this->requestInfo->getRequestMatchedParams());
         }
 
         parent::setAfterSaveRoute();
