@@ -214,9 +214,9 @@ class SurveyQuestionsSnippet extends TableSnippetAbstract
             } elseif ($this->trackData && (! $this->trackId)) {
                 // Look up key values from trackData
                 if (isset($this->trackData['gsu_id_survey'])) {
-                    $this->surveyId = $this->trackData['gsu_id_survey'];
+                    $this->surveyId = intval($this->trackData['gsu_id_survey']);
                 } elseif (isset($this->trackData['gro_id_survey'])) {
-                    $this->surveyId = $this->trackData['gro_id_survey'];
+                    $this->surveyId = intval($this->trackData['gro_id_survey']);
                 } elseif (! $this->trackId) {
                     if (isset($this->trackData['gtr_id_track'])) {
                         $this->trackId = $this->trackData['gtr_id_track'];
@@ -239,7 +239,7 @@ class SurveyQuestionsSnippet extends TableSnippetAbstract
 
         // Get the survey
         if ($this->surveyId && (! $this->survey instanceof Survey)) {
-            $this->survey = $this->tracker->getSurvey($this->surveyId);
+            $this->survey = $this->tracker->getSurvey(intval($this->surveyId));
         }
         // Load the data
         if (($this->survey instanceof Survey) && $this->survey->exists) {
