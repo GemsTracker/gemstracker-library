@@ -53,8 +53,8 @@ class TokenActionButtonRow extends CurrentButtonRowSnippet
         $this->extraRoutesLabelled = [
             'respondent.show'              => $this->_('Show respondent'),
             'respondent.tracks.index'      => $this->_('Show tracks'),
-            'respondent.tracks.show-track' => $this->_('Show track'),
-            'respondent.tracks.show'       => $this->_('Show token'),
+            'respondent.tracks.show'       => $this->_('Show track'),
+            'respondent.tracks.token.show' => $this->_('Show token'),
             ];
 
         return parent::getButtons();
