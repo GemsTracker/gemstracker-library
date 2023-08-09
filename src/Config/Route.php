@@ -833,6 +833,7 @@ class Route
                 parameters: [
                     'gco_description' => '[a-zA-Z0-9-_\\s]+',
                 ],
+                genericExport: true,
             ),
 
             ...$this->createSnippetRoutes(baseName: 'setup.codes.mail-code',
@@ -1012,6 +1013,7 @@ class Route
                     ...$this->defaultPages,
                     'cleanup',
                 ],
+                genericExport: true,
                 parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'cleanup',
@@ -1023,6 +1025,7 @@ class Route
                     ...$this->defaultPages,
                     'cleanup',
                 ],
+                genericExport: true,
                 parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'cleanup',
@@ -1038,6 +1041,7 @@ class Route
                     'cleanup',
                     'merge',
                 ],
+                genericExport: true,
                 parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'cleanup',
@@ -1061,6 +1065,7 @@ class Route
                     ...$this->defaultPages,
                     'check-filter',
                 ],
+                genericExport: true,
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'check-filter',
@@ -1147,6 +1152,7 @@ class Route
                     'answer-import',
                     //'export-codebook',
                 ],
+                genericExport: true,
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'check',

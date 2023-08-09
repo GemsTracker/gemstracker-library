@@ -725,6 +725,11 @@ class Menu
                                         ],
                                     ],
                                 ],
+                                [
+                                    'name' => 'setup.codes.consent.export',
+                                    'label' => $this->translator->trans('Export'),
+                                    'type' => 'route-link-item',
+                                ],
                             ],
                         ],
                         [
@@ -1043,6 +1048,11 @@ class Menu
                                         ],
                                     ],
                                 ],
+                                [
+                                    'name' => 'setup.agenda.activity.export',
+                                    'label' => $this->translator->trans('Export'),
+                                    'type' => 'route-link-item',
+                                ],
                             ],
                         ],
                         [
@@ -1076,6 +1086,11 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                     ],
+                                ],
+                                [
+                                    'name' => 'setup.agenda.procedure.export',
+                                    'label' => $this->translator->trans('Export'),
+                                    'type' => 'route-link-item',
                                 ],
                             ],
                         ],
@@ -1145,6 +1160,11 @@ class Menu
                                         ],
                                     ],
                                 ],
+                                [
+                                    'name' => 'setup.agenda.location.export',
+                                    'label' => $this->translator->trans('Export'),
+                                    'type' => 'route-link-item',
+                                ],
                             ],
                         ],
                         [
@@ -1212,6 +1232,11 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                     ],
+                                ],
+                                [
+                                    'name' => 'setup.agenda.filter.export',
+                                    'label' => $this->translator->trans('Export'),
+                                    'type' => 'route-link-item',
                                 ],
                             ],
                         ],
@@ -1595,6 +1620,11 @@ class Menu
                         [
                             'name' => 'track-builder.survey-maintenance.update-survey.run',
                             'label' => $this->translator->trans('Update to new survey'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.survey-maintenance.export',
+                            'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
                     ],
