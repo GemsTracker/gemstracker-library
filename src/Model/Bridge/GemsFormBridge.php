@@ -10,8 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\Model\Bridge;
 
-use Gems\Form\Element\OnOffEdit;
-use MUtil\Form\Element\ToggleCheckboxes;
+use Gems\Form\Element\ToggleCheckboxes;
 use Zalt\Ra\Ra;
 
 /**
