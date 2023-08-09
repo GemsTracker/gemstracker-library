@@ -199,9 +199,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
     {
         // Default is just go to the index
         if ($this->respondent && ! $this->afterSaveRouteUrl) {
-            $urlParams = $this->respondent->getMenuUrlParameters();
-
-            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.show', $urlParams);
+            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.show', $this->requestInfo->getRequestMatchedParams());
         }
 
         parent::setAfterSaveRoute();
