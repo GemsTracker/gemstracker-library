@@ -281,22 +281,28 @@ class LaminasTokenSelect
     /**
      * Select the token before the current token
      *
-     * @param string $tokenId
+     * @param Token $token
      * @return self
      */
-    public function forNextTokenId(string $tokenId): self
+    public function forNextToken(Token $token): self
     {
-        $this->select->join('gems__tokens as ct',
-            'gems__tokens.gto_id_respondent_track = ct.gto_id_respondent_track AND
-                    gems__tokens.gto_id_token != ct.gto_id_token AND
-                        ((gems__tokens.gto_round_order < ct.gto_round_order) OR
-                            (gems__tokens.gto_round_order = ct.gto_round_order AND gems__tokens.gto_created < ct.gto_created))',
-            []);
+        $where = new Where();
+        $where->equalTo('gto_id_respondent_track', $token->getRespondentTrackId());
+        $where->notEqualTo('gto_id_token', $token->getTokenId());
 
-        $this->select
-            ->where(['ct.gto_id_token' => $tokenId])
-            ->order(['gems__tokens.gto_round_order DESC',
-                'gems__tokens.gto_created DESC']);
+        // The previous toke should have either an earlier round order
+        $earlierOrder  = new Operator('gto_round_order', Operator::OP_LT,  $token->getRoundOrder());
+        // Or the same order
+        $sameOrder     = new Operator('gto_round_order', Operator::OPERATOR_EQUAL_TO,  $token->getRoundOrder());
+        // And being created earlier
+        $earlierCreation = new Operator('gto_created', Operator::OP_LT,  $token->getCreationDate());
+
+        $sameRound  = new Predicate([$sameOrder, $earlierCreation], PredicateSet::COMBINED_BY_AND);
+        $roundWhere = new Predicate([$earlierOrder, $sameRound], PredicateSet::COMBINED_BY_OR);
+        $where->andPredicate($roundWhere);
+
+        $this->select->where($where)
+            ->order(['gto_round_order DESC', 'gto_created DESC']);
 
         return $this;
     }

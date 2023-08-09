@@ -985,9 +985,9 @@ class Token
     /**
      * Returns the previous token that has succes in this track
      *
-     * @return \Gems\Tracker\Token
+     * @return \Gems\Tracker\Token|null
      */
-    public function getPreviousSuccessToken(): Token
+    public function getPreviousSuccessToken(): Token|null
     {
         $prev = $this->getPreviousToken();
 
@@ -1001,21 +1001,21 @@ class Token
     /**
      * Returns the previous token in this track
      *
-     * @return \Gems\Tracker\Token
+     * @return \Gems\Tracker\Token|null
      */
-    public function getPreviousToken(): Token
+    public function getPreviousToken(): Token|null
     {
         if (null === $this->_previousToken) {
             $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
             $tokenSelect
                     ->andReceptionCodes()
-                    ->forNextTokenId($this->_tokenId);
+                    ->forNextToken($this);
 
             if ($tokenData = $tokenSelect->fetchRow()) {
                 $this->_previousToken = $this->tracker->getToken($tokenData);
                 $this->_previousToken->_nextToken = $this;
             } else {
-                $this->_previousToken = false;
+                $this->_previousToken = null;
             }
         }
 
