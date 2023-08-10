@@ -169,14 +169,14 @@ class ReceptionCodeRepository
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
         $successCodes = array_filter($allReceptionCodes, function ($row) {
-            return $row[self::SUCCESS_FIELD] = 1 && ($row[ReceptionCodeType::TRACK->getDatabaseField()] == 1 || ReceptionCodeType::RESPONDENT->getDatabaseField() == 2);
+            return $row[self::SUCCESS_FIELD] == 0 && ($row[ReceptionCodeType::TRACK->getDatabaseField()] == 1 || ReceptionCodeType::RESPONDENT->getDatabaseField() == 2);
         });
 
         return array_column($successCodes, 'grc_description', 'grc_id_reception_code');
     }
 
     /**
-     * Returns the track deletion reception code list.
+     * Returns the track restore reception code list.
      *
      * @return array a value => label array.
      */
@@ -185,7 +185,7 @@ class ReceptionCodeRepository
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
         $successCodes = array_filter($allReceptionCodes, function ($row) {
-            return $row[ReceptionCodeType::TRACK->getDatabaseField()] == 1 || ReceptionCodeType::RESPONDENT->getDatabaseField() == 2;
+            return $row[self::SUCCESS_FIELD] == 1 && ($row[ReceptionCodeType::TRACK->getDatabaseField()] == 1 || ReceptionCodeType::RESPONDENT->getDatabaseField() == 2);
         });
 
         return array_column($successCodes, 'grc_description', 'grc_id_reception_code');
