@@ -160,6 +160,7 @@ class ConfigProvider
             'twofactor'     => $this->getTwoFactor(),
             'tokens'        => $this->getTokenSettings(),
             'translations'  => $this->getTranslationSettings(),
+            'vue'           => $this->getVueSettings(),
         ];
     }
 
@@ -836,6 +837,13 @@ class ConfigProvider
             'pr.embed.login' => new UntranslatedString('Grant right for access to embedded login page.'),
             'pr.survey-maintenance.answer-groups' => new UntranslatedString('Grant right to set answer access to surveys.'),
             'pr.maintenance.maintenance-mode' => new UntranslatedString('Enable, disable and stay online during maintenance mode'),
+        ];
+    }
+
+    public function getVueSettings(): array
+    {
+        return [
+            'default' => 'gems-vue.js',
         ];
     }
 }

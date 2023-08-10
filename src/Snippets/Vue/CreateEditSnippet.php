@@ -11,61 +11,31 @@ use Zalt\Html\Html;
 use Zalt\Snippets\SnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
-class CreateEditSnippet extends SnippetAbstract
+class CreateEditSnippet extends VueSnippetAbstract
 {
-    protected $appId = 'app';
-
     /**
      * True when the form should edit a new model item.
      *
      * @var boolean
      */
-    protected $createData = false;
+    protected bool $createData = false;
 
     protected string $dataEndpoint;
 
     protected string $dataResource;
 
-    protected $formType = 'horizontal';
+    protected string $formType = 'horizontal';
 
     protected ?string $submitLabel = null;
 
     protected string $tag = 'gems-form';
 
-    protected $vueOptions = [];
-
-    public function __construct(
-        SnippetOptions $snippetOptions,
-        RequestInfo $requestInfo,
-        protected LayoutSettings $layoutSettings,
-        protected TemplateRendererInterface $templateRenderer,
-        protected Locale $locale,
-    )
+    protected function getAttributes(): array
     {
-        parent::__construct($snippetOptions, $requestInfo);
-    }
-
-    protected function getDataEndpoint()
-    {
-        return $this->dataEndpoint;
-    }
-
-    protected function getDataResource()
-    {
-        return $this->dataResource;
-    }
-
-    public function getHtmlOutput()
-    {
-        $attributes = [
-            'base-url' => '/',
-            'api-url' => '/api',
-            'resource' => $this->getDataResource(),
-            'endpoint' => $this->getDataEndpoint(),
-            'form-type' => $this->formType,
-            'locale' => $this->locale->getCurrentLanguage(),
-            ...$this->vueOptions,
-        ];
+        $attributes = parent::getAttributes();
+        $attributes['resource'] = $this->getDataResource();
+        $attributes['endpoint'] = $this->getDataEndpoint();
+        $attributes['form-type'] = $this->formType;
 
         if ($this->createData === false) {
             $attributes['edit'] = $this->requestInfo->getParam(Model::REQUEST_ID);
@@ -75,19 +45,16 @@ class CreateEditSnippet extends SnippetAbstract
             $attributes['submit-label'] = $this->submitLabel;
         }
 
-        $container = Html::div(['id' => $this->appId]);
-        $app = Html::create($this->tag, $attributes);
-
-        $container->append($app);
-
-        $this->layoutSettings->addResource('resource/js/gems-vue.js');
-
-        return $container;
+        return $attributes;
     }
 
-    public function hasHtmlOutput(): bool
+    protected function getDataEndpoint(): string
     {
+        return $this->dataEndpoint;
+    }
 
-        return parent::hasHtmlOutput();
+    protected function getDataResource(): string
+    {
+        return $this->dataResource;
     }
 }

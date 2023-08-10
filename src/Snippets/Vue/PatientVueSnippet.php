@@ -5,6 +5,7 @@ namespace Gems\Snippets\Vue;
 use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
 use Gems\Locale\Locale;
+use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;
 use MUtil\Model;
 use Zalt\Base\RequestInfo;
@@ -12,27 +13,19 @@ use Zalt\Html\Html;
 use Zalt\Snippets\SnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
-class PatientVueSnippet extends SnippetAbstract
+class PatientVueSnippet extends VueSnippetAbstract
 {
-    protected string $appId = 'app';
-
     protected int $organizationId;
 
     protected string $patientNr;
 
-    protected $tag;
-
-    protected $vueOptions = [];
-
-    public function __construct(
-        SnippetOptions $snippetOptions,
-        RequestInfo $requestInfo,
-        protected LayoutSettings $layoutSettings,
-        protected TemplateRendererInterface $templateRenderer,
-        protected Locale $locale,
-    )
+    protected function getAttributes(): array
     {
-        parent::__construct($snippetOptions, $requestInfo);
+        $attributes = parent::getAttributes();
+        $attributes['patient-nr'] = $this->patientNr;
+        $attributes[':organization-id'] = $this->organizationId;
+
+        return $attributes;
     }
 
     public function getHtmlOutput()
@@ -62,7 +55,6 @@ class PatientVueSnippet extends SnippetAbstract
         }
         $this->patientNr = (string) $attributes[Model::REQUEST_ID1];
         $this->organizationId = (int) $attributes[Model::REQUEST_ID2];
-        $this->layoutSettings->addResource('resource/js/gems-vue.js');
         return parent::hasHtmlOutput();
     }
 }
