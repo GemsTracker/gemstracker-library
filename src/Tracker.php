@@ -331,7 +331,7 @@ class Tracker implements TrackerInterface
                         $oldValues[$name] = $oldValues[$name]->format(\Gems\Tracker::DB_DATETIME_FORMAT);
                     }
                     // Extra condition for empty time in date values
-                    if (($value === $oldValues[$name]) || ($value === $oldValues[$name] . ' 00:00:00')) {
+                    if (($value === $oldValues[$name]) || (is_string($oldValues[$name]) && $value === $oldValues[$name] . ' 00:00:00')) {
                         unset($newValues[$name]);
                     }
                 }
