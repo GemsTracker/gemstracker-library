@@ -14,6 +14,8 @@ use Gems\Model\GemsJoinModel;
 use Gems\Model\MaskedModelTrait;
 use Gems\Model\Type\TokenValidFromType;
 use Gems\Model\Type\TokenValidUntilType;
+use Gems\Model\MetaModelLoader;
+use Gems\Model\Type\TokenDateType;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\TokenRepository;
 use Gems\User\Mask\MaskRepository;
@@ -41,7 +43,7 @@ class TokenModel extends GemsJoinModel
     public static $useTokenModel = false;
 
     public function __construct(
-        MetaModelInterface $metaModel,
+        MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
         MaskRepository $maskRepository,
@@ -49,11 +51,10 @@ class TokenModel extends GemsJoinModel
         protected Translated $translatedUtil,
     )
     {
-        parent::__construct($metaModel, $sqlRunner, $translate);
+        parent::__construct(static::$modelName, $metaModelLoader, $sqlRunner, $translate);
 
         $this->maskRepository = $maskRepository;
-
-        $this->startJoin(self::$modelName, true);
+        $metaModel = $this->getMetaModel();
         $metaModel->setKeys($this->getKeysForTable(self::$modelName));
 
         $this->addTable(    'gems__tracks',               ['gto_id_track' => 'gtr_id_track']);

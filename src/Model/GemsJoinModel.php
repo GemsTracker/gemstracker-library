@@ -12,6 +12,7 @@ namespace Gems\Model;
 
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\TranslateableTrait;
+use Zalt\Model\MetaModel;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
@@ -24,10 +25,22 @@ class GemsJoinModel extends \Zalt\Model\Sql\JoinModel
 {
     use TranslateableTrait;
 
-    public function __construct(MetaModelInterface $metaModel, SqlRunnerInterface $sqlRunner, TranslatorInterface $translate)
+    public function __construct(
+        string $tableName,
+        MetaModelLoader $metaModelLoader,
+        SqlRunnerInterface $sqlRunner,
+        TranslatorInterface $translate,
+        string $modelName = null,
+        bool $savable = true,
+    )
     {
-        parent::__construct($metaModel, $sqlRunner);
+        if ($modelName === null) {
+            $modelName = static::class;
+        }
 
+        $metaModel = new MetaModel($modelName, $metaModelLoader);
+        parent::__construct($metaModel, $sqlRunner);
+        $this->startJoin($tableName, true);
         $this->translate = $translate;
     }
 
