@@ -10,8 +10,8 @@ class EventSubscriber implements EventSubscriberInterface
     {
         return [
             AppointmentChangedEvent::class => [
-                ['updateTracksForAppointment'],
-                ['updateAppointmentInfo'],
+                ['updateTracksForAppointment', 20],
+                ['updateAppointmentInfo', 80],
             ],
         ];
     }
