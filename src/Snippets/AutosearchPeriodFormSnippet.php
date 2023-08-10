@@ -84,6 +84,6 @@ class AutosearchPeriodFormSnippet extends AutosearchFormSnippet
         }
         $elements[self::PERIOD_DATE_USED] = $element;
 
-        $this->periodSelectRepository->addZendPeriodSelectors($elements);
+        $this->periodSelectRepository->addZendPeriodSelectors($elements, $fromLabel);
     }
 }

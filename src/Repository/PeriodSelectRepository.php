@@ -61,16 +61,20 @@ class PeriodSelectRepository
      * @param string $defaultDate Optional element, otherwise first is used.
      * @param int $switchToSelect The number of dates where this function should switch to select display
      */
-    public function addZendPeriodSelectors(array &$elements)
+    public function addZendPeriodSelectors(array &$elements, string|null $fromLabel = null)
     {
         // $config = $this->metaModelLoader->getModelConfig();
         $type = $this->lastUsedType ?? MetaModelInterface::TYPE_DATE;
         $dateType = $this->metaModelLoader->getDefaultTypeInterface($type);
 
-        $elements['datefrom'] = new DateTimeInput('datefrom', $dateType->getSettings());
+        if ($fromLabel === null) {
+            $fromLabel = $this->_('From');
+        }
 
-        $options['label'] = ' ' . $this->_('until');
-        $elements['dateuntil'] = new DateTimeInput('dateuntil', $dateType->getSettings());
+        $elements['datefrom'] = new DateTimeInput('datefrom', $dateType->getSettings() + ['label' => $fromLabel ]);
+
+        $options['label'] = $this->_('until');
+        $elements['dateuntil'] = new DateTimeInput('dateuntil', $dateType->getSettings() + $options);
     }
 
     /**
