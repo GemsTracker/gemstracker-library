@@ -8,7 +8,7 @@ class ReceptionCode
 {
     public function __construct(
         private readonly string $code,
-        private readonly ReceptionCodeType $type,
+        private readonly array $types,
         private readonly bool $success,
         private readonly ?string $description = null,
         private readonly bool $redoSurvey = false,
@@ -56,17 +56,17 @@ class ReceptionCode
 
     public function isForRespondents(): bool
     {
-        return $this->type === ReceptionCodeType::RESPONDENT;
+        return in_array(ReceptionCodeType::RESPONDENT, $this->types);
     }
 
     public function isForSurveys(): bool
     {
-        return $this->type === ReceptionCodeType::SURVEY;
+        return in_array(ReceptionCodeType::SURVEY, $this->types);
     }
 
     public function isForTracks(): bool
     {
-        return $this->type === ReceptionCodeType::TRACK;
+        return in_array(ReceptionCodeType::TRACK, $this->types);
     }
 
     public function isOverwriter(): bool

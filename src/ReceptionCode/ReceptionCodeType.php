@@ -17,16 +17,20 @@ enum ReceptionCodeType: string
         };
     }
 
-    public static function createFromData(array $data): ?self
+    public static function createFromData(array $data): array|null
     {
+        $types = [];
         if ($data[self::RESPONDENT->getDatabaseField()] > 0) {
-            return self::RESPONDENT;
+            $types[self::RESPONDENT->value] = self::RESPONDENT;
         }
         if ($data[self::SURVEY->getDatabaseField()] > 0) {
-            return self::SURVEY;
+            $types[self::SURVEY->value] = self::SURVEY;
         }
         if ($data[self::TRACK->getDatabaseField()] > 0) {
-            return self::TRACK;
+            $types[self::TRACK->value] = self::TRACK;
+        }
+        if ($types) {
+            return $types;
         }
         return null;
     }
