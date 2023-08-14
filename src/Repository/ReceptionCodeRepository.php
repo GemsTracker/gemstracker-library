@@ -42,11 +42,11 @@ class ReceptionCodeRepository
     {
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
-        $filteredCode = array_filter($allReceptionCodes, function ($row) {
+        $filteredCodes = array_filter($allReceptionCodes, function ($row) {
             return $row[self::SURVEY_TYPE_FIELD] != 0 && $row[self::SUCCESS_FIELD] == 0;
         });
 
-        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
+        return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');
     }
 
     protected function getReceptionCodeFromData(array $data): ReceptionCode
@@ -141,11 +141,11 @@ class ReceptionCodeRepository
     {
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
-        $filteredCode = array_filter($allReceptionCodes, function ($row) {
+        $filteredCodes = array_filter($allReceptionCodes, function ($row) {
             return $row[self::RESPONDENT_TYPE_FIELD] != 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
         });
 
-        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
+        return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');
     }
 
     /**
@@ -157,11 +157,11 @@ class ReceptionCodeRepository
     {
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
-        $filteredCode = array_filter($allReceptionCodes, function ($row) {
+        $filteredCodes = array_filter($allReceptionCodes, function ($row) {
             return $row[self::RESPONDENT_TYPE_FIELD] != 0 && $row[self::SUCCESS_FIELD] == 1;
         });
 
-        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
+        return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');
     }
 
     public function getSuccessCodesFor(string $field): array
@@ -231,10 +231,10 @@ class ReceptionCodeRepository
     {
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
-        $filteredCode = array_filter($allReceptionCodes, function ($row) {
+        $filteredCodes = array_filter($allReceptionCodes, function ($row) {
             return $row[self::SURVEY_TYPE_FIELD] == 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
         });
 
-        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
+        return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');
     }
 }
