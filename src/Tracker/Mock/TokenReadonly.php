@@ -267,7 +267,7 @@ class TokenReadonly extends Token
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */
-    public function setReceptionCode(ReceptionCode|string $code, string $comment, int $userId): int
+    public function setReceptionCode(ReceptionCode|string $code, string|bool|null $comment, int $userId): int
     {
         $this->_changes[__FUNCTION__] = ['code' => $code, 'comment' => $comment, 'userId' => $userId];
 
