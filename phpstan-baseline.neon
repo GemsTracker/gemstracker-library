@@ -1699,3 +1699,8 @@ parameters:
 			message: "#^Access to an undefined property GemsTest\\\\Validate\\\\IPRangesTest\\:\\:\\$validator\\.$#"
 			count: 3
 			path: tests/Validate/IPRangesTest.php
+
+		-
+			message: "#^Constructor of class Gems\\\\Model\\\\GemsJoinModel has an unused parameter \\$savable\\.$#"
+			count: 1
+			path: src/Model/GemsJoinModel.php
