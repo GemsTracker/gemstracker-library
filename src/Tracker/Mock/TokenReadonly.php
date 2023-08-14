@@ -190,7 +190,7 @@ class TokenReadonly extends Token
      * @param int $userId The id of the gems user
      * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
-    public function getUrl(string $language, int $userId, string $returnUrl): string
+    public function getUrl(string $language, int $userId, ?string $returnUrl = null): string
     {
         $this->_changes[__FUNCTION__] = ['language' => $language, 'userId' => $userId];
         
