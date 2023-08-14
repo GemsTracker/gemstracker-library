@@ -5,7 +5,6 @@ namespace Gems\Repository;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\Exception;
-use Gems\ReceptionCode\ReceptionCodeType;
 use Gems\Tracker\ReceptionCode;
 use MUtil\Translate\Translator;
 

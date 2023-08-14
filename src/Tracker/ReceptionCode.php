@@ -2,8 +2,6 @@
 
 namespace Gems\Tracker;
 
-use Gems\ReceptionCode\ReceptionCodeType;
-
 class ReceptionCode
 {
     const TYPE_RESPONDENT = 1 << 0;
