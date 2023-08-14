@@ -18,6 +18,11 @@ class ReceptionCodeRepository
     public const ACTIVE_FIELD = 'grc_active';
     public const REDO_FIELD = 'grc_redo_survey';
     public const SUCCESS_FIELD = 'grc_success';
+    public const TYPES = [
+        'grc_for_respondents' => ReceptionCode::TYPE_RESPONDENT,
+        'grc_for_surveys' => ReceptionCode::TYPE_SURVEY,
+        'grc_for_tracks' => ReceptionCode::TYPE_TRACK,
+    ];
 
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
@@ -50,7 +55,7 @@ class ReceptionCodeRepository
 
         return new ReceptionCode(
             $data['grc_id_reception_code'],
-            ReceptionCodeType::createFromData($data),
+            $this->deduceReceptionCodeTypesFromData($data),
             (bool)$data['grc_success'],
             $description,
             (bool)$data['grc_redo_survey'],
@@ -58,6 +63,29 @@ class ReceptionCodeRepository
             $data['grc_for_surveys'] === 2,
             (bool)$data['grc_overwrite_answers'],
         );
+    }
+
+    /**
+     * Construct a bitmask value that describes all the types that this
+     * reception code can be used for.
+     *
+     * @param array $data Database row
+     * @return integer
+     */
+    private function deduceReceptionCodeTypesFromData(array $data): int
+    {
+        $types = 0;
+        foreach (self::TYPES as $property => $typeValue) {
+            if (!isset($data[$property])) {
+                continue;
+            }
+            if ($data[$property] <= 0) {
+                continue;
+            }
+            $types = $types | $typeValue;
+        }
+
+        return $types;
     }
 
     /**
