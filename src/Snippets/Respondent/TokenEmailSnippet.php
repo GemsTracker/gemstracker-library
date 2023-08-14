@@ -9,6 +9,7 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Vue\CreateEditSnippet;
 use Gems\Tracker;
 use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;
 use MUtil\Model;
 use MUtil\Translate\Translator;
@@ -27,12 +28,14 @@ class TokenEmailSnippet extends CreateEditSnippet
         LayoutSettings $layoutSettings,
         TemplateRendererInterface $templateRenderer,
         Locale $locale,
+        UrlHelper $urlHelper,
+        array $config,
         protected Tracker $tracker,
         protected Translator $translator,
         protected StatusMessengerInterface $messenger,
         protected MenuSnippetHelper $menuSnippetHelper,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $templateRenderer, $locale);
+        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $templateRenderer, $locale, $urlHelper, $config);
         $this->layoutSettings = $layoutSettings;
         $this->templateRenderer = $templateRenderer;
         $this->locale = $locale;
