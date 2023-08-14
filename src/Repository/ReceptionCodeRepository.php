@@ -164,12 +164,12 @@ class ReceptionCodeRepository
         return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
     }
 
-    public function getSuccessCodesFor(ReceptionCodeType $type): array
+    public function getSuccessCodesFor(string $field): array
     {
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
-        $successCodes = array_filter($allReceptionCodes, function ($row) use ($type) {
-            return $row[$type->getDatabaseField()] != 0 && $row[self::SUCCESS_FIELD] == 1;
+        $successCodes = array_filter($allReceptionCodes, function ($row) use ($field) {
+            return $row[$field] != 0 && $row[self::SUCCESS_FIELD] == 1;
         });
 
         return array_column($successCodes, 'grc_description', 'grc_id_reception_code');
@@ -177,17 +177,17 @@ class ReceptionCodeRepository
 
     public function getSuccessCodesForRespondent(): array
     {
-        return $this->getSuccessCodesFor(ReceptionCodeType::RESPONDENT);
+        return $this->getSuccessCodesFor(self::RESPONDENT_TYPE_FIELD);
     }
 
     public function getSuccessCodesForSurvey(): array
     {
-        return $this->getSuccessCodesFor(ReceptionCodeType::SURVEY);
+        return $this->getSuccessCodesFor(self::SURVEY_TYPE_FIELD);
     }
 
     public function getSuccessCodesForTrack(): array
     {
-        return $this->getSuccessCodesFor(ReceptionCodeType::TRACK);
+        return $this->getSuccessCodesFor(self::TRACK_TYPE_FIELD);
     }
 
     /**
