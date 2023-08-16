@@ -589,7 +589,7 @@ class Survey
      */
     public function isActiveInSource(): bool
     {
-        return isset($this->data['gsu_surveyor_active']);
+        return isset($this->data['gsu_surveyor_active']) && $this->data['gsu_surveyor_active'] == '1';
     }
 
     /**
