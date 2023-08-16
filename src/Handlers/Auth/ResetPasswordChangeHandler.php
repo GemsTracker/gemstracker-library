@@ -92,6 +92,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
 
         $newPasswordValidator = new NewPasswordValidator($user, $this->passwordChecker);
         if (!$newPasswordValidator->isValid($input['new_password'] ?? null)) {
+            $this->statusMessenger->addError($this->translator->trans('Password reset failed.'), true);
             $this->validationMessenger->addValidationErrors('new_password', $newPasswordValidator->getMessages());
             return new RedirectResponse($request->getUri());
         }
@@ -102,6 +103,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
             IsConfirmed::NOT_SAME
         );
         if (!$repeatConfirmValidator->isValid($input['repeat_password'] ?? null, $input)) {
+            $this->statusMessenger->addError($this->translator->trans('Password reset failed.'), true);
             $this->validationMessenger->addValidationErrors('repeat_password', $repeatConfirmValidator->getMessages());
             return new RedirectResponse($request->getUri());
         }
