@@ -631,7 +631,7 @@ class ConfigProvider
         return [
             'default' => [
                 'notTheName' => 1,
-                'inPasswordList' => '../library/Gems/docs/weak-lst',
+                'inPasswordList' => 'docs/weak-passwords.lst',
             ],
             'guest' => [
                 'capsCount' => 1,

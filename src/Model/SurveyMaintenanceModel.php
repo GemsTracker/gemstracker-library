@@ -189,7 +189,7 @@ class SurveyMaintenanceModel extends JoinModel
             $message = sprintf($this->_('Active in %s'), $this->config['app']['name']);
         }
 
-        $this->set('gsu_active', 'label', sprintf($this->_('Active in %s'), $message),
+        $this->set('gsu_active', 'label', $message,
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );

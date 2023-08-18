@@ -77,6 +77,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
         )->authenticate();
 
         if (!$authResult->isValid()) {
+            $this->statusMessenger->addError($this->translator->trans('Password reset failed.'), true);
             $this->validationMessenger->addValidationErrors('old_password', [$this->translator->trans('Wrong password.')]);
             return new RedirectResponse($request->getUri());
         }
@@ -84,6 +85,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
         // TODO: generalize forms
         $newPasswordValidator = new \Gems\User\Validate\NewPasswordValidator($user, $this->passwordChecker);
         if (!$newPasswordValidator->isValid($input['new_password'] ?? null)) {
+            $this->statusMessenger->addError($this->translator->trans('Password reset failed.'), true);
             $this->validationMessenger->addValidationErrors('new_password', $newPasswordValidator->getMessages());
             return new RedirectResponse($request->getUri());
         }
@@ -94,6 +96,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
             \MUtil\Validator\IsConfirmed::NOT_SAME
         );
         if (!$repeatConfirmValidator->isValid($input['repeat_password'] ?? null, $input)) {
+            $this->statusMessenger->addError($this->translator->trans('Password reset failed.'), true);
             $this->validationMessenger->addValidationErrors('repeat_password', $repeatConfirmValidator->getMessages());
             return new RedirectResponse($request->getUri());
         }
