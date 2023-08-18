@@ -12,6 +12,11 @@
 namespace Gems\Import;
 
 use Gems\Model;
+use Gems\Model\MetaModelLoader;
+use Gems\Model\Translator\AppointmentTranslator;
+use Gems\Model\Translator\RespondentTranslator;
+use Gems\Model\Translator\StaffTranslator;
+use Gems\Model\Translator\StraightTranslator;
 
 /**
  * The import loader is used to gather all the GemsTracker specific knowledge
@@ -75,6 +80,11 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
      * @var \Zend_Translate
      */
     protected $translate;
+
+    public function __construct(
+        protected MetaModelLoader $metaModelLoader,
+    )
+    { }
 
     /**
      * Function to load survey specific import translators,
@@ -331,19 +341,23 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
                 break;
 
             case 'calendar':
-                $output['default'] = new \Gems\Model\Translator\AppointmentTranslator($translator->_('Direct import'));
+                $output['default'] = $this->metaModelLoader->createTranslator(AppointmentTranslator::class);
+                $output['default']->setDescription($translator->_('Direct import'));
                 break;
 
             case 'respondent':
-                $output['default'] = new \Gems\Model\Translator\RespondentTranslator($translator->_('Direct import'));
+                $output['default'] = $this->metaModelLoader->createTranslator(RespondentTranslator::class);
+                $output['default']->setDescription($translator->_('Direct import'));
                 break;
 
             case 'staff':
-                $output['default'] = new \Gems\Model\Translator\StaffTranslator($translator->_('Direct import'));
+                $output['default'] = $this->metaModelLoader->createTranslator(StaffTranslator::class);
+                $output['default']->setDescription($translator->_('Direct import'));
                 break;
 
             default:
-                $output['default'] = new \Gems\Model\Translator\StraightTranslator($translator->_('Direct import'));
+                $output['default'] = $this->metaModelLoader->createTranslator(StraightTranslator::class);
+                $output['default']->setDescription($translator->_('Direct import'));
                 break;
         }
 

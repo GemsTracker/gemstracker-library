@@ -12,6 +12,7 @@
 namespace Gems;
 
 use Gems\Agenda\Agenda;
+use Gems\Import\ImportLoader;
 use Gems\Loader\LoaderAbstract;
 use Gems\Screens\ScreenLoader;
 use Gems\Tracker\TrackEvents;
@@ -240,7 +241,7 @@ class Loader extends LoaderAbstract
      */
     public function getImportLoader()
     {
-        return $this->_getClass('importLoader', 'Import\\ImportLoader');
+        return $this->containerLoad(ImportLoader::class);
     }
 
     /**

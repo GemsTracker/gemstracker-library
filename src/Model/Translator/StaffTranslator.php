@@ -11,6 +11,11 @@
 
 namespace Gems\Model\Translator;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\OrganizationRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 /**
  *
  *
@@ -40,12 +45,17 @@ class StaffTranslator extends \Gems\Model\Translator\StraightTranslator
      * @var \Gems\User\Organization
      */
     protected $_organization;
-        
-    public function afterRegistry() {
-        parent::afterRegistry();
-    
-        // The users current organization
-        $this->_organization = $this->loader->getCurrentUser()->getCurrentOrganization();
+
+    public function __construct(
+        TranslatorInterface $translator,
+        OrganizationRepository $organizationRepository,
+        ResultFetcher $resultFetcher,
+        CurrentUserRepository $currentUserRepository,
+    )
+    {
+        parent::__construct($translator, $organizationRepository, $resultFetcher);
+
+        $this->_organization = $currentUserRepository->getCurrentOrganization();
     }
 
     /**

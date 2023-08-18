@@ -14,6 +14,7 @@ use Gems\Agenda\Agenda;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
+use Gems\Model\Translator\AppointmentTranslator;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\User\User;
 use MUtil\Model\ModelAbstract;
@@ -182,9 +183,10 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
         $data         = $this->requestInfo->getParams();
         $importLoader = $this->loader->getImportLoader();
         $model        = $this->getModel();
-        $translator   = new \Gems\Model\Translator\AppointmentTranslator($this->_('Direct import'));
+        $modelLoader  = $model->getMetaModel()->getMetaModelLoader();
+        $translator   = $modelLoader->createTranslator(AppointmentTranslator::class);
+        $translator->setDescription($this->_('Direct import'));
 
-        $this->source->applySource($translator);
         $translator->setTargetModel($model)
                 ->startImport();
 
