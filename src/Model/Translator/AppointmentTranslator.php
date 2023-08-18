@@ -35,12 +35,12 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
      *
      * @var array
      */
-    public $datetimeFormats = array(
+    public array $datetimeFormats = [
         'Y-m-d\TH:i:sP',
         'Y-m-d\TH:i:s',
         'Y-m-d H:i:sP',
         'Y-m-d H:i:s',
-        );
+        ];
 
     /**
      * @var string The import source identifier
@@ -52,7 +52,7 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
      *
      * @var string
      */
-    protected $orgIdField = 'gap_id_organization';
+    protected string $orgIdField = 'gap_id_organization';
 
     /**
      *

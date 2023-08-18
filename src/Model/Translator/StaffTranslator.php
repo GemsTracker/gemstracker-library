@@ -27,7 +27,7 @@ class StaffTranslator extends \Gems\Model\Translator\StraightTranslator
      *
      * @var string
      */
-    protected $orgIdField = 'gsf_id_organization';
+    protected string $orgIdField = 'gsf_id_organization';
     
     /**
      *
