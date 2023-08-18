@@ -163,7 +163,7 @@ class RespondentAnswerTranslator extends \Gems\Model\Translator\AnswerTranslator
      * @return array of fields sourceName => targetName
      * @throws \MUtil\Model\ModelException
      */
-    public function getFieldsTranslations()
+    public function getFieldsTranslations(): array
     {
         if (! $this->_targetModel instanceof \MUtil\Model\ModelAbstract) {
             throw new \MUtil\Model\ModelTranslateException(sprintf('Called %s without a set target model.', __FUNCTION__));
@@ -178,7 +178,7 @@ class RespondentAnswerTranslator extends \Gems\Model\Translator\AnswerTranslator
      *
      * @return array of fields sourceName => targetName
      */
-    public function getRequiredFields()
+    public function getRequiredFields(): array
     {
         return array(
             $this->patientNrField => $this->patientNrField,

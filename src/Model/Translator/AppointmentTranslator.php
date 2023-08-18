@@ -91,7 +91,7 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
      * @return array of fields sourceName => targetName
      * @throws \MUtil\Model\ModelException
      */
-    public function getFieldsTranslations()
+    public function getFieldsTranslations(): array
     {
         $this->_targetModel->setAlias('gas_name_attended_by', 'gap_id_attended_by');
         $this->_targetModel->setAlias('gas_name_referred_by', 'gap_id_referred_by');
@@ -121,12 +121,7 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
         );
     }
 
-    /**
-     * Prepare for the import.
-     *
-     * @return \MUtil\Model\ModelTranslatorAbstract (continuation pattern)
-     */
-    public function startImport()
+    public function startImport(): AppointmentTranslator
     {
         if ($this->_targetModel instanceof \MUtil\Model\ModelAbstract) {
             // No multiOptions as a new items can be created during import

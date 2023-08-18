@@ -51,7 +51,7 @@ class RespondentTranslator extends \Gems\Model\Translator\StraightTranslator
      * @return array of fields sourceName => targetName
      * @throws \MUtil\Model\ModelException
      */
-    public function getFieldsTranslations()
+    public function getFieldsTranslations(): array
     {
         $fieldList = parent::getFieldsTranslations();
 
@@ -67,9 +67,9 @@ class RespondentTranslator extends \Gems\Model\Translator\StraightTranslator
     /**
      * Prepare for the import.
      *
-     * @return \MUtil\Model\ModelTranslatorAbstract (continuation pattern)
+     * @return RespondentTranslator (continuation pattern)
      */
-    public function startImport()
+    public function startImport(): RespondentTranslator
     {
         if ($this->_targetModel instanceof \MUtil\Model\ModelAbstract) {
             $this->_targetModel->set('grs_gender', 'extraValueKeys', array('V' => 'F'));

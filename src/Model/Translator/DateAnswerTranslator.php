@@ -129,7 +129,7 @@ class DateAnswerTranslator extends \Gems\Model\Translator\RespondentAnswerTransl
      *
      * @return array of fields sourceName => targetName
      */
-    public function getRequiredFields()
+    public function getRequiredFields(): array
     {
         return parent::getRequiredFields() + array(
             $this->completionField => $this->completionField,
