@@ -56,7 +56,6 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         RequestInfo $requestInfo, 
         MenuSnippetHelper $menuHelper, 
         TranslatorInterface $translate,
-        protected Agenda $agenda,
         CurrentUserRepository $currentUserRepository,
         protected Model $modelLoader, 
     )
@@ -91,7 +90,7 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof EpisodeOfCareModel) {
-            $this->model = $this->modelLoader->createEpisodeOfCareModel($this->agenda);
+            $this->model = $this->modelLoader->createEpisodeOfCareModel();
 
             $this->model->applyBrowseSettings();
         }

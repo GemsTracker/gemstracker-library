@@ -215,13 +215,11 @@ class Model
     /**
      * Load project specific application model or general \Gems model otherwise
      *
-     * @return EpisodeOfCareModel
+     * @return ?EpisodeOfCareModel
      */
-    public function createEpisodeOfCareModel(Agenda $agenda): EpisodeOfCareModel
+    public function createEpisodeOfCareModel(): EpisodeOfCareModel
     {
-        /**
-         * @var EpisodeOfCareModel
-         */
+        $agenda = $this->overloader->getContainer()->get(Agenda::class);
         return $this->_createModel('EpisodeOfCareModel', $agenda);
     }
 
