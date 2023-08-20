@@ -11,7 +11,6 @@
 
 namespace Gems\Snippets\Agenda;
 
-use Gems\Agenda\Agenda;
 use Gems\Agenda\Filter\AppointmentFilterInterface;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;

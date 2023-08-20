@@ -11,7 +11,6 @@
 
 namespace Gems\Snippets\Agenda;
 
-use Gems\Agenda\Agenda;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -59,7 +58,6 @@ class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         TranslatorInterface $translate, 
         MessengerInterface $messenger, 
         MenuSnippetHelper $menuHelper,
-        protected Agenda $agenda,
         protected Model $modelLoader,
     )
     {
@@ -94,7 +92,7 @@ class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
     protected function createModel(): FullDataInterface
     {
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {
-            $this->model = $this->modelLoader->createAppointmentModel($this->agenda);
+            $this->model = $this->modelLoader->createAppointmentModel();
             $this->model->applyDetailSettings();
         }
         $metaModel = $this->model->getMetaModel();

@@ -10,7 +10,6 @@
 namespace Gems\Handlers\Respondent;
 
 use DateTimeImmutable;
-use Gems\Agenda\Agenda;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
@@ -22,6 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Type\AbstractDateType;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
+
 /**
  *
  *
@@ -83,7 +83,6 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface        $responder,
         TranslatorInterface              $translator,
-        protected Agenda                 $agenda,
         CurrentUserRepository            $currentUserRepository,
         protected Model                  $modelLoader,
         protected PeriodSelectRepository $periodSelectRepository,
@@ -106,7 +105,7 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $model = $this->modelLoader->createAppointmentModel($this->agenda);
+        $model = $this->modelLoader->createAppointmentModel();
         $model->applyBrowseSettings();
         return $model;
     }

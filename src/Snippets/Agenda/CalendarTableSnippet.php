@@ -11,7 +11,6 @@
 
 namespace Gems\Snippets\Agenda;
 
-use Gems\Agenda\Agenda;
 use Gems\Agenda\Filter\AppointmentFilterInterface;
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
@@ -19,7 +18,6 @@ use Gems\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\TableElement;
-use Zalt\Late\LateCall;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -53,7 +51,6 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
                                 RequestInfo $requestInfo,
                                 MenuSnippetHelper $menuHelper,
                                 TranslatorInterface $translate,
-                                protected Agenda $agenda,
                                 protected Model $modelLoader
     )
     {
@@ -147,7 +144,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         }
 
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {
-            $this->model = $this->modelLoader->createAppointmentModel($this->agenda);
+            $this->model = $this->modelLoader->createAppointmentModel();
             $this->model->applyBrowseSettings();
         }
         $this->model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');

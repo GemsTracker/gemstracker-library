@@ -115,7 +115,7 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
                 return $model;
 
             case 'calendar':
-                $model = $this->modelLoader->createAppointmentModel($this->loader->getAgenda());
+                $model = $this->modelLoader->createAppointmentModel();
                 $this->applySource($model);
                 $model->applyEditSettings();
                 return $model;
