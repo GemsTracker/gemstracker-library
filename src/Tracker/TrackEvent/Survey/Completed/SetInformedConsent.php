@@ -12,9 +12,9 @@
 namespace Gems\Tracker\TrackEvent\Survey\Completed;
 
 use Gems\Db\ResultFetcher;
+use Gems\Repository\ConsentRepository;
 use Gems\Tracker\Token;
 use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
-use Gems\Util;
 use MUtil\Translate\Translator;
 
 /**
@@ -28,7 +28,11 @@ use MUtil\Translate\Translator;
  */
 class SetInformedConsent implements SurveyCompletedEventInterface
 {
-    public function __construct(protected Translator $translator, protected ResultFetcher $resultFetcher, protected Util $util)
+    public function __construct(
+        protected Translator $translator,
+        protected ResultFetcher $resultFetcher,
+        protected ConsentRepository $consentRepository,
+    )
     {}
 
     /**
@@ -57,34 +61,34 @@ class SetInformedConsent implements SurveyCompletedEventInterface
         $answers = $token->getRawAnswers();
 
         if (isset($answers['informedconsent'])) {
-            $consent = $this->util->getConsent($answers['informedconsent']);
+            $consent = $this->consentRepository->getConsentFromDescription($answers['informedconsent']);
 
-            if ($consent->exists) {
+            if (is_object($consent)) {
                 // Is existing consent description as answer
-                $consentCode = $consent->getDescription();
+                $consentDescription = $consent->getDescription();
             } else {
                 if ($answers['informedconsent']) {
                     // Uses start of consent description as answer (LS has only 5 chars for an answer option)
-                    $consentCode = $this->resultFetcher->fetchOne(
+                    $consentDescription = $this->resultFetcher->fetchOne(
                             "SELECT gco_description FROM gems__consents WHERE gco_description LIKE ? ORDER BY gco_order",
                             [$answers['informedconsent'] . '%']
                     );
                 } else {
-                    $consentCode = false;
+                    $consentDescription = false;
                 }
 
-                if (! $consentCode) {
+                if (! $consentDescription) {
                     if ($answers['informedconsent']) {
                         // Code not found, use first positive consent
-                        $consentCode = $this->resultFetcher->fetchOne(
+                        $consentDescription = $this->resultFetcher->fetchOne(
                                 "SELECT gco_description FROM gems__consents WHERE gco_code != ? ORDER BY gco_order",
-                                [$this->util->getConsentRejected()]
+                                [$this->consentRepository->getConsentRejected()]
                                 );
                     } else {
                         // Code not found, use first negative consent
-                        $consentCode = $this->resultFetcher->fetchOne(
+                        $consentDescription = $this->resultFetcher->fetchOne(
                                 "SELECT gco_description FROM gems__consents WHERE gco_code = ? ORDER BY gco_order",
-                                [$this->util->getConsentRejected()]
+                                [$this->consentRepository->getConsentRejected()]
                                 );
                     }
                 }
@@ -95,7 +99,7 @@ class SetInformedConsent implements SurveyCompletedEventInterface
                 'gr2o_patient_nr'      => $respondent->getPatientNumber(),
                 'gr2o_id_user'         => $respondent->getId(),
                 'gr2o_id_organization' => $respondent->getOrganizationId(),
-                'gr2o_consent'         => $consentCode,
+                'gr2o_consent'         => $consentDescription,
                 'old_gr2o_consent'     => $respondent->getConsent()->getDescription(),
             );
             $model = $respondent->getRespondentModel();
