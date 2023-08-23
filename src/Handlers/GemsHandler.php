@@ -18,7 +18,6 @@ use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
-use Gems\Task\TaskRunnerBatch;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
