@@ -45,7 +45,7 @@ class ConsentRepository
     {
         $userConsents = $this->getUserConsents();
         foreach($userConsents as $userConsent) {
-            if ($userConsents['gco_description'] === $description) {
+            if ($userConsent['gco_description'] === $description) {
                 return $this->getConsentFromConsentData($userConsent);
             }
         }
