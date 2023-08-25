@@ -210,22 +210,6 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     }
 
     /**
-     * Hook that allows actions when data was saved
-     *
-     * When not rerouted, the form will be populated afterwards
-     *
-     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
-     * /
-    protected function afterSave($changed)
-    {
-        parent::afterSave($changed);
-
-        if ($changed) {
-            //$this->accesslog->logChange($this->request, null, $this->formData);
-        }
-    }
-
-    /**
      * Perform some actions on the form, right before it is displayed but already populated
      *
      * Here we add the table display to the form.
