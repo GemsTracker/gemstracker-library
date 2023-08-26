@@ -12,14 +12,10 @@ use Zalt\Loader\ProjectOverloader;
 
 class ProjectOverloaderFactory implements FactoryInterface
 {
-    /**
-     * @var array|string[]
-     */
-    protected array $defaultOverLoaderPaths;
-
-    public function __construct(array $defaultOverLoaderPaths = ['Gems', 'MUtil'])
+    public function __construct(
+        protected array $defaultOverLoaderPaths = ['Gems', 'MUtil'],
+    )
     {
-        $this->defaultOverLoaderPaths = $defaultOverLoaderPaths;
     }
 
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
@@ -32,6 +28,9 @@ class ProjectOverloaderFactory implements FactoryInterface
         if (isset($config['overLoaderPaths']) && is_array($config['overLoaderPaths'])) {
             $overloaderPaths = $config['overLoaderPaths'];
         }
+        // if (isset($config['overLoaderPathsExtra']) && is_array($config['overLoaderPathsExtra'])) {
+        dump($overloaderPaths);
+
         $overloader = new $requestedName($container, $overloaderPaths);
         $overloader->setDependencyResolver(new OrderedParamsContainerResolver());
         $overloader->legacyClasses = true;

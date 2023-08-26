@@ -13,7 +13,7 @@ namespace Gems\Tracker\Field;
 
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Util\Translated;
-use MUtil\Translate\Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -55,7 +55,7 @@ abstract class FieldAbstract implements FieldInterface
         protected int $trackId,
         protected string $fieldKey,
         protected array $fieldDefinition,
-        protected Translator $translator,
+        protected TranslatorInterface $translator,
         protected Translated $translatedUtil,
     )
     {

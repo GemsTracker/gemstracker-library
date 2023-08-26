@@ -14,7 +14,7 @@ namespace Gems\Tracker\Field;
 use Gems\Agenda\Agenda;
 use Gems\Agenda\Appointment;
 use Gems\Util\Translated;
-use MUtil\Translate\Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -45,7 +45,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
         int $trackId,
         string $fieldKey,
         array $fieldDefinition,
-        Translator $translator,
+        TranslatorInterface $translator,
         Translated $translatedUtil,
         protected Agenda $agenda,
     ) {

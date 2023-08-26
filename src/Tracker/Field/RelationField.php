@@ -14,7 +14,7 @@ namespace Gems\Tracker\Field;
 use Gems\Db\ResultFetcher;
 use Gems\Util\Translated;
 use Laminas\Db\Sql\Select;
-use MUtil\Translate\Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Phinx\Util\Expression;
 
 /**
@@ -46,7 +46,7 @@ class RelationField extends FieldAbstract
         int $trackId,
         string $fieldKey,
         array $fieldDefinition,
-        Translator $translator,
+        TranslatorInterface $translator,
         Translated $translatedUtil,
         protected readonly ResultFetcher $resultFetcher,
     ) {

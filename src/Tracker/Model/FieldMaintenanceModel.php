@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Event\Application\TrackFieldsListEvent;
 use Gems\Html;
 use Gems\Event\Application\NamedArrayEvent;
 use Gems\Event\Application\TranslatableNamedArrayEvent;
@@ -503,34 +504,39 @@ class FieldMaintenanceModel extends UnionModel
      *
      * @return array of storage name => label
      */
-    public function getFieldTypes()
+    public function getFieldTypes(): array
     {
-        $output = [
-            'activity'          => $this->_('Activity'),
-            'appointment'       => $this->_('Appointment'),
-            'appointmentInfo'   => $this->_('Appointment info'),
-            'boolean'           => $this->_('Boolean'),
-            'caretaker'         => $this->_('Caretaker'),
-            'consent'           => $this->_('Consent'),
-            'date'              => $this->_('Date'),
-            'text'              => $this->_('Free text'),
-            'textarea'          => $this->_('Long free text'),
-            'location'          => $this->_('Location'),
-            'datetime'          => $this->_('Moment in time'),
-            'procedure'         => $this->_('Procedure'),
-            'relatedTracks'     => $this->_('Related tracks'),
-            'relation'          => $this->_('Relation'),
-            'select'            => $this->_('Select one'),
-            'multiselect'       => $this->_('Select multiple'),
-            'track'             => $this->_('Track'),
-        ];
+        static $output;
 
-        $event = new TranslatableNamedArrayEvent($output);
-        $event->setTranslatorAdapter($this->translateAdapter);
-        $this->event->dispatch($event, 'gems.tracker.fieldtypes.get');
-        $output = $event->getList();
+        if (! isset($output)) {
+            $output = [
+                'activity' => $this->_('Activity'),
+                'appointment' => $this->_('Appointment'),
+                'appointmentInfo' => $this->_('Appointment info'),
+                'boolean' => $this->_('Boolean'),
+                'caretaker' => $this->_('Caretaker'),
+                'consent' => $this->_('Consent'),
+                'date' => $this->_('Date'),
+                'text' => $this->_('Free text'),
+                'textarea' => $this->_('Long free text'),
+                'location' => $this->_('Location'),
+                'datetime' => $this->_('Moment in time'),
+                'procedure' => $this->_('Procedure'),
+                'relatedTracks' => $this->_('Related tracks'),
+                'relation' => $this->_('Relation'),
+                'select' => $this->_('Select one'),
+                'multiselect' => $this->_('Select multiple'),
+                'track' => $this->_('Track'),
+            ];
 
-        asort($output);
+            $event = new TrackFieldsListEvent($output);
+            $this->event->dispatch($event, TrackFieldsListEvent::class);
+            $output = $event->getList();
+
+            asort($output);
+
+            dump($output);
+        }
         return $output;
     }
 

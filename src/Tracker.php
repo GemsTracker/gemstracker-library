@@ -1070,9 +1070,11 @@ class Tracker implements TrackerInterface
                 // Process one item at a time to prevent out of memory errors for really big resultsets
                 while ($resultSet->valid()) {
                     $respTrackData = $resultSet->current();
-                    $respTrackId   = $respTrackData['gr2t_id_respondent_track'];
-                    $batch->setTask('Tracker\\RecalculateFields', 'trkfcalc-' . $respTrackId, $respTrackId);
-                    $batch->addToCounter('resptracks');
+                    if ($respTrackData) {
+                        $respTrackId = $respTrackData['gr2t_id_respondent_track'];
+                        $batch->setTask('Tracker\\RecalculateFields', 'trkfcalc-' . $respTrackId, $respTrackId);
+                        $batch->addToCounter('resptracks');
+                    }
                     $resultSet->next();
                 }
             }
