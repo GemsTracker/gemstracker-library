@@ -19,9 +19,6 @@ class EventRegistry
         //Get an array with database config paths
         GetDatabasePaths::NAME => GetDatabasePaths::class,
 
-        // Add a source to the loader
-        LoaderInitEvent::NAME => LoaderInitEvent::class,
-
         // Add or change menu items after creation, but before project settings
         MenuAdd::NAME => MenuAdd::class,
 
@@ -33,11 +30,6 @@ class EventRegistry
 
         // Generic model create event marker, must be implemented per model to work
         'gems.model.create.*' => ModelCreateEvent::class,
-
-        // Get an array of available Track Field Types for the FieldMaintenanceModel
-        'gems.tracker.fieldtypes.get' => TranslatableNamedArrayEvent::class,
-        // Get an array of available Track Field Dependencies for the FieldMaintenanceModel
-        'gems.tracker.fielddependencies.get' => NamedArrayEvent::class,
 
         // Change token or token answers after survey completion. (Track builder event has priority 100)
         'gems.survey.completed' => TokenEvent::class,
