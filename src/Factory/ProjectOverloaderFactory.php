@@ -28,8 +28,6 @@ class ProjectOverloaderFactory implements FactoryInterface
         if (isset($config['overLoaderPaths']) && is_array($config['overLoaderPaths'])) {
             $overloaderPaths = $config['overLoaderPaths'];
         }
-        // if (isset($config['overLoaderPathsExtra']) && is_array($config['overLoaderPathsExtra'])) {
-        dump($overloaderPaths);
 
         $overloader = new $requestedName($container, $overloaderPaths);
         $overloader->setDependencyResolver(new OrderedParamsContainerResolver());

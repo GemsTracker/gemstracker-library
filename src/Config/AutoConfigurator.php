@@ -45,6 +45,7 @@ class AutoConfigurator
                 $fileReflector = new ReflectionClass($className);
                 $this->checkFileForAutoconfiguration($fileReflector);
             } catch (ReflectionException $e) {
+//                file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $e->getMessage() . "\n", FILE_APPEND);
                 //echo $e->getMessage();
             }
         }
