@@ -200,7 +200,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         // Load organizationId and respondentId
         $this->loadParams();
 
-        $model = $this->modelLoader->createAppointmentModel($this->agenda);
+        $model = $this->modelLoader->createAppointmentModel();
 
         if ($detailed) {
             if (('edit' === $action) || ('create' === $action)) {

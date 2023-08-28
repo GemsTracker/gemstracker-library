@@ -11,7 +11,11 @@
 
 namespace Gems\Model\Translator;
 
+use Gems\Agenda\Agenda;
+use Gems\Db\ResultFetcher;
 use Gems\Loader;
+use Gems\Repository\OrganizationRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -25,22 +29,16 @@ use Gems\Loader;
 class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
 {
     /**
-     *
-     * @var \Gems\Agenda\Agenda
-     */
-    protected $_agenda;
-
-    /**
      * Datetime import formats
      *
      * @var array
      */
-    public $datetimeFormats = array(
+    public array $datetimeFormats = [
         'Y-m-d\TH:i:sP',
         'Y-m-d\TH:i:s',
         'Y-m-d H:i:sP',
         'Y-m-d H:i:s',
-        );
+        ];
 
     /**
      * @var string The import source identifier
@@ -52,37 +50,16 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
      *
      * @var string
      */
-    protected $orgIdField = 'gap_id_organization';
+    protected string $orgIdField = 'gap_id_organization';
 
-    /**
-     *
-     * @var Loader
-     */
-    protected $loader;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
+    public function __construct(
+        TranslatorInterface $translator,
+        OrganizationRepository $organizationRepository,
+        ResultFetcher $resultFetcher,
+        protected Agenda $agenda,
+    )
     {
-        parent::afterRegistry();
-
-        $this->_agenda = $this->loader->getAgenda();
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return ($this->loader instanceof \Gems\Loader) &&
-            parent::checkRegistryRequestsAnswers();
+        parent::__construct($translator, $organizationRepository, $resultFetcher);
     }
 
     /**
@@ -91,13 +68,13 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
      * @return array of fields sourceName => targetName
      * @throws \MUtil\Model\ModelException
      */
-    public function getFieldsTranslations()
+    public function getFieldsTranslations(): array
     {
-        $this->_targetModel->setAlias('gas_name_attended_by', 'gap_id_attended_by');
-        $this->_targetModel->setAlias('gas_name_referred_by', 'gap_id_referred_by');
-        $this->_targetModel->setAlias('gaa_name', 'gap_id_activity');
-        $this->_targetModel->setAlias('gapr_name', 'gap_id_procedure');
-        $this->_targetModel->setAlias('glo_name', 'gap_id_location');
+        $this->targetModel->setAlias('gas_name_attended_by', 'gap_id_attended_by');
+        $this->targetModel->setAlias('gas_name_referred_by', 'gap_id_referred_by');
+        $this->targetModel->setAlias('gaa_name', 'gap_id_activity');
+        $this->targetModel->setAlias('gapr_name', 'gap_id_procedure');
+        $this->targetModel->setAlias('glo_name', 'gap_id_location');
 
         return array(
             'gap_patient_nr'      => 'gr2o_patient_nr',
@@ -121,20 +98,15 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
         );
     }
 
-    /**
-     * Prepare for the import.
-     *
-     * @return \MUtil\Model\ModelTranslatorAbstract (continuation pattern)
-     */
-    public function startImport()
+    public function startImport(): AppointmentTranslator
     {
-        if ($this->_targetModel instanceof \MUtil\Model\ModelAbstract) {
+        if ($this->targetModel instanceof \MUtil\Model\ModelAbstract) {
             // No multiOptions as a new items can be created during import
             $fields = array(
                 'gap_id_attended_by', 'gap_id_referred_by', 'gap_id_activity',  'gap_id_procedure', 'gap_id_location',
             );
             foreach ($fields as $name) {
-                $this->_targetModel->del($name, 'multiOptions');
+                $this->targetModel->del($name, 'multiOptions');
             }
         }
 
@@ -167,7 +139,7 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
                         FROM gems__respondent2org
                         WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?';
 
-                $id = $this->db->fetchOne($sql, array($row['gr2o_patient_nr'], $row[$this->orgIdField]));
+                $id = $this->resultFetcher->fetchOne($sql, [$row['gr2o_patient_nr'], $row[$this->orgIdField]]);
 
                 if ($id) {
                     $row['gap_id_user'] = $id;
@@ -193,35 +165,35 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
 
         $skip = false;
         if (isset($row['gas_name_attended_by'])) {
-            $row['gap_id_attended_by'] = $this->_agenda->matchHealthcareStaff(
+            $row['gap_id_attended_by'] = $this->agenda->matchHealthcareStaff(
                     $row['gas_name_attended_by'],
                     $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_attended_by']);
         }
         if (!$skip && isset($row['gas_name_referred_by'])) {
-            $row['gap_id_referred_by'] = $this->_agenda->matchHealthcareStaff(
+            $row['gap_id_referred_by'] = $this->agenda->matchHealthcareStaff(
                     $row['gas_name_referred_by'],
                     $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_referred_by']);
         }
         if (!$skip && isset($row['gaa_name'])) {
-            $row['gap_id_activity'] = $this->_agenda->matchActivity(
+            $row['gap_id_activity'] = $this->agenda->matchActivity(
                     $row['gaa_name'],
                     $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_activity']);
         }
         if (!$skip && isset($row['gapr_name'])) {
-            $row['gap_id_procedure'] = $this->_agenda->matchProcedure(
+            $row['gap_id_procedure'] = $this->agenda->matchProcedure(
                     $row['gapr_name'],
                     $row[$this->orgIdField]
                     );
             $skip = $skip || (false === $row['gap_id_procedure']);
         }
         if (!$skip && isset($row['glo_name'])) {
-            $location = $this->_agenda->matchLocation(
+            $location = $this->agenda->matchLocation(
                     $row['glo_name'],
                     $row[$this->orgIdField]
                     );

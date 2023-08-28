@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Gems\SnippetsActions\Delete;
 
+use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelItemYesNoDeleteSnippet;
+use Gems\SnippetsActions\ContentTitleActionTrait;
 use Zalt\Model\MetaModellerInterface;
 
 /**
@@ -22,10 +24,13 @@ use Zalt\Model\MetaModellerInterface;
  */
 class DeleteAction extends \Zalt\SnippetsActions\Delete\DeleteAction
 {
+    use ContentTitleActionTrait;
+
     /**
      * @var array Of snippet class names
      */
     protected array $_snippets = [
+        ContentTitleSnippet::class,
         ModelItemYesNoDeleteSnippet::class,
     ];
     

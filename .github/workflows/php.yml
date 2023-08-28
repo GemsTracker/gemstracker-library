@@ -68,4 +68,4 @@ jobs:
       run: COMPOSER_ROOT_VERSION=2.x-dev composer install --prefer-dist --no-progress
 
     - name: Run phpstan
-      run: vendor/bin/phpstan
+      run: vendor/bin/phpstan --no-progress

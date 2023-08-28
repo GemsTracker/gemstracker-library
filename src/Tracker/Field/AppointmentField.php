@@ -18,11 +18,12 @@ use Gems\Agenda\Agenda;
 use Gems\Agenda\Appointment;
 use Gems\Date\Period;
 use Gems\Menu\RouteHelper;
+use Gems\Model;
 use Gems\Tracker;
 use Gems\Util\Translated;
-use MUtil\Model;
-use MUtil\Translate\Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Html\Html;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -86,7 +87,7 @@ class AppointmentField extends FieldAbstract
         int $trackId,
         string $fieldKey,
         array $fieldDefinition,
-        Translator $translator,
+        TranslatorInterface $translator,
         Translated $translatedUtil,
         protected readonly Agenda $agenda,
         protected readonly RouteHelper $routeHelper,
@@ -322,9 +323,9 @@ class AppointmentField extends FieldAbstract
         }
         if ($appointment instanceof Appointment) {
             $url = $this->routeHelper->getRouteUrl('respondent.appointments.show', [
-                Model::REQUEST_ID1 => $appointment->getPatientNumber(),
-                Model::REQUEST_ID2 => $appointment->getOrganizationId(),
-                \Gems\Model::APPOINTMENT_ID => $appointment->getId(),
+                MetaModelInterface::REQUEST_ID1 => $appointment->getPatientNumber(),
+                MetaModelInterface::REQUEST_ID2 => $appointment->getOrganizationId(),
+                Model::APPOINTMENT_ID => $appointment->getId(),
             ]);
 
             if ($url) {

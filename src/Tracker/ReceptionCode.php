@@ -2,13 +2,15 @@
 
 namespace Gems\Tracker;
 
-use Gems\ReceptionCode\ReceptionCodeType;
-
 class ReceptionCode
 {
+    const TYPE_RESPONDENT = 1 << 0;
+    const TYPE_SURVEY = 1 << 1;
+    const TYPE_TRACK = 1 << 2;
+
     public function __construct(
         private readonly string $code,
-        private readonly array $types,
+        private readonly int $types,
         private readonly bool $success,
         private readonly ?string $description = null,
         private readonly bool $redoSurvey = false,
@@ -56,17 +58,17 @@ class ReceptionCode
 
     public function isForRespondents(): bool
     {
-        return in_array(ReceptionCodeType::RESPONDENT, $this->types);
+        return $this->types & self::TYPE_RESPONDENT;
     }
 
     public function isForSurveys(): bool
     {
-        return in_array(ReceptionCodeType::SURVEY, $this->types);
+        return $this->types & self::TYPE_SURVEY;
     }
 
     public function isForTracks(): bool
     {
-        return in_array(ReceptionCodeType::TRACK, $this->types);
+        return $this->types & self::TYPE_TRACK;
     }
 
     public function isOverwriter(): bool

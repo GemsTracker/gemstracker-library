@@ -124,7 +124,7 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
     {
         $respondent = $this->getRespondent();
 
-        $model = $this->modelLoader->createEpisodeOfCareModel($this->agenda);
+        $model = $this->modelLoader->createEpisodeOfCareModel();
 
         if ($detailed) {
             if (('edit' === $action) || ('create' === $action)) {

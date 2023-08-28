@@ -36,6 +36,8 @@ trait TopicCallableTrait
     {
         if (is_callable($this->topicCallable)) {
             return call_user_func($this->topicCallable, $count);
+        } elseif (property_exists($this, 'subjects')) {
+            return $this->plural($this->subjects[0], $this->subjects[1], $count);
         } else {
             return $this->plural('item', 'items', $count);
         }

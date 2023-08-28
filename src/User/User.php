@@ -1823,14 +1823,14 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function getPasswordCheckerCodes(): array
     {
-        $codes = [];
+        $codes = ['default'];
         $codes[] = $this->getCurrentOrganization()->getCode();
         $codes[] = $this->getRoles();
         $codes[] = $this->_getVar('__user_definition');
         if ($this->isStaff()) {
             $codes[] = 'staff';
         }
-        return \MUtil\Ra::flatten($codes);
+        return array_values(array_filter(\MUtil\Ra::flatten($codes)));
     }
 
     /**

@@ -11,6 +11,10 @@
 
 namespace Gems\Model\Translator;
 
+use Gems\Db\ResultFetcher;
+use Gems\Repository\OrganizationRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 /**
  * Make sure a \Gems\Form is used for validation
  *
@@ -20,72 +24,30 @@ namespace Gems\Model\Translator;
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class StraightTranslator extends \MUtil\Model\Translator\StraightTranslator
+class StraightTranslator extends \Zalt\Model\Translator\StraightTranslator
 {
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
     /**
      * The name of the field to store the organization id in
      *
      * @var string
      */
-    protected $orgIdField = 'gr2o_id_organization';
+    protected string $orgIdField = 'gr2o_id_organization';
 
     /**
      * Extra values the origanization id field accepts
-     *
-     *
-     * @var array
+     * @var array Value indentifying org => org id
      */
-    protected $orgTranslations;
+    protected array $organizationTranslations;
 
-    /**
-     * Create an empty form for filtering and validation
-     *
-     * @return \MUtil\Form
-     */
-    protected function _createTargetForm()
+    public function __construct(
+        TranslatorInterface $translator,
+        protected OrganizationRepository $organizationRepository,
+        protected ResultFetcher $resultFetcher,
+    )
     {
-        return new \Gems\Form();
-    }
+        parent::__construct($translator);
 
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->orgTranslations = $this->db->fetchPairs('
-            SELECT gor_provider_id, gor_id_organization
-                FROM gems__organizations
-                WHERE gor_provider_id IS NOT NULL
-                ORDER BY gor_provider_id');
-
-        $this->orgTranslations = $this->orgTranslations + $this->db->fetchPairs('
-            SELECT gor_code, gor_id_organization
-                FROM gems__organizations
-                WHERE gor_code IS NOT NULL
-                ORDER BY gor_id_organization');
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return ($this->db instanceof \Zend_Db_Adapter_Abstract) &&
-            parent::checkRegistryRequestsAnswers();
+        $this->organizationTranslations = $this->organizationRepository->getOrganizationsImportTranslations();
     }
 
     /**
@@ -104,8 +66,8 @@ class StraightTranslator extends \MUtil\Model\Translator\StraightTranslator
         }
 
         // Get the real organization from the provider_id or code if it exists
-        if (isset($row[$this->orgIdField], $this->orgTranslations[$row[$this->orgIdField]])) {
-            $row[$this->orgIdField] = $this->orgTranslations[$row[$this->orgIdField]];
+        if (isset($row[$this->orgIdField], $this->organizationTranslations[$row[$this->orgIdField]])) {
+            $row[$this->orgIdField] = $this->organizationTranslations[$row[$this->orgIdField]];
         }
 
         return $row;

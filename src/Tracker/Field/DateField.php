@@ -14,11 +14,10 @@ namespace Gems\Tracker\Field;
 use DateTimeInterface;
 use DateTimeImmutable;
 use Gems\Agenda\Agenda;
-use Gems\Tracker;
 use Gems\Util\Translated;
 use Laminas\Db\Sql\Expression;
 use MUtil\Model;
-use MUtil\Translate\Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Type\AbstractDateType;
 
 /**
@@ -61,7 +60,7 @@ class DateField extends FieldAbstract
         int $trackId,
         string $fieldKey,
         array $fieldDefinition,
-        Translator $translator,
+        TranslatorInterface $translator,
         Translated $translatedUtil,
         protected readonly Agenda $agenda,
     ) {

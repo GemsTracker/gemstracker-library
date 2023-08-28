@@ -132,6 +132,30 @@ class OrganizationRepository
         return static::getNotOrganizationArray();
     }
 
+    public function getOrganizationsImportTranslations()
+    {
+        $result = $this->utilDbHelper->getSelectPairsCached(
+        __FUNCTION__ . '_1',
+            "SELECT gor_provider_id, gor_id_organization
+                FROM gems__organizations
+                WHERE gor_provider_id IS NOT NULL",
+            null,
+            ['organizations'],
+        );
+        $result += $this->utilDbHelper->getSelectPairsCached(
+            __FUNCTION__ . '_1',
+            "SELECT gor_code, gor_id_organization
+                FROM gems__organizations
+                WHERE gor_code IS NOT NULL",
+            null,
+            ['organizations'],
+        );
+        if ($result) {
+            return $result;
+        }
+        return static::getNotOrganizationArray();
+    }
+
     public function getOrganizationsPerSite()
     {
         $select = $this->cachedResultFetcher->getSelect();

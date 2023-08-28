@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\TrackEvent\Survey\Display;
 
+use ArrayObject;
 use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -32,11 +33,11 @@ class OnlyAnswered extends SurveyAnswerFilterAbstract
      *
      * Empty is NULL or empty string, values of 0 are NOT empty unless they are a checkbox
      *
-     * @param array $inputArray
+     * @param ArrayObject $inputArray
      * @param DataReaderInterface $model
-     * @return boolean
+     * @return booleangetRows
      */
-    public function array_filter(array $inputArray, DataReaderInterface $model): array
+    public function array_filter(ArrayObject $inputArray, DataReaderInterface $model): array
     {
         $outputArray = array();
         foreach ($inputArray as $key => $value) {

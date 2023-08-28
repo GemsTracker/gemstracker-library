@@ -72,7 +72,7 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstr
     protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {
-            $this->model = $this->modelLoader->createAppointmentModel($this->agenda);
+            $this->model = $this->modelLoader->createAppointmentModel();
             $this->model->applyDetailSettings();
         }
         $metaModel = $this->model->getMetaModel();

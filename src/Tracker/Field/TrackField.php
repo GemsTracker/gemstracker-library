@@ -9,7 +9,7 @@ use Gems\Tracker;
 use Gems\Tracker\RespondentTrack;
 use Gems\Util\Translated;
 use DateTimeInterface;
-use MUtil\Translate\Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TrackField extends FieldAbstract
 {
@@ -36,7 +36,7 @@ class TrackField extends FieldAbstract
         int $trackId,
         string $fieldKey,
         array $fieldDefinition,
-        Translator $translator,
+        TranslatorInterface $translator,
         Translated $translatedUtil,
         protected readonly Tracker $tracker,
         protected readonly RouteHelper $routeHelper,

@@ -13,7 +13,8 @@ namespace Gems\Tracker\Field;
 
 use Gems\Repository\ConsentRepository;
 use Gems\Util\Translated;
-use MUtil\Translate\Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 
 /**
  *
@@ -30,7 +31,7 @@ class ConsentField extends FieldAbstract
         int $trackId,
         string $fieldKey,
         array $fieldDefinition,
-        Translator $translator,
+        TranslatorInterface $translator,
         Translated $translatedUtil,
         protected readonly ConsentRepository $consentRepository,
     ) {

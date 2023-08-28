@@ -229,7 +229,7 @@ abstract class AnswerTranslatorAbstract extends \Gems\Model\ModelTranslatorAbstr
      * @return array of fields sourceName => targetName
      * @throws \MUtil\Model\ModelException
      */
-    public function getFieldsTranslations()
+    public function getFieldsTranslations(): array
     {
         $this->_targetModel->set('completion_date', 'label', $this->_('Completion date'),
                 'order', 9,

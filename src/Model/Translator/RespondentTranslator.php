@@ -11,6 +11,10 @@
 
 namespace Gems\Model\Translator;
 
+use Gems\Repository\OrganizationRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataWriterInterface;
+
 /**
  *
  *
@@ -23,11 +27,6 @@ namespace Gems\Model\Translator;
 class RespondentTranslator extends \Gems\Model\Translator\StraightTranslator
 {
     /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
      * The task used for import
      *
      * @var string
@@ -35,30 +34,20 @@ class RespondentTranslator extends \Gems\Model\Translator\StraightTranslator
     protected $saveTask = 'Import\\SaveRespondentTask';
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return ($this->db instanceof \Zend_Db_Adapter_Abstract) && parent::checkRegistryRequestsAnswers();
-    }
-
-    /**
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
      * @throws \MUtil\Model\ModelException
      */
-    public function getFieldsTranslations()
+    public function getFieldsTranslations(): array
     {
         $fieldList = parent::getFieldsTranslations();
 
-        // Add the key values (so organization id is present)
-        $keys = array_combine(array_values($this->_targetModel->getKeys()), array_values($this->_targetModel->getKeys()));
-        $fieldList = $fieldList + $keys;
+        $metaModel = $this->targetModel->getMetaModel();
 
+        // Add the key values (so organization id is present)
+        $keys = array_values($metaModel->getKeys());
+        $fieldList = $fieldList + array_combine($keys, $keys);
         $fieldList['grs_email'] = 'gr2o_email';
 
         return $fieldList;
@@ -67,12 +56,15 @@ class RespondentTranslator extends \Gems\Model\Translator\StraightTranslator
     /**
      * Prepare for the import.
      *
-     * @return \MUtil\Model\ModelTranslatorAbstract (continuation pattern)
+     * @return RespondentTranslator (continuation pattern)
      */
-    public function startImport()
+    public function startImport(): RespondentTranslator
     {
-        if ($this->_targetModel instanceof \MUtil\Model\ModelAbstract) {
-            $this->_targetModel->set('grs_gender', 'extraValueKeys', array('V' => 'F'));
+        if ($this->targetModel instanceof DataWriterInterface) {
+            $metaModel = $this->targetModel->getMetaModel();
+            $options = $metaModel->get('grs_gender', 'multiOptions');
+            $options['F'] = 'V'; // Make sure the value V is accepted
+            $metaModel->set('grs_gender', 'multiOptions', $options);
         }
 
         return parent::startImport();
@@ -94,11 +86,11 @@ class RespondentTranslator extends \Gems\Model\Translator\StraightTranslator
         }
 
         if ((! isset($row['grs_id_user'])) && isset($row['gr2o_patient_nr'], $row['gr2o_id_organization'])) {
-            $sql = 'SELECT gr2o_id_user
+            $sql = "SELECT gr2o_id_user
                     FROM gems__respondent2org
-                    WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?';
+                    WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?";
 
-            $id = $this->db->fetchOne($sql, array($row['gr2o_patient_nr'], $row['gr2o_id_organization']));
+            $id = $this->resultFetcher->fetchOne($sql, [$row['gr2o_patient_nr'], $row['gr2o_id_organization']]);
 
             if ($id) {
                 $row['grs_id_user']  = $id;
@@ -109,7 +101,6 @@ class RespondentTranslator extends \Gems\Model\Translator\StraightTranslator
         if (empty($row['gr2o_email'])) {
             $row['calc_email'] = 1;
         }
-        // \MUtil\EchoOut\EchoOut::track($row);
 
         return $row;
     }

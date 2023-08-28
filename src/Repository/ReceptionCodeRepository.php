@@ -5,7 +5,6 @@ namespace Gems\Repository;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\Exception;
-use Gems\ReceptionCode\ReceptionCodeType;
 use Gems\Tracker\ReceptionCode;
 use MUtil\Translate\Translator;
 
@@ -18,6 +17,14 @@ class ReceptionCodeRepository
     public const ACTIVE_FIELD = 'grc_active';
     public const REDO_FIELD = 'grc_redo_survey';
     public const SUCCESS_FIELD = 'grc_success';
+    public const RESPONDENT_TYPE_FIELD = 'grc_for_respondents';
+    public const SURVEY_TYPE_FIELD = 'grc_for_surveys';
+    public const TRACK_TYPE_FIELD = 'grc_for_tracks';
+    public const TYPES = [
+        'grc_for_respondents' => ReceptionCode::TYPE_RESPONDENT,
+        'grc_for_surveys' => ReceptionCode::TYPE_SURVEY,
+        'grc_for_tracks' => ReceptionCode::TYPE_TRACK,
+    ];
 
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
@@ -34,11 +41,11 @@ class ReceptionCodeRepository
     {
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
-        $filteredCode = array_filter($allReceptionCodes, function ($row) {
-            return $row[ReceptionCodeType::SURVEY->getDatabaseField()] != 0 && $row[self::SUCCESS_FIELD] == 0;
+        $filteredCodes = array_filter($allReceptionCodes, function ($row) {
+            return $row[self::SURVEY_TYPE_FIELD] != 0 && $row[self::SUCCESS_FIELD] == 0;
         });
 
-        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
+        return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');
     }
 
     protected function getReceptionCodeFromData(array $data): ReceptionCode
@@ -50,7 +57,7 @@ class ReceptionCodeRepository
 
         return new ReceptionCode(
             $data['grc_id_reception_code'],
-            ReceptionCodeType::createFromData($data),
+            $this->deduceReceptionCodeTypesFromData($data),
             (bool)$data['grc_success'],
             $description,
             (bool)$data['grc_redo_survey'],
@@ -58,6 +65,29 @@ class ReceptionCodeRepository
             $data['grc_for_surveys'] === 2,
             (bool)$data['grc_overwrite_answers'],
         );
+    }
+
+    /**
+     * Construct a bitmask value that describes all the types that this
+     * reception code can be used for.
+     *
+     * @param array $data Database row
+     * @return integer
+     */
+    private function deduceReceptionCodeTypesFromData(array $data): int
+    {
+        $types = 0;
+        foreach (self::TYPES as $property => $typeValue) {
+            if (!isset($data[$property])) {
+                continue;
+            }
+            if ($data[$property] <= 0) {
+                continue;
+            }
+            $types = $types | $typeValue;
+        }
+
+        return $types;
     }
 
     /**
@@ -110,11 +140,11 @@ class ReceptionCodeRepository
     {
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
-        $filteredCode = array_filter($allReceptionCodes, function ($row) {
-            return $row[ReceptionCodeType::RESPONDENT->getDatabaseField()] != 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
+        $filteredCodes = array_filter($allReceptionCodes, function ($row) {
+            return $row[self::RESPONDENT_TYPE_FIELD] != 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
         });
 
-        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
+        return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');
     }
 
     /**
@@ -126,19 +156,19 @@ class ReceptionCodeRepository
     {
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
-        $filteredCode = array_filter($allReceptionCodes, function ($row) {
-            return $row[ReceptionCodeType::RESPONDENT->getDatabaseField()] != 0 && $row[self::SUCCESS_FIELD] == 1;
+        $filteredCodes = array_filter($allReceptionCodes, function ($row) {
+            return $row[self::RESPONDENT_TYPE_FIELD] != 0 && $row[self::SUCCESS_FIELD] == 1;
         });
 
-        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
+        return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');
     }
 
-    public function getSuccessCodesFor(ReceptionCodeType $type): array
+    public function getSuccessCodesFor(string $field): array
     {
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
-        $successCodes = array_filter($allReceptionCodes, function ($row) use ($type) {
-            return $row[$type->getDatabaseField()] != 0 && $row[self::SUCCESS_FIELD] == 1;
+        $successCodes = array_filter($allReceptionCodes, function ($row) use ($field) {
+            return $row[$field] != 0 && $row[self::SUCCESS_FIELD] == 1;
         });
 
         return array_column($successCodes, 'grc_description', 'grc_id_reception_code');
@@ -146,17 +176,17 @@ class ReceptionCodeRepository
 
     public function getSuccessCodesForRespondent(): array
     {
-        return $this->getSuccessCodesFor(ReceptionCodeType::RESPONDENT);
+        return $this->getSuccessCodesFor(self::RESPONDENT_TYPE_FIELD);
     }
 
     public function getSuccessCodesForSurvey(): array
     {
-        return $this->getSuccessCodesFor(ReceptionCodeType::SURVEY);
+        return $this->getSuccessCodesFor(self::SURVEY_TYPE_FIELD);
     }
 
     public function getSuccessCodesForTrack(): array
     {
-        return $this->getSuccessCodesFor(ReceptionCodeType::TRACK);
+        return $this->getSuccessCodesFor(self::TRACK_TYPE_FIELD);
     }
 
     /**
@@ -169,7 +199,7 @@ class ReceptionCodeRepository
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
         $successCodes = array_filter($allReceptionCodes, function ($row) {
-            return $row[self::SUCCESS_FIELD] == 0 && ($row[ReceptionCodeType::TRACK->getDatabaseField()] == 1 || ReceptionCodeType::RESPONDENT->getDatabaseField() == 2);
+            return $row[self::SUCCESS_FIELD] == 0 && ($row[self::TRACK_TYPE_FIELD] == 1 || $row[self::RESPONDENT_TYPE_FIELD] == 2);
         });
 
         return array_column($successCodes, 'grc_description', 'grc_id_reception_code');
@@ -185,7 +215,7 @@ class ReceptionCodeRepository
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
         $successCodes = array_filter($allReceptionCodes, function ($row) {
-            return $row[self::SUCCESS_FIELD] == 1 && ($row[ReceptionCodeType::TRACK->getDatabaseField()] == 1 || ReceptionCodeType::RESPONDENT->getDatabaseField() == 2);
+            return $row[self::SUCCESS_FIELD] == 1 && ($row[self::TRACK_TYPE_FIELD] == 1 || $row[self::RESPONDENT_TYPE_FIELD] == 2);
         });
 
         return array_column($successCodes, 'grc_description', 'grc_id_reception_code');
@@ -200,10 +230,10 @@ class ReceptionCodeRepository
     {
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
-        $filteredCode = array_filter($allReceptionCodes, function ($row) {
-            return $row[ReceptionCodeType::SURVEY->getDatabaseField()] == 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
+        $filteredCodes = array_filter($allReceptionCodes, function ($row) {
+            return $row[self::SURVEY_TYPE_FIELD] == 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
         });
 
-        return array_column($filteredCode, 'grc_description', 'grc_id_reception_code');
+        return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');
     }
 }

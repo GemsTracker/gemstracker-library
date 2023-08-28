@@ -5,7 +5,8 @@ namespace Gems\Tracker\Field;
 use Gems\Agenda\Agenda;
 use Gems\Repository\AppointmentInfoTypesRepository;
 use Gems\Util\Translated;
-use MUtil\Translate\Translator;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 
 class AppointmentInfoField extends FieldAbstract
 {
@@ -14,7 +15,7 @@ class AppointmentInfoField extends FieldAbstract
         int $trackId,
         string $fieldKey,
         array $fieldDefinition,
-        Translator $translator,
+        TranslatorInterface $translator,
         Translated $translatedUtil,
         protected readonly Agenda $agenda,
         protected readonly AppointmentInfoTypesRepository $appointmentInfoTypesRepository,

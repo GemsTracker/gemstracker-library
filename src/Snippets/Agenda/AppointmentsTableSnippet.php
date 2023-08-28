@@ -11,9 +11,8 @@
 
 namespace Gems\Snippets\Agenda;
 
-use Gems\Agenda\Agenda;
-use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\AppointmentModel;
@@ -104,7 +103,6 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
-        protected Agenda $agenda,
         protected Model $modelLoader,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
@@ -198,7 +196,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         if ($this->model instanceof AppointmentModel) {
             $model = $this->model;
         } else {
-            $model = $this->modelLoader->createAppointmentModel($this->agenda);
+            $model = $this->modelLoader->createAppointmentModel();
             $model->applyBrowseSettings();
         }
 

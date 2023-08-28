@@ -1461,7 +1461,7 @@ class Token
      * @param int $userId The id of the gems user
      * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
-    public function getUrl(string $language, int $userId, string $returnUrl): string
+    public function getUrl(string $language, int $userId, ?string $returnUrl = null): string
     {
         $survey = $this->getSurvey();
 
@@ -1974,7 +1974,7 @@ class Token
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */
-    public function setReceptionCode(ReceptionCode|string $code, string $comment, int $userId): int
+    public function setReceptionCode(ReceptionCode|string $code, string|bool|null $comment, int $userId): int
     {
         // Make sure it is a ReceptionCode object
         if (! $code instanceof ReceptionCode) {

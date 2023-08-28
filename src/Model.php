@@ -204,24 +204,20 @@ class Model
      *
      * @return AppointmentModel
      */
-    public function createAppointmentModel(Agenda $agenda): AppointmentModel
+    public function createAppointmentModel(): AppointmentModel
     {
-        /**
-         * @var AppointmentModel
-         */
+        $agenda = $this->overloader->getContainer()->get(Agenda::class);
         return $this->_createModel('AppointmentModel', $agenda);
     }
 
     /**
      * Load project specific application model or general \Gems model otherwise
      *
-     * @return EpisodeOfCareModel
+     * @return ?EpisodeOfCareModel
      */
-    public function createEpisodeOfCareModel(Agenda $agenda): EpisodeOfCareModel
+    public function createEpisodeOfCareModel(): EpisodeOfCareModel
     {
-        /**
-         * @var EpisodeOfCareModel
-         */
+        $agenda = $this->overloader->getContainer()->get(Agenda::class);
         return $this->_createModel('EpisodeOfCareModel', $agenda);
     }
 

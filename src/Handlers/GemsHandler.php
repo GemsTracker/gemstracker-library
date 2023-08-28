@@ -15,10 +15,11 @@ use DateTimeInterface;
 use Gems\Html;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Delete\DeleteAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
-use Gems\Task\TaskRunnerBatch;
+use Gems\SnippetsActions\Show\ShowAction;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -237,6 +238,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
         if ($action instanceof BrowseTableAction) {
             $path = $this->requestInfo->getBasePath();
             $action->dynamicSort = $this->getDynamicSortFor($action->sortParamDesc, $action->sortParamAsc);
+            $action->onEmpty     = sprintf($this->_('No %s found!'), $this->getTopic());
             $action->pageItems   = $this->getPageItems();
             $action->pageNumber  = $this->getPageNumber();
 
@@ -244,24 +246,32 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                 $useRequest = $this->requestInfo->isPost() && ! $action instanceof ExportAction;
                 $action->searchFilter = $this->getSearchFilter($useRequest);
 
+
                 if ($action instanceof BrowseSearchAction) {
+                    $action->contentTitle = ucfirst($this->getTopic(2));
                     $action->searchData = $this->getSearchData($useRequest);
                 }
             }
-        }
-        if ($action instanceof CreateAction) {
+
+        } elseif ($action instanceof CreateAction) {
             $action->class = "formTable";
             $action->addCurrentParent = true;
             $action->addCurrentChildren = false;
+            $action->subjects = [$this->getTopic(1), $this->getTopic(2)];
 
             if ($action instanceof EditAction) {
                 $action->addCurrentSiblings = true;
             } else {
                 $action->addCurrentSiblings = false;
             }
-        }
-        if ($action instanceof ExportAction) {
-            // $this->exportAction->batch = new TaskRunnerBatch('export_data_' . $this->getModel()->getName(), $this->overLoader, $this->getSession());
+
+        } elseif ($action instanceof ShowAction) {
+            $action->contentTitle = sprintf($this->_('Showing %s'), $this->getTopic(1));
+
+        } elseif ($action instanceof DeleteAction) {
+            $action->contentTitle = sprintf($this->_('Delete %s'), $this->getTopic(1));
+
+        } elseif ($action instanceof ExportAction) {
             $step = $this->requestInfo->getParam('step');
             if ($step) {
                 if (ExportAction::STEP_RESET !== $step) {

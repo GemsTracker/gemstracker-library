@@ -33,14 +33,16 @@ class InfoFilterRepository
         $filterDataList = $this->cachedResultFetcher->fetchAll('allAppointmentInfoFilters', $sql, null, $this->cacheTags);
 
         $filters = [];
-        foreach($filterDataList as $filterData) {
-            $appointmentFilter = $this->filterRepository->getFilterFromData($filterData);
-            $filters[] = new LinkFilterContainer(
-                $appointmentFilter,
-                $filterData['gai_id'],
-                $filterData['gai_field_key'],
-                $filterData['gai_field_value'],
-            );
+        if ($filterDataList) {
+            foreach ($filterDataList as $filterData) {
+                $appointmentFilter = $this->filterRepository->getFilterFromData($filterData);
+                $filters[] = new LinkFilterContainer(
+                    $appointmentFilter,
+                    $filterData['gai_id'],
+                    $filterData['gai_field_key'],
+                    $filterData['gai_field_value'],
+                );
+            }
         }
 
         return $filters;
