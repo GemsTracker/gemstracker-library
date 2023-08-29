@@ -106,6 +106,7 @@ use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Sql\Laminas\LaminasRunner;
 use Zalt\Model\Sql\Laminas\LaminasRunnerFactory;
 use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\Model\Type\SubModelType;
 use Zalt\SnippetsLoader\SnippetLoader;
 use Zalt\SnippetsLoader\SnippetLoaderFactory;
 use Zalt\SnippetsLoader\SnippetMiddleware;
@@ -148,6 +149,7 @@ class ConfigProvider
             'model'         => $this->getModelSettings(),
             'monitor'       => $this->getMonitorSettings(),
             'migrations'    => $this->getMigrations(),
+            'overLoaderPaths' => $this->getOverloaderPaths(),
             'password'      => $this->getPasswordSettings(),
             'supplementary_privileges'   => $this->getSupplementaryPrivileges(),
             'routes'        => $routeSettings(),
@@ -583,6 +585,7 @@ class ConfigProvider
         $settings = MetaModelConfigProvider::getConfig();
         $settings['bridges']['form'] = GemsFormBridge::class;
         $settings['modelTypes'] = [
+            MetaModelInterface::TYPE_CHILD_MODEL => SubModelType::class,
             MetaModelInterface::TYPE_DATE => GemsDateType::class,
             MetaModelInterface::TYPE_DATETIME => GemsDateTimeType::class,
             MetaModelInterface::TYPE_TIME => GemsTimeType::class,
@@ -623,6 +626,11 @@ class ConfigProvider
                 'to' => null,
             ],
         ];
+    }
+
+    protected function getOverloaderPaths()
+    {
+        return ['Gems', 'MUtil'];
     }
 
     protected function getPasswordSettings(): array
