@@ -258,7 +258,7 @@ class ConfigProvider
     }
 
     /**
-     * @return boolean[]|string[]
+     * @return boolean[]|string[]|array[]
      */
     public function getDbSettings(): array
     {
@@ -268,6 +268,10 @@ class ConfigProvider
             'username'  => getenv('DB_USER') ?? null,
             'password'  => getenv('DB_PASS') ?? null,
             'database'  => getenv('DB_NAME') ?? null,
+            'options'   => getenv('DB_USE_SSL') ? [
+                \PDO::MYSQL_ATTR_SSL_CA => '/etc/ssl/certs/ca-certificates.crt',
+                \PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+            ] : [],
         ];
     }
 
