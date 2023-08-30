@@ -2,11 +2,12 @@
 
 namespace Gems\Repository;
 
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 class AppointmentInfoTypesRepository
 {
-    public function __construct(protected readonly Translator $translator)
+    public function __construct(
+        protected readonly TranslatorInterface $translator)
     {}
 
     public function getInfoTypeOptions(): array
