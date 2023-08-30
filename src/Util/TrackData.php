@@ -375,7 +375,7 @@ class TrackData extends UtilAbstract
     /**
      * Get all the surveys for a certain organization id
      *
-     * @param int $organizationId
+     * @param int|null $organizationId
      * @return array survey id => survey name
      */
     public function getSurveysFor($organizationId)
