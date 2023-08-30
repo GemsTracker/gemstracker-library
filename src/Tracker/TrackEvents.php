@@ -82,6 +82,7 @@ class TrackEvents
                 $eventList[$eventClassName] = $trackEvent->getEventName() . " ({$eventClassName})";
             }
         }
+        asort($eventList);
 
         $this->cache->setCacheItem($key, $eventList);
 

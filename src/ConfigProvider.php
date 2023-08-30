@@ -23,6 +23,8 @@ use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Error\ErrorLogEventListenerDelegatorFactory;
+use Gems\Event\Application\TrackFieldDependencyListEvent;
+use Gems\Event\Application\TrackFieldsListEvent;
 use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Factory\EventDispatcherFactory;
@@ -104,6 +106,7 @@ use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Sql\Laminas\LaminasRunner;
 use Zalt\Model\Sql\Laminas\LaminasRunnerFactory;
 use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\Model\Type\SubModelType;
 use Zalt\SnippetsLoader\SnippetLoader;
 use Zalt\SnippetsLoader\SnippetLoaderFactory;
 use Zalt\SnippetsLoader\SnippetMiddleware;
@@ -146,6 +149,7 @@ class ConfigProvider
             'model'         => $this->getModelSettings(),
             'monitor'       => $this->getMonitorSettings(),
             'migrations'    => $this->getMigrations(),
+            'overLoaderPaths' => $this->getOverloaderPaths(),
             'password'      => $this->getPasswordSettings(),
             'supplementary_privileges'   => $this->getSupplementaryPrivileges(),
             'routes'        => $routeSettings(),
@@ -187,22 +191,22 @@ class ConfigProvider
         return [
             'settings' => [
                 'implements' => [
-                    RoundConditionInterface::class => ['config' => 'tracker.conditions.round'],
-                    TrackConditionInterface::class => ['config' => 'tracker.conditions.track'],
+                    DeferredUserLoaderInterface::class => ['config' => 'embed.deferredUserLoader'],
+                    EmbeddedAuthInterface::class => ['config' => 'embed.auth'],
+                    EventSubscriberInterface::class => ['config' => 'events.subscribers'],
                     ExtensionInterface::class => ['config' => 'twig.extensions'],
+                    RedirectInterface::class => ['config' => 'embed.redirect'],
                     RespondentChangedEventInterface::class => ['config' => 'tracker.trackEvents.Respondent/Change'],
+                    RoundChangedEventInterface::class => ['config' => 'tracker.trackEvents.Round/Changed'],
+                    RoundConditionInterface::class => ['config' => 'tracker.conditions.round'],
                     TrackCalculationEventInterface::class => ['config' => 'tracker.trackEvents.Track/Calculate'],
                     TrackCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Track/Completed'],
                     TrackBeforeFieldUpdateEventInterface::class => ['config' => 'tracker.trackEvents.Track/BeforeFieldUpdate'],
                     TrackFieldUpdateEventInterface::class => ['config' => 'tracker.trackEvents.Track/FieldUpdate'],
-                    RoundChangedEventInterface::class => ['config' => 'tracker.trackEvents.Round/Changed'],
+                    TrackConditionInterface::class => ['config' => 'tracker.conditions.track'],
                     SurveyBeforeAnsweringEventInterface::class => ['config' => 'tracker.trackEvents.Survey/BeforeAnswering'],
                     SurveyCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Completed'],
                     SurveyDisplayEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Display'],
-                    EventSubscriberInterface::class => ['config' => 'events.subscribers'],
-                    EmbeddedAuthInterface::class => ['config' => 'embed.auth'],
-                    DeferredUserLoaderInterface::class => ['config' => 'embed.deferredUserLoader'],
-                    RedirectInterface::class => ['config' => 'embed.redirect'],
                 ],
                 'extends' => [
                     ComparatorAbstract::class => ['config' => 'tracker.conditions.comparators'],
@@ -581,6 +585,7 @@ class ConfigProvider
         $settings = MetaModelConfigProvider::getConfig();
         $settings['bridges']['form'] = GemsFormBridge::class;
         $settings['modelTypes'] = [
+            MetaModelInterface::TYPE_CHILD_MODEL => SubModelType::class,
             MetaModelInterface::TYPE_DATE => GemsDateType::class,
             MetaModelInterface::TYPE_DATETIME => GemsDateTimeType::class,
             MetaModelInterface::TYPE_TIME => GemsTimeType::class,
@@ -621,6 +626,11 @@ class ConfigProvider
                 'to' => null,
             ],
         ];
+    }
+
+    protected function getOverloaderPaths()
+    {
+        return ['Gems', 'MUtil'];
     }
 
     protected function getPasswordSettings(): array
