@@ -10,7 +10,7 @@ use Gems\User\User;
 use Laminas\Db\Sql\Predicate\Expression;
 use Mezzio\Router\Exception\RuntimeException;
 use MUtil\Model;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\AElement;
 use Zalt\Html\HtmlElement;
 use Zalt\Late\Late;
@@ -24,7 +24,7 @@ class TokenRepository
 
     public function __construct(
         protected Tracker $tracker,
-        protected Translator $translator, 
+        protected TranslatorInterface $translator,
         CurrentUserRepository $currentUserRepository)
     {
         $this->currentUser = $currentUserRepository->getCurrentUser();

@@ -12,14 +12,15 @@ namespace Gems\Handlers\Project;
 
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Model;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\Survey\SurveyQuestionsSnippet;
-use Gems\Util\Translated;
-use MUtil\Model\ModelAbstract;
+use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Show\ShowAction;
+use Gems\Tracker\Model\SurveyMaintenanceModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -87,7 +88,7 @@ class ProjectSurveysHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
         SnippetResponderInterface $responder, 
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
-        protected Model $modelLoader,
+        protected readonly SurveyMaintenanceModel $surveyMaintenanceModel,
     )
     {
         parent::__construct($responder, $translate);
@@ -106,20 +107,24 @@ class ProjectSurveysHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action): ModelAbstract
+    protected function createModel($detailed, $action): DataReaderInterface
     {
-        $model = $this->modelLoader->getSurveyMaintenanceModel();
         if ($detailed) {
-            $model->applyDetailSettings($this->_getIdParam());
-            
-            $model->setCol(
+            $actionClass = new ShowAction();
+        } else {
+            $actionClass = new BrowseSearchAction();
+        }
+        $this->surveyMaintenanceModel->applyAction($actionClass);
+
+        $model = $this->surveyMaintenanceModel;
+        if ($detailed) {
+            $model->getMetaModel()->setCol(
                 ['gsu_surveyor_id', 'gsu_surveyor_active', 'gsu_survey_pdf', 'gsu_beforeanswering_event', 
                     'gsu_completed_event', 'gsu_display_event', 'gsu_id_source', 'gsu_active', 'gsu_status', 
                     'gsu_survey_warnings', 'gsu_allow_export', 'gsu_code', 'gsu_export_code'], 
                 ['label' => null]);
         } else {
-            $model->applyBrowseSettings();
-            $model->set('track_count', 'label', $this->_('Usage'));
+            $model->getMetaModel()->set('track_count', 'label', $this->_('Usage'));
             $model->addColumn('COALESCE(gsu_external_description, gsu_survey_name)', 'used_external_description', 'gsu_external_description');
         }
         

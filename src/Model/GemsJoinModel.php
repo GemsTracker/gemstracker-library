@@ -40,7 +40,7 @@ class GemsJoinModel extends \Zalt\Model\Sql\JoinModel
 
         $metaModel = new MetaModel($modelName, $metaModelLoader);
         parent::__construct($metaModel, $sqlRunner);
-        $this->startJoin($tableName, true);
+        $this->startJoin($tableName, $savable);
         $this->translate = $translate;
     }
 

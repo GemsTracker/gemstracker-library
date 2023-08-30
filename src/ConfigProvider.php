@@ -23,8 +23,6 @@ use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Error\ErrorLogEventListenerDelegatorFactory;
-use Gems\Event\Application\TrackFieldDependencyListEvent;
-use Gems\Event\Application\TrackFieldsListEvent;
 use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Factory\EventDispatcherFactory;
@@ -98,7 +96,6 @@ use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
-use Zalt\Base\SymfonyTranslator;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelConfigProvider;
@@ -386,7 +383,6 @@ class ConfigProvider
 
                 // Translation
                 \Symfony\Contracts\Translation\TranslatorInterface::class => TranslatorInterface::class,
-
 
                 SnippetResponderInterface::class => GemsSnippetResponder::class,
                 \MUtil\Snippets\SnippetLoaderInterface::class => SnippetLoader::class,
