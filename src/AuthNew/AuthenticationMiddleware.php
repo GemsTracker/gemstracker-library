@@ -22,6 +22,7 @@ use Zalt\Message\StatusMessengerInterface;
 class AuthenticationMiddleware implements MiddlewareInterface
 {
     public const CURRENT_USER_ATTRIBUTE = 'current_user';
+    public const CURRENT_USER_ID_ATTRIBUTE = 'currentUserId';
     public const CURRENT_IDENTITY_ATTRIBUTE = 'current_identity';
     public const CURRENT_USER_WITHOUT_TFA_ATTRIBUTE = 'current_user_without_tfa';
     public const CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE = 'current_identity_without_tfa';
@@ -68,11 +69,14 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 }
             }
 
-            $request = $request->withAttribute(self::CURRENT_USER_ATTRIBUTE, $user);
-            $request = $request->withAttribute(self::CURRENT_IDENTITY_ATTRIBUTE, $authenticationService->getIdentity());
+            $request = $request
+                ->withAttribute(self::CURRENT_USER_ATTRIBUTE, $user)
+                ->withAttribute(self::CURRENT_USER_ID_ATTRIBUTE, $user->getUserId())
+                ->withAttribute(self::CURRENT_IDENTITY_ATTRIBUTE, $authenticationService->getIdentity());
         } else {
-            $request = $request->withAttribute(self::CURRENT_USER_WITHOUT_TFA_ATTRIBUTE, $user);
-            $request = $request->withAttribute(self::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE, $authenticationService->getIdentity());
+            $request = $request
+                ->withAttribute(self::CURRENT_USER_WITHOUT_TFA_ATTRIBUTE, $user)
+                ->withAttribute(self::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE, $authenticationService->getIdentity());
         }
 
         if (!$user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)) {
