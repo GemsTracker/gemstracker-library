@@ -228,7 +228,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyActionInterfa
         $survey     = null;
         $yesNo      = $this->translatedUtil->getYesNo();
 
-        $this->addChanged(
+        $this->addColumn(
                 "CASE WHEN gsu_survey_pdf IS NULL OR CHAR_LENGTH(gsu_survey_pdf) = 0 THEN 0 ELSE 1 END",
                 'gsu_has_pdf'
                 );
