@@ -441,7 +441,7 @@ class Model
         /**
          * @var $model OrganizationModel
          */
-        $model = $this->_createModel('OrganizationModel', [$styles]);
+        $model = $this->_createModel('OrganizationModel', $styles);
 
         return $model;
     }
