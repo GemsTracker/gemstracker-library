@@ -96,9 +96,10 @@ use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
+use Zalt\Base\SymfonyTranslator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelConfigProvider;
 use Zalt\Model\MetaModelInterface;
@@ -384,7 +385,9 @@ class ConfigProvider
                 LockStorageAbstract::class => FileLock::class,
 
                 // Translation
-                Translator::class => TranslatorInterface::class,
+                \Symfony\Contracts\Translation\TranslatorInterface::class => TranslatorInterface::class,
+
+
                 SnippetResponderInterface::class => GemsSnippetResponder::class,
                 \MUtil\Snippets\SnippetLoaderInterface::class => SnippetLoader::class,
 

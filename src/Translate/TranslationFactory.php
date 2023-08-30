@@ -13,6 +13,8 @@ use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
+use Zalt\Base\SymfonyTranslator;
+use Zalt\Base\TranslatorInterface;
 
 class TranslationFactory implements FactoryInterface
 {
@@ -24,7 +26,7 @@ class TranslationFactory implements FactoryInterface
 
     protected Locale $locale;
 
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Translator
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): TranslatorInterface
     {
         $this->config = $container->get('config');
         $this->locale = $container->get(Locale::class);
@@ -103,14 +105,11 @@ class TranslationFactory implements FactoryInterface
         return [];
     }
 
-    protected function getTranslator(string $locale): Translator
+    protected function getTranslator(string $locale): TranslatorInterface
     {
-        $translator = new \MUtil\Translate\Translator($locale);
+        $translator = new Translator($locale);
         $translator = $this->addResourcesToTranslator($translator);
 
-        return $translator;
+        return new SymfonyTranslator($translator);
     }
-
-
-
 }
