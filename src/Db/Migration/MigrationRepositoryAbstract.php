@@ -7,10 +7,8 @@ use Gems\Db\ResultFetcher;
 use Gems\Model\IteratorModel;
 use Gems\Model\MetaModelLoader;
 use Laminas\Db\Sql\Select;
-use MUtil\Model\ModelAbstract;
-use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 
@@ -25,7 +23,7 @@ abstract class MigrationRepositoryAbstract
     public function __construct(
         protected readonly array $config,
         protected readonly Databases $databases,
-        protected readonly Translator $translator,
+        protected readonly TranslatorInterface $translator,
         protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly MetaModelLoader $metaModelLoader,
     )

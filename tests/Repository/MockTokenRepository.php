@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace GemsTest\Repository;
 
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  * @package    GemsTest
@@ -19,7 +19,7 @@ use MUtil\Translate\Translator;
  */
 class MockTokenRepository extends \Gems\Repository\TokenRepository
 {
-    public function __construct(Translator $translator)
+    public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }

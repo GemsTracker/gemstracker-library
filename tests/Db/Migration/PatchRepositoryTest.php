@@ -11,10 +11,10 @@ use Gems\Model\MetaModelLoader;
 use GemsTest\TestData\Db\PatchRepository\PhpPatch;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
-use MUtil\Translate\Translator;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Model\MetaModel;
 
@@ -354,8 +354,9 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
             $overloader = $overloaderProphecy->reveal();
         }
 
-        $translatorProphecy = $this->prophesize(Translator::class);
+        $translatorProphecy = $this->prophesize(TranslatorInterface::class);
         $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
+        $translatorProphecy->_(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
 
         $metaModelLoader = $this->prophesize(MetaModelLoader::class);
         $model = new IteratorModel(new MetaModel('databasePatchesModel', $metaModelLoader->reveal()));

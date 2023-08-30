@@ -11,6 +11,7 @@ use MUtil\Parser\Sql\WordsParser;
 use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
 class PatchRepository extends MigrationRepositoryAbstract
@@ -20,7 +21,7 @@ class PatchRepository extends MigrationRepositoryAbstract
     public function __construct(
         array $config,
         Databases $databases,
-        Translator $translator,
+        TranslatorInterface $translator,
         EventDispatcherInterface $eventDispatcher,
         MetaModelLoader $metaModelLoader,
         protected readonly ProjectOverloader $overloader,

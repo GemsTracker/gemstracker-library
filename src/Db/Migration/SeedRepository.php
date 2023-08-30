@@ -8,11 +8,11 @@ use Gems\Event\Application\RunSeedMigrationEvent;
 use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
-use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
 class SeedRepository extends MigrationRepositoryAbstract
@@ -23,7 +23,7 @@ class SeedRepository extends MigrationRepositoryAbstract
     public function __construct(
         array $config,
         Databases $databases,
-        Translator $translator,
+        TranslatorInterface $translator,
         EventDispatcherInterface $eventDispatcher,
         MetaModelLoader $metaModelLoader,
         protected readonly ProjectOverloader $overloader,

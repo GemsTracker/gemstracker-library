@@ -3,22 +3,16 @@
 namespace GemsTest\Db\Migration;
 
 use Gems\Db\Databases;
-use Gems\Db\Dsn;
 use Gems\Db\Migration\TableRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\CreateTableMigrationEvent;
 use Gems\Model\IteratorModel;
 use Gems\Model\MetaModelLoader;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
-use MUtil\Translate\Translator;
-use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModel;
 
 /**
@@ -345,8 +339,9 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
             $eventDispatcher = $eventDispatcherProphecy->reveal();
         }
 
-        $translatorProphecy = $this->prophesize(Translator::class);
+        $translatorProphecy = $this->prophesize(TranslatorInterface::class);
         $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
+        $translatorProphecy->_(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
 
         $metaModelLoader = $this->prophesize(MetaModelLoader::class);
         $model = new IteratorModel(new MetaModel('databaseTableModel', $metaModelLoader->reveal()));
