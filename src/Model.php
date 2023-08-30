@@ -30,7 +30,6 @@ use Gems\Model\SiteModel;
 use Gems\Model\StaffLogModel;
 use Gems\Model\StaffModel;
 use Gems\Model\SurveyCodeBookModel;
-use Gems\Model\SurveyMaintenanceModel;
 use Gems\Project\ProjectSettings;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\UserLoader;
@@ -539,19 +538,6 @@ class Model
         }
 
         return $model;
-    }
-
-    /**
-     * Get the respondent relation model
-     *
-     * @return SurveyMaintenanceModel
-     */
-    public function getSurveyMaintenanceModel(): SurveyMaintenanceModel
-    {
-        /**
-         * @var SurveyMaintenanceModel
-         */
-        return $this->_createModel('SurveyMaintenanceModel', true);
     }
 
     /**

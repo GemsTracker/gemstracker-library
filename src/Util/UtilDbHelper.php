@@ -142,6 +142,7 @@ class UtilDbHelper
             if ($where) {
                 $select->where($where);
             }
+//            dump($select->getSqlString($this->resultFetcher->getPlatform()));
             $result = $this->fetchSortedCached('fetchPairs', $cacheKey, $select, null, $tags, $sort);
         }
 

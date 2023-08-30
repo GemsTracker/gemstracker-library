@@ -18,7 +18,11 @@ use Gems\Locale\Locale;
 use Gems\Pdf;
 use Gems\Repository\SurveyRepository;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Form\EditAction;
+use Gems\SnippetsActions\Show\ShowAction;
 use Gems\Tracker;
+use Gems\Tracker\Model\SurveyMaintenanceModel;
 use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
 use Gems\Tracker\TrackEvent\SurveyDisplayEventInterface;
 use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
@@ -28,6 +32,7 @@ use MUtil\Translate\Translator;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Html\Html;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -134,6 +139,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         protected ResultFetcher $resultFetcher,
         protected ProjectOverloader $overLoader,
         protected Pdf $pdfEditor,
+        protected readonly SurveyMaintenanceModel $surveyMaintenanceModel,
         protected SurveyRepository $surveyRepository,
         protected Locale $locale,
     ) {
@@ -230,25 +236,18 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
      * @param string $action The current action.
      * @return ModelAbstract
      */
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): DataReaderInterface
     {
-        /**
-         * @var $model ModelAbstract
-         */
-        $model = $this->overLoader->create('Model\\SurveyMaintenanceModel');
-
-        if ($detailed) {
-            $surveyId = $this->_getIdParam();
-            if (('edit' == $action) || ('create' == $action)) {
-                $model->applyEditSettings(('create' == $action), $surveyId);
-            } else {
-                $model->applyDetailSettings($surveyId);
-            }
+        if (('create' == $action) || ('edit' == $action)) {
+            $actionClass = new EditAction();
+        } elseif ($detailed) {
+            $actionClass = new ShowAction();
         } else {
-            $model->applyBrowseSettings();
+            $actionClass = new BrowseSearchAction();
         }
+        $this->surveyMaintenanceModel->applyAction($actionClass);
 
-        return $model;
+        return $this->surveyMaintenanceModel;
     }
 
     /**
