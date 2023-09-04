@@ -534,8 +534,6 @@ class FieldMaintenanceModel extends UnionModel
             $output = $event->getList();
 
             asort($output);
-
-            dump($output);
         }
         return $output;
     }
