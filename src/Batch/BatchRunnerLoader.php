@@ -11,11 +11,12 @@ class BatchRunnerLoader
     public function __construct(
         private TranslatorInterface $translate,
         private LayoutSettings $layoutSettings,
+        private readonly array $config,
         )
     {}
 
     public function getBatchRunner(TaskRunnerBatch $batch): BatchRunner
     {
-        return new BatchRunner($batch, $this->translate, $this->layoutSettings);
+        return new BatchRunner($batch, $this->translate, $this->layoutSettings, $this->config);
     }
 }
