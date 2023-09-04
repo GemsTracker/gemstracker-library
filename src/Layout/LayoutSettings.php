@@ -44,10 +44,16 @@ class LayoutSettings
         $this->resources[] = $resource;
     }
 
-    public function addVue(): void
+    public function addVue(array $settings = []): void
     {
-        $this->setTemplate('gems::vue');
-        $this->addResource('resource/js/gems-vue.js');
+        $template = $settings['template'] ?? 'gems::vue';
+        $resource = $settings['template'] ?? 'resource/js/gems-vue.js';
+
+        $this->setTemplate($template);
+
+        foreach((array)$resource as $resourceItem) {
+            $this->addResource($resourceItem);
+        }
     }
 
     public function enableMenu(): void

@@ -83,7 +83,6 @@ use Mezzio\Session\Ext\PhpSessionPersistence;
 use Mezzio\Session\SessionMiddleware;
 use Mezzio\Session\SessionMiddlewareFactory;
 use Mezzio\Session\SessionPersistenceInterface;
-use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -852,7 +851,8 @@ class ConfigProvider
     public function getVueSettings(): array
     {
         return [
-            'default' => 'gems-vue.js',
+            'template' => 'gems::vue',
+            'resource' => 'resource/js/gems-vue.js',
         ];
     }
 }

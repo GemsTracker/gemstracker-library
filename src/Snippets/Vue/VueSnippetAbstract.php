@@ -32,10 +32,7 @@ class VueSnippetAbstract extends SnippetAbstract
         parent::__construct($snippetOptions, $requestInfo);
         $vueSettings = $config['vue'] ?? [];
 
-        if (isset($vueSettings['default'])) {
-            $resource = 'resource/js/' . $vueSettings['default'];
-            $this->layoutSettings->addResource($resource);
-        }
+        $this->layoutSettings->addResource($vueSettings['resource']);
     }
 
     protected function getApiUrl(): string

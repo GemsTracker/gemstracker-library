@@ -19,13 +19,17 @@ class BatchRunner
 
     protected string $formTitle = '';
 
+    protected array $vueSettings;
+
     public function __construct(
         protected TaskRunnerBatch $batch,
         TranslatorInterface $translate,
         protected LayoutSettings $layoutSettings,
+        array $config,
     )
     {
         $this->translate = $translate;
+        $this->vueSettings = $config['vue'] ?? [];
     }
 
     public function getResponse(ServerRequestInterface $request): ?ResponseInterface
@@ -61,7 +65,7 @@ class BatchRunner
             return $this->reportProgress($this->batch->getProgress(), $this->batch->getMessages());
         }
 
-        $this->layoutSettings->addVue();
+        $this->layoutSettings->addVue($this->vueSettings);
         $attributes = $this->batch->getJsAttributes();
         $attributes['title'] = $this->getTitle();
         $this->layoutSettings->addLayoutParameter('tag', 'batch-runner')
