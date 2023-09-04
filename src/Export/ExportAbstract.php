@@ -11,6 +11,8 @@
 namespace Gems\Export;
 
 use Mezzio\Session\SessionInterface;
+use Zalt\Base\TranslateableTrait;
+use Zalt\Base\TranslatorInterface;
 use Zalt\File\File;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
@@ -23,8 +25,10 @@ use Zalt\Model\MetaModelInterface;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstract implements ExportInterface
+abstract class ExportAbstract extends \Zalt\Loader\Target\TargetAbstract implements ExportInterface
 {
+    use TranslateableTrait;
+
     /**
      * @var array   Data submitted by export form
      */
@@ -121,7 +125,9 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
         protected ?SessionInterface $session,
         protected ?\Gems\Task\TaskRunnerBatch $batch,
         protected string $exportTempDir,
+        protected TranslatorInterface $translator
     ) {
+        $this->translate = $this->translator;
     }
 
     /**

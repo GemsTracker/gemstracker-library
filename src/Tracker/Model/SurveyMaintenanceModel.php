@@ -476,14 +476,15 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyActionInterfa
     {
         $surveyId = isset($context['gsu_id_survey']) ? $context['gsu_id_survey'] : false;
         if (! $surveyId) {
-            return 0;
+            return '';
         }
 
         $select = $this->resultFetcher->getSelect('gems__rounds');
-        $select->columns(['useCnt' => 'COUNT(*)', 'trackCnt' => 'COUNT(DISTINCT gro_id_track)']);
+        $select->columns(['useCnt' => new Expression('COUNT(*)'), 'trackCnt' => new Expression('COUNT(DISTINCT gro_id_track)')]);
         $select->join('gems__tracks', 'gtr_id_track = gro_id_track', [], Select::JOIN_LEFT)
-                ->where(['gro_id_survey', $surveyId]);
+                ->where(['gro_id_survey' => $surveyId]);
         $counts = $this->resultFetcher->fetchRow($select);
+        //dump($surveyId, $counts, $select->getSqlString($this->resultFetcher->getPlatform()));
 
         if (isset($counts['useCnt']) || isset($counts['trackCnt'])) {
             return sprintf($this->_('%d times in %d track(s).'), $counts['useCnt'], $counts['trackCnt']);
