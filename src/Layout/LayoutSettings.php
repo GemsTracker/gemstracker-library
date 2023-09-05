@@ -47,7 +47,7 @@ class LayoutSettings
     public function addVue(array $settings = []): void
     {
         $template = $settings['template'] ?? 'gems::vue';
-        $resource = $settings['template'] ?? 'resource/js/gems-vue.js';
+        $resource = $settings['resource'] ?? 'resource/js/gems-vue.js';
 
         $this->setTemplate($template);
 
