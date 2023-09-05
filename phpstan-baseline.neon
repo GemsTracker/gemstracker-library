@@ -356,21 +356,6 @@ parameters:
 			path: src/Actions/UpgradeAction.php
 
 		-
-			message: "#^Variable \\$diff might not be defined\\.$#"
-			count: 4
-			path: src/Agenda/Appointment.php
-
-		-
-			message: "#^Variable \\$respTrack might not be defined\\.$#"
-			count: 1
-			path: src/Agenda/Appointment.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Agenda\\\\AppointmentFilterModel\\:\\:\\$menu\\.$#"
-			count: 2
-			path: src/Agenda/AppointmentFilterModel.php
-
-		-
 			message: "#^Variable \\$fieldList in isset\\(\\) always exists and is not nullable\\.$#"
 			count: 1
 			path: src/Agenda/Filter/FieldLikeAppointmentFilter.php
@@ -576,27 +561,7 @@ parameters:
 			path: src/Handlers/AskHandler.php
 
 		-
-			message: "#^Call to an undefined method Gems\\\\Handlers\\\\ParticipateHandler\\:\\:forward\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/ParticipateHandler.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Handlers\\\\ParticipateHandler\\:\\:getRequest\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/ParticipateHandler.php
-
-		-
-			message: "#^Class Gems\\\\Handlers\\\\MaintenanceModeAskSnippet not found\\.$#"
-			count: 1
-			path: src/Handlers/ParticipateHandler.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Handlers\\\\Respondent\\\\CalendarHandler\\:\\:\\$loader\\.$#"
-			count: 1
-			path: src/Handlers/Respondent/CalendarHandler.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Handlers\\\\Respondent\\\\CalendarHandler\\:\\:\\$source\\.$#"
 			count: 1
 			path: src/Handlers/Respondent/CalendarHandler.php
 
@@ -694,16 +659,6 @@ parameters:
 			message: "#^Call to an undefined method Gems\\\\Model\\\\Bridge\\\\ThreeColumnTableBridge\\:\\:td\\(\\)\\.$#"
 			count: 1
 			path: src/Model/Bridge/ThreeColumnTableBridge.php
-
-		-
-			message: "#^Undefined variable\\: \\$config$#"
-			count: 1
-			path: src/Model/CommTemplateModel.php
-
-		-
-			message: "#^Variable \\$config in isset\\(\\) is never defined\\.$#"
-			count: 2
-			path: src/Model/CommTemplateModel.php
 
 		-
 			message: "#^Access to an undefined property Gems\\\\Model\\\\HiddenOrganizationModel\\:\\:\\$currentUser\\.$#"
@@ -1351,16 +1306,6 @@ parameters:
 			path: src/Snippets/Tracker/Answers/TrackAllAnswersModelSnippet.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Tracker\\\\Answers\\\\TrackAnswersModelSnippet\\:\\:\\$request\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Answers/TrackAnswersModelSnippet.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Snippets\\\\Tracker\\\\Answers\\\\TrackAnswersModelSnippet\\:\\:processSortOnly\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Answers/TrackAnswersModelSnippet.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Tracker\\\\Fields\\\\FieldShowSnippet\\:\\:\\$menu\\.$#"
 			count: 4
 			path: src/Snippets/Tracker/Fields/FieldShowSnippet.php
@@ -1406,11 +1351,6 @@ parameters:
 			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Unsubscribe\\\\EmailUnsubscribeSnippet\\:\\:\\$currentUser\\.$#"
-			count: 1
-			path: src/Snippets/Unsubscribe/EmailUnsubscribeSnippet.php
-
-		-
 			message: "#^Call to an undefined static method Gems\\\\Snippets\\\\FormSnippetAbstract\\:\\:afterRegistry\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Unsubscribe/EmailUnsubscribeSnippet.php
@@ -1424,11 +1364,6 @@ parameters:
 			message: "#^Variable \\$parsedPhone might not be defined\\.$#"
 			count: 1
 			path: src/Snippets/User/OwnAccountEditAuthSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\User\\\\SetTwoFactorSnippet\\:\\:\\$menuSnippetHelper\\.$#"
-			count: 1
-			path: src/Snippets/User/SetTwoFactorSnippet.php
 
 		-
 			message: "#^Method Gems\\\\Task\\\\Db\\\\CreateNewTable\\:\\:execute\\(\\) should return bool but return statement is missing\\.$#"
@@ -1456,52 +1391,12 @@ parameters:
 			path: src/Task/Updates/UpdateRoleIds.php
 
 		-
-			message: "#^Result of method Gems\\\\Tracker\\\\Engine\\\\StepEngineAbstract\\:\\:applyRespondentRelation\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: src/Tracker/Engine/StepEngineAbstract.php
-
-		-
-			message: "#^Parameter \\$source of method Gems\\\\Tracker\\\\Engine\\\\TrackEngineAbstract\\:\\:applyToMenuSource\\(\\) has invalid type Gems\\\\Menu\\\\ParameterSource\\.$#"
-			count: 1
-			path: src/Tracker/Engine/TrackEngineAbstract.php
-
-		-
-			message: "#^Parameter \\$source of method Gems\\\\Tracker\\\\Engine\\\\TrackEngineInterface\\:\\:applyToMenuSource\\(\\) has invalid type Gems\\\\Menu\\\\ParameterSource\\.$#"
-			count: 1
-			path: src/Tracker/Engine/TrackEngineInterface.php
-
-		-
-			message: "#^Class Gems\\\\Menu not found\\.$#"
-			count: 1
-			path: src/Tracker/Field/TrackField.php
-
-		-
-			message: "#^Class Gems\\\\Menu\\\\SubMenuItem not found\\.$#"
-			count: 1
-			path: src/Tracker/Field/TrackField.php
-
-		-
 			message: "#^Method Gems\\\\Tracker\\\\Token\\:\\:setRoundDescription\\(\\) invoked with 3 parameters, 2 required\\.$#"
 			count: 1
 			path: src/Tracker/Mock/TokenReadonly.php
 
 		-
-			message: "#^Parameter \\$source of method Gems\\\\Tracker\\\\Respondent\\:\\:applyToMenuSource\\(\\) has invalid type Gems\\\\Menu\\\\ParameterSource\\.$#"
-			count: 1
-			path: src/Tracker/Respondent.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Tracker\\\\RespondentTrack\\:\\:\\$logger\\.$#"
-			count: 1
-			path: src/Tracker/RespondentTrack.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Tracker\\\\RespondentTrack\\:\\:\\$translate\\.$#"
-			count: 2
-			path: src/Tracker/RespondentTrack.php
-
-		-
-			message: "#^Parameter \\$source of method Gems\\\\Tracker\\\\RespondentTrack\\:\\:applyToMenuSource\\(\\) has invalid type Gems\\\\Menu\\\\ParameterSource\\.$#"
 			count: 1
 			path: src/Tracker/RespondentTrack.php
 
@@ -1519,21 +1414,6 @@ parameters:
 			message: "#^Call to an undefined method Gems\\\\Tracker\\\\Snippets\\\\ShowTrackUsageAbstract\\:\\:processSortOnly\\(\\)\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/ShowTrackUsageAbstract.php
-
-		-
-			message: "#^Variable \\$tmpres might not be defined\\.$#"
-			count: 1
-			path: src/Tracker/Source/LimeSurvey1m9FieldMap.php
-
-		-
-			message: "#^Parameter \\$source of method Gems\\\\Tracker\\\\Token\\:\\:applyToMenuSource\\(\\) has invalid type Gems\\\\Menu\\\\ParameterSource\\.$#"
-			count: 1
-			path: src/Tracker/Token.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Tracker\\\\Token\\\\TokenLibrary\\:\\:\\$tokenChars\\.$#"
-			count: 4
-			path: src/Tracker/Token/TokenLibrary.php
 
 		-
 			message: "#^Function twig_escape_filter not found\\.$#"
@@ -1699,8 +1579,3 @@ parameters:
 			message: "#^Access to an undefined property GemsTest\\\\Validate\\\\IPRangesTest\\:\\:\\$validator\\.$#"
 			count: 3
 			path: tests/Validate/IPRangesTest.php
-
-		-
-			message: "#^Constructor of class Gems\\\\Model\\\\GemsJoinModel has an unused parameter \\$savable\\.$#"
-			count: 1
-			path: src/Model/GemsJoinModel.php
