@@ -36,7 +36,7 @@ use Laminas\Db\Sql\TableIdentifier;
 use MUtil\Model;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Pulse\Agenda\Filter\LinkFilterContainer\LinkFilterContainer;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
 /**
