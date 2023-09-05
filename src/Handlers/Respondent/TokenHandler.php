@@ -434,7 +434,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
      */
     public function getTopic(int $count = 1): string
     {
-        return $this->plural('survey', 'surveys', $count);
+        return $this->plural('token', 'tokens', $count);
     }
 
     /**

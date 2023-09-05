@@ -117,6 +117,9 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
     {
         if (TokenModel::$useTokenModel) {
             $model = $this->metaModelLoader->createModel(TokenModel::class);
+            if ($detailed) {
+                $model->applyDetailedFormatting();
+            }
         } else {
             // \MUtil\Model::$verbose = true;
             $model = $this->tracker->getTokenModel();

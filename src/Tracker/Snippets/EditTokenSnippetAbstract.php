@@ -12,7 +12,6 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Menu\MenuSnippetHelper;
-use Gems\Model\Bridge\GemsFormBridge;
 use Gems\Model\MetaModelLoader;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;
@@ -78,6 +77,8 @@ abstract class EditTokenSnippetAbstract extends ModelFormSnippetAbstract
     {
         if (TokenModel::$useTokenModel) {
             $model = $this->metaModelLoader->createModel(TokenModel::class);
+            $model->applyDetailedFormatting();
+
         } else {
             $model = $this->token->getModel();
         }

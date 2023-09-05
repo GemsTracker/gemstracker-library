@@ -133,6 +133,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
     {
         if (TokenModel::$useTokenModel) {
             $model = $this->metaModelLoader->createModel(TokenModel::class);
+            $model->applyDetailedFormatting();
         } else {
             $model = $this->token->getModel();
         }

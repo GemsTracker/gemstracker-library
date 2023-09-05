@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Gems\Tracker\Model;
 
+use DateTimeInterface;
+use Gems\Model\Dependency\TokenDateFormatDependency;
 use Gems\Model\GemsJoinModel;
 use Gems\Model\MaskedModelTrait;
 use Gems\Model\Type\TokenValidFromType;
@@ -24,6 +26,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\AbstractDateType;
+use Zalt\SnippetsActions\ApplyActionInterface;
+use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\Validator\Model\AfterDateModelValidator;
 
 /**
@@ -31,7 +35,7 @@ use Zalt\Validator\Model\AfterDateModelValidator;
  * @subpackage Tracker\Model
  * @since      Class available since version 1.0
  */
-class TokenModel extends GemsJoinModel
+class TokenModel extends GemsJoinModel implements ApplyActionInterface
 {
     use MaskedModelTrait;
 
@@ -40,7 +44,7 @@ class TokenModel extends GemsJoinModel
     /**
      * @var bool Temporary switch to enable / disable use of TokenModel
      */
-    public static $useTokenModel = false;
+    public static $useTokenModel = true;
 
     public function __construct(
         MetaModelLoader $metaModelLoader,
@@ -121,11 +125,71 @@ class TokenModel extends GemsJoinModel
 
         // $this->metaModel->set('gsu_id_primary_group', 'default', 800);
 
-//        $this->setOnSave('gto_mail_sent_date', array($this, 'saveCheckedMailDate'));
-//        $this->setOnSave('gto_mail_sent_num',  array($this, 'saveCheckedMailNum'));
-
-
         $this->applyFormatting();
+    }
+
+    /**
+     * Function to check whether the mail_sent should be reset
+     *
+     * @param boolean $isNew True when a new item is being saved
+     * @param array $context The values being saved
+     * @return boolean True when the change should be triggered
+     */
+    private function _checkForMailSent(bool $isNew, array $context): bool
+    {
+        // Never change on new tokens
+        if ($isNew) {
+            return false;
+        }
+
+        // Only act on existing valid from date
+        if (! (isset($context['gto_valid_from']) && $context['gto_valid_from'])) {
+            return false;
+        }
+
+        // There must be data to reset
+        $hasSentDate = isset($context['gto_mail_sent_date']) && $context['gto_mail_sent_date'];
+        if (! ($hasSentDate || (isset($context['gto_mail_sent_num']) && $context['gto_mail_sent_num']))) {
+            return false;
+        }
+
+        // When only the sent_num is set, then clear the existing data
+        if (! $hasSentDate) {
+            return true;
+        }
+
+        if ($context['gto_valid_from'] instanceof DateTimeInterface) {
+            $start = $context['gto_valid_from'];
+        } else {
+            // $start = DateTimeImmutable::createFromFormat($this->get('gto_valid_from', 'dateFormat'), $context['gto_valid_from']);
+            $start = $this->_getDateTime($context['gto_valid_from'], 'gto_valid_from');
+        }
+
+        if ($context['gto_mail_sent_date'] instanceof DateTimeInterface) {
+            $sent = $context['gto_mail_sent_date'];
+        } else {
+//            $sent = DateTimeImmutable::createFromFormat($this->get('gto_valid_from', 'gto_mail_sent_date'), $context['gto_mail_sent_date']);
+            $sent = $this->_getDateTime($context['gto_mail_sent_date'], 'gto_mail_sent_date');
+        }
+
+        return $start->getTimestamp() > $sent->getTimestamp();
+    }
+
+    protected function _getDateTime(mixed $value, string $name): mixed
+    {
+        return AbstractDateType::toDate($value, $this->metaModel->get($name, 'storageFormat'), $this->metaModel->get($name, 'dateFormat'), true);
+    }
+
+    public function applyAction(SnippetActionInterface $action): void
+    {
+        if ($action->isDetailed()) {
+            $this->applyDetailedFormatting();
+        }
+    }
+
+    public function applyDetailedFormatting()
+    {
+        $this->metaModel->addDependency(TokenDateFormatDependency::class);
     }
 
     /**
@@ -218,9 +282,12 @@ class TokenModel extends GemsJoinModel
             AbstractDateType::$whenDateEmptyClassKey => 'disabled',
             'tdClass' => 'date',
             ]);
+        $this->metaModel->setOnSave('gto_mail_sent_date', array($this, 'saveCheckedMailDate'));
+
         $this->metaModel->set('gto_mail_sent_num',      'label', $this->_('Number of contact moments'),
             'elementClass', 'Exhibitor'
         );
+        $this->metaModel->setOnSave('gto_mail_sent_num',  array($this, 'saveCheckedMailNum'));
         $this->metaModel->set('gto_completion_time', [
             'label' => $this->_('Completed'),
             'elementClass' => 'Exhibitor',
@@ -251,5 +318,45 @@ class TokenModel extends GemsJoinModel
         $this->applyMask();
 
         return $this;
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that can transform the saved item.
+     *
+     * @see setSaveWhen()
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return boolean
+     */
+    public function saveCheckedMailDate($value, $isNew = false, $name = null, array $context = array())
+    {
+        if ($this->_checkForMailSent($isNew, $context)) {
+            return null;
+        }
+
+        return $this->_getDateTime($value, $name);
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that can transform the saved item.
+     *
+     * @see setSaveWhen()
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return boolean
+     */
+    public function saveCheckedMailNum($value, $isNew = false, $name = null, array $context = array())
+    {
+        if ($this->_checkForMailSent($isNew, $context)) {
+            return 0;
+        }
+
+        return $value;
     }
 }
