@@ -79,9 +79,9 @@ class ConsentCode
 
     /**
      *
-     * @return boolean
+     * @return string
      */
-    public function getDescription(): bool
+    public function getDescription(): string
     {
         return $this->description;
     }
