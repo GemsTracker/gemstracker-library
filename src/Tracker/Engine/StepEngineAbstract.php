@@ -343,6 +343,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         }
 
         $changed   = 0;
+        /** @var $condition RoundConditionInterface */
         $condition = $this->conditionLoader->loadCondition($round['gro_condition']);
         $newStatus = $condition->isRoundValid($token);
         $oldStatus = $token->getReceptionCode()->isSuccess();
