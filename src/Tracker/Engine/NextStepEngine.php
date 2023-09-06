@@ -176,12 +176,12 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      *
      * @param string $fieldSource Source for field from round
      * @param string $fieldName Name from round
-     * @param int $prevRoundId Id from round
+     * @param int|null $prevRoundId Id from round
      * @param \Gems\Tracker\Token $token
      * @param \Gems\Tracker\RespondentTrack $respTrack
      * @return ?DateTimeInterface date time or null
      */
-    protected function getValidFromDate(string $fieldSource, string $fieldName, int $prevRoundId, Token $token, RespondentTrack $respTrack): ?DateTimeInterface
+    protected function getValidFromDate(string $fieldSource, string $fieldName, int|null $prevRoundId, Token $token, RespondentTrack $respTrack): ?DateTimeInterface
     {
         $date = null;
 
