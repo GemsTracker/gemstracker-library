@@ -496,7 +496,10 @@ class RespondentTrack
                     }
                 }
 
-                $changes = $changes + $token->assignTo($relationId, $relationFieldId);
+                // We cannot assign the token if the relation is unknown.
+                if ($relationId) {
+                    $changes = $changes + $token->assignTo($relationId, $relationFieldId);
+                }
             }
         }
 

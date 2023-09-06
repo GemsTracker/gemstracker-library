@@ -160,7 +160,7 @@ class AnyStepEngine extends StepEngineAbstract
      *
      * @param string $fieldSource Source for field from round
      * @param string $fieldName Name from round
-     * @param int $prevRoundId Id from round
+     * @param int|null $prevRoundId Id from round
      * @param \Gems\Tracker\Token $token
      * @param \Gems\Tracker\RespondentTrack $respTrack
      * @return ?DateTimeInterface date time or null
