@@ -60,3 +60,6 @@ ALTER TABLE `gems__organizations`
 -- PATCH: Add info field to appointments
 ALTER TABLE `gems__appointments`
     ADD `gap_info` json NULL AFTER `gap_comment`;
+
+-- PATCH: This foreign key for some reason block inserts wuth null
+alter table gems__agenda_staff drop foreign key gems__agenda_staff_ibfk_1;
