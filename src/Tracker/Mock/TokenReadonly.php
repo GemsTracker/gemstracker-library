@@ -234,11 +234,11 @@ class TokenReadonly extends Token
 
     /**
      *
-     * @param string|\DateTimeInterface $completionTime Completion time as a date or null
+     * @param string|DateTimeInterface|null $completionTime Completion time as a date or null
      * @param int $userId The current user
      * @return \Gems\Tracker\Token (continuation pattern)
      */
-    public function setCompletionTime(string|null $completionTime, int $userId): self
+    public function setCompletionTime(string|DateTimeInterface|null $completionTime, int $userId): self
     {
         $this->_changes[__FUNCTION__] = ['completionTime' => $completionTime, 'userId' => $userId];
         
