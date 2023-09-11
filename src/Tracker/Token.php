@@ -1888,11 +1888,11 @@ class Token
 
     /**
      *
-     * @param string $completionTime Completion time as a date or null
+     * @param string|DateTimeInterface|null $completionTime Completion time as a date or null
      * @param int $userId The current user
      * @return self (continuation pattern)
      */
-    public function setCompletionTime(string|null $completionTime, int $userId): self
+    public function setCompletionTime(string|DateTimeInterface|null $completionTime, int $userId): self
     {
         $values['gto_completion_time'] = null;
         if (!is_null($completionTime)) {
