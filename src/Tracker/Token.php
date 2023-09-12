@@ -44,10 +44,10 @@ use Gems\Util\Translated;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
 use MUtil\Model;
-use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelInterface;
 
@@ -180,7 +180,7 @@ class Token
         protected readonly Locale $locale,
         protected readonly TokenRepository $tokenRepository,
         protected readonly EventDispatcherInterface $eventDispatcher,
-        protected readonly Translator $translator,
+        protected readonly TranslatorInterface $translator,
         protected readonly MessageBusInterface $messageBus,
         Loggers $loggers,
         CurrentUserRepository $currentUserRepository,
