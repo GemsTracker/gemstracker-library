@@ -4,6 +4,8 @@ namespace Gems\Layout;
 
 class LayoutSettings
 {
+    public const TEMPLATE_ATTRIBUTE = 'view-template';
+
     protected array $layoutParams = [];
 
     /**

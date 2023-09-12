@@ -54,12 +54,15 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
             return $output;
         }
 
-        $breadcrumbs = array_reverse($this->menuHelper->getCurrentParentUrls(10));
-        $breadcrumbs[] = ['label' =>  $this->menuHelper->getCurrentLabel()];
         $data = [
-            'breadcrumbs' => $breadcrumbs,
             'content' => $output->getBody(),
         ];
+
+        if (isset($this->menuHelper)) {
+            $breadcrumbs = array_reverse($this->menuHelper->getCurrentParentUrls(10));
+            $breadcrumbs[] = ['label' => $this->menuHelper->getCurrentLabel()];
+            $data['breadcrumbs'] = $breadcrumbs;
+        }
         $statusCode = 200;
         $headers = [];
 
@@ -82,7 +85,9 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
             $this->snippetLoader->addConstructorVariable(MenuSnippetHelper::class, $this->menuHelper);
         }
 
-        $this->layoutSettings->setTemplate( 'gems::legacy-view');
+        $template = $request->getAttribute(LayoutSettings::TEMPLATE_ATTRIBUTE, 'gems::legacy-view');
+
+        $this->layoutSettings->setTemplate( $template);
         $this->snippetLoader->addConstructorVariable(LayoutSettings::class, $this->layoutSettings);
         
         $this->snippetLoader->addConstructorVariable(SessionInterface::class, $request->getAttribute(SessionInterface::class));

@@ -1,0 +1,44 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>GemsTracker 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="{{ path('home') }}" />
+    {{ include('@gems/vite.html.twig') }}
+    {% block header %}
+    {% endblock %}
+    <style>
+        :root {
+            --bs-primary: #167c85;
+            --bs-secondary: #1a355d;
+        }
+    </style>
+</head>
+<body
+        {% if current_identity is defined %}
+            data-max-idle-time="{{ _config.max_idle_time }}"
+            data-auth-poll-interval="{{ _config.auth_poll_interval }}"
+        {% endif %}
+>
+<div id="container" class="container-fluid">
+    <div class="content">
+        <div id="menu" role="navigation">
+            {% if menuHtml is defined %}
+                {{ menuHtml }}
+            {% endif %}
+            {% if mainMenu is defined %}
+                {{ mainMenu.renderMenu()|raw }}
+            {% endif %}
+        </div>
+        <div id="main-container" class="include-menu">
+            <div id="main">
+                {% if statusMessenger is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+{{ include('@layout/auth-idle-checker.html.twig') }}
+</body>
+</html>
