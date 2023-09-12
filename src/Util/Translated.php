@@ -14,7 +14,7 @@ use Carbon\CarbonImmutable;
 use DateTimeImmutable;
 use MUtil\Model;
 use MUtil\Translate\TranslateableTrait;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 
@@ -58,7 +58,7 @@ class Translated
      */
     public static $emptyDropdownArray;
 
-    public function __construct(Translator $translator)
+    public function __construct(TranslatorInterface $translator)
     {
         $this->translate = $translator;
 
