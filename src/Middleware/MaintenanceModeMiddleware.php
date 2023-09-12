@@ -8,19 +8,19 @@ use Gems\Util\Lock\MaintenanceLock;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\RouteResult;
-use MUtil\Translate\Translator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 
 class MaintenanceModeMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        protected MaintenanceLock $maintenanceLock,
-        protected Translator $translator,
-        protected UrlHelper $urlHelper,
+        protected readonly MaintenanceLock $maintenanceLock,
+        protected readonly TranslatorInterface $translator,
+        protected readonly UrlHelper $urlHelper,
     )
     {}
 

@@ -12,7 +12,7 @@ use Gems\Repository\ReceptionCodeRepository;
 use Gems\Tracker;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 class Respondent extends \Gems\Tracker\Respondent
 {
@@ -23,7 +23,7 @@ class Respondent extends \Gems\Tracker\Respondent
         ReceptionCodeRepository $receptionCodeRepository,
         ResultFetcher $resultFetcher,
         MaskRepository $maskRepository,
-        Translator $translator,
+        TranslatorInterface $translator,
         Translated $translatedUtil,
         Tracker $tracker,
         CurrentUserRepository $currentUserRepository,

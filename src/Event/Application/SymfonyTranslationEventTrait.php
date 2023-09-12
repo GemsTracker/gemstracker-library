@@ -2,27 +2,23 @@
 
 namespace Gems\Event\Application;
 
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 trait SymfonyTranslationEventTrait
 {
     /**
-     * @var Translator
+     * @var TranslatorInterface
      */
     protected $translator;
 
     /**
-     * @return Translator
+     * @return TranslatorInterface
      */
-    public function getTranslator(): Translator
+    public function getTranslator(): TranslatorInterface
     {
         return $this->translator;
     }
-
-    /**
-     * @param Translator $translator
-     */
-    public function setTranslator(Translator $translator): void
+    public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
     }

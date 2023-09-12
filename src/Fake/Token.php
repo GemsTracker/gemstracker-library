@@ -15,9 +15,9 @@ use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
-use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use DateTimeImmutable;
 use DateInterval;
@@ -46,7 +46,7 @@ class Token extends \Gems\Tracker\Token
         Locale $locale,
         TokenRepository $tokenRepository,
         EventDispatcherInterface $eventDispatcher,
-        Translator $translator,
+        TranslatorInterface $translator,
         MessageBusInterface $messageBus,
         Loggers $loggers,
         CurrentUserRepository $currentUserRepository

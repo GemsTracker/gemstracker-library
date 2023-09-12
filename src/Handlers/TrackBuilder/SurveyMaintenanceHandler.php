@@ -28,8 +28,8 @@ use Gems\Tracker\TrackEvent\SurveyDisplayEventInterface;
 use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
 use Mezzio\Session\SessionInterface;
 use MUtil\Model\ModelAbstract;
-use MUtil\Translate\Translator;
 use Psr\Http\Message\ResponseInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
@@ -133,7 +133,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function __construct(
         SnippetResponderInterface $responder,
-        Translator $translate,
+        TranslatorInterface $translate,
         protected Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected ResultFetcher $resultFetcher,

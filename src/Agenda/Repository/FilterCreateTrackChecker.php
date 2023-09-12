@@ -6,12 +6,12 @@ use Gems\Agenda\Appointment;
 use Gems\Agenda\Filter\TrackFieldFilterCalculationInterface;
 use Gems\Agenda\FilterTracer;
 use Gems\Tracker\RespondentTrack;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 class FilterCreateTrackChecker
 {
     public function __construct(
-        protected readonly Translator $translator,
+        protected readonly TranslatorInterface $translator,
     )
     {}
 

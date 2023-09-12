@@ -20,7 +20,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Tracker;
 use Gems\Tracker\Respondent;
 use Gems\Tracker\RespondentTrack;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -64,7 +64,7 @@ class Appointment
      */
     public function __construct(
         protected readonly array $appointmentData,
-        protected readonly Translator $translator,
+        protected readonly TranslatorInterface $translator,
         protected readonly Agenda $agenda,
         protected readonly ActivityRepository $activityRepository,
         protected readonly LocationRepository $locationRepository,

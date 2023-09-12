@@ -16,13 +16,10 @@ use Gems\Mail\UserMailFields;
 use Gems\Mail\UserPasswordMailFields;
 use Gems\Tracker\Respondent;
 use Gems\Tracker\Token;
-use Gems\Tracker\Token\TokenSelect;
 use Gems\User\Organization;
 use Gems\User\User;
 use Laminas\Db\Sql\Expression;
-use Laminas\Db\Sql\Predicate\Like;
 use Mezzio\Template\TemplateRendererInterface;
-use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Mailer\Event\MessageEvent;
@@ -34,6 +31,7 @@ use Symfony\Component\Mailer\Transport\Transports;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Zalt\Base\TranslatorInterface;
 
 class CommunicationRepository
 {
@@ -47,8 +45,7 @@ class CommunicationRepository
         protected ResultFetcher $resultFetcher,
         protected CachedResultFetcher $cachedResultFetcher,
         protected TemplateRendererInterface $template,
-        protected Translator $translator,
-        protected TokenSelect $tokenSelect,
+        protected TranslatorInterface $translator,
         protected ManualMailerFactory $mailerFactory,
         protected EventDispatcherInterface $eventDispatcher,
         protected MessageBusInterface $messageBus,
@@ -330,7 +327,7 @@ class CommunicationRepository
 
     public function getTokenMailFields(Token $token, string $language = null): array
     {
-        $mailFieldCreator = new TokenMailFields($token, $this->config, $this->translator, $this->tokenSelect);
+        $mailFieldCreator = new TokenMailFields($token, $this->translator, $this->resultFetcher, $this->config);
         return $mailFieldCreator->getMailFields($language);
     }
 

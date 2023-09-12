@@ -13,9 +13,8 @@ namespace Gems\Agenda;
 
 use DateTimeInterface;
 use Gems\Repository\RespondentRepository;
-use Gems\User\Mask\MaskRepository;
 use MUtil\Model;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -61,7 +60,7 @@ class EpisodeOfCare
         array $episodeData,
         protected readonly Agenda $agenda,
         protected readonly RespondentRepository $respondentRepository,
-        protected readonly Translator $translator,
+        protected readonly TranslatorInterface $translator,
     )
     {
         $this->data      = $episodeData;

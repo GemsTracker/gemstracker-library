@@ -7,17 +7,16 @@ use Gems\Event\Application\TokenEventCommunicationFailed;
 use Gems\Event\Application\TokenEventCommunicationSent;
 use Gems\Exception\ClientException;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Log\LogHelper;
 use Gems\Communication\CommunicationRepository;
 use Gems\Tracker;
 use Gems\Tracker\Token;
 use Gems\User\Filter\DutchPhonenumberFilter;
 use League\HTMLToMarkdown\HtmlConverter;
-use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Gems\Communication\Exception;
+use Zalt\Base\TranslatorInterface;
 
 class SmsJobMessenger implements JobMessengerInterface
 {
@@ -27,7 +26,7 @@ class SmsJobMessenger implements JobMessengerInterface
         protected Tracker $tracker,
         protected EventDispatcherInterface $event,
         protected CommunicationRepository $communicationRepository,
-        protected Translator $translator,
+        protected TranslatorInterface $translator,
         CurrentUserRepository $currentUserRepository,
     )
     {

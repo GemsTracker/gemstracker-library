@@ -2,24 +2,22 @@
 
 namespace Gems\Mail;
 
+use Gems\Db\ResultFetcher;
 use Gems\Tracker\Token;
-use Gems\Tracker\Token\TokenSelect;
-use MUtil\Translate\Translator;
+use Gems\Tracker\Token\LaminasTokenSelect;
+use Laminas\Db\Adapter\Adapter;
+use Zalt\Base\TranslatorInterface;
 
 class TokenMailFields extends RespondentMailFields
 {
-    private Token $token;
-
-    private Translator $translator;
-
-    private TokenSelect $tokenSelect;
-
-    public function __construct(Token $token, array $config, Translator $translator, TokenSelect $tokenSelect)
+    public function __construct(
+        private readonly Token $token,
+        private readonly TranslatorInterface $translator,
+        private readonly ResultFetcher $resultFetcher,
+        array $config,
+    )
     {
-        $this->token = $token;
         parent::__construct($token->getRespondent(), $config);
-        $this->translator = $translator;
-        $this->tokenSelect = $tokenSelect;
     }
 
     public function getMaiLFields(string $language = null): array
@@ -101,13 +99,11 @@ class TokenMailFields extends RespondentMailFields
             ];
         }
 
-        $tSelect = $this->tokenSelect;
-        $db = $tSelect->getSelect()->getAdapter();
+        $tSelect = new LaminasTokenSelect($this->resultFetcher);
+
         $tSelect->columns([
             'all'   => 'COUNT(*)',
-            'track' => $db->quoteInto(
-                'SUM(CASE WHEN gto_id_respondent_track = ? THEN 1 ELSE 0 END)',
-                $this->token->getRespondentTrackId())
+            'track' => sprintf('SUM(CASE WHEN gto_id_respondent_track = %d THEN 1 ELSE 0 END)', $this->token->getRespondentTrackId()),
         ]);
         $tSelect->andSurveys(array())
             ->forRespondent($this->token->getRespondentId(), $this->token->getOrganizationId())

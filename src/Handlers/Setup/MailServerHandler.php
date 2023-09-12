@@ -13,8 +13,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\MailServerModel;
 use MUtil\Model\ModelAbstract;
-use MUtil\Translate\Translator;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -41,7 +40,6 @@ class MailServerHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected ProjectOverloader $overloader,
-        protected Translator $translator,
     )
     {
         parent::__construct($responder, $translate);
@@ -78,7 +76,7 @@ class MailServerHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function getIndexTitle(): string
     {
-        return $this->translator->_('Email servers');
+        return $this->translate->_('Email servers');
     }
 
     /**
@@ -89,6 +87,6 @@ class MailServerHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function getTopic(int $count = 1): string
     {
-        return $this->translator->plural('email server', 'email servers', $count);
+        return $this->translate->plural('email server', 'email servers', $count);
     }
 }

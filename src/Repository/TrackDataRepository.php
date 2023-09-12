@@ -108,7 +108,6 @@ class TrackDataRepository
      * Returns array (id => name) of all tracks, sorted alphabetically
      *
      * @return array
-     * @throws \Zend_Cache_Exception
      */
     public function getAllTracks()
     {

@@ -20,12 +20,11 @@ use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Tracker;
 use Gems\Util\Translated;
-use Laminas\Db\Sql\Expression;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
 use MUtil\Legacy\RequestHelper;
 use MUtil\Model\ModelAbstract;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 use Zalt\Validator\Model\ModelUniqueValidator;
@@ -65,7 +64,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function __construct(
         SnippetResponderInterface $responder,
-        Translator $translate,
+        TranslatorInterface $translate,
         protected Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected ResultFetcher $resultFetcher,
