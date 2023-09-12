@@ -60,6 +60,13 @@ class PrefillAnswers extends FillBirthDayGender
             $this->addCheckedValue('tf' . $code, $value);
         }
 
+        // TO Token part
+        $this->log("Setting TO token fields");
+        $fields = $this->getTokenInfo($token);
+        foreach ($fields as $code => $value) {
+            $this->addCheckedValue('to' . $code, $value);
+        }
+
         // CP survey answer codes
         $this->log("Filling CP previous answers");
         $previous = $this->getPreviousToken($token);
@@ -70,6 +77,8 @@ class PrefillAnswers extends FillBirthDayGender
         } else {
             $this->log("No previous answers found");
         }
+
+
         
         // RD respondent part
         $this->log("Filling rd respondent fields");
