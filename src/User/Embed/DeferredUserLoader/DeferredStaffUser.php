@@ -17,7 +17,7 @@ use Gems\User\Embed\DeferredUserLoaderAbstract;
 use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\User;
 use Gems\User\UserLoader;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -30,7 +30,7 @@ use MUtil\Translate\Translator;
 class DeferredStaffUser extends DeferredUserLoaderAbstract
 {
     public function __construct(
-        Translator $translator,
+        TranslatorInterface $translator,
         UserLoader $userLoader,
         CurrentUserRepository $currentUserRepository,
         protected Model $modelLoader,

@@ -12,7 +12,7 @@
 namespace Gems\User\Mask;
 
 use MUtil\Translate\TranslateableTrait;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
 /**
@@ -74,7 +74,7 @@ class MaskStore extends \Gems\Loader\TargetLoaderAbstract
      */
     protected $keySeparator = '___';
 
-    public function __construct(ProjectOverloader $_overLoader, Translator $translate)
+    public function __construct(ProjectOverloader $_overLoader, TranslatorInterface $translate)
     {
         $this->translate = $translate;
 

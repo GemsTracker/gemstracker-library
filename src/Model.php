@@ -41,8 +41,8 @@ use MUtil\Db\Expr\CurrentTimestamp;
 use MUtil\Model\DatabaseModelAbstract;
 use MUtil\Model\FolderModel;
 use MUtil\Model\ModelAbstract;
-use MUtil\Translate\Translator;
 use OpenRosa\Model\OpenRosaFormModel;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Transform\ModelTransformerInterface;
@@ -120,7 +120,7 @@ class Model
         protected Adapter $db,
         protected MaskRepository $maskRepository,
         protected ProjectSettings $project,
-        protected Translator $translate,
+        protected TranslatorInterface $translate,
         protected Translated $translatedUtil,
         ProjectOverloader $overloader
     ) {

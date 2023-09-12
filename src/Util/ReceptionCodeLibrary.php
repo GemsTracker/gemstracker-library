@@ -16,7 +16,7 @@ use Gems\Locale\Locale;
 use Gems\Project\ProjectSettings;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
 /**
@@ -49,7 +49,7 @@ class ReceptionCodeLibrary
 
     public function __construct(
         protected ResultFetcher $resultFetcher,
-        protected Translator $translator,
+        protected TranslatorInterface $translator,
         ProjectSettings $projectSettings,
         Locale $locale,
         ProjectOverloader $overloader,

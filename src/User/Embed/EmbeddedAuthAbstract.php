@@ -12,7 +12,7 @@
 namespace Gems\User\Embed;
 
 use Gems\User\User;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -42,7 +42,9 @@ abstract class EmbeddedAuthAbstract implements EmbeddedAuthInterface
      */
     protected string $patientNumber;
 
-    public function __construct(protected Translator $translator)
+    public function __construct(
+        protected TranslatorInterface $translator
+    )
     {}
 
     /**

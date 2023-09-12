@@ -14,7 +14,7 @@ namespace Gems\User\Embed\Redirect;
 use Gems\Menu\RouteHelper;
 use Gems\Repository\RespondentRepository;
 use Gems\User\User;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -27,7 +27,7 @@ class RespondentShowCreatePage extends RespondentShowPage
 {
 
     public function __construct(
-        Translator $translator,
+        TranslatorInterface $translator,
         protected RespondentRepository $respondentRepository,
     )
     {

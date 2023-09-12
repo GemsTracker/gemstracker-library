@@ -2,12 +2,12 @@
 
 namespace Gems\User\Embed;
 
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 abstract class RedirectAbstract implements RedirectInterface
 {
     public function __construct(
-        protected Translator $translator,
+        protected TranslatorInterface $translator,
     )
     {}
 }

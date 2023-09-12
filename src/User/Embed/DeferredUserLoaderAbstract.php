@@ -16,7 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\User\Organization;
 use Gems\User\User;
 use Gems\User\UserLoader;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -32,7 +32,7 @@ abstract class DeferredUserLoaderAbstract
 
     protected int $currentOrganizationId;
     public function __construct(
-        protected Translator $translator,
+        protected TranslatorInterface $translator,
         protected UserLoader $userLoader,
         CurrentUserRepository $currentUserRepository,
     )
