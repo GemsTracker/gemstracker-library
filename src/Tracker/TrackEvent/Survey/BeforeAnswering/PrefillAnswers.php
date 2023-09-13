@@ -92,4 +92,14 @@ class PrefillAnswers extends FillBirthDayGender
         
         parent::processOutput($token);
     }
+
+    public function getTokenInfo(Token $token): array
+    {
+        return [
+            'organizationCode' => $token->getOrganization()->getCode(),
+            'roundDescription' => $token->getRoundDescription(),
+            'roundOrder' => $token->getRoundOrder(),
+            'trackName' => $token->getTrackName(),
+        ];
+    }
 }
