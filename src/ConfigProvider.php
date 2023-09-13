@@ -45,6 +45,12 @@ use Gems\Model\Type\GemsDateTimeType;
 use Gems\Model\Type\GemsDateType;
 use Gems\Model\Type\GemsTimeType;
 use Gems\Route\ModelSnippetActionRouteHelpers;
+use Gems\Screens\AskScreenInterface;
+use Gems\Screens\BrowseScreenInterface;
+use Gems\Screens\EditScreenInterface;
+use Gems\Screens\ShowScreenInterface;
+use Gems\Screens\SubscribeScreenInterface;
+use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Session\PhpSessionPersistenceFactory;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\SnippetsLoader\GemsSnippetResponderFactory;
@@ -204,6 +210,12 @@ class ConfigProvider
                     SurveyBeforeAnsweringEventInterface::class => ['config' => 'tracker.trackEvents.Survey/BeforeAnswering'],
                     SurveyCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Completed'],
                     SurveyDisplayEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Display'],
+                    UnsubscribeScreenInterface::class => ['config' => 'screens.Respondent/Unsubscribe'],
+                    SubscribeScreenInterface::class => ['config' => 'screens.Respondent/Subscribe'],
+                    BrowseScreenInterface::class => ['config' => 'screens.Respondent/Browse'],
+                    EditScreenInterface::class => ['config' => 'screens.Respondent/Edit'],
+                    ShowScreenInterface::class => ['config' => 'screens.Respondent/Show'],
+                    AskScreenInterface::class => ['config' => 'screens.Token/Ask'],
                 ],
                 'extends' => [
                     ComparatorAbstract::class => ['config' => 'tracker.conditions.comparators'],
