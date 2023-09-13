@@ -45,6 +45,12 @@ use Gems\Model\Type\GemsDateTimeType;
 use Gems\Model\Type\GemsDateType;
 use Gems\Model\Type\GemsTimeType;
 use Gems\Route\ModelSnippetActionRouteHelpers;
+use Gems\Screens\AskScreenInterface;
+use Gems\Screens\BrowseScreenInterface;
+use Gems\Screens\EditScreenInterface;
+use Gems\Screens\ShowScreenInterface;
+use Gems\Screens\SubscribeScreenInterface;
+use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Session\PhpSessionPersistenceFactory;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\SnippetsLoader\GemsSnippetResponderFactory;
@@ -188,7 +194,10 @@ class ConfigProvider
         return [
             'settings' => [
                 'implements' => [
+                    AskScreenInterface::class => ['config' => 'screens.Token/Ask'],
+                    BrowseScreenInterface::class => ['config' => 'screens.Respondent/Browse'],
                     DeferredUserLoaderInterface::class => ['config' => 'embed.deferredUserLoader'],
+                    EditScreenInterface::class => ['config' => 'screens.Respondent/Edit'],
                     EmbeddedAuthInterface::class => ['config' => 'embed.auth'],
                     EventSubscriberInterface::class => ['config' => 'events.subscribers'],
                     ExtensionInterface::class => ['config' => 'twig.extensions'],
@@ -196,14 +205,17 @@ class ConfigProvider
                     RespondentChangedEventInterface::class => ['config' => 'tracker.trackEvents.Respondent/Change'],
                     RoundChangedEventInterface::class => ['config' => 'tracker.trackEvents.Round/Changed'],
                     RoundConditionInterface::class => ['config' => 'tracker.conditions.round'],
-                    TrackCalculationEventInterface::class => ['config' => 'tracker.trackEvents.Track/Calculate'],
-                    TrackCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Track/Completed'],
-                    TrackBeforeFieldUpdateEventInterface::class => ['config' => 'tracker.trackEvents.Track/BeforeFieldUpdate'],
-                    TrackFieldUpdateEventInterface::class => ['config' => 'tracker.trackEvents.Track/FieldUpdate'],
-                    TrackConditionInterface::class => ['config' => 'tracker.conditions.track'],
+                    ShowScreenInterface::class => ['config' => 'screens.Respondent/Show'],
+                    SubscribeScreenInterface::class => ['config' => 'screens.Respondent/Subscribe'],
                     SurveyBeforeAnsweringEventInterface::class => ['config' => 'tracker.trackEvents.Survey/BeforeAnswering'],
                     SurveyCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Completed'],
                     SurveyDisplayEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Display'],
+                    TrackBeforeFieldUpdateEventInterface::class => ['config' => 'tracker.trackEvents.Track/BeforeFieldUpdate'],
+                    TrackCalculationEventInterface::class => ['config' => 'tracker.trackEvents.Track/Calculate'],
+                    TrackCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Track/Completed'],
+                    TrackConditionInterface::class => ['config' => 'tracker.conditions.track'],
+                    TrackFieldUpdateEventInterface::class => ['config' => 'tracker.trackEvents.Track/FieldUpdate'],
+                    UnsubscribeScreenInterface::class => ['config' => 'screens.Respondent/Unsubscribe'],
                 ],
                 'extends' => [
                     ComparatorAbstract::class => ['config' => 'tracker.conditions.comparators'],
