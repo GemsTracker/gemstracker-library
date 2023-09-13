@@ -210,7 +210,9 @@ class ScreenLoader
      */
     public function loadRespondentBrowseScreen(string $screenName): BrowseScreenInterface
     {
-        return $this->_loadScreen($screenName, self::RESPONDENT_BROWSE_SCREEN);
+        $screen = $this->_loadScreen($screenName, self::RESPONDENT_BROWSE_SCREEN);
+        /** @var BrowseScreenInterface $screen */
+        return $screen;
     }
 
     /**
@@ -220,7 +222,9 @@ class ScreenLoader
      */
     public function loadRespondentEditScreen(string $screenName): EditScreenInterface
     {
-        return $this->_loadScreen($screenName, self::RESPONDENT_EDIT_SCREEN);
+        $screen = $this->_loadScreen($screenName, self::RESPONDENT_EDIT_SCREEN);
+        /** @var EditScreenInterface $screen */
+        return $screen;
     }
 
     /**
@@ -230,7 +234,9 @@ class ScreenLoader
      */
     public function loadRespondentShowScreen(string $screenName): ShowScreenInterface
     {
-        return $this->_loadScreen($screenName, self::RESPONDENT_SHOW_SCREEN);
+        $screen = $this->_loadScreen($screenName, self::RESPONDENT_SHOW_SCREEN);
+        /** @var ShowScreenInterface $screen */
+        return $screen;
     }
 
     /**
@@ -241,7 +247,9 @@ class ScreenLoader
     public function loadSubscribeScreen(string|null $screenName): SubscribeScreenInterface|null
     {
         if ($screenName) {
-            return $this->_loadScreen($screenName, self::RESPONDENT_SUBSCRIBE_SCREEN);
+            $screen = $this->_loadScreen($screenName, self::RESPONDENT_SUBSCRIBE_SCREEN);
+            /** @var SubscribeScreenInterface $screen */
+            return $screen;
         }
         return null;
     }
@@ -253,7 +261,9 @@ class ScreenLoader
      */
     public function loadTokenAskScreen(string $screenName): AskScreenInterface
     {
-        return $this->_loadScreen($screenName, self::TOKEN_ASK_SCREEN);
+        $screen = $this->_loadScreen($screenName, self::TOKEN_ASK_SCREEN);
+        /** @var AskScreenInterface $screen */
+        return $screen;
     }
 
     /**
@@ -264,7 +274,9 @@ class ScreenLoader
     public function loadUnsubscribeScreen(string|null $screenName): UnsubscribeScreenInterface|null
     {
         if ($screenName) {
-            return $this->_loadScreen($screenName, self::RESPONDENT_UNSUBSCRIBE_SCREEN);
+            $screen = $this->_loadScreen($screenName, self::RESPONDENT_UNSUBSCRIBE_SCREEN);
+            /** @var UnsubscribeScreenInterface $screen */
+            return $screen;
         }
         return null;
     }
