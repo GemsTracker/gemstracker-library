@@ -13,7 +13,7 @@ namespace Gems\Model\Type;
 
 use Zalt\Base\TranslateableTrait;
 use Zalt\Model\Type\AbstractDateType;
-use Zalt\Validator\Model\IsDateModelValidator;
+use Zalt\Validator\Model\Date\IsDateModelValidator;
 
 /**
  * @package    Gems

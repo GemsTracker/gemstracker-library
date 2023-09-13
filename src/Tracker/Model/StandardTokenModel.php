@@ -13,7 +13,6 @@ namespace Gems\Tracker\Model;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-
 use Gems\Date\Period;
 use Gems\Model\Type\TokenValidFromType;
 use Gems\Model\Type\TokenValidUntilType;
@@ -22,7 +21,7 @@ use Gems\User\User;
 use Gems\Util\Translated;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Type\AbstractDateType;
-use Zalt\Validator\Model\AfterDateModelValidator;
+use Zalt\Validator\Model\Date\AfterDateModelValidator;
 
 /**
  * The StandardTokenModel is the model used to display tokens

@@ -14,6 +14,7 @@ CREATE TABLE if not exists gems__respondents (
         grs_last_name              varchar(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
         -- grs_partner_surname_prefix varchar(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
         -- grs_partner_last_name      varchar(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
+        -- grs_partner_name_after     boolean not null default 1,
         grs_gender                 char(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null default 'U',
         grs_birthday               date,
 
