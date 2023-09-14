@@ -14,7 +14,6 @@ namespace Gems\Handlers\Setup;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\ConsentRepository;
-use Gems\Util\ConsentUtil;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Sql\SqlTableModel;

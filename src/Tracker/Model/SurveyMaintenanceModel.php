@@ -40,7 +40,7 @@ use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\ConcatenatedType;
 use Zalt\SnippetsActions\ApplyActionInterface;
 use Zalt\SnippetsActions\SnippetActionInterface;
-use Zalt\Validator\Model\RequireOtherField;
+use Zalt\Validator\Model\RequireOtherFieldValidator;
 
 /**
  *
@@ -296,8 +296,8 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyActionInterfa
             'label' => $message,
             'elementClass' => 'Checkbox',
             'multiOptions' => $yesNo,
-            RequireOtherField::$otherField => 'gsu_id_primary_group',
-            'validators[requirePrim]' => RequireOtherField::class
+            RequireOtherFieldValidator::$otherField => 'gsu_id_primary_group',
+            'validators[requirePrim]' => RequireOtherFieldValidator::class
         ]);
 
         $this->metaModel->set('gsu_id_primary_group', [
