@@ -9,6 +9,8 @@ use Gems\Repository\StaffRepository;
 use Gems\Tracker\ReceptionCode;
 use Gems\User\User;
 use Gems\Util\Localized;
+use Laminas\Filter\Callback;
+use Zalt\Filter\CleanEmailFilter;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Validator\Model\Date\BeforeDateModelValidator;
 
@@ -489,7 +491,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         $this->applyDetailSettings();
         $this->copyKeys(); // The user can edit the keys.
 
-        $ucfirst = new \Zend_Filter_Callback(function($value) {
+        $ucfirst = new Callback(function($value) {
             if (is_string($value)) {
                 return ucfirst($value);
             }
@@ -522,7 +524,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 );
         $this->set('grs_id_user');
 
-        $this->set('gr2o_email', 'filter', new \Gems\Filter\CleanEmail,
+        $this->set('gr2o_email', 'filter', CleanEmailFilter::class,
                 'required', true,
                 'autoInsertNotEmptyValidator', false, // Make sure it works ok with next
                 'size', 30,

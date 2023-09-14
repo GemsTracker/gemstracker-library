@@ -21,6 +21,7 @@ use Gems\Util;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Filter\Dutch\PostcodeFilter;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -180,7 +181,7 @@ class LocationHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $model->setIfExists('glo_zipcode',     'label', $this->_('Zipcode'),
                 'size', 7,
                 'description', $this->_('E.g.: 0000 AA'),
-                'filter', new \Gems\Filter\DutchZipcode()
+                'filter', PostcodeFilter::class
                 );
 
         $model->setIfExists('glo_city',        'label', $this->_('City'));

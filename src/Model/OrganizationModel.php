@@ -326,10 +326,6 @@ class OrganizationModel extends \Gems\Model\JoinModel
             'size' => 50,
             'validators[url]' => 'ExistingUrl',
             ]);
-//        $this->setIfExists('gor_url_base',
-//                'size', 50,
-//                'filter', 'TrailingSlash'
-//                );
         $this->setIfExists('gor_code',
                 'size', 10
                 );

@@ -12,6 +12,7 @@
 namespace Gems\Model;
 
 use MUtil\Filter\Dutch\Burgerservicenummer;
+use Zalt\Filter\Dutch\PostcodeFilter;
 
 /**
  * Class containing the Netherlands specific model extensions.
@@ -128,7 +129,7 @@ class RespondentNlModel extends \Gems\Model\RespondentModel
         $model->set($fieldName,
                 'size', 7,
                 'description', $translator->_('E.g.: 0000 AA'),
-                'filter', new \Gems\Filter\DutchZipcode()
+                'filter', PostcodeFilter::class
                 );
     }
 }
