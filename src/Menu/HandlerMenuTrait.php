@@ -29,15 +29,15 @@ trait HandlerMenuTrait
      * @param array $otherActions
      * @return array|string[]
      */
-    protected function createMenuForHandler(string $controllerClass, string $name, string $label, array $otherActions = [])
+    protected function createMenuForHandler(string $controllerClass, string $name, string $label, array $otherActions = [], string|int|null $position = null, string|null $parent = null)
     {
         $actions = $controllerClass::$actions;
 
         if (isset($actions['index'])) {
-            $parent = $this->createMenuItem($name . '.index', $label);
+            $parent = $this->createMenuItem(name: $name . '.index', label: $label, position: $position, parent: $parent);
             unset($actions['index']);
         } else {
-            $parent = $this->createMenuItem($name, $label, 'container');
+            $parent = $this->createMenuItem(type: 'container', name: $name . '.index', label: $label, position: $position, parent: $parent);
         }
 
         if (isset($actions['create'])) {
@@ -73,12 +73,21 @@ trait HandlerMenuTrait
         return $parent;
     }
 
-    public function createMenuItem(string $name, string $label, string $type = 'route-link-item')
+    public function createMenuItem(string $name, string $label, string $type = 'route-link-item', string|int|null $position = null, string|null $parent = null)
     {
-        return [
+        $item = [
             'name'  => $name,
             'label' => $label,
             'type'  => $type,
         ];
+
+        if ($position !== null) {
+            $item['position'] = $position;
+        }
+        if ($parent !== null) {
+            $item['parent'] = $parent;
+        }
+
+        return $item;
     }
 }
