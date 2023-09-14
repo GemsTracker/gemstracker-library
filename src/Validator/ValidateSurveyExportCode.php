@@ -13,7 +13,6 @@ namespace Gems\Validator;
 use Laminas\Validator\AbstractValidator;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlTableModel;
-use Zalt\Model\Validator\NameAwareValidatorInterface;
 
 /**
  * @package    Gems
@@ -21,7 +20,7 @@ use Zalt\Model\Validator\NameAwareValidatorInterface;
  * @since      Class available since version 1.0
  */
 class ValidateSurveyExportCode extends AbstractValidator
-    implements NameAwareValidatorInterface
+    implements \Zalt\Model\ModelFieldNameAwareInterface
 {
     public const FOUND = 'found';
 
