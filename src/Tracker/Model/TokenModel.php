@@ -14,10 +14,10 @@ use DateTimeInterface;
 use Gems\Model\Dependency\TokenDateFormatDependency;
 use Gems\Model\GemsJoinModel;
 use Gems\Model\MaskedModelTrait;
-use Gems\Model\Type\TokenValidFromType;
-use Gems\Model\Type\TokenValidUntilType;
 use Gems\Model\MetaModelLoader;
 use Gems\Model\Type\TokenDateType;
+use Gems\Model\Type\TokenValidFromType;
+use Gems\Model\Type\TokenValidUntilType;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\TokenRepository;
 use Gems\User\Mask\MaskRepository;
@@ -28,7 +28,7 @@ use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\AbstractDateType;
 use Zalt\SnippetsActions\ApplyActionInterface;
 use Zalt\SnippetsActions\SnippetActionInterface;
-use Zalt\Validator\Model\AfterDateModelValidator;
+use Zalt\Validator\Model\Date\AfterDateModelValidator;
 
 /**
  * @package    Gems

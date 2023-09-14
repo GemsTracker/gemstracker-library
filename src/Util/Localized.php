@@ -44,6 +44,18 @@ class Localized
         return $data;
     }
 
+    public function getDefaultLanguage(): string
+    {
+        if (isset($this->project->locale['default'])) {
+            return $this->project->locale['default'];
+        }
+        if (isset($this->project->locale['availableLocales'])) {
+            $locales = $this->project->locale['availableLocales'];
+            return reset($locales);
+        }
+        return 'en';
+    }
+
     /**
      *
      * @return array Containing all the languages used in this project

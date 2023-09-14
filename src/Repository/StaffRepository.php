@@ -8,8 +8,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\StaffModel;
 use Gems\User\UserLoader;
-use Gems\User\UserRepository;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Loader\ProjectOverloader;
 
@@ -17,9 +16,8 @@ class StaffRepository
 {
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
-        protected Translator $translator,
+        protected TranslatorInterface $translator,
         protected Model $modelLoader,
-        protected \Zend_Db_Adapter_Abstract $zendDb, // init to correctly set the model
         protected ProjectOverloader $overloader,
         protected CurrentUserRepository $currentUserRepository,
     )

@@ -10,7 +10,7 @@ use Gems\Tracker\ReceptionCode;
 use Gems\User\User;
 use Gems\Util\Localized;
 use Zalt\Model\MetaModelInterface;
-use Zalt\Validator\Model\BeforeDateModelValidator;
+use Zalt\Validator\Model\Date\BeforeDateModelValidator;
 
 /**
  *

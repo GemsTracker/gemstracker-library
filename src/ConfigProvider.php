@@ -39,6 +39,7 @@ use Gems\Messenger\MessengerFactory;
 use Gems\Messenger\TransportFactory;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\Bridge\GemsFormBridge;
+use Gems\Model\Bridge\GemsValidatorBridge;
 use Gems\Model\MetaModelLoader as GemsMetaModelLoader;
 use Gems\Model\MetaModelLoaderFactory;
 use Gems\Model\Type\GemsDateTimeType;
@@ -594,6 +595,7 @@ class ConfigProvider
     {
         $settings = MetaModelConfigProvider::getConfig();
         $settings['bridges']['form'] = GemsFormBridge::class;
+        $settings['bridges']['validator'] = GemsValidatorBridge::class;
         $settings['modelTypes'] = [
             MetaModelInterface::TYPE_CHILD_MODEL => SubModelType::class,
             MetaModelInterface::TYPE_DATE => GemsDateType::class,
