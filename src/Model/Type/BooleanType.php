@@ -11,7 +11,12 @@ class BooleanType extends AbstractModelType
 {
     public function apply(MetaModelInterface $metaModel, string $name)
     {
-        $metaModel->setOnLoad($name, 'boolval');
+        $metaModel->setOnLoad($name, [$this, 'castToBoolean']);
+    }
+
+    public function castToBoolean(mixed $value): bool
+    {
+        return (bool) $value;
     }
 
     public function getBaseType(): int
