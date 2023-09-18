@@ -36,6 +36,7 @@ use DateTimeInterface;
 
 use Gems\User\User;
 use Gems\Util\Translated;
+use Laminas\Filter\Digits;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\TableModel;
 use MUtil\Ra;
@@ -702,7 +703,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                     'label', $this->translator->_('Add to date'),
                     'description', $this->translator->_('Can be negative'),
                     'required', false,
-                    'filter', 'Int'
+                    'filter', Digits::class
                     );
             $model->set('gro_valid_after_unit',
                     'label', $this->translator->_('Add to date unit'),
@@ -764,7 +765,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                     'description', $this->translator->_('Can be negative'),
                     'required', false,
                     'default', 2,
-                    'filter', 'Int'
+                    'filter', Digits::class
                     );
             $model->set('gro_valid_for_unit',
                     'label', $this->translator->_('Add to date unit'),
