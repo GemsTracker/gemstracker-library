@@ -47,6 +47,22 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 
     protected $monitorSnippets = 'MonitorSnippet';
 
+    protected array $reportPackageVersions = [
+        'magnafacta/mutil',
+        'magnafacta/zalt-html',
+        'magnafacta/zalt-laminas-filter',
+        'magnafacta/zalt-laminas-validator',
+        'magnafacta/zalt-late',
+        'magnafacta/zalt-loader',
+        'magnafacta/zalt-model',
+        'magnafacta/zalt-soap',
+        'magnafacta/zalt-util',
+        'gemstracker/gems-api',
+        'gemstracker/gems-fhir-api',
+        'gemstracker/gems-oauth2',
+        'gemstracker/gemstracker',
+    ];
+
     /**
      * Set to true in child class for automatic creation of $this->html.
      *
@@ -108,6 +124,15 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $data[$this->_('Server Hostname')]         = php_uname('n');
         $data[$this->_('Server OS')]               = php_uname('s');
         $data[$this->_('Time on server')]          = date('r');
+        foreach ($this->reportPackageVersions as $package) {
+            if (! \Composer\InstalledVersions::isInstalled($package)) {
+                continue;
+            }
+            $display = sprintf('%s (%s)',
+                \Composer\InstalledVersions::getPrettyVersion($package),
+                \Composer\InstalledVersions::getReference($package));
+                $data[$this->_('Version').' '.$package] = $display;
+        }
 
         return $data;
     }
