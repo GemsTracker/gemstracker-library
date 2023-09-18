@@ -575,9 +575,6 @@ class ConfigProvider
     protected function getMigrations(): array
     {
         return [
-            'migrations' => [
-                __DIR__ . '/../configs/db/migrations',
-            ],
             'tables' => [
                 __DIR__ . '/../configs/db/tables',
             ],

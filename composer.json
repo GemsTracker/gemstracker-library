@@ -96,7 +96,6 @@
         "psr/http-message": "^1.0.1",
         "psr/http-server-handler": "^1.0.1",
         "psr/http-server-middleware": "^1.0.1",
-        "robmorgan/phinx": "dev-master",
         "spomky-labs/otphp": "^11.0",
         "symfony/cache": "^6.1.2",
         "symfony/console": "^6.1",
@@ -173,10 +172,6 @@
         {
             "type": "git",
             "url": "https://github.com/MagnaFacta/zalt-util.git"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/jvangestel/phinx.git"
         }
     ],
     "suggest": {
