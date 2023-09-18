@@ -27,6 +27,7 @@ use Gems\Tracker\TrackEvents;
 use Gems\Util\Translated;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
+use Laminas\Filter\Digits;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Intl\Languages;
 use Symfony\Component\Intl\Locales;
@@ -351,7 +352,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyActionInterfa
         $this->metaModel->set('gsu_valid_for_length', [
             'label' => $this->_('Add to inserted end date'),
             'description' => $this->_('Add to the start date to calculate the end date when inserting.'),
-            'filter' => 'Int',
+            'filter' => Digits::class,
         ]);
         $this->metaModel->set('gsu_valid_for_unit', [
             'label' => $this->_('Inserted end date unit'),
