@@ -13,7 +13,7 @@ namespace Gems\Tracker\TrackEvent;
 
 use Gems\Tracker\Snippets\AnswerNameFilterInterface;
 use Gems\Tracker\Token;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 
 /**
@@ -34,7 +34,7 @@ abstract class SurveyAnswerFilterAbstract
      */
     protected $token;
 
-    public function __construct(protected Translator $translator)
+    public function __construct(protected TranslatorInterface $translator)
     {}
 
     // public function filterAnswers(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames);
