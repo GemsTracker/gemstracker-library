@@ -4,7 +4,7 @@ namespace Gems\Translate;
 
 use Gems\Db\ResultFetcher;
 use Gems\Locale\Locale;
-use Phinx\Util\Expression;
+use Laminas\Db\Sql\Expression;
 
 class DbTranslationRepository
 {

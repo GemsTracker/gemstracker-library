@@ -13,9 +13,9 @@ namespace Gems\Tracker\Field;
 
 use Gems\Db\ResultFetcher;
 use Gems\Util\Translated;
+use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Phinx\Util\Expression;
 
 /**
  *
