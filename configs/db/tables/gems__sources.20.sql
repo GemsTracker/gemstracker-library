@@ -25,7 +25,7 @@ CREATE TABLE if not exists gems__sources (
         gso_status          varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default NULL,
         gso_last_synch      timestamp NULL default NULL,
 
-        gso_changed         timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+        gso_changed         timestamp not null default current_timestamp on update current_timestamp,
         gso_changed_by      bigint(20) unsigned NOT NULL,
         gso_created         timestamp NOT NULL default current_timestamp,
         gso_created_by      bigint(20) unsigned NOT NULL,
