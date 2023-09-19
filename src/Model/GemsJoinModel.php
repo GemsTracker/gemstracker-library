@@ -10,10 +10,9 @@ declare(strict_types=1);
 
 namespace Gems\Model;
 
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\TranslateableTrait;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModel;
-use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
 /**

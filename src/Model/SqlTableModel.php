@@ -3,9 +3,9 @@
 namespace Gems\Model;
 
 use Zalt\Base\TranslateableTrait;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModel;
 use Zalt\Model\Sql\SqlRunnerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SqlTableModel extends \Zalt\Model\Sql\SqlTableModel
 {

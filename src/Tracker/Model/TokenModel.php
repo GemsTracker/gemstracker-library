@@ -22,7 +22,7 @@ use Gems\Repository\OrganizationRepository;
 use Gems\Repository\TokenRepository;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\AbstractDateType;

@@ -30,7 +30,7 @@ use Laminas\Db\Sql\Select;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Intl\Languages;
 use Symfony\Component\Intl\Locales;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Html\Raw;

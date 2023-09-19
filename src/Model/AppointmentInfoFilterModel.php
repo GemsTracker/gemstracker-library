@@ -6,8 +6,7 @@ use Gems\Agenda\Repository\FilterRepository;
 use Gems\Model\Dependency\AppointmentInfoTypeDependency;
 use Gems\Repository\AppointmentInfoTypesRepository;
 use Gems\Util\Translated;
-use MUtil\Translate\Translator;
-use Zalt\Model\MetaModelInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
 class AppointmentInfoFilterModel extends SqlTableModel
@@ -15,7 +14,7 @@ class AppointmentInfoFilterModel extends SqlTableModel
     public function __construct(
         MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
-        Translator $translator,
+        TranslatorInterface $translator,
         protected readonly Translated $translatedUtil,
         protected readonly FilterRepository $filterRepository,
         protected readonly AppointmentInfoTypesRepository $appointmentInfoTypesRepository,
