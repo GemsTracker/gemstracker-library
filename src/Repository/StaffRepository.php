@@ -57,7 +57,7 @@ class StaffRepository
 
         $staffModel = $this->getStaffModel();
 
-        $staffModel->addTransformer(new ValidateFieldsTransformer($this->overloader, $this->currentUserRepository->getCurrentUserId()));
+        $staffModel->addTransformer(new ValidateFieldsTransformer($staffModel, $this->overloader, $this->currentUserRepository->getCurrentUserId()));
         $result = $staffModel->save($newUserValues);
         if ($result) {
             return true;
