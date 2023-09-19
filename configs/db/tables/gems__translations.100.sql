@@ -1,5 +1,5 @@
 
-CREATE TABLE `gems__translations` (
+CREATE TABLE if not exists gems__translations (
       gtrs_id               bigint(20) unsigned NOT NULL AUTO_INCREMENT,
       gtrs_table            varchar(128) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NOT NULL,
       gtrs_field            varchar(128) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NOT NULL,

@@ -1,5 +1,5 @@
 
-CREATE TABLE IF NOT EXISTS gems__sources (
+CREATE TABLE if not exists gems__sources (
         gso_id_source       int(10) unsigned NOT NULL auto_increment,
         gso_source_name     varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NOT NULL,
 

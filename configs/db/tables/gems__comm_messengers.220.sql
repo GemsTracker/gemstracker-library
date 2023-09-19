@@ -1,5 +1,5 @@
 
-CREATE TABLE gems__comm_messengers (
+CREATE TABLE if not exists gems__comm_messengers (
     gcm_id_messenger            bigint unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
     gcm_id_order                int unsigned NOT NULL,
     gcm_type                    varchar(32) COLLATE 'utf8mb4_unicode_ci' NOT NULL,
