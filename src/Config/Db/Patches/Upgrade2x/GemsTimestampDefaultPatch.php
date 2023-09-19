@@ -23,6 +23,7 @@ class GemsTimestampDefaultPatch extends PatchAbstract
 
     public function getDescription(): string|null
     {
+        // Note: this resets any ON UPDATE statements!
         return 'Change all created, _opened and _changed columns with an invalid default to CURRENT_TIMESTAMP';
     }
 
@@ -52,7 +53,7 @@ class GemsTimestampDefaultPatch extends PatchAbstract
                 }
                 // We only want to update the default of _created, _opened and _changed columns.
                 // Note that some columns are just called 'created'.
-                if (!preg_match('/(created|_opened|_changed)$/', $column['COLUMN_NAME'])) {
+                if (!preg_match('/(created|_opened|_changed?)$/', $column['COLUMN_NAME'])) {
                     continue;
                 }
                 $modify_columns[] = $column;
