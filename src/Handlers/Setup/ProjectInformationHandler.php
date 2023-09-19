@@ -392,6 +392,12 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         if ($project->offsetExists('routes')) {
             $project->offsetUnset('routes');
         }
+        // Don't show the database password in plain text.
+        if ($project->offsetExists('db')) {
+            if (isset($project->db['password'])) {
+                $project->db['password'] = '********';
+            }
+        }
 
         $this->html->h2($this->_('Project settings'));
         $appName = $this->config['app']['name'] ?? 'GemsTracker';

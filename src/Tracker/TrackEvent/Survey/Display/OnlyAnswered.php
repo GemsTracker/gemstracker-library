@@ -35,18 +35,19 @@ class OnlyAnswered extends SurveyAnswerFilterAbstract
      *
      * @param ArrayObject $inputArray
      * @param DataReaderInterface $model
-     * @return booleangetRows
+     * @return array
      */
     public function array_filter(ArrayObject $inputArray, DataReaderInterface $model): array
     {
         $outputArray = array();
+        $metaModel = $model->getMetaModel();
         foreach ($inputArray as $key => $value) {
             // Null and empty string are skipped
             if (is_null($value) || $value === '') {
                 continue;
             }
             // Maybe do a check on multiOptions for checkboxes etc. to disable some 0 values $model->get($key, 'multiOptions');
-            if ($value == '0' && $options = $model->get($key, 'multiOptions')) {
+            if ($value == '0' && $options = $metaModel->get($key, 'multiOptions')) {
                 if (count($options) == 2) {
                     // Probably a checkbox (multi flexi in limesurvey)
                     continue;

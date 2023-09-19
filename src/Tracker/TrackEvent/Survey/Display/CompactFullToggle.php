@@ -55,12 +55,13 @@ class CompactFullToggle extends SurveyAnswerFilterAbstract
         }
 
         $keys = array();
+        $metaModel = $model->getMetaModel();
         if ($requestFullAnswers !== false) {
             // No filtering
-            return $model->getItemsOrdered();
+            return $metaModel->getItemsOrdered();
 
         } else {
-            foreach ($model->getItemNames() as $name) {
+            foreach ($metaModel->getItemNames() as $name) {
                 $start = substr(strtolower($name),0,$this->includeLength);
                 if (in_array($start, $this->includeStarts)) {
                     $keys[$name] = $name;

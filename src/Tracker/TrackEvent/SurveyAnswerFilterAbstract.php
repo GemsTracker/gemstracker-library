@@ -13,7 +13,7 @@ namespace Gems\Tracker\TrackEvent;
 
 use Gems\Tracker\Snippets\AnswerNameFilterInterface;
 use Gems\Tracker\Token;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 
 /**
@@ -34,7 +34,7 @@ abstract class SurveyAnswerFilterAbstract
      */
     protected $token;
 
-    public function __construct(protected Translator $translator)
+    public function __construct(protected TranslatorInterface $translator)
     {}
 
     // public function filterAnswers(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames);
@@ -67,12 +67,13 @@ abstract class SurveyAnswerFilterAbstract
      */
     protected function getHeaders(DataReaderInterface $model, array $currentNames): array
     {
-        $results    = array();
+        $results   = [];
+        $metaModel = $model->getMetaModel();
         foreach ($currentNames as $name) {
-            if ($model->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {
+            if ($metaModel->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {
                 $results[$name] = $name;
 
-            } elseif ($parent = $model->get($name, 'parent_question')) {
+            } elseif ($parent = $metaModel->get($name, 'parent_question')) {
                 // Insert parent header on name if it was not shown before
                 $results[$parent] = $parent;
             }
@@ -100,14 +101,15 @@ abstract class SurveyAnswerFilterAbstract
     protected function restoreHeaderPositions(DataReaderInterface $model, array $currentNames): array
     {
         $lastParent = null;
-        $results    = array();
+        $results    = [];
+        $metaModel  = $model->getMetaModel();
         foreach ($currentNames as $name) {
-            if ($model->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {
+            if ($metaModel->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {
                 // Skip header types that contain no value
                 continue;
             }
 
-            if ($parent = $model->get($name, 'parent_question')) {
+            if ($parent = $metaModel->get($name, 'parent_question')) {
                 // Check for change of parent
                 if ($lastParent !== $parent) {
                     if (isset($results[$parent])) {
