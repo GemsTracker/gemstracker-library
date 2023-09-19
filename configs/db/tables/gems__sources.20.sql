@@ -27,7 +27,7 @@ CREATE TABLE if not exists gems__sources (
 
         gso_changed         timestamp not null default current_timestamp on update current_timestamp,
         gso_changed_by      bigint(20) unsigned NOT NULL,
-        gso_created         timestamp NOT NULL default current_timestamp,
+        gso_created         timestamp not null default current_timestamp,
         gso_created_by      bigint(20) unsigned NOT NULL,
 
         PRIMARY KEY  (gso_id_source),

@@ -15,7 +15,7 @@ CREATE TABLE if not exists gems__masks
 
     gm_changed              timestamp not null default current_timestamp on update current_timestamp,
     gm_changed_by           bigint unsigned not null,
-    gm_created              timestamp       not null default current_timestamp,
+    gm_created              timestamp not null default current_timestamp,
     gm_created_by           bigint unsigned not null,
 
     PRIMARY KEY (gm_id)
