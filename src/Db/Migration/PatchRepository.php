@@ -136,7 +136,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                 $matchingLog = $patchesLog[$patchRow['name']];
                 $patchesInfo[$patchKey]['status'] = $matchingLog['gml_status'];
                 $patchesInfo[$patchKey]['executed'] = $matchingLog['gml_created'];
-                $patchesInfo[$patchKey]['sql'] = $matchingLog['gml_sql'];
+                //$patchesInfo[$patchKey]['sql'] = $matchingLog['gml_sql'];
                 $patchesInfo[$patchKey]['comment'] = $matchingLog['gml_comment'];
             }
         }
