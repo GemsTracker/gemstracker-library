@@ -1018,7 +1018,7 @@ ALTER TABLE gems__tokens ADD
 
 ALTER TABLE gems__tokens ADD
         gto_id_relation  bigint(20) NULL DEFAULT NULL
-        AFTER gto_round_description;
+        AFTER gto_id_relationfield;
 
 -- GEMS VERSION: 58
 -- PATCH: New rights for respondent comm log
