@@ -145,7 +145,7 @@ class PatchRepository extends MigrationRepositoryAbstract
     }
     public function runPatch(array $patchInfo): void
     {
-        if (!isset($patchInfo['db'], $patchInfo['sql']) || empty($patchInfo['sql']) || !array($patchInfo['sql'])) {
+        if (!isset($patchInfo['db'], $patchInfo['sql']) || empty($patchInfo['sql']) || !is_array($patchInfo['sql'])) {
             throw new \Exception('Not enough info to run patch');
         }
         $adapter = $this->databases->getDatabase($patchInfo['db']);
