@@ -36,4 +36,4 @@ CREATE TABLE if not exists gems__sources (
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 20
-    DEFAULT CHARSET=utf8;
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
