@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Respondent\Consent;
 
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\Respondent\RespondentConsentLogModel;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker\Respondent;
 use MUtil\Model\TableModel;
@@ -58,7 +59,8 @@ class RespondentConsentLogSnippet extends ModelTableSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuHelper,
-        TranslatorInterface $translate
+        TranslatorInterface $translate,
+        protected readonly RespondentConsentLogModel $respondentConsentLogModel,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
 
@@ -82,50 +84,13 @@ class RespondentConsentLogSnippet extends ModelTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
-        $respModel = $this->model;
-
-        $fieldOptions = [];
-        $valueOptions = [];
-        foreach ($respModel->consentFields as $field) {
-            $fieldOptions[$field] = $respModel->get($field, 'label');
-            $options      = (array) $respModel->get($field, 'multiOptions');
-            $valueOptions = array_merge($valueOptions, $options);
-        }
-        // \MUtil\EchoOut\EchoOut::track($fieldOptions, $valueOptions);
-
-        $model = new TableModel('gems__log_respondent_consents');
-
-        $model->set('glrc_consent_field', [
-            'label' => $this->_('Type'),
-            'multiOptions' => $fieldOptions,
-        ]);
-        $model->set('glrc_old_consent', [
-            'label' => $this->_('Previous consent'),
-            'multiOptions' => $valueOptions,
-        ]);
-        $model->set('glrc_new_consent', [
-            'label' => $this->_('New consent'),
-            'multiOptions' => $valueOptions,
-        ]);
-        $model->set('glrc_created', [
-            'label' => $this->_('Changed on'),
-            'dateFormat' => $respModel->get('gr2o_changed', 'dateFormat'),
-            'formatFunction' => $respModel->get('gr2o_changed', 'formatFunction'),
-        ]);
-        $model->set('glrc_created_by', [
-            'label' => $this->_('Changed by'),
-            'multiOptions' => $respModel->get('gr2o_changed_by', 'multiOptions'),
-        ]);
-
         if ($this->respondent && $this->respondent->exists) {
-            $this->extraFilter = [
+            $this->respondentConsentLogModel->setFilter([
                 'glrc_id_user' => $this->respondent->getId(),
                 'glrc_id_organization' => $this->respondent->getOrganizationId(),
-            ];
+            ]);
         }
-
-
-        return $model;
+        return $this->respondentConsentLogModel;
     }
 
     /**

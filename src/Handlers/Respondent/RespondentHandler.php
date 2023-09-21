@@ -135,7 +135,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $createEditSnippets = [
         'Respondent\\RespondentFormSnippet',
-//        'Respondent\\Consent\\RespondentConsentLogSnippet',
+        'Respondent\\Consent\\RespondentConsentLogSnippet',
         ];
 
     /**

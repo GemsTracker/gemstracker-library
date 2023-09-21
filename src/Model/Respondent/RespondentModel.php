@@ -330,7 +330,10 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $this->consentRepository->getUserConsentOptions(),
             'separator' => ' ',
         ]);
-        $this->setIfExists('gr2o_opened');
+        foreach ($this->consentFields as $consent) {
+            $this->addColumn($consent, 'old_' . $consent);
+            $this->metaModel->set('old_' . $consent, ['elementClass' => 'hidden']);
+        }
 
         $changers = Late::method($this->staffRepository, 'getStaff');
         $this->setIfExists('gr2o_opened', [
@@ -480,6 +483,46 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         foreach ($names as $name) {
             $this->setIfExists($name, $options);
         }
+    }
+
+    /**
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @return int Number of consent changes logged
+     */
+    public function logConsentChanges(array $newValues): int
+    {
+        $logModel = $this->metaModel->getMetaModelLoader()->createModel(RespondentConsentLogModel::class);
+
+        $changes = 0;
+        foreach ($this->consentFields as $consent) {
+            $oldConsent = 'old_' . $consent;
+            if (isset($newValues['gr2o_id_user'], $newValues['gr2o_id_organization'], $newValues[$consent]) &&
+                array_key_exists($oldConsent, $newValues) &&  // Old consent can be empty
+                ($newValues[$consent] != $newValues[$oldConsent]) ) {
+
+                $values['glrc_id_user']         = $newValues['gr2o_id_user'];
+                $values['glrc_id_organization'] = $newValues['gr2o_id_organization'];
+                $values['glrc_consent_field']   = $consent;
+                $values['glrc_old_consent']     = $newValues[$oldConsent];
+                $values['glrc_new_consent']     = $newValues[$consent];
+                $values['glrc_created']         = "CURRENT_TIMESTAMP";
+                $values['glrc_created_by']      = $this->currentUser->getUserId();
+
+                $logModel->save($values);
+                $changes++;
+            }
+        }
+
+        return $changes;
+    }
+
+    public function save(array $newValues, array $filter = null, array $saveTables = null): array
+    {
+        $output = parent::save($newValues, $filter, $saveTables);
+        $this->logConsentChanges($output);
+
+        return $output;
     }
 
     /**
