@@ -13,7 +13,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Model;
+use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\ConsentRepository;
 use Gems\Repository\MailRepository;
 use Gems\Repository\OrganizationRepository;
@@ -96,13 +96,9 @@ class RespondentTest extends TestCase
         $currentUserRepositoryProphecy->getCurrentUserId()->willReturn(1);
         $currentUserRepository = $currentUserRepositoryProphecy->reveal();
 
-        $modelLoaderProphecy = $this->prophesize(Model::class);
-
-        $respondentModelProphecy = $this->prophesize(Model\RespondentModel::class);
+        $respondentModelProphecy = $this->prophesize(RespondentModel::class);
         $respondentModelProphecy->loadFirst(Argument::type('array'))->willReturn($data);
-
-        $modelLoaderProphecy->getRespondentModel(true)->willReturn($respondentModelProphecy->reveal());
-        $modelLoader = $modelLoaderProphecy->reveal();
+        $respondentModelProphecy->applyStringAction(Argument::type('string'), Argument::type('bool'));
 
         return new Respondent(
             $patientId,
@@ -110,15 +106,15 @@ class RespondentTest extends TestCase
             $respondentId,
             $consentRepository,
             $mailRepository,
+            $maskRepository,
             $organizationRepository,
             $receptionCodeRepository,
+            $respondentModelProphecy->reveal(),
             $resultFetcher,
-            $maskRepository,
             $translator,
             $translatedUtil,
             $tracker,
             $currentUserRepository,
-            $modelLoader,
         );
     }
 }

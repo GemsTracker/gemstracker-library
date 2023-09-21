@@ -89,11 +89,11 @@ class Respondent
         protected readonly MaskRepository          $maskRepository,
         protected readonly OrganizationRepository  $organizationRepository,
         protected readonly ReceptionCodeRepository $receptionCodeRepository,
+        protected readonly RespondentModel         $respondentModel,
         protected readonly ResultFetcher           $resultFetcher,
         protected readonly Translator              $translator,
         protected readonly Translated              $translatedUtil,
         protected readonly Tracker                 $tracker,
-        protected readonly RespondentModel         $respondentModel,
         readonly CurrentUserRepository             $currentUserRepository,
     )
     {
