@@ -16,8 +16,7 @@ use DateTimeInterface;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Model;
-use Gems\Model\RespondentModel;
+use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\ConsentRepository;
 use Gems\Repository\MailRepository;
 use Gems\Repository\OrganizationRepository;
@@ -69,8 +68,6 @@ class Respondent
      */
     protected int $maxPhoneNumber = 4;
 
-    protected RespondentModel $respondentModel;
-
     /**
      *
      * @var string Respondent language
@@ -84,24 +81,24 @@ class Respondent
      * @param int $respondentId   Optional respondent id, used when patient id is empty
      */
     public function __construct(
-        protected readonly string $patientId,
-        protected readonly int $organizationId,
-        protected int|null $respondentId = null,
-        protected readonly ConsentRepository $consentRepository,
-        protected readonly MailRepository $mailRepository,
-        protected readonly OrganizationRepository $organizationRepository,
+        protected string                           $patientId,
+        protected int                              $organizationId,
+        protected int|null                         $respondentId = null,
+        protected readonly ConsentRepository       $consentRepository,
+        protected readonly MailRepository          $mailRepository,
+        protected readonly MaskRepository          $maskRepository,
+        protected readonly OrganizationRepository  $organizationRepository,
         protected readonly ReceptionCodeRepository $receptionCodeRepository,
-        protected readonly ResultFetcher $resultFetcher,
-        protected readonly MaskRepository $maskRepository,
-        protected readonly Translator $translator,
-        protected readonly Translated $translatedUtil,
-        protected readonly Tracker $tracker,
-        readonly CurrentUserRepository $currentUserRepository,
-        readonly Model $modelLoader,
+        protected readonly ResultFetcher           $resultFetcher,
+        protected readonly Translator              $translator,
+        protected readonly Translated              $translatedUtil,
+        protected readonly Tracker                 $tracker,
+        protected readonly RespondentModel         $respondentModel,
+        readonly CurrentUserRepository             $currentUserRepository,
     )
     {
         $this->currentUserId = $this->currentUserRepository->getCurrentUserId();
-        $this->respondentModel = $modelLoader->getRespondentModel(true);
+        $this->respondentModel->applyStringAction('edit', true);
         if ($this->addLoginCheck) {
             $this->respondentModel->addLoginCheck();
         }

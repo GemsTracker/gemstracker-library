@@ -21,6 +21,8 @@ use Gems\Pdf;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\SurveyRepository;
+use Gems\SnippetsActions\ApplyLegacyActionInterface;
+use Gems\SnippetsActions\ApplyLegacyActionTrait;
 use Gems\Tracker;
 use Gems\Tracker\Model\Dependency\SurveyMaintenanceDependency;
 use Gems\Tracker\TrackEvents;
@@ -39,7 +41,6 @@ use Zalt\Html\Sequence;
 use Zalt\Model\Dependency\ValueSwitchDependency;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\ConcatenatedType;
-use Zalt\SnippetsActions\ApplyActionInterface;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\Validator\Model\RequireOtherFieldValidator;
 
@@ -51,8 +52,10 @@ use Zalt\Validator\Model\RequireOtherFieldValidator;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class SurveyMaintenanceModel extends GemsJoinModel implements ApplyActionInterface
+class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionInterface
 {
+    use ApplyLegacyActionTrait;
+
     /**
      *
      * @var \Gems\User\User

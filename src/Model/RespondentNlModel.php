@@ -11,8 +11,9 @@
 
 namespace Gems\Model;
 
-use MUtil\Filter\Dutch\Burgerservicenummer;
+use Zalt\Filter\Dutch\BurgerservicenummerFilter;
 use Zalt\Filter\Dutch\PostcodeFilter;
+use Zalt\Validator\Dutch\BurgerServiceNummer;
 
 /**
  * Class containing the Netherlands specific model extensions.
@@ -96,12 +97,12 @@ class RespondentNlModel extends \Gems\Model\RespondentModel
      */
     public static function setDutchSsn(\MUtil\Model\ModelAbstract $model, \Zend_Translate_Adapter $translator, $fieldName = 'grs_ssn')
     {
-        $bsn = new Burgerservicenummer();
+        $bsn = new BurgerServiceNummer();
 
         $model->set($fieldName,
                 'size', 10,
                 'maxlength', 12,
-                'filter', new \MUtil\Filter\Dutch\Burgerservicenummer(),
+                'filter', BurgerservicenummerFilter::class,
                 'validators[bsn]', $bsn);
 
         if ($_ENV['APP_ENV'] !== 'production') {

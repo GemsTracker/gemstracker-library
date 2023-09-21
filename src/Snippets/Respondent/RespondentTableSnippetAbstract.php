@@ -13,6 +13,7 @@ namespace Gems\Snippets\Respondent;
 
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\Respondent\RespondentModel;
 use Gems\User\Mask\MaskRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -65,7 +66,8 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
-        protected MaskRepository $maskRepository,
+        protected readonly MaskRepository $maskRepository,
+        protected readonly RespondentModel $respondentModel,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
@@ -205,10 +207,6 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      */
     protected function createModel(): DataReaderInterface
     {
-        if (! $this->model instanceof \Gems\Model\RespondentModel) {
-            $this->model = $this->loader->getModels()->createRespondentModel();
-            $this->model->applyBrowseSettings();
-        }
-        return $this->model;
+        return $this->respondentModel;
     }
 }

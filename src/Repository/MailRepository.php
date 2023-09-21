@@ -48,6 +48,7 @@ class MailRepository
         ksort($pairs);
         return $pairs;
     }
+
     public function getRespondentTrackNoMailCodeValue(): int
     {
         $mailCodes = $this->getRespondentTrackMailCodes();

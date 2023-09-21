@@ -12,11 +12,11 @@
 namespace Gems\Snippets\Subscribe;
 
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Loader;
 use Gems\Locale\Locale;
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\Respondent\RespondentModel;
+use Gems\Repository\MailRepository;
 use Gems\Snippets\FormSnippetAbstract;
-use Gems\Util;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -57,12 +57,12 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        protected Loader $loader,
-        protected Util $util,
-        protected MenuSnippetHelper $menuHelper,
-        protected Locale $locale,
+        MenuSnippetHelper $menuHelper,
+        protected readonly Locale $locale,
         protected readonly Adapter $db,
         protected readonly CurrentUserRepository $currentUserRepository,
+        protected readonly MailRepository $mailRepository,
+        protected readonly RespondentModel $respondentModel,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
 
@@ -115,9 +115,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         $resultSet->buffer();
         $userIds = $resultSet->current(); // Take only the first one
 
-        $model = $this->loader->getModels()->createRespondentModel();
-
-        $mailCodes = $this->util->getDbLookup()->getRespondentMailCodes();
+        $mailCodes = $this->mailRepository->getRespondentMailCodes();
         // Use the second mailCode, the first is the no-mail code.
         next($mailCodes);
         $mailable = key($mailCodes);
@@ -140,8 +138,8 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         }
         // \MUtil\EchoOut\EchoOut::track($values);
 
-        $model->save($values);
+        $this->respondentModel->save($values);
 
-        return $model->getChanged();
+        return $this->respondentModel->getChanged();
     }
 }

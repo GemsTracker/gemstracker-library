@@ -28,7 +28,7 @@ use Symfony\Component\Intl\Languages;
  */
 class Localized
 {
-    public function __construct(protected Locale $locale, protected ProjectSettings $project )
+    public function __construct(protected Locale $locale, protected ProjectSettings $project)
     {}
 
     public function getCountries()

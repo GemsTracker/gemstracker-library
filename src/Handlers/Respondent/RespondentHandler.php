@@ -12,9 +12,10 @@
 namespace Gems\Handlers\Respondent;
 
 use Gems\Db\ResultFetcher;
+use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
-use Gems\Model\RespondentModel;
+use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Repository\TrackDataRepository;
@@ -134,7 +135,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $createEditSnippets = [
         'Respondent\\RespondentFormSnippet',
-        'Respondent\\Consent\\RespondentConsentLogSnippet',
+//        'Respondent\\Consent\\RespondentConsentLogSnippet',
         ];
 
     /**
@@ -286,11 +287,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         TranslatorInterface $translate,
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
-        protected MaskRepository $maskRepository,
-        protected Model $modelLoader,
-        protected OrganizationRepository $organizationRepository,
-        protected ResultFetcher $resultFetcher,
-        protected TrackDataRepository $trackDataRepository,
+        protected readonly MaskRepository $maskRepository,
+        protected readonly Model $modelLoader,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly RespondentModel $respondentModel,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly TrackDataRepository $trackDataRepository,
     ) {
         parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
     }
@@ -437,28 +439,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected function createModel(bool $detailed, string $action): RespondentModel
     {
-        $model = $this->modelLoader->createRespondentModel();
-
-        if (! $detailed) {
-            $model->applyBrowseSettings();
-        } else {
-            switch ($action) {
-                case 'create':
-                case 'change-consent':
-                case 'edit':
-                case 'import':
-                case 'simple-api':
-                    $model->applyEditSettings($action == 'create');
-                    break;
-
-                case 'delete':
-                default:
-                    $model->applyDetailSettings();
-                    break;
-            }
-        }
-
-        return $model;
+        $this->respondentModel->applyStringAction($action, $detailed);
+        return $this->respondentModel;
     }
 
     /**
@@ -550,6 +532,19 @@ class RespondentHandler extends RespondentChildHandlerAbstract
 
             $export->render($patients, $group, $format);
         }
+    }
+
+    public function getBrowseColumns(): bool|array
+    {
+        $br = Html::create('br');
+        $space = Html::raw('&nbsp;');
+
+        return [
+            10 => ['gr2o_patient_nr', $br, 'gor_name'],
+            20 => ['name', $br, 'gr2o_consent'],
+            30 => ['grs_address_1', $br, 'grs_zipcode', $space, 'grs_city'],
+            40 => ['gr2o_opened_by', $br, 'gr2o_opened'],
+        ];
     }
 
     /**

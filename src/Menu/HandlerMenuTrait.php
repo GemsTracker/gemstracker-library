@@ -37,7 +37,7 @@ trait HandlerMenuTrait
             $parent = $this->createMenuItem(name: $name . '.index', label: $label, position: $position, parent: $parent);
             unset($actions['index']);
         } else {
-            $parent = $this->createMenuItem(type: 'container', name: $name . '.index', label: $label, position: $position, parent: $parent);
+            $parent = $this->createMenuItem($name, $label, 'container', $position, $parent);
         }
 
         if (isset($actions['create'])) {

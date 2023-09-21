@@ -24,7 +24,7 @@ use Gems\Model\JoinModel;
 use Gems\Model\LogModel;
 use Gems\Model\MaskedModel;
 use Gems\Model\OrganizationModel;
-use Gems\Model\RespondentModel;
+use Gems\Model\Respondent\RespondentModel;
 use Gems\Model\RespondentRelationModel;
 use Gems\Model\SiteModel;
 use Gems\Model\StaffLogModel;
@@ -279,15 +279,16 @@ class Model
      * Load project specific model or general \Gems model otherwise
      *
      * @return RespondentModel
+     * @deprecated
      */
     public function createRespondentModel(): RespondentModel
     {
         /**
          * @var $model RespondentModel
          */
-        $model = $this->_createModel('RespondentModel');
+        $model = $this->_createModel(RespondentModel::class);
 
-        $this->setAsGemsUserId($model, 'grs_id_user');
+//        $this->setAsGemsUserId($model, 'grs_id_user');
 
         return $model;
     }
@@ -450,23 +451,16 @@ class Model
      *
      * @param boolean $detail When true more information needed for individual item display is added to the model.
      * @return RespondentModel
+     * @deprecated
      */
     public function getRespondentModel(bool $detailed): RespondentModel
     {
-        static $isDetailed;
-        static $model;
-
-        if ($model && ($isDetailed === $detailed)) {
-            return $model;
-        }
-
-        $isDetailed = $detailed;
         $model      = $this->createRespondentModel();
 
         if ($detailed) {
-            $model->applyDetailSettings();
+            $model->applyStringAction('edit', true);
         } else {
-            $model->applyBrowseSettings();
+            $model->applyStringAction('index', false);
         }
 
         return $model;

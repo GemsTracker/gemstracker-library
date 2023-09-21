@@ -238,15 +238,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected function createModel(bool $detailed, string $action): DataReaderInterface
     {
-        if (('create' == $action) || ('edit' == $action)) {
-            $actionClass = new EditAction();
-        } elseif ($detailed) {
-            $actionClass = new ShowAction();
-        } else {
-            $actionClass = new BrowseSearchAction();
-        }
-        $this->surveyMaintenanceModel->applyAction($actionClass);
-
+        $this->surveyMaintenanceModel->applyStringAction($action, $detailed);
         return $this->surveyMaintenanceModel;
     }
 

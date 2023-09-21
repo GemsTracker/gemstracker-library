@@ -5,8 +5,8 @@ namespace Gems\Repository;
 
 
 use Gems\Db\ResultFetcher;
-use Gems\Model;
-use Gems\Model\RespondentModel;
+use Gems\Model\MetaModelLoader;
+use Gems\Model\Respondent\RespondentModel;
 use Gems\Tracker\Respondent;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\Like;
@@ -14,8 +14,6 @@ use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Predicate\PredicateSet;
 use Laminas\Db\TableGateway\TableGateway;
 use Psr\Http\Message\ServerRequestInterface;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
 use Zalt\Loader\ProjectOverloader;
 
 class RespondentRepository
@@ -25,13 +23,11 @@ class RespondentRepository
     protected array $respondents = [];
 
     public function __construct(
-        protected Adapter $db, 
-        protected Model $modelLoader, 
-        protected ProjectOverloader $overLoader,
-        protected ResultFetcher $resultFetcher,
+        protected readonly MetaModelLoader $modelLoader,
+        protected readonly ProjectOverloader $overLoader,
+        protected readonly ResultFetcher $resultFetcher,
     )
-    {
-    }
+    { }
 
     public function getRespondent(?string $patientId, ?int $organizationId, ?int $respondentId = null): Respondent
     {
@@ -76,7 +72,13 @@ class RespondentRepository
 
     public function getRespondentModel(bool $detailed = false): RespondentModel
     {
-        return $this->modelLoader->getRespondentModel($detailed);
+        /**
+         * @var RespondentModel $model
+         */
+        $model = $this->modelLoader->createModel(RespondentModel::class);
+        $model->applyStringAction('edit', true);
+
+        return $model;
     }
 
     public function getPatient(string $patientNr, ?int $organizationId=null): ?array
