@@ -1114,7 +1114,7 @@ class LimeSurvey3m00FieldMap
      * @param bool $withExpressions Keep expressions?
      * @return string
      */
-    public function removeMarkup(string $text, bool $withExpressions): string
+    public function removeMarkup(string $text, bool $withExpressions = false): string
     {
         if ($withExpressions) {
             return trim(Html::removeMarkup($text, 'b|i|u|em|strong'));
