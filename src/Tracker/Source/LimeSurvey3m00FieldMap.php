@@ -925,6 +925,7 @@ class LimeSurvey3m00FieldMap
 
                     $parent = $tmpres;
                     $parent['id'] = $field['sid'] . 'X' . $field['gid'] . 'X' . $field['qid'];
+                    $parent['code'] = $field['title'];
 
                     // Add non answered question for grouping
                     $result[$field['title']] = $parent;
@@ -932,8 +933,8 @@ class LimeSurvey3m00FieldMap
                 }
                 $tmpres['parent'] = $field['title'];
                 $tmpres['question'] = $this->removeMarkup($field['sq_question']);
+                $tmpres['fullQuestion'] = $this->removeMarkup($field['sq_question'], true);
                 $tmpres['class'] = SurveyModel::CLASS_SUB_QUESTION;
-                $tmpres['code'] = $field['code'] .= '_' . $field['sq_title'];
             }
             $tmpres['answers'] = $this->_getPossibleAnswers($field);
 
@@ -1110,10 +1111,14 @@ class LimeSurvey3m00FieldMap
      * Removes all markup from input
      *
      * @param string $text Input possibly containing html
+     * @param bool $withExpressions Keep expressions?
      * @return string
      */
-    public function removeMarkup(string $text): string
+    public function removeMarkup(string $text, bool $withExpressions): string
     {
+        if ($withExpressions) {
+            return trim(Html::removeMarkup($text, 'b|i|u|em|strong'));
+        }
         return trim(StringUtil::beforeChars(Html::removeMarkup($text, 'b|i|u|em|strong'), '{'));
     }
 
