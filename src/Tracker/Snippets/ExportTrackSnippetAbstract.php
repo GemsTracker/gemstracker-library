@@ -174,7 +174,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             // Log Export
             $data = $this->formData;
             // Remove unuseful data
-            unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId]);
+            unset($data['button_spacer'], $data['current_step'], $data[$this->csrfName]);
             // Add useful data
             $data['localfile']    = '...' . substr($localFilename, -30);
             $data['downloadname'] = $downloadName;

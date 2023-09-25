@@ -20,6 +20,8 @@ use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
 use Gems\SnippetsActions\Show\ShowAction;
+use Mezzio\Csrf\CsrfGuardInterface;
+use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -82,6 +84,13 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
     {
         parent::__construct($responder, $metaModelLoader, $translate);
         Html::init();
+    }
+
+    public function getCsrfToken()
+    {
+        /** @var CsrfGuardInterface $csrfGuard */
+        $csrfGuard = $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
+        return $csrfGuard->generateToken();
     }
 
     /**
@@ -255,6 +264,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
 
         } elseif ($action instanceof CreateAction) {
             $action->class = "formTable";
+            $action->csrfToken = $this->getCsrfToken();
             $action->addCurrentParent = true;
             $action->addCurrentChildren = false;
             $action->subjects = [$this->getTopic(1), $this->getTopic(2)];

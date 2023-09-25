@@ -35,6 +35,7 @@ use Zalt\Validator\Model\Date\BeforeDateModelValidator;
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.0
+ * @deprecated replaced by Model\RespondentModel
  */
 class RespondentModel extends \Gems\Model\HiddenOrganizationModel
 {

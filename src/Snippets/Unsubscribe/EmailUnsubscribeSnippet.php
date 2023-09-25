@@ -15,7 +15,6 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\FormSnippetAbstract;
-use Gems\User\Organization;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Literal;
 use Laminas\Db\Sql\Sql;
@@ -101,20 +100,6 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
         return $element;
     }
 
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-        
-        // Csrf may be set by project setting in parent
-        $this->useCsrf = false;
-    }
-    
     /**
      * Hook that allows actions when data was saved
      *
