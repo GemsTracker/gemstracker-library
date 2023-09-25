@@ -14,7 +14,7 @@ namespace Gems\SnippetsActions\Browse;
 use Gems\Snippets\ModelTableSnippet;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\SnippetsActions\Browse\BrowseTableAction;
-use Zalt\SnippetsActions\PostActionInterface;
+use Zalt\SnippetsActions\NoCsrfInterface;
 
 /**
  *
@@ -22,7 +22,7 @@ use Zalt\SnippetsActions\PostActionInterface;
  * @subpackage SnippetsActions
  * @since      Class available since version 1.9.2
  */
-class BrowseFilteredAction extends BrowseTableAction implements PostActionInterface
+class BrowseFilteredAction extends BrowseTableAction implements NoCsrfInterface
 {
     protected array $_snippets = [
         ModelTableSnippet::class,

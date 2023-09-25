@@ -6,6 +6,7 @@ use Gems\Legacy\LegacyController;
 use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\SnippetsLoader\SnippetMiddleware;
+use Zalt\SnippetsActions\NoCsrfInterface;
 use Zalt\SnippetsActions\ParameterActionInterface;
 use Zalt\SnippetsActions\PostActionInterface;
 
@@ -151,7 +152,9 @@ trait ModelSnippetActionRouteHelpers
 
             if (in_array($pageName, $postRoutes)) {
                 $route['allowed_methods'][] = 'POST';
-                array_unshift($route['middleware'], HandlerCsrfMiddleware::class);
+                if ('index' !== $pageName) {
+                    array_unshift($route['middleware'], HandlerCsrfMiddleware::class);
+                }
             }
 
             $routes[$baseName . '.' . $pageName] = $route;
@@ -209,7 +212,9 @@ trait ModelSnippetActionRouteHelpers
             }
             if (isset($interfaces[PostActionInterface::class])) {
                 $route['allowed_methods'][] = 'POST';
-                array_unshift($route['middleware'], HandlerCsrfMiddleware::class);
+                if (! isset($interfaces[NoCsrfInterface::class])) {
+                    array_unshift($route['middleware'], HandlerCsrfMiddleware::class);
+                }
             }
 
             $routes[$baseName . '.' . $pageName] = $route;
