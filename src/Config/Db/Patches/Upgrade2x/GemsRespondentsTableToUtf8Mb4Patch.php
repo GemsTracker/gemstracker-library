@@ -6,7 +6,7 @@ use Gems\Db\Migration\PatchAbstract;
 use Gems\Db\ResultFetcher;
 use Laminas\Db\Adapter\Adapter;
 
-class GemsTablesToUtf8Mb4Patch extends PatchAbstract
+class GemsRespondentsTableToUtf8Mb4Patch extends PatchAbstract
 {
     var array $gems_tables;
 
@@ -21,18 +21,22 @@ class GemsTablesToUtf8Mb4Patch extends PatchAbstract
 
     public function getDescription(): string|null
     {
-        return 'Convert all tables to utf8mb4';
+        return 'Convert respondents table to utf8mb4';
     }
 
     public function getOrder(): int
     {
-        return 20000101000005;
+        return 20000101000003;
     }
 
     public function up(): array
     {
         $statements = [];
         foreach ($this->gems_tables as $table) {
+            // Only convert the respondents table.
+            if (!str_ends_with($table['TABLE_NAME'], '_respondents')) {
+                continue;
+            }
             // If the table is already utf8mb4, we don't need to convert it.
             if ($table['TABLE_COLLATION'] === 'utf8mb4_unicode_ci') {
                 continue;
