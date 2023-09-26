@@ -14,7 +14,11 @@ class GemsReceptionCodesPatch extends PatchAbstract
         protected array $config,
     )
     {
-        $db = new Adapter($config['db']);
+    }
+
+    protected function prepare(): void
+    {
+        $db = new Adapter($this->config['db']);
         $resultFetcher = new ResultFetcher($db);
         $sql = sprintf('SELECT * FROM information_schema.table_constraints_extensions WHERE constraint_schema = "%s" AND table_name = "%s"', $this->config['db']['database'], 'gems__reception_codes');
         $this->gems_table_constraints = $resultFetcher->fetchAll($sql);
@@ -32,6 +36,8 @@ class GemsReceptionCodesPatch extends PatchAbstract
 
     public function up(): array
     {
+        $this->prepare();
+
         $statements = [
             "ALTER TABLE gems__reception_codes MODIFY COLUMN grc_for_surveys tinyint NOT NULL DEFAULT '0'",
             "ALTER TABLE gems__reception_codes MODIFY COLUMN grc_redo_survey tinyint NOT NULL DEFAULT '0'",

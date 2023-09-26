@@ -14,7 +14,11 @@ class GemsAppointmentsPatch extends PatchAbstract
         protected array $config,
     )
     {
-        $db = new Adapter($config['db']);
+    }
+
+    protected function prepare(): void
+    {
+        $db = new Adapter($this->config['db']);
         $resultFetcher = new ResultFetcher($db);
         $sql = sprintf('SELECT * FROM information_schema.table_constraints_extensions WHERE constraint_schema = "%s" AND table_name = "%s"', $this->config['db']['database'], 'gems__appointments');
         $this->gems_table_constraints = $resultFetcher->fetchAll($sql);
@@ -32,6 +36,8 @@ class GemsAppointmentsPatch extends PatchAbstract
 
     public function up(): array
     {
+        $this->prepare();
+
         $statements = [
             'ALTER TABLE gems__appointments ADD COLUMN gap_last_synch timestamp NULL DEFAULT NULL AFTER gap_id_in_source',
             'ALTER TABLE gems__appointments MODIFY COLUMN gap_id_in_source varchar(40) DEFAULT NULL',

@@ -14,7 +14,11 @@ class GemsLogRespondentConsentsPatch extends PatchAbstract
         protected array $config,
     )
     {
-        $db = new Adapter($config['db']);
+    }
+
+    protected function prepare(): void
+    {
+        $db = new Adapter($this->config['db']);
         $resultFetcher = new ResultFetcher($db);
         $sql = sprintf('SELECT * FROM information_schema.table_constraints_extensions WHERE constraint_schema = "%s" AND table_name = "%s"', $this->config['db']['database'], 'gems__log_respondent_consents');
         $this->gems_table_constraints = $resultFetcher->fetchAll($sql);
@@ -32,6 +36,8 @@ class GemsLogRespondentConsentsPatch extends PatchAbstract
 
     public function up(): array
     {
+        $this->prepare();
+
         $statements = [];
         // Check if the key we wanty to drop exists.
         // If it does, we need to drop it.

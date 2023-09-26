@@ -14,7 +14,11 @@ class GemsTokensTableToUtf8Mb4Patch extends PatchAbstract
         protected array $config,
     )
     {
-        $db = new Adapter($config['db']);
+    }
+
+    protected function prepare(): void
+    {
+        $db = new Adapter($this->config['db']);
         $resultFetcher = new ResultFetcher($db);
         $this->gems_tables = $resultFetcher->fetchAll('SELECT * FROM information_schema.tables WHERE table_schema = "' . $this->config['db']['database'] . '"');
     }
@@ -31,6 +35,8 @@ class GemsTokensTableToUtf8Mb4Patch extends PatchAbstract
 
     public function up(): array
     {
+        $this->prepare();
+
         $statements = [];
         foreach ($this->gems_tables as $table) {
             // Only convert the tokens table.

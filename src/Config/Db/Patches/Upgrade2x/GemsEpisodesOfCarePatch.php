@@ -14,7 +14,11 @@ class GemsEpisodesOfCarePatch extends PatchAbstract
         protected array $config,
     )
     {
-        $db = new Adapter($config['db']);
+    }
+
+    protected function prepare(): void
+    {
+        $db = new Adapter($this->config['db']);
         $resultFetcher = new ResultFetcher($db);
         $sql = sprintf('SELECT * FROM information_schema.table_constraints_extensions WHERE constraint_schema = "%s" AND table_name = "%s"', $this->config['db']['database'], 'gems__episodes_of_care');
         $this->gems_table_constraints = $resultFetcher->fetchAll($sql);
@@ -32,6 +36,8 @@ class GemsEpisodesOfCarePatch extends PatchAbstract
 
     public function up(): array
     {
+        $this->prepare();
+
         $statements = [
             'ALTER TABLE gems__episodes_of_care MODIFY COLUMN gec_comment text',
             'ALTER TABLE gems__episodes_of_care MODIFY COLUMN gec_diagnosis_data text',

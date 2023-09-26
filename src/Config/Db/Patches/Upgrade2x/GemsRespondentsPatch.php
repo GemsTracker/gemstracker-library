@@ -14,7 +14,11 @@ class GemsRespondentsPatch extends PatchAbstract
         protected array $config,
     )
     {
-        $db = new Adapter($config['db']);
+    }
+
+    protected function prepare(): void
+    {
+        $db = new Adapter($this->config['db']);
         $resultFetcher = new ResultFetcher($db);
         $sql = sprintf('SELECT * FROM information_schema.table_constraints_extensions WHERE constraint_schema = "%s" AND table_name = "%s"', $this->config['db']['database'], 'gems__respondents');
         $this->gems_table_constraints = $resultFetcher->fetchAll($sql);
@@ -32,6 +36,8 @@ class GemsRespondentsPatch extends PatchAbstract
 
     public function up(): array
     {
+        $this->prepare();
+
         $statements = [
             'ALTER TABLE gems__respondents MODIFY COLUMN grs_id_user bigint unsigned NOT NULL',
         ];
