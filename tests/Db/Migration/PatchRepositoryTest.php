@@ -94,16 +94,12 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'type' => 'patch',
                 'description' => 'add created field to test table',
                 'order' => 100,
-                'data' => [
-                    'ALTER TABLE test__table ADD tt_created timestamp not null default current_timestamp',
-                ],
-                'sql' => [
-                    'ALTER TABLE test__table ADD tt_created timestamp not null default current_timestamp',
-                ],
                 'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/PhpPatch.php')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/PhpPatch.php'),
                 'db' => 'gems',
                 'module' => 'gems',
+                'source' => 'class',
+                'class' => new PhpPatch,
             ],
         ];
 
@@ -140,6 +136,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.up.sql')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.up.sql'),
                 'db' => 'gems',
+                'source' => 'file',
             ],
         ];
 
@@ -160,12 +157,6 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'type' => 'patch',
                 'description' => 'add created field to test table',
                 'order' => 100,
-                'data' => [
-                    'ALTER TABLE test__table ADD tt_created timestamp not null default current_timestamp',
-                ],
-                'sql' => [
-                    'ALTER TABLE test__table ADD tt_created timestamp not null default current_timestamp',
-                ],
                 'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/PhpPatch.php')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/PhpPatch.php'),
                 'db' => 'gems',
@@ -174,6 +165,8 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'executed' => null,
                 'duration' => null,
                 'comment' => null,
+                'source' => 'class',
+                'class' => new PhpPatch,
             ],
             'somePatch' => [
                 'name' => 'somePatch',
@@ -192,6 +185,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'executed' => null,
                 'duration' => null,
                 'comment' => null,
+                'source' => 'file'
             ],
         ];
 
