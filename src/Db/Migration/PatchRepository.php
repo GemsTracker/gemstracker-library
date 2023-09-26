@@ -44,7 +44,6 @@ class PatchRepository extends MigrationRepositoryAbstract
             }
             $description = $patchClass->getDescription();
             $order = $patchClass->getOrder() ?? $this->defaultOrder;
-            $data = $patchClass->up();
             $reflectionClass = new \ReflectionClass($patchClassName);
 
             $patch = [
@@ -52,10 +51,9 @@ class PatchRepository extends MigrationRepositoryAbstract
                 'module' => $patchInfo['module'] ?? 'gems',
                 'type' => 'patch',
                 'source' => 'class',
+                'class' => $patchClass,
                 'description' => $description,
                 'order' => $order,
-                'data' => $data,
-                'sql' => $data,
                 'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime($reflectionClass->getFileName())),
                 'location' => $reflectionClass->getFileName(),
                 'db' => $patchInfo['db'],
@@ -147,6 +145,13 @@ class PatchRepository extends MigrationRepositoryAbstract
     }
     public function runPatch(array $patchInfo): void
     {
+        // If the source of the patch was a PHP class, run the up() function to get the data.
+        if ($patchInfo['source'] == 'class') {
+            $patchClass = $patchInfo['class'];
+            $data = $patchClass->up();
+            $patchInfo['data'] = $data;
+            $patchInfo['sql'] = $data;
+        }
         if (!isset($patchInfo['db'], $patchInfo['sql']) || empty($patchInfo['sql']) || !is_array($patchInfo['sql'])) {
             throw new \Exception('Not enough info to run patch');
         }
