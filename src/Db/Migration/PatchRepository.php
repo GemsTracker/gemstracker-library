@@ -152,7 +152,7 @@ class PatchRepository extends MigrationRepositoryAbstract
             $patchInfo['data'] = $data;
             $patchInfo['sql'] = $data;
         }
-        if (!isset($patchInfo['db'], $patchInfo['sql']) || empty($patchInfo['sql']) || !is_array($patchInfo['sql'])) {
+        if (!isset($patchInfo['db'], $patchInfo['sql']) || !is_array($patchInfo['sql'])) {
             throw new \Exception('Not enough info to run patch');
         }
         $adapter = $this->databases->getDatabase($patchInfo['db']);
