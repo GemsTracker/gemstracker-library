@@ -20,7 +20,7 @@ class GemsRespondentsTableToUtf8Mb4Patch extends PatchAbstract
     {
         $db = new Adapter($this->config['db']);
         $resultFetcher = new ResultFetcher($db);
-        $this->gems_tables = $resultFetcher->fetchAll('SELECT * FROM information_schema.tables WHERE table_schema = "' . $this->config['db']['database'] . '"');
+        $this->gems_tables = $resultFetcher->fetchAll('SELECT * FROM information_schema.tables WHERE table_schema = "' . $this->config['db']['database'] . '"') ?? [];
     }
 
     public function getDescription(): string|null

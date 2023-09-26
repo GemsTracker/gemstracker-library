@@ -21,7 +21,7 @@ class GemsLogRespondentCommunicationsPatch extends PatchAbstract
         $db = new Adapter($this->config['db']);
         $resultFetcher = new ResultFetcher($db);
         $sql = sprintf('SELECT * FROM information_schema.table_constraints_extensions WHERE constraint_schema = "%s" AND table_name = "%s"', $this->config['db']['database'], 'gems__log_respondent_communications');
-        $this->gems_table_constraints = $resultFetcher->fetchAll($sql);
+        $this->gems_table_constraints = $resultFetcher->fetchAll($sql) ?? [];
     }
 
     public function getDescription(): string|null
