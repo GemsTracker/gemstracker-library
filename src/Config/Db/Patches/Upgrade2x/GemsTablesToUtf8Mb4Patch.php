@@ -45,10 +45,7 @@ class GemsTablesToUtf8Mb4Patch extends PatchAbstract
             }
             $statements[] = 'ALTER TABLE ' . $table['TABLE_NAME'] . ' CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
         }
-        // If no tables need to be converted, we still need to return a statement.
-        if (empty($statements)) {
-            $statements[] = 'SELECT 1';
-        }
+
         return $statements;
     }
 }

@@ -58,10 +58,7 @@ class GemsColumnsToUtf8Mb4Patch extends PatchAbstract
             }
             $statements[] = 'ALTER TABLE ' . $column['TABLE_NAME'] . ' CHANGE COLUMN ' . $column['COLUMN_NAME'] . ' ' . $column['COLUMN_NAME'] . ' ' . $column['COLUMN_TYPE'] . ' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
         }
-        // If no columns need to be converted, we still need to return a statement.
-        if (empty($statements)) {
-            $statements[] = 'SELECT 1';
-        }
+
         return $statements;
     }
 }

@@ -77,10 +77,7 @@ class GemsTimestampDefaultPatch extends PatchAbstract
             }
             $statements[] = $statement;
         }
-        // If no columns need to be converted, we still need to return a statement.
-        if (empty($statements)) {
-            $statements[] = 'SELECT 1';
-        }
+
         return $statements;
     }
 }

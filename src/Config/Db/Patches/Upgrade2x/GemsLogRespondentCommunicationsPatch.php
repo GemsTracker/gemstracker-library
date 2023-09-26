@@ -47,10 +47,6 @@ class GemsLogRespondentCommunicationsPatch extends PatchAbstract
                 break;
             }
         }
-        // We always need to return a statement.
-        if (empty($statements)) {
-            $statements[] = 'SELECT 1';
-        }
 
         return $statements;
     }
