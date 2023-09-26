@@ -30,7 +30,7 @@ class GemsAppointmentsTableToUtf8Mb4Patch extends PatchAbstract
 
     public function getOrder(): int
     {
-        return 20230101000003;
+        return 20230101000011;
     }
 
     public function up(): array

@@ -30,7 +30,7 @@ class GemsColumnsToUtf8Mb4Patch extends PatchAbstract
 
     public function getOrder(): int
     {
-        return 20230101000006;
+        return 20230101000021;
     }
 
     public function up(): array
