@@ -29,7 +29,7 @@ class GemsTimestampDefaultPatch extends PatchAbstract
 
     public function getOrder(): int
     {
-        return 20000101000001;
+        return 20230101000001;
     }
 
     public function up(): array

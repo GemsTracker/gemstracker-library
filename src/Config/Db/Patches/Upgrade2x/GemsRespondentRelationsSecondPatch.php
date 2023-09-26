@@ -13,7 +13,7 @@ class GemsRespondentRelationsSecondPatch extends PatchAbstract
 
     public function getOrder(): int
     {
-        return 20230919000102;
+        return 20230102000102;
     }
 
     public function up(): array

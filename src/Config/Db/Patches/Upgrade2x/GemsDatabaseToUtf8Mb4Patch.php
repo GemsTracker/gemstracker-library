@@ -19,7 +19,7 @@ class GemsDatabaseToUtf8Mb4Patch extends PatchAbstract
 
     public function getOrder(): int
     {
-        return 20000101000002;
+        return 20230101000002;
     }
 
     public function up(): array

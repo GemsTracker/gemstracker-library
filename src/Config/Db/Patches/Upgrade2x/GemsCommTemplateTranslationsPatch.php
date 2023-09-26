@@ -13,7 +13,7 @@ class GemsCommTemplateTranslationsPatch extends PatchAbstract
 
     public function getOrder(): int
     {
-        return 20230919000000;
+        return 20230102000000;
     }
 
     public function up(): array

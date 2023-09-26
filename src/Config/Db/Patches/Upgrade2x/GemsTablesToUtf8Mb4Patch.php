@@ -26,7 +26,7 @@ class GemsTablesToUtf8Mb4Patch extends PatchAbstract
 
     public function getOrder(): int
     {
-        return 20000101000005;
+        return 20230101000005;
     }
 
     public function up(): array
