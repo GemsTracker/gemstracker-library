@@ -14,7 +14,7 @@ class GemsDatabaseToUtf8Mb4Patch extends PatchAbstract
 
     public function getDescription(): string|null
     {
-        return 'Set database default characvter set to utf8mb4 with utf8mb4_unicode_ci';
+        return 'Set database default character set to utf8mb4 with utf8mb4_unicode_ci';
     }
 
     public function getOrder(): int
