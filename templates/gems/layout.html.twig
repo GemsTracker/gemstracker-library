@@ -32,14 +32,11 @@
     </header>
 
     <div class="content">
+        {% if mainMenu is defined %}
         <div id="menu" role="navigation">
-            {% if menuHtml is defined %}
-                {{ menuHtml }}
-            {% endif %}
-            {% if mainMenu is defined %}
-                {{ mainMenu.renderMenu()|raw }}
-            {% endif %}
+            {{ mainMenu.renderMenu()|raw }}
         </div>
+        {% endif %}
         <div id="main-container" class="include-menu">
             <div id="main">
                 {% if breadcrumbs is defined %}{{ include('@layout/breadcrumbs.html.twig') }}{% endif %}
