@@ -23,7 +23,7 @@ CREATE TABLE if not exists gems__surveys (
         gsu_answers_by_group        boolean not null default 0,
         gsu_answer_groups           varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
         gsu_allow_export            boolean not null default 1,
-        gsu_mail_code               tinyint not null default 1 references gems__mail_codes (gmc_id),
+        gsu_mail_code               tinyint not null default 100 references gems__mail_codes (gmc_id),
 
         gsu_insertable              boolean not null default 0,
         gsu_valid_for_unit          char(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null default 'M',
