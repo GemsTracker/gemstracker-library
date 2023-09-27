@@ -20,6 +20,7 @@ class GemsTrackFieldsPatch extends PatchAbstract
     {
         return [
             'ALTER TABLE gems__track_fields MODIFY COLUMN gtf_field_values TEXT',
+            'ALTER TABLE gems__track_fields MODIFY COLUMN gtf_field_value_keys TEXT',
         ];
     }
 }
