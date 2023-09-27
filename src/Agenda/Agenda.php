@@ -20,7 +20,7 @@ use Gems\Agenda\Repository\InfoFilterRepository;
 use Gems\Agenda\Repository\TrackFieldFilterRepository;
 use Gems\Agenda\Repository\LocationRepository;
 use Gems\Agenda\Repository\ProcedureRepository;
-use Gems\Agenda\Repository\StaffRepository;
+use Gems\Agenda\Repository\AgendaStaffRepository;
 use Gems\Cache\HelperAdapter;
 use Gems\Db\ResultFetcher;
 use Gems\Exception\Coding;
@@ -91,7 +91,7 @@ class Agenda
         protected readonly MetaModelLoader $metaModelLoader,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly ProcedureRepository $procedureRepository,
-        protected readonly StaffRepository $staffRepository,
+        protected readonly AgendaStaffRepository $staffRepository,
 
         protected readonly Tracker $tracker,
         protected readonly EventDispatcherInterface $eventDispatcher,

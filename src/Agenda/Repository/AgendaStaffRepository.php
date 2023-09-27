@@ -7,7 +7,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
 
-class StaffRepository
+class AgendaStaffRepository
 {
     public array $staffCacheTags = ['staff'];
 
@@ -95,18 +95,18 @@ class StaffRepository
 
     protected function getMatchList(): array
     {
-        $activeActivities = $this->getActiveStaffData();
+        $activeStaff = $this->getActiveStaffData();
 
-        $sortedActivities = [];
-        foreach ($activeActivities as $activity) {
-            if ($activity['gas_match_to'] !== null) {
-                foreach (explode('|', $activity['gas_match_to']) as $match) {
-                    $sortedActivities[$match][$activity['gas_id_organization']] = $activity['gas_id_staff'];
+        $sortedStaff = [];
+        foreach ($activeStaff as $staff) {
+            if ($staff['gas_match_to'] !== null) {
+                foreach (explode('|', $staff['gas_match_to']) as $match) {
+                    $sortedStaff[$match][$staff['gas_id_organization']] = $staff['gas_id_staff'];
                 }
             }
         }
 
-        return $sortedActivities;
+        return $sortedStaff;
     }
 
     /**
@@ -130,5 +130,26 @@ class StaffRepository
         }
 
         return null;
+    }
+
+    /**
+     * @param $name string Staff member name
+     * @param $sourceId string Source ID
+     * @param $source string Source name
+     * @param $organizationId int Organization ID
+     * @param $create bool Should the resource be created if it is not known
+     * @return int|null Staff member ID that was matched or null
+     */
+    public function matchStaffByNameOrSourceId(string $name, string $sourceId, string $source, int $organizationId, bool $create = true): int|null
+    {
+        $activeStaffData = $this->getActiveStaffData($organizationId);
+
+        foreach($activeStaffData as $staff) {
+            if ($staff['gas_source'] === $source && $staff['gas_id_in_source'] === $sourceId) {
+                return $staff['gas_id_staff'];
+            }
+        }
+
+        return $this->matchStaff($name, $organizationId, $create);
     }
 }
