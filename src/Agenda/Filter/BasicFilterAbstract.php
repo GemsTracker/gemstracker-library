@@ -88,7 +88,7 @@ abstract class BasicFilterAbstract
 
     public function __sleep(): array
     {
-        $dataFields = array_filter(get_object_vars($this), function($propertyName) {
+        $dataFields = array_filter(array_keys(get_object_vars($this)), function($propertyName) {
             return str_starts_with($propertyName, '_');
         });
 
