@@ -20,7 +20,7 @@ class GemsCommJobsPatch extends PatchAbstract
     {
         return [
             'ALTER TABLE gems__comm_jobs MODIFY COLUMN gcj_id_communication_messenger bigint unsigned NOT NULL',
-            'ALTER TABLE gems__comm_jobs MODIFY COLUMN gcj_to_method varchar(1) DEFAULT "R"',
+            'ALTER TABLE gems__comm_jobs MODIFY COLUMN gcj_to_method varchar(1) DEFAULT "A"',
         ];
     }
 }
