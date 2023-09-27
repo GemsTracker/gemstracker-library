@@ -22,6 +22,7 @@ use Gems\Repository\OrganizationRepository;
 use Gems\Repository\StaffRepository;
 use Gems\SnippetsActions\ApplyLegacyActionInterface;
 use Gems\SnippetsActions\ApplyLegacyActionTrait;
+use Gems\User\GemsUserIdGenerator;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\Util\Localized;
@@ -30,7 +31,7 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\Sql\Sql;
 use Laminas\Filter\Callback;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Filter\Dutch\PostcodeFilter;
 use Zalt\Late\Late;
 use Zalt\Model\MetaModelInterface;
@@ -85,13 +86,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
     protected int $ssnMode = self::SSN_HASH;
 
-    /**
-     * The length of a user id.
-     *
-     * @var int
-     */
-    protected int $userIdLen = 8;
-
     public function __construct(
         MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
@@ -106,6 +100,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         protected readonly ProjectSettings $project,
         protected readonly StaffRepository $staffRepository,
         protected readonly Translated $translatedUtil,
+        protected readonly GemsUserIdGenerator $gemsUserIdGenerator,
     )
     {
         $this->currentUser    = $currentUserRepository->getCurrentUser();
@@ -244,7 +239,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->metaModel->set('grs_id_user', [
             'elementClass' => 'Hidden',
         ]);
-        $this->metaModel->setOnSave('grs_id_user', [$this, 'createGemsUserId']);
+        $this->metaModel->setOnSave('grs_id_user', [$this->gemsUserIdGenerator, 'createGemsUserId']);
 
         // NAME
         if (isset($this->_labels['name']) && $this->_labels['name']) {
@@ -356,47 +351,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         $this->applyMask();
     }
-
-    /**
-     * Create a \Gems project wide unique user id
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string|null $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @return int
-     */
-    public function createGemsUserId(mixed $value, bool $isNew = false, ?string $name = null, array $context = []): int
-    {
-        if ($value) {
-            return (int) $value;
-        }
-
-        $now = new DateTimeImmutable();
-        $sql = new Sql($this->db);
-
-        do {
-            $out = mt_rand(1, 9);
-            for ($i = 1; $i < $this->userIdLen; $i++) {
-                $out .= mt_rand(0, 9);
-            }
-            // Make it a number
-            $out = intval($out);
-
-            $values = [
-                'gui_id_user' => $out,
-                'gui_created' => $now->format('Y-m-d H:i:s'),
-            ];
-            $insert = $sql->insert('gems__user_ids')->values($values);
-            $result = $sql->prepareStatementForSqlObject($insert)->execute();
-            if ((!$result instanceof ResultInterface) || 0 === $result->getAffectedRows()) {
-                $out = null;
-            }
-        } while (null === $out);
-
-        return $out;
-    }
-
 
     public function hideSSN($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
