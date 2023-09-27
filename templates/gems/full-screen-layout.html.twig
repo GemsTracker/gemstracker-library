@@ -21,19 +21,10 @@
         {% endif %}
 >
 <div id="container" class="container-fluid">
-    <div class="content">
-        {% if mainMenu is defined %}
-        <div id="menu" role="navigation">
-            {{ mainMenu.renderMenu()|raw }}
-        </div>
-        {% endif %}
-        <div id="main-container" class="include-menu">
-            <div id="main">
-                {% if statusMessenger is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
+    <div id="main">
+        {% if statusMessenger is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
 
-                {% block content %}{% endblock %}
-            </div>
-        </div>
+        {% block content %}{% endblock %}
     </div>
 </div>
 {{ include('@layout/auth-idle-checker.html.twig') }}
