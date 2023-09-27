@@ -19,7 +19,7 @@ class GemsSourcesPatch extends PatchAbstract
     public function up(): array
     {
         return [
-            "ALTER TABLE gems__sources MODIFY COLUMN gso_ls_class varchar(60) NOT NULL default 'Gems_Source_LimeSurvey3m00Database'",
+            "ALTER TABLE gems__sources MODIFY COLUMN gso_ls_class varchar(60) NOT NULL default 'Gems\\Tracker\\Source\\LimeSurvey3m00Database'",
         ];
     }
 }

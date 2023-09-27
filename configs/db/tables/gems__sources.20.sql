@@ -5,7 +5,7 @@ CREATE TABLE if not exists gems__sources (
 
         gso_ls_url          varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NOT NULL,
         gso_ls_class        varchar(60) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NOT NULL
-                            default 'Gems_Source_LimeSurvey3m00Database',
+                            default 'Gems\\Tracker\\Source\\LimeSurvey3m00Database',
         gso_ls_adapter      varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default NULL,
         gso_ls_dbhost       varchar(127) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default NULL,
         gso_ls_database     varchar(127) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default NULL,
