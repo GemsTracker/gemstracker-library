@@ -19,7 +19,7 @@ class GemsStaffPatch extends PatchAbstract
     public function up(): array
     {
         return [
-            "ALTER TABLE gems__staff MODIFY COLUMN gsf_active tinyint(1) NULL DEFAULT '1'",
+            "ALTER TABLE gems__staff MODIFY COLUMN gsf_active tinyint(1) NOT NULL DEFAULT '1'",
         ];
     }
 }
