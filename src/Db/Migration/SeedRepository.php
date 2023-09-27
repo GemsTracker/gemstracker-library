@@ -172,8 +172,8 @@ class SeedRepository extends MigrationRepositoryAbstract
         }, $this->seedFileTypes);
 
         foreach($directories as $directory) {
-            $files = $finder->files()->name($searchNames)->in($directory['path']);
-
+            $currentFinder = clone ($finder);
+            $files = $currentFinder->files()->name($searchNames)->in($directory['path']);
 
             foreach ($files as $file) {
                 $filenameParts = explode('.', $file->getBaseName());
