@@ -8,7 +8,7 @@ class LinkFilterContainer
     public function __construct(
         protected readonly AppointmentFilterInterface $appointmentFilter,
         protected readonly int $linkFilterId,
-        protected readonly string $keyField,
+        protected readonly string|null $keyField,
         protected readonly mixed $value,
     )
     {
@@ -25,7 +25,7 @@ class LinkFilterContainer
     /**
      * @return string
      */
-    public function getKeyField(): string
+    public function getKeyField(): string|null
     {
         return $this->keyField;
     }

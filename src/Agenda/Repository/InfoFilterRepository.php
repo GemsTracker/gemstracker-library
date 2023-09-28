@@ -81,11 +81,13 @@ class InfoFilterRepository
 
     public function addInfoToAppointment(Appointment $appointment, LinkFilterContainer $linkFilterContainer): void
     {
-        $info = $appointment->getInfo();
-        $info[$linkFilterContainer->getKeyField()] = $linkFilterContainer->getValue();
-        $table = new TableGateway('gems__appointments', $this->cachedResultFetcher->getAdapter());
-        $table->update([
-            'gap_info' => json_encode($info)
-        ], 'gap_id_appointment = ' . $appointment->getId());
+        if ($linkFilterContainer->getKeyField()) {
+            $info = $appointment->getInfo();
+            $info[$linkFilterContainer->getKeyField()] = $linkFilterContainer->getValue();
+            $table = new TableGateway('gems__appointments', $this->cachedResultFetcher->getAdapter());
+            $table->update([
+                'gap_info' => json_encode($info)
+            ], 'gap_id_appointment = ' . $appointment->getId());
+        }
     }
 }
