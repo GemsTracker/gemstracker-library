@@ -22,6 +22,7 @@ use Gems\Config\AutoConfig\MessageHandlers;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
+use Gems\Csrf\GemsCsrfGuardFactory;
 use Gems\Error\ErrorLogEventListenerDelegatorFactory;
 use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\DoctrineOrmFactory;
@@ -83,7 +84,6 @@ use Laminas\Permissions\Acl\Acl;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Csrf\CsrfMiddlewareFactory;
-use Mezzio\Csrf\FlashCsrfGuardFactory;
 use Mezzio\Session\Cache\CacheSessionPersistence;
 use Mezzio\Session\Cache\CacheSessionPersistenceFactory;
 use Mezzio\Session\Ext\PhpSessionPersistence;
@@ -383,7 +383,7 @@ class ConfigProvider
                 // Session
                 //SessionPersistenceInterface::class => CacheSessionPersistence::class,
                 SessionPersistenceInterface::class => PhpSessionPersistence::class,
-                CsrfGuardFactoryInterface::class => FlashCsrfGuardFactory::class,
+                CsrfGuardFactoryInterface::class => GemsCsrfGuardFactory::class,
 
                 RoleAdapterInterface::class => DbRoleAdapter::class,
                 GroupAdapterInterface::class => DbGroupAdapter::class,

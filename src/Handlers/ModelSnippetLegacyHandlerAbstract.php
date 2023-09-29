@@ -39,6 +39,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSnippetLegacyHandlerAbstract
 {
+    use CsrfHandlerTrait;
     use PaginatorHandlerTrait;
 
     /**
@@ -68,9 +69,10 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     private array $_createExtraParameters = [
         'addCurrentParent'   => true,
         'addCurrentSiblings' => false,
+        'csrfName'           => 'getCsrfTokenName',
+        'csrfToken'          => 'getCsrfToken',
         'formTitle'          => 'getCreateTitle',
         'topicCallable'      => 'getTopicCallable',
-        'csrfGuard'          => 'getCsrfGuard',
     ];
 
     /**
@@ -108,9 +110,10 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     private array $_editExtraParameters = [
         'addCurrentParent'   => true,
         'addCurrentSiblings' => true,
+        'csrfName'           => 'getCsrfTokenName',
+        'csrfToken'          => 'getCsrfToken',
         'formTitle'          => 'getEditTitle',
         'topicCallable'      => 'getTopicCallable',
-        'csrfGuard'          => 'getCsrfGuard',
     ];
 
     /**
@@ -368,11 +371,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         return $this->responder->getSnippetsResponse($action->getSnippetClasses(), $action->getSnippetOptions());
     }
 
-
-    public function getCsrfGuard(): ?CsrfGuardInterface
-    {
-        return $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
-    }
 
     public function getControllerName(): ?string
     {
