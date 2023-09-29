@@ -71,11 +71,13 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     protected array $changeConsentParameters = [
         'addCurrentParent'   => true,
         'addCurrentSiblings' => true,
-        'editMailable'     => true,
-        'menuShowSiblings' => true,
-        'menuShowChildren' => true,
-        'resetRoute'       => true,
-        'useTabbedForm'    => false,
+        'csrfName'           => 'getCsrfTokenName',
+        'csrfToken'          => 'getCsrfToken',
+        'editMailable'       => true,
+        'menuShowSiblings'   => true,
+        'menuShowChildren'   => true,
+        'resetRoute'         => true,
+        'useTabbedForm'      => false,
     ];
 
     /**
@@ -99,6 +101,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $changeOrganizationParameters = [
+        'csrfName'    => 'getCsrfTokenName',
+        'csrfToken'   => 'getCsrfToken',
         'keepConsent' => false,
     ];
 

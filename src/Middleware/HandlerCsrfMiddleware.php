@@ -26,7 +26,7 @@ class HandlerCsrfMiddleware implements MiddlewareInterface
 
     public static function getTokenName(string $controller, string $action)
     {
-        return strtr(sprintf('__csrf_%s_%s', $controller, $action), '\\', '_');
+        return strtolower(strtr(sprintf('__csrf_%s_%s', $controller, str_replace('-', '', $action)), '\\', '_'));
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -54,6 +54,8 @@ class HandlerCsrfMiddleware implements MiddlewareInterface
                 }
             }
             $inputToken = $request->getParsedBody()[$tokenName] ?? '';
+
+            file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $tokenName . ' - ' . $inputToken . "\n", FILE_APPEND);
 
             if (empty($inputToken) || !$csrfGuard->validateToken($inputToken, $tokenName)) {
                 $flash->addError($this->translator->trans('The form has expired, please try again.'));
