@@ -14,7 +14,6 @@ namespace Gems\Handlers\Respondent;
 use Gems\Db\ResultFetcher;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Model;
 use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
@@ -292,7 +291,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
         protected readonly MaskRepository $maskRepository,
-        protected readonly Model $modelLoader,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly RespondentModel $respondentModel,
         protected readonly ResultFetcher $resultFetcher,
@@ -729,28 +727,26 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 case 'show_without_track':
                     $filter[] = "NOT EXISTS (SELECT * FROM gems__respondent2track
                            WHERE gr2o_id_user = gr2t_id_user AND gr2o_id_organization = gr2t_id_organization)";
-                    // Intentional fall through
+                // Intentional fall through
                 case 'show_all':
                     unset($filter['gr2t_id_track']);
                     break;
 
                 case 'show_with_track':
                 default:
-                    $model = $this->getModel();
-                    if (! $model->hasAlias('gems__respondent2track')) {
-                        $model->addTable(
-                                'gems__respondent2track',
-                                ['gr2o_id_user' => 'gr2t_id_user', 'gr2o_id_organization' => 'gr2t_id_organization']
-                                );
+                    $joinStore = $this->respondentModel->getJoinStore();
+                    if (!$joinStore->hasTable('gems__respondent2track')) {
+                        $this->respondentModel->addTable(
+                            'gems__respondent2track',
+                            ['gr2o_id_user' => 'gr2t_id_user', 'gr2o_id_organization' => 'gr2t_id_organization']
+                        );
                     }
-                    if (! $model->hasAlias('gems__tracks')) {
-                        $model->addTable('gems__tracks', ['gr2t_id_track' => 'gtr_id_track']);
+                    if (!$joinStore->hasTable('gems__tracks')) {
+                        $this->respondentModel->addTable('gems__tracks', ['gr2t_id_track' => 'gtr_id_track']);
                     }
-                    if (! isset($filter['__active_tracks'], $filter['__active_tracks'][$filter['gr2t_id_track']])) {
+                    if (!isset($filter['__active_tracks'], $filter['__active_tracks'][$filter['gr2t_id_track']])) {
                         unset($filter['gr2t_id_track']);
                     }
-                    $model->applyBrowseSettings();
-
             }
         }
 

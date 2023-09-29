@@ -22,13 +22,13 @@ use Gems\Repository\RespondentRepository;
 use Gems\Repository\StaffRepository;
 use Gems\SnippetsActions\ApplyLegacyActionInterface;
 use Gems\SnippetsActions\ApplyLegacyActionTrait;
-use Gems\SnippetsActions\Form\CreateAction;
 use Gems\User\GemsUserIdGenerator;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
 use Laminas\Filter\Callback;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Filter\Dutch\PostcodeFilter;
 use Zalt\Late\Late;
@@ -93,6 +93,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         MaskRepository $maskRepository,
         protected readonly CommunicationRepository $communicationRepository,
         protected readonly ConsentRepository $consentRepository,
+        protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly Localized $localizedUtil,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly ProjectSettings $project,
@@ -200,6 +201,10 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             }
         }
         if ($action->isEditing()) {
+            if ($this->metaModel->has('grs_ssn')) {
+                $this->metaModel->set('grs_ssn', ['class' => 'autosubmit']);
+            }
+
             $organizationSettings['default'] = $this->currentUser->getCurrentOrganizationId();
             if (count($this->currentUser->getAllowedOrganizations()) == 1) {
                 $organizationSettings['elementClass'] = 'Exhibitor';
@@ -211,13 +216,14 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $this->metaModel->del('name', 'label');
 
             if ($action instanceof EditActionAbstract && $action->createData) {
-                dump('hi');
                 $this->metaModel->setMulti(['gr2o_changed', 'gr2o_changed_by', 'gr2o_created', 'gr2o_created_by'], [
                     'label' => null,
                     'elementClass' => 'None',
                 ]);
             }
         }
+        $event = new RespondentModelSetEvent($this, $action);
+        $this->eventDispatcher->dispatch($event, RespondentModelSetEvent::class);
     }
 
     public function applySettings()
@@ -302,9 +308,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'filters[ucfirst]' => $ucfirst,
         ]);
         $this->setIfExists('grs_address_2');
-        $this->setIfExists('grs_zipcode', [
-            'filters[postcode]' => PostcodeFilter::class,
-            ]);
+        $this->setIfExists('grs_zipcode');
         $this->setIfExists('grs_city', [
             'filters[ucfirst]' => $ucfirst,
         ]);
@@ -354,6 +358,9 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->setIfExists('gr2o_created_by',  [
             'multiOptions' => $changers,
         ]);
+
+        $event = new RespondentModelSetEvent($this);
+        $this->eventDispatcher->dispatch($event, RespondentModelSetEvent::class);
 
         $this->applyMask();
     }
@@ -454,6 +461,10 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 'grs_phone_3' => sprintf($this->_('Phone %s'), 3),
                 'grs_phone_4' => sprintf($this->_('Phone %s'), 4),
             ];
+
+            $event = new RespondentModelInitEvent($this, $this->_labels);
+            $this->eventDispatcher->dispatch($event, RespondentModelInitEvent::class);
+            $this->_labels = $event->getLabels();
         }
     }
 

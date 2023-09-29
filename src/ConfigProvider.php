@@ -43,6 +43,8 @@ use Gems\Model\Bridge\GemsFormBridge;
 use Gems\Model\Bridge\GemsValidatorBridge;
 use Gems\Model\MetaModelLoader as GemsMetaModelLoader;
 use Gems\Model\MetaModelLoaderFactory;
+use Gems\Model\Respondent\RespondentModel;
+use Gems\Model\Respondent\RespondentNlModel;
 use Gems\Model\Type\GemsDateTimeType;
 use Gems\Model\Type\GemsDateType;
 use Gems\Model\Type\GemsTimeType;
@@ -392,6 +394,8 @@ class ConfigProvider
 
                 // Default lock storage
                 LockStorageAbstract::class => FileLock::class,
+
+                RespondentModel::class => RespondentNlModel::class,
 
                 // Translation
                 \Symfony\Contracts\Translation\TranslatorInterface::class => TranslatorInterface::class,

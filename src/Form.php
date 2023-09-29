@@ -9,6 +9,10 @@
 
 namespace Gems;
 
+use Zalt\Html\ElementInterface;
+use Zalt\Html\UrlArrayAttribute;
+use Zalt\Ra\Ra;
+
 /**
  * Base form class with extensions for correct load paths, autosubmit forms and registry use.
  *
@@ -147,14 +151,14 @@ class Form extends \MUtil\Form
     public function setAutoSubmit($submitUrl, $targetId, $selective = false)
     {
         // Filter out elements passed by type
-        $args = \MUtil\Ra::args(func_get_args(),
+        $args = Ra::args(func_get_args(),
             array(
-                'submitUrl' => array('\\MUtil\\Html\\UrlArrayAttribute', 'is_array', 'is_string'),
-                'targetId'  => array('\\MUtil\\Html\\ElementInterface', 'is_string'),
-                ), null, \MUtil\Ra::STRICT);
+                'submitUrl' => array(UrlArrayAttribute::class, \MUtil\Html\UrlArrayAttribute::class,  'is_array', 'is_string'),
+                'targetId'  => array(ElementInterface::class, \MUtil\Html\ElementInterface::class, 'is_string'),
+                ), null, Ra::STRICT);
 
         if (isset($args['targetId'])) {
-            if ($args['targetId'] instanceof \MUtil\Html\ElementInterface) {
+            if ($args['targetId'] instanceof ElementInterface || $args['targetId'] instanceof \MUtil\Html\ElementInterface) {
                 if (isset($args['targetId']->id)) {
                     $args['targetId'] = '#' . $args['targetId']->id;
                 } elseif (isset($args['targetId']->class)) {
