@@ -55,8 +55,6 @@ class HandlerCsrfMiddleware implements MiddlewareInterface
             }
             $inputToken = $request->getParsedBody()[$tokenName] ?? '';
 
-            file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $tokenName . ' - ' . $inputToken . "\n", FILE_APPEND);
-
             if (empty($inputToken) || !$csrfGuard->validateToken($inputToken, $tokenName)) {
                 $flash->addError($this->translator->trans('The form has expired, please try again.'));
                 return new RedirectResponse($request->getUri());
