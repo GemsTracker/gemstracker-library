@@ -991,6 +991,7 @@ class Route
                     'create',
                     'edit',
                     'index',
+                    'show',
                     'active-toggle',
                 ],
             ),

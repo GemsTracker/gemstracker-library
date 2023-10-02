@@ -11,7 +11,6 @@
 
 namespace Gems\Handlers\Setup;
 
-use Gems\Snippets\ActiveToggleSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\User\EmbeddedUserTestUrlForm;
@@ -86,6 +85,8 @@ class SystemUserHandler extends StaffHandler
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $showParameters = [
+        'csrfName'     => 'getCsrfTokenName',
+        'csrfToken'    => 'getCsrfToken',
         'selectedUser' => 'getSelectedUser',
         ];
 
