@@ -76,7 +76,11 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
     protected string $currentGroup = '';
 
-    protected User $currentUser;
+    protected int $currentOrganizationId;
+
+    protected User|null $currentUser;
+
+    protected int $currentUserId;
 
     /**
      * Determines the algorithm used to hash the social security number
@@ -104,6 +108,9 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
     )
     {
         $this->currentUser    = $currentUserRepository->getCurrentUser();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
+        $this->currentOrganizationId = $currentUserRepository->getCurrentOrganizationId();
+
         $this->maskRepository = $maskRepository;
 
         parent::__construct('gems__respondents', $metaModelLoader, $sqlRunner, $translate, 'respondents2', true);
@@ -205,8 +212,9 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 $this->metaModel->set('grs_ssn', ['class' => 'autosubmit']);
             }
 
-            $organizationSettings['default'] = $this->currentUser->getCurrentOrganizationId();
-            if (count($this->currentUser->getAllowedOrganizations()) == 1) {
+            $organizationSettings['default'] = $this->currentOrganizationId;
+
+            if ($this->currentUser === null || count($this->currentUser->getAllowedOrganizations()) == 1) {
                 $organizationSettings['elementClass'] = 'Exhibitor';
             } else {
                 $organizationSettings['multiOptions']  = $this->currentUser->getRespondentOrganizations();
@@ -345,8 +353,9 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'default' => date('Y-m-d H:i:s'),
             'elementClass' => 'None',  // Has little use to show: is now
         ]);
+
         $this->setIfExists('gr2o_opened_by', [
-            'default' => $this->currentUser->getUserId(),
+            'default' => $this->currentUserId,
             'elementClass' => 'Hidden',  // Has little use to show: is usually editor, but otherwise is set to null during save
             'multiOptions' => $changers
         ]);
@@ -515,7 +524,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 $values['glrc_old_consent']     = $newValues[$oldConsent];
                 $values['glrc_new_consent']     = $newValues[$consent];
                 $values['glrc_created']         = "CURRENT_TIMESTAMP";
-                $values['glrc_created_by']      = $this->currentUser->getUserId();
+                $values['glrc_created_by']      = $this->currentUserId;
 
                 $logModel->save($values);
                 $changes++;
