@@ -80,6 +80,8 @@ class ExportFormSnippet extends FormSnippetAbstract
         if ($exportFormElements) {
             $form->addElements($exportFormElements);
         }
+
+        $this->addCsrf($this->csrfName, $this->csrfToken);
     }
 
     protected function createForm($options = null)
@@ -181,11 +183,11 @@ class ExportFormSnippet extends FormSnippetAbstract
         $this->currentExport = $this->export->getExport($currentType, null, $this->exportAction->batch);
 
         if ($this->isPost()) {
-            $this->formData = $this->requestInfo->getRequestPostParams() + $this->getDefaultFormValues();
+            $this->formData = $this->loadCsrfData() + $this->requestInfo->getRequestPostParams() + $this->getDefaultFormValues();
             return $this->formData;
         }
 
-        $this->formData = $this->getDefaultFormValues() + $this->requestInfo->getRequestPostParams();
+        $this->formData = $this->loadCsrfData() + $this->getDefaultFormValues() + $this->requestInfo->getRequestPostParams();
         return $this->formData;
     }
 
