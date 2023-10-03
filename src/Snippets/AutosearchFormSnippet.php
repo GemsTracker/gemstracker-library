@@ -21,7 +21,6 @@ use Laminas\Db\Sql\Select;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\UrlArrayAttribute;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
@@ -319,9 +318,6 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
     protected function createForm($options = null)
     {
         $form = new Form($options);
-        $form->setAutoSubmit(
-            UrlArrayAttribute::toUrlString([$this->requestInfo->getBasePath(), '/autofilter']),
-            'autofilter_target');
 
         return $form;
     }

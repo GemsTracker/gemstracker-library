@@ -89,7 +89,6 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
         $keyElement = $form->createElement('Radio', 'runmode', $options);
         $form->addElement($keyElement);
 
-        $form->removeDecorator('AutoFocus');
         $form->removeElement($form->focusTrackerElementId);
         $form->focusTrackerElementId = null;
 
