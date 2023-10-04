@@ -70,13 +70,13 @@ class Token
 
     /**
      *
-     * @var string The token id of the token this one was copied from, null when not loaded, false when does not exist
+     * @var string|null The token id of the token this one was copied from, null when not loaded, false when does not exist
      */
     protected string|null $_copiedFromTokenId = null;
 
     /**
      *
-     * @var array The token id's of the tokens this one was copied to, null when not loaded, [] when none exist
+     * @var array|null The token id's of the tokens this one was copied to, null when not loaded, [] when none exist
      */
     protected array|null $_copiedToTokenIds = null;
 
@@ -95,20 +95,20 @@ class Token
 
     /**
      *
-     * @var Token
+     * @var Token|bool|null
      */
     private Token|bool|null $_nextToken = null;
 
     /**
      *
-     * @var Token
+     * @var Token|null
      */
     private Token|null $_previousToken = null;
 
     /**
      * Holds the relation (if any) for this token
      *
-     * @var array
+     * @var RespondentRelationInstance|null
      */
     protected RespondentRelationInstance|null $_relation = null;
 
@@ -211,7 +211,7 @@ class Token
     /**
      * Add relation to the select statement
      *
-     * @param \Gems\Tracker\Token\TokenSelect $select
+     * @param \Gems\Tracker\Token\LaminasTokenSelect $select
      */
     protected function _addRelation(LaminasTokenSelect $select): void
     {
