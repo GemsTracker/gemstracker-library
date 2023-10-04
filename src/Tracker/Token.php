@@ -1463,29 +1463,11 @@ class Token
      */
     public function getUrl(string $language, int $userId, ?string $returnUrl = null): string
     {
-        $survey = $this->getSurvey();
-
-        $survey->copyTokenToSource($this, $language);
-
-        if (! $this->_gemsData['gto_in_source']) {
-            $values['gto_start_time'] = new Expression('CURRENT_TIMESTAMP');
-            $values['gto_in_source']  = 1;
-
-            $oldTokenId = $this->getCopiedFrom();
-            if ($oldTokenId) {
-                $oldToken = $this->tracker->getToken($oldTokenId);
-                if ($oldToken->getReceptionCode()->hasRedoCopyCode()) {
-                    $this->setRawAnswers($oldToken->getRawAnswers());
-                }
-            }
-        }
-        $values['gto_by']         = $userId;
-        $values['gto_return_url'] = $returnUrl;
-
-        $this->_updateToken($values, $userId);
+        $this->setTokenStart($language, $userId, $returnUrl);
 
         $this->handleBeforeAnswering();
 
+        $survey = $this->getSurvey();
         return $survey->getTokenUrl($this, $language);
     }
 
@@ -1886,6 +1868,14 @@ class Token
         return null;
     }
 
+    public function setBy(int $userId): int
+    {
+        $values['gto_by'] = $userId;
+        $changed = $this->_updateToken($values, $userId);
+
+        return $changed;
+    }
+
     /**
      *
      * @param string|DateTimeInterface|null $completionTime Completion time as a date or null
@@ -2014,6 +2004,30 @@ class Token
         $values = $this->_gemsData;
         $values['gto_round_description'] = $description;
         return $this->_updateToken($values, $userId);
+    }
+
+
+    public function setTokenStart(string $language, int $userId, string|null $returnUrl = null): void
+    {
+        $survey = $this->getSurvey();
+        $survey->copyTokenToSource($this, $language);
+
+        if (! $this->_gemsData['gto_in_source']) {
+            $values['gto_start_time'] = new DateTimeImmutable();
+            $values['gto_in_source']  = 1;
+
+            $oldTokenId = $this->getCopiedFrom();
+            if ($oldTokenId) {
+                $oldToken = $this->tracker->getToken($oldTokenId);
+                if ($oldToken->getReceptionCode()->hasRedoCopyCode()) {
+                    $this->setRawAnswers($oldToken->getRawAnswers());
+                }
+            }
+        }
+        $values['gto_by'] = $userId;
+        $values['gto_return_url'] = $returnUrl;
+
+        $this->_updateToken($values, $userId);
     }
 
     /**
