@@ -645,7 +645,8 @@ class ConfigProvider
 
     protected function getOverloaderPaths()
     {
-        return ['Gems', 'MUtil'];
+        // Highest priority last.
+        return ['MUtil', 'Gems'];
     }
 
     protected function getPasswordSettings(): array

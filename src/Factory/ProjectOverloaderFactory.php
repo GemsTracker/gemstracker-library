@@ -21,7 +21,7 @@ class ProjectOverloaderFactory implements FactoryInterface
         if (isset($config['overLoaderPaths']) && is_array($config['overLoaderPaths'])) {
             $overloaderPaths = $config['overLoaderPaths'];
         } else {
-            $overloaderPaths = ['Gems', 'MUtil'];
+            $overloaderPaths = ['MUtil', 'Gems'];
         }
 
         $overloader = new $requestedName($container, $overloaderPaths);
