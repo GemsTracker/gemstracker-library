@@ -247,10 +247,20 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                 $useRequest = $this->requestInfo->isPost() && ! $action instanceof ExportAction;
                 $action->searchFilter = $this->getSearchFilter($useRequest);
 
-
                 if ($action instanceof BrowseSearchAction) {
                     $action->contentTitle = ucfirst($this->getTopic(2));
                     $action->searchData = $this->getSearchData($useRequest);
+                }
+                if ($action instanceof ExportAction) {
+                    $action->csrfName = $this->getCsrfTokenName();
+                    $action->csrfToken = $this->getCsrfToken($action->csrfName);
+                    $step = $this->requestInfo->getParam('step');
+                    if ($step) {
+                        if (ExportAction::STEP_RESET !== $step) {
+                            $action->step = $step;
+                        }
+                    }
+                    $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
                 }
             }
 
@@ -274,15 +284,6 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
         } elseif ($action instanceof DeleteAction) {
             $action->contentTitle = sprintf($this->_('Delete %s'), $this->getTopic(1));
 
-        } elseif ($action instanceof ExportAction) {
-            $step = $this->requestInfo->getParam('step');
-            if ($step) {
-                if (ExportAction::STEP_RESET !== $step) {
-                    $action->step = $step;
-                }
-            }
-            $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
         }
-
     }
 }

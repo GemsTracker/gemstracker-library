@@ -45,6 +45,20 @@ class ExportAction extends BrowseFilteredAction
      */
     public ExportRunnerBatch $batch;
 
+    /**
+     * Field name for crsf protection field.
+     *
+     * @var string
+     */
+    public string $csrfName = '__csrf';
+
+    /**
+     * The csrf token.
+     *
+     * @var string
+     */
+    public ?string $csrfToken = null;
+
     public string $formTitle = '';
 
     public string $step = self::STEP_FORM;

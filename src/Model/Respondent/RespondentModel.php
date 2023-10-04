@@ -299,7 +299,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->setIfExists('grs_birthday', ['elementClass' => 'Date']);
         $this->setIfExists('gr2o_id_physician');
         $this->setIfExists('gr2o_treatment');
-        $this->setIfExists('gr2o_comments');
+        $this->setIfExists('gr2o_comments', ['elementClass' => 'Textarea', 'rows' => 4]);
 
         // CONTACT INFO
         $this->currentGroup = $this->_('Contact information');
