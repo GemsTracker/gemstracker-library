@@ -119,11 +119,11 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
         ];
         $output['gtf_filter_id'] = [
             'label'          => $this->_('Appointment filter'),
+            'autosubmit'     => true,
             'description'    => $this->_('Automatically link an appointment when it passes this filter.'),
             'elementClass'   => 'Select',
             'formatFunction' => [$this, 'showFilter', true],
             'multiOptions'   => $this->translatedUtil->getEmptyDropdownArray() + $filters,
-            'onchange'       => 'this.form.submit();',
         ];
 
         if ($context['gtf_filter_id']) {
@@ -164,8 +164,8 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             ];
             $output['gtf_max_diff_exists'] = [
                 'label'        => $this->_('Set a maximum time difference'),
+                'autosubmit'   => true,
                 'elementClass' => 'Checkbox',
-                'onclick'      => 'this.form.submit();',
             ];
             if ($context['gtf_max_diff_exists']) {
                 $output['gtf_max_diff_length'] = [
@@ -243,8 +243,6 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                 'description'  => $description,
                 'elementClass' => 'Text',
             ];
-        } elseif (isset($output['gtf_create_wait_days'])) {
-            unset($output['gtf_create_wait_days']);
         }
 
         return $output;

@@ -15,6 +15,7 @@ use Gems\Db\ResultFetcher;
 use Gems\Form;
 use Gems\Form\Element\DateTimeInput;
 use Gems\Html;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Sql\Select;
@@ -48,7 +49,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      *
      * @var string The id of a div that contains target that should be replaced.
      */
-    protected $containingId;
+    protected $containingId = 'autofilter_target';
 
     /**
      * The default search data to use.
@@ -112,9 +113,10 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
-        protected MetaModelLoader $metaModelLoader,
-        protected ResultFetcher $resultFetcher,
-        protected StatusMessengerInterface $messenger,
+        protected readonly MenuSnippetHelper $menuSnippetHelper,
+        protected readonly MetaModelLoader $metaModelLoader,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly StatusMessengerInterface $messenger,
         )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate);
@@ -427,14 +429,12 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      *
      * @return string|null Href attribute for type as you go autofilter
      */
-    protected function getAutoSearchHref()
+    protected function getAutoSearchHref():? string
     {
-        // We should add hidden parameters to the url
-        $neededParams = $this->getFixedParams();
-        $searchData   = $this->getSearchData();
-        $fixedParams  = array_intersect_key($searchData, array_flip($neededParams));
-        // $href = array('action' => 'autofilter', $this->textSearchField => null, 'RouteReset' => true) + $fixedParams;
-        // return Html::attrib('href', $href);
+        $route = $this->menuSnippetHelper->getRelatedRoute('autofilter');
+        if ($route) {
+            return $this->menuSnippetHelper->getRouteUrl($route, $this->requestInfo->getParams());
+        }
         return null;
     }
 
@@ -632,11 +632,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
             // \MUtil\EchoOut\EchoOut::track($this->searchData);
             return $this->searchData;
         }
-        /*if ($this->requestCache) {
-            $filter = $this->requestCache->getProgramParams();
-        } else {*/
-            $filter = $this->requestInfo->getRequestPostParams();
-        //}
+        $filter = $this->requestInfo->getRequestPostParams();
 
         if ($this->defaultSearchData) {
             $filter = $filter + $this->defaultSearchData;

@@ -35,30 +35,6 @@ class Form extends \Zend_Form_Decorator_Form
     	$form = $this->getElement();
     	$view = $form->getView();
 
-        /*
-         * Check if this is a form that should autosubmit. If so, add script to head and onload
-         */
-        if ($form->isAutoSubmit()) {
-            $form->addScript($this->localScriptFiles);
-            //\ZendX_JQuery::enableForm($form);
-            $jquery = $view->jQuery();
-            $jquery->enable();  //Just to make sure
-
-            $params = $form->getAutoSubmit();
-            if (($view instanceof \Zend_View_Abstract) && ($params['submitUrl'] instanceof \MUtil\Html\HtmlInterface)) {
-                $params['submitUrl'] = $params['submitUrl']->render($view);
-            }
-
-            $js = sprintf(
-                    '%s("#%s").%s(%s);',
-                    \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
-                    $form->getId(),
-                    $this->localScriptName,
-                    \ZendX_JQuery::encodeJson($params)
-                    );
-            $jquery->addOnLoad($js);
-        }
-
         $scripts 	= $form->getScripts();
         $css        = $form->getCss();
 

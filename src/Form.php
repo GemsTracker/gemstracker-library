@@ -25,13 +25,6 @@ use Zalt\Ra\Ra;
 class Form extends \MUtil\Form
 {
     /**
-     * If set this holds the url and targetid for the autosubmit
-     *
-     * @var array
-     */
-    protected $_autosubmit = null;
-
-    /**
      * Constructor
      *
      * Registers form view helper as decorator
@@ -57,24 +50,6 @@ class Form extends \MUtil\Form
     }
 
     /**
-     * Change all elements into an autosubmit element
-     *
-     * Call only when $_autoSubmit is set
-     *
-     * @param mixed $element
-     */
-    private function _enableAutoSubmitElement($element)
-    {
-        if ($element instanceof \Zend_Form || $element instanceof \Zend_Form_DisplayGroup) {
-            foreach ($element->getElements() as $sub) {
-                $this->_enableAutoSubmitElement($sub);
-            }
-        } elseif ($element instanceof \Gems\Form\AutosubmitElementInterface) {
-            $element->enableAutoSubmit($this->_autosubmit);
-        }
-    }
-
-    /**
      * Activate JQuery for this form
      *
      * @return \MUtil\Form (continuation pattern)
@@ -92,63 +67,12 @@ class Form extends \MUtil\Form
     }
 
     /**
-     * Add a new element
-     *
-     * $element may be either a string element type, or an object of type
-     * \Zend_Form_Element. If a string element type is provided, $name must be
-     * provided, and $options may be optionally provided for configuring the
-     * element.
-     *
-     * If a \Zend_Form_Element is provided, $name may be optionally provided,
-     * and any provided $options will be ignored.
-     *
-     * @param  string|\Zend_Form_Element $element
-     * @param  string $name
-     * @param  array|\Zend_Config $options
-     * @throws \Zend_Form_Exception on invalid element
-     * @return \Zend_Form (continuation pattern)
-     */
-    public function addElement($element, $name = null, $options = null)
-    {
-        parent::addElement($element, $name, $options);
-
-        if ($this->isAutoSubmit()) {
-            if (null !== $name) {
-                $element = $this->getElement($name);
-            }
-            $this->_enableAutoSubmitElement($element);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get the autosubmit arguments (if any)
-     *
-     * @return array or null
-     */
-    public function getAutoSubmit()
-    {
-        return $this->_autosubmit;
-    }
-
-    /**
-     * Is this a form that autosubmits?
-     *
-     * @return boolean
-     */
-    public function isAutoSubmit() {
-        return isset($this->_autosubmit);
-    }
-
-    /**
      * Change the form into an autosubmit form
      *
      * @param mixed $submitUrl Url as \MUtil\Html\UrlArrayAttribute, array or string
      * @param mixed $targetId Id of html element whose content is replaced by the submit result: \MUtil\Html\ElementInterface or string
-     * @param boolean $selective When true autosubmit is applied only to elements with the CSS class autosubmit
      */
-    public function setAutoSubmit($submitUrl, $targetId, $selective = false)
+    public function setAutoSubmit($submitUrl, $targetId)
     {
         // Filter out elements passed by type
         $args = Ra::args(func_get_args(),
@@ -169,16 +93,11 @@ class Form extends \MUtil\Form
             } else {
                 $args['targetId'] = '#' . $args['targetId'];
             }
-        }
-        if ($selective) {
-            $args['selective'] = true;
+
+            $this->setAttrib('autosubmit-target-id', $args['targetId']);
         }
 
-        $this->_autosubmit = $args;
-        $this->_enableAutoSubmitElement($this);
-        $this->activateJQuery();
-
-        $class = $selective ? 'selected-autosubmit' : 'autosubmit';
-        $this->setAttrib('class', $this->getAttrib('class') . ' ' . $class);
+        $this->setAttrib('autosubmit-url', $args['submitUrl']);
+        $this->setAttrib('class', $this->getAttrib('class') . ' ' . 'autosubmit');
     }
 }

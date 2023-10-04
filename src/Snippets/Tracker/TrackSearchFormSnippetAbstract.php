@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TrackDataRepository;
@@ -54,6 +55,7 @@ class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchPeriodForm
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MenuSnippetHelper $menuSnippetHelper,
         MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
@@ -62,7 +64,7 @@ class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchPeriodForm
         protected TrackDataRepository $trackData,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger, $periodSelectRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger, $periodSelectRepository);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

@@ -190,7 +190,10 @@ class AppointmentFilterModel extends JoinModel
 
         reset($this->filterOptions);
         $default = key($this->filterOptions);
-        $this->set('gaf_class',         'default', $default, 'onchange', 'this.form.submit();');
+        $this->set('gaf_class', [
+            'autosubmit' => true,
+            'default' =>  $default,
+            ]);
 
         // gaf_id is not needed for some validators
         $this->set('gaf_id',            'elementClass', 'Hidden');

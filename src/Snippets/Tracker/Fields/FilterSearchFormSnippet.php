@@ -15,6 +15,7 @@ use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\AutosearchFormSnippet;
@@ -43,6 +44,7 @@ class FilterSearchFormSnippet extends AutosearchFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MenuSnippetHelper $menuSnippetHelper,
         MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
@@ -50,7 +52,7 @@ class FilterSearchFormSnippet extends AutosearchFormSnippet
         protected TrackDataRepository $trackDataRepository,
         CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

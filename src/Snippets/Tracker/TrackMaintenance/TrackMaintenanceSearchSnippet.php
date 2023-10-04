@@ -14,6 +14,7 @@ namespace Gems\Snippets\Tracker\TrackMaintenance;
 use Gems\Db\ResultFetcher;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -38,12 +39,13 @@ class TrackMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MenuSnippetHelper $menuSnippetHelper,
         MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
         CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

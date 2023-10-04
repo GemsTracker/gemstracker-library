@@ -197,16 +197,18 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
             $this->surveyList = $this->trackDataRepository->getInsertableSurveys($this->respondent->getOrganizationId());
         }
 
-        $model->set('gto_id_survey',   'label', $this->_('Suvey to insert'),
-                // 'elementClass' set in loadSurvey
-                'multiOptions', $this->surveyList,
-                'onchange', 'this.form.submit();'
-                );
-        $model->set('gto_id_track',    'label', $this->_('Existing track'),
-                'elementClass', 'Select',
-                //'multiOptions' set in loadTrackSettings
-                'onchange', 'this.form.submit();'
-                );
+        $model->set('gto_id_survey', [
+            'label' => $this->_('Suvey to insert'),
+            'autosubmit' => true,
+            // 'elementClass' set in loadSurvey
+            'multiOptions' => $this->surveyList,
+            ]);
+        $model->set('gto_id_track', [
+            'label' => $this->_('Existing track'),
+            'autosubmit' => true,
+            'elementClass' => 'Select',
+            //'multiOptions' set in loadTrackSettings
+            ]);
         $model->set('gto_round_order', 'label', $this->_('In round'),
                 'elementClass', 'Select',
                 //'multiOptions' set in loadRoundSettings

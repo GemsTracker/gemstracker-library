@@ -13,6 +13,7 @@ namespace Gems\Snippets\Mail\Log;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TrackDataRepository;
@@ -40,6 +41,7 @@ class MailLogSearchSnippet extends AutosearchInRespondentSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MenuSnippetHelper $menuSnippetHelper,
         MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
@@ -47,7 +49,7 @@ class MailLogSearchSnippet extends AutosearchInRespondentSnippet
         CurrentUserRepository $currentUserRepository,
         protected TrackDataRepository $trackDataRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger, $periodSelectRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger, $periodSelectRepository);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

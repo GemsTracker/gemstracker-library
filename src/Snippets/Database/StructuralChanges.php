@@ -63,9 +63,8 @@ class StructuralChanges extends \MUtil\Snippets\SnippetAbstract
         $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
 
         $element = $form->createElement('select', 'gpa_level', array(
+            'autosubmit' => 'keyup',
             'multiOptions' => $this->patchLevels,
-            'onchange' => 'this.form.submit();',
-            'onkeyup' => 'this.form.submit();',
             ));
 
         $element->setValue($this->getPatchLevel());

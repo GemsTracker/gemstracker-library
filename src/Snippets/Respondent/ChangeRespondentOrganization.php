@@ -110,8 +110,8 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
 
         $bridge->addRadio('change_method',
                 'label', $this->_('Change method'),
+                'autosubmit', true,
                 'multiOptions', $choices,
-                'onchange', 'this.form.submit();',
                 'required', true
                 );
 
@@ -145,10 +145,10 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         
         $bridge->addRadio('gr2o_id_organization',
                 'label', $this->_('New organization'),
+                'autosubmit', true,
                 'disable', $disabled,
                 'escape', false,
                 'multiOptions', $availableOrganizations,
-                'onchange', 'this.form.submit();',
                 'validator', new IsNot(
                         $disabled,
                         $this->_('You cannot change to this organization')

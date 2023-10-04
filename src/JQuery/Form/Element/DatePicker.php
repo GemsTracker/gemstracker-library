@@ -21,22 +21,7 @@ namespace Gems\JQuery\Form\Element;
  * @since      Class available since version 1.5.7
  */
 class DatePicker extends \MUtil\JQuery\Form\Element\DatePicker
-        implements \Gems\Form\AutosubmitElementInterface
 {
-    /**
-     * Change the form into an autosubmit form
-     *
-     * @see \Gems\Form setAutoSubmit
-     * @param array $autoSubmitArgs Array containing submitUrl and targetId
-     */
-    public function enableAutoSubmit(array $autoSubmitArgs)
-    {
-        $this->setJQueryParam(
-                'onSelect',
-                new \Zend_Json_Expr('function(dateText, inst) {jQuery(this).trigger(jQuery.Event("keyup"));}')
-                );
-    }
-
     /**
      * Load default decorators
      *

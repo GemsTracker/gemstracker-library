@@ -32,6 +32,7 @@ trait ModelSnippetActionRouteHelpers
     ];
 
     protected array $defaultPostRoutes = [
+        'autofilter',
         'create',
         'edit',
         'index',

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gems\Snippets;
 
 use Gems\Db\ResultFetcher;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\PeriodSelectRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -31,13 +32,14 @@ class AutosearchPeriodFormSnippet extends AutosearchFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MenuSnippetHelper $menuSnippetHelper,
         MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
         protected PeriodSelectRepository $periodSelectRepository,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $resultFetcher, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger);
     }
     
     /**

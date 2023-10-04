@@ -903,10 +903,10 @@ class Agenda
     public function getTrackCreateElement(): array
     {
         return [
+            'autosubmit' => true,
             'elementClass' => 'Radio',
             'multiOptions' => $this->getTrackCreateOptions(),
             'label'        => $this->translator->_('When not assigned'),
-            'onclick'      => 'this.form.submit();',
             ];
     }
 

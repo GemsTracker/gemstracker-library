@@ -135,18 +135,21 @@ class AnswerImportSnippet extends ModelImportSnippet
 
             $order = $this->importModel->getOrder('trans') - 5;
 
-            $this->importModel->set('survey', 'label', $this->_('Survey'),
-                    'elementClass', $elementClass,
-                    'multiOptions', $surveys,
-                    'onchange', 'this.form.submit();',
-                    'order', $order,
-                    'required', true);
+            $this->importModel->set('survey', [
+                'label' => $this->_('Survey'),
+                'autosubmit' => true,
+                'elementClass' => $elementClass,
+                'multiOptions' => $surveys,
+                'order' => $order,
+                'required' => true,
+                ]);
 
-            $this->importModel->set('track', 'label', $this->_('Track'),
-                    'description', $this->_('Optionally assign answers only within a single track'),
-                    'multiOptions', $tracks //,
-                    // 'onchange', 'this.form.submit();'
-                    );
+            $this->importModel->set('track', [
+                'label' => $this->_('Track'),
+                'autosubmit' => true,
+                'description' => $this->_('Optionally assign answers only within a single track'),
+                'multiOptions' => $tracks,
+                ]);
 
             $this->importModel->set('skipUnknownPatients', 'label', $this->_('Skip unknowns'),
                     'default', 0,
