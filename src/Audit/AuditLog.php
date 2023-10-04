@@ -32,7 +32,7 @@ class AuditLog
      * @param string $action
      * @return array
      */
-    protected function getAction(string $action): array
+    public function getAction(string $action): array
     {
         $action = strtolower($action);
         $actions = $this->getDbActions();
