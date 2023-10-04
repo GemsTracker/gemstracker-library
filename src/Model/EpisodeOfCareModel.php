@@ -63,7 +63,6 @@ class EpisodeOfCareModel extends MaskedModel
                         ),
                 'appointment_count');
 
-        $keys = $this->_getKeysFor('gems__respondent2org');
         $keys[\Gems\Model::EPISODE_ID] = 'gec_episode_of_care_id';
         $this->setKeys($keys);
     }
