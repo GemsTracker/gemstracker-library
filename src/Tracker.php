@@ -675,6 +675,9 @@ class Tracker implements TrackerInterface
     {
         if (TokenModel::$useTokenModel) {
             // dump('Token model laoded through tracker.');
+            /**
+             * @var TokenModel
+             */
             return $this->metaModelLoader->createModel(TokenModel::class);
         }
 
