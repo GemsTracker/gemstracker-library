@@ -132,7 +132,12 @@ class Token
      */
     protected string $_tokenId;
 
-    protected User $currentUser;
+    /**
+     * The authenticated user or null.
+     *
+     * @var User|null
+     */
+    protected User|null $currentUser;
 
     /**
      * True when the token does exist.
@@ -314,7 +319,7 @@ class Token
         return $this->_updateToken([
             'gto_id_relation'      => $respondentRelationId,
             'gto_id_relationfield' => $relationFieldId,
-            ], $this->currentUser->getUserId());
+            ], $this->currentUser instanceof User ? $this->currentUser->getUserId() : 0);
     }
 
     /**
@@ -1830,6 +1835,9 @@ class Token
      */
     public function isViewable(): bool
     {
+        if (is_null($this->currentUser)) {
+            return false;
+        }
         if (isset($this->_gemsData['show_answers']) && $this->_gemsData['show_answers']) {
             return $this->currentUser->isAllowedOrganization($this->getOrganizationId());
         }
@@ -1925,7 +1933,7 @@ class Token
             'gto_mail_sent_date' => (new DateTimeImmutable())->format('Y-m-d'),
         ];
 
-        $this->_updateToken($values, $this->currentUser->getUserId());
+        $this->_updateToken($values, $this->currentUser instanceof User ? $this->currentUser->getUserId() : 0);
     }
 
     /**

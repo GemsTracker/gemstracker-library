@@ -20,7 +20,7 @@ use Zalt\Snippets\ModelBridge\TableBridgeAbstract;
 
 class TokenRepository
 {
-    protected User $currentUser;
+    protected User|null $currentUser;
 
     public function __construct(
         protected Tracker $tracker,
