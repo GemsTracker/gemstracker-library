@@ -27,10 +27,10 @@ use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
+use Gems\Validator\OneOf;
 use Laminas\Filter\Callback;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Filter\Dutch\PostcodeFilter;
 use Zalt\Late\Late;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
@@ -209,7 +209,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         }
         if ($action->isEditing()) {
             if ($this->metaModel->has('grs_ssn')) {
-                $this->metaModel->set('grs_ssn', ['class' => 'autosubmit']);
+                $this->metaModel->set('grs_ssn', ['autosubmit' => 'blur']);
             }
 
             $organizationSettings['default'] = $this->currentOrganizationId;
@@ -307,6 +307,19 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'required' => true,
             'autoInsertNotEmptyValidator' => false
             ]);
+        if ($this->metaModel->has('gr2o_email')) {
+            $this->addColumn('CASE WHEN gr2o_email IS NULL OR LENGTH(TRIM(gr2o_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
+            $this->setIfExists('calc_email', [
+               'elementClass' => 'Checkbox',
+                'required' => true,
+                'order' => $this->metaModel->getOrder('gr2o_email') + 1,
+                'validator' => new OneOf(
+                    $this->_('Respondent has no e-mail'),
+                    'gr2o_email',
+                    $this->metaModel->get('gr2o_email', 'label')
+                )
+            ]);
+        }
         $this->setIfExists('gr2o_mailable', [
             'elementClass' => 'radio',
             'separator' => ' ',
@@ -381,7 +394,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             if (! empty($newValues['gr2o_id_user'])) {
                 $id = $newValues['gr2o_id_user'];
             } elseif (isset($newValues['gr2o_patient_nr'], $newValues['gr2o_id_organization'])) {
-                $id = $this->respondentRepository->getRespondentId($newValues['gr2o_patient_nr'], $newValues['gr2o_id_organization']);
+                $id = $this->respondentRepository->getRespondentId($newValues['gr2o_patient_nr'], intval($newValues['gr2o_id_organization']));
             }
         } else {
             $id = $newValues['grs_id_user'];
