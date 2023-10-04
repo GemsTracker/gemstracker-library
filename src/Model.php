@@ -147,7 +147,7 @@ class Model
     {
         if ($this->project->translateDatabaseFields()) {
             /**
-             * @var $transformer ModelTransformerInterface
+             * @var ModelTransformerInterface $transformer
              */
             $transformer = $this->overloader->create('Transform\\TranslateDatabaseFields');
             $model->addTransformer($transformer);
@@ -163,7 +163,7 @@ class Model
     {
         if ($this->project->translateDatabaseFields()) {
             /**
-             * @var $transformer ModelTransformerInterface
+             * @var ModelTransformerInterface $transformer
              */
             $transformer = $this->overloader->create('Transform\\TranslateFieldEditor');
             $model->addTransformer($transformer);
@@ -284,7 +284,7 @@ class Model
     public function createRespondentModel(): RespondentModel
     {
         /**
-         * @var $model RespondentModel
+         * @var RespondentModel $model
          */
         $model = $this->_createModel(RespondentModel::class);
 
@@ -302,7 +302,7 @@ class Model
     public function getCommLogModel(bool $detailed): CommLogModel
     {
         /**
-         * @var $model CommLogModel
+         * @var CommLogModel $model
          */
         $model = $this->_createModel('CommLogModel');
         $model->applySetting($detailed);
@@ -319,7 +319,7 @@ class Model
     public function getCommMessengersModel(bool $detailed): CommMessengersModel
     {
         /**
-         * @var $model CommMessengersModel
+         * @var CommMessengersModel $model
          */
         $model = $this->_createModel('CommMessengersModel');
         $model->applySetting($detailed);
@@ -335,7 +335,7 @@ class Model
     public function getCommtemplateModel(): CommtemplateModel
     {
         /**
-         * @var $model CommtemplateModel
+         * @var CommtemplateModel $model
          */
         $model = $this->_createModel('CommtemplateModel');
 
@@ -350,7 +350,7 @@ class Model
     public function getConditionModel(): ConditionModel
     {
         /**
-         * @var $model ConditionModel
+         * @var ConditionModel $model
          */
         $model = $this->_createModel('ConditionModel');
 
@@ -365,7 +365,7 @@ class Model
     public function getExportDbaModel(Zend_Db_Adapter_Abstract $db, array $directories): ExportDbaModel
     {
         /**
-         * @var $model ExportDbaModel
+         * @var ExportDbaModel $model
          */
         $model = $this->_createModel('ExportDbaModel', [$db, $directories]);
 
@@ -423,7 +423,7 @@ class Model
     public function getOpenRosaFormModel(): OpenRosaFormModel
     {
         /**
-         * @var $model OpenRosaFormModel
+         * @var OpenRosaFormModel $model
          */
         $model = $this->_createModel('OpenRosaFormModel');
 
@@ -439,7 +439,7 @@ class Model
     public function getOrganizationModel(array $styles = []): OrganizationModel
     {
         /**
-         * @var $model OrganizationModel
+         * @var OrganizationModel $model
          */
         $model = $this->_createModel('OrganizationModel', $styles);
 
@@ -501,7 +501,7 @@ class Model
     public function getStaffModel(bool $addLogin = true): StaffModel
     {
         /**
-         * @var $model StaffModel
+         * @var StaffModel $model
          */
         $model = $this->_createModel('StaffModel');
 
@@ -522,7 +522,7 @@ class Model
     public function getStaffLogModel(bool $detailed): StaffLogModel
     {
         /**
-         * @var $model StaffLogModel
+         * @var StaffLogModel $model
          */
         $model = $this->_createModel('StaffLogModel', true);
         if ($detailed) {

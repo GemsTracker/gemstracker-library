@@ -124,7 +124,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
         }
 
         /**
-         * @var $session SessionInterface
+         * @var SessionInterface $session
          */
         $session = $this->request->getAttribute(SessionInterface::class);
 

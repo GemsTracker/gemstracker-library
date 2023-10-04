@@ -212,7 +212,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
 
         if ($this->fixedReceptionCode == 'redo' && $this->token->isExpired()) {
             /**
-             * @var $messenger StatusMessengerInterface
+             * @var StatusMessengerInterface $messenger
              */
             $messenger = $this->getMessenger();
             $messenger->addMessage($this->_("Watch out! Token is currently expired and you won't be able to answer it unless you change the valid from date."), MessageStatus::Danger, true);

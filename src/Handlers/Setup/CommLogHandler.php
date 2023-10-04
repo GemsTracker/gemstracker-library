@@ -98,7 +98,7 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
     public function createModel(bool $detailed, string $action): DataReaderInterface
     {
         /**
-         * @var $model CommLogModel
+         * @var CommLogModel $model
          */
         $model = $this->overloader->create('Model\\CommLogModel');
         $model->setMaskRepository($this->maskRepository);
