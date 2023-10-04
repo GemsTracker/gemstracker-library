@@ -269,8 +269,7 @@ class TableForm extends \Gems\Form
 
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
-            $this->addDecorator('AutoFocus')
-                ->addDecorator('FormElements')
+            $this->addDecorator('FormElements')
                 ->addDecorator(array('table' => 'HtmlTag'), array('tag'   => 'table', 'class' => $class))
                 ->addDecorator(array('tab' => 'HtmlTag'), array('tag'   => 'div', 'class' => 'displayGroup'))
                 ->addDecorator('Form');

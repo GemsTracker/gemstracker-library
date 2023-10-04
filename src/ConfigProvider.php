@@ -23,6 +23,7 @@ use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Db\Migration\PatchAbstract;
+use Gems\Csrf\GemsCsrfGuardFactory;
 use Gems\Error\ErrorLogEventListenerDelegatorFactory;
 use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\DoctrineOrmFactory;
@@ -43,6 +44,8 @@ use Gems\Model\Bridge\GemsFormBridge;
 use Gems\Model\Bridge\GemsValidatorBridge;
 use Gems\Model\MetaModelLoader as GemsMetaModelLoader;
 use Gems\Model\MetaModelLoaderFactory;
+use Gems\Model\Respondent\RespondentModel;
+use Gems\Model\Respondent\RespondentNlModel;
 use Gems\Model\Type\GemsDateTimeType;
 use Gems\Model\Type\GemsDateType;
 use Gems\Model\Type\GemsTimeType;
@@ -84,7 +87,6 @@ use Laminas\Permissions\Acl\Acl;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Csrf\CsrfMiddlewareFactory;
-use Mezzio\Csrf\FlashCsrfGuardFactory;
 use Mezzio\Session\Cache\CacheSessionPersistence;
 use Mezzio\Session\Cache\CacheSessionPersistenceFactory;
 use Mezzio\Session\Ext\PhpSessionPersistence;
@@ -385,7 +387,7 @@ class ConfigProvider
                 // Session
                 //SessionPersistenceInterface::class => CacheSessionPersistence::class,
                 SessionPersistenceInterface::class => PhpSessionPersistence::class,
-                CsrfGuardFactoryInterface::class => FlashCsrfGuardFactory::class,
+                CsrfGuardFactoryInterface::class => GemsCsrfGuardFactory::class,
 
                 RoleAdapterInterface::class => DbRoleAdapter::class,
                 GroupAdapterInterface::class => DbGroupAdapter::class,
@@ -394,6 +396,8 @@ class ConfigProvider
 
                 // Default lock storage
                 LockStorageAbstract::class => FileLock::class,
+
+                RespondentModel::class => RespondentNlModel::class,
 
                 // Translation
                 \Symfony\Contracts\Translation\TranslatorInterface::class => TranslatorInterface::class,

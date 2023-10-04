@@ -45,6 +45,19 @@ class CurrentUserRepository
         return $this->currentUser;
     }
 
+    public function getCurrentLoginName(): string|null
+    {
+        if ($this->loginName) {
+            return $this->loginName;
+        }
+        if ($this->currentUser !== null) {
+            $this->loginName = $this->currentUser->getLoginName();
+            return $this->loginName;
+        }
+
+        return null;
+    }
+
     public function getCurrentOrganizationId(): int
     {
         if ($this->organizationId !== null) {

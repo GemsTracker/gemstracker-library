@@ -15,10 +15,10 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\Respondent\RespondentConsentLogModel;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker\Respondent;
-use MUtil\Model\TableModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -84,13 +84,17 @@ class RespondentConsentLogSnippet extends ModelTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
-        if ($this->respondent && $this->respondent->exists) {
-            $this->respondentConsentLogModel->setFilter([
-                'glrc_id_user' => $this->respondent->getId(),
-                'glrc_id_organization' => $this->respondent->getOrganizationId(),
-            ]);
-        }
         return $this->respondentConsentLogModel;
+    }
+
+    public function getFilter(MetaModelInterface $metaModel): array
+    {
+        $filter = parent::getFilter($metaModel);
+        if ($this->respondent && $this->respondent->exists) {
+            $filter['glrc_id_user'] = $this->respondent->getId();
+            $filter['glrc_id_organization'] = $this->respondent->getOrganizationId();
+        }
+        return $filter;
     }
 
     /**

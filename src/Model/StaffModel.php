@@ -19,6 +19,7 @@ use Gems\User\Filter\PhoneNumberFilter;
 use Gems\User\UserLoader;
 use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Translated;
+use Laminas\Filter\Callback;
 use MUtil\Model\Dependency\ValueSwitchDependency;
 use MUtil\Validator\NoScript;
 use MUtil\Validator\SimpleEmail;
@@ -265,7 +266,7 @@ class StaffModel extends JoinModel
                 'required', true);
 
             if ($editing) {
-                $ucfirst = new \Zend_Filter_Callback(fn ($s) => ucfirst($s ?? ''));
+                $ucfirst = new Callback(fn ($s) => ucfirst($s ?? ''));
                 $this->set('gsf_first_name',   'filters[ucfirst]', $ucfirst);
                 $this->set('gsf_last_name',    'filters[ucfirst]', $ucfirst);
                 $this->set('gsf_job_title',    'filters[ucfirst]', $ucfirst);

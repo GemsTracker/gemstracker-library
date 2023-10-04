@@ -29,56 +29,58 @@ class RespondentRepository
     )
     { }
 
-    public function getRespondent(?string $patientId, ?int $organizationId, ?int $respondentId = null): Respondent
+    public function getOtherPatientNumbers(
+        string $patientNr,
+        int $organizationId,
+        bool $pairs = true,
+        bool $combined = false,
+        bool $withOrganizationName = false
+    ): array
     {
-        if ($patientId) {
-            if (isset($this->respondents[$organizationId][$patientId])) {
-                return $this->respondents[$organizationId][$patientId];
-            }
+        $subSelect = $this->resultFetcher->getSelect('gems__respondent2org')
+            ->columns(['gr2o_id_user'])
+            ->where([
+                'gr2o_patient_nr' => $patientNr,
+                'gr2o_id_organization' => $organizationId,
+            ]);
+
+        $currentOrganizationPredicate = new Predicate();
+        $currentOrganizationPredicate->equalTo('gr2o_id_organization', $organizationId);
+
+        $columns = [
+            'organizationId' => 'gr2o_id_organization',
+            'patientNr' => 'gr2o_patient_nr',
+        ];
+
+        if ($combined) {
+            $columns['patientNr'] = new Expression('CONCAT(gr2o_patient_nr, "'.static::ORGANIZATION_SEPARATOR.'", gr2o_id_organization)');
         }
-        $newResp = $this->overLoader->create('Tracker\\Respondent', $patientId, $organizationId, $respondentId);
-        $patientId = $newResp->getPatientNumber();
 
-        if (! isset($this->respondents[$organizationId][$patientId])) {
-            $this->respondents[$organizationId][$patientId] = $newResp;
+        $organizationColumns = [];
+        if ($withOrganizationName) {
+            $organizationColumns['organizationName'] = 'gor_name';
         }
 
-        return $this->respondents[$organizationId][$patientId];
-    }
-    
-    /**
-     *
-     * @return array
-     */
-    public function getRespondentConsents(): array
-    {
-        $select = $this->resultFetcher->getSelect('gems__consents');
-        $select->columns(['gco_description'])
-            ->order('gco_order');
-        $sql = "SELECT gco_description, gco_description FROM gems__consents ORDER BY gco_order";
+        $select = $this->resultFetcher->getSelect('gems__respondent2org')
+            ->join('gems__organizations', 'gor_id_organization = gr2o_id_organization', $organizationColumns)
+            ->join('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', [])
+            ->columns($columns)
+            ->where([
+                'grc_success' => 1,
+                'gr2o_id_user' => $subSelect,
+                new PredicateSet([
+                    $currentOrganizationPredicate,
+                    new Like('gor_accessible_by', '%'.$organizationId.'%'),
+                ], PredicateSet::COMBINED_BY_OR),
+            ]);
 
-        return $this->resultFetcher->fetchPairs($select) ?: [];
-    }
+        $patients = $this->resultFetcher->fetchAll($select);
 
-    public function getRespondentId(string $patientNr, ?int $organizationId=null): ?int
-    {
-        if ($patient = $this->getPatient($patientNr, $organizationId)) {
-            if (array_key_exists('gr2o_id_user', $patient)) {
-                return (int)$patient['gr2o_id_user'];
-            }
+        if ($pairs) {
+            return array_column($patients, 'patientNr', 'organizationId');
         }
-        return null;
-    }
 
-    public function getRespondentModel(bool $detailed = false): RespondentModel
-    {
-        /**
-         * @var RespondentModel $model
-         */
-        $model = $this->modelLoader->createModel(RespondentModel::class);
-        $model->applyStringAction('edit', true);
-
-        return $model;
+        return $patients;
     }
 
     public function getPatient(string $patientNr, ?int $organizationId=null): ?array
@@ -137,6 +139,58 @@ class RespondentRepository
         return $result;
     }
 
+    public function getRespondent(?string $patientId, ?int $organizationId, ?int $respondentId = null): Respondent
+    {
+        if ($patientId) {
+            if (isset($this->respondents[$organizationId][$patientId])) {
+                return $this->respondents[$organizationId][$patientId];
+            }
+        }
+        $newResp = $this->overLoader->create('Tracker\\Respondent', $patientId, $organizationId, $respondentId);
+        $patientId = $newResp->getPatientNumber();
+
+        if (! isset($this->respondents[$organizationId][$patientId])) {
+            $this->respondents[$organizationId][$patientId] = $newResp;
+        }
+
+        return $this->respondents[$organizationId][$patientId];
+    }
+    
+    /**
+     *
+     * @return array
+     */
+    public function getRespondentConsents(): array
+    {
+        $select = $this->resultFetcher->getSelect('gems__consents');
+        $select->columns(['gco_description'])
+            ->order('gco_order');
+        $sql = "SELECT gco_description, gco_description FROM gems__consents ORDER BY gco_order";
+
+        return $this->resultFetcher->fetchPairs($select) ?: [];
+    }
+
+    public function getRespondentId(string $patientNr, ?int $organizationId=null): ?int
+    {
+        if ($patient = $this->getPatient($patientNr, $organizationId)) {
+            if (array_key_exists('gr2o_id_user', $patient)) {
+                return (int)$patient['gr2o_id_user'];
+            }
+        }
+        return null;
+    }
+
+    public function getRespondentModel(bool $detailed = false): RespondentModel
+    {
+        /**
+         * @var RespondentModel $model
+         */
+        $model = $this->modelLoader->createModel(RespondentModel::class);
+        $model->applyStringAction('edit', true);
+
+        return $model;
+    }
+
     /**
      * Get RespondentId from SSN
      *
@@ -152,65 +206,6 @@ class RespondentRepository
 
 
         return $this->resultFetcher->fetchOne($select);
-    }
-
-    public function getOtherPatientNumbers(
-        string $patientNr,
-        int $organizationId,
-        bool $pairs = true,
-        bool $combined = false,
-        bool $withOrganizationName = false
-    ): array
-    {
-        $subSelect = $this->resultFetcher->getSelect('gems__respondent2org')
-            ->columns(['gr2o_id_user'])
-            ->where([
-                'gr2o_patient_nr' => $patientNr,
-                'gr2o_id_organization' => $organizationId,
-            ]);
-
-        $currentOrganizationPredicate = new Predicate();
-        $currentOrganizationPredicate->equalTo('gr2o_id_organization', $organizationId);
-
-        $columns = [
-            'organizationId' => 'gr2o_id_organization',
-            'patientNr' => 'gr2o_patient_nr',
-        ];
-
-        if ($combined) {
-            $columns['patientNr'] = new Expression('CONCAT(gr2o_patient_nr, "'.static::ORGANIZATION_SEPARATOR.'", gr2o_id_organization)');
-        }
-
-        $organizationColumns = [];
-        if ($withOrganizationName) {
-            $organizationColumns['organizationName'] = 'gor_name';
-        }
-
-        $select = $this->resultFetcher->getSelect('gems__respondent2org')
-            ->join('gems__organizations', 'gor_id_organization = gr2o_id_organization', $organizationColumns)
-            ->join('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', [])
-            ->columns($columns)
-            ->where([
-                'grc_success' => 1,
-                'gr2o_id_user' => $subSelect,
-                new PredicateSet([
-                    $currentOrganizationPredicate,
-                    new Like('gor_accessible_by', '%'.$organizationId.'%'),
-                ], PredicateSet::COMBINED_BY_OR),
-            ]);
-
-        $patients = $this->resultFetcher->fetchAll($select);
-
-        if ($pairs) {
-            return array_column($patients, 'patientNr', 'organizationId');
-        }
-
-        return $patients;
-    }
-
-    public function getRespondentIdFromRequest(ServerRequestInterface $request)
-    {
-
     }
 
     public function setOpened(string $patientNr, int $organizationId, int $currentUserId): void

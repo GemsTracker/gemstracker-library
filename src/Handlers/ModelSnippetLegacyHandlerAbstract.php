@@ -21,8 +21,6 @@ use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Snippets\ModelTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Export\ExportAction;
-use Mezzio\Csrf\CsrfGuardInterface;
-use Mezzio\Csrf\CsrfMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -39,6 +37,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSnippetLegacyHandlerAbstract
 {
+    use CsrfHandlerTrait;
     use PaginatorHandlerTrait;
 
     /**
@@ -68,9 +67,10 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     private array $_createExtraParameters = [
         'addCurrentParent'   => true,
         'addCurrentSiblings' => false,
+        'csrfName'           => 'getCsrfTokenName',
+        'csrfToken'          => 'getCsrfToken',
         'formTitle'          => 'getCreateTitle',
         'topicCallable'      => 'getTopicCallable',
-        'csrfGuard'          => 'getCsrfGuard',
     ];
 
     /**
@@ -108,9 +108,10 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     private array $_editExtraParameters = [
         'addCurrentParent'   => true,
         'addCurrentSiblings' => true,
+        'csrfName'           => 'getCsrfTokenName',
+        'csrfToken'          => 'getCsrfToken',
         'formTitle'          => 'getEditTitle',
         'topicCallable'      => 'getTopicCallable',
-        'csrfGuard'          => 'getCsrfGuard',
     ];
 
     /**
@@ -356,23 +357,21 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         }
 
         if ($action instanceof ExportAction) {
+            $action->csrfName = $this->getCsrfTokenName();
+            $action->csrfToken = $this->getCsrfToken($action->csrfName);
+            $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
+
             $step = $this->requestInfo->getParam('step');
             if ($step) {
                 if (ExportAction::STEP_RESET !== $step) {
                     $action->step = $step;
                 }
             }
-            $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
         }
 
         return $this->responder->getSnippetsResponse($action->getSnippetClasses(), $action->getSnippetOptions());
     }
 
-
-    public function getCsrfGuard(): ?CsrfGuardInterface
-    {
-        return $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
-    }
 
     public function getControllerName(): ?string
     {

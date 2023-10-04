@@ -12,6 +12,7 @@ namespace Gems\Model\Respondent;
 
 use Gems\Model\MetaModelLoader;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
 /**

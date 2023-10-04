@@ -11,6 +11,7 @@ use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\Cache\HelperAdapter;
 use Gems\Cache\RateLimiter;
+use Gems\Menu\RouteHelper;
 use Gems\Repository\RespondentRepository;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -32,6 +33,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
+        private readonly RouteHelper $routeHelper,
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
         private readonly RespondentRepository $respondentRepository,
@@ -93,7 +95,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
             //}
 
             $url = $redirector?->getRedirectUrl(
-                $this->urlHelper,
+                $this->routeHelper,
                 $result->systemUser,
                 $result->deferredUser,
                 $identity->getPatientId(),

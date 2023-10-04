@@ -11,8 +11,16 @@
 
 namespace Gems\Snippets\User;
 
-use Gems\Snippets\FormSnippetAbstractMUtil;
+use Gems\Db\ResultFetcher;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Repository\OrganizationRepository;
+use Gems\Snippets\FormSnippetAbstract;
 use Gems\User\Embed\EmbeddedUserData;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\UrlArrayAttribute;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -22,7 +30,7 @@ use Gems\User\Embed\EmbeddedUserData;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 14-Apr-2020 17:22:44
  */
-class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
+class EmbeddedUserTestUrlForm extends FormSnippetAbstract
 {
     /**
      *
@@ -31,26 +39,13 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
     protected $_embedderData;
 
     /**
-     * Required
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * The form Id used for the save button
      *
      * If empty save button is not added
      *
      * @var string
      */
-    protected $saveButtonId = null;
+    protected $saveButtonId = '';
 
     /**
      *
@@ -58,18 +53,25 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
      */
     protected $selectedUser;
 
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly ResultFetcher $resultFetcher,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+    }
 
     /**
      * Add the elements to the form
      *
      * @param \Zend_Form $form
      */
-    protected function addFormElements(\Zend_Form $form)
+    protected function addFormElements(mixed $form)
     {
         $orgOptions = [
             'label'        => $this->_('Organization'),
@@ -98,17 +100,10 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
         $pidSelect = $form->createElement('Select', 'pid', $pidOptions);
         $form->addElement($pidSelect);
 
-        $paramOptions = [
-            'label'        => $this->_('Standard query'),
-            'onchange'     => 'this.form.submit();',
-            ];
-        $paramCheck = $form->createElement('Checkbox', 'old_param', $paramOptions);
-        $form->addElement($paramCheck);
-
         $urlOptions = [
             'label'       => $this->_('Example url'),
             'cols'        => 80,
-            'description' => \MUtil\StringUtil\StringUtil::contains($this->formData['example_url'], '{') ?
+            'description' => str_contains($this->formData['example_url'], '{') ?
                 $this->_('Replace {} fields!') :
                 $this->_('Please open in private mode or in other browser.'),
             'rows'        => 5,
@@ -118,6 +113,12 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
         $form->addElement($url);
     }
 
+    protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass)
+    {
+        // No Button for this class
+    }
+
+
     /**
      *
      * @return array
@@ -126,6 +127,10 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
     {
         $auth = $this->_embedderData->getAuthenticator();
 
+        $organization = $this->organizationRepository->getOrganization($this->formData['org_id']);
+
+        $url[] =  $organization->getLoginUrl() . $this->menuHelper->getRouteUrl('embed.login');
+
         $url['epd'] = $this->selectedUser->getLoginName();
         $url['org'] = $this->formData['org_id'];
         $url['usr'] = $this->formData['login_id'];
@@ -133,20 +138,14 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
         $url['key'] = $auth->getExampleKey($this->selectedUser);
 
         $url_string = '';
-        if ($this->formData['old_param']) {
-            foreach ($url as $key => $val) {
-                $url_string .= "&$key=" . urlencode($val);
-            }
-            $url_string[0] = '?';
-        } else {
-            foreach ($url as $key => $val) {
-                $url_string .= "/$key/" . urlencode($val);
-            }
+        foreach ($url as $key => $val) {
+            $url_string .= "&$key=" . urlencode($val);
         }
+        $url_string[0] = '?';
 
         // Return the {brackets} to not decoded as they should be changed by the user
         // (and will usally work fine in an url anyway).
-        return $this->util->getCurrentURI('embed/login') . str_replace(['%7B', '%7D'], ['{', '}'], $url_string);
+        return str_replace(['%7B', '%7D'], ['{', '}'], UrlArrayAttribute::toUrlString($url));
     }
 
     /**
@@ -154,7 +153,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
      *
      * @return array
      */
-    protected function getDefaultFormValues()
+    protected function getDefaultFormValues(): array
     {
         return [
             'org_id'    => $this->selectedUser->getBaseOrganizationId(),
@@ -165,29 +164,18 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
     }
 
     /**
-     * overrule to add your own buttons.
-     *
-     * @return \Gems\Menu\MenuList
-     */
-    protected function getMenuList()
-    {
-        return null;
-    }
-
-    /**
      *
      * @param int $orgId
      * @return array login_id => login_id
      */
-    public function getPatients($orgId)
+    public function getPatients($orgId): array
     {
         $def = ['{patient_nr}' => '{patient_nr}'];
         $sql = "SELECT gr2o_patient_nr, gr2o_patient_nr
             FROM gems__respondent2org INNER JOIN gems__reception_codes ON gr2o_reception_code = grc_id_reception_code
             WHERE gr2o_id_organization = ? AND grc_success = 1 LIMIT 1000";
 
-
-        $patients = $this->db->fetchPairs($sql, $orgId);
+        $patients = $this->resultFetcher->fetchPairs($sql, [$orgId]);
 
         if ($patients) {
             return $def + $patients;
@@ -201,17 +189,16 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
      * @param int $orgId
      * @return array login_id => login_id
      */
-    public function getStaffUsers($orgId)
+    public function getStaffUsers($orgId): array
     {
         $def = ['{login_id}' => '{login_id}'];
         $sql = "SELECT gul_login, gul_login
             FROM gems__user_logins
             WHERE gul_id_organization = ? AND gul_user_class = ? AND gul_can_login = 1 AND 
                   gul_login  NOT IN (SELECT gsf_login FROM gems__staff INNER JOIN gems__systemuser_setup ON gsf_id_user = gsus_id_user)
-            ORDER BY gul_login";
+            ORDER BY gul_login LIMIT 1000";
 
-
-        $staff = $this->db->fetchPairs($sql, [$orgId, $this->selectedUser->getUserDefinitionClass()]);
+        $staff = $this->resultFetcher->fetchPairs($sql, [$orgId, $this->selectedUser->getUserDefinitionClass()]);
 
         if ($staff) {
             return $def + $staff;
@@ -230,17 +217,6 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
         return $this->_('Example login url generator');
     }
 
-    /**
-     * The place to check if the data set in the snippet is valid
-     * to generate the snippet.
-     *
-     * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
-     * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil\Registry\TargetInterface}.
-     *
-     * @return boolean
-     */
     public function hasHtmlOutput(): bool
     {
         if ($this->selectedUser instanceof \Gems\User\User) {

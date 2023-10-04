@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Gems\Model\Respondent;
 
-use DateTimeImmutable;
 use Gems\Communication\CommunicationRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\GemsJoinModel;
@@ -19,6 +18,7 @@ use Gems\Model\MetaModelLoader;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\ConsentRepository;
 use Gems\Repository\OrganizationRepository;
+use Gems\Repository\RespondentRepository;
 use Gems\Repository\StaffRepository;
 use Gems\SnippetsActions\ApplyLegacyActionInterface;
 use Gems\SnippetsActions\ApplyLegacyActionTrait;
@@ -27,15 +27,14 @@ use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Sql\Sql;
 use Laminas\Filter\Callback;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Filter\Dutch\PostcodeFilter;
 use Zalt\Late\Late;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\SnippetsActions\Form\EditActionAbstract;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\Validator\Model\ModelUniqueValidator;
 
@@ -77,7 +76,11 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
     protected string $currentGroup = '';
 
-    protected User $currentUser;
+    protected int $currentOrganizationId;
+
+    protected User|null $currentUser;
+
+    protected int $currentUserId;
 
     /**
      * Determines the algorithm used to hash the social security number
@@ -94,16 +97,20 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         MaskRepository $maskRepository,
         protected readonly CommunicationRepository $communicationRepository,
         protected readonly ConsentRepository $consentRepository,
-        protected readonly Adapter $db,
+        protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly Localized $localizedUtil,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly ProjectSettings $project,
+        protected readonly RespondentRepository $respondentRepository,
         protected readonly StaffRepository $staffRepository,
         protected readonly Translated $translatedUtil,
         protected readonly GemsUserIdGenerator $gemsUserIdGenerator,
     )
     {
         $this->currentUser    = $currentUserRepository->getCurrentUser();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
+        $this->currentOrganizationId = $currentUserRepository->getCurrentOrganizationId();
+
         $this->maskRepository = $maskRepository;
 
         parent::__construct('gems__respondents', $metaModelLoader, $sqlRunner, $translate, 'respondents2', true);
@@ -114,7 +121,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         // Set the key to resp2org
         $keys = $this->metaModel->getItemsFor(['table' => 'gems__respondent2org', 'key' => true]);
         $this->metaModel->setKeys($keys);
-        $this->copyKeys();
 
         $metaModelLoader->setChangeFields($this->metaModel, 'grs');
         $metaModelLoader->setChangeFields($this->metaModel, 'gr2o');
@@ -202,8 +208,13 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             }
         }
         if ($action->isEditing()) {
-            $organizationSettings['default'] = $this->currentUser->getCurrentOrganizationId();
-            if (count($this->currentUser->getAllowedOrganizations()) == 1) {
+            if ($this->metaModel->has('grs_ssn')) {
+                $this->metaModel->set('grs_ssn', ['class' => 'autosubmit']);
+            }
+
+            $organizationSettings['default'] = $this->currentOrganizationId;
+
+            if ($this->currentUser === null || count($this->currentUser->getAllowedOrganizations()) == 1) {
                 $organizationSettings['elementClass'] = 'Exhibitor';
             } else {
                 $organizationSettings['multiOptions']  = $this->currentUser->getRespondentOrganizations();
@@ -211,7 +222,16 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $this->setIfExists('gr2o_id_organization', $organizationSettings);
 
             $this->metaModel->del('name', 'label');
+
+            if ($action instanceof EditActionAbstract && $action->createData) {
+                $this->metaModel->setMulti(['gr2o_changed', 'gr2o_changed_by', 'gr2o_created', 'gr2o_created_by'], [
+                    'label' => null,
+                    'elementClass' => 'None',
+                ]);
+            }
         }
+        $event = new RespondentModelSetEvent($this, $action);
+        $this->eventDispatcher->dispatch($event, RespondentModelSetEvent::class);
     }
 
     public function applySettings()
@@ -276,10 +296,10 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'separator' => ' ',
             'multiOptions' => $this->translatedUtil->getGenderHello(),
         ]);
-        $this->setIfExists('grs_birthday');
+        $this->setIfExists('grs_birthday', ['elementClass' => 'Date']);
         $this->setIfExists('gr2o_id_physician');
         $this->setIfExists('gr2o_treatment');
-        $this->setIfExists('gr2o_comments');
+        $this->setIfExists('gr2o_comments', ['elementClass' => 'Textarea', 'rows' => 4]);
 
         // CONTACT INFO
         $this->currentGroup = $this->_('Contact information');
@@ -296,9 +316,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'filters[ucfirst]' => $ucfirst,
         ]);
         $this->setIfExists('grs_address_2');
-        $this->setIfExists('grs_zipcode', [
-            'filters[postcode]' => PostcodeFilter::class,
-            ]);
+        $this->setIfExists('grs_zipcode');
         $this->setIfExists('grs_city', [
             'filters[ucfirst]' => $ucfirst,
         ]);
@@ -335,8 +353,9 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'default' => date('Y-m-d H:i:s'),
             'elementClass' => 'None',  // Has little use to show: is now
         ]);
+
         $this->setIfExists('gr2o_opened_by', [
-            'default' => $this->currentUser->getUserId(),
+            'default' => $this->currentUserId,
             'elementClass' => 'Hidden',  // Has little use to show: is usually editor, but otherwise is set to null during save
             'multiOptions' => $changers
         ]);
@@ -349,7 +368,47 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $changers,
         ]);
 
+        $event = new RespondentModelSetEvent($this);
+        $this->eventDispatcher->dispatch($event, RespondentModelSetEvent::class);
+
         $this->applyMask();
+    }
+
+    public function checkIds(array $newValues)
+    {
+        $id = false;
+        if (empty($newValues['grs_id_user'])) {
+            if (! empty($newValues['gr2o_id_user'])) {
+                $id = $newValues['gr2o_id_user'];
+            } elseif (isset($newValues['gr2o_patient_nr'], $newValues['gr2o_id_organization'])) {
+                $id = $this->respondentRepository->getRespondentId($newValues['gr2o_patient_nr'], $newValues['gr2o_id_organization']);
+            }
+        } else {
+            $id = $newValues['grs_id_user'];
+        }
+
+        if (! empty($newValues['grs_ssn'])) {
+            $ssnId = $this->respondentRepository->getRespondentIdBySsn($newValues['grs_ssn']);
+
+            if ($ssnId && (! $id)) {
+                $id = $ssnId;
+            }
+        } else {
+            $ssnId = false;
+        }
+
+        if ($id) {
+            if ($ssnId && ($id != $ssnId)) {
+                // Log duplicate SSN?
+                unset($newValues['grs_ssn']);
+            }
+            if ($id) {
+                $newValues['grs_id_user']  = $id;
+                $newValues['gr2o_id_user'] = $id;
+            }
+        }
+
+        return $newValues;
     }
 
     public function hideSSN($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
@@ -411,6 +470,10 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 'grs_phone_3' => sprintf($this->_('Phone %s'), 3),
                 'grs_phone_4' => sprintf($this->_('Phone %s'), 4),
             ];
+
+            $event = new RespondentModelInitEvent($this, $this->_labels);
+            $this->eventDispatcher->dispatch($event, RespondentModelInitEvent::class);
+            $this->_labels = $event->getLabels();
         }
     }
 
@@ -461,7 +524,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 $values['glrc_old_consent']     = $newValues[$oldConsent];
                 $values['glrc_new_consent']     = $newValues[$consent];
                 $values['glrc_created']         = "CURRENT_TIMESTAMP";
-                $values['glrc_created_by']      = $this->currentUser->getUserId();
+                $values['glrc_created_by']      = $this->currentUserId;
 
                 $logModel->save($values);
                 $changes++;
@@ -473,7 +536,13 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
     public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
+//        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($newValues, true) . "\n", FILE_APPEND);
+//        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($filter, true) . "\n", FILE_APPEND);
+
+        $newValues = $this->checkIds($newValues);
+
         $output = parent::save($newValues, $filter, $saveTables);
+
         $this->logConsentChanges($output);
 
         return $output;

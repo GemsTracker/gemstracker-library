@@ -20,8 +20,6 @@ use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
 use Gems\SnippetsActions\Show\ShowAction;
-use Mezzio\Csrf\CsrfGuardInterface;
-use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,6 +38,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbstract
 {
+    use CsrfHandlerTrait;
     use PaginatorHandlerTrait;
 
     /**
@@ -84,13 +83,6 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
     {
         parent::__construct($responder, $metaModelLoader, $translate);
         Html::init();
-    }
-
-    public function getCsrfToken()
-    {
-        /** @var CsrfGuardInterface $csrfGuard */
-        $csrfGuard = $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
-        return $csrfGuard->generateToken();
     }
 
     /**
@@ -255,16 +247,27 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                 $useRequest = $this->requestInfo->isPost() && ! $action instanceof ExportAction;
                 $action->searchFilter = $this->getSearchFilter($useRequest);
 
-
                 if ($action instanceof BrowseSearchAction) {
                     $action->contentTitle = ucfirst($this->getTopic(2));
                     $action->searchData = $this->getSearchData($useRequest);
+                }
+                if ($action instanceof ExportAction) {
+                    $action->csrfName = $this->getCsrfTokenName();
+                    $action->csrfToken = $this->getCsrfToken($action->csrfName);
+                    $step = $this->requestInfo->getParam('step');
+                    if ($step) {
+                        if (ExportAction::STEP_RESET !== $step) {
+                            $action->step = $step;
+                        }
+                    }
+                    $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
                 }
             }
 
         } elseif ($action instanceof CreateAction) {
             $action->class = "formTable";
-            $action->csrfToken = $this->getCsrfToken();
+            $action->csrfName = $this->getCsrfTokenName();
+            $action->csrfToken = $this->getCsrfToken($action->csrfName);
             $action->addCurrentParent = true;
             $action->addCurrentChildren = false;
             $action->subjects = [$this->getTopic(1), $this->getTopic(2)];
@@ -281,15 +284,6 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
         } elseif ($action instanceof DeleteAction) {
             $action->contentTitle = sprintf($this->_('Delete %s'), $this->getTopic(1));
 
-        } elseif ($action instanceof ExportAction) {
-            $step = $this->requestInfo->getParam('step');
-            if ($step) {
-                if (ExportAction::STEP_RESET !== $step) {
-                    $action->step = $step;
-                }
-            }
-            $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
         }
-
     }
 }
