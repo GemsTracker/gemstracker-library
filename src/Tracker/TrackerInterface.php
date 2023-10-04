@@ -16,6 +16,7 @@ use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Tracker\Form\AskTokenForm;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\Model\TrackModel;
 use Gems\Tracker\Source\SourceInterface;
 use Gems\Tracker\Token\TokenFilter;
@@ -233,9 +234,9 @@ interface TrackerInterface
      * Returns a token model of the specified class with full display information
      *
      * @param string $modelClass Optional class to use instead of StandardTokenModel. Must be subclass.
-     * @return \Gems\Tracker\Model\StandardTokenModel
+     * @return \Gems\Tracker\Model\StandardTokenModel|\Gems\Tracker\Model\TokenModel
      */
-    public function getTokenModel(string $modelClass = 'StandardTokenModel'): StandardTokenModel;
+    public function getTokenModel(string $modelClass = 'StandardTokenModel'): StandardTokenModel|TokenModel;
 
     /**
      * Create a select statement on the token table

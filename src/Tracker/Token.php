@@ -70,13 +70,13 @@ class Token
 
     /**
      *
-     * @var string The token id of the token this one was copied from, null when not loaded, false when does not exist
+     * @var string|null The token id of the token this one was copied from, null when not loaded, false when does not exist
      */
     protected string|null $_copiedFromTokenId = null;
 
     /**
      *
-     * @var array The token id's of the tokens this one was copied to, null when not loaded, [] when none exist
+     * @var array|null The token id's of the tokens this one was copied to, null when not loaded, [] when none exist
      */
     protected array|null $_copiedToTokenIds = null;
 
@@ -95,20 +95,20 @@ class Token
 
     /**
      *
-     * @var Token
+     * @var Token|bool|null
      */
     private Token|bool|null $_nextToken = null;
 
     /**
      *
-     * @var Token
+     * @var Token|null
      */
     private Token|null $_previousToken = null;
 
     /**
      * Holds the relation (if any) for this token
      *
-     * @var array
+     * @var RespondentRelationInstance|null
      */
     protected RespondentRelationInstance|null $_relation = null;
 
@@ -132,7 +132,12 @@ class Token
      */
     protected string $_tokenId;
 
-    protected User $currentUser;
+    /**
+     * The authenticated user or null.
+     *
+     * @var User|null
+     */
+    protected User|null $currentUser;
 
     /**
      * True when the token does exist.
@@ -206,7 +211,7 @@ class Token
     /**
      * Add relation to the select statement
      *
-     * @param \Gems\Tracker\Token\TokenSelect $select
+     * @param \Gems\Tracker\Token\LaminasTokenSelect $select
      */
     protected function _addRelation(LaminasTokenSelect $select): void
     {
@@ -314,7 +319,7 @@ class Token
         return $this->_updateToken([
             'gto_id_relation'      => $respondentRelationId,
             'gto_id_relationfield' => $relationFieldId,
-            ], $this->currentUser->getUserId());
+            ], $this->currentUser instanceof User ? $this->currentUser->getUserId() : 0);
     }
 
     /**
@@ -1812,6 +1817,9 @@ class Token
      */
     public function isViewable(): bool
     {
+        if (is_null($this->currentUser)) {
+            return false;
+        }
         if (isset($this->_gemsData['show_answers']) && $this->_gemsData['show_answers']) {
             return $this->currentUser->isAllowedOrganization($this->getOrganizationId());
         }
@@ -1915,7 +1923,7 @@ class Token
             'gto_mail_sent_date' => (new DateTimeImmutable())->format('Y-m-d'),
         ];
 
-        $this->_updateToken($values, $this->currentUser->getUserId());
+        $this->_updateToken($values, $this->currentUser instanceof User ? $this->currentUser->getUserId() : 0);
     }
 
     /**

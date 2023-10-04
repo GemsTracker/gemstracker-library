@@ -2,13 +2,11 @@
 
 namespace Gems\Snippets\Respondent;
 
-use Gems\Html;
 use Gems\Layout\LayoutSettings;
 use Gems\Locale\Locale;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Vue\CreateEditSnippet;
 use Gems\Tracker;
-use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;
 use MUtil\Model;
@@ -36,9 +34,6 @@ class TokenEmailSnippet extends CreateEditSnippet
         protected MenuSnippetHelper $menuSnippetHelper,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $templateRenderer, $locale, $urlHelper, $config);
-        $this->layoutSettings = $layoutSettings;
-        $this->templateRenderer = $templateRenderer;
-        $this->locale = $locale;
     }
 
     public function getRedirectRoute(): ?string

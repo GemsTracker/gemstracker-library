@@ -133,7 +133,7 @@ class AgendaDiagnosisHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'gad');
 
-        $model->setDeleteValues('gapr_active', 0);
+        $model->setDeleteValues('gad_active', 0);
 
         $model->set('gad_diagnosis_code',           'label', $this->_('Diagnosis code'),
             'description', $this->_('A code as defined by the coding system'),
