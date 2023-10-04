@@ -669,9 +669,9 @@ class Tracker implements TrackerInterface
      * Returns a token model of the specified class with full display information
      *
      * @param string $modelClass Optional class to use instead of StandardTokenModel. Must be subclass.
-     * @return StandardTokenModel
+     * @return StandardTokenModel|TokenModel
      */
-    public function getTokenModel(string $modelClass = 'StandardTokenModel'): StandardTokenModel
+    public function getTokenModel(string $modelClass = 'StandardTokenModel'): StandardTokenModel|TokenModel
     {
         if (TokenModel::$useTokenModel) {
             // dump('Token model laoded through tracker.');
