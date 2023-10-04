@@ -44,17 +44,16 @@ class PatchRepository extends MigrationRepositoryAbstract
             }
             $description = $patchClass->getDescription();
             $order = $patchClass->getOrder() ?? $this->defaultOrder;
-            $data = $patchClass->up();
             $reflectionClass = new \ReflectionClass($patchClassName);
 
             $patch = [
                 'name' => $patchClassName,
                 'module' => $patchInfo['module'] ?? 'gems',
                 'type' => 'patch',
+                'source' => 'class',
+                'class' => $patchClass,
                 'description' => $description,
                 'order' => $order,
-                'data' => $data,
-                'sql' => $data,
                 'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime($reflectionClass->getFileName())),
                 'location' => $reflectionClass->getFileName(),
                 'db' => $patchInfo['db'],
@@ -101,6 +100,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                     'name' => $name,
                     'module' => $patchesDirectory['module'] ?? 'gems',
                     'type' => 'patch',
+                    'source' => 'file',
                     'description' => $description,
                     'order' => $order,
                     'data' => $fileContent,
@@ -136,7 +136,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                 $matchingLog = $patchesLog[$patchRow['name']];
                 $patchesInfo[$patchKey]['status'] = $matchingLog['gml_status'];
                 $patchesInfo[$patchKey]['executed'] = $matchingLog['gml_created'];
-                $patchesInfo[$patchKey]['sql'] = $matchingLog['gml_sql'];
+                //$patchesInfo[$patchKey]['sql'] = $matchingLog['gml_sql'];
                 $patchesInfo[$patchKey]['comment'] = $matchingLog['gml_comment'];
             }
         }
@@ -145,7 +145,14 @@ class PatchRepository extends MigrationRepositoryAbstract
     }
     public function runPatch(array $patchInfo): void
     {
-        if (!isset($patchInfo['db'], $patchInfo['sql']) || empty($patchInfo['sql']) || !array($patchInfo['sql'])) {
+        // If the source of the patch was a PHP class, run the up() function to get the data.
+        if ($patchInfo['source'] == 'class') {
+            $patchClass = $patchInfo['class'];
+            $data = $patchClass->up();
+            $patchInfo['data'] = $data;
+            $patchInfo['sql'] = $data;
+        }
+        if (!isset($patchInfo['db'], $patchInfo['sql']) || !is_array($patchInfo['sql'])) {
             throw new \Exception('Not enough info to run patch');
         }
         $adapter = $this->databases->getDatabase($patchInfo['db']);
@@ -163,6 +170,8 @@ class PatchRepository extends MigrationRepositoryAbstract
         try {
             if (!$connection->inTransaction()) {
                 $connection->beginTransaction();
+                // FIXME: This should be set but setting it breaks things.
+                // $localTransaction = true;
             }
             foreach($patchInfo['sql'] as $sqlQuery) {
                 $resultFetcher->query($sqlQuery);

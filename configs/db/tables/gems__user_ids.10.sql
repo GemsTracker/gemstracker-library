@@ -4,7 +4,7 @@
 CREATE TABLE if not exists gems__user_ids (
         gui_id_user          bigint unsigned not null,
 
-        gui_created          timestamp not null  default current_timestamp,
+        gui_created          timestamp not null default current_timestamp,
 
         PRIMARY KEY (gui_id_user)
     )

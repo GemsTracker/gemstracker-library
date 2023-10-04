@@ -3,6 +3,7 @@
 namespace Gems\Command;
 
 use Gems\Db\Migration\PatchRepository;
+use Gems\Db\Migration\TableRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,6 +18,7 @@ class RunPatches extends RunMigrationAbstract
 
     protected string $topicPlural = 'patches';
     public function __construct(
+        protected TableRepository $tableRepository,
         protected PatchRepository $patchRepository)
     {
         parent::__construct();
@@ -63,6 +65,14 @@ class RunPatches extends RunMigrationAbstract
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (!$this->tableRepository->hasMigrationTable()) {
+            $io = new SymfonyStyle($input, $output);
+            $result = $io->confirm('Migration table missing. Should the migration table be created?');
+            if ($result) {
+                $this->tableRepository->createMigrationTable();
+            }
+        }
+
         $id = $input->getArgument('id');
 
         $result = match($id) {

@@ -30,7 +30,7 @@ CREATE TABLE if not exists gems__organizations (
         gor_respondent_unsubscribe  varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default '',
         gor_token_ask               varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null default null,
 
-        gor_style                   varchar(15)  CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null default 'gems',
+        gor_style                   varchar(32)  CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null default 'gems',
         gor_resp_change_event       varchar(128) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
         gor_iso_lang                char(2) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null default 'en',
 

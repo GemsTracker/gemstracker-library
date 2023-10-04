@@ -1,5 +1,5 @@
 
-CREATE TABLE IF NOT EXISTS gems__respondent_relations (
+CREATE TABLE if not exists gems__respondent_relations (
         grr_id                      bigint(20) NOT NULL AUTO_INCREMENT,
         grr_id_respondent           bigint(20) NOT NULL  references gems__respondents (grs_id_user),
         grr_type                    varchar(64) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',

@@ -22,6 +22,7 @@ use Gems\Config\AutoConfig\MessageHandlers;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
+use Gems\Db\Migration\PatchAbstract;
 use Gems\Csrf\GemsCsrfGuardFactory;
 use Gems\Error\ErrorLogEventListenerDelegatorFactory;
 use Gems\Factory\DoctrineDbalFactory;
@@ -222,6 +223,7 @@ class ConfigProvider
                 ],
                 'extends' => [
                     ComparatorAbstract::class => ['config' => 'tracker.conditions.comparators'],
+                    PatchAbstract::class => ['config' => 'migrations.patches'],
                 ],
                 'attribute' => [
                     AsCommand::class => ['config' => 'console.commands'],

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `gems__chart_config` (
+CREATE TABLE if not exists gems__chart_config (
   `gcc_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `gcc_tid` bigint(20) NULL,
   `gcc_rid` bigint(20) NULL,

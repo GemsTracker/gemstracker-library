@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__respondent2org (
-        gr2o_patient_nr         varchar(15) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
+        gr2o_patient_nr         varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
         gr2o_id_organization    bigint unsigned not null references gems__organizations (gor_id_organization),
 
         gr2o_id_user            bigint unsigned not null references gems__respondents (grs_id_user),

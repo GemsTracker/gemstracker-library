@@ -17,7 +17,7 @@ CREATE TABLE if not exists gems__log_respondent_communications (
         grco_id_message   bigint unsigned null references gems__comm_templates (gct_id_template),
         grco_id_job       bigint unsigned null references gems__comm_jobs (gcj_id_job),
 
-        grco_changed      timestamp not null default current_timestamp,
+        grco_changed      timestamp not null default current_timestamp on update current_timestamp,
         grco_changed_by   bigint unsigned not null,
         grco_created      timestamp not null default current_timestamp,
         grco_created_by   bigint unsigned not null,

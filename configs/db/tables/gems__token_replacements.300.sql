@@ -4,7 +4,7 @@ CREATE TABLE if not exists gems__token_replacements (
         gtrp_id_token_new           varchar(9) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
         gtrp_id_token_old           varchar(9) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
 
-        gtrp_created                timestamp not null default CURRENT_TIMESTAMP,
+        gtrp_created                timestamp not null default current_timestamp,
         gtrp_created_by             bigint unsigned not null,
 
         PRIMARY KEY (gtrp_id_token_new),

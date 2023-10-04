@@ -1,11 +1,11 @@
 
-CREATE TABLE IF NOT EXISTS gems__sources (
+CREATE TABLE if not exists gems__sources (
         gso_id_source       int(10) unsigned NOT NULL auto_increment,
         gso_source_name     varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NOT NULL,
 
         gso_ls_url          varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NOT NULL,
         gso_ls_class        varchar(60) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NOT NULL
-                            default 'Gems_Source_LimeSurvey3m00Database',
+                            default 'Gems\\Tracker\\Source\\LimeSurvey3m00Database',
         gso_ls_adapter      varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default NULL,
         gso_ls_dbhost       varchar(127) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default NULL,
         gso_ls_database     varchar(127) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default NULL,
@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS gems__sources (
         gso_status          varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default NULL,
         gso_last_synch      timestamp NULL default NULL,
 
-        gso_changed         timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+        gso_changed         timestamp not null default current_timestamp on update current_timestamp,
         gso_changed_by      bigint(20) unsigned NOT NULL,
-        gso_created         timestamp NOT NULL default current_timestamp,
+        gso_created         timestamp not null default current_timestamp,
         gso_created_by      bigint(20) unsigned NOT NULL,
 
         PRIMARY KEY  (gso_id_source),
@@ -36,4 +36,4 @@ CREATE TABLE IF NOT EXISTS gems__sources (
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 20
-    DEFAULT CHARSET=utf8;
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';

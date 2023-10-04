@@ -21,7 +21,7 @@ CREATE TABLE if not exists gems__comm_jobs (
         -- A Answerer
         -- O Answerer or Fallback
         -- F Fallback
-        gcj_to_method               varchar(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default 'R',
+        gcj_to_method               varchar(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default 'A',
         -- O Use organization from address
         -- S Use site from address
         -- U Use gcj_id_user_as from address
