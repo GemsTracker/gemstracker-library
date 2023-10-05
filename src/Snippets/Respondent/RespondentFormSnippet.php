@@ -56,7 +56,7 @@ class RespondentFormSnippet extends ModelFormSnippet
     public function checkSsnData(string $ssn)
     {
         /**
-         * @var $model RespondentModel
+         * @var RespondentModel $model
          */
         $model = $this->getModel();
         $metaModel = $model->getMetaModel();
