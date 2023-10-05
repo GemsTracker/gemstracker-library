@@ -76,7 +76,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $orgOptions = [
             'label'        => $this->_('Organization'),
             'multiOptions' => $this->selectedUser->getAllowedOrganizations(),
-            'onchange'     => 'this.form.submit();',
+            'autoSubmit'   => true,
             ];
 
         $orgSelect = $form->createElement('Select', 'org_id', $orgOptions);
@@ -86,7 +86,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
             'label'        => $this->_('Staff'),
             'description'  => $this->_('The Staff User to login as.'),
             'multiOptions' => $this->getStaffUsers($this->formData['org_id']),
-            'onchange'     => 'this.form.submit();',
+            'autoSubmit'   => true,
             ];
         $userSelect = $form->createElement('Select', 'login_id', $userOptions);
         $form->addElement($userSelect);
@@ -95,7 +95,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
             'label'        => $this->_('Respondent'),
             'description'  => $this->_('The respondent to login to.'),
             'multiOptions' => $this->getPatients($this->formData['org_id']),
-            'onchange'     => 'this.form.submit();',
+            'autoSubmit'   => true,
             ];
         $pidSelect = $form->createElement('Select', 'pid', $pidOptions);
         $form->addElement($pidSelect);

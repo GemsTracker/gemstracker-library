@@ -108,12 +108,12 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
             'move' => $this->_('Move tracks and remove from old organization'),
         ];
 
-        $bridge->addRadio('change_method',
-                'label', $this->_('Change method'),
-                'autosubmit', true,
-                'multiOptions', $choices,
-                'required', true
-                );
+        $bridge->addRadio('change_method', [
+            'label' => $this->_('Change method'),
+            'autoSubmit' => true,
+            'multiOptions' => $choices,
+            'required' => true
+            ]);
 
         $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
 
@@ -143,17 +143,17 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
             $orgName = $orglabel->render();
         }
         
-        $bridge->addRadio('gr2o_id_organization',
-                'label', $this->_('New organization'),
-                'autosubmit', true,
-                'disable', $disabled,
-                'escape', false,
-                'multiOptions', $availableOrganizations,
-                'validator', new IsNot(
-                        $disabled,
-                        $this->_('You cannot change to this organization')
-                        )
-                );
+        $bridge->addRadio('gr2o_id_organization', [
+            'label' => $this->_('New organization'),
+            'autoSubmit' => true,
+            'disable' => $disabled,
+            'escape' => false,
+            'multiOptions' => $availableOrganizations,
+            'validator' => new IsNot(
+                $disabled,
+                $this->_('You cannot change to this organization')
+                )
+            ]);
         
         if (in_array($this->formData['gr2o_id_organization'], $disabled)) {
             // Selected organization is now unavailable, reset selection

@@ -82,7 +82,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
             $methodElement = $form->createElement('select', 'twoFactorMethod', [
                 'label' => $this->_('Two Factor method'),
                 'multiOptions' => $methods,
-                'onchange' => 'this.form.submit();',
+                'class' => 'auto-submit',
             ]);
         } else {
             $methodElement = $form->createElement('exhibitor', 'twoFactorMethod', [

@@ -257,7 +257,7 @@ class MailElements extends \Gems\Registry\TargetAbstract {
         $options['label']        = $label;
 
         if ($onChangeSubmit) {
-            $options['autosubmit'] = true;
+            $options['autoSubmit'] = true;
         }
 
         if ($list) {

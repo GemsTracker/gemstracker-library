@@ -64,31 +64,6 @@ class RoundDependency extends DependencyAbstract
     protected $conditionLoader;
 
     /**
-     * Use this function for a default application of this dependency to the model
-     *
-     * @param \Zalt\Model\MetaModelInterface $metaModel Try not to store the model as variabe in the dependency (keep it simple)
-     */
-    public function applyToModel(MetaModelInterface $metaModel)
-    {
-        if ($this->applyOnChange) {
-            foreach ($this->getDependsOn() as $name) {
-                $metaModel->set($name, [
-                   'class' => 'autosubmit',
-                ]);
-                /*if ($metaModel->is($name, 'elementClass', 'Checkbox')) {
-                    if (! $metaModel->has($name, 'onclick')) {
-                        $metaModel->set($name, 'onclick', $this->onChangeJs);
-                    }
-                } else {
-                    if (! $metaModel->has($name, 'onchange')) {
-                        $metaModel->set($name, 'onchange', $this->onChangeJs);
-                    }
-                }*/
-            }
-        }
-    }
-
-    /**
      * Returns the changes that must be made in an array consisting of
      *
      * <code>

@@ -412,7 +412,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
             // MD: Removed onchange because it does not play nice with the processAfterLoad and save methods in this class
             //     @@TODO: See if we can enable it when these methods are changed into a dependency
             $this->setIfExists('gor_user_class', [
-                'autosubmit' => true,
+                'autoSubmit' => true,
                 'default' => key($definitions),
                 'required' => true,
             ]);

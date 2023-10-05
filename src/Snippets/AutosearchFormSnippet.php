@@ -49,7 +49,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      *
      * @var string The id of a div that contains target that should be replaced.
      */
-    protected $containingId = 'autofilter_target';
+    protected ?string $containingId = null; // 'autofilter_target';
 
     /**
      * The default search data to use.
@@ -317,10 +317,15 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      * @param array $options
      * @return Form
      */
-    protected function createForm($options = null)
+    protected function createForm(array $options = [])
     {
-        $form = new Form($options);
+        if (! isset($options['name'])) {
+            $className = get_class($this);
+            dump($className);
+            $options['name'] = substr($className, strrpos($className, '\\'));
+        }
 
+        $form = new Form($options);
         return $form;
     }
 
@@ -354,7 +359,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         $data = $this->getSearchData();
         // \MUtil\EchoOut\EchoOut::track($data);
 
-        $this->form = $form = $this->createForm(array('name' => 'autosubmit', 'class' => 'form-inline', 'role' => 'form'));
+        $this->form = $form = $this->createForm(['class' => 'form-inline', 'role' => 'form']);
 
         $elements = $this->getAutoSearchElements($data);
 

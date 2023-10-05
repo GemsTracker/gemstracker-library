@@ -102,7 +102,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
         $elements['type_label'] = $this->_('Export to');
 
         $elements['type'] = $this->_createSelectElement( 'type', $exportTypes);
-        $elements['type']->setAttrib('onchange', 'this.form.submit();');
+        $elements['type']->setAttrib('class', 'auto-submit');
         // $elements['step'] = $this->form->createElement('hidden', 'step');;
 
         $exportClass = $export->getExport($currentType);
@@ -178,7 +178,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
                 $tracks,
                 $this->_('(any track)')
                 );
-        $elements['gto_id_track']->setAttrib('onchange', 'this.form.submit();');
+        $elements['gto_id_track']->setAttrib('class', 'auto-submit');
 
         $elements[] = \MUtil\Html::create('br');
 
@@ -187,7 +187,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
                 [self::NoRound => $this->_('No round description')] + $rounds,
                 $this->_('(any round)')
                 );
-        $elements['gto_round_description']->setAttrib('onchange', 'this.form.submit();');
+        $elements['gto_round_description']->setAttrib('class', 'auto-submit');
 
         $elements[] = \MUtil\Html::create('br');
 

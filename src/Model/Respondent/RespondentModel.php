@@ -209,7 +209,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         }
         if ($action->isEditing()) {
             if ($this->metaModel->has('grs_ssn')) {
-                $this->metaModel->set('grs_ssn', ['autosubmit' => 'blur']);
+                $this->metaModel->set('grs_ssn', ['autoSubmit' => 'blur']);
             }
 
             $organizationSettings['default'] = $this->currentOrganizationId;

@@ -127,7 +127,7 @@ class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchPeriodForm
 
         if (count($tracks) > 1) {
             $elements[$elementId] = $this->_createSelectElement($elementId, $tracks, $this->_('(select a track)'));
-            $elements[$elementId]->setAttrib('onchange', 'this.form.submit();');
+            $elements[$elementId]->setAttrib('class', 'auto-submit');
         }
     }
 

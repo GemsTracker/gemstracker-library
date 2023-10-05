@@ -119,7 +119,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
         ];
         $output['gtf_filter_id'] = [
             'label'          => $this->_('Appointment filter'),
-            'autosubmit'     => true,
+            'autoSubmit'     => true,
             'description'    => $this->_('Automatically link an appointment when it passes this filter.'),
             'elementClass'   => 'Select',
             'formatFunction' => [$this, 'showFilter', true],
@@ -164,7 +164,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             ];
             $output['gtf_max_diff_exists'] = [
                 'label'        => $this->_('Set a maximum time difference'),
-                'autosubmit'   => true,
+                'autoSubmit'   => true,
                 'elementClass' => 'Checkbox',
             ];
             if ($context['gtf_max_diff_exists']) {

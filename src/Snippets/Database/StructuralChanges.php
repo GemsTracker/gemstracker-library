@@ -54,7 +54,7 @@ class StructuralChanges extends \MUtil\Snippets\SnippetAbstract
      */
     protected function _getSelectForm()
     {
-        $form = new \Gems\Form(array('name' => 'autosubmit', 'class' => 'form-inline', 'role' => 'form'));
+        $form = new \Gems\Form(['name' => 'StructuralChanges', 'class' => 'form-inline', 'role' => 'form']);
 
         $form->setHtml('div');
         $div = $form->getHtml();
@@ -63,7 +63,7 @@ class StructuralChanges extends \MUtil\Snippets\SnippetAbstract
         $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
 
         $element = $form->createElement('select', 'gpa_level', array(
-            'autosubmit' => 'keyup',
+            'class' => 'auto-submit keyup',
             'multiOptions' => $this->patchLevels,
             ));
 

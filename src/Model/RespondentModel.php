@@ -500,11 +500,8 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         });
 
         if ($create && ($this->hashSsn !== self::SSN_HIDE)) {
-            $onblur = new \MUtil\Html\JavascriptArrayAttribute('onblur');
-            $onblur->addSubmitOnChange('this.value');
-
             $this->set('grs_ssn',
-                    'onblur', $onblur->render($this->view),  // Render needed as element does not know HtmlInterface
+                    'autoSubmit', 'blur',
                     'validator[]', $this->createUniqueValidator('grs_ssn')
                     );
         }

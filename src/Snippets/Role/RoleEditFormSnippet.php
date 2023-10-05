@@ -145,7 +145,7 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         }
 
         $bridge->addMultiCheckbox('grl_parents', [
-            'autosubmit' => true,
+            'autoSubmit' => true,
             'multiOptions' => $possibleParents,
             'disable' => $disabled,
             'escape' => false,

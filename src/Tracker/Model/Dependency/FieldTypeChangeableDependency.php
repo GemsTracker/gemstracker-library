@@ -105,7 +105,7 @@ class FieldTypeChangeableDependency extends DependencyAbstract
             return [
                 'gtf_field_type' => [
                 'elementClass' => 'Select',
-                'autosubmit'   => true,
+                'autoSubmit'   => true,
                 ]
             ];
         }

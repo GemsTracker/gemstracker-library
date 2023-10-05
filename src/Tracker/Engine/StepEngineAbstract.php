@@ -239,7 +239,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     protected function applyRespondentRelation(MetaModelInterface $model, array &$itemData): void
     {
         $model->set('gro_id_survey', [
-            'class' => 'autosubmit',
+            'autoSubmit' => true,
         ]);
         if (!empty($itemData['gro_id_survey']) && $model->has('gro_id_relationfield')) {
             $forStaff = $this->tracker->getSurvey($itemData['gro_id_survey'])->isTakenByStaff();
@@ -683,12 +683,12 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                 'elementClass', 'Radio',
                 'escape', false,
                 'required', true,
-                'class', 'autosubmit',
+                'autoSubmit', true,
                 'multiOptions', $this->getSourceList(true, false, false)
                 );
         $model->set('gro_valid_after_id',
                 'label', $this->translator->_('Round used'),
-                'class', 'autosubmit',
+                'autoSubmit', true
                 );
 
         if ($detailed) {
@@ -697,7 +697,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
             $model->set('gro_valid_after_field',
                     'label', $this->translator->_('Date used'),
                     'default', 'gto_valid_from',
-                    'class', 'autosubmit',
+                    'autoSubmit', true
                     );
             $model->set('gro_valid_after_length',
                     'label', $this->translator->_('Add to date'),
@@ -745,20 +745,20 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                 'elementClass', 'Radio',
                 'escape', false,
                 'required', true,
-                'class', 'autosubmit',
+                'autoSubmit', true,
                 'multiOptions', $this->getSourceList(false, false, false)
                 );
         $model->set('gro_valid_for_id',
                 'label', $this->translator->_('Round used'),
                 'default', '',
-                'class', 'autosubmit',
+                'autoSubmit', true,
                 );
 
         if ($detailed) {
             $model->set('gro_valid_for_field',
                     'label', $this->translator->_('Date used'),
                     'default', 'gto_valid_from',
-                    'class', 'autosubmit',
+                    'autoSubmit', true,
                     );
             $model->set('gro_valid_for_length',
                     'label', $this->translator->_('Add to date'),

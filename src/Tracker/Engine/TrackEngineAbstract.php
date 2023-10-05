@@ -899,13 +899,13 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
             	$model->set('gro_icon_file',
                         'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->_getAvailableIcons()
                         );
-                $model->set('org_specific_round',
-                        'label', $this->translator->_('Organization specific round'),
-                        'default', 0,
-                        'multiOptions', $this->translatedUtil->getYesNo(),
-                        'elementClass', 'radio',
-                        'class', 'autosubmit'
-                        );
+                $model->set('org_specific_round', [
+                    'label' => $this->translator->_('Organization specific round'),
+                    'default' => 0,
+                    'multiOptions' => $this->translatedUtil->getYesNo(),
+                    'elementClass' => 'radio',
+                    'autoSubmit' => true
+                    ]);
 
                 break;
 

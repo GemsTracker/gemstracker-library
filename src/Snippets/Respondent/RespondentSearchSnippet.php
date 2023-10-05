@@ -102,8 +102,7 @@ class RespondentSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
                     );
 
             if ($lineBreak) {
-                $element->setLabel($this->_('Organization'))
-                        ->setAttrib('onchange', 'this.form.submit();');
+                $element->setLabel($this->_('Organization'));
                 $elements[] = Html::create('br');
             }
             $elements[\MUtil\Model::REQUEST_ID2] = $element;

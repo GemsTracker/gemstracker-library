@@ -82,7 +82,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
             'label' => $this->_('Check mode:'),
             'description' => $this->_('This option can change tracks!'),
             'multiOptions' => $this->getModeOptions(),
-            'onchange' => 'this.form.submit();',
+            'class' => 'auto-submit',
             //'separator' => ' ',
             ];
 

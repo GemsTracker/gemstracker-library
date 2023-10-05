@@ -137,7 +137,7 @@ class AnswerImportSnippet extends ModelImportSnippet
 
             $this->importModel->set('survey', [
                 'label' => $this->_('Survey'),
-                'autosubmit' => true,
+                'autoSubmit' => true,
                 'elementClass' => $elementClass,
                 'multiOptions' => $surveys,
                 'order' => $order,
@@ -146,7 +146,7 @@ class AnswerImportSnippet extends ModelImportSnippet
 
             $this->importModel->set('track', [
                 'label' => $this->_('Track'),
-                'autosubmit' => true,
+                'autoSubmit' => true,
                 'description' => $this->_('Optionally assign answers only within a single track'),
                 'multiOptions' => $tracks,
                 ]);

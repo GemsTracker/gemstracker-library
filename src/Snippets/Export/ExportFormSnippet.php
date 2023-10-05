@@ -71,7 +71,7 @@ class ExportFormSnippet extends FormSnippetAbstract
         $element = $form->createElement('select', 'type', [
             'label' => $this->_('Export to'),
             'multiOptions' => $this->export->getExportClasses(),
-            'class' => 'autosubmit'
+            'class' => 'auto-submit'
         ]);
         $form->addElement($element);
 

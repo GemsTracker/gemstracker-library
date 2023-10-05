@@ -411,7 +411,7 @@ class FieldMaintenanceModel extends UnionModel
         $this->set('gtf_field_values',      'elementClass', 'Hidden', 'translate', true);
         $this->set('gtf_field_default',     'elementClass', 'Hidden');
 
-        $this->set('gtf_to_track_info',     'elementClass', 'Checkbox', 'autosubmit', true);
+        $this->set('gtf_to_track_info',     'elementClass', 'Checkbox', 'autoSubmit', true);
         $this->set('gtf_track_info_label',  'elementClass', 'Checkbox',
                 'required', false);
         $this->set('gtf_required',          'elementClass', 'Checkbox');

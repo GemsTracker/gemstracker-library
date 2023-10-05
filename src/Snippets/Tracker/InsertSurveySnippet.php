@@ -199,13 +199,13 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
 
         $model->set('gto_id_survey', [
             'label' => $this->_('Suvey to insert'),
-            'autosubmit' => true,
+            'autoSubmit' => true,
             // 'elementClass' set in loadSurvey
             'multiOptions' => $this->surveyList,
             ]);
         $model->set('gto_id_track', [
             'label' => $this->_('Existing track'),
-            'autosubmit' => true,
+            'autoSubmit' => true,
             'elementClass' => 'Select',
             //'multiOptions' set in loadTrackSettings
             ]);

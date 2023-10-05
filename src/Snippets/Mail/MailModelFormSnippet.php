@@ -100,7 +100,7 @@ class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         $this->addItems($bridge, 'gct_id_template', 'gct_target');
         $this->addItems($bridge, 'gct_code');
 
-        $bridge->getForm()->getElement('gct_target')->setAttrib('onchange', 'this.form.submit()');
+        $bridge->getForm()->getElement('gct_target')->setAttrib('class', 'auto-submit');
 
         $this->mailElements->addFormTabs($bridge, 'gctt', 
                                          'active', $this->_currentLanguage, 

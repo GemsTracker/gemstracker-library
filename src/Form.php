@@ -98,6 +98,6 @@ class Form extends \MUtil\Form
         }
 
         $this->setAttrib('autosubmit-url', $args['submitUrl']);
-        $this->setAttrib('class', $this->getAttrib('class') . ' ' . 'autosubmit');
+        $this->setAttrib('class', trim($this->getAttrib('class') . ' ' . 'auto-submit'));
     }
 }
