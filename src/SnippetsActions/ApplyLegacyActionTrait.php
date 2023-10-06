@@ -34,11 +34,11 @@ trait ApplyLegacyActionTrait
 
     public function getStringActionClass(string $action, bool $detailed): SnippetActionInterface
     {
-        switch ($action) {
-            case 'change-consent':
+        switch (strtolower(str_replace('-', '', $action))) {
+            case 'changeconsent':
             case 'edit':
             case 'import':
-            case 'simple-api':
+            case 'simpleapi':
                 return new EditAction();
 
             case 'create':

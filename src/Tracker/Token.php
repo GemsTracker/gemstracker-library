@@ -2021,7 +2021,7 @@ class Token
         $survey->copyTokenToSource($this, $language);
 
         if (! $this->_gemsData['gto_in_source']) {
-            $values['gto_start_time'] = new DateTimeImmutable();
+            $values['gto_start_time'] = date('Y-m-d');
             $values['gto_in_source']  = 1;
 
             $oldTokenId = $this->getCopiedFrom();

@@ -13,8 +13,8 @@ namespace Gems\Snippets\Agenda;
 
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetOptions;

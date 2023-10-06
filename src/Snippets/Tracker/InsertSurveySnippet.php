@@ -20,11 +20,10 @@ use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Survey;
-use Gems\Tracker\Model\StandardTokenModel;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\Model\MetaModelInterface;
@@ -182,43 +181,41 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
-        $model = $this->tracker->getTokenModel();
+        $dataModel = $this->tracker->getTokenModel();
+        $metaModel = $dataModel->getMetaModel();
 
-        if ($model instanceof StandardTokenModel) {
-            if ($this->createData) {
-                $model->applyInsertionFormatting();
-            }
-        }
+        $metaModel->set('gto_id_token', ['elementClass' => 'None']);
 
         // Valid from can not be calculated for inserted rounds, and should always be manual
-        $model->set('gto_valid_from_manual', 'elementClass', 'Hidden', 'default', '1');
+        $metaModel->set('gto_valid_from_manual', ['elementClass' => 'Hidden', 'default' => '1']);
 
         if (! $this->surveyList) {
             $this->surveyList = $this->trackDataRepository->getInsertableSurveys($this->respondent->getOrganizationId());
         }
 
-        $model->set('gto_id_survey', [
+        $metaModel->set('gto_id_survey', [
             'label' => $this->_('Suvey to insert'),
             'autoSubmit' => true,
             // 'elementClass' set in loadSurvey
             'multiOptions' => $this->surveyList,
             ]);
-        $model->set('gto_id_track', [
+        $metaModel->set('gto_id_track', [
             'label' => $this->_('Existing track'),
             'autoSubmit' => true,
             'elementClass' => 'Select',
             //'multiOptions' set in loadTrackSettings
             ]);
-        $model->set('gto_round_order', 'label', $this->_('In round'),
-                'elementClass', 'Select',
-                //'multiOptions' set in loadRoundSettings
-                'required', true
-                );
-        $model->set('gto_valid_from',
-                'required', true
-                );
+        $metaModel->set('gto_round_order', [
+            'label' => $this->_('In round'),
+            'elementClass' => 'Select',
+            //'multiOptions' set in loadRoundSettings
+            'required' => true,
+            ]);
+        $metaModel->set('gto_valid_from', [
+            'required' => true,
+            ]);
 
-        return $model;
+        return $dataModel;
     }
     
     /**
@@ -320,7 +317,7 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
      */
     protected function getRoundsListAndSetDefault()
     {
-        $model  = $this->getModel();
+        $metaModel  = $this->getModel()->getMetaModel();
         $output = array();
         $select = $this->getRoundSelect();
 
@@ -354,21 +351,21 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
             }
             if ($maxGroupAnswered) {
                 $this->defaultRound = $maxGroupAnswered;
-                $model->set('gto_round_order', 'description', sprintf(
+                $metaModel->set('gto_round_order', 'description', sprintf(
                         $this->_('The last round containing answers for surveys in the same user group is "%s".'),
                         $output[$this->defaultRound]
                         ));
 
             } elseif ($maxAnswered) {
                 $this->defaultRound = $maxAnswered;
-                $model->set('gto_round_order', 'description', sprintf(
+                $metaModel->set('gto_round_order', 'description', sprintf(
                         $this->_('The last round containing answers is "%s".'),
                         $output[$this->defaultRound]
                         ));
 
             } elseif (-1 !== $minGroup) {
                 $this->defaultRound = $minGroup;
-                $model->set('gto_round_order', 'description', sprintf(
+                $metaModel->set('gto_round_order', 'description', sprintf(
                         $this->_('No survey has been answered, the first round with surveys in the same user group is "%s".'),
                         $output[$this->defaultRound]
                         ));
@@ -376,7 +373,7 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
             } else {
                 reset($output);
                 $this->defaultRound = key($output);
-                $model->set('gto_round_order',
+                $metaModel->set('gto_round_order',
                         'description', $this->_('No surveys have answers, nor are any in the same user group.')
                         );
             }
@@ -384,7 +381,7 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
         } else {
             $output[10] = $this->_('Added survey');
             $this->defaultRound = 10;
-            $model->set('gto_round_order',
+            $metaModel->set('gto_round_order',
                     'description', $this->_('No current rounds available.')
                     );
         }
@@ -510,7 +507,7 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
                 'gto_valid_until'        => null, // Set in loadSurvey
                 );
 
-            $output = $this->getModel()->processAfterLoad(array($this->formData), $this->createData, false);
+            $output = $this->getModel()->getMetaModel()->processAfterLoad(array($this->formData), $this->createData, false);
             $this->formData = reset($output);
         } else {
             parent::loadFormData();
@@ -530,11 +527,11 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
     protected function loadRoundSettings()
     {
         $rounds = $this->getRoundsListAndSetDefault();
-        $model  = $this->getModel();
-        $model->set('gto_round_order', 'multiOptions', $rounds, 'size', count($rounds));
+        $metaModel  = $this->getModel()->getMetaModel();
+        $metaModel->set('gto_round_order', 'multiOptions', $rounds, 'size', count($rounds));
 
         if (count($rounds) === 1) {
-            $model->set('gto_round_order', 'elementClass', 'Exhibitor');
+            $metaModel->set('gto_round_order', 'elementClass', 'Exhibitor');
         }
 
         if (! isset($this->formData['gto_round_order'], $rounds[$this->formData['gto_round_order']])) {
@@ -555,14 +552,14 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
             $this->addMessageInvalid($this->_('Survey insertion impossible: no insertable survey exists!'));
         }
 
-        $model = $this->getModel();
+        $metaModel = $this->getModel()->getMetaModel();
         if (count($this->surveyList) === 1) {
-            $model->set('gto_id_survey', 'elementClass', 'Exhibitor');
+            $metaModel->set('gto_id_survey', 'elementClass', 'Exhibitor');
 
             reset($this->surveyList);
             $this->formData['gto_id_survey'] = key($this->surveyList);
         } elseif ($this->insertMultipleSurveys) {
-            $model->set('gto_id_survey', 'elementClass', 'MultiCheckbox', 'required', 'required');
+            $metaModel->set('gto_id_survey', 'elementClass', 'MultiCheckbox', 'required', 'required');
         }
 
         if (isset($this->formData['gto_id_survey'])) {
@@ -602,10 +599,10 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
         
         asort($this->tracksList);
         
-        $model = $this->getModel();
-        $model->set('gto_id_track', 'multiOptions', $this->tracksList);
+        $metaModel = $this->getModel()->getMetaModel();
+        $metaModel->set('gto_id_track', 'multiOptions', $this->tracksList);
         if (count($this->tracksList) === 1) {
-            $model->set('gto_id_track', 'elementClass', 'Exhibitor');
+            $metaModel->set('gto_id_track', 'elementClass', 'Exhibitor');
         }
 
         if (isset($this->formData['gto_id_track'], $respTracks[$this->formData['gto_id_track']]) && (int) $this->formData['gto_id_track'] > 0) {
@@ -617,11 +614,12 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
                 $engine = $this->respondentTrack->getTrackEngine();
                 $empty  = array('-1' => $this->_('Patient'));
                 $relations = $empty + $engine->getRespondentRelationFields();
-                $model->set('gto_id_relationfield', 'label', $this->_('Fill out by'),
-                    'elementClass', (1 == count($relations) ? 'Exhibitor' : 'Select'),
-                    'multiOptions', $relations,
-                    'required', true
-                );
+                $metaModel->set('gto_id_relationfield', [
+                    'label' => $this->_('Fill out by'),
+                    'elementClass' => (1 == count($relations) ? 'Exhibitor' : 'Select'),
+                    'multiOptions' => $relations,
+                    'required' => true
+                ]);
                 
                 if (! isset($this->formData['gto_id_relationfield'])) {
                     reset($relations);
@@ -650,14 +648,14 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
      */
     protected function saveData(): int
     {
-        $model = $this->getModel();
+        $metaModel = $this->getModel()->getMetaModel();
 
         $tokenData  = array();
 
         foreach ($this->copyFields as $name) {
             if (array_key_exists($name, $this->formData)) {
-                if ($model->hasOnSave($name)) {
-                    $tokenData[$name] = $model->getOnSave($this->formData[$name], $this->createData, $name, $this->formData);
+                if ($metaModel->hasOnSave($name)) {
+                    $tokenData[$name] = $metaModel->getOnSave($this->formData[$name], $this->createData, $name, $this->formData);
                 } elseif ('' === $this->formData[$name]) {
                     $tokenData[$name] = null;
                 } else {
@@ -669,7 +667,7 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
         }
         $changed  = 0;
         $relation = isset($tokenData['gto_id_relationfield']) ? $tokenData['gto_id_relationfield'] : null;
-        $rounds   = $model->get('gto_round_order', 'multiOptions');
+        $rounds   = $metaModel->get('gto_round_order', 'multiOptions');
         $tokenData['gto_id_round']          = '0';
         $tokenData['gto_round_order']       = $this->formData['gto_round_order'];
         $tokenData['gto_round_description'] = $rounds[$this->formData['gto_round_order']];

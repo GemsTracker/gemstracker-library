@@ -5,7 +5,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\CommMessengersModel;
 use MUtil\Model\ModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

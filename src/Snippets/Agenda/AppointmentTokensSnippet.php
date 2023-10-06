@@ -20,8 +20,8 @@ use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Engine\StepEngineAbstract;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\User\Mask\MaskRepository;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 

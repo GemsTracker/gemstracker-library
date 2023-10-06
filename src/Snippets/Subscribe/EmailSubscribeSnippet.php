@@ -19,8 +19,8 @@ use Gems\Repository\MailRepository;
 use Gems\Snippets\FormSnippetAbstract;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 

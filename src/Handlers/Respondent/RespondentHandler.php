@@ -23,7 +23,7 @@ use Gems\Screens\ProcessModelInterface;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

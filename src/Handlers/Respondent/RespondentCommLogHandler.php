@@ -10,7 +10,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
 use MUtil\Model\ModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

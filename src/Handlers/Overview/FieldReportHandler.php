@@ -20,7 +20,7 @@ use Gems\Snippets\Tracker\Fields\FieldReportSearchSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\FieldDataModel;
 use MUtil\Model\DatabaseModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

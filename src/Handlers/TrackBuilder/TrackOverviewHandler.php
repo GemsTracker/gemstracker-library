@@ -16,7 +16,7 @@ use Gems\Html;
 use Gems\Repository\OrganizationRepository;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\SelectModel;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

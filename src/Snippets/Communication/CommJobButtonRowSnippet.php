@@ -7,8 +7,8 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\CommJobRepository;
 use Gems\Snippets\Generic\PrevNextButtonRowSnippetAbstract;
 use MUtil\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 class CommJobButtonRowSnippet extends PrevNextButtonRowSnippetAbstract

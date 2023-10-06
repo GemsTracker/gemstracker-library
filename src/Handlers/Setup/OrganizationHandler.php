@@ -21,7 +21,7 @@ use Gems\User\UserLoader;
 use Laminas\Db\Sql\Select;
 use Mezzio\Session\SessionInterface;
 use MUtil\Model\ModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;

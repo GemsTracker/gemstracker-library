@@ -40,10 +40,10 @@ use MUtil\Ra;
 use MUtil\Validator\SimpleEmail;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 

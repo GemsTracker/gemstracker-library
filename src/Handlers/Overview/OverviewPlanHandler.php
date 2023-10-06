@@ -20,7 +20,7 @@ use Gems\Snippets\Token\OverviewSearchSnippet;
 use Gems\Snippets\Token\PlanTokenSnippet;
 use Gems\Snippets\Token\TokenDateSelectorSnippet;
 use Gems\Tracker;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

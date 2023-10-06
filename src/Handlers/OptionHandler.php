@@ -16,7 +16,7 @@ use Gems\Model;
 use Gems\Model\LogModel;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

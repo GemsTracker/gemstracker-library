@@ -13,7 +13,6 @@ use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Predicate\PredicateSet;
 use Laminas\Db\TableGateway\TableGateway;
-use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Loader\ProjectOverloader;
 
 class RespondentRepository

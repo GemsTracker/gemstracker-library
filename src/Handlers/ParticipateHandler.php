@@ -22,7 +22,7 @@ use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Site\SiteUtil;
 use Gems\User\User;
 use MUtil\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\RequestInfoFactory;
 use Zalt\SnippetsLoader\SnippetResponderInterface;

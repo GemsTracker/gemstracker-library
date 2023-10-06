@@ -2,7 +2,7 @@
 
 namespace Gems\Handlers;
 
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class SnippetLegacyHandlerAbstract extends \MUtil\Handler\SnippetLegacyHandlerAbstract

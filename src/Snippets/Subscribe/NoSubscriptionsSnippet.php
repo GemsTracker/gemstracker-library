@@ -12,8 +12,8 @@
 namespace Gems\Snippets\Subscribe;
 
 use Gems\Menu\RouteHelper;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 use Zalt\Snippets\MessageableSnippetAbstract;

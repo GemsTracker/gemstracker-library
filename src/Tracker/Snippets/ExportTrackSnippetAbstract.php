@@ -12,7 +12,6 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Batch\BatchRunnerLoader;
-use Gems\Cache\HelperAdapter;
 use Gems\Model\MetaModelLoader;
 use Gems\Task\TrackExportRunnerBatch;
 use Gems\Tracker\Engine\TrackEngineInterface;
@@ -23,8 +22,8 @@ use Mezzio\Session\SessionInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\File\File;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\MessengerInterface;
@@ -59,12 +58,6 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
      * @var \Gems\Task\TrackExportRunnerBatch
      */
     protected TrackExportRunnerBatch $batch;
-
-    /**
-     *
-     * @var HelperAdapter
-     */
-    protected $cache;
 
     /**
      *
@@ -294,7 +287,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
                 if ($count == 0) {
                     $this->addMessage($this->_('No export code changed'));
                 } else {
-                    $this->cache->invalidateTags(['surveys']);
+                    $this->cache->deleteItems(['surveys']);
                     $this->addMessage(sprintf(
                             $this->plural('%d export code changed', '%d export codes changed', $count),
                             $count

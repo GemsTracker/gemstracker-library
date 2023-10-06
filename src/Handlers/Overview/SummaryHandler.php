@@ -25,7 +25,7 @@ use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Having;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Sql\Laminas\LaminasSelectModel;
 use Zalt\SnippetsLoader\SnippetResponderInterface;

@@ -4,7 +4,8 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\BrowseChangeHandler;
 use Gems\Model\AppointmentInfoFilterModel;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\SnippetsActions\SnippetActionInterface;
@@ -16,9 +17,10 @@ class AppointmentInfoFilterHandler extends BrowseChangeHandler
         SnippetResponderInterface $responder,
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected readonly AppointmentInfoFilterModel $model,
     ) {
-        parent::__construct($responder, $metaModelLoader, $translate);
+        parent::__construct($responder, $metaModelLoader, $translate, $cache);
     }
 
     protected function getModel(SnippetActionInterface $action): MetaModellerInterface

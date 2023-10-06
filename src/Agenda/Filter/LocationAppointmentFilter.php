@@ -60,7 +60,7 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      */
     protected function afterLoad(): void
     {
-        if (!$this->_locations) {
+        if (!isset($this->_locations)) {
 
             if ($this->text1) {
                 $sqlActivites = "SELECT glo_id_location, glo_id_location
@@ -85,7 +85,7 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      */
     public function getSqlAppointmentsWhere(): string
     {
-        if ($this->_locations && ($this->_locations !== true)) {
+        if (isset($this->_locations) && ($this->_locations !== true)) {
             $where = 'gap_id_location IN (' . implode(', ', $this->_locations) . ')';
         } else {
             $where = '';
@@ -105,7 +105,7 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      */
     public function matchAppointment(Appointment $appointment): bool
     {
-        if (true !== $this->_locations) {
+        if (isset($this->_locations) && true !== $this->_locations) {
             if (isset($this->_locations[$appointment->getLocationId()])) {
                 return true;
             }

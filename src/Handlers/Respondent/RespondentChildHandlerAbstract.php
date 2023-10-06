@@ -18,7 +18,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
 use Gems\User\User;
 use MUtil\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

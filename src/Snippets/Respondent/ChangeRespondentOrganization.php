@@ -15,25 +15,22 @@ use Gems\Db\ResultFetcher;
 use Gems\Exception\RespondentAlreadyExists;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
-use Gems\Model\RespondentModel;
+use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
-use Gems\User\UserLoader;
 use Laminas\Db\TableGateway\TableGateway;
-use MUtil\Db\Expr\CurrentTimestamp;
-use MUtil\Model;
-use MUtil\StringUtil\StringUtil;
-use MUtil\Validator\IsNot;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
+use Zalt\Validator\IsNot;
 
 /**
  *
@@ -62,7 +59,7 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
 
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var RespondentModel
      */
     protected $model;
 
@@ -78,15 +75,13 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
-        protected CurrentUserRepository $currentUserRepository,
-        protected MaskRepository $maskRepository,
-        protected \Gems\Model $modelLoader,
-        protected OrganizationRepository $organizationRepository,
-        protected UserLoader $userLoader,
-        protected ResultFetcher $resultFetcher,
+        CurrentUserRepository $currentUserRepository,
+        protected readonly MaskRepository $maskRepository,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly ResultFetcher $resultFetcher,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
-        $this->currentUser = $this->currentUserRepository->getCurrentUser();
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**
@@ -149,10 +144,7 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
             'disable' => $disabled,
             'escape' => false,
             'multiOptions' => $availableOrganizations,
-            'validator' => new IsNot(
-                $disabled,
-                $this->_('You cannot change to this organization')
-                )
+            'validators[isnot]' => [IsNot::class, true, [$disabled, $this->_('You cannot change to this organization')]]
             ]);
         
         if (in_array($this->formData['gr2o_id_organization'], $disabled)) {
@@ -198,8 +190,8 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
             $params = $this->requestInfo->getRequestMatchedParams();
             $this->addMessage(sprintf(
                     $message,
-                    $params[Model::REQUEST_ID1],
-                    $this->userLoader->getOrganization($this->formData['gr2o_id_organization'])->getName(),
+                    $params[MetaModelInterface::REQUEST_ID1],
+                    $this->organizationRepository->getOrganization($this->formData['gr2o_id_organization'])->getName(),
                     $this->formData['gr2o_patient_nr']
                     ));
 
@@ -211,7 +203,7 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
@@ -221,11 +213,8 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         } else {
             if ($this->respondent instanceof Respondent) {
                 $model = $this->respondent->getRespondentModel();
-
-            } else {
-                $model = $this->modelLoader->getRespondentModel(true);
             }
-            $model->applyDetailSettings();
+            $model->applyStringAction('edit', true);
         }
 
         return $model;
@@ -267,8 +256,8 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
             $this->formData['change_method'] = null;
         }
         $params = $this->requestInfo->getRequestMatchedParams();
-        if (isset($params[Model::REQUEST_ID2])) {
-            $this->formData['orig_org_id'] = $params[Model::REQUEST_ID2];
+        if (isset($params[MetaModelInterface::REQUEST_ID2])) {
+            $this->formData['orig_org_id'] = $params[MetaModelInterface::REQUEST_ID2];
         }
         
         return $this->formData;
@@ -287,8 +276,8 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
 
         $params = $this->requestInfo->getRequestMatchedParams();
 
-        $fromOrgId   = $params[Model::REQUEST_ID2];
-        $fromPid     = $params[Model::REQUEST_ID1];
+        $fromOrgId   = $params[MetaModelInterface::REQUEST_ID2];
+        $fromPid     = $params[MetaModelInterface::REQUEST_ID1];
         $fromRespId  = $this->respondent->getId();
         $toOrgId     = $this->formData['gr2o_id_organization'];
         $toPatientId = $this->formData['gr2o_patient_nr'];
@@ -350,7 +339,7 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
             list($respIdField, $orgIdField, $change) = $settings;
 
             if ($change) {
-                $start = StringUtil::beforeChars($respIdField, '_');
+                $start = strtok($respIdField, '_');
 
                 $values = [
                     $orgIdField            => $toOrgId,
@@ -373,7 +362,7 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
      * Copy the respondent
      * 
      * @param int $fromOrgId
-     * @param int $fromPatientId
+     * @param string $fromPatientId
      * @param int $toOrgId
      * @param string $toPatientId
      * @return int 1 If saved
@@ -413,14 +402,14 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
      * Move the respondent
      * 
      * @param int $fromOrgId
-     * @param int $fromPatientId
+     * @param string $fromPatientId
      * @param int $toOrgId
      * @param string $toPatientId
      * @return int 1 If saved
      */
     protected function saveTo($fromOrgId, $fromPatientId, $toOrgId, $toPatientId)
     {
-        /** @var \Gems\Model\RespondentModel $model */
+        /** @var \Gems\Model\Respondent\RespondentModel $model */
         $model = $this->getModel();
         try {
             $model->move($fromOrgId, $fromPatientId, $toOrgId, $toPatientId);    
@@ -449,19 +438,13 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         return $model->getChanged();
     }
 
-    /**
-     * Set what to do when the form is 'finished'.
-     *
-     * @return self
-     */
-    protected function setAfterSaveRoute(): self
+    protected function setAfterSaveRoute(): void
     {
-        $this->routeAction = 'show';
+        $route = $this->menuHelper->getRelatedRoute('show');
 
-        if ($this->requestInfo->getCurrentAction() !== $this->routeAction) {
-            $this->afterSaveRouteUrl = $this->menuHelper->getRelatedRouteUrl('show');
-        }
-
-        return $this;
+        $this->redirectRoute = $this->menuHelper->getRouteUrl($route, [
+            MetaModelInterface::REQUEST_ID1 => $this->formData['gr2o_patient_nr'],
+            MetaModelInterface::REQUEST_ID2 => $this->formData['gr2o_id_organization'],
+        ]);
     }
 }

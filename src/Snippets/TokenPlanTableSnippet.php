@@ -10,8 +10,8 @@ namespace Gems\Snippets;
 
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Gems\Html;
 use Zalt\Html\TableElement;
 use Zalt\Snippets\ModelBridge\TableBridge;

@@ -26,7 +26,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use MUtil\Model;
 use Psr\Log\LoggerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;

@@ -45,7 +45,7 @@ class RespondentTest extends TestCase
      */
     public function testGetAge(array $respondentData, ?DateTimeInterface $date, bool $months, $expected)
     {
-        $respondent = $this->getRespondent(1,1,1, $respondentData);
+        $respondent = $this->getRespondent("1",1,1, $respondentData);
 
         $actual = $respondent->getAge($date, $months);
         $this->assertEquals($expected, $actual);
@@ -72,9 +72,9 @@ class RespondentTest extends TestCase
         ];
     }
 
-    protected function getRespondent(int $patientId = 1, int $organizationId = 1, int $respondentId = 1, array $data = []): Respondent
+    protected function getRespondent(string $patientId = "1", int $organizationId = 1, int $respondentId = 1, array $data = []): Respondent
     {
-        $data['gr2o_id_user'] = 1;
+        $data['gr2o_id_user'] = "1";
         $data['gr2o_patient_nr'] = 1;
         $data['gr2o_id_organization'] = 1;
 
@@ -91,6 +91,7 @@ class RespondentTest extends TestCase
         $translator = $this->prophesize(Translator::class)->reveal();
         $translatedUtil = $this->prophesize(Translated::class)->reveal();
         $tracker = $this->prophesize(Tracker::class)->reveal();
+        $trackEvents = $this->prophesize(Tracker\TrackEvents::class)->reveal();
 
         $currentUserRepositoryProphecy = $this->prophesize(CurrentUserRepository::class);
         $currentUserRepositoryProphecy->getCurrentUserId()->willReturn(1);
@@ -114,6 +115,7 @@ class RespondentTest extends TestCase
             $translator,
             $translatedUtil,
             $tracker,
+            $trackEvents,
             $currentUserRepository,
         );
     }

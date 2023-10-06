@@ -25,6 +25,7 @@ use Zalt\Validator\Dutch\BurgerServiceNummer;
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6
+ * @deprecated
  */
 class RespondentNlModel extends \Gems\Model\RespondentModel
 {

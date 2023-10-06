@@ -371,6 +371,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
 
         $stmt = $this->resultFetcher->query($sql, $parameters);
 
+        dump(get_class($stmt));
         return $stmt->count();
     }
 

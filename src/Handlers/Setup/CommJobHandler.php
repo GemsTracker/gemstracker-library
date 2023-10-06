@@ -31,7 +31,7 @@ use Mezzio\Session\SessionMiddleware;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use Psr\Log\LoggerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\DependencyResolver\ConstructorDependencyResolver;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\StatusMessengerInterface;

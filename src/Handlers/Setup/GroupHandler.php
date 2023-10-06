@@ -18,7 +18,7 @@ use Gems\Repository\AccessRepository;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 use Zalt\Validator\Model\ModelUniqueValidator;
 

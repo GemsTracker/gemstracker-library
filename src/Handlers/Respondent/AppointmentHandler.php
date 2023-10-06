@@ -29,7 +29,7 @@ use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

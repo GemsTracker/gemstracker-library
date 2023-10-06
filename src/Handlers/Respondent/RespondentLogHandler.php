@@ -19,7 +19,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
 use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

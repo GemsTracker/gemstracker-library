@@ -119,10 +119,14 @@ class TrackModel extends \MUtil\Model\TableModel
 
         $this->set('gtr_active',        'label', $translator->_('Active'),
                 'multiOptions', $this->translatedUtil->getYesNo());
-        $this->set('gtr_date_start',    'label', $translator->_('From'),
-                'formatFunction', $this->translatedUtil->formatDate);
-        $this->set('gtr_date_until',    'label', $translator->_('Use until'),
-                'formatFunction', $this->translatedUtil->formatDateForever);
+        $this->set('gtr_date_start', [
+            'label' => $translator->_('From'),
+            'elementClass' => 'Date',
+        ]);
+        $this->set('gtr_date_until', [
+            'label', $translator->_('Use until'),
+            'elementClass' => 'Date',
+        ]);
         $this->setIfExists('gtr_code',  'label', $translator->_('Track code'),
                 'size', 10,
                 'description', $translator->_('Optional code name to link the track to program code.'));

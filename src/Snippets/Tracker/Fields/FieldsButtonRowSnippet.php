@@ -7,8 +7,8 @@ use Gems\Snippets\Generic\PrevNextButtonRowSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Field\FieldInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 class FieldsButtonRowSnippet extends PrevNextButtonRowSnippetAbstract

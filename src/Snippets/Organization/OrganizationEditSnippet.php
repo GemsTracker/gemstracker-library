@@ -17,8 +17,8 @@ use Gems\Snippets\ModelFormSnippet;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use MUtil\Html;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 

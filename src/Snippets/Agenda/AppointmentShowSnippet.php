@@ -15,8 +15,8 @@ use Gems\Agenda\Agenda;
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 

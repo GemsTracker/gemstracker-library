@@ -15,6 +15,7 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\Handlers\GemsHandler;
 use Gems\Menu\RouteHelper;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
@@ -575,7 +576,7 @@ abstract class DateSelectorAbstract
         $href = array(
             $baseurl,
             self::DATE_FACTOR => $repeater->df_link,
-            SnippetHandler::SEARCH_RESET => null,
+            GemsHandler::AUTOSEARCH_RESET => null,
             );
 
         // Repeating column

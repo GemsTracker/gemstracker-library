@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Gems\Model\Respondent;
 
 use Gems\Communication\CommunicationRepository;
+use Gems\Exception\RespondentAlreadyExists;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\GemsJoinModel;
 use Gems\Model\MaskedModelTrait;
@@ -18,6 +19,7 @@ use Gems\Model\MetaModelLoader;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\ConsentRepository;
 use Gems\Repository\OrganizationRepository;
+use Gems\Repository\ReceptionCodeRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Repository\StaffRepository;
 use Gems\SnippetsActions\ApplyLegacyActionInterface;
@@ -415,13 +417,69 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 // Log duplicate SSN?
                 unset($newValues['grs_ssn']);
             }
-            if ($id) {
-                $newValues['grs_id_user']  = $id;
-                $newValues['gr2o_id_user'] = $id;
-            }
+            $newValues['grs_id_user']  = $id;
+            $newValues['gr2o_id_user'] = $id;
         }
 
         return $newValues;
+    }
+
+    /**
+     * Copy a respondent to a new organization
+     *
+     * If you want to share a respondent(id) with another organization use this
+     * method.
+     *
+     * @param int $fromOrgId            Id of the sending organization
+     * @param string $fromPid           Respondent number of the sending organization
+     * @param int $toOrgId              Id of the receiving organization
+     * @param string $toPid             Respondent number of the sending organization
+     * @param bool $keepConsent         Should new organization inherit the consent of the old organization or not?
+     * @return array The new respondent
+     * @throws \Gems\Exception|RespondentAlreadyExists
+     */
+    public function copyToOrg($fromOrgId, $fromPid, $toOrgId, $toPid, $keepConsent = false)
+    {
+        // Maybe we should disable masking, just to be sure
+        $this->maskRepository->disableMaskRepository();
+
+        // Do some sanity checks
+        $fromPatient = $this->loadFirst(['gr2o_id_organization' => $fromOrgId, 'gr2o_patient_nr' => $fromPid]);
+        if (empty($fromPatient)) {
+            throw new \Gems\Exception($this->_('Respondent not found in sending organization.'));
+        }
+
+        $toPatientByPid        = $this->loadFirst(['gr2o_id_organization' => $toOrgId, 'gr2o_patient_nr' => $toPid]);
+        $toPatientByRespondent = $this->loadFirst(['gr2o_id_organization' => $toOrgId, 'gr2o_id_user' => $fromPatient['gr2o_id_user']]);
+        if (!empty($toPatientByPid) && $toPatientByPid['gr2o_id_user'] == $fromPatient['gr2o_id_user']) {
+            // We already have the same respondent, nothing to do
+            throw new RespondentAlreadyExists($this->_('Respondent already exists in destination organization.'), 200, null, RespondentAlreadyExists::SAME);
+        }
+        if (!empty($toPatientByPid) && empty($toPatientByRespondent)) {
+            // Could be the same, or someone else... just return an error for now maybe offer to mark as duplicate and merge records later on
+            throw new RespondentAlreadyExists($this->_('Respondent with requested respondent number already exists in receiving organization.'), 200, null, RespondentAlreadyExists::OTHERUID);
+        }
+        if (!empty($toPatientByRespondent)) {
+            // No action needed, maybe also report the number we found?
+            throw new RespondentAlreadyExists($this->_('Respondent already exists in destination organization, but with different respondent number.'), 200, null, RespondentAlreadyExists::OTHERPID);
+        }
+
+        // Ready to go, unset consent if needed
+        $toPatient = $fromPatient;
+        if (!$keepConsent) {
+            unset($toPatient['gr2o_consent']);
+        }
+
+        // And save the record
+        $toPatient['gr2o_patient_nr']      = $toPid;
+        $toPatient['gr2o_id_organization'] = $toOrgId;
+        $toPatient['gr2o_reception_code']  = ReceptionCodeRepository::RECEPTION_OK;
+        $result = $this->save($toPatient);
+
+        // Now re-enable the mask feature
+        $this->maskRepository->enableMaskRepository();
+
+        return $result;
     }
 
     public function hideSSN($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
@@ -547,6 +605,58 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         return $changes;
     }
 
+    /**
+     * Move a respondent to a new organization and/or change it's number
+     *
+     * This not be a copy, it will be renamed. Use copyToOrg if you want to make a copy.
+     *
+     * @param int $fromOrgId            Id of the sending organization
+     * @param string $fromPid           Respondent number of the sending organization
+     * @param int $toOrgId              Id of the receiving organization
+     * @param string $toPid             Respondent number of the sending organization
+     * @return array The new respondent
+     * @throws RespondentAlreadyExists
+     */
+    public function move($fromOrgId, $fromPid, $toOrgId, $toPid)
+    {
+        // Maybe we should disable masking, just to be sure
+        $this->maskRepository->disableMaskRepository();
+
+        $patientFrom = $this->loadFirst([
+            'gr2o_id_organization' => $fromOrgId,
+            'gr2o_patient_nr'      => $fromPid
+        ]);
+        $patientTo = $this->loadFirst([
+            'gr2o_id_organization' => $toOrgId,
+            'gr2o_patient_nr'      => $toPid
+        ]);
+
+        // Lookup change and create filter
+        $filter = [];
+        if ($fromPid !== $toPid) {
+            $patientFrom['gr2o_patient_nr'] = $toPid;
+            $filter['gr2o_patient_nr'] = $fromPid;
+        }
+        if ($fromOrgId !== $toOrgId) {
+            $patientFrom['gr2o_id_organization'] = $toOrgId;
+            $filter['gr2o_id_organization'] = $fromOrgId;
+        }
+
+        if ($filter && empty($patientTo)) {
+            $result = $this->save($patientFrom, $filter);
+        } else {
+            // already exists, return current patient
+            // we can not delete the other records, maybe mark as inactive or throw an error
+            $this->maskRepository->enableMaskRepository();
+            throw new RespondentAlreadyExists($this->_('Respondent already exists in destination, please delete current record manually if needed.'), 200, null, RespondentAlreadyExists::OTHERUID);
+        }
+
+        // Now re-enable the mask feature
+        $this->maskRepository->enableMaskRepository();
+
+        return $result;
+    }
+
     public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
 //        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($newValues, true) . "\n", FILE_APPEND);
@@ -557,6 +667,17 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $output = parent::save($newValues, $filter, $saveTables);
 
         $this->logConsentChanges($output);
+
+        if (isset($output['gr2o_id_organization']) && isset($output['grs_id_user'])) {
+            // Tell the organization it has at least one user
+            $org = $this->organizationRepository->getOrganization(intval($output['gr2o_id_organization']));
+            if ($org) {
+                $org->setHasRespondents($this->currentUserId);
+            }
+
+            $respondent = $this->respondentRepository->getRespondent($output['gr2o_patient_nr'], intval($output['gr2o_id_organization']), intval($output['grs_id_user']));
+            $respondent->handleChanged();
+        }
 
         return $output;
     }

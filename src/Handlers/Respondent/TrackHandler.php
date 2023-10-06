@@ -16,14 +16,10 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Pdf;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\RespondentRepository;
-use Gems\Snippets\Respondent\TokenEmailSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\User\Mask\MaskRepository;
-use Mezzio\Session\SessionMiddleware;
-use MUtil\Ra;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Model\Bridge\BridgeInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -52,7 +48,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
         'createData'  => true,
         'formTitle'   => 'getCreateTrackTitle',
         'trackEngine' => 'getTrackEngine',
-        'csrfGuard'   => 'getCsrfGuard',
+        'csrfName'    => 'getCsrfTokenName',
+        'csrfToken'   => 'getCsrfToken',
         'session'     => 'getSession',
     ];
 
@@ -74,6 +71,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $insertParameters = [
+        'csrfName'    => 'getCsrfTokenName',
+        'csrfToken'   => 'getCsrfToken',
         'createData' => true,
         'formTitle'  => 'getInsertInTrackTitle',
         'model'      => null,

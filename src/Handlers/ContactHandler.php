@@ -15,7 +15,7 @@ use Gems\Db\ResultFetcher;
 use Gems\Locale\Locale;
 use Gems\Menu\RouteHelper;
 use Gems\Project\ProjectSettings;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

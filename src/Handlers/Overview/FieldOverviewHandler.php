@@ -18,7 +18,7 @@ use Gems\Tracker;
 use Gems\User\Group;
 use Gems\User\Mask\MaskRepository;
 use MUtil\Model\DatabaseModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

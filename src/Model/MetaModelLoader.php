@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Gems\Model;
 
 use Gems\Legacy\CurrentUserRepository;
-use Laminas\Db\Sql\Expression;
+use Gems\Model\Respondent\RespondentModel;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelInterface;
 
@@ -57,6 +57,11 @@ class MetaModelLoader extends \Zalt\Model\MetaModelLoader
             $transformer = $this->createTransformer('Transform\\TranslateDatabaseFields');
             $metaModel->addTransformer($transformer);
         }
+    }
+
+    public function getRespondentModel(): RespondentModel
+    {
+        return $this->loader->getContainer()->get(RespondentModel::class);
     }
 
     protected function setChangeField(MetaModelInterface $metaModel, string $fieldName, mixed $defaultValue, bool $createdOnly)

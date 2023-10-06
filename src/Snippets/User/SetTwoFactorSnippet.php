@@ -21,8 +21,8 @@ use Gems\Snippets\FormSnippetAbstract;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
 use Mezzio\Session\SessionInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 

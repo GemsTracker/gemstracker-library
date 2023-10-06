@@ -155,7 +155,7 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
     {
         if ($this->currentUser->hasPrivilege('pr.export.gender-age')) {
             if (isset($data['export_resp_gender']) && $data['export_resp_gender']) {
-                $model->set('grs_gender', 'label', $this->getRespondentModel()->get('grs_gender', 'label'),
+                $model->set('grs_gender', 'label', $this->getRespondentModel()->getMetaModel()->get('grs_gender', 'label'),
                         'type', \MUtil\Model::TYPE_STRING
                         );
 
@@ -198,7 +198,7 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
     {
         if ($this->currentUser->hasPrivilege('pr.export.add-resp-nr')) {
             if (isset($data['export_resp_nr']) && $data['export_resp_nr']) {
-                $model->set('gr2o_patient_nr', 'label', $this->getRespondentModel()->get('gr2o_patient_nr', 'label'),
+                $model->set('gr2o_patient_nr', 'label', $this->getRespondentModel()->getMetaModel()->get('gr2o_patient_nr', 'label'),
                         'type', \MUtil\Model::TYPE_STRING
                         );
 
@@ -470,7 +470,7 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
         if ($this->currentUser->hasPrivilege('pr.export.add-resp-nr')) {
             $elements['export_resp_nr'] = $this->_createCheckboxElement(
                     'export_resp_nr',
-                    $this->getRespondentModel()->get('gr2o_patient_nr', 'label'),
+                    $this->getRespondentModel()->getMetaModel()->get('gr2o_patient_nr', 'label'),
                     $this->_('Add respondent nr to export')
                     );
         }

@@ -16,7 +16,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\JoinModel;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

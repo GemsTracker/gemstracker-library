@@ -25,7 +25,7 @@ use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\Tracker;
 use Gems\Tracker\Model\TokenModel;
 use Mezzio\Session\SessionInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;

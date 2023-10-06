@@ -17,7 +17,7 @@ use Gems\Model\Translator\AppointmentTranslator;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\User\User;
 use MUtil\Model\ModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Type\AbstractDateType;
 use Zalt\SnippetsLoader\SnippetResponderInterface;

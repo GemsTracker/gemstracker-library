@@ -21,7 +21,8 @@ use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\Sql\SqlTableModel;
 use Zalt\Model\Type\ConcatenatedType;
@@ -46,13 +47,14 @@ class MaskHandler extends BrowseChangeHandler
         SnippetResponderInterface $responder, 
         MetaModelLoader $metaModelLoader, 
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected AccessRepository $accessRepository,
         protected MaskRepository $maskRepository,
         protected OrganizationRepository $organizationRepository,
         protected Translated $translatedUtil,
     )
     {
-        parent::__construct($responder, $metaModelLoader, $translate);
+        parent::__construct($responder, $metaModelLoader, $translate, $cache);
     }
 
     /**

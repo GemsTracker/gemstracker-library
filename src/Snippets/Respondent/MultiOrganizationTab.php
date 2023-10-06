@@ -17,8 +17,8 @@ use Gems\Menu\RouteHelper;
 use Gems\Tracker\Respondent;
 use Gems\User\User;
 use MUtil\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Snippets\TabSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 

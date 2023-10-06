@@ -26,7 +26,7 @@ use Gems\Tracker\Token;
 use Mezzio\Session\SessionMiddleware;
 use MUtil\Model;
 use MUtil\Ra;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -74,6 +74,8 @@ class TokenHandler extends TokenSearchHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $correctParameters = [
+        'csrfName'           => 'getCsrfTokenName',
+        'csrfToken'          => 'getCsrfToken',
         'fixedReceptionCode' => 'redo',
         'formTitle'          => 'getCorrectTokenTitle',
     ];

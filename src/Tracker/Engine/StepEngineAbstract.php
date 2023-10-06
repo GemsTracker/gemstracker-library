@@ -11,6 +11,9 @@
 
 namespace Gems\Tracker\Engine;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Condition\ConditionLoader;
 use Gems\Date\Period;
 use Gems\Db\ResultFetcher;
@@ -30,14 +33,9 @@ use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\Token;
 use Gems\Tracker\TrackEvents;
 use Gems\Translate\DbTranslationRepository;
-
-use DateTimeImmutable;
-use DateTimeInterface;
-
 use Gems\User\User;
 use Gems\Util\Translated;
 use Laminas\Filter\Digits;
-use MUtil\Model\ModelAbstract;
 use MUtil\Model\TableModel;
 use MUtil\Ra;
 use MUtil\Translate\Translator;
@@ -86,7 +84,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      */
     const TOKEN_TABLE = 'tok';
 
-    protected User $currentUser;
+    protected ?User $currentUser;
 
     /**
      *
@@ -914,9 +912,9 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     {
         $output[] = 'Token\\ShowTrackTokenSnippet';
 
-        if ($token->isCompleted() && $this->currentUser->hasPrivilege('pr.token.answers')) {
+        if ($token->isCompleted() && $this->currentUser?->hasPrivilege('pr.token.answers')) {
             $output[] = 'Tracker\\Answers\\SingleTokenAnswerModelSnippet';
-        } elseif ($this->currentUser->hasPrivilege('pr.project.questions')) {
+        } elseif ($this->currentUser?->hasPrivilege('pr.project.questions')) {
             $output[] = 'Survey\\SurveyQuestionsSnippet';
         }
         return $output;

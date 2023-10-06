@@ -18,8 +18,8 @@ use Gems\Repository\TrackDataRepository;
 use Gems\Tracker;
 use Gems\Tracker\Engine\StepEngineAbstract;
 use Gems\Tracker\Snippets\EditRoundSnippetAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 

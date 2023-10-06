@@ -19,7 +19,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

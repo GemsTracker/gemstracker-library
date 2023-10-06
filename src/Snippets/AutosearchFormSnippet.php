@@ -14,14 +14,15 @@ namespace Gems\Snippets;
 use Gems\Db\ResultFetcher;
 use Gems\Form;
 use Gems\Form\Element\DateTimeInput;
+use Gems\Handlers\GemsHandler;
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Sql\Select;
 use MUtil\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
@@ -321,7 +322,6 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
     {
         if (! isset($options['name'])) {
             $className = get_class($this);
-            dump($className);
             $options['name'] = substr($className, strrpos($className, '\\'));
         }
 
@@ -452,7 +452,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
     {
         $routeName = $this->requestInfo->getRouteName();
         $params = $this->requestInfo->getRequestMatchedParams();
-        $url = [$this->requestInfo->getBasePath(), SnippetHandler::SEARCH_RESET => 1];
+        $url = [$this->requestInfo->getBasePath(), GemsHandler::AUTOSEARCH_RESET => 1];
 
         $link = Html::create()->actionLink($url, $this->_('Reset search'));
 

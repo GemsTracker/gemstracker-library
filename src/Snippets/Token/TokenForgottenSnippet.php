@@ -20,8 +20,8 @@ use Gems\Repository\RespondentRepository;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\Tracker;
 use Symfony\Component\Mime\Address;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 

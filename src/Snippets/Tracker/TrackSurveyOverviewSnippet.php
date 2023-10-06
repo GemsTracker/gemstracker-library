@@ -15,8 +15,8 @@ use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Tracker;
 use Gems\Tracker\Engine\TrackEngineInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Late\Late;
 use Zalt\SnippetsLoader\SnippetOptions;
 

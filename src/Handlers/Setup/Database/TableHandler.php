@@ -6,7 +6,8 @@ use Gems\Db\Migration\MigrationRepositoryAbstract;
 use Gems\Db\Migration\TableRepository;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Show\ShowAction;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\SnippetsHandler\CreateModelHandlerTrait;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -31,11 +32,12 @@ class TableHandler extends MigrationHandlerAbstract
         SnippetResponderInterface $responder,
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected readonly array $config,
         protected readonly TableRepository $tableRepository,
     )
     {
-        parent::__construct($responder, $metaModelLoader, $translate);
+        parent::__construct($responder, $metaModelLoader, $translate, $cache);
     }
 
     protected function getRepository(): MigrationRepositoryAbstract

@@ -11,8 +11,8 @@
 
 namespace Gems\Snippets\Contact;
 
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 use Zalt\Snippets\TranslatableSnippetAbstract;
 

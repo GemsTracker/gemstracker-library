@@ -13,8 +13,8 @@ namespace Gems\Snippets;
 
 use Gems\Html;
 use Gems\User\Mask\MaskRepository;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\AElement;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;

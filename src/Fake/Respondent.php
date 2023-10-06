@@ -5,11 +5,13 @@ namespace Gems\Fake;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
+use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\ConsentRepository;
 use Gems\Repository\MailRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Tracker;
+use Gems\Tracker\TrackEvents;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
 use Zalt\Base\TranslatorInterface;
@@ -17,17 +19,18 @@ use Zalt\Base\TranslatorInterface;
 class Respondent extends \Gems\Tracker\Respondent
 {
     public function __construct(
-        ConsentRepository $consentRepository,
-        MailRepository $mailRepository,
-        OrganizationRepository $organizationRepository,
-        ReceptionCodeRepository $receptionCodeRepository,
-        ResultFetcher $resultFetcher,
-        MaskRepository $maskRepository,
-        TranslatorInterface $translator,
-        Translated $translatedUtil,
-        Tracker $tracker,
-        CurrentUserRepository $currentUserRepository,
-        Model $modelLoader
+        protected readonly ConsentRepository       $consentRepository,
+        protected readonly MailRepository          $mailRepository,
+        protected readonly MaskRepository          $maskRepository,
+        protected readonly OrganizationRepository  $organizationRepository,
+        protected readonly ReceptionCodeRepository $receptionCodeRepository,
+        protected readonly RespondentModel         $respondentModel,
+        protected readonly ResultFetcher           $resultFetcher,
+        protected readonly TranslatorInterface     $translator,
+        protected readonly Translated              $translatedUtil,
+        protected readonly Tracker                 $tracker,
+        protected readonly TrackEvents             $trackEvents,
+        CurrentUserRepository                      $currentUserRepository,
     ) {
         parent::__construct(
             'EXAMPLE001',
@@ -35,15 +38,16 @@ class Respondent extends \Gems\Tracker\Respondent
             0,
             $consentRepository,
             $mailRepository,
+            $maskRepository,
             $organizationRepository,
             $receptionCodeRepository,
+            $respondentModel,
             $resultFetcher,
-            $maskRepository,
             $translator,
             $translatedUtil,
             $tracker,
+            $trackEvents,
             $currentUserRepository,
-            $modelLoader
         );
     }
 

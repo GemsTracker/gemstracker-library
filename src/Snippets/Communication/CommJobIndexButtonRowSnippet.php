@@ -6,8 +6,8 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Menu\RouteHelper;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Util\Lock\CommJobLock;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 class CommJobIndexButtonRowSnippet extends CurrentButtonRowSnippet

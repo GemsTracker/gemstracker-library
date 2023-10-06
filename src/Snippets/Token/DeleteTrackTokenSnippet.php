@@ -22,8 +22,8 @@ use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\Token;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessageStatus;
 use Zalt\Message\MessengerInterface;
 use Zalt\Message\StatusMessengerInterface;
@@ -138,8 +138,9 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
             $model = $this->token->getModel();
         }
 
-        $model->set('gto_reception_code', [
-            'label' => $model->get('grc_description', 'label'),
+        $metaModel = $model->getMetaModel();
+        $metaModel->set('gto_reception_code', [
+            'label' => $metaModel->get('grc_description', 'label'),
             'required' => true,
         ]);
 

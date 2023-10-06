@@ -11,8 +11,8 @@
 
 namespace Gems\Snippets\Mail;
 
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessageTrait;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeInterface;

@@ -18,7 +18,7 @@ use Gems\Snippets\Tracker\TrackSurveyOverviewSnippet;
 use Gems\User\User;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

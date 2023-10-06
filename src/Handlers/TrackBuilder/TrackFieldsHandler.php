@@ -18,7 +18,7 @@ use Gems\Snippets\Tracker\Fields\FieldsButtonRowSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Tracker\Model\TrackModel;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

@@ -15,8 +15,8 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\User\User;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -178,7 +178,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
      */
     protected function loadForm()
     {
-        $model = $this->getModel();
+        $metaModel = $this->getModel()->getMetaModel();
 
         $this->unDelete = $this->isUndeleting();
 
@@ -201,7 +201,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
             }
             $label = $this->_('Rejection code');
         }
-        $model->set($this->receptionCodeItem, 'label', $label);
+        $metaModel->set($this->receptionCodeItem, 'label', $label);
 
         if ($this->fixedReceptionCode) {
             if (! isset($receptionCodes[$this->fixedReceptionCode])) {
@@ -220,19 +220,19 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
         }
 
         if ($this->fixedReceptionCode) {
-            $model->set($this->receptionCodeItem,
+            $metaModel->set($this->receptionCodeItem,
                     'elementClass', 'Exhibitor',
                     'multiOptions', $receptionCodes
                     );
             $this->formData[$this->receptionCodeItem] = $this->fixedReceptionCode;
 
         } else {
-            $model->set($this->receptionCodeItem,
-                    'elementClass', 'Select',
-                    'multiOptions', array('' => '') + $receptionCodes,
-                    'required', true,
-                    'size', min(7, max(3, count($receptionCodes) + 2))
-                    );
+            $metaModel->set($this->receptionCodeItem, [
+                    'elementClass' => 'Select',
+                    'multiOptions' => array('' => '') + $receptionCodes,
+                    'required' => true,
+                    'size' => min(7, max(3, count($receptionCodes) + 2))
+                    ]);
 
             if (! isset($this->formData[$this->receptionCodeItem], $receptionCodes[$this->formData[$this->receptionCodeItem]])) {
                 $this->formData[$this->receptionCodeItem] = '';

@@ -19,7 +19,7 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Having;
 use Laminas\Db\Sql\Select;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Sql\Laminas\LaminasSelectModel;

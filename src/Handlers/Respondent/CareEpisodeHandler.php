@@ -23,7 +23,7 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

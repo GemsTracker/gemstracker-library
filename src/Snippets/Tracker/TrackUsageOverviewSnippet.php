@@ -18,8 +18,8 @@ use Gems\Tracker;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Tracker\Respondent;
 use Gems\Tracker\RespondentTrack;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 

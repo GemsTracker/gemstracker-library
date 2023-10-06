@@ -7,7 +7,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\SurveyCodeBookModel;
 use MUtil\Model\ModelAbstract;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

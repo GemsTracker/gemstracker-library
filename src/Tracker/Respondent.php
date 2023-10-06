@@ -26,7 +26,8 @@ use Gems\Translate\GenderTranslation;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\Organization;
 use Gems\Util\Translated;
-use MUtil\Translate\Translator;
+use Laminas\Db\Sql\Expression;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -46,13 +47,6 @@ class Respondent
      * @var array The gems respondent and respondent to org data
      */
     protected $_gemsData;
-
-    /**
-     * Allow login info to be loaded
-     *
-     * @var boolean
-     */
-    protected bool $addLoginCheck = false;
 
     protected int $currentUserId;
 
@@ -81,7 +75,7 @@ class Respondent
      * @param int $respondentId   Optional respondent id, used when patient id is empty
      */
     public function __construct(
-        protected string                           $patientId,
+        protected ?string                          $patientId,
         protected int                              $organizationId,
         protected int|null                         $respondentId = null,
         protected readonly ConsentRepository       $consentRepository,
@@ -91,17 +85,15 @@ class Respondent
         protected readonly ReceptionCodeRepository $receptionCodeRepository,
         protected readonly RespondentModel         $respondentModel,
         protected readonly ResultFetcher           $resultFetcher,
-        protected readonly Translator              $translator,
+        protected readonly TranslatorInterface     $translator,
         protected readonly Translated              $translatedUtil,
         protected readonly Tracker                 $tracker,
-        readonly CurrentUserRepository             $currentUserRepository,
+        protected readonly TrackEvents             $trackEvents,
+        CurrentUserRepository                      $currentUserRepository,
     )
     {
-        $this->currentUserId = $this->currentUserRepository->getCurrentUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
         $this->respondentModel->applyStringAction('edit', true);
-        if ($this->addLoginCheck) {
-            $this->respondentModel->addLoginCheck();
-        }
 
         $this->refresh();
     }
@@ -459,6 +451,23 @@ class Respondent
     }
 
     /**
+     * @return boolean True when something changed
+     */
+    public function handleChanged()
+    {
+        $changeEventClass = $this->getOrganization()->getRespondentChangeEventClass();
+        if ($changeEventClass) {
+            $event = $this->trackEvents->loadRespondentChangedEvent($changeEventClass);
+
+            if ($event->processChangedRespondent($this)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Has the respondent active tracks
      *
      * @return boolean
@@ -597,17 +606,49 @@ class Respondent
      * Set the reception code for a respondent and cascade non-success codes to the
      * tracks / surveys.
      *
-     * @param string $newCode     String or \Gems\Util\ReceptionCode
+     * @param ReceptionCode|string $newCode String or \Gems\Util\ReceptionCode
      * @return ReceptionCode The new code reception code object for further processing
      */
-    public function setReceptionCode(ReceptionCode|string $newCode)
+    public function setReceptionCode(ReceptionCode|string $newCode): ReceptionCode
     {
-        return $this->respondentModel->setReceptionCode(
-                $this->getPatientNumber(),
-                $this->getOrganizationId(),
-                $newCode,
-                $this->getId(),
-                $this->getReceptionCode()
-                );
+        if (!$newCode instanceof ReceptionCode) {
+            $newCode = $this->receptionCodeRepository->getReceptionCode($newCode);
+        }
+
+        // Perform actual save, but not for simple stop codes.
+        if ($newCode->isForRespondents()) {
+            $oldCode = $this->_gemsData['gr2o_reception_code'];
+
+            // If the code wasn't set already
+            if ($oldCode !== $newCode->getCode()) {
+                $values['gr2o_reception_code'] = $newCode->getCode();
+                $values['gr2o_changed']        = new Expression("CURRENT_TIMESTAMP");
+                $values['gr2o_changed_by']     = $this->currentUserId;
+
+                // Update though primamry key is prefered
+                $where['gr2o_patient_nr'] = $this->getPatientNumber();
+                $where['gr2o_id_organization'] = $this->getOrganizationId();
+
+                $this->resultFetcher->updateTable('gems__respondent2org', $values, $where);
+            }
+        }
+
+        // Is the respondent really removed
+        if (! $newCode->isSuccess()) {
+            // Only check for $respondentId when it is really needed
+
+            // Cascade to tracks
+            // the responsiblilty to handle it correctly is on the sub objects now.
+            $tracks = $this->tracker->getRespondentTracks($this->getId(), $this->getOrganizationId());
+            foreach ($tracks as $track) {
+                $track->setReceptionCode($newCode, null, $this->currentUserId);
+            }
+        }
+
+        if ($newCode->isForRespondents()) {
+            $this->handleChanged();
+        }
+
+        return $newCode;
     }
 }

@@ -21,7 +21,7 @@ use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\RedirectResponse;
 use MUtil\Model\ModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

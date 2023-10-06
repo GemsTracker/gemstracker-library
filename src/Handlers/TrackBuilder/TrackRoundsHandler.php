@@ -18,7 +18,7 @@ use Gems\Tracker;
 use Gems\Tracker\Model\RoundModel;
 use Laminas\Diactoros\Response\RedirectResponse;
 use MUtil\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessageStatus;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;

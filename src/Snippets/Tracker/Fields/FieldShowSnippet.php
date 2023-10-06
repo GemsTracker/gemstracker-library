@@ -14,8 +14,8 @@ namespace Gems\Snippets\Tracker\Fields;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Field\FieldInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**

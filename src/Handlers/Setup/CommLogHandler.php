@@ -22,7 +22,7 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Mail\Log\MailLogBrowseSnippet;
 use Gems\Snippets\Mail\Log\MailLogSearchSnippet;
 use Gems\User\Mask\MaskRepository;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;

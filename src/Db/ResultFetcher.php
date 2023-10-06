@@ -9,6 +9,7 @@ use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\SqlInterface;
 use Laminas\Db\Sql\TableIdentifier;
+use Laminas\Db\TableGateway\TableGateway;
 
 class ResultFetcher
 {
@@ -120,5 +121,11 @@ class ResultFetcher
         }
 
         return $this->db->query($select, $params, $resultSet);
+    }
+
+    public function updateTable(string $tableName, array $values, mixed $where): int
+    {
+        $table = new TableGateway($tableName, $this->getAdapter());
+        return $table->update($values, $where);
     }
 }

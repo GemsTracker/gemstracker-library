@@ -10,7 +10,7 @@ use Gems\Layout\LayoutRenderer;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Laminas\Diactoros\Response\HtmlResponse;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

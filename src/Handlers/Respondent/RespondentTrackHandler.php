@@ -27,7 +27,7 @@ use Gems\Tracker\RespondentTrack;
 use Gems\User\Mask\MaskRepository;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 

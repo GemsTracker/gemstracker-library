@@ -15,7 +15,7 @@ use Gems\Exception;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Engine\TrackEngineInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

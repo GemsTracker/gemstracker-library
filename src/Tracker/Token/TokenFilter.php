@@ -12,6 +12,8 @@
 
 namespace Gems\Tracker\Token;
 
+use Laminas\Filter\FilterInterface;
+
 /**
  * Utility functions for token string functions
  *
@@ -21,7 +23,7 @@ namespace Gems\Tracker\Token;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class TokenFilter implements \Zend_Filter_Interface
+class TokenFilter implements FilterInterface
 {
     /**
      *
