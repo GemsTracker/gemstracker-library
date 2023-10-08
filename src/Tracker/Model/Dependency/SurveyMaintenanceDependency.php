@@ -12,7 +12,7 @@ namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Tracker;
 use Gems\Util\Translated;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  * @package    Gems

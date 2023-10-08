@@ -14,7 +14,7 @@ namespace Gems\Model\Translator;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\OrganizationRepository;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *

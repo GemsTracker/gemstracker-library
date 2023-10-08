@@ -13,7 +13,7 @@ namespace Gems\Tracker\Field;
 
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Util\Translated;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *

@@ -1211,7 +1211,7 @@ parameters:
 			path: src/Condition/ConditionLoader.php
 
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$arguments of method Zalt\\\\Loader\\\\ProjectOverloader\\:\\:create\\(\\) expects array, MUtil\\\\Translate\\\\Translator given\\.$#"
+			message: "#^Parameter \\#2 \\.\\.\\.\\$arguments of method Zalt\\\\Loader\\\\ProjectOverloader\\:\\:create\\(\\) expects array, Zalt\\\\Base\\\\TranslatorInterface given\\.$#"
 			count: 1
 			path: src/Condition/ConditionLoader.php
 

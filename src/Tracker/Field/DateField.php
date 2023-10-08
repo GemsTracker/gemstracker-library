@@ -17,7 +17,8 @@ use Gems\Agenda\Agenda;
 use Gems\Util\Translated;
 use Laminas\Db\Sql\Expression;
 use MUtil\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Type\AbstractDateType;
 
 /**
@@ -54,7 +55,7 @@ class DateField extends FieldAbstract
      *
      * @var int
      */
-    protected int $type = Model::TYPE_DATE;
+    protected int $type = MetaModelInterface::TYPE_DATE;
 
     public function __construct(
         int $trackId,

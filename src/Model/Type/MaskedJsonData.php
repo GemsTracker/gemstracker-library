@@ -14,7 +14,6 @@ namespace Gems\Model\Type;
 use Gems\User\Mask\MaskRepository;
 use MUtil\Model\Type\JsonData;
 use Zalt\Html\ElementInterface;
-use Zalt\Html\HtmlElement;
 
 /**
  *

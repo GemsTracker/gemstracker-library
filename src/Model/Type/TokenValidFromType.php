@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Gems\Model\Type;
 
 use Gems\Repository\TokenRepository;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Type\MaybeTimeType;
 use Zalt\Model\Type\OverwritingTypeInterface;
 

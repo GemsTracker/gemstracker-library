@@ -8,7 +8,7 @@ use Laminas\Diactoros\Response\JsonResponse;
 use MUtil\Batch\Progress;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Base\TranslateableTrait;
 
 class BatchRunner

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Gems\Agenda;
 
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Dependency\ValueSwitchDependency;
 use Zalt\Model\MetaModel;
 

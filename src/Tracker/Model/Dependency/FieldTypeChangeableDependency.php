@@ -13,7 +13,7 @@ namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Db\ResultFetcher;
 use Gems\Tracker\Model\FieldMaintenanceModel;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Dependency\DependencyAbstract;
 
 /**

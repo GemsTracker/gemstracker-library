@@ -16,7 +16,7 @@ use Gems\Condition\RoundConditionAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Token;
 use Gems\Util\Translated;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *

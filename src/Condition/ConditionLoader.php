@@ -16,8 +16,8 @@ use Gems\Condition\Comparator\ComparatorInterface;
 use Gems\Exception\Coding;
 use Gems\Model\ConditionModel;
 use Gems\Util\Translated;
-use MUtil\Translate\TranslateableTrait;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslateableTrait;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\Exception\LoadException;
 use Zalt\Loader\ProjectOverloader;
 

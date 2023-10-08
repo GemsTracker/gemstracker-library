@@ -17,7 +17,7 @@ use Gems\Tracker;
 use Gems\Tracker\RespondentTrack;
 use Gems\Util\Translated;
 use MUtil\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
 
 /**

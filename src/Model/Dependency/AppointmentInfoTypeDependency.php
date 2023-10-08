@@ -3,7 +3,7 @@
 namespace Gems\Model\Dependency;
 
 use Gems\Repository\AppointmentInfoTypesRepository;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Dependency\DependencyAbstract;
 
 class AppointmentInfoTypeDependency extends DependencyAbstract

@@ -18,7 +18,7 @@ use Gems\Html;
 use Gems\Menu\RouteHelper;
 use Gems\Util\Translated;
 use MUtil\Validator\NotEqualTo;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\AElement;
 use Zalt\Html\HrefArrayAttribute;
 use Zalt\Html\HtmlElement;

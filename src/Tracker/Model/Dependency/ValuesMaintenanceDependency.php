@@ -13,7 +13,7 @@ namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Tracker\Field\FieldAbstract;
 use Gems\Util\Translated;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Sequence;
 use Zalt\Model\Dependency\DependencyAbstract;
 

@@ -21,7 +21,7 @@ use Gems\Menu\RouteHelper;
 use Gems\Model;
 use Gems\Tracker;
 use Gems\Util\Translated;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Model\MetaModelInterface;
 

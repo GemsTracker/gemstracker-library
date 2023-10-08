@@ -12,8 +12,8 @@
 namespace Gems\Condition;
 
 use Gems\Condition\Comparator\ComparatorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\TranslateableTrait;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *

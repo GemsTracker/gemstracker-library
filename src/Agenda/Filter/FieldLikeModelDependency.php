@@ -14,7 +14,7 @@ namespace Gems\Agenda\Filter;
 use Gems\Agenda\Agenda;
 use Gems\Agenda\FilterModelDependencyAbstract;
 use Gems\Util\Translated;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *

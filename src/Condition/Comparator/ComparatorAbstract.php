@@ -11,7 +11,7 @@
 
 namespace Gems\Condition\Comparator;
 
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Base\TranslateableTrait;
 
 /**
@@ -31,7 +31,6 @@ abstract class ComparatorAbstract implements ComparatorInterface
     public function __construct(TranslatorInterface $translator, array $options = []) {
         $this->_options = $options;
         $this->translate = $translator;
-
     }
     
     /**

@@ -9,7 +9,7 @@ use Gems\Tracker;
 use Gems\Tracker\RespondentTrack;
 use Gems\Util\Translated;
 use DateTimeInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 class TrackField extends FieldAbstract
 {

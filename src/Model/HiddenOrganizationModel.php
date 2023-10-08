@@ -13,6 +13,7 @@ namespace Gems\Model;
 
 use Gems\Legacy\CurrentUserRepository;
 use Gems\User\User;
+use Zalt\Mock\MockTranslator;
 
 /**
  * Extension of JoinModel for models where the organization id is
@@ -126,7 +127,7 @@ class HiddenOrganizationModel extends MaskedModel
         }
 
         if (! $this->translate instanceof \Zend_Translate_Adapter) {
-            $this->translate = new \MUtil\Translate\Adapter\Potemkin();
+            $this->translate = new MockTranslator();
         }
 
         return $this->translate;

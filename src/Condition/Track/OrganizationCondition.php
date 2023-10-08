@@ -18,7 +18,7 @@ use Gems\Repository\OrganizationRepository;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Gems\Tracker\RespondentTrack;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *

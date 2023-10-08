@@ -13,9 +13,8 @@ namespace Gems\Model\Translator;
 
 use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
-use Gems\Loader;
 use Gems\Repository\OrganizationRepository;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *

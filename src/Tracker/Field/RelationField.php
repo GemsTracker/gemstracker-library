@@ -15,7 +15,7 @@ use Gems\Db\ResultFetcher;
 use Gems\Util\Translated;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *

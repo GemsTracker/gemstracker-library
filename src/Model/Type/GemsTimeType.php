@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\Model\Type;
 
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  * @package    Gems

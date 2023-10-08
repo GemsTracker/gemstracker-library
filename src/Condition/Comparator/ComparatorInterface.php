@@ -11,7 +11,7 @@
 
 namespace Gems\Condition\Comparator;
 
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *

@@ -11,8 +11,6 @@
 
 namespace Gems\Model\Translator;
 
-use Gems\Repository\OrganizationRepository;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataWriterInterface;
 
 /**

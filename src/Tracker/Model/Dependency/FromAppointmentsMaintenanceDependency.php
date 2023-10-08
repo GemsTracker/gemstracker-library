@@ -14,7 +14,7 @@ namespace Gems\Tracker\Model\Dependency;
 use Gems\Db\ResultFetcher;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Dependency\DependencyAbstract;
 use Zalt\Model\MetaModelInterface;
 

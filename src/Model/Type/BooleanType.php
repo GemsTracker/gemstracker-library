@@ -4,8 +4,6 @@ namespace Gems\Model\Type;
 
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Type\AbstractModelType;
-use Zalt\Model\Type\ModelTypeInterface;
-use Zalt\Model\Type\YesNoType;
 
 class BooleanType extends AbstractModelType
 {

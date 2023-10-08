@@ -5,7 +5,7 @@ namespace Gems\Tracker\Field;
 use Gems\Agenda\Agenda;
 use Gems\Repository\AppointmentInfoTypesRepository;
 use Gems\Util\Translated;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 
 class AppointmentInfoField extends FieldAbstract
