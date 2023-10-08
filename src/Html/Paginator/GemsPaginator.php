@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Gems\Html\Paginator;
 
 use Gems\Html;
+use Zalt\Html\ElementInterface;
 use Zalt\Html\HtmlElement;
 use Zalt\Html\HtmlInterface;
 use Zalt\Html\Paginator\TranslatablePaginatorTrait;
@@ -67,7 +68,7 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
         ];
     }
 
-    protected function getItemsHolder(): HtmlInterface
+    protected function getItemsHolder(): ElementInterface
     {
         return Html::create('div', ['class' => $this->itemsClass]);
     }
@@ -106,7 +107,7 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
         return Html::create('li', $output);
     }
 
-    protected function getPagesHolder(): HtmlInterface
+    protected function getPagesHolder(): ElementInterface
     {
         return Html::create('ul', ['class' => $this->pagesClass]);
     }

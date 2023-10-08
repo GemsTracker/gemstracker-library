@@ -1262,7 +1262,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      * Returns the current user role.
      *
      * @param boolean $current Checks value for current role (when false for normal role);
-     * @return string
+     * @return ?string
      */
     public function getRole($current = true)
     {
