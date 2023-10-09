@@ -11,7 +11,7 @@
 
 namespace Gems\Model;
 
-use Zalt\Base\TranslateableTrait;
+use MUtil\Translate\TranslateableTrait;
 
 /**
  * Extension of \MUtil model with auto update changed and create fields.
