@@ -1,8 +1,8 @@
 {% if ui_switch_groups is defined and ui_switch_groups %}
     <div class="group-switcher">
         <div id="groups">
-            <form method="get" action="{{ path('group.switch-ui') }}" class="selected-autosubmit">
-                <select class="form-select autosubmit" name="group">
+            <form method="get" action="{{ path('group.switch-ui') }}" class="selected-auto-submit">
+                <select class="form-select auto-submit" name="group">
                     {% for groupId, groupName in ui_switch_groups  %}
                         <option {% if ui_switch_current_group is defined and ui_switch_current_group == groupId %} selected="selected" {% endif %}value="{{ groupId }}">{{ groupName }}</option>
                     {% endfor %}
