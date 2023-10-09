@@ -17,7 +17,7 @@ use Gems\Menu\RouteHelper;
 use Gems\Model\JoinModel;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Util\Translated;
-use Zalt\Base\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
