@@ -269,7 +269,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
 
         if ($this->autosubmit) {
             $class = $this->_form->getAttrib('class');
-            $class .= ' autosubmit';
+            $class .= ' auto-submit';
             $this->_form->setAttrib('class', $class);
         }
         if ($this->selectedAutosubmit) {
