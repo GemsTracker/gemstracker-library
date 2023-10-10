@@ -77,6 +77,9 @@ class AclRepository
     private function registerRole(array $roleConfig): void
     {
         $role = new GenericRole($roleConfig[RoleAdapterInterface::ROLE_NAME]);
+        if ($this->acl->hasRole($role)) {
+            return;
+        }
 
         $this->acl->addRole($role, $roleConfig[RoleAdapterInterface::ROLE_PARENTS]);
 
