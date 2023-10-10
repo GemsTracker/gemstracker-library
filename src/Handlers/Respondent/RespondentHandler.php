@@ -176,7 +176,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     protected array $deleteParameters = [
         'baseUrl'        => 'getItemUrlArray',
         'forOtherOrgs'   => 'getOtherOrgs',
-        'onclick'        => 'getEditLink',
         // 'respondentData' => 'getRespondentData',
         'showButtons'    => false,
     ];
@@ -253,7 +252,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     protected array $showParameters = [
         'addCurrentParent' => true,
         'forOtherOrgs'     => 'getOtherOrgs',
-        'onclick'          => 'getEditLink',
         // 'respondentData'   => 'getRespondentData',
         '-run-once'        => 'openedRespondent',
         'tag'              => 'show-respondent',
@@ -557,23 +555,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     public function getCreateTitle(): string
     {
         return $this->_('New respondent...');
-    }
-
-    /**
-     * Get the link to edit respondent
-     *
-     * @return \MUtil\Html\HrefArrayAttribute
-     */
-    public function getEditLink()
-    {
-        /*$item = $this->menu->find(array(
-            'controller' => $this->requestHelper->getControllerName(),
-            $request->getActionKey() => 'edit',
-            'allowed' => true));
-
-        if ($item) {
-            return $item->toHRefAttribute($request);
-        }*/
     }
 
     /**

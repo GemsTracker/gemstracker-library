@@ -92,18 +92,6 @@ abstract class FileActionAbstract extends \MUtil\Controller\ModelSnippetActionAb
     public $recursive = false;
 
     /**
-     * The parameters used for the show action
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected $showParameters = array('addOnclickEdit' => false);
-
-    /**
      * The parameters used for the upload action
      *
      * When the value is a function name of that object, then that functions is executed

@@ -11,7 +11,9 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Html;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
@@ -81,7 +83,7 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
             $dataModel->set('grc_description', 'label', $this->_('Rejection code'));
             $bridge->addSortable('grc_description');
 
-        } elseif (! isset($this->searchFilter[\MUtil\Model::REQUEST_ID2])) {
+        } elseif (! isset($this->searchFilter[MetaModelInterface::REQUEST_ID2])) {
             $bridge->addSortable('gr2o_id_organization');
         }
     }
@@ -102,34 +104,12 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
     protected function addBrowseColumn4(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         if ($dataModel->hasAlias('gems__respondent2track')) {
-            $br = \MUtil\Html::create('br');
+            $br = Html::create('br');
 
             $dataModel->set('gtr_track_name',  'label', $this->_('Track'));
             $dataModel->set('gr2t_track_info', 'label', $this->_('Track description'));
 
-            $items = $this->findUrls('track', 'show-track');
-            $track = 'gtr_track_name';
-            if ($items) {
-                $menuItem = reset($items);
-                if ($menuItem instanceof \Gems\Menu\MenuAbstract) {
-                    $href  = $menuItem->toHRefAttribute(
-                            $this->request,
-                            $bridge,
-                            array('gr2t_id_respondent_track' => $bridge->gr2t_id_respondent_track)
-                            );
-                    $track = array();
-                    $track[0] = \MUtil\Lazy::iif($bridge->gr2t_id_respondent_track,
-                            \MUtil\Html::create()->a(
-                                    $href,
-                                    $bridge->gtr_track_name,
-                                    array('onclick' => "event.cancelBubble = true;")
-                                    )
-                            );
-                    $track[1] = $bridge->createSortLink('gtr_track_name');
-                }
-            }
-
-            $bridge->addMultiSort($track, $br, 'gr2t_track_info');
+            $bridge->addMultiSort('gtr_track_name', $br, 'gr2t_track_info');
         }
     }
 }

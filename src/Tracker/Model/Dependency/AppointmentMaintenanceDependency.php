@@ -41,7 +41,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      *
      * @var array
      */
-    protected array $_defaultEffects = ['description', 'elementClass', 'label', 'multiOptions', 'onchange', 'onclick',
+    protected array $_defaultEffects = ['description', 'elementClass', 'label', 'multiOptions',
         'filters', 'validators',
     ];
 

@@ -559,7 +559,6 @@ abstract class DateSelectorAbstract
             $td = $bridge->td();
             $td->a($href, $repeater->$name);
             $td->class = array($this->dataCellClass, $field->getClass(), $columnClass);
-            $td->onclick = array('location.href=\'', $href, '\';');
             $td->setOnEmpty($onEmpty);
             $td->setRepeater($repeater);
             $td->setRepeatTags(true);
@@ -644,10 +643,5 @@ abstract class DateSelectorAbstract
                 );
         $th->setRepeater($repeater);
         $th->setRepeatTags(true);
-
-        $newbase[] = $baseurl;
-        $newbase[\Gems\Selector\DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
-        $newbase[\Gems\Selector\DateSelectorAbstract::DATE_GROUP]  = null;
-        $th->onclick = array('location.href=\'', new HrefArrayAttribute($newbase), '\';');
     }
 }

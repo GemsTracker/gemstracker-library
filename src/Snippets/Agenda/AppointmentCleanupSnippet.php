@@ -11,8 +11,17 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Db\ResultFetcher;
+use Gems\Menu\MenuSnippetHelper;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Html\UrlArrayAttribute;
+use Zalt\Message\MessageTrait;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -23,8 +32,10 @@ use Zalt\Snippets\ModelBridge\DetailTableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-mrt-2015 11:11:12
  */
-class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
+class AppointmentCleanupSnippet extends \Gems\Snippets\ModelDetailTableSnippet
 {
+    use MessageTrait;
+
     /**
      * The action to go to when the user clicks 'No'.
      *
@@ -32,14 +43,12 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
      *
      * @var string
      */
-    protected $abortAction = 'show';
+    protected $abortRoute = 'show';
 
     /**
-     * @see \Zend_Controller_Action_Helper_Redirector
-     *
-     * @var mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
+     * @var ? string Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
-    protected $afterSaveRouteUrl;
+    protected ?string $afterSaveRouteUrl = null;
 
     /**
      * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
@@ -62,7 +71,7 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
      *
      * @var string
      */
-    protected $cleanupAction = 'show';
+    protected $cleanupRoute = 'show';
 
     /**
      * The request parameter used to store the confirmation
@@ -73,21 +82,29 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
 
     /**
      *
-     * @var \Zend_Db_Adapter_Abstract
+     * @var mixed the field or fields in appointments linking to this appointment
      */
-    protected $db;
+    protected mixed $filterOn = null;
 
     /**
      *
-     * @var string|array the field or fields in appointments linking to this appointment
+     * @var ?string The field in the model containing the yes/no filter
      */
-    protected $filterOn;
+    protected ?string $filterWhen = null;
 
-    /**
-     *
-     * @var string The field in the model containing the yes/no filter
-     */
-    protected $filterWhen;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        protected readonly MenuSnippetHelper $menuSnippetHelper,
+        protected readonly ResultFetcher $resultFetcher,
+        )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+
+        $this->messenger = $messenger;
+    }
 
     /**
      * When hasHtmlOutput() is false a snippet user should check
@@ -111,7 +128,7 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
      */
     protected function getWhere()
     {
-        $id = intval($this->request->getParam(\MUtil\Model::REQUEST_ID));
+        $id = intval($this->requestInfo->getParam(MetaModelInterface::REQUEST_ID));
         $add = " = " . $id;
 
         return implode($add . ' OR ', (array) $this->filterOn) . $add;
@@ -121,16 +138,11 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
      *
-     * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
-     * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil\Registry\TargetInterface}.
-     *
      * @return boolean
      */
     public function hasHtmlOutput(): bool
     {
-        if ($this->request->getParam($this->confirmParameter)) {
+        if ($this->requestInfo->getParam($this->confirmParameter)) {
             $this->performAction();
 
             $redirectRoute = $this->getRedirectRoute();
@@ -147,7 +159,7 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
      */
     protected function performAction()
     {
-        $count = $this->db->delete("gems__appointments", $this->getWhere());
+        $count = $this->resultFetcher->deleteFromTable("gems__appointments", $this->getWhere());
 
         $this->addMessage(sprintf($this->plural(
                 '%d appointment deleted.',
@@ -164,12 +176,8 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
      */
     protected function setAfterCleanupRoute()
     {
-        // Default is just go to the index
-        if ($this->cleanupAction && ($this->request->getActionName() !== $this->cleanupAction)) {
-            $this->afterSaveRouteUrl = array(
-                $this->request->getControllerKey() => $this->request->getControllerName(),
-                $this->request->getActionKey() => $this->cleanupAction,
-                );
+        if ($this->cleanupRoute) {
+            $this->afterSaveRouteUrl = $this->menuSnippetHelper->getRelatedRouteUrl($this->cleanupRoute);
         }
     }
 
@@ -179,8 +187,8 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param DetailTableBridge $bridge
+     * @param DataReaderInterface $model
      * @return void
      */
     protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
@@ -188,8 +196,8 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
         $fparams = array('class' => 'centerAlign');
         $row     = $bridge->getRow();
 
-        if (isset($row[$this->filterWhen]) && $row[$this->filterWhen]) {
-            $count = $this->db->fetchOne("SELECT COUNT(*) FROM gems__appointments WHERE " . $this->getWhere());
+        if (isset($this->filterOn, $this->filterWhen, $row[$this->filterWhen]) && $row[$this->filterWhen]) {
+            $count = $this->resultFetcher->fetchOne("SELECT COUNT(*) FROM gems__appointments WHERE " . $this->getWhere());
 
             if ($count) {
                 $footer = $bridge->tfrow($fparams);
@@ -201,14 +209,15 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
                         ), $count);
                 $footer[] = ' ';
                 $footer->actionLink(
-                        array($this->confirmParameter => 1),
+                        UrlArrayAttribute::toUrlString([$this->menuSnippetHelper->getCurrentUrl()] + [$this->confirmParameter => 1]),
                         $this->_('Yes')
                         );
                 $footer[] = ' ';
+
                 $footer->actionLink(
-                        array($this->request->getActionKey() => $this->abortAction),
-                        $this->_('No')
-                        );
+                    $this->menuSnippetHelper->getRelatedRouteUrl($this->abortRoute),
+                    $this->_('No')
+                    );
 
             } else {
                 $this->addMessage($this->_('Clean up not needed!'));
@@ -217,18 +226,6 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
         } else {
             $this->addMessage($this->_('Clean up filter disabled!'));
             $bridge->tfrow($this->_('No clean up possible.'), array('class' => 'centerAlign'));
-        }
-
-        if ($this->displayMenu) {
-            if (! $this->menuList) {
-                $this->menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
-                $this->menuList->addCurrentSiblings();
-            }
-            if ($this->menuList instanceof \Gems\Menu\MenuList) {
-                $this->menuList->addParameterSources($bridge);
-            }
-
-            $bridge->tfrow($this->menuList, $fparams);
         }
     }
 }

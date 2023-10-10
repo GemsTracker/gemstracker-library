@@ -109,28 +109,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
             $model->set('gtr_track_name',  'label', $this->_('Track'));
             $model->set('gr2t_track_info', 'label', $this->_('Track description'));
 
-            // TODO: make this a link
-//            $items = $this->findUrls('track', 'show-track');
             $track = 'gtr_track_name';
-//            if ($items) {
-//                $menuItem = reset($items);
-//                if ($menuItem instanceof \Gems\Menu\MenuAbstract) {
-//                    $href  = $menuItem->toHRefAttribute(
-//                            $this->request,
-//                            $bridge,
-//                            array('gr2t_id_respondent_track' => $bridge->gr2t_id_respondent_track)
-//                            );
-//                    $track = array();
-//                    $track[0] = \MUtil\Lazy::iif($bridge->gr2t_id_respondent_track,
-//                            Html::create()->a(
-//                                    $href,
-//                                    $bridge->gtr_track_name,
-//                                    array('onclick' => "event.cancelBubble = true;")
-//                                    )
-//                            );
-//                    $track[1] = $bridge->createSortLink('gtr_track_name');
-//                }
-//            }
 
             $bridge->addMultiSort($track, $br, 'gr2t_track_info');
         } else {

@@ -205,12 +205,12 @@ class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
      */
     protected function getFileIcons(TableBridge $bridge)
     {
-        $onDelete = new \MUtil\Html\OnClickArrayAttribute();
-        $onDelete->addConfirm(\MUtil\Lazy::call(
-                'sprintf',
-                $this->_("Are you sure you want to delete '%s'?"),
-                $bridge->relpath
-                ));
+//        $onDelete = new \MUtil\Html\OnClickArrayAttribute();
+//        $onDelete->addConfirm(\MUtil\Lazy::call(
+//                'sprintf',
+//                $this->_("Are you sure you want to delete '%s'?"),
+//                $bridge->relpath
+//                ));
 
         return array(
             'process.png'  => $this->findMenuItem($this->request->getControllerName(), 'import'),
@@ -219,7 +219,7 @@ class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
             'edit.png'     => $this->findMenuItem($this->request->getControllerName(), 'edit'),
             'delete.png'   => array(
                 $this->findMenuItem($this->request->getControllerName(), 'delete'),
-                $onDelete,
+//                $onDelete,
                 ),
             );
     }

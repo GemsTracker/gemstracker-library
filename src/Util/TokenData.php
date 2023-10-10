@@ -633,15 +633,11 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
                 \Gems\Model::ID_TYPE => 'token',
             ]);
 
-            $link = \MUtil\Html::create('a', $href, [
-                'onclick' => 'event.cancelBubble = true;',
-            ]);
+            $link = \MUtil\Html::create('a', $href);
 
             // $link->title = sprintf($this->_('Inspect token %s'), strtoupper($tokenId));
         } else {
-            $link = \MUtil\Html::create('span', [
-                'onclick' => 'event.cancelBubble = true;',
-            ]);
+            $link = \MUtil\Html::create('span');
         }
 
         if ($link) {

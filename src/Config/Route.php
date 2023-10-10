@@ -1031,6 +1031,14 @@ class Route
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.agenda.diagnosis',
                 controllerClass:                   \Gems\Handlers\Setup\AgendaDiagnosisHandler::class,
+                pages:                             [
+                    ...$this->defaultPages,
+                    'cleanup',
+                ],
+                parameterRoutes:                   [
+                    ...$this->defaultParameterRoutes,
+                    'cleanup',
+                ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.agenda.location',
                 controllerClass:                   \Gems\Handlers\Setup\LocationHandler::class,
@@ -1050,10 +1058,12 @@ class Route
                 pages:                             [
                     ...$this->defaultPages,
                     'merge',
+                    'cleanup',
                 ],
                 parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'merge',
+                    'cleanup',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.agenda.filter',

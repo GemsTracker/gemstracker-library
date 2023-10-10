@@ -23,8 +23,10 @@ use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Html\HtmlElement;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -158,7 +160,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         $bridge->addItem('gto_id_token', $this->_('Token'), array('colspan' => 1.5));
         $copiedFrom = $this->token->getCopiedFrom();
         if ($copiedFrom) {
-            $urlParams[\MUtil\Model::REQUEST_ID] = $copiedFrom;
+            $urlParams[MetaModelInterface::REQUEST_ID] = $copiedFrom;
             $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.show', $urlParams);
 
             $bridge->tr();
@@ -172,7 +174,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             $bridge->tdh($this->_('Token copied to'));
             $td = $bridge->td(array('colspan' => 2, 'skiprowclass' => true));
             foreach ($copiedTo as $copy) {
-                $urlParams[\MUtil\Model::REQUEST_ID] = $copy;
+                $urlParams[MetaModelInterface::REQUEST_ID] = $copy;
                 $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.show', $urlParams);
 
                 $td->a($url, $copy);
@@ -185,9 +187,9 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         $bridge->tdh($this->_('Status'));
         $td = $bridge->td(
             ['colspan' => 2, 'skiprowclass' => true],
-            \Zalt\Html\Html::raw($this->tokenRepository->getTokenStatusShowForBridge($bridge, $this->menuSnippetHelper)),
+            Html::raw($this->tokenRepository->getTokenStatusShowForBridge($bridge, $this->menuSnippetHelper)),
             ' ',
-            \Zalt\Html\Html::raw($this->tokenRepository->getTokenStatusDescriptionForBridge($bridge))
+            Html::raw($this->tokenRepository->getTokenStatusDescriptionForBridge($bridge))
         );
 
         $items = [
@@ -207,6 +209,8 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             [
                 'route' => 'respondent.tracks.token.answer',
                 'label' => $this->_('Answers'),
+                'class' => 'newWindowOnClick',
+                'gt-target-id' => $this->tokenId,
                 'disabled' => !$this->token->isStarted(),
             ],
             [
@@ -225,7 +229,16 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
                     $buttons[$item['route']] = Html::actionDisabled($item['label']);
                     continue;
                 }
+                /**
+                 * @var HtmlElement $buttons[$item['route']]
+                 */
                 $buttons[$item['route']] = Html::actionLink($url, $item['label']);
+                if (isset($item['class'])) {
+                    $buttons[$item['route']]->appendAttrib('class', $item['class']);
+                }
+                if (isset($item['gt-target-id'])) {
+                    $buttons[$item['route']]->setAttrib('gt-target-id', $item['gt-target-id']);
+                }
             }
         }
 

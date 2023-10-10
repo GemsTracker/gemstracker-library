@@ -12,9 +12,14 @@
 namespace Gems\Snippets\Respondent;
 
 use Gems\Html;
+use Gems\Tracker;
+use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Late\Late;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Displays a respondent's details with assigned surveys and tracks in extra columns.
@@ -38,6 +43,17 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
      * @var Translated
      */
     protected $translatedUtil;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MaskRepository $maskRepository,
+        protected readonly Tracker $tracker,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $maskRepository);
+    }
 
     /**
      * @param DetailTableBridge $bridge
@@ -68,9 +84,10 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
         $rowspan = 10;
 
         // Column for tracks
-        $tracksModel = $this->model->getRespondentTracksModel();
+        $tracksModel = $this->tracker->getRespondentTrackModel();
         $tracksData  = Late::repeat(
             $tracksModel->load(
+                // @phpstan-ignore property.notFound
                 array('gr2o_patient_nr' => $this->repeater->gr2o_patient_nr, 'gr2o_id_organization' => $this->repeater->gr2o_id_organization),
                 array('gr2t_created' => SORT_DESC)));
         $tracksList  = $HTML->div($tracksData, array('class' => 'tracksList'));
@@ -97,21 +114,5 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
         $bridge->addItem('gr2o_email');
         $bridge->addItem('gr2o_created');
         $bridge->addItem('gr2o_created_by');
-
-        if ($this->onclick) {
-            // TODO: can we not use $repeater?
-            $href = array('location.href=\'', $this->onclick, '\';');
-
-            foreach ($bridge->tbody() as $tr) {
-                foreach ($tr as $td) {
-                    if (strpos($td->class, 'linked') === false) {
-                        $td->onclick = $href;
-                    } else {
-                        $td->onclick = 'event.cancelBubble=true;';
-                    }
-                }
-            }
-            $bridge->tbody()->onclick = '// Dummy for CSS';
-        }
    }
 }

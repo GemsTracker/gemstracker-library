@@ -38,6 +38,12 @@ class ResultFetcher
         return array_column($resultArray, $valueKey, $keyKey);
     }
 
+    public function deleteFromTable(string $tableName, mixed $where): int
+    {
+        $table = new TableGateway($tableName, $this->getAdapter());
+        return $table->delete($where);
+    }
+
     public function fetchAll(Select|string $select, ?array $params = null): ?array
     {
         return $this->fetchAllAssociative($select, $params);

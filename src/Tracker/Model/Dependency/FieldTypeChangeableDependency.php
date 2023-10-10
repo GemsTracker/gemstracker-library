@@ -36,7 +36,7 @@ class FieldTypeChangeableDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected array $_effecteds = ['gtf_field_type' => ['elementClass', 'onchange']];
+    protected array $_effecteds = ['gtf_field_type' => ['elementClass', 'autosubmit']];
 
     /**
      * Required

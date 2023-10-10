@@ -288,8 +288,8 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
     protected function addButtons(HtmlElement $html)
     {
         $buttonDiv = $html->buttonDiv();
-        $buttonDiv->actionLink(array(), $this->_('Close'), array('onclick' => 'window.close();'));
-        $buttonDiv->actionLink(array(), $this->_('Print'), array('onclick' => 'window.print();'));
+        $buttonDiv->actionLink(array(), $this->_('Close'), array('class' => 'windowCloseButton'));
+        $buttonDiv->actionLink(array(), $this->_('Print'), array('class' => 'windowPrintButton'));
     }
 
     /**

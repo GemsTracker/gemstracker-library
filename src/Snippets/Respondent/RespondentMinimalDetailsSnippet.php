@@ -40,6 +40,8 @@ class RespondentMinimalDetailsSnippet extends \Gems\Snippets\RespondentDetailSni
      */
     protected function addTableCells(DetailTableBridge $bridge)
     {
+        $metaModel = $this->model->getMetaModel();
+
         $HTML = Html::create();
 
         // $bridge->caption($this->getCaption());
@@ -47,7 +49,7 @@ class RespondentMinimalDetailsSnippet extends \Gems\Snippets\RespondentDetailSni
         $br = $HTML->br();
 
         // ROW 0
-        $label = $this->model->get('gr2o_patient_nr', 'label'); // Try to read label from model...
+        $label = $metaModel->get('gr2o_patient_nr', 'label'); // Try to read label from model...
         if (empty($label)) {
             $label = $this->_('Respondent nr: ');               // ...but have a fall-back
         }
@@ -63,10 +65,10 @@ class RespondentMinimalDetailsSnippet extends \Gems\Snippets\RespondentDetailSni
                 $this->_('Respondent'));
         }
         // ROW 1
-        if ($this->model->has('grs_birthday') && (! $this->maskRepository->isFieldMaskedWhole('grs_birthday'))) {
+        if ($metaModel->has('grs_birthday') && (! $this->maskRepository->isFieldMaskedWhole('grs_birthday'))) {
             $bridge->addItem('grs_birthday');
         }
-        if ($this->model->has('grs_phone_1') && (! $this->maskRepository->isFieldMaskedWhole('grs_phone_1'))) {
+        if ($metaModel->has('grs_phone_1') && (! $this->maskRepository->isFieldMaskedWhole('grs_phone_1'))) {
             $bridge->addItem('grs_phone_1');
         }
     }

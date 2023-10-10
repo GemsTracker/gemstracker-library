@@ -61,13 +61,6 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
     protected $anyParameterSiblings = false;
 
     /**
-     * Optional: array of buttons
-     *
-     * @var array
-     */
-    protected $buttons;
-
-    /**
      *
      * @var \Gems\User\User
      */
@@ -81,21 +74,14 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
 
     /**
      *
-     * @var \Gems\Model\RespondentModel
+     * @var \Gems\Model\Respondent\RespondentModel
      */
     protected $model;
 
     /**
-     * Optional: href for onclick
-     *
-     * @var \MUtil\Html\HrefArrayAttribute
-     */
-    protected $onclick;
-
-    /**
      * Optional: repeater respondent data
      *
-     * @var \MUtil\Lazy\RepeatableInterface
+     * @var \Zalt\Late\RepeatableInterface
      */
     protected $repeater;
 
@@ -105,13 +91,6 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
-
-    /**
-     * Optional: set display of buttons on or off
-     *
-     * @var boolean
-     */
-    protected $showButtons = true;
 
     /**
      * Show a warning if informed consent has not been set
@@ -143,54 +122,12 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
     }
 
     /**
+     * Place to set the data to display
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @return void
-     */
-    protected function addButtons(DetailTableBridge $bridge)
-    {
-        if ($this->showButtons) {
-            if ($this->buttons) {
-                $bridge->tfrow($this->buttons, array('class' => 'centerAlign'));
-            } else {
-                $bridge->tfrow($this->getMenuList($bridge), array('class' => 'centerAlign'));
-            }
-        }
-    }
-
-    /**
      * @param DetailTableBridge $bridge
      * @return void
      */
-    protected function addOnClick(DetailTableBridge $bridge)
-    {
-        if ($this->onclick) {
-            $bridge->tbody()->onclick = array('location.href=\'', $this->onclick, '\';');
-        }
-    }
-
-    /**
-     * Place to set the data to display
-     *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @return void
-     */
     abstract protected function addTableCells(DetailTableBridge $bridge);
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        if (! $this->model instanceof \Gems\Model\RespondentModel) {
-            $this->model = $this->loader->getModels()->getRespondentModel(true);
-        }
-    }
 
     /**
      * Check if we have the 'Unknown' consent, and present a warning. The project default consent is
@@ -256,70 +193,34 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
         if (isset($params[\MUtil\Model::REQUEST_ID2])) {
             $orgId = $params[\MUtil\Model::REQUEST_ID2];
         }
-
-//        $currentOrganization =  $this->currentUser->getCurrentOrganization();
-//
-//        if ($orgId == $currentOrganization->getId()) {
-//            if ($onlyNotCurrent) {
-//                return;
-//            } else {
-//                return $this->_('Respondent information');
-//            }
-//        } else {
-//            return sprintf($this->_('%s respondent information'), $currentOrganization->getName());
-//        }
     }
 
     public function getHtmlOutput()
     {
+        /**
+         * @var DetailTableBridge $bridge
+         */
         $bridge = $this->model->getBridgeFor('itemTable', array('class' => 'displayer table table-condensed'));
         $bridge->setRepeater($this->repeater);
         $bridge->setColumnCount(2); // May be overruled
 
         $this->addTableCells($bridge);
 
-        if ($this->model->has('row_class')) {
+        if ($this->model->getMetaModel()->has('row_class')) {
             // Make sure deactivated rounds are show as deleted
             foreach ($bridge->getTable()->tbody() as $tr) {
                 foreach ($tr as $td) {
                     if ('td' === $td->tagName) {
+                        // @phpstan-ignore-next-line
                         $td->appendAttrib('class', $bridge->row_class);
                     }
                 }
             }
         }
 
-        $this->addButtons($bridge);
-        $this->addOnClick($bridge);
-
         $container = Html::create()->div(array('class' => 'table-container'));
         $container[] = $bridge->getTable();
         return $container;
-    }
-
-    /**
-     *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @return \Gems\Menu\MenuList
-     */
-    protected function getMenuList(DetailTableBridge $bridge)
-    {
-        /*$menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
-        $menuList->addParameterSources($bridge);
-
-        if ($this->addCurrentParent) {
-            $menuList->addCurrentParent($this->_('Cancel'));
-        } else {
-            unset($menuList['respondent.index']);
-        }
-        if ($this->addCurrentSiblings) {
-            $menuList->addCurrentSiblings($this->anyParameterSiblings);
-        }
-        if ($this->addCurrentChildren) {
-            $menuList->addCurrentChildren();
-        }
-
-        return $menuList;*/
     }
 
     /**
@@ -335,27 +236,24 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      */
     public function hasHtmlOutput(): bool
     {
-        if ($this->model) {
-            $this->model->setIfExists('gr2o_email', 'itemDisplay', [AElement::class, 'ifmail']);
-            $this->model->setIfExists('gr2o_comments', 'rowspan', 2);
+        $metaModel = $this->model->getMetaModel();
+        $metaModel->setIfExists('gr2o_email', 'itemDisplay', [AElement::class, 'ifmail']);
+        $metaModel->setIfExists('gr2o_comments', 'rowspan', 2);
 
-            if ($this->showConsentWarning && $this->model->has('gr2o_consent')) {
-                $this->model->set('gr2o_consent', 'formatFunction', array($this, 'checkConsent'));
-            }
-
-            if (! $this->repeater) {
-                if (! $this->respondent) {
-                    $this->repeater = $this->model->loadRepeatable();
-                } else {
-                    $data = array($this->respondent->getArrayCopy());
-
-                    $this->repeater = \MUtil\Lazy::repeat($data);
-                }
-            }
-
-            return true;
+        if ($this->showConsentWarning && $metaModel->has('gr2o_consent')) {
+            $metaModel->set('gr2o_consent', 'formatFunction', array($this, 'checkConsent'));
         }
 
-        return false;
+        if (! $this->repeater) {
+            if (! $this->respondent) {
+                $this->repeater = $this->model->loadRepeatable();
+            } else {
+                $data = array($this->respondent->getArrayCopy());
+
+                $this->repeater = \MUtil\Lazy::repeat($data);
+            }
+        }
+
+        return true;
     }
 }

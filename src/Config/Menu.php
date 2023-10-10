@@ -1104,6 +1104,11 @@ class Menu
                                             'label' => $this->translator->trans('Delete'),
                                             'type' => 'route-link-item',
                                         ],
+                                        [
+                                            'name' => 'setup.agenda.diagnosis.cleanup',
+                                            'label' => $this->translator->trans('Clean up'),
+                                            'type' => 'route-link-item',
+                                        ],
                                     ],
                                 ],
                             ],
@@ -1170,6 +1175,11 @@ class Menu
                                         [
                                             'name' => 'setup.agenda.staff.delete',
                                             'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.agenda.staff.cleanup',
+                                            'label' => $this->translator->trans('Clean up'),
                                             'type' => 'route-link-item',
                                         ],
                                         [

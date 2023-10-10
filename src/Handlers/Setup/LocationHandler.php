@@ -16,6 +16,7 @@ use Gems\Html;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Util;
 use Gems\Util\Translated;
@@ -99,6 +100,7 @@ class LocationHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $snippets = [
             'Generic\\ContentTitleSnippet',
             'Agenda\\AppointmentCleanupSnippet',
+            CurrentSiblingsButtonRowSnippet::class,
             'Agenda\\CalendarTableSnippet',
         ];
 

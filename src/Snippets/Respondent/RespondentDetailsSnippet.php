@@ -36,6 +36,8 @@ class RespondentDetailsSnippet extends \Gems\Snippets\RespondentDetailSnippetAbs
      */
     protected function addTableCells(DetailTableBridge $bridge)
     {
+        $metaModel = $this->model->getMetaModel();
+
         $HTML = Html::create();
 
         $bridge->caption($this->getCaption());
@@ -43,7 +45,7 @@ class RespondentDetailsSnippet extends \Gems\Snippets\RespondentDetailSnippetAbs
         $br = $HTML->br();
 
         // ROW 0
-        $label = $this->model->get('gr2o_patient_nr', 'label'); // Try to read label from model...
+        $label = $metaModel->get('gr2o_patient_nr', 'label'); // Try to read label from model...
         if (empty($label)) {
             $label = $this->_('Respondent nr: ');               // ...but have a fall-back
         }
@@ -59,31 +61,31 @@ class RespondentDetailsSnippet extends \Gems\Snippets\RespondentDetailSnippetAbs
                 $this->_('Respondent'));
         }
         // ROW 1
-        if ($this->model->has('grs_birthday') && (! $this->maskRepository->isFieldMaskedWhole('grs_birthday'))) {
+        if ($metaModel->has('grs_birthday') && (! $this->maskRepository->isFieldMaskedWhole('grs_birthday'))) {
             $bridge->addItem('grs_birthday');
         }
-        if ($this->model->has('grs_phone_1') && (! $this->maskRepository->isFieldMaskedWhole('grs_phone_1'))) {
+        if ($metaModel->has('grs_phone_1') && (! $this->maskRepository->isFieldMaskedWhole('grs_phone_1'))) {
             $bridge->addItem('grs_phone_1');
         }
 
         // ROW 2
-        if ($this->model->has('gr2o_email') && (! $this->maskRepository->isFieldMaskedWhole('gr2o_email'))) {
+        if ($metaModel->has('gr2o_email') && (! $this->maskRepository->isFieldMaskedWhole('gr2o_email'))) {
             $bridge->addItem('gr2o_email');
         }
         $address = [];
-        if ($this->model->has('grs_address_1') && (! $this->maskRepository->isFieldMaskedWhole('grs_address_1'))) {
+        if ($metaModel->has('grs_address_1') && (! $this->maskRepository->isFieldMaskedWhole('grs_address_1'))) {
             $address[] = $bridge->grs_address_1;
             $address[] = $br;
         }
-        if ($this->model->has('grs_address_2') && (! $this->maskRepository->isFieldMaskedWhole('grs_address_2'))) {
+        if ($metaModel->has('grs_address_2') && (! $this->maskRepository->isFieldMaskedWhole('grs_address_2'))) {
             $address[] = $bridge->grs_address_2;
             $address[] = Late::iif($bridge->grs_address_2, $br);
         }
-        if ($this->model->has('grs_zipcode') && (! $this->maskRepository->isFieldMaskedWhole('grs_zipcode'))) {
+        if ($metaModel->has('grs_zipcode') && (! $this->maskRepository->isFieldMaskedWhole('grs_zipcode'))) {
             $address[] = $bridge->grs_zipcode;
             $address[] = Late::iif($bridge->grs_zipcode, new Raw('&nbsp;&nbsp;'));
         }
-        if ($this->model->has('grs_city') && (! $this->maskRepository->isFieldMaskedWhole('grs_city'))) {
+        if ($metaModel->has('grs_city') && (! $this->maskRepository->isFieldMaskedWhole('grs_city'))) {
             $address[] = $bridge->grs_city;
         }
         if ($address) {

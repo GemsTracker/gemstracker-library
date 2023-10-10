@@ -32,7 +32,6 @@ class GemsDefaultShow extends ShowScreenAbstract
         return [
             'baseUrl'        => 'getItemUrlArray',
             'forOtherOrgs'   => 'getOtherOrgs',
-            'onclick'        => 'getEditLink',
             '-run-once'      => 'openedRespondent',
             ];
     }

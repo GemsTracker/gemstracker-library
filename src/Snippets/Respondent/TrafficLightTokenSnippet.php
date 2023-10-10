@@ -202,7 +202,6 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
             $this->_addTooltip($deleteLink, sprintf($caption, $this->_(array('track','', 1))), 'left');
 
             $link = $this->createMenuLink($trackParameterSource, 'track', 'delete-track', $deleteLink, $this->_trackDelete);
-            $link->setAttrib('onClick', 'event.cancelBubble = true;');
             $deleteTrackContainer[] = $link;
         }
 
@@ -219,7 +218,6 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
             $this->_addTooltip($editLink, $this->_("Edit track"), 'right');
 
             $link = $this->createMenuLink($trackParameterSource, 'track', 'edit-track', $editLink, $this->_trackEdit);
-            $link->setAttrib('onClick', 'event.cancelBubble = true;');
         } else {
             // When org not allowed, dont add the link, so the track will just open
             $link = \MUtil\Html::create('span', array('class' => 'fa fa-pencil', 'renderClosingTag' => true));
