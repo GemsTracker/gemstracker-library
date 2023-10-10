@@ -75,7 +75,7 @@ class LimeSurvey5m00FieldMap extends LimeSurvey3m00FieldMap
                 LEFT JOIN $gTable AS g ON q.sid = g.sid AND q.gid = g.gid
                 LEFT JOIN $gtTable AS gt ON g.gid = gt.gid AND qt.language=gt.language
                 LEFT JOIN $qTable AS sq ON q.qid = sq.parent_qid
-                LEFT JOIN $qtTable AS sqt ON sq.parent_qid = sqt.qid
+                LEFT JOIN $qtTable AS sqt ON sq.qid = sqt.qid
                 LEFT JOIN (SELECT * FROM $aTable WHERE attribute = 'hidden' AND (language = ''  OR language IS NULL)) AS at ON q.qid = at.qid
             WHERE g.sid = ? AND qt.language = ? AND gt.language = ? AND q.parent_qid = 0
             ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
