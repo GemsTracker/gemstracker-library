@@ -14,14 +14,12 @@ use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
-use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\User\User;
 use Gems\User\UserLoader;
-use Laminas\Diactoros\Response\RedirectResponse;
-use MUtil\Model\ModelAbstract;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -153,6 +151,8 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $resetParameters = [
         'askOld'           => false,   // Do not ask for the old password
         'forceRules'       => false,   // If user logs in using password that does not obey the rules, he is forced to change it
+        'csrfName'         => 'getCsrfTokenName',
+        'csrfToken'        => 'getCsrfToken',
         'menuShowChildren' => true,
         'menuShowSiblings' => true,
         'routeAction'      => 'show',
@@ -215,9 +215,9 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
-    public function createModel(bool $detailed, string $action): ModelAbstract
+    public function createModel(bool $detailed, string $action): FullDataInterface
     {
         $defaultOrgId = null;
 

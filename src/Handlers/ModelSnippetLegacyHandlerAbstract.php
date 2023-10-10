@@ -48,7 +48,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     private array $_autofilterExtraParameters = [
         'browse'          => true,
-        'containingId'    => 'autofilter_target',
         'dynamicSort'     => 'getDynamicSort',
         'onEmpty'         => 'getOnEmptyText',
         'pageItems'       => 'getPageItems',

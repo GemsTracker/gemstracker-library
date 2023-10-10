@@ -39,7 +39,6 @@ class RespondentMailLogHandler extends RespondentChildHandlerAbstract
      */
     protected array $autofilterParameters = [
         'browse'        => true,
-        'containingId'  => 'autofilter_target',
         'keyboard'      => true,
         'onEmpty'       => 'getOnEmptyText',
         'sortParamAsc'  => 'asrt',

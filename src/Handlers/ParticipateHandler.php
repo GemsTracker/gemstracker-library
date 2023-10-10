@@ -14,17 +14,12 @@ namespace Gems\Handlers;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
-use Gems\Middleware\FlashMessageMiddleware;
-use Gems\Project\ProjectSettings;
 use Gems\Screens\ScreenRepository;
 use Gems\Screens\SubscribeScreenInterface;
 use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Site\SiteUtil;
 use Gems\User\User;
-use MUtil\Model;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Base\RequestInfo;
-use Zalt\Base\RequestInfoFactory;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 
@@ -38,6 +33,8 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class ParticipateHandler extends SnippetLegacyHandlerAbstract
 {
+    use CsrfHandlerTrait;
+
     /**
      * @var User|null Current user, or null when not logged in.
      */
@@ -168,6 +165,8 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
         }
 
         $params = $this->convertLegacyRouteActionToAfterSaveRouteUrl($params);
+        $params['csrfName']  = $this->getCsrfTokenName();
+        $params['csrfToken'] = $this->getCsrfToken();
 
         $this->addSnippets('Gems\\Snippets\\Generic\\ContentTitleSnippet', ['contentTitle' => $this->_('Subscribe'), 'tagName' => 'h1']);
         $this->addSnippets($snippets, $params);
@@ -236,6 +235,8 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
         }
 
         $params = $this->convertLegacyRouteActionToAfterSaveRouteUrl($params);
+        $params['csrfName']  = $this->getCsrfTokenName();
+        $params['csrfToken'] = $this->getCsrfToken();
 
         $this->addSnippets('Gems\\Snippets\\Generic\\ContentTitleSnippet', ['contentTitle' => $this->_('Unsubscribe'), 'tagName' => 'h1']);
         $this->addSnippets($snippets, $params);
