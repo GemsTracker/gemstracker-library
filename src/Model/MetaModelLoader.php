@@ -59,6 +59,27 @@ class MetaModelLoader extends \Zalt\Model\MetaModelLoader
         }
     }
 
+    public function createJoinModel(string $startTable, string $modelName = null, bool $savable = true): GemsJoinModel
+    {
+        if ($modelName === null) {
+            $modelName = $startTable;
+        }
+
+        /**
+         * @var GemsJoinModel $model
+         */
+        return $this->loader->create(GemsJoinModel::class, $startTable, $modelName, $savable);
+    }
+
+    public function createTableModel(string $table): SqlTableModel
+    {
+        /**
+         * @var SqlTableModel
+         */
+        return $this->loader->create(SqlTableModel::class, $table);
+    }
+
+
     public function getRespondentModel(): RespondentModel
     {
         return $this->loader->getContainer()->get(RespondentModel::class);
