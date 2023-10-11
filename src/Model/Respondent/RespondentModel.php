@@ -145,7 +145,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $fieldList[] = 'grs_last_name';
 
         if ($metaModel->has('grs_partner_last_name')) {
-            $nameExpr['partnerSep'] = ' - ';
+            $nameExpr['partnerSep'] = "' - '";
             if ($metaModel->has('grs_partner_surname_prefix')) {
                 $nameExpr['partnerPrefix'] = "COALESCE(CONCAT(' ', grs_partner_surname_prefix), '')";
                 $fieldList[] = 'grs_partner_surname_prefix';
