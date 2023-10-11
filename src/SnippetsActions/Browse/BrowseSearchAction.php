@@ -55,4 +55,26 @@ class BrowseSearchAction extends BrowseFilteredAction
             $this->_stopSnippets
         );
     }
+
+    /**
+     * Overwrite start snippets
+     *
+     * @param array $snippets
+     * @return void
+     */
+    public function setStartSnippets(array $snippets): void
+    {
+        $this->_startSnippets = $snippets;
+    }
+
+    /**
+     * Overwrite stop snippets
+     *
+     * @param array $snippets
+     * @return void
+     */
+    public function setStopSnippets(array $snippets): void
+    {
+        $this->_stopSnippets = $snippets;
+    }
 }
