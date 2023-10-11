@@ -7,15 +7,20 @@ use Gems\Db\ResultFetcher;
 use Gems\Util\UtilDbHelper;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Predicate\PredicateSet;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 class TrackDataRepository
 {
+    protected array $cacheTags = [
+        'track',
+        'tracks',
+    ];
+
     public function __construct(
         protected UtilDbHelper $utilDbHelper,
         protected ResultFetcher $resultFetcher,
         protected CachedResultFetcher $cachedResultFetcher,
-        protected Translator $translator,
+        protected TranslatorInterface $translator,
     )
     {}
 
@@ -35,7 +40,7 @@ class TrackDataRepository
             'gems__tracks',
             'gtr_id_track',
             'gtr_track_name',
-            ['tracks'],
+            $this->cacheTags,
             [$where],
             'asort'
         );
@@ -58,7 +63,7 @@ class TrackDataRepository
             ->notEqualTo('gro_id_round', 0);
         $select->group(['gro_round_description']);
 
-        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__, $select, null, ['tracks']);
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__, $select, null, $this->cacheTags);
     }
 
     /**
@@ -109,7 +114,7 @@ class TrackDataRepository
      *
      * @return array
      */
-    public function getAllTracks()
+    public function getAllTracks(): array
     {
         $where = new Predicate();
         $where->notEqualTo('gtr_track_class', 'SingleSurveyEngine');
@@ -118,10 +123,28 @@ class TrackDataRepository
             'gems__tracks',
             'gtr_id_track',
             'gtr_track_name',
-            ['tracks'],
+            $this->cacheTags,
             [$where],
             'asort'
         );
+    }
+
+    public function getAllActiveTrackData(): array
+    {
+        $trackData = $this->getAllTrackData();
+
+        return array_filter($trackData, function($track) {
+            return (bool)$track['gtr_active'];
+        });
+    }
+
+    public function getAllTrackData(): array
+    {
+        $select = $this->cachedResultFetcher->getSelect('gems__tracks');
+        $select->order('gtr_track_name');
+        $select->where->notEqualTo('gtr_track_class', 'SingleSurveyEngine');
+
+        return $this->cachedResultFetcher->fetchAll('allTracks', $select, null, $this->cacheTags);
     }
 
     /**
@@ -215,7 +238,7 @@ class TrackDataRepository
             'gems__tracks',
             'gtr_id_track',
             'gtr_track_name',
-            ['tracks'],
+            $this->cacheTags,
             [$whereNest],
             'asort'
         );

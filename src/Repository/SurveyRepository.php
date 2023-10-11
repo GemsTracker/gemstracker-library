@@ -42,16 +42,31 @@ class SurveyRepository
      * @param  boolean $active Only show active surveys Default: False
      * @return array of survey ID and survey name pairs
      */
-    public function getAllSurveys(bool $active = false): array
+    public function getAllSurveyOptions(bool $active = false): array
     {
-        return $this->utilDbHelper->getTranslatedPairsCached(
-            'gems__surveys',
-            'gsu_id_survey',
-            'gsu_survey_name',
-            ['surveys'],
-            $active ? ['gsu_active' => 1] : null,
-            'asort'
-        );
+        if ($active) {
+            $surveyData = $this->getAllActiveSurveyData();
+        } else {
+            $surveyData = $this->getAllSurveyData();
+        }
+
+        return array_column($surveyData, 'gsu_survey_name', 'gsu_id_survey');
+    }
+
+    public function getAllActiveSurveyData(): array
+    {
+        $surveys = $this->getAllSurveyData();
+        return array_filter($surveys, function($survey) {
+            return (bool)$survey['gsu_active'];
+        });
+    }
+
+    public function getAllSurveyData(): array
+    {
+        $select = $this->cachedResultFetcher->getSelect('gems__surveys');
+        $select->order('gsu_survey_name');
+
+        return $this->cachedResultFetcher->fetchAll('allSurveyData', $select, null, $this->cacheTags);
     }
 
     /**
@@ -156,5 +171,19 @@ class SurveyRepository
             ],
             'ksort'
         );
+    }
+
+    public function getTrackSurveyOptions(int $trackId): array
+    {
+        $resultFetcher = $this->cachedResultFetcher->getResultFetcher();
+        $select = $resultFetcher->getSelect('gems__rounds');
+        $select->columns(['gro_id_survey', 'gro_survey_name'])
+            ->where([
+                'gro_id_track' => $trackId,
+                'gro_active' => 1,
+            ])
+            ->group('gro_id_survey');
+
+        return $resultFetcher->fetchPairs($select);
     }
 }
