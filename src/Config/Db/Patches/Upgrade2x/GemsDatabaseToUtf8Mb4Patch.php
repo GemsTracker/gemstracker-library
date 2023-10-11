@@ -25,7 +25,7 @@ class GemsDatabaseToUtf8Mb4Patch extends PatchAbstract
     public function up(): array
     {
         return [
-            'ALTER DATABASE ' . $this->config['db']['database'] . ' DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci',
+            'ALTER DATABASE `' . $this->config['db']['database'] . '` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci',
         ];
     }
 }
