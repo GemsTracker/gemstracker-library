@@ -14,7 +14,7 @@ class DevMailSmsClient implements SmsClientInterface
     {
     }
 
-    public function sendMessage($number, $body, $originator=null)
+    public function sendMessage(string $number, string $body, string|null $originator = null): bool
     {
         $reference = sprintf('%s: %s', $this->config['app']['name'], $this->config['app']['env']);
 

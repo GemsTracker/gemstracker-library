@@ -13,7 +13,10 @@ class SpryngSmsClient extends ApiKeyClient implements SmsClientInterface
      */
     protected $defaultOriginator;
 
-    public function __construct($config, Client $client = null)
+    public function __construct(
+        array $config,
+        Client|null $client = null
+    )
     {
         parent::__construct($config, $client);
         if (isset($config['default_originator'])) {
@@ -22,7 +25,7 @@ class SpryngSmsClient extends ApiKeyClient implements SmsClientInterface
 
     }
 
-    protected function handleResponse($response)
+    protected function handleResponse(ResponseInterface $response): bool
     {
         if ($response instanceof ResponseInterface) {
             switch($response->getStatusCode()) {
@@ -57,7 +60,7 @@ class SpryngSmsClient extends ApiKeyClient implements SmsClientInterface
         throw new ClientException('Incorrect message response');
     }
 
-    public function sendMessage($number, $body, $originator=null)
+    public function sendMessage(string $number, string $body, string|null $originator = null): bool
     {
         if ($originator === null) {
             if (!$this->defaultOriginator) {
@@ -93,6 +96,5 @@ class SpryngSmsClient extends ApiKeyClient implements SmsClientInterface
         $response = $this->request('POST', '', $options, true);
 
         return $this->handleResponse($response);
-
     }
 }

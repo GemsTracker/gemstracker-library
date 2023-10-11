@@ -3,10 +3,11 @@
 namespace Gems\Communication\Http;
 
 use Gems\Exception\ClientException;
+use Psr\Http\Message\ResponseInterface;
 
 class ApiKeyClient extends HttpClient
 {
-    protected function getApiKey()
+    protected function getApiKey(): string|null
     {
         if (isset($this->config, $this->config['api_key'])) {
             return $this->config['api_key'];
@@ -15,7 +16,7 @@ class ApiKeyClient extends HttpClient
         return null;
     }
 
-    public function request($method, $uri = '', $options = [], $rawResponse = false)
+    public function request(string $method, string $uri = '', array $options = [], bool $rawResponse = false): ResponseInterface
     {
         $apiKey = $this->getApiKey();
 

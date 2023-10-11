@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class HttpClient
 {
-    public static $successCodes = [
+    public static array $successCodes = [
         200,
         201,
         202,
@@ -17,17 +17,11 @@ class HttpClient
         205
     ];
 
-    /**
-     * @var Client
-     */
-    protected $client;
+    protected Client $client;
 
-    /**
-     * @var array|null
-     */
-    protected $config = null;
+    protected array|null $config = null;
 
-    public function __construct($config, Client $client = null)
+    public function __construct(array $config, Client|null $client = null)
     {
         $this->config = $config;
 
@@ -46,7 +40,7 @@ class HttpClient
         }
     }
 
-    public function request($method, $uri = '', $options = [], $rawResponse = false)
+    public function request(string $method, string $uri = '', array $options = [], bool $rawResponse = false): ResponseInterface
     {
         try {
             $response = $this->client->request($method, $uri, $options);
