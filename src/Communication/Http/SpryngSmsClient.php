@@ -25,7 +25,7 @@ class SpryngSmsClient extends ApiKeyClient implements SmsClientInterface
 
     }
 
-    protected function handleResponse(ResponseInterface $response): bool
+    protected function handleResponse(array|ResponseInterface $response): bool
     {
         if ($response instanceof ResponseInterface) {
             switch($response->getStatusCode()) {
