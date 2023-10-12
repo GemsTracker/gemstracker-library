@@ -40,7 +40,7 @@ class HttpClient
         }
     }
 
-    public function request(string $method, string $uri = '', array $options = [], bool $rawResponse = false): ResponseInterface
+    public function request(string $method, string $uri = '', array $options = [], bool $rawResponse = false): array|ResponseInterface
     {
         try {
             $response = $this->client->request($method, $uri, $options);

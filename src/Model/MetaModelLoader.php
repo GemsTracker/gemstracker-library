@@ -66,7 +66,7 @@ class MetaModelLoader extends \Zalt\Model\MetaModelLoader
         }
 
         /**
-         * @var GemsJoinModel $model
+         * @var GemsJoinModel
          */
         return $this->loader->create(GemsJoinModel::class, $startTable, $modelName, $savable);
     }

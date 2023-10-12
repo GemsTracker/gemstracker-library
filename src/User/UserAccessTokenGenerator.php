@@ -6,9 +6,9 @@ use DateTimeImmutable;
 use DateInterval;
 use Error;
 use Exception;
+use League\OAuth2\Server\Entities\ClientEntityInterface;
 use TypeError;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\OAuth2\Entity\Client;
 use Gems\OAuth2\Repository\AccessTokenRepository;
 use Gems\OAuth2\Repository\ClientRepository;
 use Gems\OAuth2\Repository\ScopeRepository;
@@ -39,7 +39,7 @@ class UserAccessTokenGenerator
         $this->oauth2Config = $config['oauth2'] ?? [];
     }
 
-    public function getAccessTokenFor(string $clientId, string $loginName, string $organizationId): string
+    public function getAccessTokenFor(string $clientId, string $loginName, int $organizationId): string
     {
         $client = $this->getClient($clientId);
         $scopes = $this->getScopes();
@@ -108,8 +108,11 @@ class UserAccessTokenGenerator
         return new DateInterval($this->oauth2Config['grants']['password']['token_valid'] ?? 'PT1H');
     }
 
-    protected function getClient(string $clientId): Client
+    protected function getClient(string $clientId): ClientEntityInterface
     {
+        /**
+         * @var ClientEntityInterface
+         */
         return $this->clientRepository->getClientEntity($clientId);
     }
 

@@ -177,7 +177,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         if ($metaModel->has('grs_partner_name_after') && $metaModel->has('grs_partner_last_name')) {
             $fieldList[] = 'grs_partner_name_after';
 
-            $lastPrefix = isset($nameExpr['grs_surname_prefix']) ? $nameExpr['grs_surname_prefix'] . ', ' : '';
+            $lastPrefix = isset($nameExpr['familyPrefix']) ? $nameExpr['familyPrefix'] . ', ' : '';
             $partnerPrefix = isset($nameExpr['partnerPrefix']) ? ', ' . $nameExpr['partnerPrefix'] : '';
 
             $columnExpr = "CASE 
