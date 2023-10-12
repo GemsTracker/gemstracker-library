@@ -24,10 +24,13 @@
     <header>
         <div class="logo"></div>
         <div class="tools">
-            {% if locale is defined %}{{ include('@layout/languages.html.twig') }}{% endif %}
-            {{ include('@layout/auth-info.html.twig') }}
+
             {{ include('@layout/organization-switcher.html.twig') }}
             {{ include('@layout/group-switcher.html.twig') }}
+            {{ include('@layout/auth-info.html.twig') }}
+            {% if locale is defined %}{{ include('@layout/languages.html.twig') }}{% endif %}
+
+
         </div>
     </header>
 
