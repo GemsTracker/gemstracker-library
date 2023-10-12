@@ -498,10 +498,7 @@ class ConfigProvider
 
         return [
             'availableLocales' => [
-                'en',
-                'nl',
-                'de',
-                'fr',
+                // Set in project
             ],
             'default' => 'en',
 //            'defaultTypes' => [
