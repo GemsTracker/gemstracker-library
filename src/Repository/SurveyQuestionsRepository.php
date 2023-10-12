@@ -69,7 +69,6 @@ class SurveyQuestionsRepository
      *
      * @param $surveyId
      * @return array
-     * @throws RestException
      */
     public function getSurveyQuestions(int $surveyId): array
     {
@@ -88,7 +87,6 @@ class SurveyQuestionsRepository
      *
      * @param $surveyId
      * @return array
-     * @throws RestException
      */
     public function getSurveyList(int $surveyId): array
     {
@@ -105,7 +103,6 @@ class SurveyQuestionsRepository
     /**
      * @param $surveyId
      * @return array
-     * @throws RestException
      */
     public function getSurveyListAndAnswers(int $surveyId, bool $addTypes = false): array
     {
