@@ -2,12 +2,13 @@
 
 namespace Gems\Config;
 
-use Gems\Event\Application\MenuBuildItemsEvent;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Gems\Menu\HandlerMenuTrait;
+use Zalt\Base\TranslatorInterface;
 
 class Menu
 {
+    use HandlerMenuTrait;
+
     public function __construct(
         private readonly TranslatorInterface $translator,
     ) {
@@ -21,6 +22,7 @@ class Menu
     private function buildItems(): array
     {
         return [
+            $this->getLoginMenu(),
             $this->getRespondentMenu(),
             $this->getCalendarMenu(),
             $this->getOverviewMenu(),
@@ -68,6 +70,22 @@ class Menu
                     'type' => 'route-link-item',
                 ],
             ],
+        ];
+    }
+
+    public function getLoginMenu(): array
+    {
+        return [
+            'name' => 'auth.login',
+            'label' => $this->translator->trans('Login'),
+            'type' => 'logged-out-route',
+            /*'children' => [
+                [
+                    'name' => 'calendar.export',
+                    'label' => $this->translator->trans('Export'),
+                    'type' => 'route-link-item',
+                ],
+            ],*/
         ];
     }
 

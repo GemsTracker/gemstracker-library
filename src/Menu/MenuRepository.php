@@ -32,7 +32,7 @@ class MenuRepository
         if (!$this->menu instanceof Menu) {
             $routeHelper = $this->getRouteHelper($user);
 
-            $menu = new Menu($this->templateRenderer, $routeHelper, $this->getMenuConfig());
+            $menu = new Menu($this->templateRenderer, $routeHelper, $this->getMenuConfig(), $user);
 
             $event = new CreateMenuEvent($menu);
             $this->eventDispatcher->dispatch($event);

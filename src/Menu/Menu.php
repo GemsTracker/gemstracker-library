@@ -2,6 +2,7 @@
 
 namespace Gems\Menu;
 
+use Gems\User\User;
 use Mezzio\Router\RouteResult;
 use Mezzio\Template\TemplateRendererInterface;
 
@@ -14,6 +15,7 @@ class Menu extends MenuNode
         public readonly TemplateRendererInterface $templateRenderer,
         public readonly RouteHelper $routeHelper,
         array $menuConfig,
+        private readonly User|null $user = null,
     ) {
         $this->addFromConfig($this, $menuConfig);
     }
@@ -25,6 +27,7 @@ class Menu extends MenuNode
                 'route', 'route-link-item' => new RouteLinkItem($item['name'], $item['label']),
                 'container' => new ContainerLinkItem($item['name'], $item['label']),
                 'alias' => new AliasItem($item['name'], $item['alias']),
+                'logged-out-route' => new LoggedOutRouteItem($item['name'], $item['label'], $this->user !== null),
                 default => throw new \Exception('Invalid type: ' . $item['type']),
             };
 
