@@ -73,7 +73,7 @@ class UserAccessTokenGenerator
     {
         return $this->getAccessTokenFor($clientId,
             $this->currentUserRepository->getCurrentLoginName(),
-            $this->currentUserRepository->getCurrentOrganizationId()
+            $this->currentUserRepository->getCurrentUser()->getBaseOrganizationId(),
         );
     }
 
