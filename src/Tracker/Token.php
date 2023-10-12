@@ -1885,6 +1885,21 @@ class Token
     }
 
     /**
+     * Only change the comment of a token
+     *
+     * @param string $comment Comment
+     * @param int $userId The current user
+     * @return int 1 if the token has changed, 0 otherwise
+     */
+    public function setComment(string $comment, int $userId): int
+    {
+        $values['gto_comment'] = $comment;
+        $changed = $this->_updateToken($values, $userId);
+
+        return $changed;
+    }
+
+    /**
      *
      * @param string|DateTimeInterface|null $completionTime Completion time as a date or null
      * @param int $userId The current user
