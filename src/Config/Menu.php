@@ -79,13 +79,13 @@ class Menu
             'name' => 'auth.login',
             'label' => $this->translator->trans('Login'),
             'type' => 'logged-out-route',
-            /*'children' => [
+            'children' => [
                 [
-                    'name' => 'calendar.export',
-                    'label' => $this->translator->trans('Export'),
-                    'type' => 'route-link-item',
+                    'name' => 'auth.password-reset.request',
+                    'label' => $this->translator->trans('Lost password'),
+                    'type' => 'logged-out-route',
                 ],
-            ],*/
+            ],
         ];
     }
 
