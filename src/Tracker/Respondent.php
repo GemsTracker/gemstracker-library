@@ -532,9 +532,9 @@ class Respondent
 
         if ($this->patientId) {
             $filter['gr2o_patient_nr'] = $this->patientId;
-        }/* elseif ($this->respondentId) {
+        } elseif ($this->respondentId) {
             $filter['gr2o_id_user'] = $this->respondentId;
-        }*/
+        }
         if (! $filter) {
             // Otherwise we load the first patient in the current organization
             $filter[] = '1=0';
@@ -548,6 +548,7 @@ class Respondent
         if ($this->_gemsData) {
             $this->exists = true;
             $this->respondentId   = $this->_gemsData['gr2o_id_user'];
+            $this->patientNr = $this->_gemsData['gr2o_patient_nr'];
         } else {
             $this->_gemsData = $this->respondentModel->loadNew();
             $this->exists = false;
