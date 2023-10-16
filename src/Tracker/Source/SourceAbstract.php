@@ -216,7 +216,7 @@ abstract class SourceAbstract implements SourceInterface
      */
     protected function addDatabasePrefix(string $tableName, bool $addDatabaseName = true): string
     {
-        return ($addDatabaseName && $this->_sourceData['gso_ls_database'] ? $this->_sourceData['gso_ls_database'] . '.' : '') .
+        return ($addDatabaseName && $this->_sourceData['gso_ls_database'] ? "`$this->_sourceData['gso_ls_database']`."  : '') .
             $this->_sourceData['gso_ls_table_prefix'] .
             $tableName;
     }
