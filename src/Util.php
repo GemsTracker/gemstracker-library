@@ -434,7 +434,7 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
      */
     public function isAllowedIP($ip, $ipRanges = "")
     {
-        $address = IpFactory::addressFromString($ip);
+        $address = IpFactory::parseAddressString($ip);
         if (! (($address instanceof AddressInterface) && strlen($ipRanges))) {
             return true;
         }
@@ -443,10 +443,10 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
         $ranges = explode('|', $ipRanges);
         foreach ($ranges as $range) {
             if (($sep = strpos($range, '-')) !== false) {
-                $rangeIF = IpFactory::rangeFromBoundaries(substr($range, 0, $sep), substr($range, $sep + 1));
+                $rangeIF = IpFactory::getRangeFromBoundaries(substr($range, 0, $sep), substr($range, $sep + 1));
 
             } else {
-                $rangeIF = IpFactory::rangeFromString($range);
+                $rangeIF = IpFactory::parseRangeString($range);
             }
 
             if (($rangeIF instanceof RangeInterface) &&
