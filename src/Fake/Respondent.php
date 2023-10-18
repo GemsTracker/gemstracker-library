@@ -19,18 +19,18 @@ use Zalt\Base\TranslatorInterface;
 class Respondent extends \Gems\Tracker\Respondent
 {
     public function __construct(
-        protected readonly ConsentRepository       $consentRepository,
-        protected readonly MailRepository          $mailRepository,
-        protected readonly MaskRepository          $maskRepository,
-        protected readonly OrganizationRepository  $organizationRepository,
-        protected readonly ReceptionCodeRepository $receptionCodeRepository,
-        protected readonly RespondentModel         $respondentModel,
-        protected readonly ResultFetcher           $resultFetcher,
-        protected readonly TranslatorInterface     $translator,
-        protected readonly Translated              $translatedUtil,
-        protected readonly Tracker                 $tracker,
-        protected readonly TrackEvents             $trackEvents,
-        CurrentUserRepository                      $currentUserRepository,
+        ConsentRepository       $consentRepository,
+        MailRepository          $mailRepository,
+        MaskRepository          $maskRepository,
+        OrganizationRepository  $organizationRepository,
+        ReceptionCodeRepository $receptionCodeRepository,
+        RespondentModel         $respondentModel,
+        ResultFetcher           $resultFetcher,
+        TranslatorInterface     $translator,
+        Translated              $translatedUtil,
+        Tracker                 $tracker,
+        TrackEvents             $trackEvents,
+        CurrentUserRepository   $currentUserRepository,
     ) {
         parent::__construct(
             'EXAMPLE001',
