@@ -299,6 +299,9 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
 
         } elseif ($action instanceof DeleteAction) {
             $action->contentTitle = sprintf($this->_('Delete %s'), $this->getTopic(1));
+            $action->csrfName = $this->getCsrfTokenName();
+            $action->csrfToken = $this->getCsrfToken($action->csrfName);
+            $action->subjects = [$this->getTopic(1), $this->getTopic(2)];
 
         }
     }

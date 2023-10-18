@@ -19,10 +19,8 @@ use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Project\ProjectSettings;
 use Gems\Snippets\Ask\MaintenanceModeAskSnippet;
-use Gems\Snippets\Ask\RedirectUntilGoodbyeSnippet;
 use Gems\Snippets\Ask\ResumeLaterSnippet;
 use Gems\Snippets\Ask\ShowAllOpenSnippet;
-use Gems\Snippets\Ask\ShowFirstOpenSnippet;
 use Gems\Snippets\Token\TokenForgottenSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Form\AskTokenForm;
@@ -33,11 +31,10 @@ use Gems\User\User;
 use Gems\Util\Lock\MaintenanceLock;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
-use MUtil\Model;
-use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\RequestInfoFactory;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 
@@ -51,6 +48,8 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class AskHandler extends SnippetLegacyHandlerAbstract
 {
+    use CsrfHandlerTrait;
+
     protected User|null $currentUser = null;
 
     /**
@@ -84,7 +83,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected $lostParameters = [
-        'clientIp' => 'getClientIpAddress',
+        'clientIp'  => 'getClientIpAddress',
     ];
 
     /**
@@ -165,11 +164,11 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             return $this->token && $this->token->exists;
         }
 
-        $tokenId = $this->request->getAttribute(Model::REQUEST_ID);
+        $tokenId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID);
         if (null === $tokenId && $this->requestInfo->isPost()) {
             $postData = $this->request->getParsedBody();
-            if (isset($postData[Model::REQUEST_ID])) {
-                $tokenId = $postData[Model::REQUEST_ID];
+            if (isset($postData[MetaModelInterface::REQUEST_ID])) {
+                $tokenId = $postData[MetaModelInterface::REQUEST_ID];
             }
         }
 
@@ -409,7 +408,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             if (isset($params['id'])) {
                 $route = $this->routeHelper->getRouteSibling($this->requestInfo->getRouteName(), 'forward');
                 $routeUrl = $this->routeHelper->getRouteUrl($route['name'], [
-                    Model::REQUEST_ID => $params['id'],
+                    MetaModelInterface::REQUEST_ID => $params['id'],
                 ]);
                 return new RedirectResponse($routeUrl);
             }
@@ -483,8 +482,8 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         }
 
         $url = $this->routeHelper->getRouteUrl('respondent.show', [
-            Model::REQUEST_ID1 => $this->token->getPatientNumber(),
-            Model::REQUEST_ID2 => $this->token->getOrganizationId(),
+            MetaModelInterface::REQUEST_ID1 => $this->token->getPatientNumber(),
+            MetaModelInterface::REQUEST_ID2 => $this->token->getOrganizationId(),
         ]);
         return new RedirectResponse($url);
     }
@@ -512,7 +511,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $askIndexUrl = $this->routeHelper->getRouteUrl('ask.index');
         if ($this->token instanceof Token && str_ends_with($urlWithoutQueryParams, $askIndexUrl)) {
             $forwardUrl = $this->routeHelper->getRouteUrl('ask.forward', [
-                Model::REQUEST_ID => $this->token->getTokenId(),
+                MetaModelInterface::REQUEST_ID => $this->token->getTokenId(),
             ]);
             // Add the supplied query params
             //$forwardUrl .= strstr($url, '?');

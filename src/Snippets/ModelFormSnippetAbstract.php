@@ -111,7 +111,6 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
      
         $this->saveLabel = $this->_('Save');
-        // $this->useCsrf = $project->useCsrfCheck();
     }
     
     /**

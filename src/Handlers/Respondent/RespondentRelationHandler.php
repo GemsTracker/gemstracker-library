@@ -16,7 +16,6 @@ use Gems\Model;
 use Gems\Model\RespondentRelationModel;
 use Gems\Model\Transform\RespondentIdTransformer;
 use Gems\Repository\RespondentRepository;
-use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Tracker\Respondent;
 use MUtil\Model\ModelAbstract;
 use Zalt\Base\TranslatorInterface;

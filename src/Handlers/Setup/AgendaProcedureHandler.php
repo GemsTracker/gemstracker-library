@@ -21,6 +21,7 @@ use Gems\Util;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Snippets\ModelConfirmSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -167,6 +168,8 @@ e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operat
                 'elementClass', 'Checkbox',
                 'multiOptions', $this->translatedUtil->getYesNo()
                 );
+
+        $model->setMeta(ModelConfirmSnippetAbstract::MODEL_ACTIVE_FIELD, 'gapr_active');
 
         $model->addColumn("CASE WHEN gapr_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 

@@ -11,17 +11,11 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
-use Gems\Menu\MenuSnippetHelper;
-use Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract;
+use Gems\Snippets\ModelConfirmSnippetAbstract;
 use Gems\Tracker\Model\RoundModel;
-use Psr\Cache\CacheItemPoolInterface;
-use Zalt\Base\RequestInfo;
-use Zalt\Base\TranslatorInterface;
-use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
-use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -32,7 +26,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 22-apr-2015 15:32:11
  */
-class RoundDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
+class RoundDeleteSnippet extends ModelConfirmSnippetAbstract
 {
     /**
      *
@@ -66,21 +60,10 @@ class RoundDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
      */
     protected $useCount = 0;
 
-    public function __construct(
-        SnippetOptions $snippetOptions,
-        RequestInfo $requestInfo,
-        MenuSnippetHelper $menuHelper,
-        TranslatorInterface $translate,
-        MessengerInterface $messenger,
-        protected CacheItemPoolInterface $cache,
-    ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger, $cache);
-    }
-
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
@@ -98,12 +81,10 @@ class RoundDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
 
     /**
      * Set what to do when the form is 'finished'.
-     *
-     * @return \MUtil\Snippets\ModelYesNoDeleteSnippetAbstract
      */
     protected function setAfterDeleteRoute()
     {
-        $this->afterActionRouteUrl = $this->menuHelper->getRouteUrl('track-builder.track-maintenance.show', [
+        $this->afterActionRouteUrl = $this->menuSnippetHelper->getRouteUrl('track-builder.track-maintenance.show', [
             'trackId' => $this->trackId,
         ]);
 

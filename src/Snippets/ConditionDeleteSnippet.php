@@ -11,16 +11,9 @@
 
 namespace Gems\Snippets;
 
-use Gems\Menu\MenuSnippetHelper;
-use Gems\Model;
 use Gems\Model\ConditionModel;
-use Psr\Cache\CacheItemPoolInterface;
-use Zalt\Base\RequestInfo;
-use Zalt\Base\TranslatorInterface;
-use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
-use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -31,7 +24,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class ConditionDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
+class ConditionDeleteSnippet extends ModelConfirmSnippetAbstract
 {
     protected ConditionModel|null $model = null;
 
@@ -48,22 +41,10 @@ class ConditionDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
      */
     protected int $useCount = 0;
 
-    public function __construct(
-        SnippetOptions $snippetOptions,
-        RequestInfo $requestInfo,
-        MenuSnippetHelper $menuHelper,
-        TranslatorInterface $translate,
-        MessengerInterface $messenger,
-        CacheItemPoolInterface $cache,
-        protected readonly Model $modelLoader,
-    ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger, $cache);
-    }
-
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {

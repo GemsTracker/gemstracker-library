@@ -329,7 +329,8 @@ class Route
                 postRoutes: [
                     ...$this->defaultPostRoutes,
                     'lost',
-                ]
+                ],
+                noCsrfRoutes: ['index', 'lost']
             ),
         ];
     }
