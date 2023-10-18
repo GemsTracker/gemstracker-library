@@ -75,6 +75,8 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         'afterSaveRoutePart' => 'edit-auth',
         'currentUser'        => 'getCurrentUser',
         'request'            => 'getRequest',
+        'csrfName'           => 'getCsrfTokenName',
+        'csrfToken'          => 'getCsrfToken',
     ];
 
     /**
@@ -146,6 +148,8 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         'contentTitle'       => 'getShowTwoFactorTitle',
         'routeAction'        => 'edit',
         'user'               => 'getCurrentUser',
+        'csrfName'           => 'getCsrfTokenName',
+        'csrfToken'          => 'getCsrfToken',
     ];
 
     /**
