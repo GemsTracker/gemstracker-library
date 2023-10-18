@@ -56,7 +56,7 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $respondent = $this->getRespondent();
 
-        /* @var $relationModel RespondentRelationModel */
+        /* @var RespondentRelationModel $relationModel */
         $relationModel = $this->modelLoader->getRespondentRelationModel();
 
         $relationModel->set('gr2o_patient_nr', 'default', $respondent->getPatientNumber());

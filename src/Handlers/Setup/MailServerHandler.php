@@ -59,7 +59,7 @@ class MailServerHandler extends ModelSnippetLegacyHandlerAbstract
     public function createModel(bool $detailed, string $action): ModelAbstract
     {
         /**
-         * @var $model MailServerModel
+         * @var MailServerModel $model
          */
         $model = $this->overloader->create(MailServerModel::class);
         if ($detailed) {

@@ -156,7 +156,7 @@ class Agenda
 
             $respTrack = null;
             foreach($tracks as $respTrack) {
-                /* @var $respTrack RespondentTrack */
+                /* @var RespondentTrack $respTrack */
                 if (!$respTrack->hasSuccesCode()) {
                     continue;
                 }

@@ -102,7 +102,7 @@ class StaffTableSnippet extends ModelTableSnippetAbstract
             $model = $this->model;
         } else {
             /**
-             * @var $model StaffModel
+             * @var StaffModel $model
              */
             $model = $this->modelLoader->getStaffModel();
         }

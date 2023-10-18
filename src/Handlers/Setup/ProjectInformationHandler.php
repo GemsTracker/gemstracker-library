@@ -329,7 +329,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         if ($this->maintenanceLock->isLocked()) {
             $this->maintenanceLock->unlock();
             /**
-             * @var $messenger StatusMessengerInterface
+             * @var StatusMessengerInterface $messenger
              */
             $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
             $messenger->clearMessages();
@@ -366,7 +366,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
     {
         $this->cache->clear();
         /**
-         * @var $messenger StatusMessengerInterface
+         * @var StatusMessengerInterface $messenger
          */
         $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
         $messenger->addSuccess($this->_('Cache cleaned'));

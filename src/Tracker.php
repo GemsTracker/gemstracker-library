@@ -718,7 +718,7 @@ class Tracker implements TrackerInterface
     public function getTokenValidator(string $clientIpAddress = null): TokenValidator
     {
         /**
-         * @var $tokenValidator TokenValidator
+         * @var TokenValidator $tokenValidator
          */
         $tokenValidator = $this->overLoader->create('Tracker\\Token\\TokenValidator');
         if ($clientIpAddress !== null) {
