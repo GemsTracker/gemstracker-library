@@ -5,7 +5,7 @@ namespace GemsTest\MenuNew;
 use Gems\Config\Menu;
 use Gems\Event\Application\MenuBuildItemsEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
 
 class MenuConfigTest extends \PHPUnit\Framework\TestCase
 {

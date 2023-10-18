@@ -232,6 +232,9 @@ class LaminasTokenSelect
             $this->columns = [Select::SQL_STAR];
             $fields = [Select::SQL_STAR];
         }
+        if (is_string($fields)) {
+            $fields = [$fields];
+        }
         $this->select->columns($fields);
 
         return $this;

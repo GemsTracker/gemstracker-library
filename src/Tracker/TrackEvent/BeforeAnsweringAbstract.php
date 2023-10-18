@@ -79,7 +79,7 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
      */
     protected function addCheckedValue($key, $value, $keepAnswer = true)
     {
-        if (! (strlen($value) && $key && is_scalar($key))) {
+        if (is_null($value) || ! (strlen($value) && $key && is_scalar($key))) {
             // Do not set if no value or no key or not a correct key
             return;
         }
