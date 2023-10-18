@@ -548,7 +548,7 @@ class Respondent
         if ($this->_gemsData) {
             $this->exists = true;
             $this->respondentId   = $this->_gemsData['gr2o_id_user'];
-            $this->patientNr = $this->_gemsData['gr2o_patient_nr'];
+            $this->patientId = $this->_gemsData['gr2o_patient_nr'];
         } else {
             $this->_gemsData = $this->respondentModel->loadNew();
             $this->exists = false;
