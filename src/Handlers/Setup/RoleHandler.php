@@ -14,6 +14,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
+use Gems\Html;
 use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -23,6 +24,7 @@ use MUtil\Model\ModelAbstract;
 use MUtil\Model\NestedArrayModel;
 use MUtil\Validator\IsNot;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Html\HtmlElement;
 use Zalt\Message\MessageStatus;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -276,11 +278,11 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * Output for browsing rols
      *
      * @param array $privileges
-     * @return array
+     * @return HtmlElement
      */
     public function formatLongLine(array $privileges)
     {
-        $output     = \Zalt\Html\Html::create('div');
+        $output     = Html::create('div');
 
         if (count($privileges)) {
             $privileges = array_combine($privileges, $privileges);

@@ -5678,7 +5678,7 @@ parameters:
 			path: src/Snippets/AutosearchFormSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:actionLink\\(\\)\\.$#"
+			message: "#^Call to an undefined method Zalt\\\\Html\\\\Creator|Zalt\\\\Html\\\\HtmlElement\\:\\:actionLink\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/AutosearchFormSnippet.php
 
@@ -6933,31 +6933,6 @@ parameters:
 			path: src/Snippets/ModelImportSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:tfrow\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/ModelItemYesNoDeleteSnippetAbstract.php
-
-		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Snippets/ModelItemYesNoDeleteSnippetAbstract.php
-
-		-
-			message: "#^Cannot call method actionLink\\(\\) on array\\<int, string\\>\\.$#"
-			count: 2
-			path: src/Snippets/ModelItemYesNoDeleteSnippetAbstract.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Snippets/ModelItemYesNoDeleteSnippetAbstract.php
-
-		-
-			message: "#^Parameter \\#1 \\$html of method Zalt\\\\Snippets\\\\SnippetAbstract\\:\\:applyHtmlAttributes\\(\\) expects Zalt\\\\Html\\\\HtmlElement, Zalt\\\\Html\\\\HtmlInterface given\\.$#"
-			count: 1
-			path: src/Snippets/ModelItemYesNoDeleteSnippetAbstract.php
-
-		-
 			message: "#^Access to an undefined property Zalt\\\\Html\\\\HtmlElement\\:\\:\\$id\\.$#"
 			count: 1
 			path: src/Snippets/ModelTableSnippetAbstract.php
@@ -7311,31 +7286,6 @@ parameters:
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$model$#"
 			count: 1
 			path: src/Snippets/Respondent/Relation/TableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Respondent\\\\Relation\\\\YesNoDeleteSnippet\\:\\:\\$abortAction\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/Relation/YesNoDeleteSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Respondent\\\\Relation\\\\YesNoDeleteSnippet\\:\\:\\$request\\.$#"
-			count: 2
-			path: src/Snippets/Respondent/Relation/YesNoDeleteSnippet.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Snippets\\\\Respondent\\\\Relation\\\\YesNoDeleteSnippet\\:\\:findMenuItem\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/Relation/YesNoDeleteSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:tfrow\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/Relation/YesNoDeleteSnippet.php
-
-		-
-			message: "#^Cannot call method actionLink\\(\\) on array\\<int, string\\>\\.$#"
-			count: 2
-			path: src/Snippets/Respondent/Relation/YesNoDeleteSnippet.php
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:\\$grs_address_1\\.$#"
@@ -9031,11 +8981,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$model of method Gems\\\\Tracker\\\\Engine\\\\StepEngineAbstract\\:\\:updateRoundModelToItem\\(\\) expects Zalt\\\\Model\\\\MetaModelInterface, Zalt\\\\Model\\\\Data\\\\DataReaderInterface given\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/Rounds/EditRoundStepSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Tracker\\\\Rounds\\\\RoundDeleteSnippet\\:\\:setAfterDeleteRoute\\(\\) should return MUtil\\\\Snippets\\\\ModelYesNoDeleteSnippetAbstract but return statement is missing\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Rounds/RoundDeleteSnippet.php
 
 		-
 			message: "#^PHPDoc tag @param for parameter \\$bridge with type MUtil\\\\Model\\\\Bridge\\\\VerticalTableBridge is incompatible with native type Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\.$#"

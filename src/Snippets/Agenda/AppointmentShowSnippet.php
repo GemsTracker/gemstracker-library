@@ -89,7 +89,7 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstr
             return $date;
         }
         $div = Html::create('div');
-        $div->class = 'calendar';
+        $div->appendAttrib('class',  'calendar');
         $div->span(ucfirst($date->format('l j F Y')))->class = 'date';
         // $div->strong($date->toString());
         // $div->br();

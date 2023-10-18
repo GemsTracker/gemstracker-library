@@ -553,7 +553,7 @@ class TokenRepository
      * @param string $roundDescr
      * @param string $surveyName
      * @param string $result
-     * @return \Zalt\Html\AElement
+     * @return \Zalt\Html\HtmlElement
      */
     public function getTokenStatusLink(MenuSnippetHelper $helper, string $tokenId, string $tokenStatus, string $patientNr, int $organizationId, string $roundDescr, string $surveyName, string $result): ?HtmlElement
     {
@@ -574,7 +574,7 @@ class TokenRepository
         }
 
         $link->append($this->getStatusIcon($tokenStatus));
-        $link->title = $this->getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result);
+        $link->setAttrib('title', $this->getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result));
 
         return $link;
     }

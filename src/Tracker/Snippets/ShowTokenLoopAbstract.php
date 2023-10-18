@@ -259,7 +259,7 @@ class ShowTokenLoopAbstract extends SnippetAbstract
      * Formats an until date for this display
      *
      * @param DateTimeInterface $dateTime
-     * @return string
+     * @return mixed
      */
     public function formatUntil(DateTimeInterface $dateTime = null)
     {
@@ -305,7 +305,7 @@ class ShowTokenLoopAbstract extends SnippetAbstract
     /**
      * Return a welcome greeting depending on showlastName switch
      *
-     * @return HtmlElement
+     * @return mixed
      */
     public function formatWelcome()
     {

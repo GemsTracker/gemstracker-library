@@ -101,8 +101,8 @@ class TrackDeleteSnippet extends ModelConfirmSnippetAbstract
                         ), $this->useCount));
                 $this->messenger->addMessage($this->_('This track cannot be deleted, only deactivated.'));
 
-                $this->deleteQuestion = $this->_('Do you want to deactivate this track?');
-                $this->displayTitle   = $this->_('Deactivate track');
+                $this->question = $this->_('Do you want to deactivate this track?');
+                // $this->displayTitle   = $this->_('Deactivate track');
             }
         }
 

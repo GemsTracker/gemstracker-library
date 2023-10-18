@@ -11,9 +11,15 @@
 
 namespace Gems\Snippets;
 
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Model;
 use Gems\Model\ConditionModel;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -40,6 +46,18 @@ class ConditionDeleteSnippet extends ModelConfirmSnippetAbstract
      * @var int
      */
     protected int $useCount = 0;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuSnippetHelper,
+        protected readonly Model $modelLoader,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuSnippetHelper);
+    }
 
     /**
      * Creates the model
@@ -77,8 +95,8 @@ class ConditionDeleteSnippet extends ModelConfirmSnippetAbstract
                         ), $this->useCount));
                 $this->messenger->addMessage($this->_('This condition cannot be deleted, only deactivated.'));
 
-                $this->deleteQuestion = $this->_('Do you want to deactivate this condition?');
-                $this->displayTitle   = $this->_('Deactivate condition');
+                $this->question = $this->_('Do you want to deactivate this condition?');
+                // $this->displayTitle   = $this->_('Deactivate condition');
             }
         }
 

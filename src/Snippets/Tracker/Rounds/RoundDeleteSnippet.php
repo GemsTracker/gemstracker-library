@@ -122,8 +122,8 @@ class RoundDeleteSnippet extends ModelConfirmSnippetAbstract
 
             if ($refCount || $this->useCount) {
                 $this->messenger->addMessage($this->_('This round cannot be deleted, only deactivated.'));
-                $this->deleteQuestion = $this->_('Do you want to deactivate this round?');
-                $this->displayTitle   = $this->_('Deactivate round');
+                $this->question = $this->_('Do you want to deactivate this round?');
+                // $this->displayTitle   = $this->_('Deactivate round');
             }
         }
 
