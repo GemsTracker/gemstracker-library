@@ -18,7 +18,7 @@ use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
-use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -59,6 +59,24 @@ class ConditionDeleteSnippet extends ModelConfirmSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuSnippetHelper);
     }
 
+    public function checkModel(FullDataInterface $dataModel): void
+    {
+        if ($dataModel instanceof ConditionModel) {
+            $this->useCount = $dataModel->getUsedCount($this->conditionId);
+
+            if ($this->useCount) {
+                $this->messenger->addMessage(sprintf($this->plural(
+                    'This condition has been used %s time.', 'This condition has been used %s times.',
+                    $this->useCount
+                ), $this->useCount));
+                $this->messenger->addMessage($this->_('This condition cannot be deleted, only deactivated.'));
+                // $this->displayTitle   = $this->_('Deactivate condition');
+                parent::checkModel($dataModel);
+            }
+        }
+
+    }
+
     /**
      * Creates the model
      *
@@ -68,38 +86,9 @@ class ConditionDeleteSnippet extends ModelConfirmSnippetAbstract
     {
         if (! $this->model instanceof ConditionModel) {
             $this->model = $this->modelLoader->getConditionModel();
+            $this->model->applyEditSettings();
         }
 
         return $this->model;
-    }
-
-    /**
-     * Set the footer of the browse table.
-     *
-     * Overrule this function to set the header differently, without
-     * having to recode the core table building code.
-     *
-     * @param DetailTableBridge $bridge
-     * @param DataReaderInterface $dataModel
-     * @return void
-     */
-    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)
-    {
-        if ($dataModel instanceof ConditionModel) {
-            $this->useCount = $dataModel->getUsedCount($this->conditionId);
-
-            if ($this->useCount) {
-                $this->messenger->addMessage(sprintf($this->plural(
-                        'This condition has been used %s time.', 'This condition has been used %s times.',
-                        $this->useCount
-                        ), $this->useCount));
-                $this->messenger->addMessage($this->_('This condition cannot be deleted, only deactivated.'));
-
-                $this->question = $this->_('Do you want to deactivate this condition?');
-                // $this->displayTitle   = $this->_('Deactivate condition');
-            }
-        }
-
-        parent::setShowTableFooter($bridge, $dataModel);
     }
 }

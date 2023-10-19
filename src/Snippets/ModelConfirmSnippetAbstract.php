@@ -63,4 +63,14 @@ abstract class ModelConfirmSnippetAbstract extends \Zalt\Snippets\ModelConfirmSn
             $this->afterActionUrl = $this->abortUrl;
         }
     }
+
+    public function getYesButtonLabel(): string
+    {
+        return match ($this->actionMode) {
+            self::MODE_DELETE => $this->_('Delete!!'),
+            self::MODE_DEACTIVATE => $this->_('Deactivate'),
+            self::MODE_ACTIVATE => $this->_('Reactivate'),
+            default => parent::getYesButtonLabel(),
+        };
+    }
 }

@@ -99,6 +99,16 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
     }
 
     /**
+     * Helper function to get the title for the index action.
+     *
+     * @return string
+     */
+    public function getIndexTitle(): string
+    {
+        return ucfirst($this->getTopic(2));
+    }
+
+    /**
      * Get the data to use for searching: the values passed in the request + any defaults
      * used in the search form (or any other search request mechanism).
      *
@@ -260,7 +270,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                 $action->searchFilter = $this->getSearchFilter($useSession);
 
                 if ($action instanceof BrowseSearchAction) {
-                    $action->contentTitle = ucfirst($this->getTopic(2));
+                    $action->contentTitle = $this->getIndexTitle();
                     $action->searchData = $this->getSearchData($useSession);
                 }
                 if ($action instanceof ExportAction) {

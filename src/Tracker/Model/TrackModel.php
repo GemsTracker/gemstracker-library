@@ -14,6 +14,7 @@ namespace Gems\Tracker\Model;
 
 use Gems\Tracker\TrackEvents;
 use Gems\Util\Translated;
+use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
@@ -118,7 +119,10 @@ class TrackModel extends \MUtil\Model\TableModel
         $this->set('gtr_survey_rounds', 'label', $translator->_('Surveys'));
 
         $this->set('gtr_active',        'label', $translator->_('Active'),
-                'multiOptions', $this->translatedUtil->getYesNo());
+            'multiOptions', $this->translatedUtil->getYesNo(),
+            ActivatingYesNoType::$activatingValue, 1,
+            ActivatingYesNoType::$deactivatingValue, 0
+        );
         $this->set('gtr_date_start', [
             'label' => $translator->_('From'),
             'elementClass' => 'Date',

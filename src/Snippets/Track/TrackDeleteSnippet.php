@@ -65,6 +65,25 @@ class TrackDeleteSnippet extends ModelConfirmSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
     }
 
+    public function checkModel(FullDataInterface $dataModel): void
+    {
+        if ($dataModel instanceof TrackModel) {
+            $this->useCount = $dataModel->getStartCount($this->trackId);
+
+            if ($this->useCount) {
+                $this->messenger->addMessage(sprintf($this->plural(
+                    'This track has been started %s time.', 'This track has been started %s times.',
+                    $this->useCount
+                ), $this->useCount));
+                $this->messenger->addMessage($this->_('This track cannot be deleted, only deactivated.'));
+
+                $this->question = $this->_('Do you want to deactivate this track?');
+                // $this->displayTitle   = $this->_('Deactivate track');
+                parent::checkModel($dataModel);
+            }
+        }
+    }
+
     /**
      * Creates the model
      *
@@ -74,38 +93,9 @@ class TrackDeleteSnippet extends ModelConfirmSnippetAbstract
     {
         if (! $this->model instanceof TrackModel) {
             $this->model = $this->tracker->getTrackModel();
+            $this->model->applyFormatting(true);
         }
 
         return $this->model;
-    }
-
-    /**
-     * Set the footer of the browse table.
-     *
-     * Overrule this function to set the header differently, without
-     * having to recode the core table building code.
-     *
-     * @param DetailTableBridge $bridge
-     * @param DataReaderInterface $dataModel
-     * @return void
-     */
-    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)
-    {
-        if ($dataModel instanceof TrackModel) {
-            $this->useCount = $dataModel->getStartCount($this->trackId);
-
-            if ($this->useCount) {
-                $this->messenger->addMessage(sprintf($this->plural(
-                        'This track has been started %s time.', 'This track has been started %s times.',
-                        $this->useCount
-                        ), $this->useCount));
-                $this->messenger->addMessage($this->_('This track cannot be deleted, only deactivated.'));
-
-                $this->question = $this->_('Do you want to deactivate this track?');
-                // $this->displayTitle   = $this->_('Deactivate track');
-            }
-        }
-
-        parent::setShowTableFooter($bridge, $dataModel);
     }
 }

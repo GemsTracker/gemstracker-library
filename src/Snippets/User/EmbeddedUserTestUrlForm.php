@@ -113,7 +113,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $form->addElement($url);
     }
 
-    protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass)
+    protected function addSaveButton(string $saveButtonId, ?string $saveLabel, string $buttonClass)
     {
         // No Button for this class
     }

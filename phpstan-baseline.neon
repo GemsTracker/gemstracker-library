@@ -3293,16 +3293,6 @@ parameters:
 			path: src/Handlers/Setup/ProjectInformationHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/ReceptionCodeHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/ReceptionCodeHandler.php
-
-		-
 			message: "#^Property Gems\\\\Handlers\\\\Setup\\\\RoleDiffHandler\\:\\:\\$translatedUtil is never read, only written\\.$#"
 			count: 1
 			path: src/Handlers/Setup/RoleDiffHandler.php
