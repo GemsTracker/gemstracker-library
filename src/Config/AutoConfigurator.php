@@ -89,7 +89,7 @@ class AutoConfigurator
 
     protected function clearConfigCache(): void
     {
-        $configCacheFileLocation = $config['config_cache_path'] ?? null;
+        $configCacheFileLocation = $this->config['config_cache_path'] ?? null;
         if ($configCacheFileLocation && file_exists($configCacheFileLocation)) {
             unlink($configCacheFileLocation);
         }
