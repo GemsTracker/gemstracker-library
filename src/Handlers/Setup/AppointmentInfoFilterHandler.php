@@ -27,23 +27,13 @@ class AppointmentInfoFilterHandler extends BrowseChangeHandler
     }
 
     /**
-     * Helper function to get the title for the index action.
-     *
-     * @return $string
-     */
-    public function getIndexTitle(): string
-    {
-        return $this->_('Appointment info');
-    }
-
-    /**
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
     public function getTopic(int $count = 1): string
     {
-        return $this->plural('appointment info', 'appointment info\'s', $count);
+        return $this->plural('appointment info filter', 'appointment info filters', $count);
     }
 }
