@@ -6,6 +6,10 @@ use Gems\Util\UtilDbHelper;
 
 class SourceRepository
 {
+    protected array $cacheTags = [
+        'sources',
+    ];
+
     public function __construct(protected UtilDbHelper $utilDbHelper)
     {}
 

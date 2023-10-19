@@ -69,7 +69,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var array
      */
-    public array $cacheTags = ['surveys', 'tracks'];
+    public array $cacheTags = ['survey', 'surveys', 'track', 'tracks'];
 
     /**
      * The parameters used for the create and edit actions.

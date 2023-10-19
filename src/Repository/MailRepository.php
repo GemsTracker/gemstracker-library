@@ -7,6 +7,8 @@ use Gems\Translate\CachedDbTranslationRepository;
 
 class MailRepository
 {
+    protected array $cacheTags = ['mailcodes',];
+
     public function __construct(
         protected readonly CachedResultFetcher $cachedResultFetcher,
         protected readonly CachedDbTranslationRepository $cachedDbTranslationRepository,
@@ -23,7 +25,7 @@ class MailRepository
                 'gmc_active' => 1,
             ]);
 
-        $result = $this->cachedResultFetcher->fetchAll('respondentMailCodes', $select, null, ['mailcodes']);
+        $result = $this->cachedResultFetcher->fetchAll('respondentMailCodes', $select, null, $this->cacheTags);
 
         $translatedResult = $this->cachedDbTranslationRepository->translateTable('respondentMailCodes', 'gems__mail_codes', 'gmc_id', $result);
 
@@ -41,7 +43,7 @@ class MailRepository
                'gmc_active' => 1,
             ]);
 
-        $result = $this->cachedResultFetcher->fetchAll('respondentTrackMailCodes', $select, null, ['mailcodes'],);
+        $result = $this->cachedResultFetcher->fetchAll('respondentTrackMailCodes', $select, null, $this->cacheTags,);
         $translatedResult = $this->cachedDbTranslationRepository->translateTable('respondentMailCodes', 'gems__mail_codes', 'gmc_id', $result);
 
         $pairs = array_column($translatedResult, 'gmc_mail_to_target', 'gmc_id');

@@ -54,6 +54,13 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
     ];
 
     /**
+     * Tags for cache cleanup after changes, passed to snippets
+     *
+     * @var array
+     */
+    public array $cacheTags = ['comm-jobs',];
+
+    /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name

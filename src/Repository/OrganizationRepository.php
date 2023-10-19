@@ -2,7 +2,6 @@
 
 namespace Gems\Repository;
 
-use Gems\Cache\HelperAdapter;
 use Gems\Db\CachedResultFetcher;
 use Gems\User\Organization;
 use Gems\User\UserLoader;
@@ -12,6 +11,8 @@ use Zalt\Loader\ProjectOverloader;
 
 class OrganizationRepository
 {
+    protected array $cacheTags = ['organization', 'organizations'];
+
     /**
      * The org ID for no organization
      */
@@ -104,7 +105,7 @@ class OrganizationRepository
                 ->unnest()
                 ->equalTo('gor_active', 1);
 
-        $result = $this->cachedResultFetcher->fetchPairs($key, $select);
+        $result = $this->cachedResultFetcher->fetchPairs($key, $select, null, $this->cacheTags);
         return $result;
     }
 
@@ -165,7 +166,7 @@ class OrganizationRepository
 
         $key = static::class . 'organizationSites';
 
-        $result = $this->cachedResultFetcher->fetchPairs($key, $select);
+        $result = $this->cachedResultFetcher->fetchPairs($key, $select, null, $this->cacheTags);
 
         $organizationsPerSite = [];
         foreach($result as $organizationId => $sites) {

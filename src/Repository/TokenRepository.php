@@ -5,17 +5,18 @@ namespace Gems\Repository;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Model;
 use Gems\Tracker;
 use Gems\User\User;
 use Laminas\Db\Sql\Predicate\Expression;
 use Mezzio\Router\Exception\RuntimeException;
-use MUtil\Model;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\AElement;
 use Zalt\Html\HtmlElement;
 use Zalt\Late\Late;
 use Zalt\Late\LateCall;
 use Zalt\Late\LateInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridgeAbstract;
 
 class TokenRepository
@@ -285,10 +286,10 @@ class TokenRepository
         }
 
         $url = $helper->getLateRouteUrl('respondent.tracks.token.answer', [
-            Model::REQUEST_ID  => 'gto_id_token',
-            Model::REQUEST_ID1 => 'gr2o_patient_nr',
-            Model::REQUEST_ID2 => 'gto_id_organization',
-            \Gems\Model::RESPONDENT_TRACK => 'gto_id_respondent_track',
+            MetaModelInterface::REQUEST_ID  => 'gto_id_token',
+            MetaModelInterface::REQUEST_ID1 => 'gr2o_patient_nr',
+            MetaModelInterface::REQUEST_ID2 => 'gto_id_organization',
+            Model::RESPONDENT_TRACK => 'gto_id_respondent_track',
         ], $bridge);
 
         return Late::method($this, 'getTokenAnswerLink',
@@ -434,13 +435,13 @@ class TokenRepository
     public function getTokenEmailLink(MenuSnippetHelper $helper, string $tokenId, string $tokenStatus, bool $canMail): ?AElement
     {
         // TODO: The email route does not yet exist 
-        if (false && $canMail && ('O' == $tokenStatus || 'P' == $tokenStatus)) {
+        if ($canMail && ('O' == $tokenStatus || 'P' == $tokenStatus)) {
             $href = $helper->getRouteUrl('email',
             [
                 'gto_id_token' => $tokenId,
                 'can_be_taken' => 1,
                 'can_email'    => 1,
-                \Gems\Model::ID_TYPE => 'token',
+                Model::ID_TYPE => 'token',
             ]);
 
             if ($href) {
@@ -487,9 +488,9 @@ class TokenRepository
         }
 
         $link = Html::actionLink($helper->getRouteUrl($routeName, [
-            Model::REQUEST_ID1 => $patientNr,
-            Model::REQUEST_ID2 => $organizationId,
-            Model::REQUEST_ID => $tokenId,
+            MetaModelInterface::REQUEST_ID1 => $patientNr,
+            MetaModelInterface::REQUEST_ID2 => $organizationId,
+            MetaModelInterface::REQUEST_ID => $tokenId,
         ]), $label);
 
         if ($link) {
@@ -520,10 +521,10 @@ class TokenRepository
         }
 
         $link = $helper->getLateRouteUrl($routeName, [
-            Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
-            Model::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
-            Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
-            \Gems\Model::RESPONDENT_TRACK => $bridge->getLate('gto_id_respondent_track'),
+            MetaModelInterface::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
+            MetaModelInterface::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
+            MetaModelInterface::REQUEST_ID => $bridge->getLate('gto_id_token'),
+            Model::RESPONDENT_TRACK => $bridge->getLate('gto_id_respondent_track'),
         ]);
 
         if (isset($link['url'])) {
@@ -559,9 +560,9 @@ class TokenRepository
     {
         if ($tokenId) {
             $href = $helper->getRouteUrl('respondent.tracks.show', [
-                \MUtil\Model::REQUEST_ID  => $tokenId,
-                \MUtil\Model::REQUEST_ID1 => $patientNr,
-                \MUtil\Model::REQUEST_ID2 => $organizationId,
+                MetaModelInterface::REQUEST_ID  => $tokenId,
+                MetaModelInterface::REQUEST_ID1 => $patientNr,
+                MetaModelInterface::REQUEST_ID2 => $organizationId,
             ]);
 
             if (! $href) {
@@ -597,7 +598,7 @@ class TokenRepository
 
         $url = $helper->getLateRouteUrl('respondent.track.token.show', [
             'gto_id_token' => $bridge->getLate('gr2o_patient_nr'),
-            \Gems\Model::ID_TYPE => 'token',
+            Model::ID_TYPE => 'token',
         ]);
 
         $link = Late::iff($url,

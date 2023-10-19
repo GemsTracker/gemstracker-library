@@ -26,6 +26,8 @@ class ReceptionCodeRepository
         'grc_for_tracks' => ReceptionCode::TYPE_TRACK,
     ];
 
+    protected array $cacheTags = ['receptionCode', 'receptionCodes'];
+
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
         protected Translator $translator,
@@ -117,7 +119,7 @@ class ReceptionCodeRepository
     public function getAllReceptionCodes(): array
     {
         $select = $this->cachedResultFetcher->getSelect('gems__reception_codes');
-        return $this->cachedResultFetcher->fetchAll(static::class . 'allReceptionCodes', $select);
+        return $this->cachedResultFetcher->fetchAll(static::class . 'allReceptionCodes', $select, null, $this->cacheTags);
     }
 
     public function getReceptionCode(string $code): ReceptionCode
