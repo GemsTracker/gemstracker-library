@@ -51,6 +51,8 @@ class AutoConfigurator
         }
 
         if (count($this->autoconfigConfig)) {
+            $this->clearConfigCache();
+            $this->addChecksumToAutoConfig();
             $this->writeAutoConfigConfig();
             return $this->getNewConfig();
         }
@@ -82,6 +84,14 @@ class AutoConfigurator
                     }
                 }
             }
+        }
+    }
+
+    protected function clearConfigCache(): void
+    {
+        $configCacheFileLocation = $config['config_cache_path'] ?? null;
+        if ($configCacheFileLocation && file_exists($configCacheFileLocation)) {
+            unlink($configCacheFileLocation);
         }
     }
 
