@@ -5,6 +5,7 @@ namespace Gems\Route;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
+use Gems\Middleware\LegacyModelMiddleware;
 use Gems\SnippetsLoader\SnippetMiddleware;
 use Zalt\SnippetsActions\NoCsrfInterface;
 use Zalt\SnippetsActions\ParameterActionInterface;
@@ -42,6 +43,7 @@ trait ModelSnippetActionRouteHelpers
     protected array $modelSnippetCustomMiddleware = [
         SnippetMiddleware::class,
         LegacyCurrentUserMiddleware::class,
+        LegacyModelMiddleware::class,
         LegacyController::class,
     ];
 
@@ -176,6 +178,7 @@ trait ModelSnippetActionRouteHelpers
         $middleware = [
             SnippetMiddleware::class,
             LegacyCurrentUserMiddleware::class,
+            LegacyModelMiddleware::class,
             $controllerClass,
         ];
 
@@ -243,6 +246,7 @@ trait ModelSnippetActionRouteHelpers
             $pages, 
             $customMiddleware ?: [
                 LegacyCurrentUserMiddleware::class,
+                LegacyModelMiddleware::class,
                 $controllerClass,
             ],
             $parameters, 
