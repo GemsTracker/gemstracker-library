@@ -12,10 +12,9 @@
 namespace Gems\Snippets\Track;
 
 use Gems\Menu\MenuSnippetHelper;
-use Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract;
+use Gems\Snippets\ModelConfirmSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
-use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
@@ -33,7 +32,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.8.6
  */
-class TrackDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
+class TrackDeleteSnippet extends ModelConfirmSnippetAbstract
 {
     /**
      *
@@ -57,14 +56,13 @@ class TrackDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        CacheItemPoolInterface $cache,
+        MenuSnippetHelper $menuHelper,
         protected Tracker $tracker
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger, $cache);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
     }
 
     /**
@@ -103,8 +101,8 @@ class TrackDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
                         ), $this->useCount));
                 $this->messenger->addMessage($this->_('This track cannot be deleted, only deactivated.'));
 
-                $this->deleteQuestion = $this->_('Do you want to deactivate this track?');
-                $this->displayTitle   = $this->_('Deactivate track');
+                $this->question = $this->_('Do you want to deactivate this track?');
+                // $this->displayTitle   = $this->_('Deactivate track');
             }
         }
 

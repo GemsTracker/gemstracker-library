@@ -16,6 +16,7 @@ use Gems\Model\MetaModelLoader;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\Mask\MaskUsageInformation;
+use Gems\Snippets\ModelConfirmSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Show\ShowAction;
@@ -27,6 +28,7 @@ use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\Sql\SqlTableModel;
 use Zalt\Model\Type\ConcatenatedType;
 use Zalt\Model\Type\YesNoType;
+use Zalt\Snippets\ModelConfirmSnippetAbstract;
 use Zalt\SnippetsActions\AbstractAction;
 use Zalt\SnippetsActions\BrowseTableAction;
 use Zalt\SnippetsActions\SnippetActionInterface;
@@ -102,6 +104,8 @@ class MaskHandler extends BrowseChangeHandler
             'description' => $this->_('Only active masks are used.'),
             'type' => new YesNoType($this->translatedUtil->getYesNo(), 'row_class'),
         ]);
+
+        $metaModel->setMeta(ModelConfirmSnippetAbstract::MODEL_ACTIVE_FIELD, 'gm_mask_active');
 
         if ($action->isDetailed()) {
             $this->maskRepository->addMaskStorageTo($metaModel, 'gm_mask_settings', $action->isDetailed());

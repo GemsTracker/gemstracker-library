@@ -7,6 +7,11 @@ use Gems\Util\UtilDbHelper;
 
 class AccessRepository
 {
+    protected array $cacheTags = [
+        'group',
+        'groups',
+    ];
+
     public function __construct(protected Translated $translatedUtil, protected UtilDbHelper $utilDbHelper)
     {}
 
@@ -43,7 +48,7 @@ class AccessRepository
                 'gems__groups',
                 'ggp_id_group',
                 'ggp_name',
-                ['groups'],
+                $this->cacheTags,
                 ['ggp_group_active' => 1],
                 'natsort'
             );

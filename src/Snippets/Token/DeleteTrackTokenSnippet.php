@@ -215,7 +215,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
              * @var StatusMessengerInterface $messenger
              */
             $messenger = $this->getMessenger();
-            $messenger->addMessage($this->_("Watch out! Token is currently expired and you won't be able to answer it unless you change the valid from date."), MessageStatus::Danger, true);
+            $messenger->addMessage($this->_("Watch out! Token is currently expired and you won't be able to answer it unless you change the valid from date."), MessageStatus::Danger);
         }
     }
 

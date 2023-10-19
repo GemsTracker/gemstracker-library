@@ -11,6 +11,10 @@ use MUtil\Translate\Translator;
 
 class ConsentRepository
 {
+    protected array $cacheTags = [
+        'consents',
+    ];
+
     protected array $consentConfig = [];
 
     public function __construct(
@@ -107,7 +111,7 @@ class ConsentRepository
         $select->columns(['gco_description', 'gco_code', 'gco_order'])
             ->order(['gco_order']);
 
-        $result = $this->cachedResultFetcher->fetchAll(__FUNCTION__, $select, null, ['consents']);
+        $result = $this->cachedResultFetcher->fetchAll(__FUNCTION__, $select, null, $this->cacheTags);
         return $this->dbTranslationRepository->translateTable(__FUNCTION__, 'gems__consents', 'gco_description', $result);
     }
 

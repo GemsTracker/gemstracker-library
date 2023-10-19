@@ -50,6 +50,13 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     ];
 
     /**
+     * Tags for cache cleanup after changes, passed to snippets
+     *
+     * @var array
+     */
+    public array $cacheTags = ['source', 'sources',];
+
+    /**
      * Array of the actions that use a summarized version of the model.
      *
      * This determines the value of $detailed in createAction(). As it is usually

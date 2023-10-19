@@ -16,6 +16,7 @@ use Gems\Snippets\TokenModelSnippetAbstract;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use Zalt\Html\AElement;
+use Zalt\Html\HtmlElement;
 use Zalt\Html\TableElement;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -122,7 +123,7 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
 
     /**
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @return AElement[] 
+     * @return HtmlElement[]
      */
     public function createActionButtons(TableBridge $bridge): array
     {
@@ -135,6 +136,9 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
         foreach ($actionLinks as $key => $actionLink) {
             if ($actionLink) {
                 $output[] = ' ';
+                /**
+                 * @vat $output[$key] HtmlElement
+                 */
                 $output[$key] = Html::create(
                         'div',
                         $actionLink,

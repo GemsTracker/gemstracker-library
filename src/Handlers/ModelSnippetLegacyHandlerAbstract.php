@@ -15,9 +15,9 @@ use Gems\Html;
 use Gems\Snippets\ActiveToggleSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelConfirmSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
-use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Snippets\ModelTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Export\ExportAction;
@@ -94,6 +94,10 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     private array $_deleteExtraParameters = [
         'deleteQuestion' => 'getDeleteQuestion',
         'displayTitle'   => 'getDeleteTitle',
+        'buttonNoClass'  => 'actionlink btn',
+        'buttonYesClass' => 'actionlink btn btn-primary btn-lg',
+        'csrfName'       => 'getCsrfTokenName',
+        'csrfToken'      => 'getCsrfToken',
         'formTitle'      => 'getDeleteTitle',
         'topicCallable'  => 'getTopicCallable',
     ];
@@ -206,7 +210,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var mixed String or array of snippets name
      */
     protected array $deleteSnippets = [
-        ModelItemYesNoDeleteSnippet::class,
+        ModelConfirmSnippet::class,
         ];
 
     protected string $exportActionClass = ExportAction::class;

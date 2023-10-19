@@ -141,6 +141,11 @@ class TokenForgottenSnippet extends ZendFormSnippetAbstract
         return $element;
     }
 
+    public function getInvalidFormMessage(): mixed
+    {
+        return $this->_('Input error! No mail could be sent!');
+    }
+
     /**
      * Returns/sets an element for determining / selecting the organization.
      *

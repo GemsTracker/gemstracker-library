@@ -521,131 +521,6 @@ parameters:
 			path: src/Actions/LogFileAction.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Actions\\\\OpenRosaFormAction\\:\\:\\$loader\\.$#"
-			count: 1
-			path: src/Actions/OpenRosaFormAction.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Actions\\\\OpenRosaFormAction\\:\\:\\$menu\\.$#"
-			count: 1
-			path: src/Actions/OpenRosaFormAction.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Actions/OpenRosaFormAction.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 87$#"
-			count: 1
-			path: src/Actions/OpenRosaFormAction.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Actions\\\\OpenrosaAction\\:\\:\\$_helper\\.$#"
-			count: 2
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Actions\\\\OpenrosaAction\\:\\:\\$loader\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Actions\\\\OpenrosaAction\\:\\:getHelper\\(\\)\\.$#"
-			count: 2
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Actions\\\\OpenrosaAction\\:\\:getRequest\\(\\)\\.$#"
-			count: 8
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Actions\\\\OpenrosaAction\\:\\:getResponse\\(\\)\\.$#"
-			count: 7
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:div\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Call to an undefined static method MUtil\\\\Controller\\\\ModelSnippetActionAbstract\\:\\:preDispatch\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Call to method addChild\\(\\) on an unknown class Gems\\\\Actions\\\\SimpleXMLElement\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Call to method asXML\\(\\) on an unknown class Gems\\\\Actions\\\\SimpleXMLElement\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Call to method saveAnswer\\(\\) on an unknown class Gems\\\\Actions\\\\OpenRosa_Tracker_Source_OpenRosa_Form\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Constant GEMS_PROJECT_NAME not found\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Constant GEMS_ROOT_DIR not found\\.$#"
-			count: 2
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Instantiated class Gems\\\\Actions\\\\OpenRosa_Tracker_Source_OpenRosa_Form not found\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Method Gems\\\\Actions\\\\OpenrosaAction\\:\\:getXml\\(\\) has invalid return type Gems\\\\Actions\\\\SimpleXMLElement\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Method Gems\\\\Actions\\\\OpenrosaAction\\:\\:getXml\\(\\) should return Gems\\\\Actions\\\\SimpleXMLElement but returns SimpleXMLElement\\|false\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Method Gems\\\\Actions\\\\OpenrosaAction\\:\\:processReceivedForm\\(\\) should return string but returns false\\.$#"
-			count: 2
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$xmlFile$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between string and false will always evaluate to false\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Undefined variable\\: \\$log$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Undefined variable\\: \\$xml$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
-			message: "#^Variable \\$forms might not be defined\\.$#"
-			count: 1
-			path: src/Actions/OpenrosaAction.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Actions\\\\PrivilegesAction\\:\\:\\$menu\\.$#"
 			count: 1
 			path: src/Actions/PrivilegesAction.php
@@ -2301,11 +2176,6 @@ parameters:
 			path: src/Handlers/GemsHandler.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$session SessionInterface\\)\\: Unexpected token \"\\$session\", expected type at offset 20$#"
-			count: 1
-			path: src/Handlers/GemsHandler.php
-
-		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
 			count: 1
 			path: src/Handlers/LogHandler.php
@@ -3186,11 +3056,6 @@ parameters:
 			path: src/Handlers/Setup/CommLogHandler.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model CommLogModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Handlers/Setup/CommLogHandler.php
-
-		-
 			message: "#^PHPDoc tag @var has invalid value \\(\\$model CommMessengersModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
 			count: 1
 			path: src/Handlers/Setup/CommMessengersHandler.php
@@ -3338,11 +3203,6 @@ parameters:
 			path: src/Handlers/Setup/MailServerHandler.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model MailServerModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Handlers/Setup/MailServerHandler.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\MetaModelLoader\\:\\:setChangeFields\\(\\)\\.$#"
 			count: 1
 			path: src/Handlers/Setup/MaskHandler.php
@@ -3419,16 +3279,6 @@ parameters:
 
 		-
 			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Handlers/Setup/ProjectInformationHandler.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$messenger StatusMessengerInterface\\)\\: Unexpected token \"\\$messenger\", expected type at offset 20$#"
-			count: 1
-			path: src/Handlers/Setup/ProjectInformationHandler.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$messenger StatusMessengerInterface\\)\\: Unexpected token \"\\$messenger\", expected type at offset 24$#"
 			count: 1
 			path: src/Handlers/Setup/ProjectInformationHandler.php
 
@@ -4423,82 +4273,12 @@ parameters:
 			path: src/Middleware/SiteGateMiddleware.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:applyBrowseSettings\\(\\)\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:applyDetailSettings\\(\\)\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:applySetting\\(\\)\\.$#"
-			count: 2
-			path: src/Model.php
-
-		-
 			message: "#^Method Gems\\\\Model\\:\\:createAppointmentModel\\(\\) should return Gems\\\\Model\\\\AppointmentModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
 			count: 1
 			path: src/Model.php
 
 		-
 			message: "#^Method Gems\\\\Model\\:\\:createEpisodeOfCareModel\\(\\) should return Gems\\\\Model\\\\EpisodeOfCareModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:createRespondentModel\\(\\) should return Gems\\\\Model\\\\Respondent\\\\RespondentModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:getCommLogModel\\(\\) should return Gems\\\\Model\\\\CommLogModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:getCommMessengersModel\\(\\) should return Gems\\\\Model\\\\CommMessengersModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:getCommtemplateModel\\(\\) should return Gems\\\\Model\\\\CommTemplateModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:getConditionModel\\(\\) should return Gems\\\\Model\\\\ConditionModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:getExportDbaModel\\(\\) should return Gems\\\\Model\\\\ExportDbaModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:getOpenRosaFormModel\\(\\) has invalid return type OpenRosa\\\\Model\\\\OpenRosaFormModel\\.$#"
-			count: 2
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:getOpenRosaFormModel\\(\\) should return OpenRosa\\\\Model\\\\OpenRosaFormModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:getOrganizationModel\\(\\) should return Gems\\\\Model\\\\OrganizationModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:getStaffLogModel\\(\\) should return Gems\\\\Model\\\\StaffLogModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Method Gems\\\\Model\\:\\:getStaffModel\\(\\) should return Gems\\\\Model\\\\StaffModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
 			count: 1
 			path: src/Model.php
 
@@ -4514,71 +4294,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @return with type Gems\\\\Model\\\\EpisodeOfCareModel\\|null is not subtype of native type Gems\\\\Model\\\\EpisodeOfCareModel\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model CommLogModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model CommMessengersModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model CommtemplateModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model ConditionModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model ExportDbaModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model OpenRosaFormModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model OrganizationModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model RespondentModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model StaffLogModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model StaffModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$transformer ModelTransformerInterface\\)\\: Unexpected token \"\\$transformer\", expected type at offset 24$#"
-			count: 2
-			path: src/Model.php
-
-		-
-			message: "#^Parameter \\#1 \\$model of method Gems\\\\Model\\:\\:addUserLogin\\(\\) expects Gems\\\\Model\\\\JoinModel, Zalt\\\\Model\\\\Data\\\\DataReaderInterface given\\.$#"
-			count: 1
-			path: src/Model.php
-
-		-
-			message: "#^Parameter \\#1 \\$model of method Gems\\\\Model\\:\\:setAsGemsUserId\\(\\) expects MUtil\\\\Model\\\\DatabaseModelAbstract, Zalt\\\\Model\\\\Data\\\\DataReaderInterface given\\.$#"
 			count: 1
 			path: src/Model.php
 
@@ -5963,7 +5678,7 @@ parameters:
 			path: src/Snippets/AutosearchFormSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:actionLink\\(\\)\\.$#"
+			message: "#^Call to an undefined method Zalt\\\\Html\\\\Creator|Zalt\\\\Html\\\\HtmlElement\\:\\:actionLink\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/AutosearchFormSnippet.php
 
@@ -7218,31 +6933,6 @@ parameters:
 			path: src/Snippets/ModelImportSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:tfrow\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/ModelItemYesNoDeleteSnippetAbstract.php
-
-		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Snippets/ModelItemYesNoDeleteSnippetAbstract.php
-
-		-
-			message: "#^Cannot call method actionLink\\(\\) on array\\<int, string\\>\\.$#"
-			count: 2
-			path: src/Snippets/ModelItemYesNoDeleteSnippetAbstract.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Snippets/ModelItemYesNoDeleteSnippetAbstract.php
-
-		-
-			message: "#^Parameter \\#1 \\$html of method Zalt\\\\Snippets\\\\SnippetAbstract\\:\\:applyHtmlAttributes\\(\\) expects Zalt\\\\Html\\\\HtmlElement, Zalt\\\\Html\\\\HtmlInterface given\\.$#"
-			count: 1
-			path: src/Snippets/ModelItemYesNoDeleteSnippetAbstract.php
-
-		-
 			message: "#^Access to an undefined property Zalt\\\\Html\\\\HtmlElement\\:\\:\\$id\\.$#"
 			count: 1
 			path: src/Snippets/ModelTableSnippetAbstract.php
@@ -7596,31 +7286,6 @@ parameters:
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$model$#"
 			count: 1
 			path: src/Snippets/Respondent/Relation/TableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Respondent\\\\Relation\\\\YesNoDeleteSnippet\\:\\:\\$abortAction\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/Relation/YesNoDeleteSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Respondent\\\\Relation\\\\YesNoDeleteSnippet\\:\\:\\$request\\.$#"
-			count: 2
-			path: src/Snippets/Respondent/Relation/YesNoDeleteSnippet.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Snippets\\\\Respondent\\\\Relation\\\\YesNoDeleteSnippet\\:\\:findMenuItem\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/Relation/YesNoDeleteSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:tfrow\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/Relation/YesNoDeleteSnippet.php
-
-		-
-			message: "#^Cannot call method actionLink\\(\\) on array\\<int, string\\>\\.$#"
-			count: 2
-			path: src/Snippets/Respondent/Relation/YesNoDeleteSnippet.php
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:\\$grs_address_1\\.$#"
@@ -8158,11 +7823,6 @@ parameters:
 			path: src/Snippets/Staff/StaffSearchSnippet.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model StaffModel\\)\\: Unexpected token \"\\$model\", expected type at offset 24$#"
-			count: 1
-			path: src/Snippets/Staff/StaffTableSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
 			count: 2
 			path: src/Snippets/Staff/SystemUserSearchSnippet.php
@@ -8513,22 +8173,12 @@ parameters:
 			path: src/Snippets/Token/DeleteTrackTokenSnippet.php
 
 		-
-			message: "#^Method Zalt\\\\Message\\\\MessengerInterface\\:\\:addMessage\\(\\) invoked with 3 parameters, 1 required\\.$#"
-			count: 1
-			path: src/Snippets/Token/DeleteTrackTokenSnippet.php
-
-		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$changed\\)\\: Unexpected token \"\\$changed\", expected type at offset 117$#"
 			count: 1
 			path: src/Snippets/Token/DeleteTrackTokenSnippet.php
 
 		-
 			message: "#^PHPDoc tag @return with type Gems\\\\Menu\\\\MenuList is incompatible with native type array\\.$#"
-			count: 1
-			path: src/Snippets/Token/DeleteTrackTokenSnippet.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$messenger StatusMessengerInterface\\)\\: Unexpected token \"\\$messenger\", expected type at offset 24$#"
 			count: 1
 			path: src/Snippets/Token/DeleteTrackTokenSnippet.php
 
@@ -9333,11 +8983,6 @@ parameters:
 			path: src/Snippets/Tracker/Rounds/EditRoundStepSnippet.php
 
 		-
-			message: "#^Method Gems\\\\Snippets\\\\Tracker\\\\Rounds\\\\RoundDeleteSnippet\\:\\:setAfterDeleteRoute\\(\\) should return MUtil\\\\Snippets\\\\ModelYesNoDeleteSnippetAbstract but return statement is missing\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Rounds/RoundDeleteSnippet.php
-
-		-
 			message: "#^PHPDoc tag @param for parameter \\$bridge with type MUtil\\\\Model\\\\Bridge\\\\VerticalTableBridge is incompatible with native type Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/Rounds/RoundDeleteSnippet.php
@@ -10044,11 +9689,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @var has invalid value \\(\\$tokenLibrary TokenLibrary\\)\\: Unexpected token \"\\$tokenLibrary\", expected type at offset 24$#"
-			count: 1
-			path: src/Tracker.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$tokenValidator TokenValidator\\)\\: Unexpected token \"\\$tokenValidator\", expected type at offset 20$#"
 			count: 1
 			path: src/Tracker.php
 

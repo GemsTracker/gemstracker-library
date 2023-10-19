@@ -454,6 +454,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         $params = $this->requestInfo->getRequestMatchedParams();
         $url = [$this->requestInfo->getBasePath(), GemsHandler::AUTOSEARCH_RESET => 1];
 
+        // @phpstan-ignore method.undefined
         $link = Html::create()->actionLink($url, $this->_('Reset search'));
 
         $element = new \MUtil\Form\Element\Html('reset');

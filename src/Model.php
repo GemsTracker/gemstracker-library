@@ -41,7 +41,6 @@ use MUtil\Db\Expr\CurrentTimestamp;
 use MUtil\Model\DatabaseModelAbstract;
 use MUtil\Model\FolderModel;
 use MUtil\Model\ModelAbstract;
-use OpenRosa\Model\OpenRosaFormModel;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
@@ -409,23 +408,6 @@ class Model
         $model->set('changed',   'label', $this->translate->_('Changed on'),
                     'dateFormat', $this->translatedUtil->dateTimeFormatString,
                     'elementClass', 'Exhibitor');
-
-        return $model;
-    }
-
-    /**
-     * Returns the OpenRosaFormModel
-     *
-     * It is special since it can show how many responses each table has
-     *
-     * @return OpenRosaFormModel
-     */
-    public function getOpenRosaFormModel(): OpenRosaFormModel
-    {
-        /**
-         * @var OpenRosaFormModel $model
-         */
-        $model = $this->_createModel('OpenRosaFormModel');
 
         return $model;
     }

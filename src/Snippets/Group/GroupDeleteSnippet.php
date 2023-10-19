@@ -15,7 +15,6 @@ use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\GroupRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
-use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessageStatus;
@@ -32,7 +31,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 24-sep-2014 18:26:00
  */
-class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract
+class GroupDeleteSnippet extends \Gems\Snippets\ModelConfirmSnippetAbstract
 {
     /**
      *
@@ -42,28 +41,27 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
 
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var FullDataInterface
      */
     protected $model;
 
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        CacheItemPoolInterface $cache,
+        MenuSnippetHelper $menuHelper,
         private readonly AclRepository $aclRepository,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly GroupRepository $groupRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger, $cache);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
     }
 
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
@@ -92,7 +90,7 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
         // Perform access check here, before anything has happened!!!
         if (isset($data['ggp_role']) && (! isset($roles[$data['ggp_role']]))) {
             $this->messenger->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
-            $this->afterActionRouteUrl = $this->menuHelper->getRelatedRouteUrl('show');
+            $this->afterActionRouteUrl = $this->menuSnippetHelper->getRelatedRouteUrl('show');
 
             return false;
         }
@@ -105,7 +103,7 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
                 $this->_('This group is being used by groups %s and hence cannot be deleted'),
                 implode(', ', $dependents)
             ), MessageStatus::Danger);
-            $this->afterActionRouteUrl = $this->menuHelper->getRelatedRouteUrl('show');
+            $this->afterActionRouteUrl = $this->menuSnippetHelper->getRelatedRouteUrl('show');
 
             return false;
         }

@@ -74,7 +74,8 @@ trait ModelSnippetActionRouteHelpers
                                        ?array $parameterRoutes = null,
                                        ?array $postRoutes = null,
                                        ?array $parentParameters = null,
-                                       bool $genericExport = false): array
+                                       bool $genericExport = false,
+                                       array $noCsrfRoutes = ['index']): array
     {
         if ($basePath === null) {
             $basePath = '/' . str_replace('.', '/', $baseName);
@@ -155,7 +156,7 @@ trait ModelSnippetActionRouteHelpers
 
             if (in_array($pageName, $postRoutes)) {
                 $route['allowed_methods'][] = 'POST';
-                if ('index' !== $pageName) {
+                if (! in_array($pageName, $noCsrfRoutes)) {
                     array_unshift($route['middleware'], HandlerCsrfMiddleware::class);
                 }
             }
@@ -237,7 +238,8 @@ trait ModelSnippetActionRouteHelpers
                                        ?array $parameterRoutes = null,
                                        ?array $postRoutes = null,
                                        ?array $parentParameters = null,
-                                       bool $genericExport = false): array
+                                       bool $genericExport = false,
+                                       array $noCsrfRoutes = ['index']): array
     {
         return $this->createBrowseRoutes(
             $baseName, 
@@ -253,7 +255,8 @@ trait ModelSnippetActionRouteHelpers
             $parameterRoutes, 
             $postRoutes, 
             $parentParameters,
-            $genericExport);
+            $genericExport,
+            $noCsrfRoutes);
     }
 
     public function getDefaultMiddleware(string|array $additionalMiddleware): array

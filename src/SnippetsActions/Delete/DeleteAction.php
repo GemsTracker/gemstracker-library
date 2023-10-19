@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Gems\SnippetsActions\Delete;
 
 use Gems\Snippets\Generic\ContentTitleSnippet;
-use Gems\Snippets\ModelItemYesNoDeleteSnippet;
+use Gems\Snippets\ModelConfirmSnippet;
 use Gems\SnippetsActions\ContentTitleActionTrait;
 use Zalt\Model\MetaModellerInterface;
 
@@ -31,9 +31,19 @@ class DeleteAction extends \Zalt\SnippetsActions\Delete\DeleteAction
      */
     protected array $_snippets = [
         ContentTitleSnippet::class,
-        ModelItemYesNoDeleteSnippet::class,
+        ModelConfirmSnippet::class,
     ];
-    
+
+    /**
+     * @var string Optional class for use on No button
+     */
+    public ?string $buttonNoClass = 'actionlink btn';
+
+    /**
+     * @var ?string Optional class for use on Yes button
+     */
+    public ?string $buttonYesClass = 'actionlink btn btn-primary btn-lg';
+
     /**
      * @var string A calssname to append to the class attribute of the main HtmlElement output of the snippet;
      */

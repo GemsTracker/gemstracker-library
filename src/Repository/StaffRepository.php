@@ -14,6 +14,8 @@ use Zalt\Loader\ProjectOverloader;
 
 class StaffRepository
 {
+    protected array $cacheTags = ['staff'];
+
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
         protected TranslatorInterface $translator,
@@ -83,7 +85,7 @@ class StaffRepository
                 WHERE gsf_active = 1
                 ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix";
 
-        return $this->cachedResultFetcher->fetchPairs(__FUNCTION__, $sql, null, ['staff']);
+        return $this->cachedResultFetcher->fetchPairs(__FUNCTION__, $sql, null, $this->cacheTags);
     }
 
     /**
@@ -105,7 +107,7 @@ class StaffRepository
 
         $staticStaff = $this->getStaticStaff();
 
-        return $this->cachedResultFetcher->fetchPairs(__FUNCTION__, $sql, null, ['staff']) + $staticStaff;
+        return $this->cachedResultFetcher->fetchPairs(__FUNCTION__, $sql, null, $this->cacheTags) + $staticStaff;
 
     }
 
