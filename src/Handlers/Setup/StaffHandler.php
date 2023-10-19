@@ -16,6 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelConfirmSnippet;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Zalt\Base\TranslatorInterface;
@@ -32,6 +33,10 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class StaffHandler extends ModelSnippetLegacyHandlerAbstract
 {
+    protected array $activeToggleSnippets = [
+        ModelConfirmSnippet::class,
+    ];
+
     /**
      * The parameters used for the autofilter action.
      *
@@ -253,7 +258,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         }
 
         // \MUtil\Model::$verbose = true;
-        $model = $this->modelLoader->getStaffModel(! (('deactivate' === $action) || ('reactivate' === $action)));
+        $model = $this->modelLoader->getStaffModel(! in_array($action, ['deactivate', 'reactivate', 'active-toggle']));
 
         if ($this->useStaffModel) {
             $model->applySettings($detailed, $action);

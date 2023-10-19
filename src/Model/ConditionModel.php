@@ -12,6 +12,7 @@
 namespace Gems\Model;
 
 use Gems\Condition\ConditionLoader;
+use Zalt\Model\Type\ActivatingYesNoType;
 
 /**
  *
@@ -80,7 +81,9 @@ class ConditionModel extends \Gems\Model\JoinModel
 
         $this->set('gcon_name', 'label', $this->_('Name'));
         $this->set('gcon_active', 'label', $this->_('Active'),
-            'multiOptions', $yesNo
+            'multiOptions', $yesNo,
+            ActivatingYesNoType::$activatingValue, 1,
+            ActivatingYesNoType::$deactivatingValue, 0
         );
 
         $this->addColumn("CASE WHEN gcon_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
@@ -169,7 +172,9 @@ class ConditionModel extends \Gems\Model\JoinModel
         // gcon_id is not needed for some validators
         $this->set('gcon_id',            'elementClass', 'Hidden');
 
-        $this->set('gcon_active',        'elementClass', 'Checkbox');
+        $this->set('gcon_active',
+            'elementClass', 'Checkbox',
+        );
 
         return $this;
     }

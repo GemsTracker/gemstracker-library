@@ -196,7 +196,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      * As the save button is not part of the model - but of the interface - it
      * does deserve it's own function.
      */
-    protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass)
+    protected function addSaveButton(string $saveButtonId, ?string $saveLabel, string $buttonClass)
     {
         if ("OK" == $this->saveLabel) {
             $this->saveLabel = $this->_('Save');

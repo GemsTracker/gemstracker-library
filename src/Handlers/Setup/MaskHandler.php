@@ -26,6 +26,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\Sql\SqlTableModel;
+use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\Model\Type\ConcatenatedType;
 use Zalt\Model\Type\YesNoType;
 use Zalt\Snippets\ModelConfirmSnippetAbstract;
@@ -102,10 +103,8 @@ class MaskHandler extends BrowseChangeHandler
         $metaModel->set('gm_mask_active', [
             'label' => $this->_('Active'),
             'description' => $this->_('Only active masks are used.'),
-            'type' => new YesNoType($this->translatedUtil->getYesNo(), 'row_class'),
+            'type' => new ActivatingYesNoType($this->translatedUtil->getYesNo(), 'row_class'),
         ]);
-
-        $metaModel->setMeta(ModelConfirmSnippetAbstract::MODEL_ACTIVE_FIELD, 'gm_mask_active');
 
         if ($action->isDetailed()) {
             $this->maskRepository->addMaskStorageTo($metaModel, 'gm_mask_settings', $action->isDetailed());

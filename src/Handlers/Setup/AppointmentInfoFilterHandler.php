@@ -6,25 +6,44 @@ use Gems\Handlers\BrowseChangeHandler;
 use Gems\Model\AppointmentInfoFilterModel;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\MetaModelLoader;
-use Zalt\SnippetsActions\SnippetActionInterface;
+use Zalt\SnippetsHandler\ConstructorModelHandlerTrait;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class AppointmentInfoFilterHandler extends BrowseChangeHandler
 {
+    use ConstructorModelHandlerTrait;
+
     public function __construct(
         SnippetResponderInterface $responder,
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected readonly AppointmentInfoFilterModel $model,
+        AppointmentInfoFilterModel $appointmentInfoFilterModel,
     ) {
         parent::__construct($responder, $metaModelLoader, $translate, $cache);
+
+        $this->model = $appointmentInfoFilterModel;
     }
 
-    protected function getModel(SnippetActionInterface $action): MetaModellerInterface
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle(): string
     {
-        return $this->model;
+        return $this->_('Appointment info');
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic(int $count = 1): string
+    {
+        return $this->plural('appointment info', 'appointment info\'s', $count);
     }
 }

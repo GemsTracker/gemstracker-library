@@ -154,6 +154,10 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     );
 
     protected array $activeToggleParameters = [
+        'buttonNoClass'  => 'actionlink btn',
+        'buttonYesClass' => 'actionlink btn btn-primary btn-lg',
+        'csrfName'       => 'getCsrfTokenName',
+        'csrfToken'      => 'getCsrfToken',
         'deactivateConfirmQuestion' => 'getDeactivateQuestion',
         'deactivateDisplayTitle'    => 'getDeactivateTitle',
         'deactivateFormTitle'       => 'getDeactivateTitle',

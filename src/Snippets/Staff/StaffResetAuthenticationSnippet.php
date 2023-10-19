@@ -95,7 +95,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
         $form->addElement($resetElement);
     }
 
-    protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass)
+    protected function addSaveButton(string $saveButtonId, ?string $saveLabel, string $buttonClass)
     {
         parent::addSaveButton($saveButtonId, $saveLabel, $buttonClass);
         $this->_saveButton->setAttrib('class', 'd-none');

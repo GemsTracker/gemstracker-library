@@ -24,6 +24,7 @@ use MUtil\Model\Dependency\ValueSwitchDependency;
 use MUtil\Validator\NoScript;
 use MUtil\Validator\SimpleEmail;
 use Zalt\Html\AElement;
+use Zalt\Model\Type\ActivatingYesNoType;
 
 /**
  * Contains the staffModel
@@ -339,7 +340,9 @@ class StaffModel extends JoinModel
 
         $this->set('gsf_active', 'label', $this->_('Active'),
             'elementClass', 'None',
-            'multiOptions', $yesNo
+            'multiOptions', $yesNo,
+            ActivatingYesNoType::$activatingValue, 1,
+            ActivatingYesNoType::$deactivatingValue, 0
         );
 
         $this->setIfExists('has_authenticator_tfa', 'label', $this->_('Authenticator TFA'),

@@ -21,6 +21,7 @@ use Gems\Util;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\Snippets\ModelConfirmSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -161,15 +162,15 @@ e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operat
         $model->setIfExists('gapr_active',      'label', $this->_('Active'),
                 'description', $this->_('Inactive means assignable only through automatich processes.'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $this->translatedUtil->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo(),
+                ActivatingYesNoType::$activatingValue, 1,
+                ActivatingYesNoType::$deactivatingValue, 0
                 );
         $model->setIfExists('gapr_filter',      'label', $this->_('Filter'),
                 'description', $this->_('When checked appointments with these procedures are not imported.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $this->translatedUtil->getYesNo()
                 );
-
-        $model->setMeta(ModelConfirmSnippetAbstract::MODEL_ACTIVE_FIELD, 'gapr_active');
 
         $model->addColumn("CASE WHEN gapr_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
