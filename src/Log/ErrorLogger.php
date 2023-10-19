@@ -8,8 +8,13 @@ use Monolog\Logger;
 
 class ErrorLogger extends Logger
 {
-    public function __construct(string $name = 'gems', array $handlers = [], array $processors = [], DateTimeZone|null $timezone = null)
-    {
+    public function __construct(
+        string $name = 'gems',
+        array $handlers = [],
+        array $processors = [],
+        ?DateTimeZone $timezone = null
+    ) {
+        parent::__construct($name, $handlers, $processors, $timezone);
         $this->name = $name;
         $this->setHandlers($handlers);
         $this->processors = $processors;

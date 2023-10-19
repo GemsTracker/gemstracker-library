@@ -108,7 +108,7 @@ class MonologFactory implements FactoryInterface
 
     protected function createLogger($requestedName): Logger
     {
-        if (class_exists($requestedName, false)) {
+        if (class_exists($requestedName)) {
             return new $requestedName();
         }
 
