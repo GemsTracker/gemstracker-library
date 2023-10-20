@@ -49,6 +49,10 @@ class ManualMailerFactory
             return $dsn;
         }
 
+        if (getenv('MAILER_DSN')) {
+            return getenv('MAILER_DSN');
+        }
+
         if (isset($this->config['dsn'])) {
             return $this->config['dsn'];
         }

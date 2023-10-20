@@ -352,8 +352,13 @@ class CommunicationRepository
     public function getTransports(): array
     {
         $transports = [];
-        if (isset($this->config['email']['dsn'])) {
-            $transports['config'] = Transport::fromDsn($this->config['email']['dsn'], $this->eventDispatcher);
+        $dsn = getenv('MAILER_DSN');
+        if (!$dsn) {
+            $dsn = $this->config['email']['dsn'] ?? null;
+        }
+
+        if ($dsn) {
+            $transports['config'] = Transport::fromDsn($dsn, $this->eventDispatcher);
         }
 
         $mailservers = $this->getMailServers();
