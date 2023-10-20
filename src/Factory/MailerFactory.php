@@ -31,7 +31,7 @@ class MailerFactory implements FactoryInterface
 
     protected function getTransport(array $config): TransportInterface
     {
-        $envDsn = getenv('MAILER_DSN') ?? null;
+        $envDsn = getenv('MAILER_DSN') ? getenv('MAILER_DSN') : null;
         if ($envDsn) {
             return Transport::fromDsn($envDsn);
         }
