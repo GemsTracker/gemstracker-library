@@ -7,6 +7,7 @@ namespace Gems\Factory;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Gems\Db\ConfigRepository;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Cache\CacheItemPoolInterface;
@@ -26,7 +27,9 @@ class DoctrineDbalFactory implements FactoryInterface
     {
         $config = $container->get('config');
 
-        $databaseConfig = $this->getDatabaseConfig($config['db']);
+        $configRepository = new ConfigRepository($config);
+        $databaseConfig = $configRepository->getDoctrineConfig();
+
         $connection = DriverManager::getConnection($databaseConfig);
 
         $cache = $container->get(CacheItemPoolInterface::class);
@@ -36,28 +39,5 @@ class DoctrineDbalFactory implements FactoryInterface
         }
 
         return $connection;
-    }
-
-    protected function getDatabaseConfig(array $config)
-    {
-        if (isset($config['url'])) {
-            return [
-                'url' => $config['url'],
-            ];
-        }
-
-        $options = [
-            'driver' => strtolower($config['driver']),
-            'host' => $config['host'],
-            'user' => $config['username'],
-            'password' => $config['password'],
-            'dbname' => $config['database'],
-        ];
-
-        if (isset($config['options'])) {
-            $options['driverOptions'] = $config['options'];
-        }
-
-        return $options;
     }
 }

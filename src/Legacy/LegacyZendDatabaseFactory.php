@@ -3,6 +3,7 @@
 namespace Gems\Legacy;
 
 use Exception;
+use Gems\Db\ConfigRepository;
 use Gems\Db\LegacyDbAdapter\PdoMysqlAdapter;
 use Gems\Db\LegacyDbAdapter\PdoSqliteAdapter;
 use Interop\Container\ContainerInterface;
@@ -23,7 +24,8 @@ class LegacyZendDatabaseFactory implements FactoryInterface
             throw new Exception('No database configuration found');
         }
 
-        $databaseConfig = $config['db'];
+        $configRepository = new ConfigRepository($config);
+        $databaseConfig = $configRepository->getConfig();
 
         /**
          * Zend\Db (2.x) uses other configuration names vs \Zend_Db:
