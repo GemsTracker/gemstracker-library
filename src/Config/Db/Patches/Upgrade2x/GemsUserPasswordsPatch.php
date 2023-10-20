@@ -12,16 +12,15 @@ class GemsUserPasswordsPatch extends PatchAbstract
 
     public function __construct(
         protected array $config,
+        protected readonly ResultFetcher $resultFetcher,
     )
     {
     }
 
     protected function prepare(): void
     {
-        $db = new Adapter($this->config['db']);
-        $resultFetcher = new ResultFetcher($db);
         $sql = sprintf('SELECT * FROM information_schema.table_constraints_extensions WHERE constraint_schema = "%s" AND table_name = "%s"', $this->config['db']['database'], 'gems__user_passwords');
-        $this->gems_table_constraints = $resultFetcher->fetchAll($sql) ?? [];
+        $this->gems_table_constraints = $this->resultFetcher->fetchAll($sql) ?? [];
     }
 
     public function getDescription(): string|null

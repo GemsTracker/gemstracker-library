@@ -13,16 +13,15 @@ class GemsTimestampDefaultPatch extends PatchAbstract
 
     public function __construct(
         protected array $config,
+        protected readonly ResultFetcher $resultFetcher,
     )
     {
     }
 
     protected function prepare(): void
     {
-        $db = new Adapter($this->config['db']);
-        $resultFetcher = new ResultFetcher($db);
-        $this->gems_tables = $resultFetcher->fetchAll('SELECT * FROM information_schema.tables WHERE table_schema = "' . $this->config['db']['database'] . '"') ?? [];
-        $this->gems_columns = $resultFetcher->fetchAll('SELECT * FROM information_schema.columns WHERE table_schema = "' . $this->config['db']['database'] . '"') ?? [];
+        $this->gems_tables = $this->resultFetcher->fetchAll('SELECT * FROM information_schema.tables WHERE table_schema = "' . $this->config['db']['database'] . '"') ?? [];
+        $this->gems_columns = $this->resultFetcher->fetchAll('SELECT * FROM information_schema.columns WHERE table_schema = "' . $this->config['db']['database'] . '"') ?? [];
     }
 
     public function getDescription(): string|null
