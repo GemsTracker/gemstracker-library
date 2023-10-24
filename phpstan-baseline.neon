@@ -1786,11 +1786,6 @@ parameters:
 			path: src/Form.php
 
 		-
-			message: "#^Parameter \\#4 \\$mode of static method Zalt\\\\Ra\\\\Ra\\:\\:args\\(\\) expects bool, int given\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
 			message: "#^Method Gems\\\\Form\\\\AutoLoadFormAbstract\\:\\:getSubmitButton\\(\\) should return Zend_Form_Element_Submit but returns Zend_Form_Element\\.$#"
 			count: 1
 			path: src/Form/AutoLoadFormAbstract.php
@@ -2651,11 +2646,6 @@ parameters:
 			path: src/Handlers/Respondent/RespondentHandler.php
 
 		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Handlers/Respondent/RespondentHandler.php
-
-		-
 			message: "#^If condition is always true\\.$#"
 			count: 15
 			path: src/Handlers/Respondent/RespondentHandler.php
@@ -3268,11 +3258,6 @@ parameters:
 			path: src/Handlers/Setup/ProjectInformationHandler.php
 
 		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Handlers/Setup/ProjectInformationHandler.php
-
-		-
 			message: "#^Parameter \\#1 \\$size of static method MUtil\\\\File\\:\\:getByteSized\\(\\) expects int, float given\\.$#"
 			count: 2
 			path: src/Handlers/Setup/ProjectInformationHandler.php
@@ -3313,18 +3298,8 @@ parameters:
 			path: src/Handlers/Setup/RoleHandler.php
 
 		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Handlers/Setup/RoleHandler.php
-
-		-
 			message: "#^Method Gems\\\\Handlers\\\\Setup\\\\RoleHandler\\:\\:formatInherited\\(\\) should return Zalt\\\\Html\\\\ListElement but returns Zalt\\\\Html\\\\HtmlElement\\.$#"
 			count: 1
-			path: src/Handlers/Setup/RoleHandler.php
-
-		-
-			message: "#^Method Gems\\\\Handlers\\\\Setup\\\\RoleHandler\\:\\:formatLongLine\\(\\) should return array but returns Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 2
 			path: src/Handlers/Setup/RoleHandler.php
 
 		-
@@ -3636,11 +3611,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$oldTrackId of method Gems\\\\Tracker\\\\Engine\\\\TrackEngineInterface\\:\\:copyTrack\\(\\) expects int, string\\|null given\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/TrackMaintenanceHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:i\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/TrackOverviewHandler.php
 
 		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
@@ -4908,16 +4878,6 @@ parameters:
 			path: src/Repository/TokenRepository.php
 
 		-
-			message: "#^Access to an undefined property Zalt\\\\Html\\\\HtmlElement\\:\\:\\$title\\.$#"
-			count: 1
-			path: src/Repository/TokenRepository.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:i\\(\\)\\.$#"
-			count: 15
-			path: src/Repository/TokenRepository.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Late\\\\LateCall\\:\\:append\\(\\)\\.$#"
 			count: 1
 			path: src/Repository/TokenRepository.php
@@ -4933,17 +4893,7 @@ parameters:
 			path: src/Repository/TokenRepository.php
 
 		-
-			message: "#^Left side of && is always false\\.$#"
-			count: 1
-			path: src/Repository/TokenRepository.php
-
-		-
 			message: "#^Method Gems\\\\Repository\\\\TokenRepository\\:\\:getTokenCopyLinkClass\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/Repository/TokenRepository.php
-
-		-
-			message: "#^Method Gems\\\\Repository\\\\TokenRepository\\:\\:getTokenStatusLink\\(\\) should return Zalt\\\\Html\\\\AElement\\|null but returns Zalt\\\\Html\\\\HtmlElement\\.$#"
 			count: 1
 			path: src/Repository/TokenRepository.php
 
@@ -4979,7 +4929,7 @@ parameters:
 
 		-
 			message: "#^Result of && is always false\\.$#"
-			count: 2
+			count: 1
 			path: src/Repository/TokenRepository.php
 
 		-
@@ -5274,7 +5224,7 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\Html\\\\HtmlElement\\:\\:\\$class\\.$#"
-			count: 3
+			count: 2
 			path: src/Snippets/Agenda/AppointmentShowSnippet.php
 
 		-
@@ -5598,17 +5548,12 @@ parameters:
 			path: src/Snippets/Ask/ShowOpenSequenceSnippet.php
 
 		-
-			message: "#^Return type \\(string\\) of method Gems\\\\Snippets\\\\Ask\\\\ShowOpenSequenceSnippet\\:\\:formatWelcome\\(\\) should be compatible with return type \\(Zalt\\\\Html\\\\HtmlElement\\) of method Gems\\\\Tracker\\\\Snippets\\\\ShowTokenLoopAbstract\\:\\:formatWelcome\\(\\)$#"
-			count: 1
-			path: src/Snippets/Ask/ShowOpenSequenceSnippet.php
-
-		-
 			message: "#^Access to an undefined property Zalt\\\\Html\\\\HtmlElement\\:\\:\\$class\\.$#"
 			count: 1
 			path: src/Snippets/AutosearchFormSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Creator|Zalt\\\\Html\\\\HtmlElement\\:\\:actionLink\\(\\)\\.$#"
+			message: "#^Call to an undefined method Zalt\\\\Html\\\\Creator\\|Zalt\\\\Html\\\\HtmlElement\\:\\:actionLink\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/AutosearchFormSnippet.php
 
@@ -5620,11 +5565,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:label\\(\\)\\.$#"
 			count: 2
-			path: src/Snippets/AutosearchFormSnippet.php
-
-		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
 			path: src/Snippets/AutosearchFormSnippet.php
 
 		-
@@ -6248,11 +6188,6 @@ parameters:
 			path: src/Snippets/FolderModelTableSnippet.php
 
 		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Snippets/FormSnippetAbstract.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\FormSnippetAbstract\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\HtmlElement\\.$#"
 			count: 1
 			path: src/Snippets/FormSnippetAbstract.php
@@ -6718,11 +6653,6 @@ parameters:
 			path: src/Snippets/ModelConfirmDataChangeSnippet.php
 
 		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Snippets/ModelConfirmDataChangeSnippet.php
-
-		-
 			message: "#^Cannot call method actionLink\\(\\) on array\\<int, string\\>\\.$#"
 			count: 2
 			path: src/Snippets/ModelConfirmDataChangeSnippet.php
@@ -6748,21 +6678,6 @@ parameters:
 			path: src/Snippets/ModelConfirmDataChangeSnippet.php
 
 		-
-			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
-			count: 1
-			path: src/Snippets/ModelDetailTableSnippetAbstract.php
-
-		-
-			message: "#^Elseif branch is unreachable because previous condition is always true\\.$#"
-			count: 1
-			path: src/Snippets/ModelDetailTableSnippetAbstract.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 164$#"
-			count: 1
-			path: src/Snippets/ModelDetailTableSnippetAbstract.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Bridge\\\\FormBridgeInterface\\:\\:addDisplayGroup\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/ModelFormSnippetAbstract.php
@@ -6773,27 +6688,7 @@ parameters:
 			path: src/Snippets/ModelFormSnippetAbstract.php
 
 		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Snippets/ModelFormSnippetAbstract.php
-
-		-
-			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
-			count: 1
-			path: src/Snippets/ModelFormSnippetAbstract.php
-
-		-
-			message: "#^Elseif branch is unreachable because previous condition is always true\\.$#"
-			count: 1
-			path: src/Snippets/ModelFormSnippetAbstract.php
-
-		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$menuList$#"
-			count: 1
-			path: src/Snippets/ModelFormSnippetAbstract.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 164$#"
 			count: 1
 			path: src/Snippets/ModelFormSnippetAbstract.php
 
@@ -7153,11 +7048,6 @@ parameters:
 			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:spaced\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:td\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
@@ -7258,11 +7148,6 @@ parameters:
 			path: src/Snippets/Respondent/RespondentDetailsSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:spaced\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/RespondentDetailsSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:caption\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Respondent/RespondentDetailsSnippet.php
@@ -7299,11 +7184,6 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:\\$grs_surname_prefix\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/RespondentMinimalDetailsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:spaced\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Respondent/RespondentMinimalDetailsSnippet.php
 
@@ -7615,11 +7495,6 @@ parameters:
 		-
 			message: "#^Call to method findAllowedController\\(\\) on an unknown class Gems\\\\Menu\\.$#"
 			count: 2
-			path: src/Snippets/RespondentDetailSnippetAbstract.php
-
-		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
 			path: src/Snippets/RespondentDetailSnippetAbstract.php
 
 		-
@@ -8033,11 +7908,6 @@ parameters:
 			path: src/Snippets/Survey/SurveyQuestionsSnippet.php
 
 		-
-			message: "#^Property Zalt\\\\Snippets\\\\TableSnippetAbstract\\:\\:\\$repeater \\(Zalt\\\\Late\\\\RepeatableInterface\\) does not accept null\\.$#"
-			count: 1
-			path: src/Snippets/Survey/SurveyQuestionsSnippet.php
-
-		-
 			message: "#^Result of && is always false\\.$#"
 			count: 1
 			path: src/Snippets/Survey/SurveyQuestionsSnippet.php
@@ -8263,11 +8133,6 @@ parameters:
 			path: src/Snippets/Token/PlanTokenSnippet.php
 
 		-
-			message: "#^Method Gems\\\\Snippets\\\\Token\\\\PlanTokenSnippet\\:\\:createActionButtons\\(\\) should return array\\<Zalt\\\\Html\\\\AElement\\> but returns array\\<int\\|string, string\\|Zalt\\\\Html\\\\HtmlElement\\>\\.$#"
-			count: 1
-			path: src/Snippets/Token/PlanTokenSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\Token\\\\PlanTokenSnippet\\:\\:createShowTokenButton\\(\\) should return Zalt\\\\Html\\\\AElement\\|null but return statement is missing\\.$#"
 			count: 1
 			path: src/Snippets/Token/PlanTokenSnippet.php
@@ -8350,11 +8215,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Gems\\\\Snippets\\\\Token\\\\RespondentTokenSnippet\\:\\:findMenuItem\\(\\)\\.$#"
 			count: 1
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:if\\(\\)\\.$#"
-			count: 2
 			path: src/Snippets/Token/RespondentTokenSnippet.php
 
 		-
@@ -8638,18 +8498,8 @@ parameters:
 			path: src/Snippets/Tracker/AddTracksSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\AElement\\:\\:i\\(\\)\\.$#"
-			count: 4
-			path: src/Snippets/Tracker/AddTracksSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:button\\(\\)\\.$#"
 			count: 3
-			path: src/Snippets/Tracker/AddTracksSnippet.php
-
-		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 4
 			path: src/Snippets/Tracker/AddTracksSnippet.php
 
 		-
@@ -9151,11 +9001,6 @@ parameters:
 			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/TrackUsageTextDetailsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:i\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/Tracker/TrackVisualDefinitionSnippet.php
 
 		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
@@ -10398,11 +10243,6 @@ parameters:
 			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
 
 		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
 			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
@@ -10733,11 +10573,6 @@ parameters:
 			path: src/Tracker/Snippets/ShowRoundSnippetAbstract.php
 
 		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/ShowRoundSnippetAbstract.php
-
-		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/ShowRoundSnippetAbstract.php
@@ -10751,11 +10586,6 @@ parameters:
 			message: "#^Negated boolean expression is always false\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/ShowRoundSnippetAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:sprintf\\(\\)\\.$#"
-			count: 2
-			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlInterface\\:\\:actionLink\\(\\)\\.$#"
@@ -10783,21 +10613,6 @@ parameters:
 			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
 
 		-
-			message: "#^Method Gems\\\\Tracker\\\\Snippets\\\\ShowTokenLoopAbstract\\:\\:formatUntil\\(\\) should return string but empty return statement found\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
-
-		-
-			message: "#^Method Gems\\\\Tracker\\\\Snippets\\\\ShowTokenLoopAbstract\\:\\:formatUntil\\(\\) should return string but returns array\\<int, string\\|Zalt\\\\Html\\\\HtmlElement\\>\\.$#"
-			count: 2
-			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
-
-		-
-			message: "#^Method Gems\\\\Tracker\\\\Snippets\\\\ShowTokenLoopAbstract\\:\\:formatWelcome\\(\\) should return Zalt\\\\Html\\\\HtmlElement but returns array\\<int, Zalt\\\\Html\\\\HtmlElement\\>\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
-
-		-
 			message: "#^Variable \\$lastMailedDate might not be defined\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
@@ -10809,11 +10624,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\|Zalt\\\\Model\\\\Data\\\\DataWriterInterface\\:\\:applyDetailedFormatting\\(\\)\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/ShowTokenSnippetAbstract.php
-
-		-
-			message: "#^Cannot assign new offset to Zalt\\\\Html\\\\HtmlElement\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/ShowTokenSnippetAbstract.php
 
@@ -12636,31 +12446,6 @@ parameters:
 			message: "#^Call to an undefined method Prophecy\\\\Prophecy\\\\ObjectProphecy\\:\\:loadFirst\\(\\)\\.$#"
 			count: 1
 			path: tests/Tracker/RespondentTest.php
-
-		-
-			message: "#^Call to method averageInt\\(\\) on an unknown class GemsTest\\\\Tracker\\\\TrackEvent\\\\Gems\\\\Tracker\\\\TrackEvent\\\\EventCalculations\\.$#"
-			count: 3
-			path: tests/Tracker/TrackEvent/EventCalculationsTest.php
-
-		-
-			message: "#^Call to method reverseCode\\(\\) on an unknown class GemsTest\\\\Tracker\\\\TrackEvent\\\\Gems\\\\Tracker\\\\TrackEvent\\\\EventCalculations\\.$#"
-			count: 6
-			path: tests/Tracker/TrackEvent/EventCalculationsTest.php
-
-		-
-			message: "#^Call to method sumInt\\(\\) on an unknown class GemsTest\\\\Tracker\\\\TrackEvent\\\\Gems\\\\Tracker\\\\TrackEvent\\\\EventCalculations\\.$#"
-			count: 6
-			path: tests/Tracker/TrackEvent/EventCalculationsTest.php
-
-		-
-			message: "#^Property GemsTest\\\\Tracker\\\\TrackEvent\\\\EventCalculationsTest\\:\\:\\$object \\(GemsTest\\\\Tracker\\\\TrackEvent\\\\Gems\\\\Tracker\\\\TrackEvent\\\\EventCalculations\\) does not accept Gems\\\\Tracker\\\\TrackEvent\\\\EventCalculations\\.$#"
-			count: 1
-			path: tests/Tracker/TrackEvent/EventCalculationsTest.php
-
-		-
-			message: "#^Property GemsTest\\\\Tracker\\\\TrackEvent\\\\EventCalculationsTest\\:\\:\\$object has unknown class GemsTest\\\\Tracker\\\\TrackEvent\\\\Gems\\\\Tracker\\\\TrackEvent\\\\EventCalculations as its type\\.$#"
-			count: 1
-			path: tests/Tracker/TrackEvent/EventCalculationsTest.php
 
 		-
 			message: "#^Call to an undefined method Prophecy\\\\Prophecy\\\\ObjectProphecy\\:\\:getLocale\\(\\)\\.$#"
