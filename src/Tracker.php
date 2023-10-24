@@ -12,6 +12,7 @@
 namespace Gems;
 
 use Gems\Db\ResultFetcher;
+use Gems\Db\UnbufferedResultFetcher;
 use Gems\Exception\Coding;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\MetaModelLoader;
@@ -30,9 +31,9 @@ use Gems\Tracker\Source\SourceInterface;
 use Gems\Tracker\Survey;
 use Gems\Tracker\SurveyModel;
 use Gems\Tracker\Token;
+use Gems\Tracker\Token\LaminasTokenSelect;
 use Gems\Tracker\Token\TokenFilter;
 use Gems\Tracker\Token\TokenLibrary;
-use Gems\Tracker\Token\LaminasTokenSelect;
 use Gems\Tracker\Token\TokenSelect;
 use Gems\Tracker\Token\TokenValidator;
 use Gems\Tracker\TrackerInterface;
@@ -140,6 +141,7 @@ class Tracker implements TrackerInterface
         protected readonly ProjectOverloader $overLoader,
         CurrentUserRepository $currentUserRepository,
         protected readonly ResultFetcher $resultFetcher,
+        protected readonly UnbufferedResultFetcher $unbufferedResultFetcher,
         protected readonly MetaModelLoader $metaModelLoader,
         protected readonly Model $modelLoader,
         protected readonly SurveyRepository $surveyRepository,
@@ -1001,9 +1003,9 @@ class Tracker implements TrackerInterface
         $batch->minimalStepDurationMs = 3000;
 
         if (! $batch->isLoaded()) {
-            $resultSet = $this->resultFetcher->query($tokenSelect->getSelect());
+            // Process one row at a time to prevent out of memory errors for really big resultsets.
+            $resultSet = $this->unbufferedResultFetcher->query($tokenSelect->getSelect());
             if ($resultSet instanceof ResultSet) {
-                //Process one row at a time to prevent out of memory errors for really big resultsets
                 while ($resultSet->valid()) {
                     $tokenData = $resultSet->current();
                     $tokenId = $tokenData['gto_id_token'];
