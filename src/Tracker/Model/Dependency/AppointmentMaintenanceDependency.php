@@ -15,6 +15,7 @@ use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
 use Gems\Menu\RouteHelper;
 use Gems\Util\Translated;
+use Laminas\Filter\Digits;
 use Laminas\Validator\GreaterThan;
 use Laminas\Validator\LessThan;
 use MUtil\Model;
@@ -154,7 +155,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                 'elementClass'      => 'Text',
                 'required'          => true,
                 // 'size'              => 5, // Causes trouble during save
-                'filters[int]'      => 'Int',
+                'filters[int]'      => Digits::class,
                 'validators[isnot]' => new IsNot(0, $this->_('This value may not be zero!')),
             ];
             $output['gtf_min_diff_unit'] = [
@@ -173,7 +174,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                     'elementClass'      => 'Text',
                     'required'          => false,
                     // 'size'              => 5, // Causes trouble during save
-                    'filters[int]'      => 'Int',
+                    'filters[int]'      => Digits::class,
                 ];
                 if ($context['gtf_min_diff_length'] < 0) {
                     $output['gtf_max_diff_length']['description'] = $this->_(
