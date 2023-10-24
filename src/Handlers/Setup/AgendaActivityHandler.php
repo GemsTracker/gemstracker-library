@@ -11,7 +11,7 @@
 
 namespace Gems\Handlers\Setup;
 
-use Gems\Model;
+use Gems\Model\AgendaActivityModel;
 use Gems\Snippets\Agenda\AutosearchFormSnippet;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -93,6 +93,7 @@ class AgendaActivityHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
         TranslatorInterface $translate,
         protected Translated $translatedUtil,
         protected Util $util,
+        protected readonly AgendaActivityModel $agendaActivityModel,
     ) {
         parent::__construct($responder, $translate);
     }
@@ -128,51 +129,9 @@ class AgendaActivityHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action): ModelAbstract
+    protected function createModel($detailed, $action): AgendaActivityModel
     {
-        $model = new \MUtil\Model\TableModel('gems__agenda_activities');
-
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gaa');
-
-        $model->setDeleteValues('gaa_active', 0);
-
-        $model->set('gaa_name',                    'label', $this->_('Activity'),
-                'description', $this->_('An activity is a high level description about an appointment:
-e.g. consult, check-up, diet, operation, physiotherapy or other.'),
-                'minlength', 3,
-                'required', true
-                );
-
-        $model->setIfExists('gaa_id_organization', 'label', $this->_('Organization'),
-                'description', $this->_('Optional, an import match with an organization has priority over those without.'),
-                'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->util->getDbLookup()->getOrganizations()
-                );
-
-        $model->setIfExists('gaa_name_for_resp',   'label', $this->_('Respondent explanation'),
-                'description', $this->_('Alternative description to use with respondents.')
-                );
-        $model->setIfExists('gaa_match_to',        'label', $this->_('Import matches'),
-                'description', $this->_("Split multiple import matches using '|'.")
-                );
-
-        $model->setIfExists('gaa_code',        'label', $this->_('Activity code'),
-                'size', 10,
-                'description', $this->_('Optional code name to link the activity to program code.'));
-
-        $model->setIfExists('gaa_active',      'label', $this->_('Active'),
-                'description', $this->_('Inactive means assignable only through automatich processes.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
-        $model->setIfExists('gaa_filter',      'label', $this->_('Filter'),
-                'description', $this->_('When checked appointments with these activities are not imported.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
-
-        $model->addColumn("CASE WHEN gaa_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
-
-        return $model;
+        return $this->agendaActivityModel;
     }
 
     /**
