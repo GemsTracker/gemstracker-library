@@ -176,8 +176,13 @@ class PatchRepository extends MigrationRepositoryAbstract
             foreach($patchInfo['sql'] as $sqlQuery) {
                 $resultFetcher->query($sqlQuery);
             }
-            if ($localTransaction) {
-                $connection->commit();
+            if ($localTransaction && $connection->inTransaction()) {
+                try {
+                    $connection->commit();
+                } catch(\Exception $e) {
+                    // Could not commit, probably one of the statements
+                    // caused an implicit commit.
+                }
             }
             $event = new RunPatchMigrationEvent(
                 'patch',
@@ -194,7 +199,12 @@ class PatchRepository extends MigrationRepositoryAbstract
 
         } catch(\Exception $e) {
             if ($localTransaction && $connection->inTransaction()) {
-                $connection->rollback();
+                try {
+                    $connection->rollback();
+                } catch(\Exception $e) {
+                    // Could not rollback, probably one of the statements
+                    // caused an implicit commit.
+                }
             }
             $event = new RunPatchMigrationEvent(
                 'patch',
