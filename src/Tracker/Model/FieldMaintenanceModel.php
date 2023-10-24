@@ -562,6 +562,9 @@ class FieldMaintenanceModel extends UnionModel
     public function getTypeDependencyClass($fieldType)
     {
         if (isset($this->dependencies[$fieldType]) && $this->dependencies[$fieldType]) {
+            if (class_exists($this->dependencies[$fieldType])) {
+                return $this->dependencies[$fieldType];
+            }
             return 'Model\\Dependency\\' . $this->dependencies[$fieldType];
         }
         return null;
