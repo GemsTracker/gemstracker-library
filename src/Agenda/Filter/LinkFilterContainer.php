@@ -1,7 +1,6 @@
 <?php
 
-namespace Pulse\Agenda\Filter\LinkFilterContainer;
-use Gems\Agenda\Filter\AppointmentFilterInterface;
+namespace Gems\Agenda\Filter;
 
 class LinkFilterContainer
 {

@@ -4,9 +4,9 @@ namespace Gems\Agenda\Repository;
 
 use Gems\Agenda\Appointment;
 use Gems\Agenda\EpisodeOfCare;
+use Gems\Agenda\Filter\LinkFilterContainer;
 use Gems\Db\CachedResultFetcher;
 use Laminas\Db\TableGateway\TableGateway;
-use Pulse\Agenda\Filter\LinkFilterContainer\LinkFilterContainer;
 
 class InfoFilterRepository
 {
