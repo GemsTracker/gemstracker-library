@@ -127,7 +127,7 @@ class AgendaActivityHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return AgendaActivityModel
      */
     protected function createModel($detailed, $action): AgendaActivityModel
     {
