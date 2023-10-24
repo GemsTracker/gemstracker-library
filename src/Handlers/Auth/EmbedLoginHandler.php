@@ -34,7 +34,6 @@ class EmbedLoginHandler implements RequestHandlerInterface
         private readonly TranslatorInterface $translator,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly RouteHelper $routeHelper,
-        private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
         private readonly RespondentRepository $respondentRepository,
         HelperAdapter $cacheHelper,

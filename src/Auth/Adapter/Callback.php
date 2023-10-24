@@ -25,7 +25,7 @@ class Callback implements AdapterInterface
     /**
      * The callback to use
      *
-     * @var callback
+     * @var Callback
      */
     private $_callback;
 
@@ -50,7 +50,7 @@ class Callback implements AdapterInterface
      * return true or false and in that case this adapter will wrap the result
      * in a Result
      *
-     * @param callback $callback A valid callback
+     * @param Callback $callback A valid callback
      * @param string $identity The identity to use
      * @param array $params   Array of parameters needed for the callback
      */

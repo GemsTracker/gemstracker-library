@@ -113,6 +113,7 @@ class AuthenticationService
             return false;
         }
 
+        /** @var int $validUntil */
         $validUntil = min(
             $authData['auth_login_at'] + $this->config['session']['max_total_time'],
             $authData['auth_last_seen_at'] + $this->config['session']['max_away_time'],

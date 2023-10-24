@@ -37,7 +37,7 @@ trait ThrottleSendTrait
 
     private function getMaxSendOtpKey(User $user): string
     {
-        return sha1($user->getUserId()) . '_otp_send_max';
+        return sha1(strval($user->getUserId())) . '_otp_send_max';
     }
 
     protected function canSendOtp(User $user): bool

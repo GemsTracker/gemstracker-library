@@ -34,8 +34,6 @@ class ChangePasswordHandler implements RequestHandlerInterface
         private readonly Adapter $db,
         private readonly TranslatorInterface $translator,
         private readonly LayoutRenderer $layoutRenderer,
-        private readonly UrlHelper $urlHelper,
-        private readonly AccesslogRepository $accesslogRepository,
         private readonly PasswordChecker $passwordChecker,
     ) {
     }

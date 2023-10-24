@@ -886,64 +886,9 @@ parameters:
 			path: src/Audit/AuditLog.php
 
 		-
-			message: "#^Class Gems\\\\Auth\\\\Adapter\\\\Callback referenced with incorrect case\\: Gems\\\\Auth\\\\Adapter\\\\callback\\.$#"
-			count: 2
-			path: src/Auth/Adapter/Callback.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between array\\|null and false will always evaluate to false\\.$#"
-			count: 1
-			path: src/AuthNew/Adapter/EmbedAuthentication.php
-
-		-
-			message: "#^Unsafe usage of new static\\(\\)\\.$#"
-			count: 1
-			path: src/AuthNew/Adapter/EmbedIdentity.php
-
-		-
-			message: "#^Unsafe usage of new static\\(\\)\\.$#"
-			count: 1
-			path: src/AuthNew/Adapter/GemsTrackerIdentity.php
-
-		-
-			message: "#^Match expression does not handle remaining value\\: string$#"
-			count: 1
-			path: src/AuthNew/Adapter/GenericRoutedAuthentication.php
-
-		-
-			message: "#^Comparison operation \"\\>\" between int\\<1, max\\> and \\(array\\|float\\|int\\) results in an error\\.$#"
-			count: 1
-			path: src/AuthNew/AuthenticationService.php
-
-		-
-			message: "#^Property Gems\\\\AuthNew\\\\EventSubscriber\\:\\:\\$accesslogRepository is never read, only written\\.$#"
-			count: 1
-			path: src/AuthNew/EventSubscriber.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function sha1 expects string, int given\\.$#"
-			count: 1
-			path: src/AuthTfa/Adapter/HotpAdapter.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function sha1 expects string, int given\\.$#"
-			count: 1
-			path: src/AuthTfa/Adapter/TotpAdapter.php
-
-		-
 			message: "#^Call to an undefined method Zend_Form_Element\\:\\:img\\(\\)\\.$#"
 			count: 1
 			path: src/AuthTfa/Method/AuthenticatorTotp.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function sha1 expects string, int given\\.$#"
-			count: 1
-			path: src/AuthTfa/SendDecorator/MailOtp.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function sha1 expects string, int given\\.$#"
-			count: 1
-			path: src/AuthTfa/SendDecorator/SmsOtp.php
 
 		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#"
@@ -2116,32 +2061,7 @@ parameters:
 			path: src/Handlers/AskHandler.php
 
 		-
-			message: "#^Variable \\$flash in PHPDoc tag @var does not match assigned variable \\$statusMessenger\\.$#"
-			count: 1
-			path: src/Handlers/Auth/AuthIdleCheckHandler.php
-
-		-
-			message: "#^Property Gems\\\\Handlers\\\\Auth\\\\ChangePasswordHandler\\:\\:\\$accesslogRepository is never read, only written\\.$#"
-			count: 1
-			path: src/Handlers/Auth/ChangePasswordHandler.php
-
-		-
-			message: "#^Property Gems\\\\Handlers\\\\Auth\\\\ChangePasswordHandler\\:\\:\\$urlHelper is never read, only written\\.$#"
-			count: 1
-			path: src/Handlers/Auth/ChangePasswordHandler.php
-
-		-
-			message: "#^Property Gems\\\\Handlers\\\\Auth\\\\EmbedLoginHandler\\:\\:\\$urlHelper is never read, only written\\.$#"
-			count: 1
-			path: src/Handlers/Auth/EmbedLoginHandler.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\AuthNew\\\\Adapter\\\\AuthenticationResult\\:\\:\\$user\\.$#"
-			count: 1
-			path: src/Handlers/Auth/LoginHandler.php
-
-		-
-			message: "#^Property Gems\\\\Handlers\\\\Auth\\\\LoginHandler\\:\\:\\$accesslogRepository is never read, only written\\.$#"
 			count: 1
 			path: src/Handlers/Auth/LoginHandler.php
 
