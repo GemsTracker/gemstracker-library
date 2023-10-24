@@ -911,11 +911,6 @@ parameters:
 			path: src/AuthNew/Adapter/GenericRoutedAuthentication.php
 
 		-
-			message: "#^Using nullsafe method call on non\\-nullable type Zalt\\\\Message\\\\StatusMessengerInterface\\. Use \\-\\> instead\\.$#"
-			count: 3
-			path: src/AuthNew/AuthenticationMiddleware.php
-
-		-
 			message: "#^Comparison operation \"\\>\" between int\\<1, max\\> and \\(array\\|float\\|int\\) results in an error\\.$#"
 			count: 1
 			path: src/AuthNew/AuthenticationService.php
@@ -1224,11 +1219,6 @@ parameters:
 			message: "#^Variable \\$result might not be defined\\.$#"
 			count: 2
 			path: src/Dev/DebugBar/TraceablePDOStatement.php
-
-		-
-			message: "#^Variable \\$output might not be defined\\.$#"
-			count: 1
-			path: src/Dev/Middleware/DebugDumperMiddleware.php
 
 		-
 			message: "#^Method Gems\\\\Dev\\\\VarDumper\\\\ContextualizedDumper\\:\\:dump\\(\\) should return string\\|null but return statement is missing\\.$#"
@@ -4211,56 +4201,6 @@ parameters:
 			message: "#^Argument of an invalid type \\(callable\\)\\|Symfony\\\\Component\\\\Messenger\\\\Handler\\\\HandlerDescriptor supplied for foreach, only iterables are supported\\.$#"
 			count: 1
 			path: src/Messenger/Psr11HandlersLocator.php
-
-		-
-			message: "#^Property Gems\\\\Middleware\\\\AclMiddleware\\:\\:\\$template is never read, only written\\.$#"
-			count: 1
-			path: src/Middleware/AclMiddleware.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$user User\\)\\: Unexpected token \"\\$user\", expected type at offset 20$#"
-			count: 1
-			path: src/Middleware/CurrentOrganizationMiddleware.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$dbAdapter Adapter\\)\\: Unexpected token \"\\$dbAdapter\", expected type at offset 24$#"
-			count: 1
-			path: src/Middleware/DbProfilerMiddleware.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$legacyAdapter \\\\Zend_Db_Adapter_Abstract\\)\\: Unexpected token \"\\$legacyAdapter\", expected type at offset 24$#"
-			count: 1
-			path: src/Middleware/DbProfilerMiddleware.php
-
-		-
-			message: "#^Negated boolean expression is always false\\.$#"
-			count: 2
-			path: src/Middleware/HandlerCsrfMiddleware.php
-
-		-
-			message: "#^Result of \\|\\| is always false\\.$#"
-			count: 1
-			path: src/Middleware/HandlerCsrfMiddleware.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$messenger StatusMessengerInterface\\)\\: Unexpected token \"\\$messenger\", expected type at offset 20$#"
-			count: 1
-			path: src/Middleware/MaintenanceModeMiddleware.php
-
-		-
-			message: "#^Method Gems\\\\Middleware\\\\RateLimitMiddleware\\:\\:getLogMessage\\(\\) is unused\\.$#"
-			count: 1
-			path: src/Middleware/RateLimitMiddleware.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$request$#"
-			count: 1
-			path: src/Middleware/RateLimitMiddleware.php
-
-		-
-			message: "#^Property Gems\\\\Middleware\\\\SiteGateMiddleware\\:\\:\\$logName is never read, only written\\.$#"
-			count: 1
-			path: src/Middleware/SiteGateMiddleware.php
 
 		-
 			message: "#^Method Gems\\\\Model\\:\\:createAppointmentModel\\(\\) should return Gems\\\\Model\\\\AppointmentModel but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"

@@ -24,7 +24,7 @@ class DbProfilerMiddleware implements MiddlewareInterface
 
         if (isset($_ENV['DB_PROFILE']) && $_ENV['DB_PROFILE'] === '1') {
             /**
-             * @var $dbAdapter Adapter
+             * @var Adapter $dbAdapter
              */
             $dbAdapter = $this->container->get(Adapter::class);
             $profiler = $dbAdapter->getProfiler();
@@ -37,7 +37,7 @@ class DbProfilerMiddleware implements MiddlewareInterface
             }
 
             /**
-             * @var $legacyAdapter \Zend_Db_Adapter_Abstract
+             * @var \Zend_Db_Adapter_Abstract $legacyAdapter
              */
             $legacyAdapter = $this->container->get(\Zend_Db_Adapter_Abstract::class);
             $profiler = $legacyAdapter->getProfiler();

@@ -23,6 +23,7 @@ class DebugDumperMiddleware implements MiddlewareInterface
     {
         $cloner = new VarCloner();
         $cloner->addCasters(ReflectionCaster::UNSET_CLOSURE_FILE_INFO);
+        $output = null;
 
         if (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true)) {
 
@@ -46,7 +47,9 @@ class DebugDumperMiddleware implements MiddlewareInterface
 
         $html = $response->getBody()->getContents();
         $html .= EchoOut::out();
-        $html .= $debugOutput = stream_get_contents($output,-1, 0);
+        if ($output) {
+            $html .= stream_get_contents($output,-1, 0);
+        }
 
         $body = new Stream('php://temp', 'wb+');
         $body->write($html);

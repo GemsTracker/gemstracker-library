@@ -18,7 +18,6 @@ class AclMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private readonly Acl $acl,
-        private readonly TemplateRendererInterface $template,
         private readonly LayoutRenderer $layoutRenderer,
         private readonly array $config,
     ) {
