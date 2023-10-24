@@ -7,8 +7,8 @@ use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunPatchMigrationEvent;
 use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\Driver\Pdo\Connection;
 use MUtil\Parser\Sql\WordsParser;
-use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
 use Zalt\Base\TranslatorInterface;
@@ -164,6 +164,7 @@ class PatchRepository extends MigrationRepositoryAbstract
 
         $start = microtime(true);
 
+        /** @var Connection $connection */
         $connection = $resultFetcher->getAdapter()->getDriver()->getConnection();
         $localTransaction = false;
 
@@ -175,7 +176,7 @@ class PatchRepository extends MigrationRepositoryAbstract
             foreach($patchInfo['sql'] as $sqlQuery) {
                 $resultFetcher->query($sqlQuery);
             }
-            if ($localTransaction && $connection->inTransaction()) {
+            if ($localTransaction && $connection->inTransaction()) { // @phpstan-ignore-line
                 try {
                     $connection->commit();
                 } catch(\Exception $e) {
