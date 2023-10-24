@@ -171,7 +171,7 @@ class PatchRepository extends MigrationRepositoryAbstract
             if (!$connection->inTransaction()) {
                 $connection->beginTransaction();
                 // FIXME: This should be set but setting it breaks things.
-                // $localTransaction = true;
+                $localTransaction = true;
             }
             foreach($patchInfo['sql'] as $sqlQuery) {
                 $resultFetcher->query($sqlQuery);
