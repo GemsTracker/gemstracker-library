@@ -509,10 +509,6 @@ class TokenRepository
      */
     public function getTokenShowLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $plusLabel = true): ?AElement
     {
-        if (! $this->currentUser->hasPrivilege('pr.respondent.track.token.show')) {
-            //return null;
-        }
-
         $routeName = 'respondent.tracks.token.show';
         $label = $this->translator->_('Show');
 
@@ -527,7 +523,7 @@ class TokenRepository
             Model::RESPONDENT_TRACK => $bridge->getLate('gto_id_respondent_track'),
         ]);
 
-        if (isset($link['url'])) {
+        if ($link !== null && isset($link['url'])) {
             return Html::actionLink($link['url'], $label);
         }
         return null;
