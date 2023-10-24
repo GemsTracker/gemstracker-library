@@ -16,6 +16,7 @@ use Gems\Condition\ConditionLoader;
 use Gems\Event\Application\ModelCreateEvent;
 use Gems\Exception\Coding;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -103,6 +104,7 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelDetailTableSnippet',
+        CurrentButtonRowSnippet::class,
         'Tracker\\Rounds\\ConditionRoundsTableSnippet',
         'ConditionAndOrTableSnippet',
     ];
