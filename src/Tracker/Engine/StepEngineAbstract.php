@@ -15,6 +15,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 
 use Gems\Condition\ConditionLoader;
+use Gems\Condition\RoundConditionInterface;
 use Gems\Date\Period;
 use Gems\Db\ResultFetcher;
 use Gems\Exception\Coding;
@@ -131,7 +132,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param string $fieldName
      * @param array $options
      * @param array $itemData    The current items data
-     * @param boolean True if the update changed values (usually by changed selection lists).
+     * @return bool True if the update changed values (usually by changed selection lists).
      */
     protected function _applyOptions(MetaModelInterface $model, string $fieldName, array $options, array &$itemData): bool
     {
@@ -177,7 +178,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
      * @param string $language   (ISO) language string
-     * @param boolean True if the update changed values (usually by changed selection lists).
+     * @return bool True if the update changed values (usually by changed selection lists).
      */
     protected function applyDatesValidAfter(MetaModelInterface $model, array &$itemData, string $language): bool
     {
@@ -193,7 +194,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
      * @param string $language   (ISO) language string
-     * @param boolean True if the update changed values (usually by changed selection lists).
+     * @return bool True if the update changed values (usually by changed selection lists).
      */
     protected function applyDatesValidFor(MetaModelInterface $model, array &$itemData, string $language): bool
     {
@@ -273,7 +274,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      *
      * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
-     * @param bool True if the update changed values (usually by changed selection lists).
+     * @return bool True if the update changed values (usually by changed selection lists).
      */
     abstract protected function applySurveyListValidAfter(MetaModelInterface $model, array &$itemData): bool;
 
@@ -282,7 +283,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      *
      * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
-     * @param bool True if the update changed values (usually by changed selection lists).
+     * @return bool True if the update changed values (usually by changed selection lists).
      */
     abstract protected function applySurveyListValidFor(MetaModelInterface $model, array &$itemData): bool;
 
@@ -325,7 +326,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param \Gems\Tracker\Token $token
      * @param array $round
      * @param int   $userId Id of the user who takes the action (for logging)
-     * @param \Gems\Tracker\RespondentTrack Current respondent track
+     * @param RespondentTrack $respTrack Current respondent track
      * @return int The number of tokens changed by this code
      */
     protected function checkTokenCondition(Token $token, array $round, int $userId, RespondentTrack $respTrack): int
@@ -342,7 +343,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         }
 
         $changed   = 0;
-        /** @var $condition RoundConditionInterface */
+        /** @var RoundConditionInterface $condition */
         $condition = $this->conditionLoader->loadCondition($round['gro_condition']);
         $newStatus = $condition->isRoundValid($token);
         $oldStatus = $token->getReceptionCode()->isSuccess();
@@ -371,7 +372,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param \Gems\Tracker\Token $token
      * @param array $round
      * @param int   $userId Id of the user who takes the action (for logging)
-     * @param \Gems\Tracker\RespondentTrack Current respondent track
+     * @param RespondentTrack $respTrack Current respondent track
      * @return int 1 if the token has changed
      */
     protected function checkTokenDates(Token $token, array $round, int $userId, RespondentTrack $respTrack): int
@@ -526,7 +527,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * Makes it empty when not applicable
      *
      * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
+     * @param bool $new True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @return string The value to use
@@ -555,7 +556,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     /**
      * Returns the date fields selectable using the current source
      *
-     * @param string $source The date list source as defined by this object
+     * @param string $sourceType The date list source as defined by this object
      * @param int $roundId  \Gems round id
      * @param string $language   (ISO) language string
      * @return array
@@ -974,7 +975,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
      * @param string $language   (ISO) language string
-     * @param boolean True if the update changed values (usually by changed selection lists).
+     * @return bool True if the update changed values (usually by changed selection lists).
      */
     public function updateRoundModelToItem(MetaModelInterface $model, array &$itemData, string $language): bool
     {

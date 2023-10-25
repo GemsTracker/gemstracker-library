@@ -54,9 +54,9 @@ class AnyStepEngine extends StepEngineAbstract
     /**
      * Set the surveys to be listed as valid for choices for this item and the way they are displayed (if at all)
      *
-     * @param \MUtil\Model\ModelAbstract $model The round model
+     * @param MetaModelInterface $model The round model
      * @param array $itemData    The current items data
-     * @param boolean True if the update changed values (usually by changed selection lists).
+     * @return bool True if the update changed values (usually by changed selection lists).
      */
     protected function applySurveyListValidFor(MetaModelInterface $model, array &$itemData): bool
     {
@@ -143,7 +143,7 @@ class AnyStepEngine extends StepEngineAbstract
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return \MUtil\Model\ModelAbstract
+     * @return RoundModel
      */
     public function getRoundModel(bool $detailed, string $action): RoundModel
     {

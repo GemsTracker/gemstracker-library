@@ -60,7 +60,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
     /**
      * Stores how the fields are define for this track
      *
-     * @var FieldsDefinition;
+     * @var FieldsDefinition
      */
     protected FieldsDefinition $_fieldsDefinition;
 
@@ -560,7 +560,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
     /**
      * Returns the field definition for the track enige.
      *
-     * @return FieldsDefinition;
+     * @return FieldsDefinition
      */
     public function getFieldsDefinition(): FieldsDefinition
     {

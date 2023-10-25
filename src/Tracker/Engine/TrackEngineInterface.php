@@ -43,8 +43,8 @@ interface TrackEngineInterface
      * Integrate field loading en showing and editing
      *
      * @param MetaModelInterface $model
-     * @param boolean $addDependency True when editing, can be false in all other cases
-     * @param int|null $respTrackIdField Optional Database column name where Respondent Track Id is set
+     * @param bool $addDependency True when editing, can be false in all other cases
+     * @param string|null $respTrackIdField Optional Database column name where Respondent Track Id is set
      * @return \Gems\Tracker\Engine\TrackEngineAbstract
      */
     public function addFieldsToModel(MetaModelInterface $model, bool $addDependency = true, ?string $respTrackIdField = null): self;
@@ -52,7 +52,6 @@ interface TrackEngineInterface
     /**
      * Calculate the track info from the fields
      *
-     * @param int $respTrackId \Gems respondent track id or null when new
      * @param array $data The values to save
      * @return string The description to save as track_info
      */
@@ -69,8 +68,9 @@ interface TrackEngineInterface
      * Check for the existence of all tokens and create them otherwise
      *
      * @param \Gems\Tracker\RespondentTrack $respTrack The respondent track to check
+     * @param SessionInterface $session
      * @param int $userId Id of the user who takes the action (for logging)
-     * @param \Gems\Task\TaskRunnerBatch $changes batch for counters
+     * @param \Gems\Task\TaskRunnerBatch|null $batch for counters
      */
     public function checkRoundsFor(RespondentTrack $respTrack, SessionInterface $session = null, int $userId, ?TaskRunnerBatch $batch = null): void;
 
@@ -80,7 +80,7 @@ interface TrackEngineInterface
      * @param \Gems\Tracker\RespondentTrack $respTrack The respondent track to check
      * @param \Gems\Tracker\Token $startToken The token to start at
      * @param int $userId Id of the user who takes the action (for logging)
-     * @param \Gems\Tracker\Token $skipToken Optional token to skip in the recalculation
+     * @param \Gems\Tracker\Token|null $skipToken Optional token to skip in the recalculation
      * @return int The number of tokens changed by this code
      */
     public function checkTokensFrom(RespondentTrack $respTrack, Token $startToken, int $userId, ?Token $skipToken = null): int;
@@ -127,7 +127,7 @@ interface TrackEngineInterface
     /**
      * Get the FieldUpdateEvent for this trackId
      *
-     * @return TrackBeforeFieldUpdateEventInterface | null
+     * @return TrackBeforeFieldUpdateEventInterface|null
      */
     public function getFieldBeforeUpdateEvent(): ?TrackBeforeFieldUpdateEventInterface;
 
@@ -171,7 +171,7 @@ interface TrackEngineInterface
     /**
      * Returns a model that can be used to retrieve or save the field definitions for the track editor.
      *
-     * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
+     * @param bool $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
      * @return FieldMaintenanceModel
      */
@@ -188,7 +188,7 @@ interface TrackEngineInterface
     /**
      * Get the FieldUpdateEvent for this trackId
      *
-     * @return TrackFieldUpdateEventInterface | null
+     * @return TrackFieldUpdateEventInterface|null
      */
     public function getFieldUpdateEvent(): ?TrackFieldUpdateEventInterface;
 
@@ -197,7 +197,7 @@ interface TrackEngineInterface
      *
      * @return int \Gems id of first round
      */
-    public function getFirstRoundId():int ;
+    public function getFirstRoundId(): int;
 
     /**
      * A pretty name for use in dropdown selection boxes.
@@ -226,7 +226,7 @@ interface TrackEngineInterface
      *
      * @param int $roundId  \Gems round id
      * @param int $roundOrder Optional extra round order, for when the current round may have changed.
-     * @return int \Gems round id
+     * @return int|null \Gems round id
      */
     public function getPreviousRoundId(int $roundId, int $roundOrder = null): ?int;
 
@@ -287,9 +287,9 @@ interface TrackEngineInterface
     /**
      * Returns a model that can be used to retrieve or save the data.
      *
-     * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
+     * @param bool $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return JoinModel
+     * @return RoundModel
      */
     public function getRoundModel(bool $detailed, string $action): RoundModel;
 
