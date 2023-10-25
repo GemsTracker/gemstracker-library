@@ -9368,11 +9368,6 @@ parameters:
 			path: src/Tracker.php
 
 		-
-			message: "#^PHPDoc tag @param has invalid value \\(LaminasTokenSelect Select statements selecting tokens\\)\\: Unexpected token \"Select\", expected variable at offset 492$#"
-			count: 1
-			path: src/Tracker.php
-
-		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$batch_id$#"
 			count: 2
 			path: src/Tracker.php
@@ -10741,26 +10736,6 @@ parameters:
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 2
 			path: src/Tracker/Token.php
-
-		-
-			message: "#^Access to an undefined property Laminas\\\\Db\\\\Sql\\\\Where\\:\\:\\$where\\.$#"
-			count: 1
-			path: src/Tracker/Token/LaminasTokenSelect.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$bind$#"
-			count: 1
-			path: src/Tracker/Token/LaminasTokenSelect.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$cond$#"
-			count: 1
-			path: src/Tracker/Token/LaminasTokenSelect.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$surveyId$#"
-			count: 1
-			path: src/Tracker/Token/LaminasTokenSelect.php
 
 		-
 			message: "#^Binary operation \"\\.\" between array and string\\|null results in an error\\.$#"
