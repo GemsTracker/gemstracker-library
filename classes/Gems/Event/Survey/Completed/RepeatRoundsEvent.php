@@ -54,15 +54,16 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
         // From
         if (isset($answers['repeatFromUnitCount'])) {
             $fromUnit  = substr($answers['repeatFromUnitCount'], 0, 1);
-            $fromCount = intval(substr($answers['repeatFromUnitCount'], 1));
+            if ('-' == $fromUnit && isset($answers['repeatFromUnitCountother']) && $answers['repeatFromUnitCountother']) {
+                $fromUnit  = 'D';
+                $fromCount = $answers['repeatFromUnitCountother'];
+            } else {
+                $fromCount = intval(substr($answers['repeatFromUnitCount'], 1));
+            }
 
         } elseif (isset($answers['repeatFromCount'], $answers['repeatFromUnit'])) {
             $fromUnit  = substr($answers['repeatFromUnit'], 0, 1);
             $fromCount = intval($answers['repeatFromCount']);
-
-        } elseif (isset($answers['repeatFromUnitCountother'])) {
-            $fromUnit  = 'D';
-            $fromCount = intval($answers['repeatFromUnitCountother']);
 
         } else {
             $fromUnit = false;
@@ -71,16 +72,17 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
         // Until
         if (isset($answers['repeatUnitCount'])) {
             $untilUnit  = substr($answers['repeatUnitCount'], 0, 1);
-            $untilCount = intval(substr($answers['repeatUnitCount'], 1));
+            if ('-' == $untilUnit && isset($answers['repeatUnitCountother']) && $answers['repeatUnitCountother']) {
+                $untilUnit  = 'D';
+                $untilCount = intval(substr($answers['repeatUnitCountother'], 1));
+            } else {
+                $untilCount = intval(substr($answers['repeatUnitCount'], 1));
+            }
             
         } elseif (isset($answers['repeatCount'], $answers['repeatUnit'])) {
             $untilUnit  = substr($answers['repeatUnit'], 0, 1);
             $untilCount = intval($answers['repeatCount']);
 
-        } elseif (isset($answers['repeatUnitCountother'])) {
-            $untilUnit  = 'D';
-            $untilCount = intval($answers['repeatUnitCountother']);
-            
         } else {
             $untilUnit = false;
         }
