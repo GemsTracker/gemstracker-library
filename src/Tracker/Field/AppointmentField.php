@@ -123,7 +123,7 @@ class AppointmentField extends FieldAbstract
 
         $appointment = $this->agenda->getAppointment($currentValue);
 
-        if ($appointment && $appointment->isActive()) {
+        if ($appointment->isActive()) {
             $time = $appointment->getAdmissionTime();
 
             if ($time) {
@@ -161,7 +161,9 @@ class AppointmentField extends FieldAbstract
                         $fromDate = DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $trackData['gr2t_start_date']);
                     }
                     // Always use start of the day for start date comparisons
-                    $fromDate->setTime(0,0);
+                    if ($fromDate instanceof DateTimeImmutable) {
+                        $fromDate = $fromDate->setTime(0,0);
+                    }
                 }
 
                 if ($fromDate instanceof DateTimeInterface) {
@@ -321,20 +323,17 @@ class AppointmentField extends FieldAbstract
         } else {
             $appointment = $this->agenda->getAppointment($value);
         }
-        if ($appointment instanceof Appointment) {
-            $url = $this->routeHelper->getRouteUrl('respondent.appointments.show', [
-                MetaModelInterface::REQUEST_ID1 => $appointment->getPatientNumber(),
-                MetaModelInterface::REQUEST_ID2 => $appointment->getOrganizationId(),
-                Model::APPOINTMENT_ID => $appointment->getId(),
-            ]);
 
-            if ($url) {
-                return Html::create('a', $url, $appointment->getDisplayString());
-            }
+        $url = $this->routeHelper->getRouteUrl('respondent.appointments.show', [
+            MetaModelInterface::REQUEST_ID1 => $appointment->getPatientNumber(),
+            MetaModelInterface::REQUEST_ID2 => $appointment->getOrganizationId(),
+            Model::APPOINTMENT_ID => $appointment->getId(),
+        ]);
 
-            return $appointment->getDisplayString();
+        if ($url) {
+            return Html::create('a', $url, $appointment->getDisplayString());
         }
 
-        return $value;
+        return $appointment->getDisplayString();
     }
 }

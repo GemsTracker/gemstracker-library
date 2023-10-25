@@ -48,7 +48,7 @@ abstract class FieldAbstract implements FieldInterface
     /**
      *
      * @param int $trackId gems__tracks id for this field
-     * @param string $key The field key
+     * @param string $fieldKey The field key
      * @param array $fieldDefinition Field definition array
      */
     public function __construct(
@@ -86,7 +86,7 @@ abstract class FieldAbstract implements FieldInterface
     /**
      * Calculate the field value using the current values
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other known field values
      * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
