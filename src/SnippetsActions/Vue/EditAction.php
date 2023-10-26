@@ -2,7 +2,9 @@
 
 namespace Gems\SnippetsActions\Vue;
 
-class EditAction extends CreateAction
+use Zalt\SnippetsActions\ParameterActionInterface;
+
+class EditAction extends CreateAction  implements ParameterActionInterface
 {
     /**
      * True when the form should edit a new model item.

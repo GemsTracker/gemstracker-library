@@ -28,25 +28,6 @@ class PatientVueSnippet extends VueSnippetAbstract
         return $attributes;
     }
 
-    public function getHtmlOutput()
-    {
-        $attributes = [
-            'base-url' => '/',
-            'api-url' => '/api',
-            'patient-nr' => $this->patientNr,
-            ':organization-id' => $this->organizationId,
-            'locale' => $this->locale->getCurrentLanguage(),
-            ...$this->vueOptions,
-        ];
-
-        $container = Html::div(['id' => $this->appId]);
-        $app = Html::create($this->tag, $attributes);
-
-        $container->append($app);
-
-        return $container;
-    }
-
     public function hasHtmlOutput(): bool
     {
         $attributes = $this->requestInfo->getRequestMatchedParams();

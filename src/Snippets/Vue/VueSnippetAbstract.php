@@ -15,6 +15,8 @@ class VueSnippetAbstract extends SnippetAbstract
 {
     protected string $appId = 'app';
 
+    protected string $attributePrefix = 'data-vue-';
+
     protected string $tag;
 
     protected array $vueOptions = [];
@@ -42,9 +44,10 @@ class VueSnippetAbstract extends SnippetAbstract
 
     public function getHtmlOutput()
     {
-        $attributes = $this->getAttributes();
+        $attributes = $this->prefixAttributes($this->getAttributes());
+        $attributes['id'] = $this->appId;
 
-        $container = Html::div(['id' => $this->appId]);
+        $container = Html::div($attributes);
         $app = Html::create($this->tag, $attributes);
 
         $container->append($app);
@@ -61,6 +64,20 @@ class VueSnippetAbstract extends SnippetAbstract
             ...$this->vueOptions,
         ];
 
+        if (isset($this->tag)) {
+            $parameters['tag'] = $this->tag;
+        }
+
         return $parameters;
+    }
+
+    protected function prefixAttributes(array $attributes): array
+    {
+        $prefixedAttributes = [];
+        foreach($attributes as $key => $value) {
+            $newKey = $this->attributePrefix . $key;
+            $prefixedAttributes[$newKey] = $value;
+        }
+        return $prefixedAttributes;
     }
 }
