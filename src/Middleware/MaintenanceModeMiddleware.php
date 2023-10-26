@@ -31,7 +31,7 @@ class MaintenanceModeMiddleware implements MiddlewareInterface
         }
 
         /**
-         * @var $messenger StatusMessengerInterface
+         * @var StatusMessengerInterface|null $messenger
          */
         $messenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
         $messenger->addDanger($this->translator->_('System is in maintenance mode'));

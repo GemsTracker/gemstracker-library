@@ -47,7 +47,7 @@ class LoginHandler implements RequestHandlerInterface
         private readonly UrlHelper $urlHelper,
         private readonly Adapter $db,
         private readonly UserLoader $userLoader,
-        private readonly AccesslogRepository $accesslogRepository,
+        //private readonly AccesslogRepository $accesslogRepository,
         private readonly PasswordChecker $passwordChecker,
     ) {
     }

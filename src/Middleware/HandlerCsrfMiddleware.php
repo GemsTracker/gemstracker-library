@@ -32,10 +32,10 @@ class HandlerCsrfMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($request->getMethod() === 'POST') {
-            /** @var CsrfGuardInterface $csrfGuard */
+            /** @var CsrfGuardInterface|null $csrfGuard */
             $csrfGuard = $request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
 
-            /** @var StatusMessengerInterface $flash */
+            /** @var StatusMessengerInterface|null $flash */
             $flash = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
             if (!$csrfGuard || !$flash) {

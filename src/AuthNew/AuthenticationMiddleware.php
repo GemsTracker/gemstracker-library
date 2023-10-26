@@ -85,7 +85,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 $tfaService->logout();
             }
 
-            /** @var StatusMessengerInterface $flash */
+            /** @var StatusMessengerInterface|null $flash */
             $flash = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
             $flash?->addErrors([
                 $this->translator->trans('You are not allowed to login from this location.'),
@@ -103,7 +103,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 'tfa.login',
                 'auth.logout',
             ])) {
-                /** @var StatusMessengerInterface $flash */
+                /** @var StatusMessengerInterface|null $flash */
                 $flash = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
                 $flash?->addErrors([
                     $this->translator->trans('Your password must be changed.'),
@@ -119,7 +119,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 'tfa.login',
                 'auth.logout',
             ])) {
-                /** @var StatusMessengerInterface $flash */
+                /** @var StatusMessengerInterface|null $flash */
                 $flash = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
                 $flash?->addInfos([
                     $this->translator->trans('Please configure Authenticator TFA to continue.'),

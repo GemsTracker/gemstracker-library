@@ -2,7 +2,7 @@
 
 namespace Gems\AuthNew\Adapter;
 
-class GemsTrackerIdentity implements AuthenticationIdentityInterface
+final class GemsTrackerIdentity implements AuthenticationIdentityInterface
 {
     public function __construct(
         private readonly string $loginName,

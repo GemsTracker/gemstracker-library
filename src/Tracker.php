@@ -991,7 +991,7 @@ class Tracker implements TrackerInterface
      * Does not reflect changes to tracks or rounds.
      *
      * @param string $batch_id A unique identifier for the current batch
-     * @param LaminasTokenSelect Select statements selecting tokens
+     * @param LaminasTokenSelect $tokenSelect Select statements selecting tokens
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */

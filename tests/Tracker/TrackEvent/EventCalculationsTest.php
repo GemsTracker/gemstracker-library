@@ -11,7 +11,7 @@ use Gems\Tracker\TrackEvent\EventCalculations;
 class EventCalculationsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Gems\Tracker\TrackEvent\EventCalculations
+     * @var \Gems\Tracker\TrackEvent\EventCalculations
      */
     protected $object;
 

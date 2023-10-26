@@ -216,9 +216,9 @@ class RateLimitMiddleware implements MiddlewareInterface
     /**
      * Return the message that should be logged if the rate limiter is hit.
      *
-     * @param ServerRequestInterface $request
      * @return string
      */
+    /*
     private function getLogMessage(): string
     {
         $message = sprintf('%s request to %s from %s at %s exceeded rate limit of %d requests per %d seconds',
@@ -231,6 +231,7 @@ class RateLimitMiddleware implements MiddlewareInterface
 
         return $message;
     }
+    */
 
     /**
      * Log a rate limit hit to the database.

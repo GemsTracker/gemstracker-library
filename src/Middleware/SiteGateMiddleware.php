@@ -18,7 +18,7 @@ class SiteGateMiddleware implements MiddlewareInterface
 
     private SiteUtil $siteUtil;
 
-    private string $logName = 'siteLogger';
+    //private string $logName = 'siteLogger';
     private TemplateRendererInterface $template;
 
     public function __construct(SiteUtil $siteUtil, TemplateRendererInterface $template)

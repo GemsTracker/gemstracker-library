@@ -33,7 +33,7 @@ class AuthIdleCheckHandler implements RequestHandlerInterface
         $session = $request->getAttribute(SessionInterface::class);
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
-        /** @var StatusMessengerInterface $flash */
+        /** @var StatusMessengerInterface|null $statusMessenger */
         $statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
         $statusMessenger?->prolong();
 

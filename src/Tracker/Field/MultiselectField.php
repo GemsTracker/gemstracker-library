@@ -55,7 +55,7 @@ class MultiselectField extends FieldAbstract
     /**
      * Converting the field value when saving to a respondent track
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */

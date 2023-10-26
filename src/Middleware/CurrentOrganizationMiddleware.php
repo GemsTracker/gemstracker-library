@@ -31,7 +31,7 @@ class CurrentOrganizationMiddleware implements MiddlewareInterface
         $request = $request->withAttribute(static::CURRENT_ORGANIZATION_ATTRIBUTE, $currentOrganizationId);
 
         /**
-         * @var $user User
+         * @var User|null $user
          */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
         if ($user instanceof User) {

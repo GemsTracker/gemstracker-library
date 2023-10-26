@@ -3,6 +3,7 @@
 namespace Gems\AuthNew\Adapter;
 
 use Gems\AuthNew\GenericFailedAuthenticationResult;
+use Gems\Exception;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -38,9 +39,13 @@ class GenericRoutedAuthentication implements AuthenticationAdapterInterface
             ]);
         }
 
-        $adapter = match($user->getUserDefinitionClass()) {
-            UserLoader::USER_STAFF => GemsTrackerAuthentication::fromUser($this->db, $user, $this->password),
-        };
+        try {
+            $adapter = match($user->getUserDefinitionClass()) {
+                UserLoader::USER_STAFF => GemsTrackerAuthentication::fromUser($this->db, $user, $this->password),
+            };
+        } catch (\UnhandledMatchError $e) {
+            throw new Exception('Unsupported user definition class');
+        }
 
         return $adapter->authenticate();
     }

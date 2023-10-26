@@ -30,7 +30,7 @@ trait ThrottleVerifyTrait
 
     private function getMaxVerifyOtpKey(User $user): string
     {
-        return sha1($user->getUserId()) . '_otp_verify_max';
+        return sha1(strval($user->getUserId())) . '_otp_verify_max';
     }
 
     public function canVerifyOtp(User $user): bool

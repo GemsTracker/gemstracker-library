@@ -443,7 +443,7 @@ class FieldsDefinition
                         $output[$this->_fields[$key]->getManualKey()] = $row['gr2t2f_value_manual'];
                     }
 
-                    $value = $this->_fields[$key]->onFieldDataLoad($row['gr2t2f_value'], $output, $respTrackId);
+                    $value = $this->_fields[$key]->onFieldDataLoad($row['gr2t2f_value'], $output);
                 } else {
                     $value = $row['gr2t2f_value']; // Should not occur
                 }

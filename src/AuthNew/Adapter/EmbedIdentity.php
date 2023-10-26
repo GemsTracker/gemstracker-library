@@ -2,7 +2,7 @@
 
 namespace Gems\AuthNew\Adapter;
 
-class EmbedIdentity implements AuthenticationIdentityInterface
+final class EmbedIdentity implements AuthenticationIdentityInterface
 {
     public function __construct(
         private readonly string $systemUserLoginName,

@@ -391,7 +391,7 @@ class LaminasTokenSelect
     /**
      * Select only a specific surveyId
      *
-     * @param string $surveyId
+     * @param string $surveyCode
      * @return self
      */
     public function forSurveyCode(string $surveyCode): self
@@ -430,8 +430,7 @@ class LaminasTokenSelect
     /**
      * For adding generic where statements
      *
-     * @param string $cond SQL Where condition.
-     * @param mixed $bind optional bind values
+     * @param array $conditions SQL Where conditions
      * @return self
      */
     public function forWhere(array $conditions): self
@@ -508,10 +507,9 @@ class LaminasTokenSelect
      */
     public function onlyValid(): self
     {
-
         $this->select->where->isNull('gto_completion_time')
             ->lessThanOrEqualTo('gto_valid_from', new Expression('CURRENT_TIMESTAMP'))
-            ->where->nest()->isNull('gto_valid_until')->or->greaterThanOrEqualTo('gto_valid_until', new Expression('CURRENT_TIMESTAMP'));
+            ->nest()->isNull('gto_valid_until')->or->greaterThanOrEqualTo('gto_valid_until', new Expression('CURRENT_TIMESTAMP'))->unnest();
 
         return $this;
     }

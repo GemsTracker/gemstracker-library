@@ -86,7 +86,7 @@ class DateField extends FieldAbstract
     /**
      * Calculation the field info display for this type
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
@@ -115,7 +115,7 @@ class DateField extends FieldAbstract
     /**
      * Calculate the field value using the current values
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other known field values
      * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
@@ -168,7 +168,7 @@ class DateField extends FieldAbstract
     /**
      * Calculate the field value using the current values
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
@@ -184,7 +184,7 @@ class DateField extends FieldAbstract
     /**
      * Converting the field value when saving to a respondent track
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */

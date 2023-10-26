@@ -59,7 +59,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
 
         $respondent = $this->respondentRepository->getPatient($this->patientId, $systemUser->getCurrentOrganizationId());
 
-        if ($respondent === false) {
+        if (!is_array($respondent)) {
             return $this->makeFailResult(AuthenticationResult::FAILURE_DEFERRED, ['Nonexistent patient']);
         }
 

@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class EventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly AccesslogRepository $accesslogRepository,
+        //private readonly AccesslogRepository $accesslogRepository,
     ) {
     }
 
