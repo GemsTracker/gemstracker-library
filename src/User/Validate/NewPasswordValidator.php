@@ -29,9 +29,9 @@ class NewPasswordValidator implements ValidatorInterface
     /**
      * The reported problems with the password.
      *
-     * @var array or null
+     * @var array
      */
-    private $_report;
+    private array $_report;
 
     /**
      *
@@ -57,15 +57,23 @@ class NewPasswordValidator implements ValidatorInterface
      */
     public function isValid($value, $context = array())
     {
-        $this->_report = $this->passwordChecker->reportPasswordWeakness($this->user, $value, true);
+        $messages = [];
 
-        foreach ($this->_report as &$report) {
-            $report = ucfirst($report) . '.';
+        $report = $this->passwordChecker->reportPasswordWeakness($this->user, $value, true);
+        if (is_array($report)) {
+            array_push($messages, ...$report);
+        }
+
+        if ($messages) {
+            foreach ($messages as &$message) {
+                $message = ucfirst($message) . '.';
+            }
+            $this->_report = $messages;
         }
 
         // \MUtil\EchoOut\EchoOut::track($value, $this->_report);
 
-        return ! (boolean) $this->_report;
+        return empty($this->_report);
     }
 
     /**
