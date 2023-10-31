@@ -25,11 +25,13 @@ use Zalt\Base\TranslatorInterface;
  */
 class PasswordHistoryChecker
 {
+    public const DEFAULT_PASSWORD_HISTORY_LENGTH = 5;
+
     protected array $errors = [];
 
     protected ?User $user = null;
 
-    protected int $historyLength = 5;
+    protected int $historyLength = self::DEFAULT_PASSWORD_HISTORY_LENGTH;
 
     public function __construct(
         protected readonly ResultFetcher $resultFetcher,
