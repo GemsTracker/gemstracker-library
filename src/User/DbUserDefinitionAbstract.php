@@ -11,11 +11,13 @@
 
 namespace Gems\User;
 
+use Gems\Db\ResultFetcher;
+use Gems\User\PasswordHistoryChecker;
 use Laminas\Authentication\Adapter\AdapterInterface;
-use Laminas\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter;
+use Laminas\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Where;
 
 /**
  * A standard, database stored user as of version 1.5.
@@ -445,6 +447,53 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
 
         $model = new \MUtil\Model\TableModel('gems__user_passwords');
         \Gems\Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
+
+        $model->save($data);
+
+        return $this;
+    }
+
+    /**
+     * Update the password history.
+     *
+     * @param \Gems\User\User $user The user whose password history to change
+     * @param string $password
+     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     */
+    public function updatePasswordHistory(\Gems\User\User $user, string $password)
+    {
+        $historyLength = $user->getPasswordHistoryLength();
+        if (is_null($historyLength)) {
+            $historyLength = PasswordHistoryChecker::DEFAULT_PASSWORD_HISTORY_LENGTH;
+        }
+
+        // First we clean up.
+        $cleanupOffset = $historyLength > 0 ? $historyLength -1 : 0;
+        $resultFetcher = new ResultFetcher($this->getDb2());
+        $select = $resultFetcher->getSelect('gems__user_password_history');
+        $select->columns(['guph_id'])
+            ->where(['guph_id_user' => $user->getUserLoginId()])
+            ->order('guph_set_time DESC')
+            ->limit(10)
+            ->offset($cleanupOffset);
+        $removeIds = $resultFetcher->fetchCol($select);
+        if (is_array($removeIds)) {
+            $where = new Where;
+            $where->in('guph_id', $removeIds);
+            $resultFetcher->deleteFromTable('gems__user_password_history', $where);
+        }
+
+        // Nothing to add if we don't need to keep track of the password history.
+        if ($historyLength == 0) {
+            return $this;
+        }
+
+        // Add the password to the history.
+        $data['guph_id_user']  = $user->getUserLoginId();
+        $data['guph_password'] = $this->hashPassword($password);
+        $data['guph_set_time'] = new \Zend_Db_Expr('CURRENT_TIMESTAMP');
+
+        $model = new \MUtil\Model\TableModel('gems__user_password_history');
 
         $model->save($data);
 

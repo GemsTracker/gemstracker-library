@@ -11,7 +11,8 @@
 
 namespace Gems\User;
 
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslatorInterface;
+
 
 /**
  *

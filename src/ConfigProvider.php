@@ -655,6 +655,7 @@ class ConfigProvider
             'default' => [
                 'notTheName' => 1,
                 'inPasswordList' => 'docs/weak-passwords.lst',
+                'historyLength' => 5,
             ],
             'guest' => [
                 'capsCount' => 1,

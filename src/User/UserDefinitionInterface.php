@@ -123,6 +123,15 @@ interface UserDefinitionInterface
     public function setPassword(\Gems\User\User $user, $password);
 
     /**
+     * Update the password history, if allowed for this user type.
+     *
+     * @param \Gems\User\User $user The user whose password history to change
+     * @param string $password
+     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     */
+    public function updatePasswordHistory(\Gems\User\User $user, string $password);
+
+    /**
      *
      * @param \Gems\User\User $user The user whose password to change
      * @param string $newKey

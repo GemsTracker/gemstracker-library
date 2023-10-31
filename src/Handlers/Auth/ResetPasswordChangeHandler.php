@@ -9,6 +9,7 @@ use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Session\ValidationMessenger;
 use Gems\User\PasswordChecker;
+use Gems\User\PasswordHistoryChecker;
 use Gems\User\UserLoader;
 use Gems\User\Validate\NewPasswordValidator;
 use Laminas\Diactoros\Response\HtmlResponse;
@@ -33,6 +34,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
         private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
         private readonly PasswordChecker $passwordChecker,
+        private readonly PasswordHistoryChecker $passwordHistoryChecker,
     ) {
     }
 
@@ -90,7 +92,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
 
         $input = $request->getParsedBody();
 
-        $newPasswordValidator = new NewPasswordValidator($user, $this->passwordChecker);
+        $newPasswordValidator = new NewPasswordValidator($user, $this->passwordChecker, $this->passwordHistoryChecker);
         if (!$newPasswordValidator->isValid($input['new_password'] ?? null)) {
             $this->statusMessenger->addError($this->translator->trans('Password reset failed.'), true);
             $this->validationMessenger->addValidationErrors('new_password', $newPasswordValidator->getMessages());

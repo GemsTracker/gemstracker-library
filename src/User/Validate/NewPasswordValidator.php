@@ -12,6 +12,7 @@
 namespace Gems\User\Validate;
 
 use Gems\User\PasswordChecker;
+use Gems\User\PasswordHistoryChecker;
 use Gems\User\User;
 use Laminas\Validator\ValidatorInterface;
 
@@ -29,9 +30,9 @@ class NewPasswordValidator implements ValidatorInterface
     /**
      * The reported problems with the password.
      *
-     * @var array or null
+     * @var array
      */
-    private $_report;
+    private array $report;
 
     /**
      *
@@ -40,6 +41,7 @@ class NewPasswordValidator implements ValidatorInterface
     public function __construct(
         private readonly User $user,
         private readonly PasswordChecker $passwordChecker,
+        private readonly PasswordHistoryChecker $passwordHistoryChecker,
     ) {
     }
 
@@ -57,15 +59,28 @@ class NewPasswordValidator implements ValidatorInterface
      */
     public function isValid($value, $context = array())
     {
-        $this->_report = $this->passwordChecker->reportPasswordWeakness($this->user, $value, true);
+        $messages = [];
 
-        foreach ($this->_report as &$report) {
-            $report = ucfirst($report) . '.';
+        $report = $this->passwordChecker->reportPasswordWeakness($this->user, $value, true);
+        if (is_array($report)) {
+            array_push($messages, ...$report);
         }
 
-        // \MUtil\EchoOut\EchoOut::track($value, $this->_report);
+        $report = $this->passwordHistoryChecker->reportPasswordReuse($this->user, $value);
+        if (is_array($report)) {
+            array_push($messages, ...$report);
+        }
 
-        return ! (boolean) $this->_report;
+        if ($messages) {
+            foreach ($messages as &$message) {
+                $message = ucfirst($message) . '.';
+            }
+            $this->report = $messages;
+        }
+
+        // \MUtil\EchoOut\EchoOut::track($value, $this->report);
+
+        return empty($this->report);
     }
 
     /**
@@ -80,8 +95,8 @@ class NewPasswordValidator implements ValidatorInterface
      */
     public function getMessages()
     {
-        if ($this->_report) {
-            return $this->_report;
+        if ($this->report) {
+            return $this->report;
 
         } else {
             return array();

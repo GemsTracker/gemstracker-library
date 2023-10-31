@@ -1834,6 +1834,41 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
+     * Get the password history length from the config.
+     *
+     * @return int|null The password history length, or null if not configured.
+     */
+    public function getPasswordHistoryLength(): int|null
+    {
+        if (!isset($this->config['password']) || !is_array($this->config['password'])) {
+            return null;
+        }
+
+        $historyLength = 0;
+        $found = false;
+        $codes = $this->getPasswordCheckerCodes();
+        foreach ($codes as $code) {
+            if (!isset($this->config['password'][$code]['historyLength'])) {
+                continue;
+            }
+            if (!is_int($this->config['password'][$code]['historyLength'])) {
+                continue;
+            }
+            if ($this->config['password'][$code]['historyLength'] > $historyLength) {
+                $historyLength = $this->config['password'][$code]['historyLength'];
+                $found = true;
+            }
+        }
+
+        if ($found) {
+            return $historyLength;
+        }
+
+        return null;
+    }
+
+
+    /**
      * Send an e-mail to this user
      *
      * @param string $subjectTemplate A subject template in which {fields} are replaced
@@ -2050,6 +2085,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
     {
         $this->definition->setPassword($this, $password);
         $this->setPasswordResetRequired(false);
+        $this->definition->updatePasswordHistory($this, $password);
         $this->refresh();   // force refresh
         return $this;
     }
