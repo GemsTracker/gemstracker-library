@@ -31,7 +31,7 @@ class NewPasswordValidator implements ValidatorInterface
      *
      * @var array
      */
-    private array $_report;
+    private array $report;
 
     /**
      *
@@ -68,12 +68,12 @@ class NewPasswordValidator implements ValidatorInterface
             foreach ($messages as &$message) {
                 $message = ucfirst($message) . '.';
             }
-            $this->_report = $messages;
+            $this->report = $messages;
         }
 
-        // \MUtil\EchoOut\EchoOut::track($value, $this->_report);
+        // \MUtil\EchoOut\EchoOut::track($value, $this->report);
 
-        return empty($this->_report);
+        return empty($this->report);
     }
 
     /**
@@ -88,8 +88,8 @@ class NewPasswordValidator implements ValidatorInterface
      */
     public function getMessages()
     {
-        if ($this->_report) {
-            return $this->_report;
+        if ($this->report) {
+            return $this->report;
 
         } else {
             return array();
