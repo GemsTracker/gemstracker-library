@@ -11,14 +11,16 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Setup;
 
-use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\Model\MetaModelLoader;
-use Gems\Repository\ConsentRepository;
+use Gems\Handlers\BrowseChangeHandler;
+use Gems\Model\Setup\ConsentModel;
+use Gems\Model\Setup\ConsentUsageCounter;
+use Gems\SnippetsActions\Browse\BrowseFilteredAction;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Model\Data\DataReaderInterface;
-use Zalt\Model\Sql\SqlTableModel;
+use Zalt\Model\MetaModelLoader;
+use Zalt\SnippetsActions\SnippetActionInterface;
+use Zalt\SnippetsHandler\ConstructorModelHandlerTrait;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
-use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
  *
@@ -26,8 +28,10 @@ use Zalt\Validator\Model\ModelUniqueValidator;
  * @subpackage Handlers\Setup
  * @since      Class available since version 1.9.2
  */
-class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
+class ConsentHandler extends BrowseChangeHandler
 {
+    use ConstructorModelHandlerTrait;
+
     /**
      * Variable to set tags for cache cleanup after changes
      *
@@ -35,63 +39,17 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public array $cacheTags = ['consent', 'consents'];
 
-    /**
-     * The snippets used for the autofilter action.
-     *
-     * @var array snippets name
-     */
-    protected array $autofilterParameters = [
-        'extraSort' => ['gco_order' => SORT_ASC,],
-    ];
-
     public function __construct(
-        SnippetResponderInterface $responder,
-        TranslatorInterface $translate,
-        protected MetaModelLoader $metaModelLoader,
-        protected ConsentRepository $consentRepository,
+        SnippetResponderInterface              $responder,
+        MetaModelLoader                        $metaModelLoader,
+        TranslatorInterface                    $translate,
+        CacheItemPoolInterface                 $cache,
+        ConsentModel                           $consentModel,
+        protected readonly ConsentUsageCounter $usageCounter,
     ) {
-        parent::__construct($responder, $translate);
-    }
+        parent::__construct($responder, $metaModelLoader, $translate, $cache);
 
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
-     */
-    public function createModel(bool $detailed, string $action): DataReaderInterface
-    {
-        $model = $this->metaModelLoader->createModel(SqlTableModel::class, 'gems__consents');
-        
-        $metaModel = $model->getMetaModel();
-        $metaModel->setKeys(['gco_description' => 'gco_description']);
-        $metaModel->set('gco_description', 'label', $this->_('Description'), 'size', '10', 'translate', true);
-
-        $metaModel->set('gco_order',       'label', $this->_('Order'), 'size', '10',
-                    'description', $this->_('Determines order of presentation in interface.'),
-                    'validator', 'Digits');
-        $metaModel->set('gco_code',        'label', $this->_('Consent code'),
-                    'multiOptions', $this->consentRepository->getConsentTypes(),
-                    'description', $this->_('Internal code, not visible to users, copied with the token information to the source.'));
-        if ($detailed) {
-            $metaModel->set('gco_description', 'validator', ModelUniqueValidator::class);
-            $metaModel->set('gco_order',       'validator', ModelUniqueValidator::class);
-        }
-
-        if ('create' == $action || 'edit' == $action) {
-            // $this->metaModelLoader->addDatabaseTranslationEditFields($metaModel);
-        } else {
-            // $this->metaModelLoader->addDatabaseTranslations($metaModel);
-        }
-
-        $this->metaModelLoader->setChangeFields($metaModel, 'gco');
-
-        return $model;
+        $this->model = $consentModel;
     }
 
     /**
@@ -113,5 +71,14 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
     public function getTopic(int $count = 1): string
     {
         return $this->plural('respondent consent', 'respondent consents', $count);
+    }
+
+    public function prepareAction(SnippetActionInterface $action): void
+    {
+        parent::prepareAction($action);
+
+        if ($action instanceof BrowseFilteredAction) {
+            $action->extraSort = ['gco_order' => SORT_ASC,];
+        }
     }
 }

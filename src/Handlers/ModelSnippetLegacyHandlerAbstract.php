@@ -15,7 +15,7 @@ use Gems\Html;
 use Gems\Snippets\ActiveToggleSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
-use Gems\Snippets\ModelConfirmSnippet;
+use Gems\Snippets\ModelConfirmDeleteSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelTableSnippet;
@@ -154,6 +154,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     );
 
     protected array $activeToggleParameters = [
+        'allowDeletion'  => false,
         'buttonNoClass'  => 'actionlink btn',
         'buttonYesClass' => 'actionlink btn btn-primary btn-lg',
         'csrfName'       => 'getCsrfTokenName',
@@ -214,7 +215,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var mixed String or array of snippets name
      */
     protected array $deleteSnippets = [
-        ModelConfirmSnippet::class,
+        ModelConfirmDeleteSnippet::class,
         ];
 
     protected string $exportActionClass = ExportAction::class;

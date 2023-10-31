@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
-use Gems\Snippets\ModelConfirmSnippetAbstract;
+use Gems\Snippets\ModelConfirmDeleteSnippetAbstract;
 use Gems\Tracker\Model\RoundModel;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Data\FullDataInterface;
@@ -26,7 +26,7 @@ use Zalt\Snippets\ModelBridge\DetailTableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 22-apr-2015 15:32:11
  */
-class RoundDeleteSnippet extends ModelConfirmSnippetAbstract
+class RoundDeleteDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
 {
     /**
      *
@@ -96,8 +96,8 @@ class RoundDeleteSnippet extends ModelConfirmSnippetAbstract
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $dataModel
+     * @param DetailTableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
     protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)

@@ -42,7 +42,15 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
     ) {
         parent::__construct($snippetLoader);
     }
-    
+
+    public function getMenuSnippetHelper(): ?MenuSnippetHelper
+    {
+        if (isset($this->menuHelper)) {
+            return $this->menuHelper;
+        }
+        return null;
+    }
+
     public function getSnippetsResponse(array $snippetNames, mixed $snippetOptions = [], ?ServerRequestInterface $request = null) : ResponseInterface
     {
         $output = parent::getSnippetsResponse($snippetNames, $snippetOptions, $request);

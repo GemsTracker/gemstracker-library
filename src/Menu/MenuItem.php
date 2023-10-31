@@ -76,4 +76,6 @@ abstract class MenuItem extends MenuNode
     {
         $this->active = $active;
     }
+
+    abstract public function setLabel(string $label): void;
 }

@@ -16,7 +16,7 @@ use Gems\Model\MetaModelLoader;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\Mask\MaskUsageInformation;
-use Gems\Snippets\ModelConfirmSnippet;
+use Gems\Snippets\ModelConfirmDeleteSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Show\ShowAction;

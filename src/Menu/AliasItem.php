@@ -34,4 +34,8 @@ class AliasItem extends MenuItem
     {
         return '';
     }
+
+    public function setLabel(string $label): void
+    {
+    }
 }

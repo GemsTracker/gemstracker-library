@@ -13,6 +13,7 @@
 namespace Gems\Model;
 
 use Gems\Encryption\ValueEncryptor;
+use Gems\Model\Dependency\ActivationDependency;
 use Gems\Model\Type\EncryptedField;
 use Gems\User\Embed\EmbedLoader;
 use Gems\User\Filter\PhoneNumberFilter;

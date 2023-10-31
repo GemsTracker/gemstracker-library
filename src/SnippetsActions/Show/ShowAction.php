@@ -14,8 +14,10 @@ namespace Gems\SnippetsActions\Show;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\Snippets\UsageSnippet;
 use Gems\SnippetsActions\ButtonRowActiontrait;
 use Gems\SnippetsActions\ContentTitleActionTrait;
+use Gems\SnippetsActions\UsageCounterActionTrait;
 use Zalt\Model\MetaModellerInterface;
 
 /**
@@ -28,7 +30,8 @@ class ShowAction extends \Zalt\SnippetsActions\Show\ShowAction
 {
     use ButtonRowActiontrait;
     use ContentTitleActionTrait;
-    
+    use UsageCounterActionTrait;
+
     /**
      * @inheritDoc
      */
@@ -36,6 +39,7 @@ class ShowAction extends \Zalt\SnippetsActions\Show\ShowAction
         ContentTitleSnippet::class,
         ModelDetailTableSnippet::class,
         CurrentButtonRowSnippet::class,
+        UsageSnippet::class,
         ];
 
     public string $class = 'displayer table';

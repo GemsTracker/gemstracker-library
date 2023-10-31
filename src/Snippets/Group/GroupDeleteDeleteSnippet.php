@@ -31,7 +31,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 24-sep-2014 18:26:00
  */
-class GroupDeleteSnippet extends \Gems\Snippets\ModelConfirmSnippetAbstract
+class GroupDeleteDeleteSnippet extends \Gems\Snippets\ModelConfirmDeleteSnippetAbstract
 {
     /**
      *
@@ -102,7 +102,7 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelConfirmSnippetAbstract
             $this->messenger->addMessage(sprintf(
                 $this->_('This group is being used by groups %s and hence cannot be deleted'),
                 implode(', ', $dependents)
-            ), MessageStatus::Danger);
+            ));
             $this->afterActionRouteUrl = $this->menuSnippetHelper->getRelatedRouteUrl('show');
 
             return false;

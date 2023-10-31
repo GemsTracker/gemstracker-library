@@ -10,7 +10,7 @@ class RouteLinkItem extends MenuItem
 
     public function __construct(
         public readonly string $name,
-        public readonly string $label,
+        public string $label,
     ) {
     }
 
@@ -72,5 +72,10 @@ class RouteLinkItem extends MenuItem
             'active' => $this->isActive(),
             'children' => $children,
         ]);
+    }
+
+    public function setLabel(string $label): void
+    {
+        $this->label = $label;
     }
 }

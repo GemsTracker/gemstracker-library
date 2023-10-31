@@ -14,6 +14,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Actions\ProjectSettings;
 use Gems\Handlers\BrowseChangeHandler;
 use Gems\Model\Setup\ReceptionCodeModel;
+use Gems\Model\Setup\ReceptionCodeUsageCounter;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
@@ -43,11 +44,12 @@ class ReceptionCodeHandler extends BrowseChangeHandler
     public array $cacheTags = ['receptionCode', 'receptionCodes'];
 
     public function __construct(
-        SnippetResponderInterface $responder,
-        MetaModelLoader $metaModelLoader,
-        TranslatorInterface $translate,
-        CacheItemPoolInterface $cache,
-        ReceptionCodeModel $receptionCodeModel,
+        SnippetResponderInterface                    $responder,
+        MetaModelLoader                              $metaModelLoader,
+        TranslatorInterface                          $translate,
+        CacheItemPoolInterface                       $cache,
+        ReceptionCodeModel                           $receptionCodeModel,
+        protected readonly ReceptionCodeUsageCounter $usageCounter,
     ) {
         parent::__construct($responder, $metaModelLoader, $translate, $cache);
 

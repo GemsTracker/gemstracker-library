@@ -16,7 +16,8 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
-use Gems\Snippets\ModelConfirmSnippet;
+use Gems\Snippets\ModelConfirmDeleteSnippet;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Zalt\Base\TranslatorInterface;
@@ -34,7 +35,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
 class StaffHandler extends ModelSnippetLegacyHandlerAbstract
 {
     protected array $activeToggleSnippets = [
-        ModelConfirmSnippet::class,
+        ModelConfirmDeleteSnippet::class,
     ];
 
     /**
@@ -264,6 +265,19 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
             $model->applySettings($detailed, $action);
         } else {
             $model->applySystemUserSettings($detailed, $action);
+        }
+        if ($detailed) {
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $menuHelper = $this->responder->getMenuSnippetHelper();
+            } else {
+                $menuHelper = null;
+            }
+            $metaModel = $model->getMetaModel();
+            $metaModel->addDependency(new Model\Dependency\ActivationDependency(
+                $this->translate,
+                $metaModel,
+                $menuHelper,
+            ));
         }
 
         return $model;

@@ -13,6 +13,7 @@ namespace Gems\Handlers;
 
 use DateTimeInterface;
 use Gems\Html;
+use Gems\Model\Dependency\UsageDependency;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Delete\DeleteAction;
@@ -20,6 +21,7 @@ use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
 use Gems\SnippetsActions\Show\ShowAction;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Mezzio\Session\SessionInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -306,6 +308,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
 
         } elseif ($action instanceof ShowAction) {
             $action->contentTitle = sprintf($this->_('Showing %s'), $this->getTopic(1));
+            $action->subjects = [$this->getTopic(1), $this->getTopic(2)];
 
         } elseif ($action instanceof DeleteAction) {
             $action->contentTitle = sprintf($this->_('Delete %s'), $this->getTopic(1));
@@ -313,6 +316,23 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
             $action->csrfToken = $this->getCsrfToken($action->csrfName);
             $action->subjects = [$this->getTopic(1), $this->getTopic(2)];
 
+        }
+
+        if (property_exists($this, 'usageCounter') && property_exists($action, 'usageCounter')) {
+            $action->usageCounter = $this->usageCounter;
+
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $menuHelper = $this->responder->getMenuSnippetHelper();
+            } else {
+                $menuHelper = null;
+            }
+            $metaModel = $this->getModel($action)->getMetaModel();
+            $metaModel->addDependency(new UsageDependency(
+                $this->translate,
+                $metaModel,
+                $this->usageCounter,
+                $menuHelper,
+            ));
         }
     }
 }

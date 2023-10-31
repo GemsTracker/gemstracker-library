@@ -327,4 +327,14 @@ class MenuSnippetHelper
         unset($routes[$current]);
         return $routes;
     }
+
+    public function setMenuItemLabel(string $route, string $label): void
+    {
+        try {
+            $menuItem = $this->menu->find($route);
+            $menuItem->setLabel($label);
+        } catch (MenuItemNotFoundException $minfe) {
+            dump($route. $minfe->getMessage());
+        }
+    }
 }

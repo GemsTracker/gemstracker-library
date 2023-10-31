@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Gems\SnippetsActions\Form;
 
+use Gems\Snippets\ModelFormSnippet;
+use Gems\Snippets\UsageSnippet;
+use Gems\SnippetsActions\UsageCounterActionTrait;
 use Zalt\SnippetsActions\ParameterActionInterface;
 
 /**
@@ -21,6 +24,16 @@ use Zalt\SnippetsActions\ParameterActionInterface;
  */
 class EditAction extends CreateAction implements ParameterActionInterface
 {
+    use UsageCounterActionTrait;
+
+    /**
+     * @var array Of snippet class names
+     */
+    protected array $_snippets = [
+        ModelFormSnippet::class,
+        UsageSnippet::class,
+    ];
+
     /**
      * True when the form should edit a new model item.
      * @var boolean

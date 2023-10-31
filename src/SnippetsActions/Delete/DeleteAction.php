@@ -12,8 +12,10 @@ declare(strict_types=1);
 namespace Gems\SnippetsActions\Delete;
 
 use Gems\Snippets\Generic\ContentTitleSnippet;
-use Gems\Snippets\ModelConfirmSnippet;
+use Gems\Snippets\ModelConfirmDeleteSnippet;
+use Gems\Snippets\UsageSnippet;
 use Gems\SnippetsActions\ContentTitleActionTrait;
+use Gems\SnippetsActions\UsageCounterActionTrait;
 use Zalt\Model\MetaModellerInterface;
 
 /**
@@ -25,13 +27,15 @@ use Zalt\Model\MetaModellerInterface;
 class DeleteAction extends \Zalt\SnippetsActions\Delete\DeleteAction
 {
     use ContentTitleActionTrait;
+    use UsageCounterActionTrait;
 
     /**
      * @var array Of snippet class names
      */
     protected array $_snippets = [
         ContentTitleSnippet::class,
-        ModelConfirmSnippet::class,
+        ModelConfirmDeleteSnippet::class,
+        UsageSnippet::class,
     ];
 
     /**
@@ -45,7 +49,7 @@ class DeleteAction extends \Zalt\SnippetsActions\Delete\DeleteAction
     public ?string $buttonYesClass = 'actionlink btn btn-primary btn-lg';
 
     /**
-     * @var string A calssname to append to the class attribute of the main HtmlElement output of the snippet;
+     * @var string A calssname to append to the class attribute ofUseSn the main HtmlElement output of the snippet;
      */
     public string $class = 'displayer';
     

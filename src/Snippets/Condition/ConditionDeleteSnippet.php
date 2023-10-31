@@ -9,16 +9,17 @@
  * @license    New BSD License
  */
 
-namespace Gems\Snippets;
+namespace Gems\Snippets\Condition;
 
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\ConditionModel;
+use Gems\Snippets\ModelConfirmDeleteSnippetAbstract;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
-use Zalt\Model\Data\FullDataInterface;
+use Zalt\Snippets\DeleteModeEnum;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -30,7 +31,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class ConditionDeleteSnippet extends ModelConfirmSnippetAbstract
+class ConditionDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
 {
     protected ConditionModel|null $model = null;
 
@@ -59,8 +60,10 @@ class ConditionDeleteSnippet extends ModelConfirmSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuSnippetHelper);
     }
 
-    public function checkModel(FullDataInterface $dataModel): void
+    protected function getDeletionMode(DataReaderInterface $dataModel): DeleteModeEnum
     {
+        $output = parent::getDeletionMode($dataModel);
+
         if ($dataModel instanceof ConditionModel) {
             $this->useCount = $dataModel->getUsedCount($this->conditionId);
 
@@ -71,10 +74,11 @@ class ConditionDeleteSnippet extends ModelConfirmSnippetAbstract
                 ), $this->useCount));
                 $this->messenger->addMessage($this->_('This condition cannot be deleted, only deactivated.'));
                 // $this->displayTitle   = $this->_('Deactivate condition');
-                parent::checkModel($dataModel);
+                $output = DeleteModeEnum::Deactivate;
             }
         }
 
+        return $output;
     }
 
     /**

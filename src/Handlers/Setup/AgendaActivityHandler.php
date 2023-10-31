@@ -20,7 +20,6 @@ use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Util;
 use Gems\Util\Translated;
-use MUtil\Model\ModelAbstract;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -206,6 +205,6 @@ class AgendaActivityHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
     {
         parent::indexAction();
         
-        $this->html->pInfo($this->getModel()->get('gaa_name', 'description'));
+        $this->html->pInfo($this->getModel()->getMetaModel()->get('gaa_name', 'description'));
     }
 }

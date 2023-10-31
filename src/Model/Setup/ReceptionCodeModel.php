@@ -16,6 +16,7 @@ use Gems\Util\ReceptionCodeLibrary;
 use Gems\Util\Translated;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\SnippetsActions\ApplyActionInterface;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\Validator\Model\ModelUniqueValidator;
@@ -87,9 +88,8 @@ class ReceptionCodeModel extends \Gems\Model\SqlTableModel implements ApplyActio
             ]);
         $this->metaModel->set('grc_active', [           
             'label' => $this->_('Active'),
-            'multiOptions' => $yesNo,
-            'elementClass' => 'CheckBox',
             'description' => $this->_('Only active codes can be selected.'),
+            'type' => new ActivatingYesNoType($yesNo, 'row_class'),
             ]);
         $this->metaModel->set('grc_for_respondents', [
             'label' => $this->_('Respondents'),

@@ -75,7 +75,7 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $deleteSnippets = ['ConditionDeleteSnippet'];
+    protected array $deleteSnippets = ['Condition\\ConditionDeleteSnippet'];
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -106,7 +106,7 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
         'ModelDetailTableSnippet',
         CurrentButtonRowSnippet::class,
         'Tracker\\Rounds\\ConditionRoundsTableSnippet',
-        'ConditionAndOrTableSnippet',
+        'Condition\\ConditionAndOrTableSnippet',
     ];
 
     public function __construct(

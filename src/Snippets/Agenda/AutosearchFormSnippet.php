@@ -36,7 +36,7 @@ class AutosearchFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
         
         foreach ($this->searchFields as $searchField => $emptyTxt) {
             if (!is_numeric($searchField)) {
-                $elements[] = $this->_createSelectElement($searchField, $this->model->get($searchField, 'multiOptions'), $emptyTxt);
+                $elements[] = $this->_createSelectElement($searchField, $this->model->getMetaModel()->get($searchField, 'multiOptions'), $emptyTxt);
             } else {
                 $elements[] = $emptyTxt;
             }

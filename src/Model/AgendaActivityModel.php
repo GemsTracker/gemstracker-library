@@ -2,7 +2,6 @@
 
 namespace Gems\Model;
 
-use Gems\Model\Type\BooleanType;
 use Gems\Repository\OrganizationRepository;
 use Gems\Util\Translated;
 use Zalt\Base\TranslatorInterface;
@@ -17,9 +16,17 @@ class AgendaActivityModel extends SqlTableModel
         TranslatorInterface $translate,
         protected readonly Translated $translatedUtil,
         protected readonly OrganizationRepository $organizationRepository,
-    ) {
+    )
+    {
         parent::__construct('gems__agenda_activities', $metaModelLoader, $sqlRunner, $translate);
 
+        $metaModelLoader->setChangeFields($this->metaModel, 'gaa');
+
+        $this->applySettings();
+    }
+
+    public function applySettings(): void
+    {
         $this->metaModel->set('gaa_id_activity', [
             'label' => $this->_('ID'),
             'apiName' => 'id',
@@ -58,10 +65,7 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
         $this->metaModel->set('gaa_active', [
             'label' => $this->_('Active'),
             'apiName' => 'active',
-            'type' => new BooleanType(),
-            ActivatingYesNoType::$activatingValue => 1,
-            ActivatingYesNoType::$deactivatingValue => 0,
-
+            'type' => new ActivatingYesNoType($this->translatedUtil->getYesNo(), 'row_class'),
         ]);
 
         $this->metaModel->set('gaa_filter', [
@@ -70,9 +74,5 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
             'elementClass' => 'Checkbox',
             'multiOptions' => $this->translatedUtil->getYesNo(),
         ]);
-
-        $metaModelLoader->setChangeFields($this->metaModel, 'gaa');
-
-        $this->addColumn("CASE WHEN gaa_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
     }
 }

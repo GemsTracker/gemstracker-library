@@ -9,15 +9,14 @@
  * @license    New BSD License
  */
 
-namespace Gems\Snippets;
+namespace Gems\Snippets\Condition;
 
 use Gems\Condition\ConditionLoader;
 use Gems\Menu\MenuSnippetHelper;
-use Gems\Menu\RouteHelper;
 use Gems\Model\ConditionModel;
+use Gems\Snippets\ModelTableSnippetAbstract;
 use MUtil\Model;
-use MUtil\Model\ModelAbstract;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Bridge\BridgeAbstract;
@@ -53,7 +52,7 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
     protected $_model;
 
     /**
-     * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
+     * One of the BridgeAbstract MODE constants
      *
      * @var int
      */
@@ -64,13 +63,13 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public $menuActionController = 'condition';
+    public $menuActionController = ['condition'];
 
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuSnippetHelper,
-        Translator $translate,
+        TranslatorInterface $translate,
         protected ConditionLoader $conditionLoader
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuSnippetHelper, $translate);
@@ -81,7 +80,7 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {

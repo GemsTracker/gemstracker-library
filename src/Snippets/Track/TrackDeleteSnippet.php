@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Track;
 
 use Gems\Menu\MenuSnippetHelper;
-use Gems\Snippets\ModelConfirmSnippetAbstract;
+use Gems\Snippets\ModelConfirmDeleteSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
 use Zalt\Base\RequestInfo;
@@ -20,7 +20,7 @@ use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Data\FullDataInterface;
-use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\Snippets\DeleteModeEnum;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -32,7 +32,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.8.6
  */
-class TrackDeleteSnippet extends ModelConfirmSnippetAbstract
+class TrackDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
 {
     /**
      *
@@ -65,8 +65,10 @@ class TrackDeleteSnippet extends ModelConfirmSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
     }
 
-    public function checkModel(FullDataInterface $dataModel): void
+    protected function getDeletionMode(DataReaderInterface $dataModel): DeleteModeEnum
     {
+        $output = parent::getDeletionMode($dataModel);
+
         if ($dataModel instanceof TrackModel) {
             $this->useCount = $dataModel->getStartCount($this->trackId);
 
@@ -79,9 +81,12 @@ class TrackDeleteSnippet extends ModelConfirmSnippetAbstract
 
                 $this->question = $this->_('Do you want to deactivate this track?');
                 // $this->displayTitle   = $this->_('Deactivate track');
-                parent::checkModel($dataModel);
+
+                $output = DeleteModeEnum::Activate;
             }
         }
+
+        return $output;
     }
 
     /**
