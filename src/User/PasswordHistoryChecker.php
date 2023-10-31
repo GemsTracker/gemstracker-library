@@ -59,7 +59,7 @@ class PasswordHistoryChecker
         $this->user = $user;
         $this->errors = [];
 
-        $this->getHistoryLength($user->getPasswordCheckerCodes());
+        $this->getHistoryLength();
 
         $previousHashes = $this->getPasswordHistory();
         if (is_null($previousHashes)) {
@@ -78,30 +78,12 @@ class PasswordHistoryChecker
 
     /**
      * Get the password history length from the config.
-     *
-     * @param array $codes Keys in the 'password' section of the config array.
      */
-    private function getHistoryLength(array $codes): void
+    private function getHistoryLength(): void
     {
-        if (!isset($this->config['password']) || !is_array($this->config['password'])) {
-            return;
-        }
-        $historyLength = 0;
-        $found = false;
-        foreach ($codes as $code) {
-            if (!isset($this->config['password'][$code]['historyLength'])) {
-                continue;
-            }
-            if (!is_int($this->config['password'][$code]['historyLength'])) {
-                continue;
-            }
-            if ($this->config['password'][$code]['historyLength'] > $historyLength) {
-                $historyLength = $this->config['password'][$code]['historyLength'];
-                $found = true;
-            }
-        }
+        $historyLength = $this->user->getPasswordHistoryLength();
 
-        if ($found) {
+        if (!is_null($historyLength)) {
             $this->historyLength = $historyLength;
         }
     }
