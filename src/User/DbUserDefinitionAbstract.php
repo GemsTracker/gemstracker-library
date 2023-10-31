@@ -452,6 +452,26 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
     }
 
     /**
+     * Update the password history.
+     *
+     * @param \Gems\User\User $user The user whose password history to change
+     * @param string $password
+     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     */
+    public function updatePasswordHistory(\Gems\User\User $user, string $password)
+    {
+        $data['guph_id_user']  = $user->getUserLoginId();
+        $data['guph_password'] = $this->hashPassword($password);
+        $data['guph_set_time'] = new \Zend_Db_Expr('CURRENT_TIMESTAMP');
+
+        $model = new \MUtil\Model\TableModel('gems__user_password_history');
+
+        $model->save($data);
+
+        return $this;
+    }
+
+    /**
      *
      * @param \Gems\User\User $user The user whose key to set
      * @param string $newKey

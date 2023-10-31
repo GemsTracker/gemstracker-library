@@ -2050,6 +2050,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
     {
         $this->definition->setPassword($this, $password);
         $this->setPasswordResetRequired(false);
+        $this->definition->updatePasswordHistory($this, $password);
         $this->refresh();   // force refresh
         return $this;
     }

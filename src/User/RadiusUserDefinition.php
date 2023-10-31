@@ -306,4 +306,16 @@ class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Ge
         throw new \Gems\Exception\Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
         return $this;
     }
+
+    /**
+     * Update the password history, if allowed for this user type.
+     *
+     * @param \Gems\User\User $user The user whose password history to change
+     * @param string $password
+     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     */
+    public function updatePasswordHistory(\Gems\User\User $user, string $password)
+    {
+        throw new \Gems\Exception\Coding(sprintf('The password history cannot be updated for %s users.', get_class($this)));
+    }
 }
