@@ -12,6 +12,7 @@
 namespace Gems\User\Validate;
 
 use Gems\User\PasswordChecker;
+use Gems\User\PasswordHistoryChecker;
 use Gems\User\User;
 use Laminas\Validator\ValidatorInterface;
 
@@ -40,6 +41,7 @@ class NewPasswordValidator implements ValidatorInterface
     public function __construct(
         private readonly User $user,
         private readonly PasswordChecker $passwordChecker,
+        private readonly PasswordHistoryChecker $passwordHistoryChecker,
     ) {
     }
 
@@ -60,6 +62,11 @@ class NewPasswordValidator implements ValidatorInterface
         $messages = [];
 
         $report = $this->passwordChecker->reportPasswordWeakness($this->user, $value, true);
+        if (is_array($report)) {
+            array_push($messages, ...$report);
+        }
+
+        $report = $this->passwordHistoryChecker->reportPasswordReuse($this->user, $value);
         if (is_array($report)) {
             array_push($messages, ...$report);
         }
