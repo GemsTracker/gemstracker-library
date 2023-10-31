@@ -29,7 +29,7 @@ class PasswordHistoryChecker
 
     protected ?User $user = null;
 
-    protected int $historySize = 5;
+    protected int $historyLength = 5;
 
     public function __construct(
         protected readonly ResultFetcher $resultFetcher,
@@ -59,6 +59,8 @@ class PasswordHistoryChecker
         $this->user = $user;
         $this->errors = [];
 
+        $this->getHistoryLength($user->getPasswordCheckerCodes());
+
         $previousHashes = $this->getPasswordHistory();
         if (is_null($previousHashes)) {
             return null;
@@ -66,12 +68,42 @@ class PasswordHistoryChecker
 
         foreach ($previousHashes as $previousHash) {
             if (password_verify($password, $previousHash)) {
-                $this->_addError(sprintf($this->translator->trans('should not be identical to any of the previous %d passwords'), $this->historySize));
+                $this->_addError(sprintf($this->translator->trans('should not be identical to any of the previous %d passwords'), $this->historyLength));
                 break;
             }
         }
 
         return $this->errors;
+    }
+
+    /**
+     * Get the password history length from the config.
+     *
+     * @param array $codes Keys in the 'password' section of the config array.
+     */
+    private function getHistoryLength(array $codes): void
+    {
+        if (!isset($this->config['password']) || !is_array($this->config['password'])) {
+            return;
+        }
+        $historyLength = 0;
+        $found = false;
+        foreach ($codes as $code) {
+            if (!isset($this->config['password'][$code]['historyLength'])) {
+                continue;
+            }
+            if (!is_int($this->config['password'][$code]['historyLength'])) {
+                continue;
+            }
+            if ($this->config['password'][$code]['historyLength'] > $historyLength) {
+                $historyLength = $this->config['password'][$code]['historyLength'];
+                $found = true;
+            }
+        }
+
+        if ($found) {
+            $this->historyLength = $historyLength;
+        }
     }
 
     /**
@@ -85,7 +117,7 @@ class PasswordHistoryChecker
         $select->columns(['guph_password'])
             ->where(['guph_id_user' => $this->user->getUserLoginId()])
             ->order('guph_set_time DESC')
-            ->limit($this->historySize);
+            ->limit($this->historyLength);
 
         return $this->resultFetcher->fetchCol($select);
     }
