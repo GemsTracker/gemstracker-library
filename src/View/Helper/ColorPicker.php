@@ -19,14 +19,10 @@ class ColorPicker extends \ZendX_JQuery_View_Helper_ColorPicker
 	        $params['color'] = $value;
 	    }
 
-            $params['showInput'] = true;
-            $params['preferredFormat'] = "hex";
+        $params['showInput'] = true;
+        $params['preferredFormat'] = "hex";
 
-	    if(count($params) > 0) {
-            $params = \ZendX_JQuery::encodeJson($params);
-	    } else {
-	        $params = "{}";
-	    }
+        $params = \ZendX_JQuery::encodeJson($params);
 
         $js = sprintf('%s("#%s").spectrum(%s);',
             \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
