@@ -876,6 +876,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
 
         $model->set('gro_condition',
                 'label', $this->translator->_('Condition'),
+                'autoSubmit', true,
                 'elementClass', 'Select',
                 'multiOptions', $this->conditionLoader->getConditionsFor(ConditionLoader::ROUND_CONDITION)
                 );
