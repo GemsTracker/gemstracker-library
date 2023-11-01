@@ -38,6 +38,7 @@ use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Html\Raw;
 use Zalt\Html\Sequence;
+use Zalt\Model\Dependency\CanEditDependency;
 use Zalt\Model\Dependency\ValueSwitchDependency;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\ConcatenatedType;
@@ -188,11 +189,11 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
 
         if ($action->isEditing()) {
             if (true || $this->currentUser->hasPrivilege('pr.survey-maintenance.answer-groups')) {
-                $this->metaModel->addDependency('CanEditDependency', 'gsu_answers_by_group', ['gsu_answer_groups']);
+                $this->metaModel->addDependency(CanEditDependency::class, 'gsu_answers_by_group', ['gsu_answer_groups']);
             } else {
                 $this->metaModel->setMulti(['gsu_answers_by_group', 'gsu_answer_groups', 'gsu_allow_export'], ['readonly' => 'readonly', 'disabled' => 'disabled']);
             }
-            $this->metaModel->addDependency('CanEditDependency', 'gsu_surveyor_active', ['gsu_active']);
+            $this->metaModel->addDependency(CanEditDependency::class, 'gsu_surveyor_active', ['gsu_active']);
 
             $this->metaModel->set('toggleOrg', [
                 'elementClass' => 'ToggleCheckboxes',
