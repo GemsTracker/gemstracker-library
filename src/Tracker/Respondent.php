@@ -257,10 +257,10 @@ class Respondent
     }
 
     /**
-     * Get a single char code for the gender (normally M/F/U)
-     * @return string
+     * Get a single char code for the gender (normally M/F/U), or null when masked.
+     * @return string|null
      */
-    public function getGender(): string
+    public function getGender(): string|null
     {
         return $this->_gemsData['grs_gender'];
     }
