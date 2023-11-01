@@ -180,7 +180,7 @@ class UtilAbstract extends TargetAbstract
      * @param mixed $sql string or \Zend_Db_Select
      * @param array $binds sql paramters
      * @param mixed $tags a string or array of strings
-     * @param string Optional function to sort on, only known functions will do
+     * @param string $sort Optional function to sort on, only known functions will do
      * @return array
      */
     protected function _getSelectPairsCached($cacheId, $sql, $binds = array(), $tags = array(), $sort = null)
@@ -217,7 +217,7 @@ class UtilAbstract extends TargetAbstract
      * @param callable $function The function called with each row to form the result
      * @param array $binds sql paramters
      * @param mixed $tags string or array of strings
-     * @param string Optional function to sort on, only known functions will do
+     * @param string $sort Optional function to sort on, only known functions will do
      * @return array
      */
     protected function _getSelectPairsProcessedCached($cacheId, $sql, $function, $binds = array(), $tags = array(), $sort = null)
@@ -260,7 +260,7 @@ class UtilAbstract extends TargetAbstract
      * @param callable $function The function called with each row to form the result
      * @param string $keyField The field containing the key for each row
      * @param mixed $tags string or array of strings
-     * @param string Optional function to sort on, only known functions will do
+     * @param string $sort Optional function to sort on, only known functions will do
      * @return array
      */
     protected function _getSelectProcessedCached($cacheId, $sql, $function, $keyField, $tags = array(), $sort = null)
@@ -305,7 +305,7 @@ class UtilAbstract extends TargetAbstract
      * @param string $label
      * @param mixed $tags a string or array of strings
      * @param string $where Input for $select->where()
-     * @param string Optional function to sort on, only known functions will do
+     * @param string $sort Optional function to sort on, only known functions will do
      * @return array
      */
     protected function _getTranslatedPairsCached($table, $key, $label, $tags = array(), $where = null, $sort = null)

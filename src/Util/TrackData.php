@@ -155,7 +155,7 @@ class TrackData extends UtilAbstract
             'gsu_id_survey',
             'gsu_survey_name',
             ['surveys'],
-            $active ? "gsu_active = 1" : null, 
+            $active ? "gsu_active = 1" : null,
             'asort'
         );
     }
@@ -196,8 +196,8 @@ class TrackData extends UtilAbstract
     public function getAllTracks()
     {
         return $this->_getTranslatedPairsCached(
-            'gems__tracks', 
-            'gtr_id_track', 
+            'gems__tracks',
+            'gtr_id_track',
             'gtr_track_name',
             ['tracks'],
             "gtr_track_class != 'SingleSurveyEngine'",
@@ -398,7 +398,6 @@ class TrackData extends UtilAbstract
     /**
      * Get surveys that do not have export codes
      *
-     * @param int $surveyId
      * @return array
      */
     public function getSurveysWithoutExportCode()

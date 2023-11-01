@@ -60,7 +60,7 @@ class Localized
      *
      * @return array Containing all the languages used in this project
      */
-    public function getLanguages()
+    public function getLanguages(): array
     {
         if (isset($this->project->locale['availableLocales'])) {
             $locales = $this->project->locale['availableLocales'];
@@ -70,9 +70,9 @@ class Localized
             $locales = ['en'];
         }
 
+        $languages = [];
         foreach ($locales as $locale) {
             $languages[$locale] = Languages::getName($locale, $this->locale->getCurrentLanguage());
-
         }
 
         asort($languages);

@@ -128,7 +128,7 @@ class SiteUtil extends UtilAbstract
     /**
      * @param string $url A complete url (not just the server) or otherwise the current url is used
      * @param boolean $blockOnCreation
-     * @return \Gems\Util\SiteUrl
+     * @return null|\Gems\Util\SiteUrl
      */
     public function getSiteByFullUrl($url, $blockOnCreation = true)
     {
@@ -215,7 +215,7 @@ class SiteUtil extends UtilAbstract
 
     /**
      * @param \Zend_Controller_Request_Abstract $request
-     * @return string The not allowed host
+     * @return null|string The not allowed host
      */
     public function isRequestFromAllowedHost(\Zend_Controller_Request_Abstract $request)
     {
@@ -270,9 +270,7 @@ class SiteUtil extends UtilAbstract
                 $site = $this->getSiteByFullUrl($referrer, $isPost);
                 if ($site) {
                     if ($site->isNew()) {
-                        if ($isPost) {
-                            return \MUtil\StringUtil\StringUtil::beforeChars($referrer, '?&<>=');
-                        }
+                        return \MUtil\StringUtil\StringUtil::beforeChars($referrer, '?&<>=');
                     } elseif ($site->isBlocked()) {
                         return $site->getUrl();
                     }

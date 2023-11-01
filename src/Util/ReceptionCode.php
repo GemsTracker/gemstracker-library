@@ -78,7 +78,7 @@ class ReceptionCode extends \Gems\Registry\CachedArrayTargetAbstract
 
     /**
      *
-     * @return boolean
+     * @return string
      */
     public function getDescription()
     {

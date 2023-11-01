@@ -493,7 +493,6 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
     /**
      * Generate a token item with (in the future) a copy to clipboard button
      *
-     * @param string $tokenId
      * @param string $tokenStatus
      * @param boolean $memberType To determine whether the token is answerable by staff
      * @return string

@@ -80,7 +80,7 @@ class Translated
 
         throw new \Gems\Exception\Coding("Unknown method '$name' requested as callable.");
     }
-    
+
     /**
      * Called after the check that all required registry values
      * have been set correctly has run.
@@ -95,7 +95,7 @@ class Translated
      * Get a readable version of date / time object with nearby days translated in text
      *
      * @param mixed $dateTimeValue
-     * @return string
+     * @return null|string
      */
     public function describeDateFromNow($dateTimeValue)
     {
@@ -133,7 +133,7 @@ class Translated
      * Get a readable version of date / time object with nearby time translated in text
      *
      * @param mixed $dateTimeValue
-     * @return string
+     * @return null|string
      */
     public function describeTimeFromNow($dateTimeValue)
     {
@@ -322,11 +322,11 @@ class Translated
 
     public function formatTimeFromSeconds($totalSeconds)
     {
-        $seconds = str_pad(intval($totalSeconds) % 60, 2, '0', STR_PAD_LEFT);
-        $rest    = intval($totalSeconds / 60);
-        $minutes = str_pad($rest % 60, 2, '0', STR_PAD_LEFT);
-        $hours   = intval($rest / 60);
-        $days    = intval($hours / 24);
+        $seconds = str_pad((string) ((int) $totalSeconds % 60), 2, '0', STR_PAD_LEFT);
+        $rest    = (int) ($totalSeconds / 60);
+        $minutes = str_pad((string) ($rest % 60), 2, '0', STR_PAD_LEFT);
+        $hours   = (int) ($rest / 60);
+        $days    = (int) ($hours / 24);
 
         if ($hours > 48) {
             $hours = $hours % 24;
@@ -343,7 +343,7 @@ class Translated
      * Returns the time in seconds as a display string
      *
      * @param int $dateTimeValue
-     * @return string
+     * @return null|string
      */
     public function formatTime($dateTimeValue)
     {
@@ -353,8 +353,8 @@ class Translated
         }
         $diff = $dateTime->diff(new DateTimeImmutable());
 
-        $seconds = str_pad($diff->s, 2, '0', STR_PAD_LEFT);
-        $minutes = str_pad($diff->i, 2, '0', STR_PAD_LEFT);
+        $seconds = str_pad((string) $diff->s, 2, '0', STR_PAD_LEFT);
+        $minutes = str_pad((string) $diff->i, 2, '0', STR_PAD_LEFT);
         $hours   = $diff->h;
         $days    = $diff->days;
 
@@ -494,7 +494,7 @@ class Translated
     /**
      * Mark empty data as empty
      *
-     * @param string $subject
+     * @param string $value
      * @return mixed
      */
     public function markEmpty($value)

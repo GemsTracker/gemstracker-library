@@ -39,10 +39,10 @@ class Monitor extends UtilAbstract
      * @var \Gems\Util
      */
     protected $util;
-    
+
     /**
      * Return an array of organization recipients for the given monitorName
-     * 
+     *
      * @param string $monitorName
      * @return array
      */
@@ -58,33 +58,32 @@ class Monitor extends UtilAbstract
                 $where = 'gor_mail_watcher = 1';
                 break;
         }
-        
+
         $orgTo = $this->db->fetchCol(
                 "SELECT DISTINCT gor_contact_email FROM gems__organizations WHERE LENGTH(gor_contact_email) > 5 AND gor_active = 1 AND $where"
                 );
-        return $orgTo;        
+        return $orgTo;
     }
 
     /**
      * Get the mail addresses for a monitor
      *
      * @param string $monitorName ProjectSettings name
-     * @param string $where Optional, a gems__staff SQL WHERE statement
      * @return array
      */
     protected function _getMailTo($monitorName)
-    {     
+    {
         $projTo  = explode(',',$this->getTo($monitorName));
         $userTo  = $this->_getUserTo($monitorName);
         $orgTo   = $this->_getOrgTo($monitorName);
         $mailtos = array_merge($projTo, $userTo, $orgTo);
-        
+
         return array_values(array_unique(array_filter(array_map('trim',$mailtos))));
     }
-    
+
     /**
      * Return an array of user recipients for the given monitorName
-     * 
+     *
      * @param string $monitorName
      * @return array
      */
@@ -111,7 +110,7 @@ class Monitor extends UtilAbstract
                 $where = 'gsf_mail_watcher = 1';
                 break;
         }
-        
+
         $userTo = $this->db->fetchCol(
                 "SELECT DISTINCT gsf_email FROM gems__staff $joins WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
                 );
@@ -157,12 +156,12 @@ class Monitor extends UtilAbstract
     {
         return MonitorJob::getJob($this->getAppName() . ' cron mail');
     }
-    
+
     /**
      * Return the mail template to use for sending CronMailMonitor messages
-     * 
+     *
      * @param string $locale The locale to use for the message
-     * 
+     *
      * @return array with elements $subject and $messageBbText
      */
     public function getCronMailTemplate($locale)
@@ -190,7 +189,7 @@ This is notice number {mailCount}. Please check what went wrong.
 This messages was send automatically.";
                 break;
         }
-        
+
         return array($subject, $messageBbText);
     }
 
@@ -221,23 +220,23 @@ This messages was send automatically.";
     }
 
     /**
-     * 
+     *
      * @return MonitorJob
      */
     public function getReverseMaintenanceMonitor()
     {
        return MonitorJob::getJob($this->getAppName() . ' maintenance mode');
     }
-    
+
     /**
      * Return the mail template to use for sending ReverseMaintenanceMonitor messages
-     * 
+     *
      * There are two messages, the message when the maintenance mode is first turned on
      * and the one that is sent after the set amount of time when the maintenance mode
      * is still turned on.
-     * 
+     *
      * @param string $locale The locale to use for the message
-     * 
+     *
      * @return array with elements $initSubject, $initBbText, $subject and $messageBbText
      */
     public function getReverseMaintenanceMonitorTemplate($locale)
@@ -319,7 +318,7 @@ This messages was send automatically.";
 
         $lock->lock();
         $to = $this->_getMailTo('maintenancemode');
-        
+
         if (!$to) {
             return true;
         }
@@ -356,7 +355,7 @@ This messages was send automatically.";
         }
 
         $locale = $this->project->getLocaleDefault();
-        list($subject, $messageBbText) = $this->getCronMailTemplate($locale);        
+        list($subject, $messageBbText) = $this->getCronMailTemplate($locale);
 
         $job->setFrom($this->getFrom('cronmail'))
                 ->setMessage($messageBbText)

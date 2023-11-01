@@ -30,7 +30,7 @@ class CommTemplateUtil extends UtilAbstract
      *
      * @param string $target Optional communications template target
      * @param string $code Optional communications template code
-     * @return integer id of communications template or false if none exists
+     * @return array id of communications template or false if none exists
      */
     public function getCommTemplateForCode($code, $target = null)
     {
@@ -42,7 +42,7 @@ class CommTemplateUtil extends UtilAbstract
             $sql .= "AND gct_target = ? ";
         }
         $sql .= " ORDER BY gct_name LIMIT 1";
-        
+
         return $this->db->fetchCol($sql, $binds);
     }
 
