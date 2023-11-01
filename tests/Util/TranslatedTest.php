@@ -16,14 +16,14 @@ class TranslatedTest extends TestCase
     /**
      * @dataProvider describeDateFromNowDataProvider
      */
-    public function testDescribeDateFromNow($dateTime, $expectedResult)
+    public function testDescribeDateFromNow($dateTime, $expectedResult): void
     {
         $translated = $this->getTranslated();
 
         $this->assertEquals($expectedResult, $translated->describeDateFromNow($dateTime));
     }
 
-    public static function describeDateFromNowDataProvider()
+    public static function describeDateFromNowDataProvider(): array
     {
         $dateTime = new CarbonImmutable();
         return [

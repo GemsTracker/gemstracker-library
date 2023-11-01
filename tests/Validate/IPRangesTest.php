@@ -8,29 +8,34 @@
 
 namespace GemsTest\Validate;
 
+use Gems\Validator\IPRanges;
+use PHPUnit\Framework\TestCase;
+
 /**
  * Description of IPRangesTest
  *
  * @author 175780
  */
-class IPRangesTest extends \PHPUnit\Framework\TestCase
+class IPRangesTest extends TestCase
 {
+    private IPRanges $validator;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->validator = new \Gems\Validator\IPRanges();
+        $this->validator = new IPRanges();
     }
 
     /**
      *
      * @dataProvider validProvider
      */
-    public function testValid($range)
+    public function testValid($range): void
     {
         $this->assertEquals(true, $this->validator->isValid($range));
     }
 
-    public static function validProvider()
+    public static function validProvider(): array
     {
         return [
             ['10.0.0.0'],
@@ -48,12 +53,12 @@ class IPRangesTest extends \PHPUnit\Framework\TestCase
      *
      * @dataProvider invalidProvider
      */
-    public function testInvalid($range)
+    public function testInvalid($range): void
     {
         $this->assertEquals(false, $this->validator->isValid($range));
     }
 
-    public static function invalidProvider()
+    public static function invalidProvider(): array
     {
         return [
             ['10.0.0.0.1'],          // One digit too much
