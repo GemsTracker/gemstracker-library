@@ -11,7 +11,9 @@
 
 namespace Gems\Model\Dependency;
 
-use MUtil\Model\Dependency\DependencyAbstract;
+use Gems\Repository\OrganizationRepository;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -30,7 +32,7 @@ class StaffUserClassDependency extends DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = array('multiOptions');
+    protected array $_defaultEffects = ['multiOptions'];
 
     /**
      * Array of name => name of items dependency depends on.
@@ -40,7 +42,7 @@ class StaffUserClassDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gsf_id_organization');
+    protected array $_dependentOn = ['gsf_id_organization'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -50,13 +52,14 @@ class StaffUserClassDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array('gul_user_class');
+    protected array $_effecteds = ['gul_user_class'];
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    public function __construct(
+        TranslatorInterface $translate,
+        protected readonly OrganizationRepository $organizationRepository,
+    ) {
+        parent::__construct($translate);
+    }
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -81,7 +84,7 @@ class StaffUserClassDependency extends DependencyAbstract
     public function getChanges(array $context, bool $new = false): array
     {
         if (isset($context['gsf_id_organization'])) {
-            $org = $this->loader->getOrganization($context['gsf_id_organization']);
+            $org = $this->organizationRepository->getOrganization((int)$context['gsf_id_organization']);
 
             if ($org instanceof \Gems\User\Organization) {
                 return ['gul_user_class' => ['multiOptions' => $org->getAllowedUserClasses()]];
