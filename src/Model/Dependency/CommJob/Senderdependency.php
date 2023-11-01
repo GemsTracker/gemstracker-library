@@ -11,7 +11,7 @@
 
 namespace Gems\Model\Dependency\CommJob;
 
-use MUtil\Model\Dependency\DependencyAbstract;
+use Zalt\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -31,7 +31,7 @@ class Senderdependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = ['gcj_target', 'gcj_to_method', 'gcj_fallback_method'];
+    protected array $_dependentOn = ['gcj_target', 'gcj_to_method', 'gcj_fallback_method'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -41,7 +41,7 @@ class Senderdependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = ['gcj_to_method', 'gcj_fallback_method', 'gcj_fallback_fixed'];
+    protected array $_effecteds = ['gcj_to_method', 'gcj_fallback_method', 'gcj_fallback_fixed'];
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -100,5 +100,5 @@ class Senderdependency extends DependencyAbstract
         }
 
         return $output;
-    }  // */
+    }
 }
