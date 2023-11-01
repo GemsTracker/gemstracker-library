@@ -43,6 +43,8 @@ class ReceptionCodeHandler extends BrowseChangeHandler
      */
     public array $cacheTags = ['receptionCode', 'receptionCodes'];
 
+    public static array $parameters = ['id' => '[a-zA-Z0-9-_]+',];
+
     public function __construct(
         SnippetResponderInterface                    $responder,
         MetaModelLoader                              $metaModelLoader,

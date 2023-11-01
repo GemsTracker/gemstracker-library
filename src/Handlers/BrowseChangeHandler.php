@@ -28,15 +28,19 @@ use Gems\SnippetsActions\Show\ShowAction;
 abstract class BrowseChangeHandler extends GemsHandler
 {
     /**
+     * The order is important: if the regex of a parameter allows export / create / delete / edit these action routes
+     * must be defined before the parameter is added to prevent an "is shadowed by previously defined variable route"
+     * exception!
+     *
      * @var string[classname|SnippetActionInterface]
      */
     public static $actions = [
         'autofilter' => BrowseFilteredAction::class,
         'index'      => BrowseSearchAction::class,
         'create'     => CreateAction::class,
-        'show'       => ShowAction::class,
-        'edit'       => EditAction::class,
         'export'     => ExportAction::class,
+        'edit'       => EditAction::class,
         'delete'     => DeleteAction::class,
+        'show'       => ShowAction::class,
         ];
 }

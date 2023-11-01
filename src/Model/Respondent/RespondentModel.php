@@ -33,6 +33,7 @@ use Gems\Validator\OneOf;
 use Laminas\Filter\Callback;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Filter\RequireOneCapsFilter;
 use Zalt\Late\Late;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
@@ -241,13 +242,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->initLabels();
         $this->metaModel->resetOrder();
 
-        $ucfirst = new Callback(function($value) {
-            if (is_string($value) && ($value === strtolower($value))) {
-                return ucfirst($value);
-            }
-            return $value;
-        });
-
         // IDENTIFICATION
         $this->currentGroup = $this->_('Identification');
         $this->setSSN();
@@ -269,20 +263,20 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         }
         $this->setIfExists('grs_initials_name');
         $this->setIfExists('grs_first_name', [
-            'filters[ucfirst]' => $ucfirst,
+            'filters[ucfirst]' => RequireOneCapsFilter::class,
         ]);
         $this->setIfExists('grs_surname_prefix', [
             'description' => $this->_('de, ibn, Le, Mac, von, etc...'),
         ]);
         $this->setIfExists('grs_last_name', [
-            'filters[ucfirst]' => $ucfirst,
+            'filters[ucfirst]' => RequireOneCapsFilter::class,
             'required'         => true,
         ]);
         $this->setIfExists('grs_partner_surname_prefix', [
             'description' => $this->_('de, ibn, Le, Mac, von, etc...'),
         ]);
         $this->setIfExists('grs_partner_last_name', [
-            'filters[ucfirst]' => $ucfirst,
+            'filters[ucfirst]' => RequireOneCapsFilter::class,
         ]);
         $this->setIfExists('grs_partner_name_after', [
             'default' => 1,
@@ -328,12 +322,12 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $this->communicationRepository->getRespondentMailCodes(),
             ]);
         $this->setIfExists('grs_address_1', [
-            'filters[ucfirst]' => $ucfirst,
+            'filters[ucfirst]' => RequireOneCapsFilter::class,
         ]);
         $this->setIfExists('grs_address_2');
         $this->setIfExists('grs_zipcode');
         $this->setIfExists('grs_city', [
-            'filters[ucfirst]' => $ucfirst,
+            'filters[ucfirst]' => RequireOneCapsFilter::class,
         ]);
         $this->setIfExists('grs_iso_country', [
             'multiOptions' => $this->localizedUtil->getCountries(),

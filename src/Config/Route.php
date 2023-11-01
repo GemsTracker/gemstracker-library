@@ -822,23 +822,16 @@ class Route
             ],
 
 
-            ...$this->createSnippetRoutes(baseName: 'setup.codes.reception',
-                controllerClass:                   \Gems\Handlers\Setup\ReceptionCodeHandler::class,
-                parameters:                        [
-                    'id' => '[a-zA-Z0-9-_]+',
-                ],
-                genericExport: true,
+            ...$this->createHandlerRoute(
+                baseName: 'setup.codes.reception',
+                controllerClass: \Gems\Handlers\Setup\ReceptionCodeHandler::class,
             ),
-            ...$this->createSnippetRoutes(baseName: 'setup.codes.consent',
+            ...$this->createHandlerRoute(baseName: 'setup.codes.consent',
                 controllerClass: \Gems\Handlers\Setup\ConsentHandler::class,
-                parameters: [
-                    'gco_description' => '[a-zA-Z0-9-_\\s]+',
-                ],
             ),
 
-            ...$this->createSnippetRoutes(baseName: 'setup.codes.mail-code',
+            ...$this->createHandlerRoute(baseName: 'setup.codes.mail-code',
                 controllerClass: \Gems\Handlers\Setup\MailCodeHandler::class,
-                genericExport: true,
             ),
 
             [

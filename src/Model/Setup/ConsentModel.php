@@ -10,9 +10,12 @@ declare(strict_types=1);
 
 namespace Gems\Model\Setup;
 
+use Gems\Handlers\Setup\ConsentHandler;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\ConsentRepository;
+use Laminas\Validator\Regex;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Filter\UcFirstFilter;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\SnippetsActions\ApplyActionInterface;
 use Zalt\SnippetsActions\SnippetActionInterface;
@@ -51,10 +54,15 @@ class ConsentModel extends \Gems\Model\SqlTableModel implements ApplyActionInter
 
     public function applySettings()
     {
+        $regex = new Regex('/^' . ConsentHandler::$parameters['gco_description'] . '$/');
+        $regex->setMessage($this->_('Only letters, numbers, underscores (_) and dashes (-) are allowed.'), Regex::NOT_MATCH);
+
         $this->metaModel->set('gco_description', [
             'label'            => $this->_('Description'),
+            'minlength'        => 2,
             'size'             => '10',
             'translate'        => true,
+            'filters[ucfirst]' => UcFirstFilter::class,  // Otherwise the label may overwrite the export/edit/delete/create routes
             'validators[uniq]' => ModelUniqueValidator::class
         ]);
 

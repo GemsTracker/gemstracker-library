@@ -24,6 +24,7 @@ use Laminas\Filter\Callback;
 use MUtil\Model\Dependency\ValueSwitchDependency;
 use MUtil\Validator\NoScript;
 use MUtil\Validator\SimpleEmail;
+use Zalt\Filter\RequireOneCapsFilter;
 use Zalt\Html\AElement;
 use Zalt\Model\Type\ActivatingYesNoType;
 
@@ -269,9 +270,9 @@ class StaffModel extends JoinModel
 
             if ($editing) {
                 $ucfirst = new Callback(fn ($s) => ucfirst($s ?? ''));
-                $this->set('gsf_first_name',   'filters[ucfirst]', $ucfirst);
-                $this->set('gsf_last_name',    'filters[ucfirst]', $ucfirst);
-                $this->set('gsf_job_title',    'filters[ucfirst]', $ucfirst);
+                $this->set('gsf_first_name',   'filters[ucfirst]', RequireOneCapsFilter::class);
+                $this->set('gsf_last_name',    'filters[ucfirst]', RequireOneCapsFilter::class);
+                $this->set('gsf_job_title',    'filters[ucfirst]', RequireOneCapsFilter::class);
             }
         } else {
             $this->set('name',                 'label', $this->_('Name'));

@@ -61,7 +61,7 @@ trait HandlerMenuTrait
         }
         if (isset($actions['export'])) {
             // At the moment not in the menu
-//            $parent['children'][] = $this->createMenuItem($name . '.export', $this->_('Export'));
+            $parent['children'][] = $this->createMenuItem($name . '.export', $this->_('Export'));
             unset($actions['export']);
         }
         foreach ($actions as $action => $actionClass) {

@@ -2,6 +2,9 @@
 
 namespace Gems\Config;
 
+use Gems\Handlers\Setup\ConsentHandler;
+use Gems\Handlers\Setup\MailCodeHandler;
+use Gems\Handlers\Setup\ReceptionCodeHandler;
 use Gems\Menu\HandlerMenuTrait;
 use Zalt\Base\TranslatorInterface;
 
@@ -10,8 +13,9 @@ class Menu
     use HandlerMenuTrait;
 
     public function __construct(
-        private readonly TranslatorInterface $translator,
+        protected readonly TranslatorInterface $translator,
     ) {
+        $this->translate = $this->translator;
     }
 
     public function getItems(): array
@@ -682,103 +686,9 @@ class Menu
                     'label' => $this->translator->trans('Codes'),
                     'type' => 'container',
                     'children' => [
-                        [
-                            'name' => 'setup.codes.reception.index',
-                            'label' => $this->translator->trans('Reception codes'),
-                            'type' => 'route-link-item',
-                            'children' => [
-                                [
-                                    'name' => 'setup.codes.reception.create',
-                                    'label' => $this->translator->trans('New'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
-                                    'name' => 'setup.codes.reception.show',
-                                    'label' => $this->translator->trans('Show'),
-                                    'type' => 'route-link-item',
-                                    'children' => [
-                                        [
-                                            'name' => 'setup.codes.reception.edit',
-                                            'label' => $this->translator->trans('Edit'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'setup.codes.reception.delete',
-                                            'label' => $this->translator->trans('Delete'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                    ],
-                                ],
-                                [
-                                    'name' => 'setup.codes.reception.export',
-                                    'label' => $this->translator->trans('Export'),
-                                    'type' => 'route-link-item',
-                                ],
-                            ],
-                        ],
-                        [
-                            'name' => 'setup.codes.consent.index',
-                            'label' => $this->translator->trans('Consents'),
-                            'type' => 'route-link-item',
-                            'children' => [
-                                [
-                                    'name' => 'setup.codes.consent.create',
-                                    'label' => $this->translator->trans('New'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
-                                    'name' => 'setup.codes.consent.show',
-                                    'label' => $this->translator->trans('Show'),
-                                    'type' => 'route-link-item',
-                                    'children' => [
-                                        [
-                                            'name' => 'setup.codes.consent.edit',
-                                            'label' => $this->translator->trans('Edit'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'setup.codes.consent.delete',
-                                            'label' => $this->translator->trans('Delete'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                        [
-                            'name' => 'setup.codes.mail-code.index',
-                            'label' => $this->translator->trans('Mail codes'),
-                            'type' => 'route-link-item',
-                            'children' => [
-                                [
-                                    'name' => 'setup.codes.mail-code.create',
-                                    'label' => $this->translator->trans('New'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
-                                    'name' => 'setup.codes.mail-code.show',
-                                    'label' => $this->translator->trans('Show'),
-                                    'type' => 'route-link-item',
-                                    'children' => [
-                                        [
-                                            'name' => 'setup.codes.mail-code.edit',
-                                            'label' => $this->translator->trans('Edit'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'setup.codes.mail-code.delete',
-                                            'label' => $this->translator->trans('Delete'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                    ],
-                                ],
-                                [
-                                    'name' => 'setup.codes.mail-code.export',
-                                    'label' => $this->translator->trans('Export'),
-                                    'type' => 'route-link-item',
-                                ],
-                            ],
-                        ],
+                        $this->createMenuForHandler(ReceptionCodeHandler::class, 'setup.codes.reception', $this->translator->trans('Reception codes')),
+                        $this->createMenuForHandler(ConsentHandler::class, 'setup.codes.consent', $this->translator->trans('Consents')),
+                        $this->createMenuForHandler(MailCodeHandler::class, 'setup.codes.mail-code', $this->translator->trans('Mail codes')),
                     ],
                 ],
                 [

@@ -10,15 +10,18 @@ declare(strict_types=1);
 
 namespace Gems\Model\Setup;
 
+use Gems\Handlers\Setup\ReceptionCodeHandler;
 use Gems\Html;
 use Gems\Model\MetaModelLoader;
 use Gems\Util\ReceptionCodeLibrary;
 use Gems\Util\Translated;
+use Laminas\Validator\Regex;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\SnippetsActions\ApplyActionInterface;
 use Zalt\SnippetsActions\SnippetActionInterface;
+use Zalt\Validator\IsNot;
 use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
@@ -67,11 +70,17 @@ class ReceptionCodeModel extends \Gems\Model\SqlTableModel implements ApplyActio
     public function applySettings()
     {
         $yesNo = $this->translateUtil->getYesNo();
-        
+
+        $regex = new Regex('/^' . ReceptionCodeHandler::$parameters['id'] . '$/');
+        $regex->setMessage($this->_('Only letters, numbers, underscores (_) and dashes (-) are allowed.'), Regex::NOT_MATCH);
+
         $this->metaModel->set('grc_id_reception_code', [
-            'label' => $this->_('Code'), 
-            'size' => '10',
-            'validators[uniq]' => ModelUniqueValidator::class,
+            'label'             => $this->_('Code'),
+            'minlength'         => 2,
+            'size'              => '10',
+            'validators[notin]' => new IsNot(['export', 'create'], $this->_("The code '%value%' is not allowed.")),
+            'validators[regex]' => $regex,
+            'validators[uniq]'  => ModelUniqueValidator::class,
             ]);
         $this->metaModel->set('grc_description', [      
             'label' => $this->_('Description'), 
