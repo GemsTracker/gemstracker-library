@@ -14,11 +14,11 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Usage\UsageCounterInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
+use Zalt\Html\HtmlElement;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
-use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\Snippets\DeleteModeEnum;
-use Zalt\Snippets\ModelBridge\DetailTableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -35,6 +35,20 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
     public string $buttonBlockedClass = 'actionlink btn disabled';
 
     protected $class = 'displayer table';
+
+    /**
+     * The title to display
+     *
+     * @var string
+     */
+    protected string $contentTitle;
+
+    /**
+     * Tagname of the HtmlElement to create
+     *
+     * @var string
+     */
+    protected string $tagName = 'h2';
 
     protected string $deleteRoute = 'index';
 
@@ -60,7 +74,7 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
     public function getActivationMessage(): string
     {
         return sprintf(
-            $this->_('One %s activated!'),
+            $this->_('One %s reactivated!'),
             $this->getTopic(1)
         );
     }
@@ -68,7 +82,7 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
     public function getActivationQuestion(): string
     {
         return sprintf(
-            $this->_('Do you want to activate this %s?'),
+            $this->_('Do you want to reactivate this %s?'),
             $this->getTopic(1)
         );
     }
@@ -110,7 +124,7 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
     {
         $output = parent::getDeletionMode($dataModel);
 
-        if (isset($this->usageCounter) && (! ActivatingYesNoType::hasActivation($dataModel->getMetaModel()))) {
+        if (isset($this->usageCounter)) {
             // Load dependencies
             $row = $dataModel->loadFirst();
             $output = $this->usageCounter->getUsageMode();
@@ -136,6 +150,16 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
         );
     }
 
+    public function getHtmlOutput()
+    {
+        $html = $this->getHtmlSequence();
+
+        $html->append($this->getTitleElement());
+        $html->append(parent::getHtmlOutput());
+
+        return $html;
+    }
+
     protected function getMessage(): string
     {
         if ($this->afterActionMessage) {
@@ -156,6 +180,21 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
             return $this->question;
         }
 
+        return match($this->deletionMode) {
+            DeleteModeEnum::Delete => $this->getDeletionQuestion(),
+            DeleteModeEnum::Deactivate => $this->getDeactivationQuestion(),
+            DeleteModeEnum::Activate => $this->getActivationQuestion(),
+            DeleteModeEnum::Block => $this->getBlockedQuestion(),
+        };
+    }
+
+    protected function getTitleElement(): HtmlElement
+    {
+        return Html::create($this->tagName, $this->getTitleString(), array('class' => 'title'));
+    }
+
+    protected function getTitleString(): string
+    {
         return match($this->deletionMode) {
             DeleteModeEnum::Delete => $this->getDeletionQuestion(),
             DeleteModeEnum::Deactivate => $this->getDeactivationQuestion(),

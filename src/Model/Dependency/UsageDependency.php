@@ -70,7 +70,7 @@ class UsageDependency extends \Zalt\Model\Dependency\DependencyAbstract
                         $label = $this->_('Deactivate');
                         $this->usageCounter->setUsageMode(DeleteModeEnum::Deactivate);
                     } else {
-                        $label = $this->_('Activate');
+                        $label = $this->_('Reactivate');
                         $this->usageCounter->setUsageMode(DeleteModeEnum::Activate);
                     }
                 } else {

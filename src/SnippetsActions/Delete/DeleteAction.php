@@ -33,7 +33,6 @@ class DeleteAction extends \Zalt\SnippetsActions\Delete\DeleteAction
      * @var array Of snippet class names
      */
     protected array $_snippets = [
-        ContentTitleSnippet::class,
         ModelConfirmDeleteSnippet::class,
         UsageSnippet::class,
     ];
