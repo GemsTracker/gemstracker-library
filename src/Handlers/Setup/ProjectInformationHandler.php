@@ -379,7 +379,8 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
     {
         $this->html->h2($this->_('Server PHP Info'));
 
-        $php = new \MUtil\Config\Php();
+	// Don't show environment or variables, these contain sensitive information.
+        $php = new \MUtil\Config\Php(INFO_GENERAL|INFO_CREDITS|INFO_CONFIGURATION|INFO_MODULES|INFO_LICENSE);
 
         $this->html->raw($php->getInfo());
     }
