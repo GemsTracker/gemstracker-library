@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: ISO-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.4.1\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -164,7 +164,7 @@ msgstr "Procedure"
 #: classes/Gems/Model/OrganizationModel.php:86
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:498
 msgid "Location"
-msgstr "Vestiging"
+msgstr "Locatie"
 
 #: classes/Gems/Agenda.php:755
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:87
@@ -203,19 +203,19 @@ msgstr ", "
 
 #: classes/Gems/Agenda.php:976
 msgid "Active appointment"
-msgstr "Actief"
+msgstr "Actieve afspraak"
 
 #: classes/Gems/Agenda.php:977
 msgid "Completed appointment"
-msgstr "Afgerond"
+msgstr "Afgeronde afspraak"
 
 #: classes/Gems/Agenda.php:993
 msgid "Aborted appointment"
-msgstr "Niet doorgegaan"
+msgstr "Afspraak niet doorgegaan"
 
 #: classes/Gems/Agenda.php:994
 msgid "Cancelled appointment"
-msgstr "Afgezegd"
+msgstr "Afgezegde afspraak"
 
 #: classes/Gems/Agenda.php:1063
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:314
@@ -267,7 +267,7 @@ msgstr "Thuis"
 
 #: classes/Gems/Agenda.php:1099
 msgid "Inpatient"
-msgstr "Patiënt"
+msgstr "Op de kliniek"
 
 #: classes/Gems/Agenda.php:1100
 msgid "Short stay"
@@ -307,7 +307,7 @@ msgstr "%d dagen sinds de vorige startdatum, %d vereist"
 
 #: classes/Gems/Agenda/Appointment.php:360
 msgid "never create a track"
-msgstr "filter maakt nooit traject aan"
+msgstr "Maak nooit een traject aan"
 
 #: classes/Gems/Agenda/Appointment.php:382
 #: classes/Gems/Agenda/Appointment.php:433
@@ -435,7 +435,7 @@ msgstr "Activiteit \"%s\""
 #: classes/Gems/Agenda/Filter/ActProcModelDependency.php:46
 #, php-format
 msgid "but activity not \"%s\""
-msgstr "maar activiteit niet \"%s\""
+msgstr "maar niet activiteit \"%s\""
 
 #: classes/Gems/Agenda/Filter/ActProcModelDependency.php:49
 #, php-format
@@ -445,7 +445,7 @@ msgstr "procedure \"%s\""
 #: classes/Gems/Agenda/Filter/ActProcModelDependency.php:52
 #, php-format
 msgid "but procedure not \"%s\""
-msgstr "maar procedure niet \"%s\""
+msgstr "maar niet procedure \"%s\""
 
 #: classes/Gems/Agenda/Filter/ActProcModelDependency.php:58
 #: classes/Gems/Agenda/Filter/AndModelDependency.php:83
@@ -622,15 +622,15 @@ msgstr "Gegevens waarde"
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:43
 #, php-format
 msgid "Location contains %s"
-msgstr "Vestiging bevat %s"
+msgstr "Locatie bevat %s"
 
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:66
 msgid "Location match"
-msgstr "Vestigings filter"
+msgstr "Locatie overeenkomst"
 
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:84
 msgid "Appointment location"
-msgstr "Afspraak vestiging"
+msgstr "Afspraak locatie"
 
 #: classes/Gems/Agenda/Filter/OrModelDependency.php:44
 msgid "OR combination filter"
@@ -709,11 +709,11 @@ msgstr "NIET (%s)"
 
 #: classes/Gems/Agenda/Filter/XandModelDependency.php:63
 msgid "NOT ALL (XAND) combination filter"
-msgstr "NIET ELKE (NIET EN) combinatie filter"
+msgstr "NIET ELKE (XAND) combinatie filter"
 
 #: classes/Gems/Agenda/Filter/XorModelDependency.php:41
 msgid "NOT ANY (XOR) combination filter"
-msgstr "GEEN (NIET OF) combinatie filter"
+msgstr "GEEN (XOR) combinatie filter"
 
 #: classes/Gems/Communication/JobMessenger/MailJobMessenger.php:37
 #: classes/Gems/Task/Mail/ExecuteMailJobTask.php:106
@@ -1000,7 +1000,7 @@ msgstr "Bevat"
 #: classes/Gems/Condition/Round/LastAnswerCondition.php:54
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:54
 msgid "In (..|..)"
-msgstr "In (..|..)"
+msgstr "Meerdere waardes (..|..)"
 
 #: classes/Gems/Condition/Round/LastAnswerCondition.php:63
 msgid "Look back from the current survey and find the first answered question"
@@ -1108,7 +1108,7 @@ msgstr ""
 #: classes/Gems/Condition/Track/LocationCondition.php:83
 #, php-format
 msgid "Location %d"
-msgstr "Vestiging %d"
+msgstr "Locatie %d"
 
 #: classes/Gems/Condition/Track/LocationCondition.php:90
 msgid "Track field code"
@@ -1121,11 +1121,11 @@ msgstr "Optionele veldcode"
 #: classes/Gems/Condition/Track/LocationCondition.php:127
 #, php-format
 msgid "A location field with code %s set to: "
-msgstr "Een vestigingsveld met veldcode %s voor: "
+msgstr "Een locatieveld met veldcode %s voor: "
 
 #: classes/Gems/Condition/Track/LocationCondition.php:130
 msgid "A location field set to: "
-msgstr "Een vestigingsveld voor: "
+msgstr "Een locatie veld voor: "
 
 #: classes/Gems/Condition/Track/LocationCondition.php:141
 #: classes/Gems/Model/SurveyMaintenanceModel.php:415
@@ -1949,7 +1949,7 @@ msgstr ""
 #: classes/Gems/Model/CommLogModel.php:148
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:141
 msgid "Template"
-msgstr "Sjabloon"
+msgstr "Template"
 
 #: classes/Gems/Default/CommJobAction.php:150
 msgid "Execution"
@@ -2159,11 +2159,11 @@ msgstr "Bron email gegevens"
 
 #: classes/Gems/Default/CommTemplateAction.php:107
 msgid "Template code"
-msgstr "Sjablooncode"
+msgstr "Template code"
 
 #: classes/Gems/Default/CommTemplateAction.php:108
 msgid "Optional code name to link the template to program code."
-msgstr "Optionele code naam om het sjabloon aan programmacode te koppelen."
+msgstr "Optionele code naam om het template aan programmacode te koppelen."
 
 #: classes/Gems/Default/CommTemplateAction.php:131
 #: classes/Gems/Model/LogModel.php:110
@@ -2173,16 +2173,16 @@ msgstr "Bericht"
 
 #: classes/Gems/Default/CommTemplateAction.php:191
 msgid "New template"
-msgstr "Nieuw sjabloon"
+msgstr "Nieuw "
 
 #: classes/Gems/Default/CommTemplateAction.php:198
 #, php-format
 msgid "Edit template: %s"
-msgstr "Bewerk sjabloon: %s"
+msgstr "Bewerk : %s"
 
 #: classes/Gems/Default/CommTemplateAction.php:203
 msgid "Email templates"
-msgstr "Email sjabloon"
+msgstr "Email templates"
 
 #: classes/Gems/Default/ComplianceAction.php:86
 #: classes/Gems/Default/FieldOverviewAction.php:100
@@ -2573,7 +2573,7 @@ msgstr "Gems bouwnummer"
 
 #: classes/Gems/Default/DatabaseAction.php:399
 msgid "Database build"
-msgstr "Database versie"
+msgstr "Database bouwnummer"
 
 #: classes/Gems/Default/DatabaseAction.php:401
 msgid "Execute level"
@@ -2692,7 +2692,7 @@ msgstr "De gegevens in tabel %s"
 
 #: classes/Gems/Default/DatabaseBackupAction.php:56
 msgid "Respondent data"
-msgstr "Respondent data"
+msgstr "Patient data"
 
 #: classes/Gems/Default/DatabaseBackupAction.php:58
 msgid "Export table"
@@ -3093,7 +3093,7 @@ msgstr ""
 
 #: classes/Gems/Default/LocationAction.php:146
 msgid "Location code"
-msgstr "Vestigingscode"
+msgstr "Locatie code"
 
 #: classes/Gems/Default/LocationAction.php:148
 msgid "Optional code name to link the location to program code."
@@ -3101,20 +3101,20 @@ msgstr "Optionele code naam om de locatie aan programmacode te koppelen."
 
 #: classes/Gems/Default/LocationAction.php:150
 msgid "Location url"
-msgstr "Webadres vestiging"
+msgstr "Webadres locatie"
 
 #: classes/Gems/Default/LocationAction.php:151
 msgid "Complete url for location: http://www.domain.etc"
-msgstr "Het complete web adres voor de vestiging: http://www.domein.enz"
+msgstr "Het complete web adres voor de locatie: http://www.domein.enz"
 
 #: classes/Gems/Default/LocationAction.php:153
 msgid "Location route url"
-msgstr "Webadres route naar vestiging"
+msgstr "Webadres route naar de locatie"
 
 #: classes/Gems/Default/LocationAction.php:154
 msgid "Complete url for route to location: http://www.domain.etc"
 msgstr ""
-"Het complete web adres voor de route naar de vestiging: http://www.domein.enz"
+"Het complete web adres voor de route naar de locatie: http://www.domein.enz"
 
 #: classes/Gems/Default/LocationAction.php:158
 #: classes/Gems/Model/RespondentModel.php:288
@@ -3172,19 +3172,18 @@ msgstr "Telefoon 4"
 
 #: classes/Gems/Default/LocationAction.php:183
 msgid "When checked appointments with these locations are not imported."
-msgstr ""
-"Afspraken met deze vestiging worden niet geïmporteerd als dit aan staat."
+msgstr "Afspraken met deze locatie worden niet geïmporteerd als dit aan staat."
 
 #: classes/Gems/Default/LocationAction.php:200
 #: classes/Gems/Menu/MenuAbstract.php:226
 msgid "Locations"
-msgstr "Vestigingen"
+msgstr "Locaties"
 
 #: classes/Gems/Default/LocationAction.php:243
 msgid "location"
 msgid_plural "locations"
-msgstr[0] "vestiging"
-msgstr[1] "vestigingen"
+msgstr[0] "locatie"
+msgstr[1] "locaties"
 
 #: classes/Gems/Default/LocationAction.php:253
 msgid ""
@@ -3192,10 +3191,10 @@ msgid ""
 " Two organizations sharing a geographic location still need a location item "
 "for each organization."
 msgstr ""
-"Een vestiging is een combinatie van een geografisch vestiging en een "
+"Een locatie is een combinatie van een geografisch vestiging en een "
 "organisatie.\n"
-" Als twee organisaties dezelfde vestiging delen dan moet er een vestiging "
-"zijn voor elke organisatie."
+"Als twee organisaties dezelfde vestiging delen dan moet er een locatie zijn "
+"voor elke organisatie."
 
 #: classes/Gems/Default/LogAction.php:82
 msgid "Logging"
@@ -3417,7 +3416,7 @@ msgstr "Herhaal wachtwoord"
 #: classes/Gems/Default/MailServerAction.php:75
 #: classes/Gems/Default/SourceAction.php:223
 msgid "Enter new or remove stars to empty"
-msgstr "Voer een nieuwe in of verwijder sterren om te verwijderen"
+msgstr "Voer een nieuwe in of verwijder sterren om leeg te maken"
 
 #: classes/Gems/Default/MailServerAction.php:91
 msgid "Email servers"
@@ -3693,7 +3692,7 @@ msgstr "bestand niet gevonden"
 #: classes/Gems/Menu/MenuAbstract.php:676
 #, php-format
 msgid "Changelog %s"
-msgstr "Wijzigingen %s"
+msgstr "Wijzigingen log %s"
 
 #: classes/Gems/Default/ProjectInformationAction.php:224
 msgid "Logged errors"
@@ -3856,6 +3855,7 @@ msgid "Is success code"
 msgstr "Is succes code"
 
 #: classes/Gems/Default/ReceptionAction.php:72
+#, fuzzy
 msgid "This reception code is a success code."
 msgstr "Aanzetten als deze ontvangstcode positief is."
 
@@ -3903,7 +3903,7 @@ msgstr "Overschrijf bestaande toestemming"
 
 #: classes/Gems/Default/ReceptionAction.php:106
 msgid "Remove the consent from already answered surveys."
-msgstr "Verwijder \"informed consent\" van beantwoorde vragenlijsten."
+msgstr "Verwijder \"informed consent\" van reeds beantwoorde vragenlijsten."
 
 #: classes/Gems/Default/ReceptionAction.php:133 classes/Gems/Menu.php:184
 msgid "Reception codes"
@@ -3937,7 +3937,7 @@ msgstr "Exporteer patiëntdossier"
 
 #: classes/Gems/Default/RespondentExportAction.php:51
 msgid "Please select at least one respondent"
-msgstr "Kies minstens één respondent"
+msgstr "Kies minstens één patiënt "
 
 #: classes/Gems/Default/RespondentLogAction.php:52
 #: classes/Gems/Default/TokenAction.php:82
@@ -4181,7 +4181,7 @@ msgstr "Database Server"
 
 #: classes/Gems/Default/SourceAction.php:181
 msgid "The database server used by the source."
-msgstr "Het merk database server gebruikt door deze bron."
+msgstr "Het soort database server gebruikt door deze bron."
 
 #: classes/Gems/Default/SourceAction.php:184
 msgid "Table prefix"
@@ -4193,11 +4193,11 @@ msgstr "Vergeet de underscores niet."
 
 #: classes/Gems/Default/SourceAction.php:192
 msgid "Leave empty for the Gems database settings."
-msgstr "Leeglaten bij gebruik van de Gems database."
+msgstr "Leeglaten bij gebruik van de Gems database instellingen."
 
 #: classes/Gems/Default/SourceAction.php:194
 msgid "Database host"
-msgstr "Database machine"
+msgstr "Database host"
 
 #: classes/Gems/Default/SourceAction.php:198
 msgid "Database port"
@@ -4230,7 +4230,7 @@ msgstr "Laatste synchronisatie"
 #: classes/Gems/Default/SourceAction.php:258
 #: classes/Gems/Menu/MenuAbstract.php:833
 msgid "Survey Sources"
-msgstr "Bronnen"
+msgstr "Vragenlijst Bronnen"
 
 #: classes/Gems/Default/SourceAction.php:298
 msgid "source"
@@ -4402,8 +4402,8 @@ msgstr "Gebruikte sjablonen"
 #: classes/Gems/Default/TemplateAction.php:78
 msgid "template"
 msgid_plural "templates"
-msgstr[0] "sjabloon"
-msgstr[1] "sjablonen"
+msgstr[0] "template"
+msgstr[1] "templates"
 
 #: classes/Gems/Default/TemplateAction.php:93
 #, php-format
@@ -6219,11 +6219,11 @@ msgstr "Handtekening"
 
 #: classes/Gems/Model/OrganizationModel.php:220
 msgid "Create Account template"
-msgstr "Sjabloon email nieuwe medewerker"
+msgstr "Template email nieuwe medewerker"
 
 #: classes/Gems/Model/OrganizationModel.php:223
 msgid "Reset Password template"
-msgstr "Wijzig wachtwoord sjabloon"
+msgstr "Wijzig wachtwoord "
 
 #: classes/Gems/Model/OrganizationModel.php:227
 msgid "Allowed IP Ranges"
@@ -6885,8 +6885,8 @@ msgid ""
 "A template.ini file should exist in the template directory in order to "
 "configure the template"
 msgstr ""
-"Een template.ini bestand moet in de template directory bestaan op het "
-"sjabloon te kunnen configureren"
+"Een template.ini bestand moet in de template directory bestaan op het  te "
+"kunnen configureren"
 
 #: classes/Gems/Model/TemplateModel.php:251
 #, php-format
@@ -7665,7 +7665,7 @@ msgstr "Dit is de laatste vragenlijst om te beantwoorden."
 
 #: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:31
 msgid "Welcome back,"
-msgstr "Welkomterug,"
+msgstr "Welkom terug,"
 
 #: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:33
 #: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:330
@@ -7731,7 +7731,7 @@ msgstr "Communicatie opdracht id ontbreekt!"
 
 #: classes/Gems/Snippets/Communication/ResendCommLogItemSnippet.php:93
 msgid "Mail not sent for a token!"
-msgstr "Communicatie opdracht id is niet voor een kenmerk!"
+msgstr "Communicatie opdracht niet verstuurd voor een kenmerk!"
 
 #: classes/Gems/Snippets/Communication/ResendCommLogItemSnippet.php:108
 msgid "Mail resent successful!"
@@ -7811,7 +7811,7 @@ msgstr "SQL direct uitvoeren"
 
 #: classes/Gems/Snippets/Database/RunSqlFormSnippet.php:159
 msgid "raw"
-msgstr "rauw"
+msgstr "ruwe"
 
 #: classes/Gems/Snippets/Database/StructuralChanges.php:98
 msgid "This new project has no structural changes to show."
@@ -7879,8 +7879,8 @@ msgid ""
 msgstr ""
 "Pak de gedownloade zip uit en open het .sps bestand.\n"
 "Wijzig regel 8 zodat het volledige pad voor het .dat bestaat staat:\n"
-"    /FILE=\"bestandnaam.dat\"  ==>  /FILE=\"c:\\downloads\\bestandsnaam.dat"
-"\"\n"
+"    /FILE=\"bestandnaam.dat\"  ==>  /FILE=\"c:\\downloads\\bestandsnaam."
+"dat\"\n"
 "Kies Run/All en al je data zou zichtbaar moeten zijn."
 
 #: classes/Gems/Snippets/Export/MultiSurveysSearchFormSnippet.php:162
@@ -9641,8 +9641,8 @@ msgstr[1] "%d vragenlijsten toegevoegd"
 #: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:381
 #, php-format
 msgid ""
-"The last round containing answers for surveys in the same user group is \"%s"
-"\"."
+"The last round containing answers for surveys in the same user group is "
+"\"%s\"."
 msgstr ""
 "De laatste ronde met antwoorden en een vragenlijst in dezelfde "
 "gebruikersgroep is \"%s\"."
@@ -9885,7 +9885,7 @@ msgstr "Nieuwe medewerker email verzonden"
 #: classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:96
 msgid "No default Create Account mail template set in organization or project"
 msgstr ""
-"Geen default sjabloon voor nieuwe medewerker ingesteld op project- of "
+"Geen default  voor nieuwe medewerker ingesteld op project- of "
 "organisatieniveau"
 
 #: classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:105
@@ -9895,7 +9895,7 @@ msgstr "Wijzig wachtwoord email verzonden"
 #: classes/Gems/Snippets/User/AdminPasswordResetSnippet.php:108
 msgid "No default Reset Password mail template set in organization or project"
 msgstr ""
-"Geen default sjabloon voor wachtwoord reset ingesteld op project- of "
+"Geen default  voor wachtwoord reset ingesteld op project- of "
 "organisatieniveau"
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:85
@@ -9920,7 +9920,7 @@ msgstr "Vervang de {} velden!"
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:113
 msgid "Please open in private mode or in other browser."
-msgstr "S.v.p. in privé modus openen of in andere browser."
+msgstr "A.u.b. in privé modus openen of in andere browser."
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:230
 msgid "Example login url generator"
@@ -9960,7 +9960,7 @@ msgstr "Email"
 
 #: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:152
 msgid "Google Authenticator"
-msgstr "Google Authenticator"
+msgstr "Authenticator app"
 
 #: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:153
 #: classes/Gems/Snippets/User/SetTwoFactorSnippet.php:154
@@ -10004,7 +10004,7 @@ msgstr "Totaal %d te versturen %s met template %s en %d te markeren kenmerken."
 #: classes/Gems/Task/Comm/ExecuteCommJobTask.php:161
 #, php-format
 msgid "Sent %d %s with template %s, updated %d tokens."
-msgstr "%d %s verzonden met sjabloon %s, %d kenmerken bijgewerkt."
+msgstr "%d %s verzonden met  %s, %d kenmerken bijgewerkt."
 
 #: classes/Gems/Task/Comm/ExecuteCommJobTask.php:171
 #, php-format
@@ -10012,8 +10012,8 @@ msgid ""
 "%d error(s) occurred while creating %s for template %s. Check error log for "
 "details."
 msgstr ""
-"%d fout(en) tijdens het maken van %s voor sjabloon %s. Kijk in het error log "
-"voor de details."
+"%d fout(en) tijdens het maken van %s voor  %s. Kijk in het error log voor de "
+"details."
 
 #: classes/Gems/Task/Db/AddPatches.php:38
 #, php-format
@@ -10090,7 +10090,7 @@ msgstr ""
 #: classes/Gems/Task/Mail/ExecuteMailJobTask.php:204
 #, php-format
 msgid "Sent %d e-mails with template %s, updated %d tokens."
-msgstr "%d emails verzonden met sjabloon %s, %d kenmerken bijgewerkt."
+msgstr "%d emails verzonden met  %s, %d kenmerken bijgewerkt."
 
 #: classes/Gems/Task/Mail/ExecuteMailJobTask.php:213
 #, php-format
@@ -10098,8 +10098,8 @@ msgid ""
 "%d error(s) occurred while creating mails for template %s. Check error log "
 "for details."
 msgstr ""
-"%d fout(en) tijdens het maken van emails voor sjabloon %s. Kijk in het error "
-"log voor de details."
+"%d fout(en) tijdens het maken van emails voor  %s. Kijk in het error log "
+"voor de details."
 
 #: classes/Gems/Task/Respondent/UpdateRespondentTask.php:61
 #, php-format
@@ -10445,8 +10445,8 @@ msgstr "%d van %d vragen veranderd."
 #, php-format
 msgid "Save failed for survey %s, question %s, option \"%s\" => \"%s\": %s"
 msgstr ""
-"Opslaan mislukt foor vragenlijst %s, vraag %s, antwoord optie \"%s\" => \"%s"
-"\": %s"
+"Opslaan mislukt foor vragenlijst %s, vraag %s, antwoord optie \"%s\" => "
+"\"%s\": %s"
 
 #: classes/Gems/Task/Tracker/RefreshQuestion.php:128
 #, php-format
@@ -10758,7 +10758,7 @@ msgstr "Minimum tijdsverschil"
 
 #: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:162
 msgid "This value may not be zero!"
-msgstr "Deze warde mag niet nul zijn!"
+msgstr "Deze waarde mag niet nul zijn!"
 
 #: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:165
 msgid "Minimal difference unit"
@@ -12865,7 +12865,7 @@ msgid "Invalid type given. String, integer or float expected"
 msgstr "Ongeldige invoer, geef een tekst of een nummer op"
 
 #: languages/FakeTranslations.php:103
-#, php-format
+#, no-php-format
 msgid "Only %extension% files are accepted."
 msgstr "Alleen bestanden van het %extension% formaat zijn toegestaan."
 
@@ -13452,8 +13452,8 @@ msgstr "Neem contact op met systeembeheer"
 #~ msgstr ""
 #~ "Pak de gedownloade zip uit en open het .sps bestand.\n"
 #~ "Wijzig regel 8 zodat het volledige pad voor het .dat bestaat staat:\n"
-#~ "   /FILE=\"bestandnaam.dat\" ==> /FILE=\"c:\\downloads\\bestandsnaam.dat"
-#~ "\"\n"
+#~ "   /FILE=\"bestandnaam.dat\" ==> /FILE=\"c:\\downloads\\bestandsnaam."
+#~ "dat\"\n"
 #~ "Kies Run/All en al je data zou zichtbaar moeten zijn."
 
 #~ msgid ""
@@ -13746,9 +13746,10 @@ msgstr "Neem contact op met systeembeheer"
 #~ "path to your data file. Then choose Run -> All to execute the syntax."
 #~ msgstr ""
 #~ "Na het downloaden kunt u het bestand uitpakken en krijgt u een syntax en "
-#~ "een databestand. Open de syntax met SPSS en wijzig de regel /FILE="
-#~ "\"filename.dat\" zodat het volledige pad naar het databestand er voor "
-#~ "komt te staan. Vervolgens kiest u Run -> All om de syntax uit te voeren."
+#~ "een databestand. Open de syntax met SPSS en wijzig de regel /"
+#~ "FILE=\"filename.dat\" zodat het volledige pad naar het databestand er "
+#~ "voor komt te staan. Vervolgens kiest u Run -> All om de syntax uit te "
+#~ "voeren."
 
 #~ msgid "Deprecated"
 #~ msgstr "Deprecated"
