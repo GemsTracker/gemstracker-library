@@ -121,7 +121,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate);
-        
+
         if (! $this->searchLabel) {
             $this->searchLabel = $this->_('Free search text');
         }
@@ -242,9 +242,9 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
 
         $tName = 'toggle_' . $name;
         $options = [
-            'label'    => $toggleLabel ? $toggleLabel : $this->_('Toggle'),
-            'selector' => "input[name^=$name]",
-            ];
+            'label'    => $toggleLabel ?: $this->_('Toggle'),
+            'selectorname' => $name,
+        ];
         $elements[$tName] = $this->form->createElement('ToggleCheckboxes', $tName, $options);
 
         return $elements;
@@ -371,7 +371,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
             $div = Html::div();
             $div->class = 'search';
             $form->setHtml($div);
-            
+
             $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
 
             $elements[] = $this->getAutoSearchSubmit();
@@ -497,7 +497,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
     {
         $div = Html::div();
         $div->append($this->getAutoSearchForm());
-        
+
         return $div;
     }
 
