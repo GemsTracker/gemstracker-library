@@ -126,7 +126,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $bridge->gr2o_id_organization;
 
         $keys = $this->getRouteMaps($dataModel->getMetaModel());
-        
+
         $episode = $this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index');
 
         $br      = Html::create('br');
@@ -134,7 +134,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $table   = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
         $bridge->tr()->appendAttrib('class', $bridge->row_class);
-        
+
         if ($this->showMenu) {
             foreach ($this->getShowUrls($bridge, $keys, $bridge) as $linkParts) {
                 if (! isset($linkParts['label'])) {
@@ -206,7 +206,6 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             'formatFunction', [$this, 'formatTime']);
 
         $this->_dateStorageFormat = $model->get('gap_admission_time', 'storageFormat');
-        // $this->_timeImg           = \MUtil\Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));
 
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
@@ -253,12 +252,12 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     public function getFilter(MetaModelInterface $metaModel): array
     {
         $filter = parent::getFilter($metaModel);
-        
+
         if ($this->respondent instanceof Respondent) {
             $filter['gap_id_user'] = $this->respondent->getId();
-            $filter['gap_id_organization'] = $this->respondent->getOrganizationId(); 
+            $filter['gap_id_organization'] = $this->respondent->getOrganizationId();
         }
-        
+
         $episodeId = $this->requestInfo->getParam(Model::EPISODE_ID);
         if ($episodeId) {
             $this->caption = $this->_('Linked appointments');

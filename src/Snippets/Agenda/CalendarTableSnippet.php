@@ -44,7 +44,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
-    
+
     protected string $onEmptyAlt = '';
 
     public function __construct(SnippetOptions $snippetOptions,
@@ -74,12 +74,12 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $bridge->gr2o_id_organization;
-        
+
         $keys = $this->getRouteMaps($dataModel->getMetaModel());
-        
+
         $appointmentHref = $this->menuHelper->getLateRouteUrl('respondent.appointments.show', $keys, $bridge);
         $appointmentButton = isset($appointmentHref['url']) ? Html::actionLink($appointmentHref['url'], $this->_('Show appointment')) : null;
-        
+
         $respondentHref = $this->menuHelper->getLateRouteUrl('respondent.show', $keys, $bridge);
         $respondentButton = isset($respondentHref['url']) ? Html::actionLink($respondentHref['url'], $this->_('Show respondent')) : null;
 
@@ -98,7 +98,6 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'time middleAlign'));
         $td = $bridge->addSortable('gap_admission_time');
         $td->append(' ');
-        //$td->img()->src = 'stopwatch.png';
         $td->i(['class' => 'fa fa-stopwatch']);
         $td->title = $bridge->date_only; // Add title, to make sure row displays when time is same as time for previous day
         $bridge->addSortable('gor_name');
@@ -156,11 +155,11 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         \Gems\Model\RespondentModel::addNameToModel($this->model, $this->_('Name'));
 
         $this->model->applyMask();
-        
+
         // \MUtil\Model::$verbose = true;
         return $this->model;
     }
-    
+
     public function getRouteMaps(MetaModelInterface $metaModel): array
     {
         $output = parent::getRouteMaps($metaModel);
