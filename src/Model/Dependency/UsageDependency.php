@@ -24,6 +24,13 @@ use Zalt\Snippets\DeleteModeEnum;
  */
 class UsageDependency extends \Zalt\Model\Dependency\DependencyAbstract
 {
+    /**
+     * No autosubmit!
+     *
+     * @var array
+     */
+    protected array $autoSubmitSettings = [];
+
     protected string $fieldName;
 
     public function __construct(

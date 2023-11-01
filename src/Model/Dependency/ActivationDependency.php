@@ -23,6 +23,13 @@ use Zalt\Snippets\DeleteModeEnum;
  */
 class ActivationDependency extends \Zalt\Model\Dependency\DependencyAbstract
 {
+    /**
+     * No autosubmit!
+     *
+     * @var array
+     */
+    protected array $autoSubmitSettings = [];
+
     public function __construct(
         TranslatorInterface $translate,
         protected readonly MetaModelInterface $metaModel,
