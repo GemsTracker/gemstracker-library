@@ -48,7 +48,7 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstr
     {
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
-    
+
     /**
      * Adds rows from the model to the bridge that creates the browse table.
      *
@@ -96,7 +96,7 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstr
         $td = $div->span($date->format('H:i'));
         $td->class = 'time middleAlign';
         $td->append(' ');
-        $td->img()->src = 'stopwatch.png';
+        $td->i(['class' => 'fa fa-stopwatch']);
         return $div;
     }
 
