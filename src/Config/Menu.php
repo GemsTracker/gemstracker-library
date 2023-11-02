@@ -1210,11 +1210,26 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
+                                            'name' => 'setup.communication.job.execute',
+                                            'label' => $this->translator->trans('Execute'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
                                             'name' => 'setup.communication.job.delete',
                                             'label' => $this->translator->trans('Delete'),
                                             'type' => 'route-link-item',
                                         ],
                                     ],
+                                ],
+                                [
+                                    'name' => 'setup.communication.job.monitor',
+                                    'label' => $this->translator->trans('Monitor'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.communication.job.execute-all',
+                                    'label' => $this->translator->trans('Execute all'),
+                                    'type' => 'route-link-item',
                                 ],
                             ],
                         ],

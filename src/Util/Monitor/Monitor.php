@@ -9,9 +9,11 @@
  * @license    New BSD License
  */
 
-namespace Gems\Util;
+namespace Gems\Util\Monitor;
 
-use MUtil\Util\MonitorJob;
+use Gems\Db\ResultFetcher;
+use Gems\Util\Lock\MaintenanceLock;
+use Gems\Util\Monitor\MonitorJob;
 
 /**
  *
@@ -22,23 +24,17 @@ use MUtil\Util\MonitorJob;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Mar 2, 2016 1:42:12 PM
  */
-class Monitor extends UtilAbstract
+class Monitor
 {
-    /**
-     * @var array
-     */
-    protected $config;
-    /**
-     *
-     * @var \Zend_Locale
-     */
-    protected $locale;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        protected readonly array $config,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly MaintenanceLock $maintenanceLock,
+    )
+    {
+        MonitorJob::$monitorDateFormat  = 'l j F Y H:i';
+        MonitorJob::$monitorDir         = $this->config['rootDir'] . '/data';
+    }
 
     /**
      * Return an array of organization recipients for the given monitorName
@@ -59,9 +55,10 @@ class Monitor extends UtilAbstract
                 break;
         }
 
-        $orgTo = $this->db->fetchCol(
+        $orgTo = $this->resultFetcher->fetchCol(
                 "SELECT DISTINCT gor_contact_email FROM gems__organizations WHERE LENGTH(gor_contact_email) > 5 AND gor_active = 1 AND $where"
                 );
+
         return $orgTo;
     }
 
@@ -71,7 +68,7 @@ class Monitor extends UtilAbstract
      * @param string $monitorName ProjectSettings name
      * @return array
      */
-    protected function _getMailTo($monitorName)
+    protected function _getMailTo($monitorName): array
     {
         $projTo  = explode(',',$this->getTo($monitorName));
         $userTo  = $this->_getUserTo($monitorName);
@@ -87,7 +84,7 @@ class Monitor extends UtilAbstract
      * @param string $monitorName
      * @return array
      */
-    protected function _getUserTo($monitorName)
+    protected function _getUserTo($monitorName): array
     {
         switch ($monitorName) {
             case 'maintenancemode':
@@ -97,7 +94,7 @@ class Monitor extends UtilAbstract
                       JOIN gems__roles ON ggp_role = grl_id_role";
 
                     $where = 'grl_name IN (' .
-                            implode(', ', array_map(array($this->db, 'quote'), array_keys($roles))) .
+                            implode(', ', array_map(array($this->resultFetcher->getPlatform(), 'quoteValue'), array_keys($roles))) .
                             ')';
                 } else {
                     return [];
@@ -111,22 +108,10 @@ class Monitor extends UtilAbstract
                 break;
         }
 
-        $userTo = $this->db->fetchCol(
+        $userTo = $this->resultFetcher->fetchCol(
                 "SELECT DISTINCT gsf_email FROM gems__staff $joins WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
                 );
         return $userTo;
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        MonitorJob::$monitorDateFormat  = 'l j F Y H:i';
-        MonitorJob::$monitorDir         = $this->config['rootDir'] . '/var/settings';
     }
 
     /**
@@ -152,7 +137,7 @@ class Monitor extends UtilAbstract
      *
      * @return MonitorJob
      */
-    public function getCronMailMonitor()
+    public function getCronMailMonitor(): MonitorJob
     {
         return MonitorJob::getJob($this->getAppName() . ' cron mail');
     }
@@ -162,27 +147,27 @@ class Monitor extends UtilAbstract
      *
      * @param string $locale The locale to use for the message
      *
-     * @return array with elements $subject and $messageBbText
+     * @return array with elements $subject and $messageHtml
      */
-    public function getCronMailTemplate($locale)
+    public function getCronMailTemplate(string $locale): array
     {
         switch ($locale) {
             case 'nl':
                 $subject = "{name} opdracht draait al meer dan {periodHours} uur niet";
-                $messageBbText = "L.S.,
+                $messageHtml = "L.S.,
 
-De [b]{name}[/b] opdracht heeft op {setTime} voor het laatst gedraaid en zou voor {firstCheck} opnieuw gedraaid moeten hebben.
+De <b>{name}</b> opdracht heeft op {setTime} voor het laatst gedraaid en zou voor {firstCheck} opnieuw gedraaid moeten hebben.
 
-Dit is waarschuwing nummer [b]{mailCount}[/b]. Controleer s.v.p. wat verkeerd gegaan is.
+Dit is waarschuwing nummer <b>{mailCount}</b>. Controleer s.v.p. wat verkeerd gegaan is.
 
 Dit is een automatische waarschuwing.";
                 break;
 
             default:
                 $subject = "{name} job has not run for over {periodHours} hours";
-                $messageBbText = "L.S.,
+                $messageHtml = "L.S.,
 
-The [b]{name}[/b] job ran at {setTime} for the last time and should have run again before {firstCheck}.
+The <b>{name}</b> job ran at {setTime} for the last time and should have run again before {firstCheck}.
 
 This is notice number {mailCount}. Please check what went wrong.
 
@@ -190,7 +175,15 @@ This messages was send automatically.";
                 break;
         }
 
-        return array($subject, $messageBbText);
+        return array($subject, $messageHtml);
+    }
+
+    protected function getDefaultLocale(): string
+    {
+        if (isset($this->config['locale']['default'])) {
+            return $this->config['locale']['default'];
+        }
+        return 'en';
     }
 
     protected function getFrom($name)
@@ -237,45 +230,45 @@ This messages was send automatically.";
      *
      * @param string $locale The locale to use for the message
      *
-     * @return array with elements $initSubject, $initBbText, $subject and $messageBbText
+     * @return array with elements $initSubject, $initHtml, $subject and $messageHtml
      */
-    public function getReverseMaintenanceMonitorTemplate($locale)
+    public function getReverseMaintenanceMonitorTemplate(string $locale): array
     {
         switch ($locale) {
             case 'nl':
                 $initSubject = "{name} is aangezet";
-                $initBbText = "L.S.,
+                $initHtml = "L.S.,
 
-De [b]{name}[/b] is op {setTime} aangezet.
+De <b>{name}</b> is op {setTime} aangezet.
 
 Zolang dit aan blijft staan kan u regelmatig waarschuwingen krijgen.
 
 Dit is een automatisch bericht.";
 
                 $subject = "{name} staat al meer dan {periodHours} uur aan";
-                $messageBbText = "L.S.,
+                $messageHtml = "L.S.,
 
-De [b]{name}[/b] is op {setTime} aangezet en staat nog steeds aan.
+De <b>{name}</b> is op {setTime} aangezet en staat nog steeds aan.
 
-Dit is waarschuwing nummer [b]{mailCount}[/b]. Controleer s.v.p. of de onderhouds modus nog steeds nodig is.
+Dit is waarschuwing nummer <b>{mailCount}</b>. Controleer s.v.p. of de onderhouds modus nog steeds nodig is.
 
 Dit is een automatische waarschuwing.";
                 break;
 
             default:
                 $initSubject = "{name} has been turned on";
-                $initBbText = "L.S.,
+                $initHtml = "L.S.,
 
-The [b]{name}[/b] was activated at {setTime}.
+The <b>{name}</b> was activated at {setTime}.
 
 As long as maintenance mode is active the system may send you warning messages.
 
 This messages was send automatically.";
 
                 $subject = "{name} has been active for over {periodHours} hours";
-                $messageBbText = "L.S.,
+                $messageHtml = "L.S.,
 
-The [b]{name}[/b] was activated at {setTime} and is still active.
+The <b>{name}</b> was activated at {setTime} and is still active.
 
 This is notice number {mailCount}. Please check whether the maintenance mode is still required.
 
@@ -284,7 +277,7 @@ This messages was send automatically.";
 
         }
 
-        return array($initSubject, $initBbText, $subject, $messageBbText);
+        return array($initSubject, $initHtml, $subject, $messageHtml);
     }
 
     protected function getTo(string $name)
@@ -308,32 +301,30 @@ This messages was send automatically.";
     public function reverseMaintenanceMonitor()
     {
         $job  = $this->getReverseMaintenanceMonitor();
-        $lock = $this->util->getMaintenanceLock();
 
-        if ($lock->isLocked()) {
+        if ($this->maintenanceLock->isLocked()) {
             $job->stop();
-            $lock->unlock();
+            $this->maintenanceLock->unlock();
             return false;
         }
 
-        $lock->lock();
+        $this->maintenanceLock->lock();
         $to = $this->_getMailTo('maintenancemode');
 
         if (!$to) {
             return true;
         }
 
-        $locale = $this->project->getLocaleDefault();
-        list($initSubject, $initBbText, $subject, $messageBbText) = $this->getReverseMaintenanceMonitorTemplate($locale);
+        list($initSubject, $initHtml, $subject, $messageHtml) = $this->getReverseMaintenanceMonitorTemplate($this->getDefaultLocale());
 
         $job->setFrom($this->getFrom('maintenancemode'))
-                ->setMessage($messageBbText)
+                ->setMessage($messageHtml)
                 ->setPeriod($this->getPeriod('maintenancemode'))
                 ->setSubject($subject)
                 ->setTo($to);
 
         if ($job->start()) {
-            $job->sendOtherMail($initSubject, $initBbText);
+            $job->sendOtherMail($initSubject, $initHtml);
         }
 
         return true;
@@ -354,11 +345,10 @@ This messages was send automatically.";
             return false;
         }
 
-        $locale = $this->project->getLocaleDefault();
-        list($subject, $messageBbText) = $this->getCronMailTemplate($locale);
+        list($subject, $messageHtml) = $this->getCronMailTemplate($this->getDefaultLocale());
 
         $job->setFrom($this->getFrom('cronmail'))
-                ->setMessage($messageBbText)
+                ->setMessage($messageHtml)
                 ->setPeriod($this->getPeriod('cronmail'))
                 ->setSubject($subject)
                 ->setTo($to)

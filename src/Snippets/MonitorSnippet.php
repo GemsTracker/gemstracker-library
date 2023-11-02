@@ -10,7 +10,13 @@
 
 namespace Gems\Snippets;
 
-use MUtil\Util\MonitorJob;
+use Gems\Html;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Util\Monitor\MonitorJob;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Html\TableElement;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Snippet to display information about a specific monitor job
@@ -21,44 +27,44 @@ use MUtil\Util\MonitorJob;
  * @license    New BSD License
  * @since      Class available since version 1.8.3
  */
-class MonitorSnippet extends \MUtil\Snippets\SnippetAbstract
+class MonitorSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
-    public $caption;
-    
+    public ?string $caption = null;
+
     public $confirmParameter = 'delete';
+
     /**
      *
      * @var MonitorJob
      */
-    public $monitorJob;
+    public MonitorJob $monitorJob;
     
-    /**
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
-    
-    public $title;
-    
-    public function afterRegistry()
+    public ?string $title = null;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected readonly MenuSnippetHelper $menuSnippetHelper,
+    )
     {
-        parent::afterRegistry();
-        
-        if (is_null($this->caption)) {
-            $this->caption = $this->_(sprintf('Monitorjob %s', $this->monitorJob->getName()));
-        }
-        
-        if (is_null($this->title)) {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+
+        if (null === $this->title) {
             $this->title = $this->_('Monitorjob overview');
         }
     }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         $seq = $this->getHtmlSequence();
         $seq->h3($this->title);
-        
-        if ($this->request->getParam($this->confirmParameter)) {
+
+        if (! $this->title) {
+            $this->caption = $this->_(sprintf('Monitorjob %s', $this->monitorJob->getName()));
+        }
+
+        if ($this->requestInfo->getParam($this->confirmParameter)) {
             $this->monitorJob->stop();
             // Now clear the job so it is empty
             $this->monitorJob = MonitorJob::getJob($this->monitorJob->getName());
@@ -68,13 +74,14 @@ class MonitorSnippet extends \MUtil\Snippets\SnippetAbstract
         if (empty($data)) {
             $seq[] = sprintf($this->_('No monitorjob found for %s'), $this->monitorJob->getName());
         } else {
-            $tableContainer   = \MUtil\Html::create()->div(array('class' => 'table-container'));
-            $table            = \MUtil\Html\TableElement::createArray($data, $this->caption);
+            $tableContainer   = Html::create()->div(array('class' => 'table-container'));
+            $table            = TableElement::createArray($data, $this->caption);
+
             $table->class     = 'browser table';
             $tableContainer[] = $table;
             $seq[]            = $tableContainer;
-            
-            $seq->actionLink(array($this->confirmParameter => 1), $this->_('Delete'));
+
+            $seq->actionLink([$this->menuSnippetHelper->getCurrentUrl(), $this->confirmParameter => 1], $this->_('Delete'));
         }
 
         return $seq;
@@ -91,7 +98,9 @@ class MonitorSnippet extends \MUtil\Snippets\SnippetAbstract
         $data = $job->getArrayCopy();
         
         // Skip when job is not started
-        if ($data['setTime'] == 0) return;
+        if ((! isset($data['setTime'])) || $data['setTime'] == 0) {
+            return;
+        }
         
         $data['firstCheck'] = date(MonitorJob::$monitorDateFormat, $data['firstCheck']);
         $data['checkTime'] = date(MonitorJob::$monitorDateFormat, $data['checkTime']);
@@ -106,5 +115,8 @@ class MonitorSnippet extends \MUtil\Snippets\SnippetAbstract
         return $data;
     }
 
-
+    public function hasHtmlOutput(): bool
+    {
+        return isset($this->monitorJob);
+    }
 }

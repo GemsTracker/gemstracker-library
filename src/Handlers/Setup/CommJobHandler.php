@@ -14,6 +14,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\CommJobModel;
@@ -24,17 +25,18 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
+use Gems\User\UserLoader;
 use Gems\Util\Lock\CommJobLock;
+use Gems\Util\Monitor\Monitor;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
-use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use Psr\Log\LoggerInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Loader\DependencyResolver\ConstructorDependencyResolver;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\StatusMessengerInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -67,11 +69,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
      */
     //protected array $createEditSnippets = ['ModelFormVariableFieldSnippet'];
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
+    protected int $currentUserId = UserLoader::UNKNOWN_USER_ID;
 
     /**
      * @var array
@@ -118,16 +116,20 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
         protected ResultFetcher $resultFetcher,
         protected ProjectOverloader $overloader,
         protected Tracker $tracker,
-        protected BatchRunnerLoader $batchRunnerLoader,
-        protected CommJobRepository $commJobRepository,
-        protected CommJobLock $communicationJobLock,
-        protected RouteHelper $routeHelper,
+        protected readonly BatchRunnerLoader $batchRunnerLoader,
+        protected readonly CommJobRepository $commJobRepository,
+        protected readonly CommJobLock $communicationJobLock,
+        protected readonly Monitor $monitor,
+        protected readonly RouteHelper $routeHelper,
     )
     {
         parent::__construct($responder, $translate);
+
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     /**
@@ -146,7 +148,6 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
         /**
          * @var $model CommJobModel
          */
-
         $model = $this->overloader->create(CommJobModel::class);
 
         if ($detailed) {
@@ -188,10 +189,10 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function executeAction($preview = false)
     {
-        $jobId = intval($this->request->getAttribute(Model::REQUEST_ID));
+        $jobId = intval($this->request->getAttribute(MetaModelInterface::REQUEST_ID));
         $session = $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
 
-        $batch = new TaskRunnerBatch($jobId, $this->overloader, $session);
+        $batch = new TaskRunnerBatch('commjob-execute-' . $jobId, $this->overloader, $session);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         if ($this->cronLog instanceof LoggerInterface) {
@@ -207,7 +208,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
                     ));
 
             // Check for unprocessed tokens
-            $this->tracker->loadCompletedTokensBatch($batch, null, $this->currentUser->getUserId());
+            $this->tracker->loadCompletedTokensBatch($batch, null, $this->currentUserId);
 
             // We could skip this, but a check before starting the batch is better
             $select = $this->resultFetcher->getSelect('gems__comm_jobs');
@@ -248,15 +249,47 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function executeAllAction()
     {
-        $batch = $this->commJobRepository->getCronBatch(
-            'commjob-execute-all',
-            $this->overloader,
-            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
-        );
+        $session = $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
+
+        $batch = new TaskRunnerBatch('commjob-execute-all', $this->overloader, $session);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
+        if ($this->cronLog instanceof LoggerInterface) {
+            $batch->setMessageLogger($this->cronLog);
+        }
+
+        $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
+
+        if (!$batch->isLoaded()) {
+            $batch->addMessage($this->_('Execute all message jobs'));
+
+            // Check for unprocessed tokens
+            $this->tracker->loadCompletedTokensBatch($batch, null, $this->currentUserId);
+
+            // We could skip this, but a check before starting the batch is better
+            $select = $this->resultFetcher->getSelect('gems__comm_jobs');
+            $select->columns([
+                'gcj_id_job',
+            ])->where
+                ->greaterThan('gcj_active', 0);
+
+            $job = $this->resultFetcher->fetchOne($select);
+
+            if (!empty($job)) {
+                $batch->addTask('Comm\\ExecuteCommJobTask', $job, null, null);
+            } else {
+                $batch->reset();
+                $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+                $messenger->addMessage($this->_("Messagejob is inactive and won't be executed"), 'danger');
+            }
+
+            $batch->autoStart = true;
+        }
+
+        $title = $this->_('Executing all message job');
+
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
-        $batchRunner->setTitle($this->_('Execute all message jobs'));
+        $batchRunner->setTitle($title);
         return $batchRunner->getResponse($this->request);
     }
 
@@ -272,7 +305,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function getMailMonitorJob()
     {
-        //return $this->loader->getUtil()->getMonitor()->getCronMailMonitor();
+        return $this->monitor->getCronMailMonitor();
     }
 
     /**

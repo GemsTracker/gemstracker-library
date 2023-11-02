@@ -14,8 +14,8 @@ namespace Gems;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Tracker\ReceptionCode;
 use Gems\User\User;
-use IPLib\Factory as IpFactory;
 use IPLib\Address\AddressInterface;
+use IPLib\Factory as IpFactory;
 use IPLib\Range\RangeInterface;
 
 /**
@@ -75,7 +75,7 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems\Util\Monitor
+     * @var \Gems\Util\Monitor\Monitor
      */
     protected $monitor;
 
@@ -322,7 +322,7 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Returns the job monitor
      *
-     * @return \Gems\Util\Monitor
+     * @return \Gems\Util\Monitor\Monitor
      */
     public function getMonitor()
     {

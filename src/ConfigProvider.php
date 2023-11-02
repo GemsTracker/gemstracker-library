@@ -80,6 +80,8 @@ use Gems\Util\Lock\LockFactory;
 use Gems\Util\Lock\MaintenanceLock;
 use Gems\Util\Lock\Storage\FileLock;
 use Gems\Util\Lock\Storage\LockStorageAbstract;
+use Gems\Util\Monitor\Monitor;
+use Gems\Util\Monitor\MonitorFactory;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -356,6 +358,7 @@ class ConfigProvider
                 // Locks
                 MaintenanceLock::class => [LockFactory::class, FileLock::class],
                 CommJobLock::class => [LockFactory::class, FileLock::class],
+                Monitor::class => MonitorFactory::class,
 
                 // Route / Menu
                 RouteHelper::class => RouteHelperFactory::class,
@@ -466,62 +469,11 @@ class ConfigProvider
 
     protected function getLocaleSettings(): array
     {
-//        $jstUrl = $this->basepath->getBasePath() . '/gems/js';
-
-//        $dateFormat = [
-//            'dateFormat'   => 'd-m-Y',
-//            'description'  => 'dd-mm-yyyy',
-//            'datePickerSettings' => [],
-//            'size'         => 10,
-//            'storageFormat' => 'Y-m-d',
-//            ];
-//
-//        $timeFormat = [
-//            'dateFormat'   => 'H:i',
-//            'description'  => 'hh:mm',
-//            'datePickerSettings' => [
-//                'minutesStep'  => 5,
-//            ],
-//            'size'        => 6,
-//            'storageFormat' => 'H:i:s',
-//            ];
-//
-//        $dateTimeFormat = [
-//            'dateFormat'   => 'd-m-Y H:i',
-//            'description'  => 'dd-mm-yyyy hh:mm',
-//            'datePickerSettings' => [
-//                'minutesStep'  => 5,
-//            ],
-//            'size'         => 16,
-//            'storageFormat' => 'Y-m-d H:i:s',
-//        ];
-
         return [
             'availableLocales' => [
                 // Set in project
             ],
             'default' => 'en',
-//            'defaultTypes' => [
-//                MetaModelInterface::TYPE_DATE     => $dateFormat,
-//                MetaModelInterface::TYPE_DATETIME => $dateTimeFormat,
-//                MetaModelInterface::TYPE_TIME     => $timeFormat,
-//            ],
-//            'localeTypes' => [
-//                'nl' => [
-//                    MetaModelInterface::TYPE_DATE     => ['description' => 'tt-mm-jjjj'],
-//                    MetaModelInterface::TYPE_DATETIME => ['description' => 'tt-mm-jjjj uu:mm'],
-//                    MetaModelInterface::TYPE_TIME     => ['description' => 'uu:mm'],
-//                ],
-//                'de' => [
-//                    MetaModelInterface::TYPE_DATE     => ['description' => 'dd-mm-jjjj'],
-//                    MetaModelInterface::TYPE_DATETIME => ['description' => 'dd-mm-jjjj ss:mm'],
-//                    MetaModelInterface::TYPE_TIME     => ['description' => 'ss:mm'],
-//                ],
-//                'fr' => [
-//                    MetaModelInterface::TYPE_DATE     => ['description' => 'jj-mm-aaaa'],
-//                    MetaModelInterface::TYPE_DATETIME => ['description' => 'jj-mm-aaaa hh:mm'],
-//                ],
-//            ],
         ];
     }
 

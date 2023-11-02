@@ -16,9 +16,11 @@ use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Tracker;
+use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
@@ -56,6 +58,8 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public array $cacheTags = ['source', 'sources',];
 
+    protected int $currentUserId = UserLoader::UNKNOWN_USER_ID;
+
     /**
      * Array of the actions that use a summarized version of the model.
      *
@@ -72,6 +76,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
         protected Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected ResultFetcher $resultFetcher,
@@ -82,6 +87,8 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
 
     ) {
         parent::__construct($responder, $translate);
+
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     /**

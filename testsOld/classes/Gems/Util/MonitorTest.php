@@ -12,7 +12,7 @@ class MonitorTest extends \Gems\Test\DbTestAbstract
 
     /**
      *
-     * @var \Gems\Util\Monitor
+     * @var \Gems\Util\Monitor\Monitor
      */
     protected $object;
 

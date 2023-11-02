@@ -9,15 +9,14 @@ use Gems\Snippets\Vue\CreateEditSnippet;
 use Gems\Tracker;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;
-use MUtil\Model;
-use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 class TokenEmailSnippet extends CreateEditSnippet
 {
-
     protected ?string $afterSaveUrl = null;
     
     public function __construct(
@@ -29,7 +28,7 @@ class TokenEmailSnippet extends CreateEditSnippet
         UrlHelper $urlHelper,
         array $config,
         protected Tracker $tracker,
-        protected Translator $translator,
+        protected TranslatorInterface $translator,
         protected StatusMessengerInterface $messenger,
         protected MenuSnippetHelper $menuSnippetHelper,
     ) {
@@ -43,62 +42,64 @@ class TokenEmailSnippet extends CreateEditSnippet
 
     protected function gotoShowToken(): void
     {
-        $this->afterSaveUrl = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.show', $this->requestInfo->getRequestMatchedParams());
+        $this->afterSaveUrl = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.show', $this->requestInfo->getRequestMatchedParams());
     }
 
     public function hasHtmlOutput(): bool
     {
         $params = $this->requestInfo->getRequestMatchedParams();
-        if (!isset($params[Model::REQUEST_ID])) {
+        if (!isset($params[MetaModelInterface::REQUEST_ID])) {
             throw new \Exception('No Token ID');
         }
 
-        $tokenId = $params[Model::REQUEST_ID];
+        $tokenId = $params[MetaModelInterface::REQUEST_ID];
         $token = $this->tracker->getToken($tokenId);
 
-        $message = null;
+        $messages = [];
 
         if (!$token->getReceptionCode()->isSuccess()) {
-            $message = $this->translator->_('This token cannot be sent. It is not valid');
+            $messages[] = $this->translator->_('This token cannot be sent. It is not valid');
         }
 
         if ($token->getSurvey()->isTakenByStaff()) {
-            $message = $this->translator->_('This token cannot be sent. It is intended for Staff');
+            $messages[] = $this->translator->_('This token cannot be sent. It is intended for Staff');
         }
 
         if ($token->isNotYetValid()) {
-            $message = $this->translator->_('This token cannot be sent. It is not yet valid');
+            $messages[] = $this->translator->_('This token cannot be sent. It is not yet valid');
         }
 
         if ($token->isExpired()) {
-            $message = $this->translator->_('This token is expired');
+            $messages[] = $this->translator->_('This token is expired');
         }
 
         if ($token->isCompleted()) {
-            $message = $this->translator->_('This token has already been completed');
+            $messages[] = $this->translator->_('This token has already been completed');
         }
 
         if ($token->getEmail() === null) {
-            $message = $this->translator->_('Respondent does not have an E-mail address');
+            $messages[] = $this->translator->_('Respondent does not have an E-mail address');
             if ($token->hasRelation() && $token->getRelation()->getEmail() === null) {
-                $message = $this->translator->_('Respondent relation does not have an E-mail address');
+                $messages[] = $this->translator->_('Respondent relation does not have an E-mail address');
             }
         }
 
         if ($token->hasRelation() && !$token->getRelation()->isMailable()) {
-            $message = $this->translator->_('Respondent relation cannot be contacted');
+            $messages[] = $this->translator->_('Respondent relation cannot be contacted');
         }
 
         if (!$token->getRespondent()->isMailable()) {
-            $message = $this->translator->_('Respondent relation cannot be contacted');
+            $messages[] = $this->translator->_('Respondent relation cannot be contacted');
         }
 
-        if (!$token->isMailable()) {
-            $message = $this->translator->_('This token cannot be E-mailed');
+        if (! ($messages || $token->isMailable())) {
+            $messages[] = $this->translator->_('This token cannot be E-mailed');
         }
 
-        if ($message !== null) {
-            $this->messenger->addError($message);
+        if ($messages) {
+            foreach ($messages as $message) {
+                $this->messenger->addError($message);
+            }
             $this->gotoShowToken();
             return false;
         }

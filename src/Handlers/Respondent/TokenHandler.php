@@ -24,8 +24,8 @@ use Gems\Tracker;
 use Gems\Tracker\Respondent;
 use Gems\Tracker\Token;
 use Mezzio\Session\SessionMiddleware;
-use MUtil\Model;
-use MUtil\Ra;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Ra\Ra;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -307,7 +307,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
      */
     public function getIndexTitle(): string
     {
-        return sprintf($this->_('Surveys assigned to respondent %s'), $this->request->getAttribute(Model::REQUEST_ID1));
+        return sprintf($this->_('Surveys assigned to respondent %s'), $this->request->getAttribute(MetaModelInterface::REQUEST_ID1));
     }
 
     /**
@@ -320,8 +320,8 @@ class TokenHandler extends TokenSearchHandlerAbstract
         static $respondent;
 
         if (! $respondent) {
-            $patientNumber  = $this->request->getAttribute(Model::REQUEST_ID1);
-            $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
+            $patientNumber  = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
+            $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
 
             $respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
             
@@ -362,11 +362,11 @@ class TokenHandler extends TokenSearchHandlerAbstract
         // Survey action data
         $data['gto_id_respondent']   = $this->getRespondentId();
 
-        $orgsFor = $this->organizationRepository->getAllowedOrganizationsFor($this->request->getAttribute(Model::REQUEST_ID2));
+        $orgsFor = $this->organizationRepository->getAllowedOrganizationsFor($this->request->getAttribute(MetaModelInterface::REQUEST_ID2));
         if (is_array($orgsFor)) {
             $data['gto_id_organization'] = array_keys($orgsFor);
         } elseif (true !== $orgsFor) {
-            $data['gto_id_organization'] = $this->request->getAttribute(Model::REQUEST_ID2);
+            $data['gto_id_organization'] = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
         }
 
         return $data;

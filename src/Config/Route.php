@@ -846,7 +846,14 @@ class Route
                 controllerClass: \Gems\Handlers\Setup\CommJobHandler::class,
                 pages: [
                     ...$this->defaultPages,
+                    'execute',
+                    'execute-all',
                     'lock',
+                    'monitor',
+                ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                    'execute',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.communication.messenger',
