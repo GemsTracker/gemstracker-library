@@ -69,8 +69,6 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
      */
     //protected array $createEditSnippets = ['ModelFormVariableFieldSnippet'];
 
-    protected int $currentUserId = UserLoader::UNKNOWN_USER_ID;
-
     /**
      * @var array
      */

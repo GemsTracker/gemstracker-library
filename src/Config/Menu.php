@@ -534,6 +534,11 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                         [
+                            'name' => 'setup.project-information.monitor',
+                            'label' => $this->translator->trans('Monitor'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
                             'name' => 'setup.project-information.php',
                             'label' => $this->translator->trans('PHP'),
                             'type' => 'route-link-item',

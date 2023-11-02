@@ -19,6 +19,7 @@ use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Project\ProjectSettings;
 use Gems\Util\Lock\MaintenanceLock;
+use Gems\Util\Monitor\Monitor;
 use Gems\Versions;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
@@ -85,6 +86,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         protected ProjectSettings $projectSettings,
         protected HelperAdapter $cache,
         protected Loggers $loggers,
+        protected readonly Monitor $monitor,
         protected readonly array $config,
     )
     {
@@ -258,7 +260,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 
     public function getMaintenanceMonitorJob()
     {
-        return $this->util->getMonitor()->getReverseMaintenanceMonitor();
+        return $this->monitor->getMaintenanceMonitor();
     }
 
     /**
@@ -326,32 +328,19 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
      */
     public function maintenanceModeAction()
     {
-        if ($this->maintenanceLock->isLocked()) {
-            $this->maintenanceLock->unlock();
-            /**
-             * @var StatusMessengerInterface $messenger
-             */
-            $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-            $messenger->clearMessages();
+        /**
+         * @var StatusMessengerInterface $messenger
+         */
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+        $messenger->clearMessages();
+        if ($this->monitor->reverseMaintenanceMonitor()) {
+            $messenger->addSuccess($this->_('Maintenance mode set ON'));
+        } else {
             $messenger->addSuccess($this->_('Maintenance mode set OFF'));
-        } else {
-            $this->maintenanceLock->lock();
         }
-        // Switch lock
-        /*if ($this->util->getMonitor()->reverseMaintenanceMonitor()) {
-            $this->accesslog->logChange($this->getRequest(), $this->_('Maintenance mode set ON'));
-        } else {
-            $this->accesslog->logChange($this->getRequest(), $this->_('Maintenance mode set OFF'));
-
-            // Dump the existing maintenance mode messages.
-            \MUtil\EchoOut\EchoOut::out();
-        }*/
-
 
         // Redirect
         return new RedirectResponse($this->routeHelper->getRouteUrl('setup.project-information.index'));
-
-
     }
 
     public function monitorAction() {

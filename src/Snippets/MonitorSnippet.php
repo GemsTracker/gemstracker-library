@@ -77,10 +77,11 @@ class MonitorSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
             $tableContainer   = Html::create()->div(array('class' => 'table-container'));
             $table            = TableElement::createArray($data, $this->caption);
 
-            $table->class     = 'browser table';
+            $table->appendAttrib('class', 'browser table');
             $tableContainer[] = $table;
             $seq[]            = $tableContainer;
 
+            // @phpstan-ignore-next-line
             $seq->actionLink([$this->menuSnippetHelper->getCurrentUrl(), $this->confirmParameter => 1], $this->_('Delete'));
         }
 

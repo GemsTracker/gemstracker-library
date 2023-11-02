@@ -108,7 +108,7 @@ class MonitorTest extends \Gems\Test\DbTestAbstract
         $lock->unlock();
 
         $this->object->reverseMaintenanceMonitor();
-        $job      = $this->object->getReverseMaintenanceMonitor();
+        $job      = $this->object->getMaintenanceMonitor();
         $data     = $job->getArrayCopy();
         $actual   = $data['to'];
         $expected = ['test@gemstracker.org'];
@@ -123,7 +123,7 @@ class MonitorTest extends \Gems\Test\DbTestAbstract
         $lock->unlock();
 
         $this->object->reverseMaintenanceMonitor();
-        $job      = $this->object->getReverseMaintenanceMonitor();
+        $job      = $this->object->getMaintenanceMonitor();
         $data     = $job->getArrayCopy();
         $actual   = $data['to'];
         $expected = null;

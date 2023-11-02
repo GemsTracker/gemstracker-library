@@ -12,6 +12,7 @@ namespace Gems\Util\Monitor;
 
 use Gems\Db\ResultFetcher;
 use Gems\Util\Lock\MaintenanceLock;
+use Laminas\Permissions\Acl\Acl;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -30,6 +31,7 @@ class MonitorFactory implements FactoryInterface
 
         return new $requestedName(
             $config,
+            $container->get(Acl::class),
             $container->get(ResultFetcher::class),
             $container->get(MaintenanceLock::class),
         );

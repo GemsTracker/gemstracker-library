@@ -11553,21 +11553,6 @@ parameters:
 			path: src/Util/Lock/LockFactory.php
 
 		-
-			message: "#^Method Gems\\\\Util\\\\Monitor\\:\\:getCronMailMonitor\\(\\) should return MUtil\\\\Util\\\\MonitorJob but returns self\\.$#"
-			count: 1
-			path: src/Util/Monitor.php
-
-		-
-			message: "#^Method Gems\\\\Util\\\\Monitor\\:\\:getReverseMaintenanceMonitor\\(\\) should return MUtil\\\\Util\\\\MonitorJob but returns self\\.$#"
-			count: 1
-			path: src/Util/Monitor.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$where$#"
-			count: 1
-			path: src/Util/Monitor.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Util\\\\OrganizationUtil\\:\\:\\$db\\.$#"
 			count: 1
 			path: src/Util/OrganizationUtil.php

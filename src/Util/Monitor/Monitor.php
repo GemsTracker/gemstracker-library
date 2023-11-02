@@ -13,7 +13,7 @@ namespace Gems\Util\Monitor;
 
 use Gems\Db\ResultFetcher;
 use Gems\Util\Lock\MaintenanceLock;
-use Gems\Util\Monitor\MonitorJob;
+use Laminas\Permissions\Acl\Acl;
 
 /**
  *
@@ -28,6 +28,7 @@ class Monitor
 {
     public function __construct(
         protected readonly array $config,
+        protected readonly Acl $acl,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly MaintenanceLock $maintenanceLock,
     )
@@ -37,12 +38,28 @@ class Monitor
     }
 
     /**
+     * Get the mail addresses for a monitor
+     *
+     * @param string $monitorName ProjectSettings name
+     * @return array
+     */
+    protected function _getMailTo($monitorName): array
+    {
+        $projTo  = array_filter(explode(',', $this->getTo($monitorName)));
+        $userTo  = $this->_getUserTo($monitorName);
+        $orgTo   = $this->_getOrgTo($monitorName);
+        $mailtos = array_merge($projTo, $userTo, $orgTo);
+
+        return array_values(array_unique(array_filter(array_map('trim',$mailtos))));
+    }
+
+    /**
      * Return an array of organization recipients for the given monitorName
      *
      * @param string $monitorName
      * @return array
      */
-    protected function _getOrgTo($monitorName)
+    protected function _getOrgTo($monitorName): array
     {
         switch ($monitorName) {
             case 'maintenancemode':
@@ -56,26 +73,10 @@ class Monitor
         }
 
         $orgTo = $this->resultFetcher->fetchCol(
-                "SELECT DISTINCT gor_contact_email FROM gems__organizations WHERE LENGTH(gor_contact_email) > 5 AND gor_active = 1 AND $where"
-                );
+            "SELECT DISTINCT gor_contact_email FROM gems__organizations WHERE LENGTH(gor_contact_email) > 5 AND gor_active = 1 AND $where"
+        );
 
-        return $orgTo;
-    }
-
-    /**
-     * Get the mail addresses for a monitor
-     *
-     * @param string $monitorName ProjectSettings name
-     * @return array
-     */
-    protected function _getMailTo($monitorName): array
-    {
-        $projTo  = explode(',',$this->getTo($monitorName));
-        $userTo  = $this->_getUserTo($monitorName);
-        $orgTo   = $this->_getOrgTo($monitorName);
-        $mailtos = array_merge($projTo, $userTo, $orgTo);
-
-        return array_values(array_unique(array_filter(array_map('trim',$mailtos))));
+        return $orgTo ?? [];
     }
 
     /**
@@ -86,15 +87,23 @@ class Monitor
      */
     protected function _getUserTo($monitorName): array
     {
+
         switch ($monitorName) {
             case 'maintenancemode':
-                $roles = $this->util->getDbLookup()->getRolesByPrivilege('pr.maintenance.maintenance-mode');
+                $platform = $this->resultFetcher->getPlatform();
+                $roles    = [];
+                foreach ($this->acl->getRoles() as $role) {
+                    if ($this->acl->isAllowed($role, 'pr.maintenance.maintenance-mode')) {
+                        $roles[$role] = $platform->quoteValue($role);
+                    }
+                }
+
                 if ($roles) {
                     $joins = "JOIN gems__groups ON gsf_id_primary_group = ggp_id_group 
                       JOIN gems__roles ON ggp_role = grl_id_role";
 
                     $where = 'grl_name IN (' .
-                            implode(', ', array_map(array($this->resultFetcher->getPlatform(), 'quoteValue'), array_keys($roles))) .
+                            implode(', ', $roles) .
                             ')';
                 } else {
                     return [];
@@ -111,7 +120,7 @@ class Monitor
         $userTo = $this->resultFetcher->fetchCol(
                 "SELECT DISTINCT gsf_email FROM gems__staff $joins WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
                 );
-        return $userTo;
+        return $userTo ?? [];
     }
 
     /**
@@ -199,6 +208,15 @@ This messages was send automatically.";
         return 'noreply@gemstracker.org';
     }
 
+    /**
+     *
+     * @return MonitorJob
+     */
+    public function getMaintenanceMonitor()
+    {
+        return MonitorJob::getJob($this->getAppName() . ' maintenance mode');
+    }
+
     protected function getPeriod(string $name)
     {
         if (isset($this->config['monitor'][$name], $this->config['monitor'][$name]['period'])) {
@@ -210,15 +228,6 @@ This messages was send automatically.";
         }
 
         return '25h';
-    }
-
-    /**
-     *
-     * @return MonitorJob
-     */
-    public function getReverseMaintenanceMonitor()
-    {
-       return MonitorJob::getJob($this->getAppName() . ' maintenance mode');
     }
 
     /**
@@ -280,17 +289,17 @@ This messages was send automatically.";
         return array($initSubject, $initHtml, $subject, $messageHtml);
     }
 
-    protected function getTo(string $name)
+    protected function getTo(string $name): string
     {
-        if (isset($this->config['monitor'][$name], $this->config[$name]['to'])) {
+        if (isset($this->config['monitor'][$name]) && isset($this->config['monitor'][$name]['to']) && $this->config['monitor'][$name]['to']) {
             return $this->config['monitor'][$name]['to'];
         }
 
-        if (isset($this->config['monitor']['default'], $this->config['monitor']['default']['to'])) {
+        if (isset($this->config['monitor']['default']) && isset($this->config['monitor']['default']['to']) && $this->config['monitor']['default']['to']) {
             return $this->config['monitor']['default']['to'];
         }
 
-        return null;
+        return '';
     }
 
     /**
@@ -298,11 +307,12 @@ This messages was send automatically.";
      *
      * @return boolean True when the job was started
      */
-    public function reverseMaintenanceMonitor()
+    public function reverseMaintenanceMonitor(): bool
     {
-        $job  = $this->getReverseMaintenanceMonitor();
+        $job  = $this->getMaintenanceMonitor();
 
         if ($this->maintenanceLock->isLocked()) {
+            dump('hi');
             $job->stop();
             $this->maintenanceLock->unlock();
             return false;
@@ -311,6 +321,7 @@ This messages was send automatically.";
         $this->maintenanceLock->lock();
         $to = $this->_getMailTo('maintenancemode');
 
+        dump($to);
         if (!$to) {
             return true;
         }

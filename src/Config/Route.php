@@ -761,6 +761,7 @@ class Route
                 pages: [
                     'index',
                     'errors',
+                    'monitor',
                     'php',
                     'php-errors',
                     'project',
