@@ -12,14 +12,15 @@ declare(strict_types=1);
 namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\BrowseChangeHandler;
+use Gems\Model\Dependency\ActivationDependency;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\Mask\MaskUsageInformation;
-use Gems\Snippets\ModelConfirmDeleteSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Show\ShowAction;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
 use Psr\Cache\CacheItemPoolInterface;
@@ -29,7 +30,6 @@ use Zalt\Model\Sql\SqlTableModel;
 use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\Model\Type\ConcatenatedType;
 use Zalt\Model\Type\YesNoType;
-use Zalt\Snippets\ModelConfirmSnippetAbstract;
 use Zalt\SnippetsActions\AbstractAction;
 use Zalt\SnippetsActions\BrowseTableAction;
 use Zalt\SnippetsActions\SnippetActionInterface;
@@ -108,6 +108,17 @@ class MaskHandler extends BrowseChangeHandler
 
         if ($action->isDetailed()) {
             $this->maskRepository->addMaskStorageTo($metaModel, 'gm_mask_settings', $action->isDetailed());
+
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $menuHelper = $this->responder->getMenuSnippetHelper();
+            } else {
+                $menuHelper = null;
+            }
+            $metaModel->addDependency(new ActivationDependency(
+                $this->translate,
+                $metaModel,
+                $menuHelper,
+            ));
         }
 
         $this->metaModelLoader->setChangeFields($metaModel, 'gm');

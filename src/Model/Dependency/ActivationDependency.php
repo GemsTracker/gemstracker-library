@@ -62,7 +62,7 @@ class ActivationDependency extends \Zalt\Model\Dependency\DependencyAbstract
             if (ActivatingYesNoType::isActive($this->metaModel, $context)) {
                 $label = $this->_('Deactivate');
             } else {
-                $label = $this->_('Activate');
+                $label = $this->_('Reactivate');
             }
             if ($route && $label) {
                 $this->menuSnippetHelper->setMenuItemLabel($route, $label);
