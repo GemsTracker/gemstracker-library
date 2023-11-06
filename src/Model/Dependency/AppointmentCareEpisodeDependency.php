@@ -13,7 +13,8 @@ namespace Gems\Model\Dependency;
 
 use Gems\Agenda\Agenda;
 use Gems\Util\Translated;
-use MUtil\Model\Dependency\DependencyAbstract;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -32,7 +33,7 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = array('multiOptions');
+    protected array $_defaultEffects = ['multiOptions'];
 
     /**
      * Array of name => name of items dependency depends on.
@@ -42,7 +43,7 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gap_id_user', 'gap_id_organization', 'gap_admission_time');
+    protected array $_dependentOn = ['gap_id_user', 'gap_id_organization', 'gap_admission_time'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -52,11 +53,14 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array('gap_id_episode');
+    protected array $_effecteds = ['gap_id_episode'];
 
-    public function __construct(protected Agenda $agenda, protected Translated $translatedUtil)
-    {
-        parent::__construct();
+    public function __construct(
+        TranslatorInterface $translate,
+        protected Agenda $agenda,
+        protected Translated $translatedUtil,
+    ) {
+        parent::__construct($translate);
     }
 
     /**

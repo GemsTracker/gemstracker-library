@@ -13,8 +13,8 @@ namespace Gems\Model\Dependency\Condition;
 
 use Gems\Condition\ConditionLoader;
 use Laminas\Validator\Callback;
-use MUtil\Model\Dependency\DependencyAbstract;
-use Zalt\Model\MetaModelInterface;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -33,7 +33,7 @@ class RoundDependency extends DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = [];
+    protected array $_defaultEffects = [];
 
     /**
      * Array of name => name of items dependency depends on.
@@ -43,7 +43,7 @@ class RoundDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = ['gro_condition', 'gro_id_track', 'gro_id_round'];
+    protected array $_dependentOn = ['gro_condition', 'gro_id_track', 'gro_id_round'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -53,15 +53,17 @@ class RoundDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = [
+    protected array $_effecteds = [
         'condition_display' => ['value', 'elementClass'],
         'gro_condition'     => ['validator'],
         ];
 
-    /**
-     * @var ConditionLoader
-     */
-    protected $conditionLoader;
+    public function __construct(
+        TranslatorInterface $translate,
+        protected readonly ConditionLoader $conditionLoader,
+    ) {
+        parent::__construct($translate);
+    }
 
     /**
      * Returns the changes that must be made in an array consisting of

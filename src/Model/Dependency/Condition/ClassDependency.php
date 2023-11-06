@@ -13,8 +13,9 @@ namespace Gems\Model\Dependency\Condition;
 
 use Gems\Condition\ConditionLoader;
 use Gems\Condition\ConditionLoadException;
-use MUtil\Model\Dependency\DependencyAbstract;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
+use Zalt\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -33,7 +34,7 @@ class ClassDependency extends DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = [];
+    protected array $_defaultEffects = [];
 
     /**
      * Array of name => name of items dependency depends on.
@@ -43,7 +44,7 @@ class ClassDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = [
+    protected array $_dependentOn = [
         'gcon_type', 
         'gcon_class', 
         'gcon_condition_text1',
@@ -60,7 +61,7 @@ class ClassDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = [
+    protected array $_effecteds = [
         'condition_help' => ['value'],
         'gcon_condition_text1' => ['label', 'elementClass', 'multiOptions', 'value'],
         'gcon_condition_text2' => ['label', 'elementClass', 'multiOptions', 'value'],
@@ -68,10 +69,12 @@ class ClassDependency extends DependencyAbstract
         'gcon_condition_text4' => ['label', 'elementClass', 'multiOptions', 'value', 'description'],
         ];
 
-    /**
-     * @var ConditionLoader
-     */
-    protected $conditionLoader;
+    public function __construct(
+        TranslatorInterface $translate,
+        protected readonly ConditionLoader $conditionLoader,
+    ) {
+        parent::__construct($translate);
+    }
 
     /**
      * Returns the changes that must be made in an array consisting of
