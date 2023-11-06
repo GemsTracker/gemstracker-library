@@ -13,7 +13,8 @@ namespace Gems\Model\Dependency\Condition;
 
 use Gems\Condition\ConditionLoader;
 use Gems\Util\Translated;
-use MUtil\Model\Dependency\DependencyAbstract;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -32,7 +33,7 @@ class TypeDependency extends DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = ['multiOptions'];
+    protected array $_defaultEffects = ['multiOptions'];
 
     /**
      * Array of name => name of items dependency depends on.
@@ -42,7 +43,7 @@ class TypeDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = ['gcon_type'];
+    protected array $_dependentOn = ['gcon_type'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -52,19 +53,17 @@ class TypeDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = [
+    protected array $_effecteds = [
         'gcon_class' => ['multiOptions', 'default']
         ];
 
-    /**
-     * @var ConditionLoader
-     */
-    protected $conditionLoader;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    public function __construct(
+        TranslatorInterface $translate,
+        protected readonly ConditionLoader $conditionLoader,
+        protected readonly Translated $translatedUtil,
+    ) {
+        parent::__construct($translate);
+    }
 
     /**
      * Returns the changes that must be made in an array consisting of

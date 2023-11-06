@@ -21,11 +21,11 @@ use Gems\User\UserLoader;
 use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Translated;
 use Laminas\Filter\Callback;
-use MUtil\Model\Dependency\ValueSwitchDependency;
 use MUtil\Validator\NoScript;
 use MUtil\Validator\SimpleEmail;
 use Zalt\Filter\RequireOneCapsFilter;
 use Zalt\Html\AElement;
+use Zalt\Model\Dependency\ValueSwitchDependency;
 use Zalt\Model\Type\ActivatingYesNoType;
 
 /**
@@ -503,7 +503,7 @@ class StaffModel extends JoinModel
         $check  = ['elementClass' => 'Checkbox'];
         $hidden = ['elementClass' => 'Hidden', 'label' => null];
         $select = ['elementClass' => 'Select'];
-        $switch = new ValueSwitchDependency();
+        $switch = new ValueSwitchDependency(null, $this->translate);
         $switch->setDependsOn('gsf_is_embedded');
         $switch->setSwitches([
             0 => [
