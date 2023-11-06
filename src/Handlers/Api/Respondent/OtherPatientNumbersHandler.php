@@ -18,7 +18,18 @@ class OtherPatientNumbersHandler implements RequestHandlerInterface
         $patientNr = $request->getAttribute('patientNr');
         $organizationId = $request->getAttribute('organizationId');
 
-        $otherPatientNumbers = $this->respondentRepository->getOtherPatientNumbers($patientNr, $organizationId, false, false, true);
+        $pairs = true;
+        $queryParams = $request->getQueryParams();
+        if (isset($queryParams['detailed']) && $queryParams['detailed'] == 1) {
+            $pairs = false;
+        }
+
+        // TEMP FOR PENTEST
+        //if ($request->getAttribute(\Gems\Api\Middleware\ApiAuthenticationMiddleware::AUTH_TYPE) === 'session') {
+        //    $pairs = false;
+        //}
+
+        $otherPatientNumbers = $this->respondentRepository->getOtherPatientNumbers($patientNr, $organizationId, $pairs, false, true);
 
         return new JsonResponse($otherPatientNumbers);
     }
