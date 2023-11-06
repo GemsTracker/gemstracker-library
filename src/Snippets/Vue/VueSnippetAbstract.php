@@ -48,9 +48,9 @@ class VueSnippetAbstract extends SnippetAbstract
         $attributes['id'] = $this->appId;
 
         $container = Html::div($attributes);
-        $app = Html::create($this->tag, $attributes);
+        //$app = Html::create($this->tag, $attributes);
 
-        $container->append($app);
+        //$container->append($app);
 
         return $container;
     }
