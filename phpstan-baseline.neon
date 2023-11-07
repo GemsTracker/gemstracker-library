@@ -1066,22 +1066,7 @@ parameters:
 			path: src/Db/Migration/MigrationRepositoryAbstract.php
 
 		-
-			message: "#^Call to an undefined method Laminas\\\\Db\\\\Adapter\\\\Driver\\\\ConnectionInterface\\:\\:inTransaction\\(\\)\\.$#"
-			count: 2
-			path: src/Db/Migration/PatchRepository.php
-
-		-
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
-			count: 1
-			path: src/Db/Migration/PatchRepository.php
-
-		-
-			message: "#^If condition is always false\\.$#"
-			count: 1
-			path: src/Db/Migration/PatchRepository.php
-
-		-
-			message: "#^Left side of && is always false\\.$#"
 			count: 1
 			path: src/Db/Migration/PatchRepository.php
 
@@ -2026,18 +2011,8 @@ parameters:
 			path: src/Handlers/AskHandler.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/AskHandler.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:p\\(\\)\\.$#"
 			count: 1
-			path: src/Handlers/AskHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 3
 			path: src/Handlers/AskHandler.php
 
 		-
@@ -2561,11 +2536,6 @@ parameters:
 			path: src/Handlers/Respondent/RespondentHandler.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/Respondent/RespondentHandler.php
-
-		-
 			message: "#^If condition is always true\\.$#"
 			count: 15
 			path: src/Handlers/Respondent/RespondentHandler.php
@@ -2731,16 +2701,6 @@ parameters:
 			path: src/Handlers/Respondent/TrackHandler.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaActivityHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaActivityHandler.php
-
-		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
 			count: 1
 			path: src/Handlers/Setup/AgendaActivityHandler.php
@@ -2826,11 +2786,6 @@ parameters:
 			path: src/Handlers/Setup/AgendaFilterHandler.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaProcedureHandler.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
 			count: 1
 			path: src/Handlers/Setup/AgendaProcedureHandler.php
@@ -2896,16 +2851,6 @@ parameters:
 			path: src/Handlers/Setup/AgendaStaffHandler.php
 
 		-
-			message: "#^Call to an undefined method Gems\\\\Repository\\\\CommJobRepository\\:\\:getCronBatch\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
 			message: "#^Call to function is_null\\(\\) with int will always evaluate to false\\.$#"
 			count: 1
 			path: src/Handlers/Setup/CommJobHandler.php
@@ -2941,11 +2886,6 @@ parameters:
 			path: src/Handlers/Setup/CommJobHandler.php
 
 		-
-			message: "#^Parameter \\#1 \\$id of class Gems\\\\Task\\\\TaskRunnerBatch constructor expects string, int given\\.$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\CommLogHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/CommLogHandler.php
@@ -2969,21 +2909,6 @@ parameters:
 			message: "#^PHPDoc tag @var does not specify variable name\\.$#"
 			count: 1
 			path: src/Handlers/Setup/CommTemplateHandler.php
-
-		-
-			message: "#^Method Gems\\\\Handlers\\\\Setup\\\\ConsentHandler\\:\\:createModel\\(\\) should return MUtil\\\\Model\\\\ModelAbstract but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\|Zalt\\\\Model\\\\Data\\\\DataWriterInterface\\.$#"
-			count: 1
-			path: src/Handlers/Setup/ConsentHandler.php
-
-		-
-			message: "#^Method Zalt\\\\Model\\\\MetaModelInterface\\:\\:set\\(\\) invoked with 7 parameters, 1\\-5 required\\.$#"
-			count: 2
-			path: src/Handlers/Setup/ConsentHandler.php
-
-		-
-			message: "#^Method Zalt\\\\Model\\\\MetaModelInterface\\:\\:set\\(\\) invoked with 9 parameters, 1\\-5 required\\.$#"
-			count: 1
-			path: src/Handlers/Setup/ConsentHandler.php
 
 		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
@@ -3019,11 +2944,6 @@ parameters:
 			message: "#^Variable \\$value on left side of \\?\\? always exists and is not nullable\\.$#"
 			count: 1
 			path: src/Handlers/Setup/GroupHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/Setup/LocationHandler.php
 
 		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
@@ -3064,28 +2984,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\LogMaintenanceHandler\\:\\:\\$indexStartSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/LogMaintenanceHandler.php
-
-		-
-			message: """
-				#^PHPDoc tag @return has invalid value \\(\\$string
-				/
-				public function getIndexTitle\\(\\)
-				\\{
-				return \\$this\\-\\>_\\('Mail codes'\\);
-				\\}\\)\\: Unexpected token "\\$string", expected type at offset 88$#
-			"""
-			count: 1
-			path: src/Handlers/Setup/MailCodeHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 333$#"
-			count: 1
-			path: src/Handlers/Setup/MailCodeHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\MailCodeHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Setup/MailCodeHandler.php
 
 		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
@@ -3138,11 +3036,6 @@ parameters:
 			path: src/Handlers/Setup/OrganizationHandler.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Handlers\\\\Setup\\\\ProjectInformationHandler\\:\\:\\$util\\.$#"
-			count: 1
-			path: src/Handlers/Setup/ProjectInformationHandler.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Project\\\\ProjectSettings\\:\\:\\$publicDir\\.$#"
 			count: 1
 			path: src/Handlers/Setup/ProjectInformationHandler.php
@@ -3163,18 +3056,8 @@ parameters:
 			path: src/Handlers/Setup/ProjectInformationHandler.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
-			count: 5
-			path: src/Handlers/Setup/ProjectInformationHandler.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pre\\(\\)\\.$#"
 			count: 2
-			path: src/Handlers/Setup/ProjectInformationHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:raw\\(\\)\\.$#"
-			count: 1
 			path: src/Handlers/Setup/ProjectInformationHandler.php
 
 		-
@@ -3210,11 +3093,6 @@ parameters:
 		-
 			message: "#^Access to an undefined property Zalt\\\\Html\\\\Raw\\|Zalt\\\\Html\\\\TableElement\\:\\:\\$class\\.$#"
 			count: 1
-			path: src/Handlers/Setup/RoleHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
-			count: 2
 			path: src/Handlers/Setup/RoleHandler.php
 
 		-
@@ -3426,11 +3304,6 @@ parameters:
 			message: "#^Parameter \\#3 \\$detailed of class Gems\\\\Event\\\\Application\\\\ModelCreateEvent constructor expects bool, string given\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 2
-			path: src/Handlers/TrackBuilder/SourceHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\SourceHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
@@ -5148,11 +5021,6 @@ parameters:
 			path: src/Snippets/Agenda/AppointmentShowSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:img\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentShowSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\Agenda\\\\AppointmentShowSnippet\\:\\:displayEpisode\\(\\) should return string but returns int\\<min, \\-1\\>\\|int\\<1, max\\>\\.$#"
 			count: 1
 			path: src/Snippets/Agenda/AppointmentShowSnippet.php
@@ -5268,11 +5136,6 @@ parameters:
 			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AutosearchFormSnippet.php
-
-		-
 			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$date_only\\.$#"
 			count: 1
 			path: src/Snippets/Agenda/CalendarTableSnippet.php
@@ -5373,28 +5236,8 @@ parameters:
 			path: src/Snippets/Ask/MaintenanceModeAskSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Ask/RedirectUntilGoodbyeSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 3
-			path: src/Snippets/Ask/RedirectUntilGoodbyeSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlInterface\\:\\:actionLink\\(\\)\\.$#"
 			count: 1
-			path: src/Snippets/Ask/ResumeLaterSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Ask/ResumeLaterSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 2
 			path: src/Snippets/Ask/ResumeLaterSnippet.php
 
 		-
@@ -5413,28 +5256,8 @@ parameters:
 			path: src/Snippets/Ask/ShowAllOpenSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Ask/ShowAllOpenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 6
-			path: src/Snippets/Ask/ShowAllOpenSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:buttonDiv\\(\\)\\.$#"
 			count: 1
-			path: src/Snippets/Ask/ShowFirstOpenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Ask/ShowFirstOpenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 8
 			path: src/Snippets/Ask/ShowFirstOpenSnippet.php
 
 		-
@@ -5455,11 +5278,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:actionLink\\(\\)\\.$#"
 			count: 1
-			path: src/Snippets/Ask/ShowOpenSequenceSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 6
 			path: src/Snippets/Ask/ShowOpenSequenceSnippet.php
 
 		-
@@ -5603,21 +5421,6 @@ parameters:
 			path: src/Snippets/Condition/ConditionSearchFormSnippet.php
 
 		-
-			message: "#^Property Gems\\\\Snippets\\\\Condition\\ConditionAndOrTableSnippet\\:\\:\\$menuActionController \\(array\\) does not accept default value of type string\\.$#"
-			count: 1
-			path: src/Snippets/ConditionAndOrTableSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Contact/AboutSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Contact/AboutSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\Contact\\\\AboutSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\Sequence\\.$#"
 			count: 1
 			path: src/Snippets/Contact/AboutSnippet.php
@@ -5628,22 +5431,12 @@ parameters:
 			path: src/Snippets/Contact/AboutSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/Contact/BugsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 3
-			path: src/Snippets/Contact/BugsSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Contact\\\\BugsSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\Sequence\\.$#"
+			message: "#^Cannot call method a\\(\\) on string\\.$#"
 			count: 1
 			path: src/Snippets/Contact/BugsSnippet.php
 
 		-
-			message: "#^Cannot call method a\\(\\) on string.$#"
+			message: "#^Method Gems\\\\Snippets\\\\Contact\\\\BugsSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\Sequence\\.$#"
 			count: 1
 			path: src/Snippets/Contact/BugsSnippet.php
 
@@ -5653,18 +5446,8 @@ parameters:
 			path: src/Snippets/Contact/BugsSnippet.php
 
 		-
-			message: "#^Cannot call method a\\(\\) on string.$#"
+			message: "#^Cannot call method a\\(\\) on string\\.$#"
 			count: 2
-			path: src/Snippets/Contact/GemsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Contact/GemsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 4
 			path: src/Snippets/Contact/GemsSnippet.php
 
 		-
@@ -5676,16 +5459,6 @@ parameters:
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$view$#"
 			count: 1
 			path: src/Snippets/Contact/GemsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Contact/IndexSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h4\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Contact/IndexSnippet.php
 
 		-
 			message: "#^Method Gems\\\\Snippets\\\\Contact\\\\IndexSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\Sequence\\.$#"
@@ -5713,11 +5486,6 @@ parameters:
 			path: src/Snippets/Contact/OrganizationsListSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 5
-			path: src/Snippets/Contact/OrganizationsListSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\Contact\\\\OrganizationsListSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\Sequence\\.$#"
 			count: 1
 			path: src/Snippets/Contact/OrganizationsListSnippet.php
@@ -5726,11 +5494,6 @@ parameters:
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$view$#"
 			count: 1
 			path: src/Snippets/Contact/OrganizationsListSnippet.php
-
-		-
-			message: "#^Cannot call method a\\(\\) on string.$#"
-			count: 4
-			path: src/Snippets/Contact/SupportSnippet.php
 
 		-
 			message: "#^Access to an undefined property MUtil\\\\Lazy\\\\RepeatableInterface\\:\\:\\$gor_name\\.$#"
@@ -5743,18 +5506,8 @@ parameters:
 			path: src/Snippets/Contact/SupportSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Contact/SupportSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h4\\(\\)\\.$#"
-			count: 6
-			path: src/Snippets/Contact/SupportSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 7
+			message: "#^Cannot call method a\\(\\) on string\\.$#"
+			count: 4
 			path: src/Snippets/Contact/SupportSnippet.php
 
 		-
@@ -6228,11 +5981,6 @@ parameters:
 			path: src/Snippets/Generic/DataTableSnippet.php
 
 		-
-			message: "#^Method Zalt\\\\Message\\\\MessengerInterface\\:\\:addMessage\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: src/Snippets/Group/GroupDeleteSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Group/GroupFormSnippet.php
@@ -6281,11 +6029,6 @@ parameters:
 			message: "#^Method Gems\\\\Snippets\\\\Import\\\\FileImportSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns string\\.$#"
 			count: 1
 			path: src/Snippets/Import/FileImportSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h1\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/InfoSnippet.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:p\\(\\)\\.$#"
@@ -6708,32 +6451,7 @@ parameters:
 			path: src/Snippets/ModelTableSnippetAbstract.php
 
 		-
-			message: "#^Access to an undefined property MUtil\\\\Html\\\\TableElement\\:\\:\\$class\\.$#"
-			count: 1
-			path: src/Snippets/MonitorSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\HtmlElement\\:\\:div\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/MonitorSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:actionLink\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/MonitorSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/MonitorSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\MonitorSnippet\\:\\:getReadableData\\(\\) should return array but empty return statement found\\.$#"
-			count: 1
-			path: src/Snippets/MonitorSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\MonitorSnippet\\:\\:\\$monitorJob \\(MUtil\\\\Util\\\\MonitorJob\\) does not accept self\\.$#"
 			count: 1
 			path: src/Snippets/MonitorSnippet.php
 
@@ -6763,18 +6481,8 @@ parameters:
 			path: src/Snippets/Organization/CheckOrganizationInformation.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Organization/ChooseListedOrganizationSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/Organization/ChooseListedOrganizationSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:actionLink\\(\\)\\.$#"
-			count: 2
+			count: 1
 			path: src/Snippets/Organization/ChooseListedOrganizationSnippet.php
 
 		-
@@ -7578,16 +7286,6 @@ parameters:
 			path: src/Snippets/Subscribe/NoSubscriptionsSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Subscribe/NoSubscriptionsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/Subscribe/NoSubscriptionsSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\Subscribe\\\\NoSubscriptionsSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\Sequence\\.$#"
 			count: 1
 			path: src/Snippets/Subscribe/NoSubscriptionsSnippet.php
@@ -7860,26 +7558,6 @@ parameters:
 		-
 			message: "#^Access to an undefined property Zalt\\\\Html\\\\TableElement\\:\\:\\$class\\.$#"
 			count: 1
-			path: src/Snippets/Token/CheckTokenEvents.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h1\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Token/CheckTokenEvents.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/Token/CheckTokenEvents.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/Token/CheckTokenEvents.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 5
 			path: src/Snippets/Token/CheckTokenEvents.php
 
 		-
@@ -8703,11 +8381,6 @@ parameters:
 			path: src/Snippets/Tracker/Rounds/EditRoundStepSnippet.php
 
 		-
-			message: "#^PHPDoc tag @param for parameter \\$bridge with type MUtil\\\\Model\\\\Bridge\\\\VerticalTableBridge is incompatible with native type Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Rounds/RoundDeleteSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
 			count: 11
 			path: src/Snippets/Tracker/Rounds/RoundsTableSnippet.php
@@ -8863,11 +8536,6 @@ parameters:
 			path: src/Snippets/Tracker/TrackSurveyOverviewSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/TrackSurveyOverviewSnippet.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Snippets\\\\Tracker\\\\TrackSurveyOverviewSnippet\\:\\:\\$trackName with type int is incompatible with native type string\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/TrackSurveyOverviewSnippet.php
@@ -8950,16 +8618,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:actionLink\\(\\)\\.$#"
 			count: 1
-			path: src/Snippets/Unsubscribe/NoUnsubscriptionsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Unsubscribe/NoUnsubscriptionsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 2
 			path: src/Snippets/Unsubscribe/NoUnsubscriptionsSnippet.php
 
 		-
@@ -9626,11 +9284,6 @@ parameters:
 			message: "#^Right side of && is always true\\.$#"
 			count: 1
 			path: src/Tracker/Model/StandardTokenModel.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:sprintf\\(\\)\\.$#"
-			count: 6
-			path: src/Tracker/Model/SurveyMaintenanceModel.php
 
 		-
 			message: "#^Left side of \\|\\| is always true\\.$#"
@@ -10313,16 +9966,6 @@ parameters:
 			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 2
-			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 5
-			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
-
-		-
 			message: "#^Comparison operation \"\\<\\=\" between int\\<15, max\\> and 0 is always false\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
@@ -10379,11 +10022,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Gems\\\\Tracker\\\\Snippets\\\\ShowTrackUsageAbstract\\:\\:processSortOnly\\(\\)\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/ShowTrackUsageAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/ShowTrackUsageAbstract.php
 
@@ -11163,11 +10801,6 @@ parameters:
 			path: src/User/Organization.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Contracts\\\\Translation\\\\TranslatorInterface\\:\\:plural\\(\\)\\.$#"
-			count: 5
-			path: src/User/PasswordChecker.php
-
-		-
 			message: "#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#"
 			count: 1
 			path: src/User/PasswordChecker.php
@@ -11478,11 +11111,6 @@ parameters:
 			path: src/Util/CommTemplateUtil.php
 
 		-
-			message: "#^Method Gems\\\\Util\\\\CommTemplateUtil\\:\\:getCommTemplateForCode\\(\\) should return int but returns array\\.$#"
-			count: 1
-			path: src/Util/CommTemplateUtil.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Project\\\\ProjectSettings\\:\\:\\$consentRejected\\.$#"
 			count: 1
 			path: src/Util/ConsentUtil.php
@@ -11543,11 +11171,6 @@ parameters:
 			path: src/Util/DbLookup.php
 
 		-
-			message: "#^Variable \\$languages might not be defined\\.$#"
-			count: 2
-			path: src/Util/Localized.php
-
-		-
 			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:build\\(\\)\\.$#"
 			count: 1
 			path: src/Util/Lock/LockFactory.php
@@ -11561,11 +11184,6 @@ parameters:
 			message: "#^Call to an undefined method Gems\\\\Util\\\\OrganizationUtil\\:\\:_getTranslatedPairsCached\\(\\)\\.$#"
 			count: 4
 			path: src/Util/OrganizationUtil.php
-
-		-
-			message: "#^Method Gems\\\\Util\\\\ReceptionCode\\:\\:getDescription\\(\\) should return bool but returns string\\.$#"
-			count: 1
-			path: src/Util/ReceptionCode.php
 
 		-
 			message: "#^Access to an undefined property Zend_Session_Namespace\\:\\:\\$requestCache\\.$#"
@@ -11604,22 +11222,12 @@ parameters:
 
 		-
 			message: "#^If condition is always true\\.$#"
-			count: 3
+			count: 1
 			path: src/Util/SiteUtil.php
 
 		-
 			message: "#^Instanceof between Zend_Controller_Response_Abstract\\|null and Zend_Controller_Request_Abstract will always evaluate to false\\.$#"
 			count: 1
-			path: src/Util/SiteUtil.php
-
-		-
-			message: "#^Method Gems\\\\Util\\\\SiteUtil\\:\\:getSiteByFullUrl\\(\\) should return Gems\\\\Util\\\\SiteUrl but returns null\\.$#"
-			count: 1
-			path: src/Util/SiteUtil.php
-
-		-
-			message: "#^Method Gems\\\\Util\\\\SiteUtil\\:\\:isRequestFromAllowedHost\\(\\) should return string but returns null\\.$#"
-			count: 3
 			path: src/Util/SiteUtil.php
 
 		-
@@ -11768,11 +11376,6 @@ parameters:
 			path: src/Util/TokenData.php
 
 		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$tokenId$#"
-			count: 1
-			path: src/Util/TokenData.php
-
-		-
 			message: "#^Property Gems\\\\Util\\\\TokenData\\:\\:\\$menu has unknown class Gems\\\\Menu as its type\\.$#"
 			count: 1
 			path: src/Util/TokenData.php
@@ -11788,11 +11391,6 @@ parameters:
 			path: src/Util/TrackData.php
 
 		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$surveyId$#"
-			count: 1
-			path: src/Util/TrackData.php
-
-		-
 			message: "#^PHPDoc type Zend_Translate of property Gems\\\\Util\\\\TrackData\\:\\:\\$translate is not covariant with PHPDoc type MUtil\\\\Translate\\\\Translator of overridden property Gems\\\\Util\\\\UtilAbstract\\:\\:\\$translate\\.$#"
 			count: 1
 			path: src/Util/TrackData.php
@@ -11803,36 +11401,6 @@ parameters:
 			path: src/Util/TrackData.php
 
 		-
-			message: "#^Method Gems\\\\Util\\\\Translated\\:\\:describeDateFromNow\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/Util/Translated.php
-
-		-
-			message: "#^Method Gems\\\\Util\\\\Translated\\:\\:describeTimeFromNow\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/Util/Translated.php
-
-		-
-			message: "#^Method Gems\\\\Util\\\\Translated\\:\\:formatTime\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/Util/Translated.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$subject$#"
-			count: 1
-			path: src/Util/Translated.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function str_pad expects string, int given\\.$#"
-			count: 2
-			path: src/Util/Translated.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function str_pad expects string, int\\<\\-59, 59\\> given\\.$#"
-			count: 2
-			path: src/Util/Translated.php
-
-		-
 			message: "#^Property Gems\\\\Util\\\\Translated\\:\\:\\$translate \\(MUtil\\\\Translate\\\\Translator\\) does not accept Zalt\\\\Base\\\\TranslatorInterface\\.$#"
 			count: 1
 			path: src/Util/Translated.php
@@ -11841,26 +11409,6 @@ parameters:
 			message: "#^Strict comparison using \\=\\=\\= between null and int will always evaluate to false\\.$#"
 			count: 1
 			path: src/Util/Translated.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(string Optional function to sort on, only known functions will do\\)\\: Unexpected token \"Optional\", expected variable at offset 291$#"
-			count: 1
-			path: src/Util/UtilAbstract.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(string Optional function to sort on, only known functions will do\\)\\: Unexpected token \"Optional\", expected variable at offset 305$#"
-			count: 1
-			path: src/Util/UtilAbstract.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(string Optional function to sort on, only known functions will do\\)\\: Unexpected token \"Optional\", expected variable at offset 382$#"
-			count: 1
-			path: src/Util/UtilAbstract.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(string Optional function to sort on, only known functions will do\\)\\: Unexpected token \"Optional\", expected variable at offset 414$#"
-			count: 1
-			path: src/Util/UtilAbstract.php
 
 		-
 			message: "#^Constructor of class Gems\\\\Util\\\\UtilDbHelper has an unused parameter \\$config\\.$#"
@@ -11909,16 +11457,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Zend_View_Interface\\:\\:headScript\\(\\)\\.$#"
-			count: 1
-			path: src/View/Helper/ColorPicker.php
-
-		-
-			message: "#^Comparison operation \"\\>\" between int\\<1, max\\> and 0 is always true\\.$#"
-			count: 1
-			path: src/View/Helper/ColorPicker.php
-
-		-
-			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
 			count: 1
 			path: src/View/Helper/ColorPicker.php
 
@@ -12028,11 +11566,6 @@ parameters:
 			path: tests/Db/Migration/PatchRepositoryTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$datetime of static method DateTimeImmutable\\:\\:createFromFormat\\(\\) expects string, int\\|false given\\.$#"
-			count: 4
-			path: tests/Db/Migration/PatchRepositoryTest.php
-
-		-
 			message: "#^Call to an undefined method Prophecy\\\\Prophecy\\\\ObjectProphecy\\:\\:_\\(\\)\\.$#"
 			count: 1
 			path: tests/Db/Migration/SeedRepositoryTest.php
@@ -12063,11 +11596,6 @@ parameters:
 			path: tests/Db/Migration/SeedRepositoryTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$datetime of static method DateTimeImmutable\\:\\:createFromFormat\\(\\) expects string, int\\|false given\\.$#"
-			count: 8
-			path: tests/Db/Migration/SeedRepositoryTest.php
-
-		-
 			message: "#^Call to an undefined method Prophecy\\\\Prophecy\\\\ObjectProphecy\\:\\:_\\(\\)\\.$#"
 			count: 1
 			path: tests/Db/Migration/TableRepositoryTest.php
@@ -12090,11 +11618,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Prophecy\\\\Prophecy\\\\ObjectProphecy\\:\\:trans\\(\\)\\.$#"
 			count: 1
-			path: tests/Db/Migration/TableRepositoryTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$datetime of static method DateTimeImmutable\\:\\:createFromFormat\\(\\) expects string, int\\|false given\\.$#"
-			count: 4
 			path: tests/Db/Migration/TableRepositoryTest.php
 
 		-
@@ -12136,8 +11659,3 @@ parameters:
 			message: "#^Call to an undefined method Prophecy\\\\Prophecy\\\\ObjectProphecy\\:\\:trans\\(\\)\\.$#"
 			count: 1
 			path: tests/Util/TranslatedTest.php
-
-		-
-			message: "#^Access to an undefined property GemsTest\\\\Validate\\\\IPRangesTest\\:\\:\\$validator\\.$#"
-			count: 3
-			path: tests/Validate/IPRangesTest.php
