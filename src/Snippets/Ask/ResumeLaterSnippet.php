@@ -11,7 +11,9 @@
 
 namespace Gems\Snippets\Ask;
 
+use Zalt\Html\HtmlElement;
 use Zalt\Html\HtmlInterface;
+use Zalt\Html\Sequence;
 
 /**
  *
@@ -28,9 +30,9 @@ class ResumeLaterSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
     protected string $action = 'resume-later';
     
     /**
-     * @param HtmlInterface $html
+     * @param HtmlElement|Sequence $html
      */
-    protected function addContinueNowButton(HtmlInterface $html)
+    protected function addContinueNowButton(HtmlElement|Sequence $html)
     {
         $html->a(
             $this->getTokenHref($this->token),

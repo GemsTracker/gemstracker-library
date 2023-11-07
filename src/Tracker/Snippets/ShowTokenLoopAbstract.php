@@ -25,6 +25,7 @@ use Zalt\Html\HrefArrayAttribute;
 use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Html\HtmlInterface;
+use Zalt\Html\Sequence;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\TranslatableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -92,7 +93,7 @@ class ShowTokenLoopAbstract extends TranslatableSnippetAbstract
         $this->wasAnswered = $this->token->isCompleted();
     }
 
-    public function addContinueLink(HtmlInterface $html, ?Token $token = null)
+    public function addContinueLink(HtmlElement|Sequence $html, ?Token $token = null)
     {
         if (null == $token) {
             $token = $this->token;
@@ -104,12 +105,9 @@ class ShowTokenLoopAbstract extends TranslatableSnippetAbstract
             // If there is no template, or no email for sender / receiver we show no link
             if ($templateId && (!empty($orgEmail)) && $token->isMailable()) {
                 $html->p($this->_('or'), ['class' => 'info']);
-                $url = $this->menuSnippetHelper->getRouteUrl("ask.$this->action", [
+                $url = [$this->menuSnippetHelper->getRouteUrl("ask.$this->action", [
                     'id' => $token->getTokenId()
-                ],
-                [
-                    self::CONTINUE_LATER_PARAM => 1
-                ]);
+                ])] + [self::CONTINUE_LATER_PARAM => 1];
                 $html->a($url, $this->_('Send me an email to continue later'), ['class' => 'actionlink btn']);
             }
         }
