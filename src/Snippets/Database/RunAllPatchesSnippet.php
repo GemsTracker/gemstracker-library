@@ -28,8 +28,6 @@ class RunAllPatchesSnippet extends SnippetAbstract
     {
         $model = $this->patchRepository->getModel();
 
-        $params = $this->requestInfo->getRequestMatchedParams();
-
         $patchItems = $model->load(['status' => ['new', 'error']]);
 
         if (!$patchItems) {
@@ -41,11 +39,11 @@ class RunAllPatchesSnippet extends SnippetAbstract
             try {
                 $this->patchRepository->runPatch($patchItem);
                 $this->statusMessenger->addSuccess(
-                    sprintf($this->translator->_('Patch %s has been succesfully executed'), $params['name'])
+                    sprintf($this->translator->_('Patch %s has been succesfully executed'), $patchItem['name'])
                 );
             } catch (\Exception $e) {
                 $this->statusMessenger->addError(
-                    sprintf($this->translator->_('Error executing patch %s. %s'), $params['name'], $e->getMessage())
+                    sprintf($this->translator->_('Error executing patch %s. %s'), $patchItem['name'], $e->getMessage())
                 );
             }
         }
