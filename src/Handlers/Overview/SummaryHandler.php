@@ -23,6 +23,7 @@ use Gems\User\User;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Having;
+use Laminas\Db\Sql\Predicate\Expression as PredicateExpression;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Zalt\Base\TranslatorInterface;
@@ -59,7 +60,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     /**
      * The snippets used for the autofilter action.
      *
-     * @var mixed String or array of snippets name
+     * @var array String or array of snippets name
      */
     protected array $autofilterSnippets = [ 
         SummaryTableSnippet::class,
@@ -74,7 +75,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     /**
      * The snippets used for the index action, before those in autofilter
      *
-     * @var mixed String or array of snippets name
+     * @var array String or array of snippets name
      */
     protected array $indexStartSnippets = [
         ContentTitleSnippet::class,
@@ -84,7 +85,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     /**
      * The snippets used for the index action, after those in autofilter
      *
-     * @var mixed String or array of snippets name
+     * @var array String or array of snippets name
      */
     protected array $indexStopSnippets = [
         CurrentSiblingsButtonRowSnippet::class,
@@ -114,7 +115,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     public function createModel($detailed, $action): DataReaderInterface
     {      
@@ -142,7 +143,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         // $metaModel->set('removed',  'label', $this->_('Removed'));
 
         $metaModel->setMulti(['answered', 'missed', 'open', 'total'],
-                'tdClass', 'centerAlign', 'thClass', 'centerAlign', 'no_text_search', true);
+                'tdClass', 'centerAlign', 'thClass', 'centerAlign');
 
         $metaModel->set('filler',  'label', $this->_('Filler'), 'no_text_search', true);
 
@@ -168,7 +169,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
     public function getIndexTitle(): string
     {
@@ -263,7 +264,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                ->join('gems__rounds', 'gto_id_round = gro_id_round', ['gro_round_description', 'gro_id_survey'])
                ->join('gems__surveys', 'gro_id_survey = gsu_id_survey', ['gsu_survey_name'])
                ->join('gems__groups', 'gsu_id_primary_group =  ggp_id_group', [])
-               ->join('gems__track_fields', new Expression('gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"'), [], Select::JOIN_LEFT)
+               ->join('gems__track_fields', new PredicateExpression('gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"'), [], Select::JOIN_LEFT)
                ->group(['gro_id_order', 'gro_round_description', 'gro_id_survey', 'gsu_survey_name', $fields['filler']]);
 
         $filter = $this->getSearchFilter();
@@ -280,7 +281,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
     public function getTopic($count = 1): string
     {

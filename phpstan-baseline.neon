@@ -2321,47 +2321,7 @@ parameters:
 			path: src/Handlers/Overview/RespondentPlanHandler.php
 
 		-
-			message: "#^Method Gems\\\\Handlers\\\\Overview\\\\SummaryHandler\\:\\:createModel\\(\\) should return MUtil\\\\Model\\\\ModelAbstract but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\|Zalt\\\\Model\\\\Data\\\\DataWriterInterface\\.$#"
-			count: 1
-			path: src/Handlers/Overview/SummaryHandler.php
-
-		-
-			message: "#^Method Zalt\\\\Model\\\\MetaModelInterface\\:\\:setMulti\\(\\) invoked with 7 parameters, 1\\-5 required\\.$#"
-			count: 1
-			path: src/Handlers/Overview/SummaryHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Overview/SummaryHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Overview/SummaryHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\SummaryHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Overview/SummaryHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\SummaryHandler\\:\\:\\$indexStartSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Overview/SummaryHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\SummaryHandler\\:\\:\\$indexStopSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Overview/SummaryHandler.php
-
-		-
 			message: "#^Parameter \\#1 \\$predicate of method Laminas\\\\Db\\\\Sql\\\\Select\\:\\:having\\(\\) expects array\\|Closure\\|Laminas\\\\Db\\\\Sql\\\\Where\\|string, Laminas\\\\Db\\\\Sql\\\\Having given\\.$#"
-			count: 1
-			path: src/Handlers/Overview/SummaryHandler.php
-
-		-
-			message: "#^Parameter \\#2 \\$on of method Laminas\\\\Db\\\\Sql\\\\Select\\:\\:join\\(\\) expects Laminas\\\\Db\\\\Sql\\\\Predicate\\\\Expression\\|string, Laminas\\\\Db\\\\Sql\\\\Expression given\\.$#"
 			count: 1
 			path: src/Handlers/Overview/SummaryHandler.php
 
