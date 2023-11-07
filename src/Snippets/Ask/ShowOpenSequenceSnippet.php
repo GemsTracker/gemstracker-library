@@ -28,49 +28,43 @@ class ShowOpenSequenceSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstra
     public function formatWelcome()
     {
         if ($this->wasAnswered) {
-            return $this->translator->_('Welcome back,');
+            return $this->_('Welcome back,');
         } else {
-            return $this->translator->_('Welcome,');
+            return $this->_('Welcome,');
         }
     }
     
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         $html = $this->getHtmlSequence();
-        $org = $this->token->getOrganization();
-        
-        $html->pInfo($this->formatWelcome());
+
+        $html->p($this->formatWelcome(), ['class' => 'info']);
         
         if ($this->wasAnswered) {
             $nextToken = $this->token->getNextUnansweredToken();
             if ($nextToken) {
-                $html->pInfo(sprintf(
-                                 $this->translator->_('Thank you for answering "%s".'),
-                                 $this->token->getSurvey()->getExternalName()));
+                $html->p(sprintf(
+                    $this->_('Thank you for answering "%s".'),
+                    $this->token->getSurvey()->getExternalName()),
+                    ['class' => 'info']);
 
                 $open = $this->getOpenCount();
 
                 if ($open && $open > 1) {
-                    $html->pInfo($this->showTotal($open));
+                    $html->p($this->showTotal($open), ['class' => 'info']);
                 }
                 
-                $html->pInfo($this->showLink($nextToken));
+                $html->p($this->showLink($nextToken), ['class' => 'info']);
             } else {
-                $html->pInfo(sprintf(
-                                 $this->translator->_('Thank you for answering the surveys for "%s".'),
-                                 $this->token->getTrackEngine()->getExternalName()));
+                $html->p(sprintf(
+                    $this->_('Thank you for answering the surveys for "%s".'),
+                    $this->token->getTrackEngine()->getExternalName()),
+                    ['class' => 'info']
+                );
             }
             
         } else {
-            $html->pInfo($this->showLink($this->token));
+            $html->p($this->showLink($this->token), ['class' => 'info']);
         }
         
         return $html;
@@ -97,9 +91,9 @@ class ShowOpenSequenceSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstra
         $html   = $this->getHtmlSequence();
         $survey = $token->getSurvey();
 
-        $html->append($this->translator->_('Click on the link to answer the survey:'));
+        $html->append($this->_('Click on the link to answer the survey:'));
         $html->append(' ');
-        $html->actionLink($href, $survey->getExternalName());
+        $html->a($href, $survey->getExternalName(), ['class' => 'actionlink btn']);
 
         $html->br();
         $html->append($this->formatDuration($survey->getDuration()));
@@ -109,6 +103,6 @@ class ShowOpenSequenceSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstra
     }
     public function showTotal($open)
     {
-        return sprintf($this->translator->_('There are open %d surveys'), $open);
+        return sprintf($this->_('There are open %d surveys'), $open);
     }
 }

@@ -13,11 +13,12 @@ namespace Gems\Snippets\Ask;
 
 use Gems\Communication\CommunicationRepository;
 use Gems\Html;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Tracker\Snippets\ShowTokenLoopAbstract;
 use Gems\Tracker\Token;
-use Gems\Menu\RouteHelper;
-use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Html\AElement;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -52,12 +53,12 @@ class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        RouteHelper $routeHelper,
+        TranslatorInterface $translator,
         CommunicationRepository $communicationRepository,
-        Translator $translator,
+        MenuSnippetHelper $menuSnippetHelper,
         protected array $config,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $communicationRepository, $translator);
+        parent::__construct($snippetOptions, $requestInfo, $translator, $communicationRepository, $menuSnippetHelper);
         if ($this->wasAnswered) {
             $this->showToken = $this->token->getNextUnansweredToken();
         } else {
@@ -105,7 +106,7 @@ class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
 
         $delay = $this->getAskDelay();
 
-        $url = $this->routeHelper->getRouteUrl('ask.to-survey', ['id' => $this->showToken->getTokenId()]);
+        $url = $this->menuSnippetHelper->getRouteUrl('ask.to-survey', ['id' => $this->showToken->getTokenId()]);
 
         switch ($delay) {
             case 0:
@@ -130,27 +131,27 @@ class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
         $html->append($this->formatWelcome());
 
         if ($this->wasAnswered) {
-            $html->pInfo(sprintf(
-                $this->translator->_('Thank you for answering the "%s" survey.'),
-                $this->getSurveyName($this->token)));
-            $html->pInfo($this->translator->_('Please click the button below to answer the next survey.'));
+            $html->p(sprintf(
+                $this->_('Thank you for answering the "%s" survey.'),
+                $this->getSurveyName($this->token)), ['class' => 'info']);
+            $html->p($this->_('Please click the button below to answer the next survey.'), ['class' => 'info']);
         } else {
             if ($welcome = $org->getWelcome()) {
-                $html->pInfo()->raw($welcome);
+                $html->p(['class' => 'info'])->raw($welcome);
             }
-            $html->pInfo(sprintf(
-                $this->translator->_('Please click the button below to answer the survey for token %s.'),
-                strtoupper($this->showToken->getTokenId())));
+            $html->p(sprintf(
+                $this->_('Please click the button below to answer the survey for token %s.'),
+                strtoupper($this->showToken->getTokenId())), ['class' => 'info']);
         }
         if ($delay > 0) {
-            $html->pInfo(sprintf($this->translator->plural(
+            $html->p(sprintf($this->plural(
                 'Wait one second to open the survey automatically or click on Cancel to stop.',
                 'Wait %d seconds to open the survey automatically or click on Cancel to stop.',
-                $delay), $delay));
+                $delay), $delay), ['class' => 'info']);
         }
 
         $buttonDiv = $html->buttonDiv(array('class' => 'centerAlign'));
-        $button = Html::actionLink($url, $this->getSurveyName($this->showToken));
+        $button = new AElement($url, $this->getSurveyName($this->showToken), ['class' => 'actionlink btn']);
         $buttonDiv->append($button);
 
         $buttonDiv->append(' ');
@@ -158,7 +159,7 @@ class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
         $buttonDiv->append($this->formatUntil($this->showToken->getValidUntil()));
 
         if ($delay > 0) {
-            $buttonDiv->actionLink(array('delay_cancelled' => 1), $this->translator->_('Cancel'));
+            $buttonDiv->a(array('delay_cancelled' => 1), $this->_('Cancel'), ['class' => 'actionlink btn']);
         }
 
         if ($this->wasAnswered) {
@@ -167,15 +168,15 @@ class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
         }
 
         if ($count) {
-            $html->pInfo(sprintf($this->translator->plural(
+            $html->p(sprintf($this->plural(
                 'After this survey there is one other survey we would like you to answer.',
                 'After this survey there are another %d surveys we would like you to answer.',
-                $count), $count));
+                $count), $count), ['class' => 'info']);
         } elseif ($this->wasAnswered) {
-            $html->pInfo($this->translator->_('This survey is the last survey to answer.'));
+            $html->p($this->_('This survey is the last survey to answer.'), ['class' => 'info']);
         }
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->raw($sig);
+            $html->p($sig, ['class' => 'info']);
         }
         return $html;
     }

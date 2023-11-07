@@ -13,12 +13,13 @@ namespace Gems\Snippets\Ask;
 
 use Gems\Communication\CommunicationRepository;
 use Gems\Html;
-use Gems\Menu\RouteHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Tracker;
 use Gems\Tracker\Snippets\ShowTokenLoopAbstract;
 use Gems\Tracker\Token;
-use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Html\AElement;
 use Zalt\Html\HtmlInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -43,12 +44,12 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        RouteHelper $routeHelper,
+        TranslatorInterface $translator,
         CommunicationRepository $communicationRepository,
-        Translator $translator,
+        MenuSnippetHelper $menuSnippetHelper,
         protected Tracker $tracker,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $communicationRepository, $translator);
+        parent::__construct($snippetOptions, $requestInfo, $translator, $communicationRepository, $menuSnippetHelper);
     }
 
     /**
@@ -99,10 +100,10 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
         $html->append($this->formatWelcome());
 
         if ($this->wasAnswered) {
-            $html->pInfo(sprintf($this->translator->_('Thank you for answering the "%s" survey.'), $this->token->getSurvey()->getExternalName()));
+            $html->p(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurvey()->getExternalName()), ['class' => 'info']);
         } else {
             if ($welcome = $org->getWelcome()) {
-                $html->pInfo()->raw($welcome);
+                $html->p($welcome, ['class' => 'info']);
             }
         }
 
@@ -111,7 +112,7 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
             $lastRound = false;
             $lastTrack = false;
             $open      = 0;
-            $pStart    = $html->pInfo();
+            $pStart    = $html->p(['class' => 'info']);
 
             foreach ($tokens as $token) {
                 if ($token instanceof Token) {
@@ -120,11 +121,11 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
 
                         $div = $html->div();
                         $div->class = 'askTrack';
-                        $div->append($this->translator->_('Track'));
+                        $div->append($this->_('Track'));
                         $div->append(' ');
                         $div->strong($lastTrack);
                         if ($token->getRespondentTrack()->getFieldsInfo()) {
-                            $div->small(sprintf($this->translator->_(' (%s)'), $token->getRespondentTrack()->getFieldsInfo()));
+                            $div->small(sprintf($this->_(' (%s)'), $token->getRespondentTrack()->getFieldsInfo()));
                         }
                     }
 
@@ -132,7 +133,7 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
                         $lastRound = $token->getRoundDescription();
                         $div = $html->div();
                         $div->class = 'askRound';
-                        $div->strong(sprintf($this->translator->_('Round: %s'), $lastRound));
+                        $div->strong(sprintf($this->_('Round: %s'), $lastRound));
                         $div->br();
                     }
 
@@ -147,7 +148,7 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
                     } else {
                         $open++;
 
-                        $button = Html::actionLink($this->getTokenUrl($token), $survey->getExternalName());
+                        $button = new AElement($this->getTokenUrl($token), $survey->getExternalName(), ['class' => 'actionlink btn']);
                         $div->append($button);
                         $div->append(' ');
                         $div->append($this->formatDuration($survey->getDuration()));
@@ -156,18 +157,18 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
                 }
             }
             if ($open) {
-                $pStart->append($this->translator->plural('Please answer the open survey.', 'Please answer the open surveys.', $open));
+                $pStart->append($this->plural('Please answer the open survey.', 'Please answer the open surveys.', $open));
             } else {
-                $html->pInfo($this->translator->_('Thank you for answering all open surveys.'));
+                $html->p($this->_('Thank you for answering all open surveys.'), ['class' => 'info']);
             }
         } else {
-            $html->pInfo($this->translator->_('There are no surveys to show for this token.'));
+            $html->p($this->_('There are no surveys to show for this token.'), ['class' => 'info']);
         }
 
         if ($sig = $org->getSignature()) {
-            $p = $html->pInfo();
+            $p = $html->p(['class' => 'info']);
             $p->br();
-            $p->raw($sig);
+            $p->append($sig);
         }
         return $html;
     }

@@ -1849,8 +1849,10 @@ class Token
                     ->addShowAnswers($groupId)
                     ->forTokenId($this->_tokenId);
 
-            $this->_gemsData = $tokenSelect->fetchRow();
-            if (! $this->_gemsData) {
+            $row = $tokenSelect->fetchRow();
+            if ($row) {
+                $this->_gemsData = $row;
+            } else {
                 // on failure, reset to empty array
                 $this->_gemsData = [];
             }

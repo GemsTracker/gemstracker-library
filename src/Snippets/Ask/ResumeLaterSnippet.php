@@ -32,7 +32,10 @@ class ResumeLaterSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
      */
     protected function addContinueNowButton(HtmlInterface $html)
     {
-        $html->actionLink($this->getTokenHref($this->token), sprintf($this->translator->_('Click here to resume %s now'), $this->token->getSurvey()->getExternalName()));
+        $html->a(
+            $this->getTokenHref($this->token),
+            sprintf($this->_('Click here to resume %s now'), $this->token->getSurvey()->getExternalName()),
+            ['class' => 'actionlink btn']);
     }
 
     /**
@@ -40,7 +43,7 @@ class ResumeLaterSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
      */
     protected function getHeaderLabel()
     {
-        return $this->translator->_('Thank you for answering so far');
+        return $this->_('Thank you for answering so far');
     }
 
     /**
@@ -62,8 +65,8 @@ class ResumeLaterSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 
         $html->h3($this->getHeaderLabel());
 
-        $html->pInfo($this->translator->_('You can resume later by clicking on the link in your current mail'));
-        $html->pInfo($this->translator->_('or'));
+        $html->p($this->_('You can resume later by clicking on the link in your current mail'), ['class' => 'info']);
+        $html->p($this->_('or'), ['class' => 'info']);
         $this->addContinueNowButton($html);
         $this->addContinueLink($html);
         

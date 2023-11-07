@@ -12,12 +12,12 @@
 namespace Gems\Snippets\Ask;
 
 use Gems\Communication\CommunicationRepository;
-use Gems\Menu\RouteHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Tracker;
 use Gems\Tracker\Snippets\ShowTokenLoopAbstract;
 use Gems\Tracker\Token;
-use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -45,13 +45,13 @@ class RedirectUntilGoodbyeSnippet extends ShowTokenLoopAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        RouteHelper $routeHelper,
+        TranslatorInterface $translator,
         CommunicationRepository $communicationRepository,
-        Translator $translator,
+        MenuSnippetHelper $menuSnippetHelper,
         protected Tracker $tracker,
         protected MessengerInterface $messenger,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $communicationRepository, $translator);
+        parent::__construct($snippetOptions, $requestInfo, $translator, $communicationRepository, $menuSnippetHelper);
     }
 
     /**
@@ -101,24 +101,24 @@ class RedirectUntilGoodbyeSnippet extends ShowTokenLoopAbstract
         $html->h3($this->getHeaderLabel());
         $html->append($this->formatThanks());
         if ($welcome = $org->getWelcome()) {
-            $html->pInfo()->raw($welcome);
+            $html->p($welcome, ['class' => 'info']);
         }
 
-        $p = $html->pInfo()->spaced();
+        $p = $html->p(['class' => 'info'])->spaced();
         if ($this->wasAnswered) {
-            $p->append($this->translator->_('Thanks for answering our questions.'));
+            $p->append($this->_('Thanks for answering our questions.'));
         } elseif (! $this->token->isCurrentlyValid()) {
             if ($this->token->isExpired()) {
-                $this->messenger->addMessage($this->translator->_('This survey has expired. You can no longer answer it.'));
+                $this->messenger->addMessage($this->_('This survey has expired. You can no longer answer it.'));
             } else {
-                $this->messenger->addMessage($this->translator->_('This survey is no longer valid.'));
+                $this->messenger->addMessage($this->_('This survey is no longer valid.'));
             }
         }
-        $p->append($this->translator->_('We have no further questions for you at the moment.'));
-        $p->append($this->translator->_('We appreciate your cooperation very much.'));
+        $p->append($this->_('We have no further questions for you at the moment.'));
+        $p->append($this->_('We appreciate your cooperation very much.'));
 
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->raw($sig);
+            $html->p($sig, ['class' => 'info']);
         }
 
         return $html;

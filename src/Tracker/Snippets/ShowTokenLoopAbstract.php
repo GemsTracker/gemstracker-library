@@ -16,17 +16,17 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Communication\CommunicationRepository;
 use Gems\Mail\TokenMailer;
-use Gems\Menu\RouteHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Tracker\Token;
-use MUtil\Model;
-use MUtil\Translate\Translator;
 use Symfony\Component\Mime\Address;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HrefArrayAttribute;
 use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Html\HtmlInterface;
-use Zalt\Snippets\SnippetAbstract;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Snippets\TranslatableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -38,7 +38,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ShowTokenLoopAbstract extends SnippetAbstract
+class ShowTokenLoopAbstract extends TranslatableSnippetAbstract
 {
     const CONTINUE_LATER_PARAM = 'continueLater';
 
@@ -83,12 +83,12 @@ class ShowTokenLoopAbstract extends SnippetAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        protected RouteHelper $routeHelper,
+        TranslatorInterface $translator,
         protected CommunicationRepository $communicationRepository,
-        protected Translator $translator,
+        protected MenuSnippetHelper $menuSnippetHelper,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo);
+        parent::__construct($snippetOptions, $requestInfo, $translator);
         $this->wasAnswered = $this->token->isCompleted();
     }
 
@@ -103,14 +103,14 @@ class ShowTokenLoopAbstract extends SnippetAbstract
 
             // If there is no template, or no email for sender / receiver we show no link
             if ($templateId && (!empty($orgEmail)) && $token->isMailable()) {
-                $html->pInfo($this->translator->_('or'));
-                $url = $this->routeHelper->getRouteUrl("ask.$this->action", [
+                $html->p($this->_('or'), ['class' => 'info']);
+                $url = $this->menuSnippetHelper->getRouteUrl("ask.$this->action", [
                     'id' => $token->getTokenId()
                 ],
                 [
                     self::CONTINUE_LATER_PARAM => 1
                 ]);
-                $html->actionLink($url, $this->translator->_('Send me an email to continue later'));
+                $html->a($url, $this->_('Send me an email to continue later'), ['class' => 'actionlink btn']);
             }
         }
     }
@@ -170,17 +170,17 @@ class ShowTokenLoopAbstract extends SnippetAbstract
             // Do not send multiple mails a day
 
             if ($lastMailedDate instanceof DateTimeInterface && CarbonImmutable::create($lastMailedDate)->isToday()) {
-                $html->pInfo($this->translator->_('An email with information to continue later was already sent to your registered email address today.'));
+                $html->p($this->_('An email with information to continue later was already sent to your registered email address today.'), ['class' => 'info']);
             } else {
                 $mailer->send($email);
-                $html->pInfo($this->translator->_('An email with information to continue later was sent to your registered email address.'));
+                $html->p($this->_('An email with information to continue later was sent to your registered email address.'), ['class' => 'info']);
             }
 
-            $html->pInfo($this->translator->_('Delivery can take a while. If you do not receive an email please check your spam-box.'));
+            $html->p($this->_('Delivery can take a while. If you do not receive an email please check your spam-box.'), ['class' => 'info']);
         }
 
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->raw($sig);
+            $html->p($sig, ['class' => 'info']);
         }
 
         return $html;
@@ -198,19 +198,19 @@ class ShowTokenLoopAbstract extends SnippetAbstract
 
         switch ($days) {
             case 0:
-                return $this->translator->_('We have received your answers today. Thank you!');
+                return $this->_('We have received your answers today. Thank you!');
 
             case 1:
-                return $this->translator->_('We have received your answers yesterday. Thank you!');
+                return $this->_('We have received your answers yesterday. Thank you!');
 
             case 2:
-                return $this->translator->_('We have received your answers 2 days ago. Thank you.');
+                return $this->_('We have received your answers 2 days ago. Thank you.');
 
             default:
                 if ($days <= 14) {
-                    return sprintf($this->translator->_('We have received your answers %d days ago. Thank you.'), $days);
+                    return sprintf($this->_('We have received your answers %d days ago. Thank you.'), $days);
                 }
-                return sprintf($this->translator->_('We have received your answers on %s. '), $dateTime->format($this->dateFormat));
+                return sprintf($this->_('We have received your answers on %s. '), $dateTime->format($this->dateFormat));
         }
     }
 
@@ -223,7 +223,7 @@ class ShowTokenLoopAbstract extends SnippetAbstract
     public function formatDuration($duration)
     {
         if ($duration && $this->showDuration) {
-            return sprintf($this->translator->_('Takes about %s to answer.'),  $duration) . ' ';
+            return sprintf($this->_('Takes about %s to answer.'),  $duration) . ' ';
         }
         return null;
     }
@@ -235,7 +235,7 @@ class ShowTokenLoopAbstract extends SnippetAbstract
      */
     public function formatNoFurtherQuestions()
     {
-        return Html::create('pInfo', $this->translator->_('At the moment we have no further surveys for you to take.'));
+        return Html::create('pInfo', $this->_('At the moment we have no further surveys for you to take.'));
     }
 
     /**
@@ -248,9 +248,9 @@ class ShowTokenLoopAbstract extends SnippetAbstract
         $output = Html::create('pInfo');
         if ($this->showLastName) {
             // getRespondentName returns the relation name when the token has a relation
-            $output->sprintf($this->translator->_('Thank you %s,'), $this->token->getRespondentName());
+            $output->sprintf($this->_('Thank you %s,'), $this->token->getRespondentName());
         } else {
-            $output->append($this->translator->_('Thank you for your answers,'));
+            $output->append($this->_('Thank you for your answers,'));
         }
         return $output;
     }
@@ -261,44 +261,45 @@ class ShowTokenLoopAbstract extends SnippetAbstract
      * @param DateTimeInterface $dateTime
      * @return mixed
      */
-    public function formatUntil(DateTimeInterface $dateTime = null)
+    public function formatUntil(\DateTimeInterface $dateTime = null)
     {
         if (false === $this->showUntil) { return; }
 
         if (null === $dateTime) {
-            return $this->translator->_('Survey has no time limit.');
+            return $this->_('Survey has no time limit.');
         }
 
-        $days = $dateTime->diff(new DateTimeImmutable())->days;
+        $diff = $dateTime->diff(new \DateTimeImmutable());
+        $days = $diff->days;
 
         switch ($days) {
             case 0:
                 return [
-                    Html::create('strong', $this->translator->_('Warning!!!')),
+                    Html::create('strong', $this->_('Warning!!!')),
                     ' ',
-                    $this->translator->_('This survey must be answered today!')
+                    $this->_('This survey must be answered today!')
                 ];
 
             case 1:
                 return [
-                    Html::create('strong', $this->translator->_('Warning!!')),
+                    Html::create('strong', $this->_('Warning!!')),
                     ' ',
-                    $this->translator->_('This survey can only be answered until tomorrow!')
+                    $this->_('This survey can only be answered until tomorrow!')
                 ];
 
             case 2:
-                return $this->translator->_('Warning! This survey can only be answered for another 2 days!');
+                return $this->_('Warning! This survey can only be answered for another 2 days!');
 
             default:
                 if ($days <= 14) {
-                    return sprintf($this->translator->_('Please answer this survey within %d days.'), $days);
+                    return sprintf($this->_('Please answer this survey within %d days.'), $days);
                 }
 
                 if ($days <= 0) {
-                    return $this->translator->_('This survey can no longer be answered.');
+                    return $this->_('This survey can no longer be answered.');
                 }
 
-                return sprintf($this->translator->_('Please answer this survey before %s.'), $dateTime->format($this->dateFormat));
+                return sprintf($this->_('Please answer this survey before %s.'), $dateTime->format($this->dateFormat));
         }
     }
 
@@ -309,20 +310,20 @@ class ShowTokenLoopAbstract extends SnippetAbstract
      */
     public function formatWelcome()
     {
-        $output = Html::create('pInfo');
+        $output = Html::create('p', ['class' => 'info']);
         if ($this->showLastName) {
             // getRespondentName returns the relation name when the token has a relation
-            $output->sprintf($this->translator->_('Welcome %s,'), $this->token->getRespondentName());
+            $output->sprintf($this->_('Welcome %s,'), $this->token->getRespondentName());
         } else {
-            $output->append($this->translator->_('Welcome,'));
+            $output->append($this->_('Welcome,'));
         }
         if ($this->token->hasRelation() && $this->showLastName) {
             return [
                 $output,
-                Html::create('pInfo', sprintf(
-                    $this->translator->_('We kindly ask you to answer a survey about %s.'),
+                Html::create('p', sprintf(
+                    $this->_('We kindly ask you to answer a survey about %s.'),
                     $this->token->getRespondent()->getName()
-                ))];
+                ), ['class' => 'info'])];
         }
         return $output;
     }
@@ -332,7 +333,7 @@ class ShowTokenLoopAbstract extends SnippetAbstract
      */
     protected function getHeaderLabel()
     {
-        return $this->translator->_('Token');
+        return $this->_('Token');
     }
 
     /**
@@ -343,22 +344,13 @@ class ShowTokenLoopAbstract extends SnippetAbstract
      */
     protected function getTokenHref(Token $token)
     {
-        /***************
-         * Get the url *
-         ***************/
-        $params = [
-            'action' => 'to-survey',
-            Model::REQUEST_ID => $token->getTokenId(),
-            'RouteReset' => false,
-        ];
-
-        return new HrefArrayAttribute($params);
+        return new HrefArrayAttribute([$this->getTokenUrl($token)]);
     }
 
     protected function getTokenUrl(Token $token): string
     {
-        return $this->routeHelper->getRouteUrl('ask.to-survey', [
-            Model::REQUEST_ID => $token->getTokenId(),
+        return $this->menuSnippetHelper->getRouteUrl('ask.to-survey', [
+            MetaModelInterface::REQUEST_ID => $token->getTokenId(),
         ]);
     }
 
@@ -379,7 +371,7 @@ class ShowTokenLoopAbstract extends SnippetAbstract
         $html->append($this->formatNoFurtherQuestions());
 
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->raw($sig);
+            $html->pInfo($sig, ['class' => 'info']);
         }
 
         return $html;
