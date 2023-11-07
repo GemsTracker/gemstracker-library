@@ -29,8 +29,6 @@ class CreateTablesSnippet extends SnippetAbstract
     {
         $model = $this->tableRepository->getModel();
 
-        $params = $this->requestInfo->getRequestMatchedParams();
-
         $tableItems = $model->load(['status' => ['new', 'error']]);
 
         if (!$tableItems) {
@@ -42,11 +40,11 @@ class CreateTablesSnippet extends SnippetAbstract
             try {
                 $this->tableRepository->createTable($tableItem);
                 $this->statusMessenger->addSuccess(
-                    sprintf($this->translator->_('Table %s has been succesfully created'), $params['name'])
+                    sprintf($this->translator->_('Table %s has been succesfully created'), $tableItem['name'])
                 );
             } catch (\Exception $e) {
                 $this->statusMessenger->addError(
-                    sprintf($this->translator->_('Error creating table %s. %s'), $params['name'], $e->getMessage())
+                    sprintf($this->translator->_('Error creating table %s. %s'), $tableItem['name'], $e->getMessage())
                 );
             }
         }
