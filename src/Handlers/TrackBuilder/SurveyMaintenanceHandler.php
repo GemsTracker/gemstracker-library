@@ -18,16 +18,13 @@ use Gems\Locale\Locale;
 use Gems\Pdf;
 use Gems\Repository\SurveyRepository;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
-use Gems\SnippetsActions\Browse\BrowseSearchAction;
-use Gems\SnippetsActions\Form\EditAction;
-use Gems\SnippetsActions\Show\ShowAction;
 use Gems\Tracker;
 use Gems\Tracker\Model\SurveyMaintenanceModel;
 use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
 use Gems\Tracker\TrackEvent\SurveyDisplayEventInterface;
 use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
 use Mezzio\Session\SessionInterface;
-use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
@@ -134,6 +131,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected ResultFetcher $resultFetcher,
@@ -143,7 +141,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         protected SurveyRepository $surveyRepository,
         protected Locale $locale,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**
@@ -234,7 +232,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(bool $detailed, string $action): DataReaderInterface
     {

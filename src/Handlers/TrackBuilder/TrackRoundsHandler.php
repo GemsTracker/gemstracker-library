@@ -12,15 +12,12 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Db\ResultFetcher;
-use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Repository\TrackDataRepository;
 use Gems\Tracker;
 use Gems\Tracker\Model\RoundModel;
-use Laminas\Diactoros\Response\RedirectResponse;
 use MUtil\Model;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Message\MessageStatus;
-use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -107,11 +104,12 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         Tracker $tracker,
         protected ResultFetcher $resultFetcher,
         protected TrackDataRepository $trackDataRepository,
     ) {
-        parent::__construct($responder, $translate, $tracker);
+        parent::__construct($responder, $translate, $cache, $tracker);
     }
 
     /*public function autofilterAction(bool $resetMvc = true): void

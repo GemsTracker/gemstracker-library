@@ -19,6 +19,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\User\Mask\MaskRepository;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -134,6 +135,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
         protected BatchRunnerLoader $batchRunnerLoader,
@@ -142,7 +144,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         protected Pdf $pdf,
         protected Tracker $tracker,
     ) {
-        parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
+        parent::__construct($responder, $translate, $cache, $respondentRepository, $currentUserRepository);
     }
 
     /**

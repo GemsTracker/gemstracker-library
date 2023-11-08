@@ -14,10 +14,10 @@ namespace Gems\Handlers;
 use DateTimeImmutable;
 use Gems\Model;
 use Gems\Repository\PeriodSelectRepository;
-use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Log\LogSearchSnippet;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -59,11 +59,12 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected Model $modelLoader,
         protected PeriodSelectRepository $periodSelectRepository
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

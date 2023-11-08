@@ -208,43 +208,6 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         }
     }
 
-    protected function saveData(): int
-    {
-        $id = $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID);
-
-        if ($id === null) {
-            // Add
-            return parent::saveData();
-        }
-
-        // Edit
-        $this->zendDbAdapter->beginTransaction();
-        try {
-            $oldData = $this->getModel()->loadFirst(['grl_id_role' => $id]);
-
-            $return = parent::saveData();
-
-            $newData = $this->getModel()->loadFirst(['grl_id_role' => $id]);
-
-            if ($newData['grl_name'] !== $oldData['grl_name']) {
-                $sql = new Sql($this->dbAdapter);
-
-                $update = $sql->update('gems__groups');
-                $update->set(['ggp_role' => $newData['grl_name']]);
-                $update->where->equalTo('ggp_role', $oldData['grl_name']);
-
-                $statement = $sql->prepareStatementForSqlObject($update);
-                $statement->execute();
-            }
-
-            $this->zendDbAdapter->commit();
-            return $return;
-        } catch (\Throwable $e) {
-            $this->zendDbAdapter->rollback();
-            throw $e;
-        }
-    }
-
     /**
      * Creates the model
      *
@@ -287,9 +250,7 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected function loadFormData(): array
     {
-        // \MUtil\EchoOut\EchoOut::track(file_get_contents('php://input'));
         parent::loadFormData();
-        // \MUtil\EchoOut\EchoOut::track($this->formData);
 
         if ($this->requestInfo->isPost()) {
             if (! $this->requestInfo->getParam('grl_parents')) {
@@ -306,4 +267,41 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         }
         return $this->formData;
     }
- }
+
+    protected function saveData(): int
+    {
+        $id = $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID);
+
+        if ($id === null) {
+            // Add
+            return parent::saveData();
+        }
+
+        // Edit
+        $this->zendDbAdapter->beginTransaction();
+        try {
+            $oldData = $this->getModel()->loadFirst(['grl_id_role' => $id]);
+
+            $return = parent::saveData();
+
+            $newData = $this->getModel()->loadFirst(['grl_id_role' => $id]);
+
+            if ($newData['grl_name'] !== $oldData['grl_name']) {
+                $sql = new Sql($this->dbAdapter);
+
+                $update = $sql->update('gems__groups');
+                $update->set(['ggp_role' => $newData['grl_name']]);
+                $update->where->equalTo('ggp_role', $oldData['grl_name']);
+
+                $statement = $sql->prepareStatementForSqlObject($update);
+                $statement->execute();
+            }
+
+            $this->zendDbAdapter->commit();
+            return $return;
+        } catch (\Throwable $e) {
+            $this->zendDbAdapter->rollback();
+            throw $e;
+        }
+    }
+}

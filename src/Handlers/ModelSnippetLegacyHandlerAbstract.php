@@ -21,6 +21,7 @@ use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Export\ExportAction;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
@@ -265,8 +266,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
 
     public function __construct(
         SnippetResponderInterface $responder,
-        TranslatorInterface $translate)
+        TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
+    )
     {
+        $this->cache = $cache;
         parent::__construct($responder, $translate);
         Html::init();
     }

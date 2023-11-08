@@ -16,6 +16,7 @@ use Gems\Model\CommTemplateModel;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Vue\CreateEditSnippet;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -65,10 +66,11 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected readonly ProjectOverloader $overloader,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

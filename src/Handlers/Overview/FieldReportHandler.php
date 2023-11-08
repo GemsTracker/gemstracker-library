@@ -20,6 +20,7 @@ use Gems\Snippets\Tracker\Fields\FieldReportSearchSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\FieldDataModel;
 use MUtil\Model\DatabaseModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -110,6 +111,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
         protected PeriodSelectRepository $periodSelectRepository,
         protected ResultFetcher $resultFetcher,
@@ -117,7 +119,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         protected Tracker $tracker,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
 
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

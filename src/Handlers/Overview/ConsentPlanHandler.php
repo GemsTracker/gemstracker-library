@@ -19,6 +19,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelTableSnippet;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -94,12 +95,13 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
         protected \Zend_Db_Adapter_Abstract $db,
         protected ReceptionCodeRepository $receptionCodeRepository,
         protected RespondentRepository $respondentRepository,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

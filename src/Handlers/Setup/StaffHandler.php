@@ -20,6 +20,7 @@ use Gems\Snippets\ModelConfirmDeleteSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -201,6 +202,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected UserLoader $userLoader,
         protected Model $modelLoader,
         CurrentUserRepository $currentUserRepository,
@@ -208,7 +210,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         private readonly RouteHelper $routeHelper,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

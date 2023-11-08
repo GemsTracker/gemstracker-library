@@ -10,6 +10,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -21,12 +22,13 @@ class RespondentCommLogHandler extends CommLogHandler
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         MaskRepository $maskRepository,
         ProjectOverloader $overloader,
         PeriodSelectRepository $periodSelectRepository,
         protected RespondentRepository $respondentRepository,
     ) {
-        parent::__construct($responder, $translate, $maskRepository, $overloader, $periodSelectRepository);
+        parent::__construct($responder, $translate, $cache, $maskRepository, $overloader, $periodSelectRepository);
     }
 
     public function createModel(bool $detailed, string $action): ModelAbstract

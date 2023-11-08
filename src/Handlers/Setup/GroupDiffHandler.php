@@ -10,6 +10,7 @@ use Gems\Layout\LayoutRenderer;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Laminas\Diactoros\Response\HtmlResponse;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -34,6 +35,7 @@ class GroupDiffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         private readonly ConfigGroupAdapter $configGroupAdapter,
         private readonly DbGroupAdapter $dbGroupAdapter,
         private readonly LayoutRenderer $layoutRenderer,
@@ -41,7 +43,7 @@ class GroupDiffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         private readonly Translated $translatedUtil,
         private readonly UserLoader $userLoader,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

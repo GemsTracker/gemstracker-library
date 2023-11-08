@@ -26,6 +26,7 @@ use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\Tracker\RespondentTrack;
 use Gems\User\Mask\MaskRepository;
 use Mezzio\Session\SessionMiddleware;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeInterface;
@@ -113,13 +114,14 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
         protected Tracker $tracker,
         protected MaskRepository $maskRepository,
         protected BatchRunnerLoader $batchRunnerLoader,
     ) {
-        parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
+        parent::__construct($responder, $translate, $cache, $respondentRepository, $currentUserRepository);
     }
 
     public function checkTrackAction(): ?ResponseInterface

@@ -18,6 +18,7 @@ use Gems\Model\Transform\RespondentIdTransformer;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -44,11 +45,12 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected Model $modelLoader,
         protected RespondentRepository $respondentRepository,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     protected function createModel(bool $detailed, string $action): ModelAbstract

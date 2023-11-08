@@ -23,6 +23,7 @@ use Mezzio\Helper\UrlHelper;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\NestedArrayModel;
 use MUtil\Validator\IsNot;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
 use Zalt\Message\MessageStatus;
@@ -87,11 +88,12 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         private readonly RouteHelper $routeHelper,
         private readonly AclRepository $aclRepository,
         private readonly UrlHelper $urlHelper,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

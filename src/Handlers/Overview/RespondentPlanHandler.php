@@ -19,6 +19,7 @@ use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\Token\PlanRespondentSnippet;
 use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\Tracker;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -55,13 +56,14 @@ class RespondentPlanHandler extends TokenSearchHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         MetaModelLoader $metaModelLoader,
         PeriodSelectRepository $periodSelectRepository,
         Tracker $tracker,
         protected RouteHelper $routeHelper,
         protected TokenDateSelector $dateSelector,
     ) {
-        parent::__construct($responder, $translate, $metaModelLoader, $periodSelectRepository, $tracker);
+        parent::__construct($responder, $translate, $cache, $metaModelLoader, $periodSelectRepository, $tracker);
     }
 
     /**

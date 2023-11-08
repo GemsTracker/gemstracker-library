@@ -15,6 +15,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\JoinModel;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -67,10 +68,11 @@ class LogMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected Translated $translatedUtil,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

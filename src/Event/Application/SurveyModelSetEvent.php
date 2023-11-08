@@ -65,5 +65,4 @@ class SurveyModelSetEvent extends \Symfony\Contracts\EventDispatcher\Event
     {
         return $this->detailed;
     }
-
 }

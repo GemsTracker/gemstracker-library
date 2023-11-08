@@ -19,6 +19,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -112,11 +113,12 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected ConditionLoader $conditionLoader,
         protected EventDispatcherInterface $event,
 
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

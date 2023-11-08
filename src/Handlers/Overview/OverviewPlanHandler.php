@@ -20,6 +20,7 @@ use Gems\Snippets\Token\OverviewSearchSnippet;
 use Gems\Snippets\Token\PlanTokenSnippet;
 use Gems\Snippets\Token\TokenDateSelectorSnippet;
 use Gems\Tracker;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -72,13 +73,14 @@ class OverviewPlanHandler extends TokenSearchHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         MetaModelLoader $metaModelLoader,
         Tracker $tracker,
         PeriodSelectRepository $periodSelectRepository,
         protected RouteHelper $routeHelper,
         protected TokenDateSelector $dateSelector,
     ) {
-        parent::__construct($responder, $translate, $metaModelLoader, $periodSelectRepository, $tracker);
+        parent::__construct($responder, $translate, $cache, $metaModelLoader, $periodSelectRepository, $tracker);
     }
 
     public function createModel(bool $detailed, string $action): DataReaderInterface

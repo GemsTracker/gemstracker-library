@@ -18,6 +18,7 @@ use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -192,11 +193,12 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected RouteHelper $routeHelper,
     ) {
-        parent::__construct($responder, $translate, $tracker);
+        parent::__construct($responder, $translate, $cache, $tracker);
     }
 
     /**

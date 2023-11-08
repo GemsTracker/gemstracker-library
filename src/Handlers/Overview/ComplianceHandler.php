@@ -13,12 +13,12 @@ use Gems\Snippets\Tracker\Compliance\ComplianceLegenda;
 use Gems\Snippets\Tracker\Compliance\ComplianceSearchFormSnippet;
 use Gems\Snippets\Tracker\Compliance\ComplianceTableSnippet;
 use Gems\Snippets\Tracker\TokenStatusLegenda;
-use Gems\User\Group;
 use Gems\User\Mask\MaskRepository;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Having;
 use Laminas\Db\Sql\Select;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelLoader;
@@ -90,6 +90,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected Adapter $laminasDb,
         CurrentUserRepository $currentUserRepository,
         protected MaskRepository $maskRepository,
@@ -100,7 +101,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         protected TrackDataRepository $trackDataRepository,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
 
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

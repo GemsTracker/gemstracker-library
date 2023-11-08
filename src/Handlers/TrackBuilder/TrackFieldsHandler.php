@@ -18,6 +18,7 @@ use Gems\Snippets\Tracker\Fields\FieldsButtonRowSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Tracker\Model\TrackModel;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -107,11 +108,12 @@ class TrackFieldsHandler extends TrackMaintenanceWithEngineHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         Tracker $tracker,
         protected ResultFetcher $resultFetcher,
         protected TrackDataRepository $trackDataRepository,
     ) {
-        parent::__construct($responder, $translate, $tracker);
+        parent::__construct($responder, $translate, $cache, $tracker);
     }
 
     /**

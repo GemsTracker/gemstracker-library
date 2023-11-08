@@ -25,13 +25,13 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
-use Gems\User\UserLoader;
 use Gems\Util\Lock\CommJobLock;
 use Gems\Util\Monitor\Monitor;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
@@ -114,6 +114,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
         protected ResultFetcher $resultFetcher,
         protected ProjectOverloader $overloader,
@@ -125,7 +126,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
         protected readonly RouteHelper $routeHelper,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
 
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }

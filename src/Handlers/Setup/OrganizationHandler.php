@@ -21,6 +21,7 @@ use Gems\User\UserLoader;
 use Laminas\Db\Sql\Select;
 use Mezzio\Session\SessionInterface;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\StatusMessengerInterface;
@@ -77,6 +78,7 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected UserLoader $userLoader,
         protected Model $modelLoader,
         protected BatchRunnerLoader $batchRunnerLoader,
@@ -84,7 +86,7 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
         protected ResultFetcher $resultFetcher,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

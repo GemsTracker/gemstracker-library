@@ -24,6 +24,7 @@ use Gems\Tracker;
 use Gems\Tracker\Respondent;
 use Gems\Tracker\Token;
 use Mezzio\Session\SessionMiddleware;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
 use Zalt\Base\TranslatorInterface;
@@ -144,6 +145,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         Tracker $tracker,
         MetaModelLoader $metaModelLoader,
         PeriodSelectRepository $periodSelectRepository,
@@ -151,7 +153,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
         protected OrganizationRepository $organizationRepository,
         protected BatchRunnerLoader $batchRunnerLoader,
     ) {
-        parent::__construct($responder, $translate, $metaModelLoader, $periodSelectRepository, $tracker);
+        parent::__construct($responder, $translate, $cache, $metaModelLoader, $periodSelectRepository, $tracker);
     }
 
     public function answerAction()

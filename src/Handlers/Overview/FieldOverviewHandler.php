@@ -15,9 +15,9 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Tracker\Compliance\ComplianceSearchFormSnippet;
 use Gems\Snippets\Tracker\Fields\FieldOverviewTableSnippet;
 use Gems\Tracker;
-use Gems\User\Group;
 use Gems\User\Mask\MaskRepository;
 use MUtil\Model\DatabaseModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -79,6 +79,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
         protected MaskRepository $maskRepository,
         protected PeriodSelectRepository $periodSelectRepository,
@@ -86,7 +87,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         protected Tracker $tracker,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
 
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

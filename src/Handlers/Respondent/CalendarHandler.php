@@ -17,6 +17,7 @@ use Gems\Model\Translator\AppointmentTranslator;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\User\User;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Type\AbstractDateType;
@@ -83,11 +84,12 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface        $responder,
         TranslatorInterface              $translator,
+        CacheItemPoolInterface $cache,
         CurrentUserRepository            $currentUserRepository,
         protected Model                  $modelLoader,
         protected PeriodSelectRepository $periodSelectRepository,
     ) {
-        parent::__construct($responder, $translator);
+        parent::__construct($responder, $translator, $cache);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

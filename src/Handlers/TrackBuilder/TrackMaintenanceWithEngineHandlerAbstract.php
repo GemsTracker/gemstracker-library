@@ -15,6 +15,7 @@ use Gems\Exception;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Engine\TrackEngineInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -55,9 +56,10 @@ abstract class TrackMaintenanceWithEngineHandlerAbstract extends ModelSnippetLeg
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected Tracker $tracker,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

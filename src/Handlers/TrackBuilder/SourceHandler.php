@@ -26,6 +26,7 @@ use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
 use MUtil\Legacy\RequestHelper;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -76,6 +77,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
         protected Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
@@ -86,7 +88,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         protected ValueEncryptor $valueEncryptor,
 
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
 
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }

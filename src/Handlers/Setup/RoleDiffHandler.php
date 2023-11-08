@@ -13,6 +13,7 @@ use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Laminas\Diactoros\Response\HtmlResponse;
 use MUtil\Ra;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -39,6 +40,7 @@ class RoleDiffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         private readonly RouteHelper $routeHelper,
         private readonly ConfigRoleAdapter $configRoleAdapter,
         private readonly DbRoleAdapter $dbRoleAdapter,
@@ -47,7 +49,7 @@ class RoleDiffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         private readonly Translated $translatedUtil,
         private readonly UserLoader $userLoader,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

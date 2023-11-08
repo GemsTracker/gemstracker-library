@@ -13,6 +13,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\MailServerModel;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -39,10 +40,11 @@ class MailServerHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected ProjectOverloader $overloader,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

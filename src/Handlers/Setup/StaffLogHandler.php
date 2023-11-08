@@ -16,9 +16,9 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
-use Laminas\Db\Adapter\Adapter;
 use Gems\Model;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -61,12 +61,13 @@ class StaffLogHandler extends LogHandler
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         Model $modelLoader,
         PeriodSelectRepository $periodSelectRepository,
         protected UserLoader $userLoader,
         CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($responder, $translate, $modelLoader, $periodSelectRepository);
+        parent::__construct($responder, $translate, $cache, $modelLoader, $periodSelectRepository);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

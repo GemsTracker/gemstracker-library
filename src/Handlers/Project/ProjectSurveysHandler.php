@@ -19,6 +19,7 @@ use Gems\Snippets\Survey\SurveyQuestionsSnippet;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Gems\Tracker\Model\SurveyMaintenanceModel;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -87,11 +88,12 @@ class ProjectSurveysHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
     public function __construct(
         SnippetResponderInterface $responder, 
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
         protected readonly SurveyMaintenanceModel $surveyMaintenanceModel,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

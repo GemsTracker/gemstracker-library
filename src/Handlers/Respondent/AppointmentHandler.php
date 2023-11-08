@@ -29,6 +29,7 @@ use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -159,6 +160,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
         protected Agenda $agenda,
@@ -167,7 +169,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         protected ResultFetcher $resultFetcher,
         protected UserLoader $userLoader,
     ) {
-        parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
+        parent::__construct($responder, $translate, $cache, $respondentRepository, $currentUserRepository);
     }
     
     /**

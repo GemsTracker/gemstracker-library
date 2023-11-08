@@ -7,6 +7,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\SurveyCodeBookModel;
 use MUtil\Model\ModelAbstract;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -18,9 +19,10 @@ class SurveyCodeBookExportHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected ProjectOverloader $overLoader
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     protected function createModel(bool $detailed, string $action): ModelAbstract

@@ -22,6 +22,7 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Mail\Log\MailLogBrowseSnippet;
 use Gems\Snippets\Mail\Log\MailLogSearchSnippet;
 use Gems\User\Mask\MaskRepository;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
@@ -76,12 +77,13 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected MaskRepository $maskRepository,
         protected ProjectOverloader $overloader,
         protected PeriodSelectRepository $periodSelectRepository,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

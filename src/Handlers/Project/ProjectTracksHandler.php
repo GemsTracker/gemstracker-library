@@ -18,6 +18,7 @@ use Gems\Snippets\Tracker\TrackSurveyOverviewSnippet;
 use Gems\User\User;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -84,11 +85,12 @@ class ProjectTracksHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
         protected Translated $translatedUtil,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

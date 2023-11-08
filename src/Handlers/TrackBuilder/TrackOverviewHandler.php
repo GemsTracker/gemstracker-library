@@ -16,6 +16,7 @@ use Gems\Html;
 use Gems\Repository\OrganizationRepository;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\SelectModel;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -65,11 +66,12 @@ class TrackOverviewHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected OrganizationRepository $organizationRepository,
         protected \Zend_Db_Adapter_Abstract $db,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

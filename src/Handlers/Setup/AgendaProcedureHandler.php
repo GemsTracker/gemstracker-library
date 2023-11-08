@@ -20,9 +20,9 @@ use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Util;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Type\ActivatingYesNoType;
-use Zalt\Snippets\ModelConfirmSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -92,10 +92,11 @@ class AgendaProcedureHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected Translated $translatedUtil,
         protected Util $util,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

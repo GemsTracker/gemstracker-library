@@ -17,8 +17,8 @@ use Gems\Model;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
-use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -48,11 +48,12 @@ class RespondentLogHandler extends LogHandler
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         Model $modelLoader,
         PeriodSelectRepository $periodSelectRepository,
         protected RespondentRepository $respondentRepository,
     ) {
-        parent::__construct($responder, $translate, $modelLoader, $periodSelectRepository);
+        parent::__construct($responder, $translate, $cache, $modelLoader, $periodSelectRepository);
     }
 
     protected function createModel(bool $detailed, string $action): ModelAbstract

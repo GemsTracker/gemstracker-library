@@ -23,8 +23,8 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -99,15 +99,16 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
 
     public function __construct(
         SnippetResponderInterface $responder, 
-        TranslatorInterface $translate, 
-        RespondentRepository $respondentRepository, 
+        TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
+        RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
         protected Agenda $agenda,
         protected MaskRepository $maskRepository,
         protected Model $modelLoader,
     )
     {
-        parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
+        parent::__construct($responder, $translate, $cache, $respondentRepository, $currentUserRepository);
     }
 
     /**

@@ -16,6 +16,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\JoinModel;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -33,10 +34,11 @@ class ChartConfigHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected Translated $translatedUtil,
         protected ResultFetcher $resultFetcher,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     protected function createModel(bool $detailed, string $action): ModelAbstract

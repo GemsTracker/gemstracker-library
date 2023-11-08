@@ -18,6 +18,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
 use Gems\User\User;
 use MUtil\Model;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -77,10 +78,11 @@ abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerA
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected RespondentRepository $respondentRepository,
         protected CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

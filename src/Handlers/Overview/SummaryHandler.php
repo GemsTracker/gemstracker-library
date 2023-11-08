@@ -26,6 +26,7 @@ use Laminas\Db\Sql\Having;
 use Laminas\Db\Sql\Predicate\Expression as PredicateExpression;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Sql\Laminas\LaminasSelectModel;
@@ -94,6 +95,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder, 
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
         protected Adapter $laminasDb,
         protected MetaModelLoader $metaModelLoader,
@@ -101,7 +103,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         protected TrackDataRepository $trackDataRepository,
     )
     {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

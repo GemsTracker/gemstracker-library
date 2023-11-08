@@ -25,6 +25,7 @@ use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\Tracker;
 use Gems\Tracker\Model\TokenModel;
 use Mezzio\Session\SessionInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
@@ -95,11 +96,12 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         protected MetaModelLoader $metaModelLoader,
         protected PeriodSelectRepository $periodSelectRepository,
         protected Tracker $tracker,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

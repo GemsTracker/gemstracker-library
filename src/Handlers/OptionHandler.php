@@ -15,6 +15,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\LogModel;
 use Mezzio\Session\SessionInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -165,11 +166,12 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         private readonly array $config,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly Model $modelContainer,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**

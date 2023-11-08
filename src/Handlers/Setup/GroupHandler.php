@@ -18,6 +18,7 @@ use Gems\Repository\AccessRepository;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
+use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 use Zalt\Validator\Model\ModelUniqueValidator;
@@ -86,13 +87,14 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
         private readonly UserLoader $userLoader,
         private readonly AclRepository $aclRepository,
         private readonly GroupRepository $groupRepository,
         private readonly AccessRepository $accessRepository,
         private readonly Translated $translatedUtil,
     ) {
-        parent::__construct($responder, $translate);
+        parent::__construct($responder, $translate, $cache);
     }
 
     /**
