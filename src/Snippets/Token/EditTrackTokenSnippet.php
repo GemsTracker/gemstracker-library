@@ -14,6 +14,7 @@ namespace Gems\Snippets\Token;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Date\Period;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
@@ -48,12 +49,13 @@ class EditTrackTokenSnippet extends EditTokenSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
         MenuSnippetHelper $menuHelper,
         MetaModelLoader $metaModelLoader,
         Tracker $tracker,
         CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $metaModelLoader, $tracker);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper, $metaModelLoader, $tracker);
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 

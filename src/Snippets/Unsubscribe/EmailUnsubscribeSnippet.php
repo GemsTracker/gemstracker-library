@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Unsubscribe;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
@@ -70,12 +71,13 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
+        MenuSnippetHelper $menuHelper,
         protected Loader $loader,
-        protected MenuSnippetHelper $menuHelper,
         protected readonly Adapter $db,
         protected readonly CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
 
         $this->currentOrganization = $this->currentUserRepository->getCurrentOrganization();
     }

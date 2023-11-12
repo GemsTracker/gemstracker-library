@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\User;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\OrganizationRepository;
@@ -58,12 +59,13 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
         MenuSnippetHelper $menuHelper,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly ResultFetcher $resultFetcher,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
     }
 
     /**

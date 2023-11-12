@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\Respondent\RespondentModel;
@@ -46,11 +47,12 @@ class RespondentFormSnippet extends ModelFormSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
         MenuSnippetHelper $menuHelper,
         protected OrganizationRepository $organizationRepository,
         protected ResultFetcher $resultFetcher,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
     }
 
     public function checkSsnData(string $ssn)

@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\ReceptionCodeRepository;
@@ -95,13 +96,14 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
         protected ReceptionCodeRepository $receptionCodeRepository,
         protected Tracker $tracker,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $currentUserRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper, $currentUserRepository);
     }
 
 

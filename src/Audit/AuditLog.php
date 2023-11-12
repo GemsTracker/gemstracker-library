@@ -20,6 +20,9 @@ use Zalt\Message\StatusMessengerInterface;
 class AuditLog
 {
     protected string $actionsCacheKey = 'logActions';
+
+    protected ServerRequestInterface $request;
+
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
         protected RespondentRepository $respondentRepository,
@@ -177,6 +180,24 @@ class AuditLog
         return false;
     }
 
+    protected function logAction(string $action, string $method, int $by, string $role, bool $changed, mixed $message, mixed $data, string $ip, int $respondentId, int $organizationId)
+    {
+        $log = [
+            'gla_action' => $action,
+            'gla_method' => $method,
+            'gla_by' => $by,
+            'gla_changed' => $changed,
+            'gla_message' => json_encode($message),
+            'gla_data' => json_encode($data),
+            'gla_remote_ip' => $ip,
+            'gla_respondent_id' => $respondentId,
+            'gla_organization' => $organizationId,
+            'gla_role' => $role,
+        ];
+
+        return $this->storeLogEntry($log);
+    }
+
     public function logChange(ServerRequestInterface $request, mixed $message = null, mixed $data = null, ?int $respondentId = null): array|null
     {
         return $this->logRequest($request, $message, $data, $respondentId, true);
@@ -184,6 +205,7 @@ class AuditLog
 
     public function logRequest(ServerRequestInterface $request, mixed $message = null, mixed $data = null, ?int $respondentId=null, bool $changed = false): array|null
     {
+        $this->setRequest($request);
         $routeName = $this->getRouteName($request);
         $actionData = $this->getAction($routeName);
 
@@ -224,6 +246,11 @@ class AuditLog
         ];
 
         return $this->storeLogEntry($log);
+    }
+
+    public function setRequest(ServerRequestInterface $request)
+    {
+        $this->request = $request;
     }
 
     public function shouldLogAction(array $actionData, string $method): bool

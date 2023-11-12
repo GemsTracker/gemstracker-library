@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Generic\ButtonRowTrait;
@@ -32,12 +33,6 @@ use Zalt\SnippetsLoader\SnippetOptions;
 abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
 {
     use ButtonRowTrait;
-
-    /**
-     *
-     * @var \Gems\Audit\AuditLog
-     */
-    protected $accesslog;
 
     /**
      * Shortfix to add class attribute
@@ -65,7 +60,8 @@ abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        protected MenuSnippetHelper $menuHelper,
+        protected readonly AccesslogRepository $accesslogRepository,
+        protected readonly MenuSnippetHelper $menuHelper,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
@@ -103,13 +99,13 @@ abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
      * When not rerouted, the form will be populated afterwards
      *
      * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
-     * /
+     */
     protected function afterSave($changed)
     {
         parent::afterSave($changed);
 
         if ($changed) {
-            // $this->accesslog->logChange($this->request, null, $this->formData);
+//            $this->logChanges($changed);
         }
     }
 

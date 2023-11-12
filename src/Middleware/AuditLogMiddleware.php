@@ -16,8 +16,6 @@ class AuditLogMiddleware implements MiddlewareInterface
     public const RESPONDENT_ID_ATTRIBUTE = 'respondentId';
 
 
-
-
     public function __construct(
         protected AuditLog $auditLog,
     )

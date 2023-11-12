@@ -8,6 +8,7 @@
 
 namespace Gems\Snippets\Staff;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippet;
@@ -41,11 +42,12 @@ class StaffCreateEditSnippet extends ModelFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        AccesslogRepository $accesslogRepository,
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
         private readonly Loader $loader,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
     }
 
     /**

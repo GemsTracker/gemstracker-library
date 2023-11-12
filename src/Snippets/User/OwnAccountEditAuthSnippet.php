@@ -85,20 +85,20 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
         MenuSnippetHelper $menuHelper,
         private readonly array $config,
         private readonly Adapter $db,
         private readonly UserLoader $userLoader,
         private readonly TranslatorInterface $translator,
         private readonly LoginThrottleBuilder $loginThrottleBuilder,
-        private readonly AccesslogRepository $accesslogRepository,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly MenuSnippetHelper $menuSnippetHelper,
         private readonly CommunicationRepository $communicationRepository,
         private readonly SmsClientInterface $smsClient,
         private readonly HelperAdapter $throttleCache,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
 
         $this->sessionNamespace = new SessionNamespace($this->session, __CLASS__);
 

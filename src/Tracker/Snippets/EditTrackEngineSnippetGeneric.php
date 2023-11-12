@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Form\Element\ToggleCheckboxes;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Project\ProjectSettings;
@@ -60,11 +61,12 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
         MenuSnippetHelper $menuHelper,
         protected Tracker $tracker,
         protected ProjectSettings $project
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
     }
 
     /**

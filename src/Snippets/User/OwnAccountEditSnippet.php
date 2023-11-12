@@ -60,14 +60,14 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
         MenuSnippetHelper $menuHelper,
         private readonly array $config,
         private readonly Model $modelContainer,
         private readonly UserLoader $userLoader,
-        private readonly AccesslogRepository $accesslogRepository,
         private readonly CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
     }
 
     public function beforeDisplay()

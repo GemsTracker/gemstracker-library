@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\ReceptionCode;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippetAbstract;
@@ -102,10 +103,11 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Generic\ButtonRowTrait;
@@ -46,12 +47,6 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
 {
     use ButtonRowTrait;
     use TopicCallableTrait;
-
-    /**
-     *
-     * @var \Gems\Audit\AuditLog
-     */
-    // protected $accesslog;
 
     protected string $afterSaveRoutePart = 'show';
 
@@ -95,18 +90,21 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     protected $useTabbedForm = false;
 
     /**
-     * @param \Zalt\SnippetsLoader\SnippetOptions  $snippetOptions
-     * @param \Zalt\Base\RequestInfo               $requestInfo
-     * @param \Zalt\Base\TranslatorInterface       $translate
-     * @param \Zalt\Message\MessengerInterface     $messenger
-     * @param \Gems\Menu\MenuSnippetHelper         $menuHelper
+     * @param SnippetOptions $snippetOptions
+     * @param RequestInfo $requestInfo
+     * @param TranslatorInterface $translate
+     * @param MessengerInterface $messenger
+     * @param AccesslogRepository $accesslogRepository
+     * @param MenuSnippetHelper $menuHelper
      */
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        protected MenuSnippetHelper $menuHelper)
+        protected readonly AccesslogRepository $accesslogRepository,
+        protected readonly MenuSnippetHelper $menuHelper,
+    )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
      

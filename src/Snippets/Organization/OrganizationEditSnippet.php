@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Organization;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippet;
@@ -39,11 +40,12 @@ class OrganizationEditSnippet extends ModelFormSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
         protected UserLoader $userLoader,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

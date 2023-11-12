@@ -55,7 +55,7 @@ class LogMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $createEditParameters = [
-        'cacheTags' => ['accesslog_actions'],
+        'cacheTags' => ['accesslog_actions', 'logActions'],
     ];
 
     /**

@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Token;
 
 use Carbon\CarbonImmutable;
+use Gems\Audit\AccesslogRepository;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
@@ -103,13 +104,14 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AccesslogRepository $accesslogRepository,
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
         protected MetaModelLoader $metaModelLoader,
         protected ReceptionCodeRepository $receptionCodeRepository,
         protected Tracker $tracker,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $currentUserRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper, $currentUserRepository);
     }
 
     /**
