@@ -172,7 +172,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                     $this->_('The name "master" is reserved')
                 ),
                 'validators[pattern]' => (new Regex('/^[a-z][a-z0-9]+$/'))->setMessage(
-                    $this->_('The name should be alphanumerical and start with a letter')
+                    $this->_('The name should be alphanumerical, lowercase, and start with a letter')
                 ),
             ]);
 
