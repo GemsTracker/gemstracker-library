@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\Snippets;
 
+use Gems\Audit\AuditLog;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Usage\UsageCounterInterface;
 use Zalt\Base\TranslatorInterface;
@@ -18,6 +19,7 @@ use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Data\FullDataInterface;
 use Zalt\Snippets\DeleteModeEnum;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -61,6 +63,7 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        protected readonly AuditLog $auditLog,
         protected readonly MenuSnippetHelper $menuSnippetHelper)
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
@@ -211,5 +214,33 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
             DeleteModeEnum::Activate => $this->_('Reactivate'),
             DeleteModeEnum::Block => $this->_('Blocked!'),
         };
+    }
+
+    public function isActionConfirmed() : bool
+    {
+        if (parent::isActionConfirmed()) {
+            $this->logChanges();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function logChanges(): void
+    {
+        switch ($this->deletionMode) {
+            case DeleteModeEnum::Activate:
+            case DeleteModeEnum::Deactivate:
+                $this->auditLog->registerChanges($this->actionValues, messages: $this->messenger->getMessages(keep: true));
+                return;
+
+            case DeleteModeEnum::Delete:
+                $this->auditLog->registerChanges(['row' => 'deleted'], messages: $this->messenger->getMessages(keep: true));
+                return;
+
+            case DeleteModeEnum::Block:
+                // Do nothing
+        }
     }
 }

@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Track;
 
+use Gems\Audit\AuditLog;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelConfirmDeleteSnippetAbstract;
 use Gems\Tracker;
@@ -58,11 +59,12 @@ class TrackDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         protected Tracker $tracker
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
 
     protected function getDeletionMode(DataReaderInterface $dataModel): DeleteModeEnum

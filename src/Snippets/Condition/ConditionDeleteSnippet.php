@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Condition;
 
+use Gems\Audit\AuditLog;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\ConditionModel;
@@ -53,11 +54,12 @@ class ConditionDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuSnippetHelper,
         protected readonly Model $modelLoader,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuSnippetHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuSnippetHelper);
     }
 
     protected function getDeletionMode(DataReaderInterface $dataModel): DeleteModeEnum

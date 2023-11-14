@@ -334,7 +334,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
         }
     }
 
-    protected function logChanges(int $changes)
+    protected function logChanges(int $changes): void
     {
         /**
          * @var DataWriterInterface $model;

@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Group;
 
+use Gems\Audit\AuditLog;
 use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\GroupRepository;
 use Gems\Legacy\CurrentUserRepository;
@@ -50,12 +51,13 @@ class GroupDeleteDeleteSnippet extends \Gems\Snippets\ModelConfirmDeleteSnippetA
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         private readonly AclRepository $aclRepository,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly GroupRepository $groupRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
 
     /**
