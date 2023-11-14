@@ -2,7 +2,7 @@
 
 namespace Gems\Snippets\Export;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Export;
 use Gems\Export\ExportInterface;
 use Gems\Form;
@@ -49,14 +49,14 @@ class ExportFormSnippet extends FormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         Loader $loader,
         protected ExportAction $exportAction,
         private readonly SessionInterface $session,
         private readonly ProjectOverloader $overLoader,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
 
         $this->export    = $loader->getExport();
         $this->saveLabel = $this->_('Export');

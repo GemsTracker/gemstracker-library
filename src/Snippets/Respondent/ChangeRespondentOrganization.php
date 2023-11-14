@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Respondent;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Db\ResultFetcher;
 use Gems\Exception\RespondentAlreadyExists;
 use Gems\Legacy\CurrentUserRepository;
@@ -75,14 +75,14 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
         protected readonly MaskRepository $maskRepository,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly ResultFetcher $resultFetcher,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

@@ -11,6 +11,7 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\Audit\AuditLog;
 use Gems\Cache\HelperAdapter;
 use Gems\Handlers\SnippetLegacyHandlerAbstract;
 use Gems\Log\ErrorLogger;
@@ -79,14 +80,15 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
-        protected UrlHelper $urlHelper,
-        protected MaintenanceLock $maintenanceLock,
-        protected Versions $versions,
-        protected RouteHelper $routeHelper,
-        protected ProjectSettings $projectSettings,
+        protected AuditLog $auditLog,
         protected HelperAdapter $cache,
         protected Loggers $loggers,
+        protected MaintenanceLock $maintenanceLock,
         protected readonly Monitor $monitor,
+        protected ProjectSettings $projectSettings,
+        protected RouteHelper $routeHelper,
+        protected UrlHelper $urlHelper,
+        protected Versions $versions,
         protected readonly array $config,
     )
     {
@@ -359,6 +361,9 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
          */
         $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
         $messenger->addSuccess($this->_('Cache cleaned'));
+
+         $this->auditLog->registerChanges(['cache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
+
         // Redirect
         $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
         return new RedirectResponse($redirectUrl);

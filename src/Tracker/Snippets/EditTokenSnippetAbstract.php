@@ -11,7 +11,7 @@
 
 namespace Gems\Tracker\Snippets;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
 use Gems\Snippets\ModelFormSnippetAbstract;
@@ -62,12 +62,12 @@ abstract class EditTokenSnippetAbstract extends ModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         protected MetaModelLoader $metaModelLoader,
         protected Tracker $tracker,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
 
     /**

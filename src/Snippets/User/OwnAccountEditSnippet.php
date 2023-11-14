@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\User;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Cache\HelperAdapter;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\LocaleCookie;
@@ -60,14 +60,14 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         private readonly array $config,
         private readonly Model $modelContainer,
         private readonly UserLoader $userLoader,
         private readonly CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
 
     public function beforeDisplay()
@@ -91,7 +91,7 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
     protected function afterSave($changed)
     {
         if ($changed) {
-            $this->accesslogRepository->logChange($this->request, null, $this->formData);
+            $this->auditLog->logChange($this->request, null, $this->formData);
 
             // Reload the current user data
             $user       = $this->currentUser;

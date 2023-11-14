@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Subscribe;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\Menu\MenuSnippetHelper;
@@ -58,7 +58,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         protected readonly Locale $locale,
         protected readonly Adapter $db,
@@ -66,7 +66,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         protected readonly MailRepository $mailRepository,
         protected readonly RespondentModel $respondentModel,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
 
         $this->currentUser = $currentUserRepository->getCurrentUser();
         $this->currentOrganization = $currentUserRepository->getCurrentOrganization();

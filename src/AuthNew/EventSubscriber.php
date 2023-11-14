@@ -2,7 +2,7 @@
 
 namespace Gems\AuthNew;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\AuthNew\Adapter\EmbedAuthenticationResult;
 use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\AuthNew\Adapter\GemsTrackerAuthenticationResult;
@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class EventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        //private readonly AccesslogRepository $accesslogRepository,
+        //private readonly AuditLog $auditLog,
     ) {
     }
 
@@ -38,7 +38,7 @@ class EventSubscriber implements EventSubscriberInterface
             $identity = $result->getIdentity();
             $message = 'Successful embedded login ' . $identity->getSystemUserLoginName() . ' / ' . $identity->getLoginName();
 
-            //$this->accesslogRepository->logChange(null, $message);
+            //$this->auditLog->logChange(null, $message);
         }
     }
 
@@ -49,11 +49,11 @@ class EventSubscriber implements EventSubscriberInterface
         if ($result instanceof EmbedAuthenticationResult) {
             $message = 'Failed embedded login [' . $result->getCode() . ']: ' . implode(';', $result->getMessages());
 
-            //$this->accesslogRepository->logChange(null, $message);
+            //$this->auditLog->logChange(null, $message);
         } elseif ($result instanceof GemsTrackerAuthenticationResult) {
             $message = 'Failed GT login [' . $result->getCode() . ']: ' . implode(';', $result->getMessages());
 
-            //$this->accesslogRepository->logChange(null, $message);
+            //$this->auditLog->logChange(null, $message);
         }
     }
 }

@@ -11,7 +11,7 @@
 
 namespace Gems\Handlers\TrackBuilder;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Encryption\ValueEncryptor;
@@ -84,7 +84,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         protected ResultFetcher $resultFetcher,
         protected RouteHelper $routeHelper,
         protected Translated $translatedUtil,
-        protected AccesslogRepository $accesslog,
+        protected AuditLog $accesslog,
         protected ValueEncryptor $valueEncryptor,
 
     ) {

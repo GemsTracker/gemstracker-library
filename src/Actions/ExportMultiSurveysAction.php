@@ -84,7 +84,7 @@ class ExportMultiSurveysAction extends \Gems\Actions\ExportSurveyActionAbstract
                 }
 
                 $batch->autoStart = true;
-                $this->accesslog->logChange($this->getRequest(), null, $data + $filter);
+                $this->accesslog->logChange($this->getRequest(), data: $data + $filter);
             }
 
             if ($batch->run($this->request)) {

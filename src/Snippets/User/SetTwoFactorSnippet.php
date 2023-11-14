@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\User;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\AuthTfa\OtpMethodBuilder;
@@ -50,13 +50,13 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuSnippetHelper,
         private readonly array $config,
         private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly LayoutSettings $layoutSettings,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuSnippetHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuSnippetHelper);
 
         $this->sessionNamespace = new SessionNamespace($this->session, __CLASS__);
 

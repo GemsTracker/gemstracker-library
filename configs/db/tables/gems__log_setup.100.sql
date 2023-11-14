@@ -17,5 +17,5 @@ CREATE TABLE if not exists gems__log_setup (
         INDEX (gls_name)
     )
     ENGINE=InnoDB
-    auto_increment = 70
+    auto_increment = 2000
     CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';

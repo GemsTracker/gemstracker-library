@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Generic\ButtonRowTrait;
@@ -32,6 +32,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
 {
+    use AuditLogDataCleanupTrait;
     use ButtonRowTrait;
 
     /**
@@ -60,7 +61,7 @@ abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        protected readonly AccesslogRepository $accesslogRepository,
+        protected readonly AuditLog $auditLog,
         protected readonly MenuSnippetHelper $menuHelper,
     )
     {
@@ -105,7 +106,7 @@ abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
         parent::afterSave($changed);
 
         if ($changed) {
-//            $this->logChanges($changed);
+            $this->logChanges($changed);
         }
     }
 
@@ -189,4 +190,11 @@ abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
             return sprintf($this->_('Edit %s'), $this->getTopic());
         }
     }
+
+    protected function logChanges(int $changes)
+    {
+        $oldData = $this->loadCsrfData() + $this->getDefaultFormValues() + $this->requestInfo->getRequestMatchedParams();
+        $this->auditLog->registerChanges($this->cleanupLogData($this->formData), $oldData);
+    }
+
 }

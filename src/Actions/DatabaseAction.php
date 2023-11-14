@@ -585,7 +585,7 @@ class DatabaseAction extends \MUtil\Controller\ModelSnippetActionAbstract
                     $results[] = sprintf($this->_('Finished %s creation script for object %d of %d'), $this->_(strtolower($data['type'])), $objCount, $oCount);
                     $objCount++;
                 }
-                $this->accesslog->logChange($this->_request, $results);
+                $this->accesslog->logChange($this->_request, message: $results);
 
             } else {
                 $results[] = $this->_('All objects exist. Nothing was executed.');

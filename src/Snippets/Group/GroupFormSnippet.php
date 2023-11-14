@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Group;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Auth\Acl\AclRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
@@ -48,12 +48,12 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         private readonly AclRepository $aclRepository,
         private readonly CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
 
     /**

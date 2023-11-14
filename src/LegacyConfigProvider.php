@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gems;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Agenda\Agenda;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Communication\CommunicationRepository;
@@ -78,7 +78,7 @@ class LegacyConfigProvider
                 'LegacyCurrentUser' => LegacyFactory::class,
             ],
             'aliases' => [
-                'LegacyAccesslog' => AccesslogRepository::class,
+                'LegacyAccesslog' => AuditLog::class,
                 'LegacyAccessRepository' => AccessRepository::class,
                 'LegacyAcl' => Acl::class,
                 'LegacyAgenda' => Agenda::class,

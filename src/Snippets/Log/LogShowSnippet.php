@@ -20,6 +20,7 @@ use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeAbstract;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -67,6 +68,7 @@ class LogShowSnippet extends ModelDetailTableSnippetAbstract
         }
         return $this->model;
     }
+
     protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)
     {
         $row = $bridge->getRow();
@@ -75,20 +77,24 @@ class LogShowSnippet extends ModelDetailTableSnippetAbstract
 
         $footer = $bridge->tfrow();
         if (isset($row['gla_respondent_id'], $row['gla_organization'])) {
+            dump($row);
             $patientNr = $this->respondentRepository->getPatientNr($row['gla_respondent_id'], $row['gla_organization']);
 
-            $params = [
-                \MUtil\Model::REQUEST_ID1 => $patientNr,
-                \MUtil\Model::REQUEST_ID2 => $row['gla_organization'],
-            ];
+            dump($patientNr);
+            if ($patientNr) {
+                $params = [
+                    MetaModelInterface::REQUEST_ID1 => $patientNr,
+                    MetaModelInterface::REQUEST_ID2 => $row['gla_organization'],
+                ];
 
-            $url = $this->routeHelper->getRouteUrl('respondent.show', $params);
-            $footer->actionLink($url, $this->_('Respondent'));
-            $footer[] = ' ';
+                $url = $this->routeHelper->getRouteUrl('respondent.show', $params);
+                $footer->actionLink($url, $this->_('Respondent'));
+                $footer[] = ' ';
+            }
         }
         if (isset($row['gsf_id_user'])) {
             $params = [
-                \MUtil\Model::REQUEST_ID => $row['gsf_id_user'],
+                MetaModelInterface::REQUEST_ID => $row['gsf_id_user'],
             ];
 
             $url = $this->routeHelper->getRouteUrl('setup.access.staff.show', $params);

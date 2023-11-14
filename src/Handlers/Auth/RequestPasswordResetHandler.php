@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Auth;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\AuthNew\PasswordResetThrottleBuilder;
 use Gems\Communication\CommunicationRepository;
 use Gems\Layout\LayoutRenderer;
@@ -36,7 +36,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
         private readonly PasswordResetThrottleBuilder $passwordResetThrottleBuilder,
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
-        private readonly AccesslogRepository $accesslogRepository,
+        private readonly AuditLog $auditLog,
         private readonly CommunicationRepository $communicationRepository,
     ) {
     }
@@ -102,7 +102,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
             $errors = $this->sendUserResetEMail($user);
 
             if ($errors) {
-                $this->accesslogRepository->logChange(
+                $this->auditLog->logChange(
                     $request,
                     sprintf(
                         "User %s requested reset password but got %d error(s). %s",
@@ -113,7 +113,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
                 );
             }
 
-            $this->accesslogRepository->logChange($request);
+            $this->auditLog->logChange($request);
         }
 
         $this->statusMessenger->addInfo($this->translator->trans(

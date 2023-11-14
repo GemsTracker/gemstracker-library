@@ -134,6 +134,7 @@ class AgendaDiagnosisHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
     protected function createModel($detailed, $action): ModelAbstract
     {
         $model      = new \MUtil\Model\TableModel('gems__agenda_diagnoses');
+        $model->copyKeys();
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'gad');
 

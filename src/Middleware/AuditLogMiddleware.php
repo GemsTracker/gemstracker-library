@@ -2,7 +2,6 @@
 
 namespace Gems\Middleware;
 
-use Gems\Audit\AccesslogRepository;
 use Gems\Audit\AuditLog;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,7 +22,7 @@ class AuditLogMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $log = $this->auditLog->logRequest($request);
+        $log = $this->auditLog->registerRequest($request);
 
         $response = $handler->handle($request);
         // Check if log should be updated

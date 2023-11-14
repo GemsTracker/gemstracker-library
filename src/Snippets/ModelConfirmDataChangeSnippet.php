@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Menu\MenuSnippetHelper;
 use Mezzio\Helper\UrlHelper;
 use Zalt\Base\RequestInfo;
@@ -36,9 +36,9 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
 {
     /**
      *
-     * @var AccesslogRepository
+     * @var AuditLog
      */
-    protected $accesslog;
+    protected $auditlog;
 
     /**
      * Shortfix to add class attribute

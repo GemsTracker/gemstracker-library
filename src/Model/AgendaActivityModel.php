@@ -30,6 +30,7 @@ class AgendaActivityModel extends SqlTableModel
         $this->metaModel->set('gaa_id_activity', [
             'label' => $this->_('ID'),
             'apiName' => 'id',
+            'elementClass' => 'Hidden',
         ]);
 
         $this->metaModel->set('gaa_name', [

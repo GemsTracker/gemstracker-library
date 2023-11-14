@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Generic\ButtonRowTrait;
@@ -21,6 +21,7 @@ use Zalt\Html\Raw;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeAbstract;
 use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\DataWriterInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\Snippets\Zend\ZendModelFormSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -45,6 +46,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
 {
+    use AuditLogDataCleanupTrait;
     use ButtonRowTrait;
     use TopicCallableTrait;
 
@@ -94,7 +96,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      * @param RequestInfo $requestInfo
      * @param TranslatorInterface $translate
      * @param MessengerInterface $messenger
-     * @param AccesslogRepository $accesslogRepository
+     * @param AuditLog $auditLog
      * @param MenuSnippetHelper $menuHelper
      */
     public function __construct(
@@ -102,7 +104,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        protected readonly AccesslogRepository $accesslogRepository,
+        protected readonly AuditLog $auditLog,
         protected readonly MenuSnippetHelper $menuHelper,
     )
     {
@@ -204,6 +206,22 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
             $this->_form->resetContext();
         }
         parent::addSaveButton($saveButtonId, $saveLabel, $buttonClass);
+    }
+
+    /**
+     * Hook that allows actions when data was saved
+     *
+     * When not rerouted, the form will be populated afterwards
+     *
+     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
+     */
+    protected function afterSave($changed)
+    {
+        parent::afterSave($changed);
+
+        if ($changed) {
+            $this->logChanges($changed);
+        }
     }
 
     /**
@@ -314,6 +332,16 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
         } else {
             return sprintf($this->_('Edit %s'), $this->getTopic());
         }
+    }
+
+    protected function logChanges(int $changes)
+    {
+        /**
+         * @var DataWriterInterface $model;
+         */
+        $model = $this->getModel();
+
+        $this->auditLog->registerChanges($this->cleanupLogData($this->formData,$model), $model->getOldValues() ?? []);
     }
 
     /**

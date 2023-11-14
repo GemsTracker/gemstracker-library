@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Respondent;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
@@ -89,13 +89,13 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
         protected Model $modelLoader,
         protected ReceptionCodeRepository $receptionCodeRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper, $currentUserRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper, $currentUserRepository);
     }
 
     /**

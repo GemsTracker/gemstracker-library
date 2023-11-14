@@ -5,23 +5,49 @@ namespace Gems\Audit;
 use Exception;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Db\CachedResultFetcher;
+use Gems\Exception\Coding;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Repository\RespondentRepository;
 use Gems\User\User;
+use Gems\User\UserLoader;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\TableGateway\TableGateway;
 use Mezzio\Router\RouteResult;
-use MUtil\Model;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Message\StatusMessengerInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Ra\Ra;
 
 class AuditLog
 {
     protected string $actionsCacheKey = 'logActions';
 
+    protected ?int $lastLogId = null;
+
+    /**
+     * @var array|string[] routes that should always be logged as request, those not containing \\. will have that added
+     */
+    protected array $logRequestActions = [
+        'answer', 'ask\\.forward', 'ask\\.return', 'ask\\.take', 'logout', 'respondent.*\\.show', 'to-survey',
+        ];
+
+    /**
+     * @var array|string[] routes that should always be logged when changed, those not containing \\. will have that added
+     */
+    protected array $logRequestChanges = [
+        'active-toggle', 'answer-export', 'ask\\.lost', 'attributes', 'cacheclean', 'change', 'check', 'cleanup',
+        'correct', 'create', 'delete', 'download', 'edit', 'execute', 'export', 'import', 'insert', 'lock',
+        'maintenance-mode', 'merge', 'patches', 'ping', 'recalc', 'reset', 'run', 'seeds', 'subscribe',
+        'synchronize', 'two-factor', 'undelete', 'unsubscribe',
+        ];
+
     protected ServerRequestInterface $request;
+
+    protected array $respondentIdFields = [
+        'grs_id_user', 'gr2o_id_user', 'gr2t_id_user', 'gap_id_user', 'gec_id_user', 'gto_id_respondent', 'grr_id_respondent'
+    ];
 
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
@@ -32,23 +58,38 @@ class AuditLog
     /**
      * Get a specific action from the database actions
      *
-     * @param string $action
      * @return array
+     * @throws Coding
      */
-    public function getAction(string $action): array
+    public function getAction(): array
     {
-        $action = strtolower($action);
+        $route   = strtolower($this->getRouteName());
         $actions = $this->getDbActions();
-        if (isset($actions[$action])) {
-            return $actions[$action];
+        if (isset($actions[$route ])) {
+            return $actions[$route];
+        }
+
+        $logChange  = 0;
+        $logRequest = 0;
+        foreach ($this->logRequestActions as $routePart) {
+            if ($this->matchAction($route, $routePart)) {
+                $logRequest = 1;
+                break;
+            }
+        }
+        foreach ($this->logRequestChanges as $routePart) {
+            if ($this->matchAction($route, $routePart)) {
+                $logChange = 1;
+                break;
+            }
         }
 
         $logAction = [
-            'gls_name' => $action,
+            'gls_name' => $route,
             'gls_when_no_user' => 0,
-            'gls_on_action' => 0,
+            'gls_on_action' => $logRequest,
             'gls_on_post' => 0,
-            'gls_on_change' => 0,
+            'gls_on_change' => $logChange,
             'gls_changed' => new Expression('NOW()'),
             'gls_changed_by' => 0,
             'gls_created' => new Expression('NOW()'),
@@ -59,21 +100,42 @@ class AuditLog
         $table->insert($logAction);
 
         $actions = $this->getDbActions(true);
-        return $actions[$action];
+        return $actions[$route];
     }
 
-    protected function getCurrentOrganizationFromRequest(ServerRequestInterface $request): int
+    protected function getCurrentOrganizationId(): int
     {
-        $organizationId = $request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
+        $organizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
         if ($organizationId !== null) {
             return $organizationId;
         }
-        $currentUser = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
         if ($currentUser instanceof User) {
             return $currentUser->getCurrentOrganizationId();
         }
 
         return 0;
+    }
+
+    protected function getCurrentRole(): string
+    {
+        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        if ($currentUser instanceof User) {
+            return $currentUser->getRole();
+        }
+
+        return 'nologin';
+    }
+
+
+    protected function getCurrentUserId(): int
+    {
+        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        if ($currentUser instanceof User) {
+            return $currentUser->getUserId();
+        }
+
+        return $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE, UserLoader::UNKNOWN_USER_ID);
     }
 
     public function getDbActions(bool $refresh = false): array
@@ -95,12 +157,11 @@ class AuditLog
     /**
      * Get the user IP address
      *
-     * @param ServerRequestInterface $request
      * @return string|null
      */
-    public function getIp(ServerRequestInterface $request): string|null
+    public function getIp(): string|null
     {
-        $params = $request->getServerParams();
+        $params = $this->request->getServerParams();
         if (isset($params['REMOTE_ADDR'])) {
             return $params['REMOTE_ADDR'];
         }
@@ -108,25 +169,28 @@ class AuditLog
     }
 
     /**
+     * @return int|null
+    */
+    public function getLastLogId(): ?int
+    {
+        return $this->lastLogId ?? 0;
+    }
+
+    /**
      * Get the data of the request
      *
-     * @param ServerRequestInterface $request
      * @return array
      */
-    public function getRequestData(ServerRequestInterface $request): array
+    public function getRequestData(): array
     {
-        $method = $request->getMethod();
-        switch($method) {
-            case 'GET':
-            case 'DELETE':
-                $data = $request->getQueryParams();
-                break;
+        $data = $this->getRouteData();
+
+        $data = $this->request->getQueryParams() + $data;
+        switch($this->request->getMethod()) {
             case 'PATCH':
             case 'POST':
-                $data = $request->getParsedBody();
+                $data = $this->request->getParsedBody() + $data;
                 break;
-            default:
-                $data = [];
         }
 
         return $data;
@@ -135,22 +199,29 @@ class AuditLog
     /**
      * Get the message from a request
      *
-     * @param ServerRequestInterface $request
-     * @return null
+     * @return array
      */
-    public function getRequestMessage(ServerRequestInterface $request)
+    public function getRequestMessages(): array
     {
         /**
          * @var $messenger StatusMessengerInterface
          */
-        $messenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-        return $messenger->getMessages(null, true);
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+        return Ra::flatten($messenger->getMessages(null, true));
     }
 
-    public function getRequestRespondentId(ServerRequestInterface $request): ?int
+    public function getRespondentId(array $data): ?int
     {
-        $id1 = $request->getAttribute(Model::REQUEST_ID1);
-        $id2 = $request->getAttribute(Model::REQUEST_ID2);
+        if ($data) {
+            foreach ($this->respondentIdFields as $field) {
+                if (isset($data[$field]) && $data[$field]) {
+                    return $data[$field];
+                }
+            }
+        }
+
+        $id1 = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
+        $id2 = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
 
         if ($id1 !== null && $id2 !== null) {
             return $this->respondentRepository->getRespondentId($id1, $id2);
@@ -158,15 +229,31 @@ class AuditLog
         return null;
     }
 
+    public function getRouteData(): array
+    {
+        if (! isset($this->request)) {
+            throw new Coding("Asking for route before the request was set");
+        }
+
+        $routeResult = $this->request->getAttribute(RouteResult::class);
+        if ($routeResult instanceof RouteResult) {
+            return $routeResult->getMatchedParams();
+        }
+        return [];
+    }
+
     /**
      * Get the current Action from the route
      *
-     * @param ServerRequestInterface $request
      * @return string
+     * @throws Coding
      */
-    public function getRouteName(ServerRequestInterface $request): string
+    public function getRouteName(): string
     {
-        $routeResult = $request->getAttribute(RouteResult::class);
+        if (! isset($this->request)) {
+            throw new Coding("Asking for route before the request was set");
+        }
+        $routeResult = $this->request->getAttribute(RouteResult::class);
         $route = $routeResult->getMatchedRoute();
 
         return $route->getName();
@@ -180,94 +267,113 @@ class AuditLog
         return false;
     }
 
-    protected function logAction(string $action, string $method, int $by, string $role, bool $changed, mixed $message, mixed $data, string $ip, int $respondentId, int $organizationId)
+    public function logChange(ServerRequestInterface $request, mixed $message = null, mixed $data = null, ?int $respondentId = null): ? int
     {
-        $log = [
-            'gla_action' => $action,
-            'gla_method' => $method,
-            'gla_by' => $by,
-            'gla_changed' => $changed,
-            'gla_message' => json_encode($message),
-            'gla_data' => json_encode($data),
-            'gla_remote_ip' => $ip,
-            'gla_respondent_id' => $respondentId,
-            'gla_organization' => $organizationId,
-            'gla_role' => $role,
-        ];
-
-        return $this->storeLogEntry($log);
+        if (null === $respondentId) {
+            $respondentId = 0;
+        }
+        $logId = $this->registerRequest($request);
+        if (null == $logId) {
+            $logId = 0;
+        }
+        $this->registerChanges($data, [], (array) $message, $respondentId, $logId);
+        return $logId;
     }
 
-    public function logChange(ServerRequestInterface $request, mixed $message = null, mixed $data = null, ?int $respondentId = null): array|null
-    {
-        return $this->logRequest($request, $message, $data, $respondentId, true);
-    }
+//    public function logRequest(ServerRequestInterface $request, mixed $message = null, mixed $data = null):? int
+//    {
+//        $this->setRequest($request);
+//        $actionData = $this->getAction();
+//
+//        if (!$this->shouldLogAction($actionData)) {
+//            return null;
+//        }
+//
+//        if ($data === null) {
+//            $data = $this->getRequestData($request);
+//        }
+//        if ($message === null) {
+//            $message = $this->getRequestMessage($request);
+//        }
+//
+//        $this->lastLogId = $this->storeLogEntry($actionData['gls_id_action'], $message, $data, $this->getRespondentId($data), false);
+//
+//        return $this->lastLogId;
+//    }
 
-    public function logRequest(ServerRequestInterface $request, mixed $message = null, mixed $data = null, ?int $respondentId=null, bool $changed = false): array|null
-    {
-        $this->setRequest($request);
-        $routeName = $this->getRouteName($request);
-        $actionData = $this->getAction($routeName);
-
-        if (!$this->shouldLogAction($actionData, $request->getMethod())) {
-            return null;
-        }
-
-        $by = 0;
-        $role = '';
-        $currentUser = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-        if ($currentUser instanceof User) {
-            $by = $currentUser->getUserId();
-            $role = $currentUser->getRole();
-        }
-
-        if ($data === null) {
-            $data = $this->getRequestData($request);
-        }
-        $ip = $this->getIp($request);
-        if ($message === null) {
-            $message = $this->getRequestMessage($request);
-        }
-        if ($respondentId === null) {
-            $respondentId = $this->getRequestRespondentId($request);
-        }
-
-        $log = [
-            'gla_action' => $actionData['gls_id_action'],
-            'gla_method' => $request->getMethod(),
-            'gla_by' => $by,
-            'gla_changed' => (int) ($changed || $this->isChanged($request)),
-            'gla_message' => json_encode($message),
-            'gla_data' => json_encode($data),
-            'gla_remote_ip' => $ip,
-            'gla_respondent_id' => $respondentId,
-            'gla_organization' => $this->getCurrentOrganizationFromRequest($request),
-            'gla_role' => $role,
-        ];
-
-        return $this->storeLogEntry($log);
-    }
-
-    public function setRequest(ServerRequestInterface $request)
+    protected function setRequest(ServerRequestInterface $request)
     {
         $this->request = $request;
     }
 
-    public function shouldLogAction(array $actionData, string $method): bool
+    protected function matchAction($route, $action): bool
     {
-        $checkField = 'gls_on_action';
-        switch($method) {
-            case 'OPTIONS':
-                return false;
+        if (str_contains($action, '\\.')) {
+            $pattern = '/^' . $action . '[^.]*$/';
+        } else {
+            $pattern = '/\\.' . $action . '[^.]*$/';
+        }
+        return (bool) preg_match($pattern, $route);
+    }
 
-            case 'POST':
-            case 'PATCH':
-            case 'DELETE':
-                $checkField = 'gls_on_post';
-                break;
-            case 'GET':
-            default:
-                break;
+    public function registerChanges(array $currentValues, array $oldValues = [], array $messages = [], int $respondentId = 0, int $logId = 0):? int
+    {
+        $actionData = $this->getAction();
+
+        if (!$this->shouldLogAction($actionData, true)) {
+            return null;
+        }
+
+        $data = $this->getRouteData() + array_diff_assoc($currentValues, $oldValues);
+        if (! $messages) {
+            $messages = $this->getRequestMessages();
+        }
+        if (! $respondentId) {
+            $respondentId = $this->getRespondentId($currentValues + $oldValues);
+        }
+
+        $this->lastLogId = $this->storeLogEntry($actionData['gls_id_action'], $messages, $data, true, $respondentId, $logId);
+
+        return $this->lastLogId;
+    }
+
+    public function registerRequest(ServerRequestInterface $request):? int
+    {
+        $this->setRequest($request);
+        $actionData = $this->getAction();
+
+        if (!$this->shouldLogAction($actionData)) {
+            return null;
+        }
+
+        $data         = $this->getRequestData();
+        $message      = $this->getRequestMessages();
+        $respondentId = $this->getRespondentId($data);
+
+        $this->lastLogId = $this->storeLogEntry($actionData['gls_id_action'], $message, $data, false, $respondentId, 0);
+
+        return $this->lastLogId;
+    }
+
+    public function shouldLogAction(array $actionData, bool $change = false): bool
+    {
+        if ($change) {
+            $checkField = 'gls_on_change';
+        } else {
+            $checkField = 'gls_on_action';
+            switch ($this->request->getMethod()) {
+                case 'OPTIONS':
+                    return false;
+
+                case 'POST':
+                case 'PATCH':
+                case 'DELETE':
+                    $checkField = 'gls_on_post';
+                    break;
+                case 'GET':
+                default:
+                    break;
+            }
         }
 
         if ($actionData[$checkField] != 1) {
@@ -276,10 +382,23 @@ class AuditLog
         return true;
     }
 
-    protected function storeLogEntry(array $logData, $new = true): ?array
+    protected function storeLogEntry($route, $message, $data, bool $changed, ?int $respondentId, int $logId = 0): ? int
     {
+        $logData = [
+            'gla_action'        => $route,
+            'gla_method'        => $this->request->getMethod(),
+            'gla_by'            => $this->getCurrentUserId(),
+            'gla_changed'       => (int) ($changed || $this->isChanged($this->request)),
+            'gla_message'       => json_encode($message),
+            'gla_data'          => json_encode($data),
+            'gla_remote_ip'     => $this->getIp(),
+            'gla_respondent_id' => $respondentId,
+            'gla_organization'  => $this->getCurrentOrganizationId(),
+            'gla_role'          => $this->getCurrentRole(),
+        ];
+
         $sql = new Sql($this->cachedResultFetcher->getAdapter());
-        if ($new) {
+        if (0 == $logId) {
             $insert = $sql->insert();
             $insert->into('gems__log_activity')
                 ->columns(array_keys($logData))
@@ -289,24 +408,23 @@ class AuditLog
                 $statement = $sql->prepareStatementForSqlObject($insert);
                 $result = $statement->execute();
                 if ($id = $result->getGeneratedValue()) {
-                    $log['gla_id'] = $id;
+                    return $id;
                 }
-                return $log;
             } catch (Exception $e) {
-                return null;
             }
+            return null;
         }
 
         $update = $sql->update();
         $update->table('gems__log_activity')
             ->set($logData)
-            ->where(['gla_id' => $logData['gla_id']]);
+            ->where(['gla_id' => $logId]);
         try {
             $statement = $sql->prepareStatementForSqlObject($update);
             $statement->execute();
-            return $logData;
+            return $logId;
         } catch (Exception $e) {
-            return null;
+            return $logId;
         }
     }
 }

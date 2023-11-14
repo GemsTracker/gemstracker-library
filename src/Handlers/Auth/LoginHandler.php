@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Auth;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\AuthNew\Adapter\GenericRoutedAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
@@ -47,7 +47,7 @@ class LoginHandler implements RequestHandlerInterface
         private readonly UrlHelper $urlHelper,
         private readonly Adapter $db,
         private readonly UserLoader $userLoader,
-        //private readonly AccesslogRepository $accesslogRepository,
+        //private readonly AuditLog $auditLog,
         private readonly PasswordChecker $passwordChecker,
     ) {
     }
@@ -174,7 +174,7 @@ class LoginHandler implements RequestHandlerInterface
             $input['organization'],
             $logErrors
         );
-        $this->accesslogRepository->logChange($request, $msg);*/
+        $this->auditLog->logChange($request, $msg);*/
 
         return new RedirectResponse($request->getUri());
     }

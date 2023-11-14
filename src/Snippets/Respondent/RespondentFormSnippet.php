@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Respondent;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Db\ResultFetcher;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\Respondent\RespondentModel;
@@ -33,6 +33,11 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class RespondentFormSnippet extends ModelFormSnippet
 {
+    /**
+     * @var array|string[] Fields that should not be logged
+     */
+    protected array $extraNotLoggedFields = ['__c_1_3_copy__grs_id_user__key_k_0_p_1__', 'calc_email', 'old_gr2o_consent'];
+
     protected array $ssnOtherOrgCopyFields = ['gr2o_email', 'gr2o_mailable'];
 
     /**
@@ -47,12 +52,12 @@ class RespondentFormSnippet extends ModelFormSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         protected OrganizationRepository $organizationRepository,
         protected ResultFetcher $resultFetcher,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
 
     public function checkSsnData(string $ssn)

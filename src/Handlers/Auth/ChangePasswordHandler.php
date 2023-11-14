@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Auth;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\LoginStatusTracker;

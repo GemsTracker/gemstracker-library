@@ -11,7 +11,7 @@
 
 namespace Gems\Tracker\Snippets;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
@@ -103,14 +103,14 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         protected MaskRepository $maskRepository,
         protected Tracker $tracker,
         CurrentUserRepository $currentUserRepository,
         protected Translated $translatedUtil,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger,  $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger,  $auditLog, $menuHelper);
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 

@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Agenda;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Zalt\Base\RequestInfo;
@@ -58,12 +58,12 @@ class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         RequestInfo $requestInfo, 
         TranslatorInterface $translate, 
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         protected Model $modelLoader,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
 
     /**

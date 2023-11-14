@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\User;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
 use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\Cache\HelperAdapter;
@@ -85,7 +85,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         private readonly array $config,
         private readonly Adapter $db,
@@ -98,7 +98,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
         private readonly SmsClientInterface $smsClient,
         private readonly HelperAdapter $throttleCache,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
 
         $this->sessionNamespace = new SessionNamespace($this->session, __CLASS__);
 
@@ -120,7 +120,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
     protected function afterSave($changed)
     {
         if ($changed) {
-            $this->accesslogRepository->logChange($this->request, null, $this->formData);
+            $this->auditLog->logChange($this->request, null, $this->formData);
 
             // Reload the current user data
             $user = $this->userLoader->getUser($this->currentUser->getLoginName(), $this->currentUser->getBaseOrganizationId());

@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Tracker;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
@@ -137,7 +137,7 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        AccesslogRepository $accesslogRepository,
+        AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         protected Tracker $tracker,
         CurrentUserRepository $currentUserRepository,
@@ -146,7 +146,7 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
         protected AccessRepository $accessRepository,
         protected ResultFetcher $resultFetcher,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $accesslogRepository, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
 
         if ($this->insertMultipleSurveys) {
             $this->saveLabel = $this->_('Insert survey(s)');

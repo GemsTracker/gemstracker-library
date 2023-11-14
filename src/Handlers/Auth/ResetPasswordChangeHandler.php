@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Auth;
 
-use Gems\Audit\AccesslogRepository;
+use Gems\Audit\AuditLog;
 use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Session\ValidationMessenger;
@@ -32,7 +32,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
         private readonly LayoutRenderer $layoutRenderer,
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
-        private readonly AccesslogRepository $accesslogRepository,
+        private readonly AuditLog $auditLog,
         private readonly PasswordChecker $passwordChecker,
         private readonly PasswordHistoryChecker $passwordHistoryChecker,
     ) {
@@ -50,7 +50,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
             } else {
                 $logMessage = 'Someone used a non existent reset key.';
             }
-            $this->accesslogRepository->logChange($request, $logMessage);
+            $this->auditLog->logChange($request, $logMessage);
 
             if ($user && ($user->hasPassword() || !$user->isActive())) {
                 $userMessage = $this->translator->trans('Your password reset request is no longer valid, please request a new link.');
@@ -79,7 +79,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
         }
 
         if ($request->getMethod() !== 'POST') {
-            $this->accesslogRepository->logChange($request, sprintf("User %s opened valid reset link.", $user->getLoginName()));
+            $this->auditLog->logChange($request, sprintf("User %s opened valid reset link.", $user->getLoginName()));
 
             $data = [
                 'ask_old' => false,
@@ -113,7 +113,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
         $user->setPassword($input['new_password']);
 
         $this->statusMessenger->addSuccess($this->translator->trans('New password is active.'));
-        $this->accesslogRepository->logChange($request, $this->translator->trans('User reset password.'));
+        $this->auditLog->logChange($request, $this->translator->trans('User reset password.'));
 
         return new RedirectResponse($this->urlHelper->generate('auth.login'));
     }
