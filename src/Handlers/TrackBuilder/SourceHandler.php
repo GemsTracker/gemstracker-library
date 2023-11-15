@@ -394,16 +394,16 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
             if ($source->checkSourceActive($this->currentUserId)) {
                 $message = $this->_('This installation is active.');
                 $status  = 'success';
-                $messenger->addSuccess($message, true);
+                $messenger->addSuccess($message);
             } else {
                 $message = $this->_('Inactive installation.');
                 $status  = 'warning';
-                $messenger->addWarning($message, true);
+                $messenger->addWarning($message);
             }
             $this->accesslog->logChange($this->request, $message, $status);
         } catch (\Exception $e) {
             $messenger->addDanger($this->_('Installation error!'));
-            $messenger->addDanger($e->getMessage(), true);
+            $messenger->addDanger($e->getMessage());
         }
 
         $requestHelper = new RequestHelper($this->request);
