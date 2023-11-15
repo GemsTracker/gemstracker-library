@@ -11,8 +11,8 @@
 
 namespace Gems\Handlers\Setup;
 
-use Gems\Agenda\Repository\LocationRepository;
 use Gems\Html;
+use Gems\Model\LocationModel;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
@@ -20,10 +20,9 @@ use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Util;
 use Gems\Util\Translated;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Filter\Dutch\PostcodeFilter;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -85,6 +84,7 @@ class LocationHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         CacheItemPoolInterface $cache,
         protected Translated $translatedUtil,
         protected Util $util,
+        protected readonly LocationModel $locationModel
     ) {
         parent::__construct($responder, $translate, $cache);
     }
@@ -139,79 +139,10 @@ class LocationHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): DataReaderInterface
     {
-        $model = new \MUtil\Model\TableModel('gems__locations');
-        $yesNo = $this->translatedUtil->getYesNo();
-
-        \Gems\Model::setChangeFieldsByPrefix($model, 'glo');
-
-        $model->setDeleteValues('glo_active', 0);
-
-        $model->set('glo_name',                    'label', $this->_('Location'),
-                'required', true
-                );
-
-        $model->set('glo_organizations', 'label', $this->_('Organizations'),
-                'description', $this->_('Checked organizations see this organizations respondents.'),
-                'elementClass', 'MultiCheckbox',
-                'multiOptions', $this->util->getDbLookup()->getOrganizations(),
-                'noSort', true
-                );
-        $tp = new \MUtil\Model\Type\ConcatenatedRow(LocationRepository::ORGANIZATION_SEPARATOR, ', ');
-        $tp->apply($model, 'glo_organizations');
-
-        $model->setIfExists('glo_match_to',        'label', $this->_('Import matches'),
-                'description', $this->_("Split multiple import matches using '|'.")
-                );
-
-        $model->setIfExists('glo_code',        'label', $this->_('Location code'),
-                'size', 10,
-                'description', $this->_('Optional code name to link the location to program code.'));
-
-        $model->setIfExists('glo_url',         'label', $this->_('Location url'),
-                'description', $this->_('Complete url for location: http://www.domain.etc'),
-                'validator', 'Uri');
-        $model->setIfExists('glo_url_route',   'label', $this->_('Location route url'),
-                'description', $this->_('Complete url for route to location: http://www.domain.etc'),
-                'validator', 'Uri');
-
-
-        $model->setIfExists('glo_address_1',   'label', $this->_('Street'));
-        $model->setIfExists('glo_address_2',   'label', ' ');
-
-        $model->setIfExists('glo_zipcode',     'label', $this->_('Zipcode'),
-                'size', 7,
-                'description', $this->_('E.g.: 0000 AA'),
-                'filter', PostcodeFilter::class
-                );
-
-        $model->setIfExists('glo_city',        'label', $this->_('City'));
-        $model->setIfExists('glo_region',      'label', $this->_('Region'));
-        $model->setIfExists('glo_iso_country', 'label', $this->_('Country'),
-                'multiOptions', $this->util->getLocalized()->getCountries());
-
-        $model->setIfExists('glo_phone_1',     'label', $this->_('Phone'));
-        $model->setIfExists('glo_phone_2',     'label', $this->_('Phone 2'));
-        $model->setIfExists('glo_phone_3',     'label', $this->_('Phone 3'));
-        $model->setIfExists('glo_phone_4',     'label', $this->_('Phone 4'));
-
-        $model->setIfExists('glo_active',      'label', $this->_('Active'),
-                'description', $this->_('Inactive means assignable only through automatich processes.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $yesNo
-                );
-        $model->setIfExists('glo_filter',      'label', $this->_('Filter'),
-                'description', $this->_('When checked appointments with these locations are not imported.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $yesNo
-                );
-
-        $model->addColumn("CASE WHEN glo_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
-
-        return $model;
+        return $this->locationModel;
     }
 
     /**
