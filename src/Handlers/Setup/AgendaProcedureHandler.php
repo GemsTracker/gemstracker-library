@@ -22,7 +22,6 @@ use Gems\Util;
 use Gems\Util\Translated;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

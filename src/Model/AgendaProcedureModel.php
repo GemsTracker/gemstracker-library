@@ -23,13 +23,13 @@ class AgendaProcedureModel extends SqlTableModel
 
         $metaModelLoader->setChangeFields($this->metaModel, 'gapr');
 
+        $this->addColumn("CASE WHEN gapr_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
+
         $this->applySettings();
     }
 
     public function applySettings(): void
     {
-        $this->addColumn("CASE WHEN gapr_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
-
         $this->metaModel->set('gapr_name', [
             'label' => $this->_('Procedure'),
             'description' => $this->_('A procedure describes an appointments effects on a respondent: e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operation, etc...'),
