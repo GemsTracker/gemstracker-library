@@ -140,7 +140,7 @@ class LocationHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
      */
-    protected function createModel(bool $detailed, string $action): DataReaderInterface
+    protected function createModel(bool $detailed, string $action): LocationModel
     {
         return $this->locationModel;
     }
