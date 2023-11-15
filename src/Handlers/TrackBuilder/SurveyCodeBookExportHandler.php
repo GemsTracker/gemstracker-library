@@ -28,7 +28,7 @@ class SurveyCodeBookExportHandler extends ModelSnippetLegacyHandlerAbstract
     protected function createModel(bool $detailed, string $action): ModelAbstract
     {
         /**
-         * @var $model SurveyCodeBookModel
+         * @var SurveyCodeBookModel $model
          */
         $model = $this->overLoader->create('Model\\SurveyCodeBookModel', $this->surveyId);
 

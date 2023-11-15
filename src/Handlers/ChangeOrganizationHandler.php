@@ -37,7 +37,7 @@ class ChangeOrganizationHandler implements RequestHandlerInterface
                 $allowedOrganizations = $user->getAllowedOrganizations();
             } else {
                 /**
-                 * @var $identity AuthenticationIdentityInterface
+                 * @var AuthenticationIdentityInterface $identity
                  */
                 $identity = $request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE);
                 $baseOrganizationId = $identity->getOrganizationId();

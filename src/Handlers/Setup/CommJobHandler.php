@@ -145,7 +145,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
     protected function createModel(bool $detailed, string $action): ModelAbstract
     {
         /**
-         * @var $model CommJobModel
+         * @var CommJobModel $model
          */
         $model = $this->overloader->create(CommJobModel::class);
 
@@ -170,7 +170,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
             $this->communicationJobLock->unlock();
 
             /**
-             * @var $messenger StatusMessengerInterface
+             * @var StatusMessengerInterface $messenger
              */
             $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
             $messenger->clearMessages();
@@ -337,7 +337,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
     {
         if ($this->communicationJobLock->isLocked()) {
             /**
-             * @var $messenger StatusMessengerInterface
+             * @var StatusMessengerInterface $messenger
              */
             $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
             $messenger->addError(

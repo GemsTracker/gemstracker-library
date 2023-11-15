@@ -139,7 +139,7 @@ class ConditionLoader
     {
         try {
             /**
-             * @var $condition ConditionInterface
+             * @var ConditionInterface $condition
              */
             $condition = $this->overloader->create($conditionClassName);
         } catch (LoadException) {
@@ -166,7 +166,7 @@ class ConditionLoader
     public function getConditionModel(): ConditionModel
     {
         /**
-         * @var $model ConditionModel
+         * @var ConditionModel $model
          */
         $model = $this->overloader->create('Model\\ConditionModel');
         return $model;

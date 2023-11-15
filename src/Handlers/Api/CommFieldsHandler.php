@@ -69,7 +69,7 @@ class CommFieldsHandler implements RequestHandlerInterface
         $language = $locale->getLanguage();
         if ($id === null || $organizationId === null) {
             /**
-             * @var $fakeRespondent Respondent
+             * @var Respondent $fakeRespondent
              */
             $fakeRespondent = $this->overloader->create(Respondent::class);
             $mailFields = $this->communicationRepository->getRespondentMailFields($fakeRespondent, $language);
@@ -101,7 +101,7 @@ class CommFieldsHandler implements RequestHandlerInterface
         $language = $locale->getLanguage();
         if ($id === null || $organizationId === null) {
             /**
-             * @var $fakeUser User
+             * @var User $fakeUser
              */
             $fakeUser = $this->overloader->create(User::class);
             if ($passwordFields) {

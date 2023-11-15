@@ -204,7 +204,7 @@ class AuditLog
     public function getRequestMessages(): array
     {
         /**
-         * @var $messenger StatusMessengerInterface
+         * @var StatusMessengerInterface $messenger
          */
         $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
         return Ra::flatten($messenger->getMessages(null, true));

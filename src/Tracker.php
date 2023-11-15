@@ -658,7 +658,7 @@ class Tracker implements TrackerInterface
     {
         if (! $this->_tokenLibrary) {
             /**
-             * @var $tokenLibrary TokenLibrary
+             * @var TokenLibrary $tokenLibrary
              */
             $tokenLibrary = $this->overLoader->create('Tracker\\Token\\TokenLibrary');
             $this->_tokenLibrary = $tokenLibrary;

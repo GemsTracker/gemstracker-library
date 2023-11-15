@@ -130,7 +130,7 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
         $orgId = $this->_getIdParam();
         $org   = $this->userLoader->getOrganization($orgId);
         /**
-         * @var $messenger StatusMessengerInterface
+         * @var StatusMessengerInterface $messenger
          */
         $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 

@@ -116,7 +116,7 @@ class LegacyController implements RequestHandlerInterface
     protected function getFlashMessages(ServerRequestInterface $request): array
     {
         /**
-         * @var $messenger FlashMessagesInterface
+         * @var FlashMessagesInterface $messenger
          */
         $messenger = $request->getAttribute('flash');
         return $messenger->getFlash(Action::$messengerKey, []);

@@ -30,7 +30,7 @@ class CommMessengersHandler extends ModelSnippetLegacyHandlerAbstract
     protected function createModel(bool $detailed, string $action): ModelAbstract
     {
         /**
-         * @var $model CommMessengersModel
+         * @var CommMessengersModel $model
          */
         $model = $this->overLoader->create($this->modelName);
         $model->applySetting($detailed);

@@ -32,7 +32,7 @@ class RouteHelperFactory implements FactoryInterface
         $userRole = null;
         if ($container->has(CurrentUserRepository::class)) {
             /**
-             * @var $currentUserRepository CurrentUserRepository
+             * @var CurrentUserRepository $currentUserRepository
              */
             $currentUserRepository = $container->get(CurrentUserRepository::class);
             $currentUser = $currentUserRepository->getCurrentUser();

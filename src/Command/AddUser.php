@@ -81,7 +81,7 @@ class AddUser extends Command
     protected function interactiveUserAdd(InputInterface $input, OutputInterface $output)
     {
         /**
-         * @var $helper QuestionHelper
+         * @var QuestionHelper $helper
          */
         $helper = $this->getHelper('question');
         $io = new SymfonyStyle($input, $output);

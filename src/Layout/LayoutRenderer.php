@@ -32,7 +32,7 @@ class LayoutRenderer
     protected function getAvailableOrganizations(ServerRequestInterface $request): ?array
     {
         /**
-         * @var $user User
+         * @var User|null $user
          */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
         //if ($user->hasPrivilege('pr.organization-switch')) {
@@ -44,7 +44,7 @@ class LayoutRenderer
 
     protected function getUiSwitchGroups(ServerRequestInterface $request): ?array
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
         if ($user instanceof User /*&& $user->hasPrivilege('pr.group.switch')*/) {
             return $user->getAllowedStaffGroups(false);
@@ -54,7 +54,7 @@ class LayoutRenderer
 
     protected function getUiSwitchCurrentGroup(ServerRequestInterface $request): ?int
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
         if ($user instanceof User /*&& $user->hasPrivilege('pr.group.switch')*/) {
             return $user->getGroupId();

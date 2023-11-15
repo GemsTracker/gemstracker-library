@@ -44,7 +44,7 @@ class MoveAnswersTask extends \MUtil\Task\TaskAbstract
 
     /**
      *
-     * @var [] targetfield => sourcefield
+     * @var array targetfield => sourcefield
      */
     public $targetFields;
 

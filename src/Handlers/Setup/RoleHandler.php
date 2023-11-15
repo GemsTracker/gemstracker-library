@@ -222,7 +222,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         //If we try to edit master, add an error message and reroute
         if (isset($data['grl_name']) && $data['grl_name']=='master') {
             /**
-             * @var $messenger StatusMessengerInterface
+             * @var StatusMessengerInterface $messenger
              */
             $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
             $messenger->addError($this->_('Editing `master` is not allowed'));
@@ -245,7 +245,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         // If we try to delete a parent, add an error message and reroute
         if (count($children) > 0) {
             /**
-             * @var $messenger StatusMessengerInterface
+             * @var StatusMessengerInterface $messenger
              */
             $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
             $messenger->addMessage(sprintf(

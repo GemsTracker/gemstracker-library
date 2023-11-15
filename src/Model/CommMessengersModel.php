@@ -25,7 +25,7 @@ class CommMessengersModel extends JoinModel
 
     /**
      *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param bool $detailed True when the current action is not in $summarizedActions.
      */
     public function applySetting($detailed = true)
     {

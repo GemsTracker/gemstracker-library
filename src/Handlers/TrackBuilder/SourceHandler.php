@@ -386,7 +386,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         $source = $this->getSourceById();
 
         /**
-         * @var $messenger StatusMessengerInterface
+         * @var StatusMessengerInterface $messenger
          */
         $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
