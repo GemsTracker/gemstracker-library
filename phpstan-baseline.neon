@@ -876,29 +876,9 @@ parameters:
 			path: src/Agenda/LaminasAppointmentSelect.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$messenger StatusMessengerInterface\\)\\: Unexpected token \"\\$messenger\", expected type at offset 20$#"
-			count: 1
-			path: src/Audit/AuditLog.php
-
-		-
-			message: "#^Variable \\$log might not be defined\\.$#"
-			count: 1
-			path: src/Audit/AuditLog.php
-
-		-
 			message: "#^Call to an undefined method Zend_Form_Element\\:\\:img\\(\\)\\.$#"
 			count: 1
 			path: src/AuthTfa/Method/AuthenticatorTotp.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#"
-			count: 12
-			path: src/Command/AddUser.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$helper QuestionHelper\\)\\: Unexpected token \"\\$helper\", expected type at offset 20$#"
-			count: 1
-			path: src/Command/AddUser.php
 
 		-
 			message: "#^Parameter \\#2 \\$default of class Symfony\\\\Component\\\\Console\\\\Question\\\\ConfirmationQuestion constructor expects bool, string given\\.$#"
@@ -992,16 +972,6 @@ parameters:
 
 		-
 			message: "#^Method Gems\\\\Condition\\\\ConditionLoader\\:\\:listConditionsForType\\(\\) should return array\\<string\\> but returns array\\<Gems\\\\Condition\\\\ConditionInterface\\>\\.$#"
-			count: 1
-			path: src/Condition/ConditionLoader.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$condition ConditionInterface\\)\\: Unexpected token \"\\$condition\", expected type at offset 24$#"
-			count: 1
-			path: src/Condition/ConditionLoader.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model ConditionModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
 			count: 1
 			path: src/Condition/ConditionLoader.php
 
@@ -1991,27 +1961,12 @@ parameters:
 			path: src/FormattedData.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$fakeRespondent Respondent\\)\\: Unexpected token \"\\$fakeRespondent\", expected type at offset 24$#"
-			count: 1
-			path: src/Handlers/Api/CommFieldsHandler.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$fakeUser User\\)\\: Unexpected token \"\\$fakeUser\", expected type at offset 24$#"
-			count: 1
-			path: src/Handlers/Api/CommFieldsHandler.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Handlers\\\\AskHandler\\:\\:\\$redirectUrl\\.$#"
 			count: 1
 			path: src/Handlers/AskHandler.php
 
 		-
 			message: "#^Call to an undefined method Gems\\\\User\\\\User\\:\\:switchLocale\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/AskHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:p\\(\\)\\.$#"
 			count: 1
 			path: src/Handlers/AskHandler.php
 
@@ -2044,11 +1999,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\BrowseChangeHandler\\:\\:\\$actions contains unresolvable type\\.$#"
 			count: 1
 			path: src/Handlers/BrowseChangeHandler.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$identity AuthenticationIdentityInterface\\)\\: Unexpected token \"\\$identity\", expected type at offset 28$#"
-			count: 1
-			path: src/Handlers/ChangeOrganizationHandler.php
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\SnippetsActions\\\\ModelActionInterface&Zalt\\\\SnippetsActions\\\\SnippetActionInterface\\:\\:\\$model\\.$#"
@@ -2836,16 +2786,6 @@ parameters:
 			path: src/Handlers/Setup/CommJobHandler.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$messenger StatusMessengerInterface\\)\\: Unexpected token \"\\$messenger\", expected type at offset 24$#"
-			count: 2
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model CommJobModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\CommLogHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/CommLogHandler.php
@@ -2854,11 +2794,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\CommLogHandler\\:\\:\\$indexStartSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/CommLogHandler.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model CommMessengersModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Handlers/Setup/CommMessengersHandler.php
 
 		-
 			message: "#^PHPDoc tag @var above a method has no effect\\.$#"
@@ -2981,11 +2916,6 @@ parameters:
 			path: src/Handlers/Setup/OrganizationHandler.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$messenger StatusMessengerInterface\\)\\: Unexpected token \"\\$messenger\", expected type at offset 20$#"
-			count: 1
-			path: src/Handlers/Setup/OrganizationHandler.php
-
-		-
 			message: "#^Parameter \\#1 \\$organizationId of method Gems\\\\User\\\\UserLoader\\:\\:getOrganization\\(\\) expects int\\|null, string\\|null given\\.$#"
 			count: 1
 			path: src/Handlers/Setup/OrganizationHandler.php
@@ -3083,11 +3013,6 @@ parameters:
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\RoleHandler\\:\\:\\$createEditSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
-			path: src/Handlers/Setup/RoleHandler.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$messenger StatusMessengerInterface\\)\\: Unexpected token \"\\$messenger\", expected type at offset 24$#"
-			count: 2
 			path: src/Handlers/Setup/RoleHandler.php
 
 		-
@@ -3269,21 +3194,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\SourceHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/SourceHandler.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$messenger StatusMessengerInterface\\)\\: Unexpected token \"\\$messenger\", expected type at offset 20$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/SourceHandler.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$model SurveyCodeBookModel\\)\\: Unexpected token \"\\$model\", expected type at offset 20$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/SurveyCodeBookExportHandler.php
-
-		-
-			message: "#^Method Gems\\\\Handlers\\\\TrackBuilder\\\\SurveyMaintenanceHandler\\:\\:createModel\\(\\) should return MUtil\\\\Model\\\\ModelAbstract but returns Gems\\\\Tracker\\\\Model\\\\SurveyMaintenanceModel\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/SurveyMaintenanceHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\SurveyMaintenanceHandler\\:\\:\\$createEditSnippets with type mixed is not subtype of native type array\\.$#"
@@ -3526,22 +3436,7 @@ parameters:
 			path: src/JQuery/TableRowKeySelector.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$user User\\)\\: Unexpected token \"\\$user\", expected type at offset 20$#"
-			count: 1
-			path: src/Layout/LayoutRenderer.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 2
-			path: src/Layout/LayoutRenderer.php
-
-		-
 			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Legacy/LegacyController.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$messenger FlashMessagesInterface\\)\\: Unexpected token \"\\$messenger\", expected type at offset 20$#"
 			count: 1
 			path: src/Legacy/LegacyController.php
 
@@ -3909,11 +3804,6 @@ parameters:
 			message: "#^PHPDoc tag @return has invalid value \\(\\[\\]ElementInterface\\)\\: Unexpected token \"\\[\", expected type at offset 46$#"
 			count: 1
 			path: src/Menu/RouteHelper.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$currentUserRepository CurrentUserRepository\\)\\: Unexpected token \"\\$currentUserRepository\", expected type at offset 24$#"
-			count: 1
-			path: src/Menu/RouteHelperFactory.php
 
 		-
 			message: "#^Method Psr\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
@@ -5186,21 +5076,6 @@ parameters:
 			path: src/Snippets/Agenda/FilterSqlSnippet.php
 
 		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Ask/MaintenanceModeAskSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 7
-			path: src/Snippets/Ask/MaintenanceModeAskSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlInterface\\:\\:actionLink\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Ask/ResumeLaterSnippet.php
-
-		-
 			message: "#^Access to an undefined property Zalt\\\\Html\\\\HtmlElement\\:\\:\\$class\\.$#"
 			count: 3
 			path: src/Snippets/Ask/ShowAllOpenSnippet.php
@@ -5234,16 +5109,6 @@ parameters:
 			message: "#^Negated boolean expression is always false\\.$#"
 			count: 1
 			path: src/Snippets/Ask/ShowFirstOpenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:actionLink\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Ask/ShowOpenSequenceSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Ask\\\\ShowOpenSequenceSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\Sequence\\.$#"
-			count: 1
-			path: src/Snippets/Ask/ShowOpenSequenceSnippet.php
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\Html\\\\HtmlElement\\:\\:\\$class\\.$#"
@@ -5841,11 +5706,6 @@ parameters:
 			path: src/Snippets/FormSnippetAbstract.php
 
 		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$changed$#"
-			count: 1
-			path: src/Snippets/FormSnippetAbstract.php
-
-		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$menuList$#"
 			count: 1
 			path: src/Snippets/FormSnippetAbstract.php
@@ -5989,11 +5849,6 @@ parameters:
 			message: "#^Method Gems\\\\Snippets\\\\Import\\\\FileImportSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns string\\.$#"
 			count: 1
 			path: src/Snippets/Import/FileImportSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:p\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/InfoSnippet.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:tfrow\\(\\)\\.$#"
@@ -6331,11 +6186,6 @@ parameters:
 			path: src/Snippets/ModelFormSnippetAbstract.php
 
 		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Snippets\\\\ModelFormSnippetAbstract\\:\\:\\$afterSaveRoutePart with type Gems\\\\Audit\\\\AuditLog is incompatible with native type string\\.$#"
-			count: 1
-			path: src/Snippets/ModelFormSnippetAbstract.php
-
-		-
 			message: "#^Variable \\$groupName might not be defined\\.$#"
 			count: 1
 			path: src/Snippets/ModelFormSnippetAbstract.php
@@ -6648,11 +6498,6 @@ parameters:
 		-
 			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:\\$grs_surname_prefix\\.$#"
 			count: 1
-			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:p\\(\\)\\.$#"
-			count: 2
 			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
 
 		-
@@ -8491,11 +8336,6 @@ parameters:
 			path: src/Snippets/Tracker/TrackSearchFormSnippetAbstract.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:table\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/TrackSurveyOverviewSnippet.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Snippets\\\\Tracker\\\\TrackSurveyOverviewSnippet\\:\\:\\$trackName with type int is incompatible with native type string\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/TrackSurveyOverviewSnippet.php
@@ -8846,11 +8686,6 @@ parameters:
 			path: src/Task/Survey/MoveAnswersTask.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\[\\] targetfield \\=\\> sourcefield\\)\\: Unexpected token \"\\[\", expected type at offset 23$#"
-			count: 1
-			path: src/Task/Survey/MoveAnswersTask.php
-
-		-
 			message: "#^Parameter \\#2 \\$add of method MUtil\\\\Batch\\\\BatchAbstract\\:\\:addToCounter\\(\\) expects int, string\\|false\\|null given\\.$#"
 			count: 1
 			path: src/Task/Survey/MoveAnswersTask.php
@@ -9012,11 +8847,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$userId$#"
-			count: 1
-			path: src/Tracker.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$tokenLibrary TokenLibrary\\)\\: Unexpected token \"\\$tokenLibrary\", expected type at offset 24$#"
 			count: 1
 			path: src/Tracker.php
 
@@ -9914,16 +9744,6 @@ parameters:
 			message: "#^Negated boolean expression is always false\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/ShowRoundSnippetAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlInterface\\:\\:actionLink\\(\\)\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlInterface\\:\\:pInfo\\(\\)\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/ShowTokenLoopAbstract.php
 
 		-
 			message: "#^Comparison operation \"\\<\\=\" between int\\<15, max\\> and 0 is always false\\.$#"
