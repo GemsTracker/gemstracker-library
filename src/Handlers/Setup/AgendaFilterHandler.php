@@ -13,6 +13,7 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Agenda\Agenda;
 use Gems\Agenda\AppointmentFilterInterface;
+use Gems\Agenda\AppointmentFilterModel;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Snippets\Agenda\ApplyFiltersInformation;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
@@ -124,14 +125,14 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected Agenda $agenda,
-    )
-    {
+        protected readonly AppointmentFilterModel $appointmentFilterModel
+    ) {
         parent::__construct($responder, $translate, $cache);
     }
 
     protected function createModel(bool $detailed, string $action): DataReaderInterface
     {
-        $model = $this->agenda->newFilterModel();
+        $model = $this->appointmentFilterModel;
 
         if ($detailed) {
             if (('edit' == $action) || ('create' == $action)) {
