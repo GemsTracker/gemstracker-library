@@ -67,10 +67,6 @@ class AppointmentFilterModel extends GemsJoinModel
      */
     protected $subFilters = [];
 
-    /**
-     *
-     * @param string $name
-     */
     public function __construct(
         protected readonly MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
@@ -98,29 +94,34 @@ class AppointmentFilterModel extends GemsJoinModel
 
         $yesNo = $this->translatedUtil->getYesNo();
 
-        $this->metaModel->set('gaf_class', 'label', $this->_('Filter type'),
-                'description', $this->_('Determines what is filtered how.'),
-                'multiOptions', $this->filterOptions
-                );
+        $this->metaModel->set('gaf_class', [
+            'label' => $this->_('Filter type'),
+                'description' => $this->_('Determines what is filtered how.'),
+                'multiOptions' => $this->filterOptions
+                ]);
         $this->addColumn('COALESCE(gaf_manual_name, gaf_calc_name)', 'gaf_name');
-        $this->metaModel->set('gaf_name', 'label', $this->_('Name'));
-        $this->metaModel->set('gaf_id_order', 'label', $this->_('Order'),
-                'description', $this->_('Execution order of the filters, lower numbers are executed first.')
-                );
-        $this->metaModel->set('gaf_active', 'label', $this->_('Active'),
-                'multiOptions', $yesNo
-                );
+        $this->metaModel->set('gaf_name', ['label' => $this->_('Name')]);
+        $this->metaModel->set('gaf_id_order', [
+            'label' => $this->_('Order'),
+                'description' => $this->_('Execution order of the filters, lower numbers are executed first.')
+                ]);
+        $this->metaModel->set('gaf_active', [
+            'label' => $this->_('Active'),
+                'multiOptions' => $yesNo
+                ]);
 
         $this->addColumn("(SELECT COUNT(*) FROM gems__track_appointments WHERE gaf_id = gtap_filter_id)", 'usetrack');
-        $this->metaModel->set('usetrack', 'label', $this->_('Use in track fields'),
-                'description', $this->_('The number of uses of this filter in track fields.'),
-                'elementClass', 'Exhibitor'
-                );
+        $this->metaModel->set('usetrack', [
+            'label' => $this->_('Use in track fields'),
+                'description' => $this->_('The number of uses of this filter in track fields.'),
+                'elementClass' => 'Exhibitor'
+                ]);
         $this->addColumn($this->getSubFilterSql('COUNT(*)'), 'usefilter');
-        $this->metaModel->set('usefilter', 'label', $this->_('Use in filters'),
-                'description', $this->_('The number of uses of this filter in other filters.'),
-                'elementClass', 'Exhibitor'
-                );
+        $this->metaModel->set('usefilter', [
+            'label' => $this->_('Use in filters'),
+                'description' => $this->_('The number of uses of this filter in other filters.'),
+                'elementClass' => 'Exhibitor'
+                ]);
 
         $this->addColumn("CASE WHEN gaf_active =  1 THEN '' ELSE 'deleted' END", 'row_class');
 
@@ -140,16 +141,20 @@ class AppointmentFilterModel extends GemsJoinModel
 
         $this->metaModel->resetOrder();
 
-        $this->metaModel->set('gaf_class', 'label', $this->_('Filter type'),
-                'description', $this->_('Determines what is filtered how.'),
-                'multiOptions', $this->filterOptions
-                );
-        $this->metaModel->set('gaf_manual_name', 'label', $this->_('Manual name'),
-                'description', $this->_('A name for this filter. The calculated name is used otherwise.'));
-        $this->metaModel->set('gaf_calc_name', 'label', $this->_('Calculated name'));
-        $this->metaModel->set('gaf_id_order', 'label', $this->_('Order'),
-                'description', $this->_('Execution order of the filters, lower numbers are executed first.')
-                );
+        $this->metaModel->set('gaf_class', [
+            'label' => $this->_('Filter type'),
+                'description' => $this->_('Determines what is filtered how.'),
+                'multiOptions' => $this->filterOptions
+                ]);
+        $this->metaModel->set('gaf_manual_name', [
+            'label' => $this->_('Manual name'),
+                'description' => $this->_('A name for this filter. The calculated name is used otherwise.')
+        ]);
+        $this->metaModel->set('gaf_calc_name', ['label' => $this->_('Calculated name')]);
+        $this->metaModel->set('gaf_id_order', [
+            'label' => $this->_('Order'),
+                'description' => $this->_('Execution order of the filters, lower numbers are executed first.')
+                ]);
 
         // Set the order
         $this->metaModel->set('gaf_filter_text1');
@@ -157,25 +162,28 @@ class AppointmentFilterModel extends GemsJoinModel
         $this->metaModel->set('gaf_filter_text3');
         $this->metaModel->set('gaf_filter_text4');
 
-        $this->metaModel->set('gaf_active', 'label', $this->_('Active'),
-                'multiOptions', $yesNo
-                );
+        $this->metaModel->set('gaf_active', [
+            'label' => $this->_('Active'),
+                'multiOptions' => $yesNo
+                ]);
 
         $this->addColumn('NULL', 'usetrack');
         $this->metaModel->setOnLoad('usetrack', [$this, 'loadTracks']);
-        $this->metaModel->set('usetrack', 'label', $this->_('Use in track fields'),
-                'description', $this->_('The use of this filter in track fields.'),
-                'elementClass', 'Exhibitor',
-                'formatFunction', [$this, 'showTracks']
-                );
+        $this->metaModel->set('usetrack', [
+            'label' => $this->_('Use in track fields'),
+                'description' => $this->_('The use of this filter in track fields.'),
+                'elementClass' => 'Exhibitor',
+                'formatFunction' => [$this, 'showTracks']
+                ]);
 
         $this->addColumn('NULL', 'usefilter');
         $this->metaModel->setOnLoad('usefilter', [$this, 'loadFilters']);
-        $this->metaModel->set('usefilter', 'label', $this->_('Use in filters'),
-                'description', $this->_('The use of this filter in other filters.'),
-                'elementClass', 'Exhibitor',
-                'formatFunction', [$this, 'showFilters']
-                );
+        $this->metaModel->set('usefilter', [
+            'label' => $this->_('Use in filters'),
+                'description' => $this->_('The use of this filter in other filters.'),
+                'elementClass' => 'Exhibitor',
+                'formatFunction' => [$this, 'showFilters']
+                ]);
 
         $this->addColumn("CASE WHEN gaf_active =  1 THEN '' ELSE 'deleted' END", 'row_class');
 
@@ -199,17 +207,17 @@ class AppointmentFilterModel extends GemsJoinModel
             ]);
 
         // gaf_id is not needed for some validators
-        $this->metaModel->set('gaf_id',            'elementClass', 'Hidden');
+        $this->metaModel->set('gaf_id', ['elementClass' => 'Hidden']);
 
-        $this->metaModel->set('gaf_id_order','filters[digits]', 'Digits');
+        $this->metaModel->set('gaf_id_order', ['filters[digits]' => 'Digits']);
 
-        $this->metaModel->set('gaf_calc_name',     'elementClass', 'Exhibitor');
-        $this->metaModel->setOnSave('gaf_calc_name', array($this, 'calcultateName'));
-        $this->metaModel->set('gaf_active',        'elementClass', 'Checkbox');
+        $this->metaModel->set('gaf_calc_name', ['elementClass' => 'Exhibitor']);
+        $this->metaModel->setOnSave('gaf_calc_name', [$this, 'calcultateName']);
+        $this->metaModel->set('gaf_active', ['elementClass' => 'Checkbox']);
 
         if ($create) {
             $default = $this->resultFetcher->fetchOne("SELECT MAX(gaf_id_order) FROM gems__appointment_filters");
-            $this->metaModel->set('gaf_id_order', 'default', intval($default) + 10);
+            $this->metaModel->set('gaf_id_order', ['default' => (int) $default + 10]);
         }
 
         return $this;

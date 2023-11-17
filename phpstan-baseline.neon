@@ -811,16 +811,6 @@ parameters:
 			path: src/Agenda/Appointment.php
 
 		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$name$#"
-			count: 1
-			path: src/Agenda/AppointmentFilterModel.php
-
-		-
-			message: "#^Property Gems\\\\Model\\\\JoinModel\\:\\:\\$translate \\(MUtil\\\\Translate\\\\Translator\\) does not accept Symfony\\\\Contracts\\\\Translation\\\\TranslatorInterface\\.$#"
-			count: 1
-			path: src/Agenda/AppointmentFilterModel.php
-
-		-
 			message: "#^PHPDoc tag @param for parameter \\$filter with type Gems\\\\Agenda\\\\AppointmentFilterInterface is not subtype of native type Gems\\\\Agenda\\\\Filter\\\\AppointmentFilterInterface\\.$#"
 			count: 1
 			path: src/Agenda/AppointmentSelect.php
