@@ -63,10 +63,6 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
      */
     protected $currentUser;
 
-    /**
-     *
-     * @param string $name
-     */
     public function __construct(
         protected readonly MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
@@ -220,7 +216,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
         $event = new SurveyModelSetEvent($this, $action->isDetailed(), $action->isEditing());
         $this->eventDispatcher->dispatch($event, SurveyModelSetEvent::class);
     }
-    
+
     /**
      * Set those settings needed for the browse display
      *
