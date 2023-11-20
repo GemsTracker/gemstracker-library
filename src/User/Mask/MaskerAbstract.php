@@ -117,7 +117,7 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
     /**
      *
      * @param string $type Current field data type
-     * @return callable Function to perform masking
+     * @return callable|null Function to perform masking
      */
     abstract public function getMaskFunction($type);
 
