@@ -12,9 +12,8 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\Model\JoinModel;
+use Gems\Model\LogMaintenanceModel;
 use Gems\Util\Translated;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -70,6 +69,7 @@ class LogMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected Translated $translatedUtil,
+        protected readonly LogMaintenanceModel $logMaintenanceModel
     )
     {
         parent::__construct($responder, $translate, $cache);
@@ -84,40 +84,10 @@ class LogMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): LogMaintenanceModel
     {
-        $model = new JoinModel('log_maint', 'gems__log_setup', 'gls', true);
-        $model->set('gls_name', 'label', $this->_('Action'),
-                'elementClass', ('create' == $action) ? 'Text' : 'Exhibitor',
-                'validators[unique]', $model->createUniqueValidator('gls_name'));
-
-        $model->set('gls_when_no_user', 'label', $this->_('Log when no user'),
-                'description', $this->_('Always log this action, even when no one is logged in.'),
-                'elementClass', 'CheckBox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
-
-        $model->set('gls_on_action', 'label', $this->_('Log view'),
-                'description', $this->_('Always log when viewed / opened.'),
-                'elementClass', 'CheckBox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
-
-        $model->set('gls_on_post', 'label', $this->_('Log change tries'),
-                'description', $this->_('Log when trying to change the data.'),
-                'elementClass', 'CheckBox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
-
-        $model->set('gls_on_change', 'label', $this->_('Log data change'),
-                'description', $this->_('Log when data changes.'),
-                'elementClass', 'CheckBox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
-
-        return $model;
+        return $this->logMaintenanceModel;
     }
 
     /**

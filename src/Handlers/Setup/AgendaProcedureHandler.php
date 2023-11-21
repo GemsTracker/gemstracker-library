@@ -11,6 +11,7 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\Model\AgendaProcedureModel;
 use Gems\Snippets\Agenda\AutosearchFormSnippet;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -19,10 +20,8 @@ use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Util;
 use Gems\Util\Translated;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -53,7 +52,7 @@ class AgendaProcedureHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
      * @var array
      */
     public array $cacheTags = ['procedure', 'procedures'];
-    
+
     /**
      * The snippets used for the index action, before those in autofilter
      *
@@ -95,6 +94,7 @@ class AgendaProcedureHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
         CacheItemPoolInterface $cache,
         protected Translated $translatedUtil,
         protected Util $util,
+        protected readonly AgendaProcedureModel $agendaProcedureModel
     ) {
         parent::__construct($responder, $translate, $cache);
     }
@@ -128,54 +128,10 @@ class AgendaProcedureHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): AgendaProcedureModel
     {
-        $model      = new \MUtil\Model\TableModel('gems__agenda_procedures');
-
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gapr');
-
-        $model->setDeleteValues('gapr_active', 0);
-
-        $model->set('gapr_name',                    'label', $this->_('Procedure'),
-                'description', $this->_('A procedure describes an appointments effects on a respondent:
-e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operation, etc...'),
-                'required', true
-                );
-
-        $model->setIfExists('gapr_id_organization', 'label', $this->_('Organization'),
-                'description', $this->_('Optional, an import match with an organization has priority over those without.'),
-                'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->util->getDbLookup()->getOrganizations()
-                );
-
-        $model->setIfExists('gapr_name_for_resp',   'label', $this->_('Respondent explanation'),
-                'description', $this->_('Alternative description to use with respondents.')
-                );
-        $model->setIfExists('gapr_match_to',        'label', $this->_('Import matches'),
-                'description', $this->_("Split multiple import matches using '|'.")
-                );
-
-        $model->setIfExists('gapr_code',        'label', $this->_('Procedure code'),
-                'size', 10,
-                'description', $this->_('Optional code name to link the procedure to program code.'));
-
-        $model->setIfExists('gapr_active',      'label', $this->_('Active'),
-                'description', $this->_('Inactive means assignable only through automatich processes.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $this->translatedUtil->getYesNo(),
-                ActivatingYesNoType::$activatingValue, 1,
-                ActivatingYesNoType::$deactivatingValue, 0
-                );
-        $model->setIfExists('gapr_filter',      'label', $this->_('Filter'),
-                'description', $this->_('When checked appointments with these procedures are not imported.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
-
-        $model->addColumn("CASE WHEN gapr_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
-
-        return $model;
+        return $this->agendaProcedureModel;
     }
 
     /**
@@ -187,10 +143,10 @@ e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operat
     {
         return $this->_('Agenda procedures');
     }
-    
+
     /**
-     * Returns the fields for autosearch with 
-     * 
+     * Returns the fields for autosearch with
+     *
      * @return array
      */
     public function getSearchFields()
@@ -250,6 +206,10 @@ e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operat
     {
         parent::indexAction();
 
-        $this->html->pInfo($this->getModel()->get('gapr_name', 'description'));
+        $this->html->pInfo(
+            $this->getModel()
+                ->getMetaModel()
+                ->get('gapr_name', 'description')
+        );
     }
 }

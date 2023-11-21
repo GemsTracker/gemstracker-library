@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Agenda\Agenda;
+use Gems\Model\AgendaDiagnosisModel;
 use Gems\Snippets\Agenda\AutosearchFormSnippet;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -20,7 +21,6 @@ use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Util;
 use Gems\Util\Translated;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -96,6 +96,7 @@ class AgendaDiagnosisHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
         protected Agenda $agenda,
         protected Translated $translatedUtil,
         protected Util $util,
+        protected readonly AgendaDiagnosisModel $agendaDiagnosisModel
     ) {
         parent::__construct($responder, $translate, $cache);
     }
@@ -119,7 +120,7 @@ class AgendaDiagnosisHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
 
         $this->addSnippets($snippets, $params);
     }
-    
+
     /**
      * Creates a model for getModel(). Called only for each new $action.
      *
@@ -129,49 +130,10 @@ class AgendaDiagnosisHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): AgendaDiagnosisModel
     {
-        $model      = new \MUtil\Model\TableModel('gems__agenda_diagnoses');
-        $model->copyKeys();
-
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gad');
-
-        $model->setDeleteValues('gad_active', 0);
-
-        $model->set('gad_diagnosis_code',           'label', $this->_('Diagnosis code'),
-            'description', $this->_('A code as defined by the coding system'),
-            'required', true
-        );
-        $model->set('gad_description',              'label', $this->_('Activity'),
-            'description', $this->_('Description of the diagnosis'),
-            'required', true
-        );
-
-        $model->setIfExists('gad_coding_method',    'label', $this->_('Coding system'),
-            'description', $this->_('The coding system used.'),
-            'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->agenda->getDiagnosisCodingSystems()
-        );
-
-        $model->setIfExists('gad_code',             'label', $this->_('Diagnosis code'),
-            'size', 10,
-            'description', $this->_('Optional code name to link the diagnosis to program code.'));
-
-        $model->setIfExists('gad_active',           'label', $this->_('Active'),
-            'description', $this->_('Inactive means assignable only through automatich processes.'),
-            'elementClass', 'Checkbox',
-            'multiOptions', $this->translatedUtil->getYesNo()
-        );
-        $model->setIfExists('gad_filter',      'label', $this->_('Filter'),
-            'description', $this->_('When checked appointments with these diagnoses are not imported.'),
-            'elementClass', 'Checkbox',
-            'multiOptions', $this->translatedUtil->getYesNo()
-        );
-
-        $model->addColumn("CASE WHEN gad_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
-
-        return $model;
+        return $this->agendaDiagnosisModel;
     }
 
     /**

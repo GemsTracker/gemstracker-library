@@ -11,6 +11,7 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\Model\AgendaStaffModel;
 use Gems\Snippets\Agenda\AutosearchFormSnippet;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -18,7 +19,6 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Util;
 use Gems\Util\Translated;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -51,7 +51,7 @@ class AgendaStaffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
      * @var array
      */
     public array $cacheTags = ['staff'];
-    
+
     /**
      * The snippets used for the index action, before those in autofilter
      *
@@ -93,6 +93,7 @@ class AgendaStaffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         CacheItemPoolInterface $cache,
         protected Translated $translatedUtil,
         protected Util $util,
+        protected readonly AgendaStaffModel $agendaStaffModel
     ) {
         parent::__construct($responder, $translate, $cache);
     }
@@ -125,50 +126,10 @@ class AgendaStaffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): AgendaStaffModel
     {
-        $dblookup   = $this->util->getDbLookup();
-        $model      = new \MUtil\Model\TableModel('gems__agenda_staff');
-
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gas');
-
-        $model->setDeleteValues('gas_active', 0);
-
-        $model->set('gas_name',                    'label', $this->_('Name'),
-                'required', true
-                );
-        $model->set('gas_function',                'label', $this->_('Function'));
-
-
-        $model->setIfExists('gas_id_organization', 'label', $this->_('Organization'),
-                'multiOptions', $dblookup->getOrganizations(),
-                'required', true
-                );
-
-        $model->setIfExists('gas_id_user',         'label', $this->_('GemsTracker user'),
-                'description', $this->_('Optional: link this health care provider to a GemsTracker Staff user.'),
-                'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $dblookup->getStaff()
-                );
-        $model->setIfExists('gas_match_to',        'label', $this->_('Import matches'),
-                'description', $this->_("Split multiple import matches using '|'.")
-                );
-
-        $model->setIfExists('gas_active',      'label', $this->_('Active'),
-                'description', $this->_('Inactive means assignable only through automatich processes.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
-        $model->setIfExists('gas_filter',      'label', $this->_('Filter'),
-                'description', $this->_('When checked appointments with this staff member are not imported.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
-
-        $model->addColumn("CASE WHEN gas_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
-
-        return $model;
+        return $this->agendaStaffModel;
     }
 
     /**
@@ -180,10 +141,10 @@ class AgendaStaffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
     {
         return $this->_('Agenda healthcare provider');
     }
-    
+
     /**
-     * Returns the fields for autosearch with 
-     * 
+     * Returns the fields for autosearch with
+     *
      * @return array
      */
     public function getSearchFields()

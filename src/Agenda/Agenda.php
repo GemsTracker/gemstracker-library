@@ -47,7 +47,7 @@ use Zalt\Loader\ProjectOverloader;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Agenda 
+class Agenda
 {
     /**
      *
@@ -72,7 +72,7 @@ class Agenda
      * @var string
      */
     public string $episodeDisplayFormat = 'd-M-Y';
-    
+
     /**
      * Sets the source of variables and the first directory for snippets
      */
@@ -105,7 +105,7 @@ class Agenda
         $this->eventDispatcher->dispatch($event);
         return $event;
     }
-    
+
     /**
      * Get the select statement for appointments in getAppointments()
      *
@@ -1068,15 +1068,6 @@ class Agenda
     public function newFilterObject(string $className): object
     {
         return $this->overloader->create("Agenda\\Filter\\$className");
-    }
-
-    /**
-     *
-     * @return \Gems\Agenda\AppointmentFilterModel
-     */
-    public function newFilterModel(): AppointmentFilterModel
-    {
-        return $this->overloader->create("Agenda\\AppointmentFilterModel");
     }
 
     /**
