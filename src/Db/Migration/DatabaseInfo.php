@@ -15,8 +15,9 @@ class DatabaseInfo
     public function tableExists(string $tableName): bool
     {
         $metaData = Factory::createSourceFromAdapter($this->adapter);
-        return in_array($tableName, $metaData->getTableNames());
+        $tables = $metaData->getTableNames();
 
+        return in_array($tableName, $tables);
     }
 
     public function tableHasColumn(string $tableName, string $columnName): bool
