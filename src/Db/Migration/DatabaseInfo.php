@@ -24,6 +24,6 @@ class DatabaseInfo
         $metaData = Factory::createSourceFromAdapter($this->adapter);
         $columns = $metaData->getColumnNames($tableName);
 
-        return in_array($columns, $columns);
+        return in_array($columnName, $columns);
     }
 }
