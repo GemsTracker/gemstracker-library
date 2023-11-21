@@ -2,7 +2,7 @@
 CREATE TABLE if not exists gems__comm_templates (
       gct_id_template bigint unsigned not null AUTO_INCREMENT,
 
-      gct_name        varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
+      gct_name        varchar(120) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
       gct_target      varchar(32) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
       gct_code        varchar(64)  CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
 
