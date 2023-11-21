@@ -2,9 +2,9 @@
 
 namespace Gems\Config\Db\Patches\Upgrade2x;
 
+use Gems\Db\Migration\DatabaseInfo;
 use Gems\Db\Migration\PatchAbstract;
 use Gems\Db\ResultFetcher;
-use Laminas\Db\Adapter\Adapter;
 
 class GemsAppointmentsPatch extends PatchAbstract
 {
@@ -13,6 +13,7 @@ class GemsAppointmentsPatch extends PatchAbstract
     public function __construct(
         protected array $config,
         protected readonly ResultFetcher $resultFetcher,
+        protected readonly DatabaseInfo $databaseInfo,
     )
     {
     }
@@ -37,12 +38,13 @@ class GemsAppointmentsPatch extends PatchAbstract
     {
         $this->prepare();
 
-        $statements = [
-            'ALTER TABLE gems__appointments ADD COLUMN gap_last_synch timestamp NULL DEFAULT NULL AFTER gap_id_in_source',
-            'ALTER TABLE gems__appointments MODIFY COLUMN gap_id_in_source varchar(40) DEFAULT NULL',
-            'ALTER TABLE gems__appointments MODIFY COLUMN gap_comment text',
+        $statements = [];
+        if (!$this->databaseInfo->tableHasColumn('gems__appointments', 'gap_last_synch')) {
+            $statements[] = 'ALTER TABLE gems__appointments ADD COLUMN gap_last_synch timestamp NULL DEFAULT NULL AFTER gap_id_in_source';
+        }
+        $statements[] = 'ALTER TABLE gems__appointments MODIFY COLUMN gap_id_in_source varchar(40) DEFAULT NULL';
+        $statements[] = 'ALTER TABLE gems__appointments MODIFY COLUMN gap_comment text';
 
-        ];
         // Check if the key we want to drop exists.
         // If it does, we need to drop it.
         foreach ($this->gems_table_constraints as $constraint) {
