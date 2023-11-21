@@ -14,6 +14,11 @@ namespace Gems\Snippets\Agenda;
 use Gems\Audit\AuditLog;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Model\AppointmentModel;
+use Gems\Snippets\ModelFormSnippetAbstract;
+use Gems\Tracker\Respondent;
+use Gems\User\User;
+use Gems\Util;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
@@ -28,35 +33,20 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
+class AppointmentFormSnippet extends ModelFormSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
+    protected User $currentUser;
 
-    /**
-     *
-     * @var \MUtil\Model\ModelAbstract
-     */
-    protected $model;
+    protected ?FullDataInterface $model = null;
 
-    /**
-     *
-     * @var \Gems\Tracker\Respondent
-     */
-    protected $respondent;
+    protected Respondent $respondent;
 
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
+    protected Util $util;
 
     public function __construct(
-        SnippetOptions $snippetOptions, 
-        RequestInfo $requestInfo, 
-        TranslatorInterface $translate, 
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
         MessengerInterface $messenger,
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
@@ -78,7 +68,7 @@ class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         parent::afterSave($changed);
 
         $model = $this->getModel();
-        if ($model instanceof \Gems\Model\AppointmentModel) {
+        if ($model instanceof AppointmentModel) {
             $count = $model->getChangedTokenCount();
             if ($count) {
                 $this->addMessage(sprintf($this->plural('%d token changed', '%d tokens changed', $count), $count));
@@ -93,7 +83,7 @@ class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
-        if (! $this->model instanceof \Gems\Model\AppointmentModel) {
+        if (!$this->model instanceof AppointmentModel) {
             $this->model = $this->modelLoader->createAppointmentModel();
             $this->model->applyDetailSettings();
         }

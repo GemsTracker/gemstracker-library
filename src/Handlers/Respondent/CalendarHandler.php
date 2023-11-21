@@ -36,7 +36,7 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
-     
+
     protected array $autofilterParameters = array(
         'dateFormat'        => 'getDateFormat',
         'extraSort'         => array(
@@ -90,7 +90,7 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
         protected PeriodSelectRepository $periodSelectRepository,
     ) {
         parent::__construct($responder, $translator, $cache);
-        
+
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
@@ -105,7 +105,7 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): Model\AppointmentModel
     {
         $model = $this->modelLoader->createAppointmentModel();
         $model->applyBrowseSettings();
@@ -172,7 +172,7 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
 
         return $filter;
     }
-    
+
     public function getIndexTitle(): string
     {
         return $this->_('Calendar');

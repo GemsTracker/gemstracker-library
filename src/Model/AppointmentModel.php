@@ -282,8 +282,9 @@ class AppointmentModel extends GemsMaskedModel
 
         $jsonType = new JsonType(10);
         $jsonType->apply($this->metaModel, 'gap_info');
-
-        $this->metaModel->setIfExists('gap_info', ['label' => $this->_('Additional info')]);
+        $this->metaModel->setIfExists('gap_info', [
+            'label' => $this->_('Additional info'),
+        ]);
 
         if ($setMulti) {
             $this->metaModel->setIfExists('gap_id_activity', ['multiOptions' => $empty + $this->agenda->getActivities()]);
@@ -378,7 +379,7 @@ class AppointmentModel extends GemsMaskedModel
         if ($this->getChanged() && ($this->getChanged() !== $oldChanged)) {
             if ($this->isAutoTrackUpdate()) {
                 $appointment = $this->agenda->getAppointment($returnValues);
-                $event = $this->agenda->appointmentChanged($appointment, $this->agenda);
+                $event = $this->agenda->appointmentChanged($appointment);
                 $this->_changedTokenCount += $event->getTokensChanged();
             }
         }

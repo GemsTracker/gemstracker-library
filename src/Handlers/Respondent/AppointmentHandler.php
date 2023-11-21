@@ -19,7 +19,6 @@ use Gems\Model\AppointmentModel;
 use Gems\Model;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Agenda\AppointmentFormSnippet;
-use Gems\Snippets\Agenda\AppointmentItemYesNoDeleteSnippet;
 use Gems\Snippets\Agenda\AppointmentShowSnippet;
 use Gems\Snippets\Agenda\AppointmentTokensSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
