@@ -87,12 +87,6 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
-     */
-    protected $model;
-
-    /**
-     *
      * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
@@ -103,7 +97,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
-        protected Model $modelLoader,
+        protected AppointmentModel $model,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
         $this->currentUser = $currentUserRepository->getCurrentUser();
@@ -193,27 +187,24 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
-        if ($this->model instanceof AppointmentModel) {
-            $model = $this->model;
-        } else {
-            $model = $this->modelLoader->createAppointmentModel();
-            $model->applyBrowseSettings();
-        }
+        $model = $this->model;
 
-        $model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
-        $model->set('date_only', 'formatFunction', [$this, 'formatDate']);
-        $model->set('gap_admission_time', 'label', $this->_('Time'),
-            'formatFunction', [$this, 'formatTime']);
+        $model->addColumn("CONVERT(gap_admission_time, DATE)", 'date_only');
+        $model->getMetaModel()->set('date_only', ['formatFunction' => [$this, 'formatDate']]);
+        $model->getMetaModel()->set('gap_admission_time', [
+            'label' => $this->_('Time'),
+            'formatFunction' => [$this, 'formatTime']
+        ]);
 
-        $this->_dateStorageFormat = $model->get('gap_admission_time', 'storageFormat');
+        $this->_dateStorageFormat = $model->getMetaModel()->get('gap_admission_time', 'storageFormat');
 
-        $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
+        $model->getMetaModel()->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
         if ($this->respondent instanceof Respondent) {
-            $model->addFilter([
-                'gap_id_user' => $this->respondent->getId(),
-                'gap_id_organization' => $this->respondent->getOrganizationId(),
-            ]);
+//            $model->addFilter([
+//                'gap_id_user' => $this->respondent->getId(),
+//                'gap_id_organization' => $this->respondent->getOrganizationId(),
+//            ]);
         }
 
         return $model;

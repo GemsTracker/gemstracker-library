@@ -55,7 +55,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         'pageNumber'      => 'getPageNumber',
         'sortParamAsc'    => 'asrt',
         'sortParamDesc'   => 'dsrt',
-        'textSearchField' => 'searchText', 
+        'textSearchField' => 'searchText',
     ];
 
     /**
@@ -227,7 +227,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var mixed String or array of snippets name
      */
     protected array $indexStartSnippets = [
-        'Generic\\ContentTitleSnippet', 
+        'Generic\\ContentTitleSnippet',
         'AutosearchFormSnippet',
         ];
 
@@ -246,7 +246,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var mixed String or array of snippets name
      */
     protected array $showSnippets = [
-        ContentTitleSnippet::class, 
+        ContentTitleSnippet::class,
         ModelDetailTableSnippet::class,
         CurrentButtonRowSnippet::class,
         ];
@@ -281,7 +281,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
 
         $this->addSnippets($this->activeToggleSnippets, $params);
     }
-    
+
     /**
      * The automatically filtered result
      *
@@ -593,7 +593,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $this->currentUserId = $request->getAttribute('userId', $this->currentUserId);
-        
+
         return $this->processResponseCookies(parent::handle($request));
     }
 
