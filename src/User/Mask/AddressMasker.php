@@ -24,7 +24,7 @@ class AddressMasker extends AnyMasker
     /**
      *
      * @param string $type Current field data type
-     * @return callable Function to perform masking
+     * @return callable|null Function to perform masking
      */
     public function getMaskFunction($type)
     {
@@ -53,7 +53,7 @@ class AddressMasker extends AnyMasker
 
     /**
      *
-     * @return mixed default value
+     * @return string default value
      */
     public function getSettingsDefault()
     {
@@ -80,7 +80,7 @@ class AddressMasker extends AnyMasker
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is partially masked
+     * @return bool True if this field is partially masked
      */
     public function isTypeInvisible($type, $choice)
     {
@@ -91,7 +91,7 @@ class AddressMasker extends AnyMasker
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     * @return bool True if this field is partially (or wholly) masked (or invisible)
      */
     public function isTypeMaskedPartial($type, $choice)
     {
@@ -110,14 +110,13 @@ class AddressMasker extends AnyMasker
             default:
                 return false;
         }
-        return false;
     }
 
     /**
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is masked (or invisible)
+     * @return bool True if this field is masked (or invisible)
      */
     public function isTypeMaskedWhole($type, $choice)
     {
@@ -140,14 +139,13 @@ class AddressMasker extends AnyMasker
             default:
                 return false;
         }
-        return false;
     }
 
     /**
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is masked
+     * @return bool True if this field is masked
      */
     public function isTypeMasked($type, $choice)
     {
@@ -158,7 +156,7 @@ class AddressMasker extends AnyMasker
      * Mask the value
      *
      * @param string $value The original value
-     * @return string
+     * @return string|null
      */
     public function maskZip($value)
     {

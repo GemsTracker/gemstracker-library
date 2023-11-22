@@ -414,7 +414,7 @@ class MaskRepository
      * Get the settings field name from a combined field name
      *
      * @param string $key
-     * @return string The settings name or null when not a key name
+     * @return string|null The settings name or null when not a key name
      */
     public function getSettingsField($key)
     {
@@ -431,7 +431,7 @@ class MaskRepository
      * Get the storage field name from a combined field name
      *
      * @param string $key
-     * @return string The storage name or null when not a key name
+     * @return string|null The storage name or null when not a key name
      */
     public function getStorageField($key)
     {
@@ -629,7 +629,7 @@ class MaskRepository
      * Make a model field name
      *
      * @param string $storageField
-     * @param string $settingsdField
+     * @param string $settingsField
      * @return string
      */
     public function makeKey($storageField, $settingsField)

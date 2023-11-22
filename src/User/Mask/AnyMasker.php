@@ -45,7 +45,7 @@ class AnyMasker extends MaskerAbstract
 
     /**
      *
-     * @return mixed default value
+     * @return string default value
      */
     public function getSettingsDefault()
     {
@@ -67,7 +67,7 @@ class AnyMasker extends MaskerAbstract
     /**
      * Mask the value
      *
-     * @return string
+     * @return null
      */
     public function hideValue()
     {
@@ -78,7 +78,7 @@ class AnyMasker extends MaskerAbstract
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is partially masked
+     * @return bool True if this field is partially masked
      */
     public function isTypeInvisible($type, $choice)
     {
@@ -89,7 +89,7 @@ class AnyMasker extends MaskerAbstract
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     * @return bool True if this field is partially (or wholly) masked (or invisible)
      */
     public function isTypeMaskedPartial($type, $choice)
     {
@@ -100,7 +100,7 @@ class AnyMasker extends MaskerAbstract
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is masked (or invisible)
+     * @return bool True if this field is masked (or invisible)
      */
     public function isTypeMaskedWhole($type, $choice)
     {
@@ -111,7 +111,7 @@ class AnyMasker extends MaskerAbstract
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is masked
+     * @return bool True if this field is masked
      */
     public function isTypeMasked($type, $choice)
     {

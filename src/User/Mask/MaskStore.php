@@ -30,13 +30,13 @@ class MaskStore extends \Gems\Loader\TargetLoaderAbstract
 
     /**
      *
-     * @var array Of hidden model settings
+     * @var array|bool Of hidden model settings
      */
     private $_compiledHiddenModelSettings;
 
     /**
      *
-     * @var array Of non-hidden model settings
+     * @var array|bool Of non-hidden model settings
      */
     private $_compiledNormalModelSettings;
 
@@ -357,7 +357,7 @@ class MaskStore extends \Gems\Loader\TargetLoaderAbstract
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return string|null
+     * @return array|string|null
      */
     public function decodeSettings($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -508,7 +508,7 @@ class MaskStore extends \Gems\Loader\TargetLoaderAbstract
      * Make a model field name
      *
      * @param string $storageField
-     * @param string $settingsdField
+     * @param string $settingsField
      * @return string
      */
     public function makeKey($storageField, $settingsField)

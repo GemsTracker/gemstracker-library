@@ -19,12 +19,20 @@ class GemsTemplateVariablesPatch extends PatchAbstract
     public function up(): array
     {
         return [
+            "ALTER TABLE gems__comm_templates MODIFY COLUMN gct_name varchar(120) NOT NULL",
             "UPDATE gems__comm_templates SET gct_name = REPLACE(REPLACE(REPLACE(REPLACE(gct_name, '{', '{{'), '}', '}}'), '{{{{', '{{'), '}}}}', '}}')",
             "UPDATE gems__comm_template_translations SET gctt_body = REPLACE(REPLACE(REPLACE(REPLACE(gctt_body, '{', '{{'), '}', '}}'), '{{{{', '{{'), '}}}}', '}}')",
             "UPDATE gems__comm_template_translations SET gctt_subject = REPLACE(REPLACE(REPLACE(REPLACE(gctt_subject, '{', '{{'), '}', '}}'), '{{{{', '{{'), '}}}}', '}}')",
             "UPDATE gems__comm_templates SET gct_name = REPLACE(gct_name, '{greetingNL}', '{greeting}')",
             "UPDATE gems__comm_template_translations SET gctt_body = REPLACE(gctt_body, '{greetingNL}', '{greeting}')",
             "UPDATE gems__comm_template_translations SET gctt_subject = REPLACE(gctt_subject, '{greetingNL}', '{greeting}')",
+        ];
+    }
+
+    public function down(): array
+    {
+        return [
+            "ALTER TABLE gems__comm_templates MODIFY COLUMN gct_name varchar(100) NOT NULL",
         ];
     }
 }

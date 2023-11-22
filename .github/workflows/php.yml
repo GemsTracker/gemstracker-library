@@ -1,4 +1,4 @@
-name: Test suite
+name: Static analysis and Tests
 
 on:
   push:

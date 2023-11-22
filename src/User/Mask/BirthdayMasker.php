@@ -38,7 +38,7 @@ class BirthdayMasker extends MaskerAbstract
     /**
      *
      * @param string $choice Current choice
-     * @return callable Function to perform masking
+     * @return string|null Function to perform masking
      */
     public function getDateMask($choice)
     {
@@ -83,7 +83,7 @@ class BirthdayMasker extends MaskerAbstract
 
     /**
      *
-     * @return mixed default value
+     * @return string default value
      */
     public function getSettingsDefault()
     {
@@ -109,7 +109,7 @@ class BirthdayMasker extends MaskerAbstract
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is partially masked
+     * @return bool True if this field is partially masked
      */
     public function isTypeInvisible($type, $choice)
     {
@@ -120,7 +120,7 @@ class BirthdayMasker extends MaskerAbstract
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     * @return bool True if this field is partially (or wholly) masked (or invisible)
      */
     public function isTypeMaskedPartial($type, $choice)
     {
@@ -131,7 +131,7 @@ class BirthdayMasker extends MaskerAbstract
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is masked (or invisible)
+     * @return bool True if this field is masked (or invisible)
      */
     public function isTypeMaskedWhole($type, $choice)
     {

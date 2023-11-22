@@ -61,31 +61,33 @@ class AuditLog
      * @return array
      * @throws Coding
      */
-    public function getAction(): array
+    public function getAction(string|null $routeName = null): array
     {
-        $route   = strtolower($this->getRouteName());
+        if ($routeName === null) {
+            $routeName = strtolower($this->getRouteName());
+        }
         $actions = $this->getDbActions();
-        if (isset($actions[$route ])) {
-            return $actions[$route];
+        if (isset($actions[$routeName])) {
+            return $actions[$routeName];
         }
 
         $logChange  = 0;
         $logRequest = 0;
         foreach ($this->logRequestActions as $routePart) {
-            if ($this->matchAction($route, $routePart)) {
+            if ($this->matchAction($routeName, $routePart)) {
                 $logRequest = 1;
                 break;
             }
         }
         foreach ($this->logRequestChanges as $routePart) {
-            if ($this->matchAction($route, $routePart)) {
+            if ($this->matchAction($routeName, $routePart)) {
                 $logChange = 1;
                 break;
             }
         }
 
         $logAction = [
-            'gls_name' => $route,
+            'gls_name' => $routeName,
             'gls_when_no_user' => 0,
             'gls_on_action' => $logRequest,
             'gls_on_post' => 0,
@@ -100,7 +102,7 @@ class AuditLog
         $table->insert($logAction);
 
         $actions = $this->getDbActions(true);
-        return $actions[$route];
+        return $actions[$routeName];
     }
 
     protected function getCurrentOrganizationId(): int
