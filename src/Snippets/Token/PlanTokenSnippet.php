@@ -13,12 +13,11 @@ namespace Gems\Snippets\Token;
 
 use Gems\Html;
 use Gems\Snippets\TokenModelSnippetAbstract;
-use MUtil\Model;
-use MUtil\Model\ModelAbstract;
 use Zalt\Html\AElement;
 use Zalt\Html\HtmlElement;
 use Zalt\Html\TableElement;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
@@ -63,7 +62,7 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
         // Add link to patient to overview
         $respondentRoute = $this->menuHelper->getRelatedRoute('respondent.show');
         if ($respondentRoute) {
-            $menu = $this->menuHelper->getLateRouteUrl($respondentRoute, [Model::REQUEST_ID1 => 'gr2o_patient_nr', Model::REQUEST_ID2 => 'gr2o_id_organization'], $bridge);
+            $menu = $this->menuHelper->getLateRouteUrl($respondentRoute, [MetaModelInterface::REQUEST_ID1 => 'gr2o_patient_nr', MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization'], $bridge);
             $aElem = new AElement($menu['url'], ['class' => '']);
             $aElem->setOnEmpty('');
 
@@ -114,7 +113,6 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
      * As this is a common cell setting, this function allows you to overrule it.
      *
      * @param TableBridge $bridge
-     * @param ModelAbstract $model
      */
     protected function addRespondentCell(TableBridge $bridge)
     {
