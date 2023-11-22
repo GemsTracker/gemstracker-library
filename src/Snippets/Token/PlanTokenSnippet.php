@@ -53,6 +53,13 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
     public $browse = true;
 
     /**
+     * Don't show total counter.
+     *
+     * @var bool
+     */
+    public $showTotal = false;
+
+    /**
      * @inheritdoc 
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
