@@ -16,9 +16,9 @@ use Gems\Model;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Log\LogSearchSnippet;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -61,34 +61,22 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected Model $modelLoader,
-        protected PeriodSelectRepository $periodSelectRepository
+        protected PeriodSelectRepository $periodSelectRepository,
+        protected Model\LogModel $logModel
     )
     {
         parent::__construct($responder, $translate, $cache);
     }
 
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
-     */
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): FullDataInterface
     {
-        $model = $this->modelLoader->createLogModel();
-
         if ($detailed) {
-            $model->applyDetailSettings();
+            $this->logModel->applyDetailSettings();
         } else {
-            $model->applyBrowseSettings();
+            $this->logModel->applyBrowseSettings();
         }
 
-        return $model;
+        return $this->logModel;
     }
 
     /**
@@ -135,7 +123,7 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
         $filter = parent::getSearchFilter($useRequest);
 
         $where = $this->periodSelectRepository->createPeriodFilter($filter);
-        
+
         if ($where) {
             $filter[] = $where;
         }

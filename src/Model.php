@@ -264,19 +264,6 @@ class Model
     /**
      * Load project specific model or general \Gems model otherwise
      *
-     * @return LogModel
-     */
-    public function createLogModel(): LogModel
-    {
-        /**
-         * @var LogModel
-         */
-        return $this->_createModel('LogModel');
-    }
-
-    /**
-     * Load project specific model or general \Gems model otherwise
-     *
      * @return RespondentModel
      * @deprecated
      */

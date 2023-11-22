@@ -121,7 +121,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected array $showLogParameters = [
         'contentTitle' => 'getShowLogItemTitle',
-        'extraFilter'     => 'getShowLogOverviewFilter',
+        'extraFilter' => 'getShowLogOverviewFilter',
         'model' => 'getLogModel',
     ];
 
@@ -170,6 +170,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         private readonly array $config,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly Model $modelContainer,
+        protected LogModel $logModel
     ) {
         parent::__construct($responder, $translate, $cache);
     }
@@ -226,8 +227,6 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
 
     /**
      * Helper function to get the title for the edit action.
-     *
-     * @return $string
      */
     public function getEditTitle(): string
     {
@@ -236,16 +235,15 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
 
     protected function getLogModel(): LogModel
     {
-        $model = $this->modelContainer->createLogModel();
         $action = $this->requestInfo->getCurrentAction();
         if ($action === 'overview') {
-            $model->applyBrowseSettings();
+            $this->logModel->applyBrowseSettings();
         }
         if ($action === 'show-log') {
-            $model->applyDetailSettings();
+            $this->logModel->applyDetailSettings();
         }
 
-        return $model;
+        return $this->logModel;
     }
 
     /**
