@@ -49,7 +49,7 @@ class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
     /**
      * A model, not necessarily the token model
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var DataReaderInterface
      */
     protected $model;
 
@@ -69,7 +69,7 @@ class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
 
     /**
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param TableBridge $bridge
      */
     protected function addActionLinks(TableBridge $bridge)
     {
