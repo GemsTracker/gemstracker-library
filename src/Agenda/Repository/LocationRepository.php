@@ -114,7 +114,7 @@ class LocationRepository
             'glo_phone_1',
             'glo_active',
             'glo_filter',
-        ]);
+        ])->order('glo_name');
         $result = $this->cachedResultFetcher->fetchAll('locations', $select, null, $this->locationsCacheTags);
         if ($result === null) {
             return [];

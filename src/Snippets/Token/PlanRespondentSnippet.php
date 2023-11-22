@@ -12,9 +12,9 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Html;
-use MUtil\Model;
 use Zalt\Html\AElement;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
@@ -53,7 +53,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
 
         $respondentRoute = $this->menuHelper->getRelatedRoute('respondent.show');
         if ($respondentRoute) {
-            $menu = $this->menuHelper->getLateRouteUrl($respondentRoute, [Model::REQUEST_ID1 => 'gr2o_patient_nr', Model::REQUEST_ID2 => 'gr2o_id_organization'], $bridge);
+            $menu = $this->menuHelper->getLateRouteUrl($respondentRoute, [MetaModelInterface::REQUEST_ID1 => 'gr2o_patient_nr', MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization'], $bridge);
             $aElem = new AElement($menu['url']);
             $aElem->setOnEmpty('');
 
@@ -68,7 +68,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         // Get the buttons
         $respondentRoute = $this->menuHelper->getRelatedRoute('respondent.show');
         if ($respondentRoute) {
-            $menu = $this->menuHelper->getLateRouteUrl($respondentRoute, [Model::REQUEST_ID1 => 'gr2o_patient_nr', Model::REQUEST_ID2 => 'gr2o_id_organization'], $bridge);
+            $menu = $this->menuHelper->getLateRouteUrl($respondentRoute, [MetaModelInterface::REQUEST_ID1 => 'gr2o_patient_nr', MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization'], $bridge);
             $respondentButton = new AElement($menu['url'], $this->_('Show respondent'), ['class' => 'actionlink btn rightFloat']);
             $respondentButton->setOnEmpty('');
         } else {
@@ -76,7 +76,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         }
         $respondentTrackRoute = $this->menuHelper->getRelatedRoute('respondent.tracks.show-track');
         if ($respondentTrackRoute) {
-            $menu = $this->menuHelper->getLateRouteUrl($respondentTrackRoute, [Model::REQUEST_ID1 => 'gr2o_patient_nr', Model::REQUEST_ID2 => 'gr2o_id_organization', 'rt' => 'gr2t_id_respondent_track'], $bridge);
+            $menu = $this->menuHelper->getLateRouteUrl($respondentTrackRoute, [MetaModelInterface::REQUEST_ID1 => 'gr2o_patient_nr', MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization', 'rt' => 'gr2t_id_respondent_track'], $bridge);
             $trackButton = new AElement($menu['url'], $this->_('Show track'), ['class' => 'actionlink btn rightFloat']);
             $trackButton->setOnEmpty('');
         } else {

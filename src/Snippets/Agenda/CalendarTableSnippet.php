@@ -20,6 +20,7 @@ use Gems\Snippets\ModelTableSnippetAbstract;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\TableElement;
+use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -114,7 +115,7 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
     protected function createModel(): DataReaderInterface
     {
         if (null !== $this->calSearchFilter) {
-            $this->bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
+            $this->bridgeMode = BridgeInterface::MODE_ROWS;
             $this->caption    = $this->_('Example appointments');
 
             if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
@@ -157,8 +158,8 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
     public function getRouteMaps(MetaModelInterface $metaModel): array
     {
         $output = parent::getRouteMaps($metaModel);
-        $output[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
-        $output[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
+        $output[MetaModelInterface::REQUEST_ID1] = 'gr2o_patient_nr';
+        $output[MetaModelInterface::REQUEST_ID2] = 'gr2o_id_organization';
         return $output;
     }
 }
