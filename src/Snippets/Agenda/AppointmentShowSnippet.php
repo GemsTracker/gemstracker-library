@@ -18,6 +18,7 @@ use Gems\Model;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**

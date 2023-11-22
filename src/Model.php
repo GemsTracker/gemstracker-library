@@ -483,27 +483,6 @@ class Model
     }
 
     /**
-     * Get the staff log model
-     *
-     * @param $detailed
-     * @return \Gems\Model\StaffLogModel
-     */
-    public function getStaffLogModel(bool $detailed): StaffLogModel
-    {
-        /**
-         * @var StaffLogModel $model
-         */
-        $model = $this->_createModel('StaffLogModel', true);
-        if ($detailed) {
-            $model->applyDetailSettings();
-        } else {
-            $model->applyBrowseSettings();
-        }
-
-        return $model;
-    }
-
-    /**
      * Get the survey codebook Model
      *
      * @param int $surveyId

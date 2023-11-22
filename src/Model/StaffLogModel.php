@@ -2,18 +2,23 @@
 
 namespace Gems\Model;
 
+use Gems\User\Mask\MaskRepository;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
+
 class StaffLogModel extends LogModel
 {
-    /**
-     * Create a model for the log
-     */
-    public function __construct()
-    {
-        \Gems\Model\HiddenOrganizationModel::__construct('StaffLog', 'gems__staff', 'gsf', true);
-        $this->addTable('gems__log_activity', ['gla_by' => 'gsf_id_user'], 'gla', true);
-        $this->addTable('gems__log_setup', ['gla_action' => 'gls_id_action'])
-            ->addLeftTable('gems__respondents', ['gla_respondent_id' => 'grs_id_user']);
+    public function __construct(
+        MetaModelLoader $metaModelLoader,
+        SqlRunnerInterface $sqlRunner,
+        TranslatorInterface $translate,
+        MaskRepository $maskRepository,
+    ) {
+        parent::__construct($metaModelLoader, $sqlRunner, $translate, $maskRepository);
 
-        $this->setKeys(['logId' => 'gla_id']);
+        $this->getMetaModel()->setKeys([
+            'id' => 'gsf_id_user',
+            'logId' => 'gla_id'
+        ]);
     }
 }

@@ -180,11 +180,6 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         }
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         $model = $this->model;

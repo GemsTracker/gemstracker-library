@@ -103,7 +103,6 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel(bool $detailed, string $action): Model\AppointmentModel
     {
@@ -180,7 +179,6 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function simpleApiAction()
     {
-
         $data         = $this->requestInfo->getParams();
         $importLoader = $this->loader->getImportLoader();
         $model        = $this->getModel();

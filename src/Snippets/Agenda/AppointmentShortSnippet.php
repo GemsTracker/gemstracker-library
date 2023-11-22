@@ -34,25 +34,20 @@ class AppointmentShortSnippet extends \Gems\Snippets\Agenda\AppointmentShowSnipp
         'gap_id_attended_by',
         ];
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
-        $model = parent::createModel();
+        parent::createModel();
 
-        $this->model->del('gap_admission_time', 'formatFunction');
-        $this->model->del('gap_discharge_time', 'formatFunction');
-        
-        foreach ($model->getColNames('label') as $name) {
+        $this->model->getMetaModel()->del('gap_admission_time', 'formatFunction');
+        $this->model->getMetaModel()->del('gap_discharge_time', 'formatFunction');
+
+        foreach ($this->model->getMetaModel()->getColNames('label') as $name) {
             if (! in_array($name, $this->showFields)) {
-                $model->del($name, 'label');
+                $this->model->getMetaModel()->del($name, 'label');
             }
         }
 
-        return $model;
+        return $this->model;
     }
 
     /**

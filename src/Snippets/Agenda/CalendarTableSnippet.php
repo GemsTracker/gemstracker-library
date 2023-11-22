@@ -50,8 +50,7 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
                                 MenuSnippetHelper $menuHelper,
                                 TranslatorInterface $translate,
                                 protected Model $modelLoader
-    )
-    {
+    ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
 
         if ($this->onEmptyAlt) {
@@ -112,11 +111,6 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
         unset($table[TableElement::THEAD]);
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         if (null !== $this->calSearchFilter) {
@@ -157,7 +151,6 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
 
         $this->model->applyMask();
 
-        // \MUtil\Model::$verbose = true;
         return $this->model;
     }
 

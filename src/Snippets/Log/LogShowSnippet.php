@@ -54,11 +54,6 @@ class LogShowSnippet extends ModelDetailTableSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         return $this->model;

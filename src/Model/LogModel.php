@@ -31,18 +31,6 @@ use Zalt\Model\Type\JsonType;
 class LogModel extends GemsMaskedModel
 {
     /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
      * Create a model for the log
      */
     public function __construct(
@@ -59,9 +47,14 @@ class LogModel extends GemsMaskedModel
             ->addLeftTable('gems__respondents', ['gla_respondent_id' => 'grs_id_user'])
             ->addLeftTable('gems__staff', ['gla_by' => 'gsf_id_user']);
 
+        $this->addColumns();
+    }
+
+    private function addColumns(): void
+    {
         $this->addColumn(
-                sprintf(
-                    "CASE WHEN gla_by IS NULL THEN '%s'
+            sprintf(
+                "CASE WHEN gla_by IS NULL THEN '%s'
                     ELSE CONCAT(
                         COALESCE(gsf_last_name, '-'),
                         ', ',
@@ -69,13 +62,13 @@ class LogModel extends GemsMaskedModel
                         COALESCE(gsf_surname_prefix, '')
                         )
                     END",
-                    $this->_('(no user)')
+                $this->_('(no user)')
             ),
             'staff_name'
         );
         $this->addColumn(
-                sprintf(
-                    "CASE WHEN gla_respondent_id IS NULL THEN '%s'
+            sprintf(
+                "CASE WHEN gla_respondent_id IS NULL THEN '%s'
                     ELSE CONCAT(
                         COALESCE(grs_last_name, '-'),
                         ', ',
@@ -83,7 +76,7 @@ class LogModel extends GemsMaskedModel
                         COALESCE(grs_surname_prefix, '')
                         )
                     END",
-                    $this->_('(no respondent)')
+                $this->_('(no respondent)')
             ),
             'respondent_name'
         );

@@ -76,11 +76,6 @@ class AppointmentFormSnippet extends ModelFormSnippetAbstract
         }
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): FullDataInterface
     {
         if (!$this->model instanceof AppointmentModel) {

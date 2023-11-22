@@ -400,7 +400,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
                 $status  = 'warning';
                 $messenger->addWarning($message);
             }
-            $this->accesslog->logChange($this->request, $message, $status);
+            $this->accesslog->logChange($this->request, $message, [$status]);
         } catch (\Exception $e) {
             $messenger->addDanger($this->_('Installation error!'));
             $messenger->addDanger($e->getMessage());

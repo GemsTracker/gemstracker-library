@@ -95,8 +95,7 @@ class AppointmentModel extends GemsMaskedModel
         $this->addTable(
             'gems__respondent2org',
             array('gap_id_user' => 'gr2o_id_user', 'gap_id_organization' => 'gr2o_id_organization'),
-            'gr2o',
-            false
+            false,
         );
 
         $this->addColumn("'appointment'", Model::ID_TYPE);
@@ -137,7 +136,6 @@ class AppointmentModel extends GemsMaskedModel
             $this->addTable(
                 'gems__organizations',
                 array('gap_id_organization' => 'gor_id_organization'),
-                'gor',
                 false
             );
         }
@@ -145,7 +143,6 @@ class AppointmentModel extends GemsMaskedModel
             $this->addLeftTable(
                 'gems__agenda_staff',
                 array('gap_id_attended_by' => 'gas_id_staff'),
-                'gas',
                 false
             );
         }
@@ -160,7 +157,6 @@ class AppointmentModel extends GemsMaskedModel
             $this->addLeftTable(
                 'gems__agenda_activities',
                 array('gap_id_activity' => 'gaa_id_activity'),
-                'gap',
                 false
             );
         }
@@ -168,7 +164,6 @@ class AppointmentModel extends GemsMaskedModel
             $this->addLeftTable(
                 'gems__agenda_procedures',
                 array('gap_id_procedure' => 'gapr_id_procedure'),
-                'gapr',
                 false
             );
         }
@@ -176,7 +171,6 @@ class AppointmentModel extends GemsMaskedModel
             $this->addLeftTable(
                 'gems__locations',
                 array('gap_id_location' => 'glo_id_location'),
-                'glo',
                 false
             );
         }
