@@ -35,6 +35,9 @@ class VueSnippetAbstract extends SnippetAbstract
         $vueSettings = $config['vue'] ?? [];
 
         $this->layoutSettings->addResource($vueSettings['resource']);
+        if (isset($vueSettings['style'])) {
+            $this->layoutSettings->addResource($vueSettings['style']);
+        }
     }
 
     protected function getApiUrl(): string
