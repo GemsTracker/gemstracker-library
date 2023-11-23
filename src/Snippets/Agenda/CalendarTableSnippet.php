@@ -18,6 +18,7 @@ use Gems\Model;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\TableElement;
+use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -41,7 +42,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var DataReaderInterface
      */
     protected $model;
 
@@ -117,12 +118,12 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {
         if (null !== $this->calSearchFilter) {
-            $this->bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
+            $this->bridgeMode = BridgeInterface::MODE_ROWS;
             $this->caption    = $this->_('Example appointments');
 
             if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
@@ -147,8 +148,8 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             $this->model->applyBrowseSettings();
         }
         $this->model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
-        $this->model->set('date_only', 'type', \MUtil\Model::TYPE_DATE);
-        $this->model->set('gap_admission_time', 'label', $this->_('Time'), 'type', \MUtil\Model::TYPE_TIME);
+        $this->model->set('date_only', 'type', MetaModelInterface::TYPE_DATE);
+        $this->model->set('gap_admission_time', 'label', $this->_('Time'), 'type', MetaModelInterface::TYPE_TIME);
 
         $this->model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
@@ -163,8 +164,8 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     public function getRouteMaps(MetaModelInterface $metaModel): array
     {
         $output = parent::getRouteMaps($metaModel);
-        $output[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
-        $output[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
+        $output[MetaModelInterface::REQUEST_ID1] = 'gr2o_patient_nr';
+        $output[MetaModelInterface::REQUEST_ID2] = 'gr2o_id_organization';
         return $output;
     }
 }
