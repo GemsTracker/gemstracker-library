@@ -42,18 +42,12 @@ class LogTableSnippet extends ModelTableSnippetAbstract
      */
     protected $_fixedSort = ['gla_created' => SORT_DESC];
 
-    /**
-     *
-     * @var \MUtil\Model\ModelAbstract
-     */
-    protected $model;
-
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
-        protected Model $modelLoader,
+        protected LogModel $model,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
     }
@@ -63,12 +57,8 @@ class LogTableSnippet extends ModelTableSnippetAbstract
      *
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
-     *
-     * @param TableBridge $bridge
-     * @param DataReaderInterface $dataModel
-     * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel): void
     {
         if (! $this->columns) {
             $this->columns = [];
@@ -83,18 +73,10 @@ class LogTableSnippet extends ModelTableSnippetAbstract
         parent::addBrowseTableColumns($bridge, $dataModel);
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
-        if (! $this->model instanceof LogModel) {
-            $this->model = $this->modelLoader->createLogModel();
-            $this->model->applyBrowseSettings();
-        }
-        $this->model->addMap(\Gems\Model::LOG_ITEM_ID, 'gla_id');
+        $this->model->applyBrowseSettings();
+        $this->model->getMetaModel()->addMap(\Gems\Model::LOG_ITEM_ID, 'gla_id');
 
         return $this->model;
     }

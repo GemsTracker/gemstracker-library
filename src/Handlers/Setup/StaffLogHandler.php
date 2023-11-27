@@ -66,8 +66,9 @@ class StaffLogHandler extends LogHandler
         PeriodSelectRepository $periodSelectRepository,
         protected UserLoader $userLoader,
         CurrentUserRepository $currentUserRepository,
+        protected Model\StaffLogModel $staffLogModel,
     ) {
-        parent::__construct($responder, $translate, $cache, $modelLoader, $periodSelectRepository);
+        parent::__construct($responder, $translate, $cache, $modelLoader, $periodSelectRepository, $this->staffLogModel);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
@@ -80,9 +81,8 @@ class StaffLogHandler extends LogHandler
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): Model\StaffLogModel
     {
         // Make sure the user is loaded
         $user = $this->getSelectedUser();
@@ -97,7 +97,13 @@ class StaffLogHandler extends LogHandler
             }
         }
 
-        return $this->modelLoader->getStaffLogModel($detailed);
+        if ($detailed) {
+            $this->staffLogModel->applyDetailSettings();
+        } else {
+            $this->staffLogModel->applyBrowseSettings();
+        }
+
+        return $this->staffLogModel;
     }
 
     /**

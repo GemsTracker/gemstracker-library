@@ -15,6 +15,8 @@ use Gems\Agenda\Filter\AppointmentFilterInterface;
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Model\AppointmentModel;
+use Gems\Snippets\ModelTableSnippetAbstract;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\TableElement;
@@ -32,7 +34,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
+class CalendarTableSnippet extends ModelTableSnippetAbstract
 {
     /**
      *
@@ -40,11 +42,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected $calSearchFilter;
 
-    /**
-     *
-     * @var DataReaderInterface
-     */
-    protected $model;
+    protected ?DataReaderInterface $model = null;
 
     protected string $onEmptyAlt = '';
 
@@ -53,8 +51,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
                                 MenuSnippetHelper $menuHelper,
                                 TranslatorInterface $translate,
                                 protected Model $modelLoader
-    )
-    {
+    ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
 
         if ($this->onEmptyAlt) {
@@ -115,11 +112,6 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         unset($table[TableElement::THEAD]);
     }
 
-    /**
-     * Creates the model
-     *
-     * @return DataReaderInterface
-     */
     protected function createModel(): DataReaderInterface
     {
         if (null !== $this->calSearchFilter) {
@@ -143,21 +135,23 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             }
         }
 
-        if (! $this->model instanceof \Gems\Model\AppointmentModel) {
+        if (! $this->model instanceof AppointmentModel) {
             $this->model = $this->modelLoader->createAppointmentModel();
             $this->model->applyBrowseSettings();
         }
-        $this->model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
-        $this->model->set('date_only', 'type', MetaModelInterface::TYPE_DATE);
-        $this->model->set('gap_admission_time', 'label', $this->_('Time'), 'type', MetaModelInterface::TYPE_TIME);
+        $this->model->addColumn("CONVERT(gap_admission_time, DATE)", 'date_only');
+        $this->model->getMetaModel()->set('date_only', ['type' => MetaModelInterface::TYPE_DATE]);
+        $this->model->getMetaModel()->set('gap_admission_time', [
+            'label' => $this->_('Time'),
+            'type' => MetaModelInterface::TYPE_TIME
+        ]);
 
-        $this->model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
+        $this->model->getMetaModel()->set('gr2o_patient_nr', ['label' => $this->_('Respondent nr')]);
 
-        \Gems\Model\RespondentModel::addNameToModel($this->model, $this->_('Name'));
+        Model\Respondent\RespondentModel::addNameToModel($this->model->getMetaModel(), $this->_('Name'));
 
         $this->model->applyMask();
 
-        // \MUtil\Model::$verbose = true;
         return $this->model;
     }
 

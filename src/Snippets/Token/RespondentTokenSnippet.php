@@ -173,7 +173,7 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
         $filter['gsu_active']  = 1;
 
         // NOTE! $this->model does not need to be the token model, but $model is a token model
-        $tabFilter = $this->model->getMeta('tab_filter');
+        $tabFilter = $metaModel->getMeta('tab_filter');
         if ($tabFilter) {
             $this->extraFilter = $tabFilter;
         }

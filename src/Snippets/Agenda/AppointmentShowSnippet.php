@@ -18,6 +18,7 @@ use Gems\Model;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -31,11 +32,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstract
 {
-    /**
-     *
-     * @var \MUtil\Model\ModelAbstract
-     */
-    protected $model;
+    protected ?DataReaderInterface $model = null;
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -49,26 +46,6 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstr
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
-    /**
-     * Adds rows from the model to the bridge that creates the browse table.
-     *
-     * Overrule this function to add different columns to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return void
-     * /
-    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
-    {
-        parent::addShowTableRows($bridge, $model);
-    }
-
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {

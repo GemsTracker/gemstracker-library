@@ -19,7 +19,6 @@ use Gems\Model\AppointmentModel;
 use Gems\Model;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Agenda\AppointmentFormSnippet;
-use Gems\Snippets\Agenda\AppointmentItemYesNoDeleteSnippet;
 use Gems\Snippets\Agenda\AppointmentShowSnippet;
 use Gems\Snippets\Agenda\AppointmentTokensSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -168,10 +167,11 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         protected Model $modelLoader,
         protected ResultFetcher $resultFetcher,
         protected UserLoader $userLoader,
+        protected readonly AppointmentModel $appointmentModel,
     ) {
         parent::__construct($responder, $translate, $cache, $respondentRepository, $currentUserRepository);
     }
-    
+
     /**
      * Perform checks on an Episode of care
      */
@@ -182,7 +182,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
 
             $this->addSnippets($this->checkSnippets, $params);
         }
-        
+
         return [];
     }
 
@@ -195,55 +195,48 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel(bool $detailed, string $action): AppointmentModel
     {
-        // Load organizationId and respondentId
         $this->loadParams();
-
-        $model = $this->modelLoader->createAppointmentModel();
 
         if ($detailed) {
             if (('edit' === $action) || ('create' === $action)) {
-                $model->applyEditSettings($this->organizationId);
+                $this->appointmentModel->applyEditSettings($this->organizationId);
 
-                if ($action == 'create') {
-                    // Set default date to tomoorow.
-                    $now  = new \DateTimeImmutable('tomorrow');
-
-                    $loid = $this->resultFetcher->fetchOne(
-                            "SELECT gap_id_location
+                if ($action === 'create') {
+                    $locationId = $this->resultFetcher->fetchOne(
+                        "SELECT gap_id_location
                                 FROM gems__appointments
                                 WHERE gap_id_user = ? AND gap_id_organization = ?
                                 ORDER BY gap_admission_time DESC",
-                            [$this->respondentId, $this->organizationId]
-                            );
+                        [$this->respondentId, $this->organizationId]
+                    );
 
-                    if ($loid !== false) {
-                        $model->set('gap_id_location', 'default', $loid);
+                    if ($locationId !== false) {
+                        $this->appointmentModel->getMetaModel()->set('gap_id_location', ['default' => $locationId]);
                     }
 
-                    $model->set('gap_id_user',         'default', $this->respondentId);
-                    $model->set('gap_manual_edit',     'default', 1);
-                    $model->set('gap_admission_time',  'default', $now);
+                    $this->appointmentModel->getMetaModel()->set('gap_id_user', ['default' => $this->respondentId]);
+                    $this->appointmentModel->getMetaModel()->set('gap_manual_edit', ['default' => 1]);
+                    $this->appointmentModel->getMetaModel()->set('gap_admission_time', ['default' => new \DateTimeImmutable('tomorrow')]);
                 } else {
                     // When there is something saved, then set manual edit to 1
-                    $model->setSaveOnChange('gap_manual_edit');
-                    $model->setOnSave(      'gap_manual_edit', 1);
+                    $this->appointmentModel->getMetaModel()->setSaveOnChange('gap_manual_edit');
+                    $this->appointmentModel->getMetaModel()->setOnSave('gap_manual_edit', 1);
                 }
             } else {
-                $model->applyDetailSettings();
+                $this->appointmentModel->applyDetailSettings();
             }
         } else {
-            $model->applyBrowseSettings();
-            $model->addFilter([
-                'gap_id_user'         => $this->respondentId,
-                'gap_id_organization' => $this->organizationId,
-            ]);
+            $this->appointmentModel->applyBrowseSettings();
+//            $this->appointmentModel->addFilter([
+//                'gap_id_user'         => $this->respondentId,
+//                'gap_id_organization' => $this->organizationId,
+//            ]);
         }
 
-        return $model;
+        return $this->appointmentModel;
     }
 
     /**

@@ -264,19 +264,6 @@ class Model
     /**
      * Load project specific model or general \Gems model otherwise
      *
-     * @return LogModel
-     */
-    public function createLogModel(): LogModel
-    {
-        /**
-         * @var LogModel
-         */
-        return $this->_createModel('LogModel');
-    }
-
-    /**
-     * Load project specific model or general \Gems model otherwise
-     *
      * @return RespondentModel
      * @deprecated
      */
@@ -491,27 +478,6 @@ class Model
             $this->addUserLogin($model, 'gsf_login', 'gsf_id_organization');
         }
         $this->setAsGemsUserId($model, 'gsf_id_user');
-
-        return $model;
-    }
-
-    /**
-     * Get the staff log model
-     *
-     * @param $detailed
-     * @return \Gems\Model\StaffLogModel
-     */
-    public function getStaffLogModel(bool $detailed): StaffLogModel
-    {
-        /**
-         * @var StaffLogModel $model
-         */
-        $model = $this->_createModel('StaffLogModel', true);
-        if ($detailed) {
-            $model->applyDetailSettings();
-        } else {
-            $model->applyBrowseSettings();
-        }
 
         return $model;
     }

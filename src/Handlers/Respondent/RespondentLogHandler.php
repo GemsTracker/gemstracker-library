@@ -20,6 +20,7 @@ use Gems\Tracker\Respondent;
 use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -52,29 +53,26 @@ class RespondentLogHandler extends LogHandler
         Model $modelLoader,
         PeriodSelectRepository $periodSelectRepository,
         protected RespondentRepository $respondentRepository,
+        Model\LogModel $logModel,
     ) {
-        parent::__construct($responder, $translate, $cache, $modelLoader, $periodSelectRepository);
+        parent::__construct($responder, $translate, $cache, $modelLoader, $periodSelectRepository, $logModel);
     }
 
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): FullDataInterface
     {
-        /**
-         * @var Model\JoinModel $model
-         */
-        $model = parent::createModel($detailed, $action);
-        $model->addTable('gems__respondent2org', ['gla_respondent_id' => 'gr2o_id_user', 'gla_organization' => 'gr2o_id_organization']);
-        $model->setKeys([Model::LOG_ITEM_ID => 'gla_id']);
+        parent::createModel($detailed, $action);
 
-        $model->addMap(\MUtil\Model::REQUEST_ID1, 'gr2o_patient_nr');
-        $model->addMap(\MUtil\Model::REQUEST_ID2, 'gr2o_id_organization');
+        $this->logModel->addTable('gems__respondent2org', ['gla_respondent_id' => 'gr2o_id_user', 'gla_organization' => 'gr2o_id_organization']);
+        $this->logModel->getMetaModel()->setKeys([Model::LOG_ITEM_ID => 'gla_id']);
 
-        return $model;
+        $this->logModel->getMetaModel()->addMap(\MUtil\Model::REQUEST_ID1, 'gr2o_patient_nr');
+        $this->logModel->getMetaModel()->addMap(\MUtil\Model::REQUEST_ID2, 'gr2o_id_organization');
+
+        return $this->logModel;
     }
 
     /**
      * Get the respondent object
-     *
-     * @return Respondent
      */
     public function getRespondent(): Respondent
     {

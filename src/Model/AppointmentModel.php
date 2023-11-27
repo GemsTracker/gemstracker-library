@@ -13,10 +13,17 @@ namespace Gems\Model;
 
 use Gems\Agenda\Agenda;
 use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model;
+use Gems\User\Mask\MaskRepository;
+use Gems\Util;
 use MUtil\Model\Type\JsonData;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
+use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\Model\Type\ActivatingYesNoType;
+use Zalt\Model\Type\JsonType;
 
 /**
  *
@@ -27,7 +34,7 @@ use Zalt\Html\HtmlElement;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class AppointmentModel extends MaskedModel
+class AppointmentModel extends GemsMaskedModel
 {
     /**
      * The number of tokens changed by the last save
@@ -65,35 +72,35 @@ class AppointmentModel extends MaskedModel
      */
     protected $routeHelper;
 
-
-    /**
-     * @var \Gems\Util\Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
-
     /**
      * Self constructor
      */
-    public function __construct(protected Agenda $agenda)
-    {
+    public function __construct(
+        protected readonly MetaModelLoader $metaModelLoader,
+        SqlRunnerInterface $sqlRunner,
+        TranslatorInterface $translate,
+        protected Agenda $agenda,
+        CurrentUserRepository $currentUserRepository,
+        MaskRepository $maskRepository,
+        protected readonly Util $util,
+        protected readonly Util\Translated $translatedUtil,
+    ) {
         // gems__respondents MUST be first table for INSERTS!!
-        parent::__construct('appointments', 'gems__appointments', 'gap');
+        parent::__construct('gems__appointments', $this->metaModelLoader, $sqlRunner, $translate, $maskRepository);
+
+        $this->metaModelLoader->setChangeFields($this->metaModel, 'gap');
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
 
         $this->addTable(
             'gems__respondent2org',
             array('gap_id_user' => 'gr2o_id_user', 'gap_id_organization' => 'gr2o_id_organization'),
-            'gr2o',
-            false
+            false,
         );
 
-        $this->addColumn(new \Zend_Db_Expr("'appointment'"), \Gems\Model::ID_TYPE);
-        $this->setKeys(array(\Gems\Model::APPOINTMENT_ID => 'gap_id_appointment'));
-        
+        $this->addColumn("'appointment'", Model::ID_TYPE);
+        $this->metaModel->setKeys([Model::APPOINTMENT_ID => 'gap_id_appointment']);
+
         $this->addColumn(
             "CASE WHEN gap_status IN ('" .
             implode("', '", $this->agenda->getStatusKeysInactive()) .
@@ -111,7 +118,10 @@ class AppointmentModel extends MaskedModel
             $cancelCode = null;
         }
         if ($cancelCode) {
-            $this->setDeleteValues('gap_status', $cancelCode);
+            $this->metaModel->set('gap_status', [
+                ActivatingYesNoType::$activatingValue => 1,
+                ActivatingYesNoType::$deactivatingValue => 0
+            ]);
         }
     }
 
@@ -122,50 +132,45 @@ class AppointmentModel extends MaskedModel
     {
         $this->addTable('gems__respondents', array('gap_id_user' => 'grs_id_user'));
 
-        if ($this->has('gap_id_organization')) {
+        if ($this->metaModel->has('gap_id_organization')) {
             $this->addTable(
                 'gems__organizations',
                 array('gap_id_organization' => 'gor_id_organization'),
-                'gor',
                 false
             );
         }
-        if ($this->has('gap_id_attended_by')) {
+        if ($this->metaModel->has('gap_id_attended_by')) {
             $this->addLeftTable(
                 'gems__agenda_staff',
                 array('gap_id_attended_by' => 'gas_id_staff'),
-                'gas',
                 false
             );
         }
         /*
-        if ($this->has('gap_id_referred_by')) {
+        if ($this->metaModel->has('gap_id_referred_by')) {
             $this->addLeftTable(
                     array('ref_staff' => 'gems__agenda_staff'),
                     array('gap_id_referred_by' => 'ref_staff.gas_id_staff')
                     );
         } // */
-        if ($this->has('gap_id_activity')) {
+        if ($this->metaModel->has('gap_id_activity')) {
             $this->addLeftTable(
                 'gems__agenda_activities',
                 array('gap_id_activity' => 'gaa_id_activity'),
-                'gap',
                 false
             );
         }
-        if ($this->has('gap_id_procedure')) {
+        if ($this->metaModel->has('gap_id_procedure')) {
             $this->addLeftTable(
                 'gems__agenda_procedures',
                 array('gap_id_procedure' => 'gapr_id_procedure'),
-                'gapr',
                 false
             );
         }
-        if ($this->has('gap_id_location')) {
+        if ($this->metaModel->has('gap_id_location')) {
             $this->addLeftTable(
                 'gems__locations',
                 array('gap_id_location' => 'glo_id_location'),
-                'glo',
                 false
             );
         }
@@ -179,31 +184,32 @@ class AppointmentModel extends MaskedModel
     public function applyBrowseSettings()
     {
         $this->_addJoinTables();
-        $this->resetOrder();
+        $this->metaModel->resetOrder();
 
-        $this->setIfExists('gap_admission_time',     'label', $this->_('Appointment'));
-        $this->setIfExists('gap_status',             'label', $this->_('Type'),
-            'multiOptions', $this->agenda->getStatusCodes());
+        $this->metaModel->setIfExists('gap_admission_time', ['label' => $this->_('Appointment')]);
+        $this->metaModel->setIfExists('gap_status', [
+            'label' => $this->_('Type'),
+            'multiOptions' => $this->agenda->getStatusCodes()
+        ]);
 
         if ($this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
-            $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
-                'formatFunction', [$this, 'showEpisode']);
+            $this->metaModel->setIfExists('gap_id_episode', [
+                'label' => $this->_('Episode'),
+                'formatFunction' => [$this, 'showEpisode']
+            ]);
         }
 
-        $this->setIfExists('gas_name',              'label', $this->_('With'));
-        //  $this->setIfExists('ref_staff.gas_name',    'label', $this->_('By'));
-        $this->setIfExists('gaa_name',              'label', $this->_('Activities'));
-        $this->setIfExists('gapr_name',             'label', $this->_('Procedures'));
-        $this->setIfExists('glo_name',              'label', $this->_('Location'));
-        $this->setIfExists('gor_name',              'label', $this->_('Organization'));
-        $this->setIfExists('gap_subject',           'label', $this->_('Subject'));
+        $this->metaModel->setIfExists('gas_name', ['label' => $this->_('With')]);
+        //  $this->setIfExists('ref_staff.gas_name', ['label' => $this->_('By')]);
+        $this->metaModel->setIfExists('gaa_name', ['label' => $this->_('Activities')]);
+        $this->metaModel->setIfExists('gapr_name', ['label' => $this->_('Procedures')]);
+        $this->metaModel->setIfExists('glo_name', ['label' => $this->_('Location')]);
+        $this->metaModel->setIfExists('gor_name', ['label' => $this->_('Organization')]);
+        $this->metaModel->setIfExists('gap_subject', ['label' => $this->_('Subject')]);
 
         $dels = $this->agenda->getStatusKeysInactiveDbQuoted();
         if ($dels) {
-            $this->addColumn(
-                new \Zend_Db_Expr("CASE WHEN gap_status IN ($dels) THEN 'deleted' ELSE '' END "),
-                'row_class'
-            );
+            $this->addColumn("CASE WHEN gap_status IN ($dels) THEN 'deleted' ELSE '' END ", 'row_class');
         }
 
         $this->applyMask();
@@ -219,48 +225,65 @@ class AppointmentModel extends MaskedModel
      */
     public function applyDetailSettings($setMulti = true)
     {
-        $this->resetOrder();
+        $this->metaModel->resetOrder();
 
         $dbLookup   = $this->util->getDbLookup();
         $empty      = $this->translatedUtil->getEmptyDropdownArray();
 
-        $this->setIfExists('gap_admission_time',  'label', $this->_('Appointment'),
-            'dateFormat',  'd-m-Y H:i',
-            'description', $this->_('dd-mm-yyyy hh:mm'));
-        $this->setIfExists('gap_discharge_time',  'label', $this->_('Discharge'),
-            'dateFormat',  'd-m-Y H:i',
-            'description', $this->_('dd-mm-yyyy hh:mm'));
-        $this->setIfExists('gap_code',            'label', $this->_('Type'),
-            'multiOptions', $this->agenda->getTypeCodes());
-        $this->setIfExists('gap_status',          'label', $this->_('Status'),
-            'multiOptions', $this->agenda->getStatusCodes());
+        $this->metaModel->setIfExists('gap_admission_time', [
+            'label' => $this->_('Appointment'),
+            'dateFormat' =>  'd-m-Y H:i',
+            'description' => $this->_('dd-mm-yyyy hh:mm')
+        ]);
+        $this->metaModel->setIfExists('gap_discharge_time', [
+            'label' => $this->_('Discharge'),
+            'dateFormat' =>  'd-m-Y H:i',
+            'description' => $this->_('dd-mm-yyyy hh:mm')
+        ]);
+        $this->metaModel->setIfExists('gap_code', [
+            'label' => $this->_('Type'),
+            'multiOptions' => $this->agenda->getTypeCodes()
+        ]);
+        $this->metaModel->setIfExists('gap_status', [
+            'label' => $this->_('Status'),
+            'multiOptions' => $this->agenda->getStatusCodes()
+        ]);
         if ($this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
-            $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
-                'required', false);
+            $this->metaModel->setIfExists('gap_id_episode', [
+                'label' => $this->_('Episode'),
+                'required' => false
+            ]);
         }
 
-        $this->setIfExists('gap_id_attended_by',  'label', $this->_('With'),
-            'multiOptions', $empty + $this->agenda->getHealthcareStaff());
-        $this->setIfExists('gap_id_referred_by',  'label', $this->_('Referrer'),
-            'multiOptions', $empty + $this->agenda->getHealthcareStaff());
-        $this->setIfExists('gap_id_activity',     'label', $this->_('Activities'));
-        $this->setIfExists('gap_id_procedure',    'label', $this->_('Procedures'));
-        $this->setIfExists('gap_id_location',     'label', $this->_('Location'));
-        $this->setIfExists('gap_id_organization', 'label', $this->_('Organization'),
-            'elementClass', 'Exhibitor',
-            'multiOptions', $empty + $dbLookup->getOrganizations());
-        $this->setIfExists('gap_subject',         'label', $this->_('Subject'));
-        $this->setIfExists('gap_comment',         'label', $this->_('Comment'));
+        $this->metaModel->setIfExists('gap_id_attended_by', [
+            'label' => $this->_('With'),
+            'multiOptions' => $empty + $this->agenda->getHealthcareStaff()
+        ]);
+        $this->metaModel->setIfExists('gap_id_referred_by', [
+            'label' => $this->_('Referrer'),
+            'multiOptions' => $empty + $this->agenda->getHealthcareStaff()
+        ]);
+        $this->metaModel->setIfExists('gap_id_activity', ['label' => $this->_('Activities')]);
+        $this->metaModel->setIfExists('gap_id_procedure', ['label' => $this->_('Procedures')]);
+        $this->metaModel->setIfExists('gap_id_location', ['label' => $this->_('Location')]);
+        $this->metaModel->setIfExists('gap_id_organization', [
+            'label' => $this->_('Organization'),
+            'elementClass' => 'Exhibitor',
+            'multiOptions' => $empty + $dbLookup->getOrganizations()
+        ]);
+        $this->metaModel->setIfExists('gap_subject', ['label' => $this->_('Subject')]);
+        $this->metaModel->setIfExists('gap_comment', ['label' => $this->_('Comment')]);
 
-        $jsonType = new JsonData(10);
-        $jsonType->apply($this, 'gap_info', true);
-
-        $this->setIfExists('gap_info', 'label', $this->_('Additional info'));
+        $jsonType = new JsonType(10);
+        $jsonType->apply($this->metaModel, 'gap_info');
+        $this->metaModel->setIfExists('gap_info', [
+            'label' => $this->_('Additional info'),
+        ]);
 
         if ($setMulti) {
-            $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $this->agenda->getActivities());
-            $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $this->agenda->getProcedures());
-            $this->setIfExists('gap_id_location',     'multiOptions', $empty + $this->agenda->getLocations());
+            $this->metaModel->setIfExists('gap_id_activity', ['multiOptions' => $empty + $this->agenda->getActivities()]);
+            $this->metaModel->setIfExists('gap_id_procedure', ['multiOptions' => $empty + $this->agenda->getProcedures()]);
+            $this->metaModel->setIfExists('gap_id_location', ['multiOptions' => $empty + $this->agenda->getLocations()]);
         }
 
         $this->applyMask();
@@ -280,24 +303,24 @@ class AppointmentModel extends MaskedModel
 
         $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
-        $this->set('gap_id_user', [
+        $this->metaModel->set('gap_id_user', [
             'elementClass' => 'Hidden',
         ]);
 
-        $this->setIfExists('gap_id_organization', 'default', $orgId ?: $this->currentOrganization->getId());
-        $this->setIfExists('gap_admission_time',  'elementClass', 'Date');
-        $this->setIfExists('gap_discharge_time',  'elementClass', 'Date');
-        $this->setIfExists('gap_status',          'required', true);
-        $this->setIfExists('gap_comment',         'elementClass', 'Textarea', 'rows', 5);
-        $this->setIfExists('gap_info', 'elementClass', 'Exhibitor');
+        $this->metaModel->setIfExists('gap_id_organization', ['default' => $orgId ?: $this->currentOrganization->getId()]);
+        $this->metaModel->setIfExists('gap_admission_time', ['elementClass' => 'Date']);
+        $this->metaModel->setIfExists('gap_discharge_time', ['elementClass' => 'Date']);
+        $this->metaModel->setIfExists('gap_status', ['required' => true]);
+        $this->metaModel->setIfExists('gap_comment', ['elementClass' => 'Textarea', 'rows' => 5]);
+        $this->metaModel->setIfExists('gap_info', ['elementClass' => 'Exhibitor']);
 
-        $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $this->agenda->getActivities($orgId));
-        $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $this->agenda->getProcedures($orgId));
-        $this->setIfExists('gap_id_location',     'multiOptions', $empty + $this->agenda->getLocations($orgId));
+        $this->metaModel->setIfExists('gap_id_activity', ['multiOptions' => $empty + $this->agenda->getActivities($orgId)]);
+        $this->metaModel->setIfExists('gap_id_procedure', ['multiOptions' => $empty + $this->agenda->getProcedures($orgId)]);
+        $this->metaModel->setIfExists('gap_id_location', ['multiOptions' => $empty + $this->agenda->getLocations($orgId)]);
 
         if ($this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
-            $this->setIfExists('gap_id_episode', 'multiOptions', $empty);
-            $this->addDependency(['AppointmentCareEpisodeDependency', $this->agenda, $this->translatedUtil]);
+            $this->metaModel->setIfExists('gap_id_episode', ['multiOptions' => $empty]);
+            $this->metaModel->addDependency(['AppointmentCareEpisodeDependency', $this->agenda, $this->translatedUtil]);
         }
         return $this;
     }
@@ -322,15 +345,7 @@ class AppointmentModel extends MaskedModel
         return $this->autoTrackUpdate;
     }
 
-    /**
-     * Save a single model item.
-     *
-     * @param array $newValues The values to store for a single model item.
-     * @param array $filter If the filter contains old key values these are used
-     * to decide on update versus insert.
-     * @return array The values as they are after saving (they may change).
-     */
-    public function save(array $newValues, array $filter = null): array
+    public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
         // When appointment id is not set, then check for existing instances of
         // this appointment using the source information
@@ -358,7 +373,7 @@ class AppointmentModel extends MaskedModel
         if ($this->getChanged() && ($this->getChanged() !== $oldChanged)) {
             if ($this->isAutoTrackUpdate()) {
                 $appointment = $this->agenda->getAppointment($returnValues);
-                $event = $this->agenda->appointmentChanged($appointment, $this->agenda);
+                $event = $this->agenda->appointmentChanged($appointment);
                 $this->_changedTokenCount += $event->getTokensChanged();
             }
         }

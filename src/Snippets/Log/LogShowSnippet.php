@@ -42,8 +42,6 @@ class LogShowSnippet extends ModelDetailTableSnippetAbstract
      */
     protected $bridgeMode = BridgeAbstract::MODE_SINGLE_ROW;
 
-    protected ?LogModel $model = null;
-
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
@@ -51,21 +49,13 @@ class LogShowSnippet extends ModelDetailTableSnippetAbstract
         protected Model $modelLoader,
         protected RespondentRepository $respondentRepository,
         protected RouteHelper $routeHelper,
+        protected LogModel $model,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
-        if (! $this->model instanceof LogModel) {
-            $this->model = $this->modelLoader->createLogModel();
-            $this->model->applyDetailSettings();
-        }
         return $this->model;
     }
 

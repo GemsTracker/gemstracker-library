@@ -2071,11 +2071,6 @@ parameters:
 			path: src/Handlers/OptionHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 87$#"
-			count: 1
-			path: src/Handlers/OptionHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\OptionHandler\\:\\:\\$createEditSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/OptionHandler.php
@@ -2319,11 +2314,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Project\\\\ProjectTracksHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Project/ProjectTracksHandler.php
-
-		-
-			message: "#^PHPDoc tag @return with type MUtil\\\\Model\\\\ModelAbstract is not subtype of native type Gems\\\\Model\\\\AppointmentModel\\.$#"
-			count: 1
-			path: src/Handlers/Respondent/AppointmentHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Respondent\\\\AppointmentHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
@@ -2684,11 +2674,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$filterId of method Gems\\\\Agenda\\\\Agenda\\:\\:getFilter\\(\\) expects int, string\\|null given\\.$#"
 			count: 1
 			path: src/Handlers/Setup/AgendaFilterHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaProcedureHandler.php
 
 		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
@@ -3361,6 +3346,11 @@ parameters:
 			path: src/Import/ImportLoader.php
 
 		-
+			message: "#^Method Gems\\\\Import\\\\ImportLoader\\:\\:getControllerTargetModel\\(\\) should return MUtil\\\\Model\\\\ModelAbstract but returns Gems\\\\Model\\\\AppointmentModel\\.$#"
+			count: 1
+			path: src/Import/ImportLoader.php
+
+		-
 			message: "#^Method Gems\\\\Import\\\\ImportLoader\\:\\:getControllerTargetModel\\(\\) should return MUtil\\\\Model\\\\ModelAbstract but returns Gems\\\\Model\\\\Respondent\\\\RespondentModel\\.$#"
 			count: 1
 			path: src/Import/ImportLoader.php
@@ -3382,6 +3372,11 @@ parameters:
 
 		-
 			message: "#^Method Gems\\\\Import\\\\ImportLoader\\:\\:getTranslators\\(\\) should return array\\<MUtil\\\\Model\\\\ModelTranslatorInterface\\> but returns array\\<string, Zalt\\\\Model\\\\Translator\\\\ModelTranslatorInterface\\>\\.$#"
+			count: 1
+			path: src/Import/ImportLoader.php
+
+		-
+			message: "#^Parameter \\#1 \\$target of method MUtil\\\\Registry\\\\Source\\:\\:applySource\\(\\) expects MUtil\\\\Registry\\\\TargetInterface, Gems\\\\Model\\\\AppointmentModel given\\.$#"
 			count: 1
 			path: src/Import/ImportLoader.php
 
@@ -3836,11 +3831,6 @@ parameters:
 			path: src/Model/AppointmentModel.php
 
 		-
-			message: "#^Method Gems\\\\Agenda\\\\Agenda\\:\\:appointmentChanged\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: src/Model/AppointmentModel.php
-
-		-
 			message: "#^Method Gems\\\\Model\\\\AppointmentModel\\:\\:showEpisode\\(\\) should return Zalt\\\\Html\\\\HtmlElement\\|null but returns int\\<min, \\-1\\>\\|int\\<1, max\\>\\.$#"
 			count: 1
 			path: src/Model/AppointmentModel.php
@@ -3934,16 +3924,6 @@ parameters:
 			message: "#^Property Gems\\\\Model\\\\MaskedModel\\:\\:\\$maskRepository \\(Gems\\\\User\\\\Mask\\\\MaskRepository\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
 			path: src/Model/HiddenOrganizationModel.php
-
-		-
-			message: "#^Method Gems\\\\Model\\\\LogModel\\:\\:applyBrowseSettings\\(\\) should return Gems\\\\Model\\\\LogModel but return statement is missing\\.$#"
-			count: 1
-			path: src/Model/LogModel.php
-
-		-
-			message: "#^Method Gems\\\\Model\\\\LogModel\\:\\:applyDetailSettings\\(\\) should return Gems\\\\Model\\\\LogModel but return statement is missing\\.$#"
-			count: 1
-			path: src/Model/LogModel.php
 
 		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$model$#"
@@ -4867,16 +4847,6 @@ parameters:
 
 		-
 			message: "#^Method Gems\\\\Snippets\\\\Agenda\\\\AppointmentShowSnippet\\:\\:displayEpisode\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentShowSnippet.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$bridge$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentShowSnippet.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$model$#"
 			count: 1
 			path: src/Snippets/Agenda/AppointmentShowSnippet.php
 
@@ -9106,11 +9076,6 @@ parameters:
 			path: src/Tracker/Model/SurveyMaintenanceModel.php
 
 		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$name$#"
-			count: 1
-			path: src/Tracker/Model/SurveyMaintenanceModel.php
-
-		-
 			message: "#^Method Gems\\\\Tracker\\\\Model\\\\TokenModel\\:\\:applyFormatting\\(\\) should return Gems\\\\Tracker\\\\Model\\\\StandardTokenModel but returns \\$this\\(Gems\\\\Tracker\\\\Model\\\\TokenModel\\)\\.$#"
 			count: 1
 			path: src/Tracker/Model/TokenModel.php
@@ -10431,73 +10396,8 @@ parameters:
 			path: src/User/LdapUserDefinition.php
 
 		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\AddressMasker\\:\\:getMaskFunction\\(\\) should return callable\\(\\)\\: mixed but returns null\\.$#"
-			count: 2
-			path: src/User/Mask/AddressMasker.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\AddressMasker\\:\\:maskZip\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/User/Mask/AddressMasker.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 2
-			path: src/User/Mask/AddressMasker.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\AnyMasker\\:\\:hideValue\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/User/Mask/AnyMasker.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\BirthdayMasker\\:\\:getDateMask\\(\\) should return callable\\(\\)\\: mixed but returns '\\*\\*\\-\\*\\*\\-\\*\\*\\*\\*'\\.$#"
-			count: 1
-			path: src/User/Mask/BirthdayMasker.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\BirthdayMasker\\:\\:getDateMask\\(\\) should return callable\\(\\)\\: mixed but returns 'Y'\\.$#"
-			count: 1
-			path: src/User/Mask/BirthdayMasker.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\BirthdayMasker\\:\\:getDateMask\\(\\) should return callable\\(\\)\\: mixed but returns 'd m'\\.$#"
-			count: 1
-			path: src/User/Mask/BirthdayMasker.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\BirthdayMasker\\:\\:getDateMask\\(\\) should return callable\\(\\)\\: mixed but returns 'm Y'\\.$#"
-			count: 1
-			path: src/User/Mask/BirthdayMasker.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\BirthdayMasker\\:\\:getDateMask\\(\\) should return callable\\(\\)\\: mixed but returns null\\.$#"
-			count: 1
-			path: src/User/Mask/BirthdayMasker.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\MaskRepository\\:\\:getSettingsField\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/User/Mask/MaskRepository.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\MaskRepository\\:\\:getStorageField\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/User/Mask/MaskRepository.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$settingsdField$#"
-			count: 1
-			path: src/User/Mask/MaskRepository.php
-
-		-
 			message: "#^Call to an undefined method MUtil\\\\Html\\\\HtmlElement\\:\\:h4\\(\\)\\.$#"
 			count: 1
-			path: src/User/Mask/MaskStore.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Mask\\\\MaskStore\\:\\:decodeSettings\\(\\) should return string\\|null but returns array\\.$#"
-			count: 2
 			path: src/User/Mask/MaskStore.php
 
 		-
@@ -10511,34 +10411,9 @@ parameters:
 			path: src/User/Mask/MaskStore.php
 
 		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$settingsdField$#"
-			count: 1
-			path: src/User/Mask/MaskStore.php
-
-		-
-			message: "#^Property Gems\\\\User\\\\Mask\\\\MaskStore\\:\\:\\$_compiledHiddenModelSettings \\(array\\) does not accept false\\.$#"
-			count: 1
-			path: src/User/Mask/MaskStore.php
-
-		-
-			message: "#^Property Gems\\\\User\\\\Mask\\\\MaskStore\\:\\:\\$_compiledNormalModelSettings \\(array\\) does not accept false\\.$#"
-			count: 1
-			path: src/User/Mask/MaskStore.php
-
-		-
 			message: "#^Property Gems\\\\User\\\\Mask\\\\MaskStore\\:\\:\\$translate \\(MUtil\\\\Translate\\\\Translator\\) does not accept Zalt\\\\Base\\\\TranslatorInterface\\.$#"
 			count: 1
 			path: src/User/Mask/MaskStore.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 2
-			path: src/User/Mask/MaskerAbstract.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: src/User/Mask/MaskerAbstract.php
 
 		-
 			message: "#^Method Gems\\\\User\\\\NoLoginDefinition\\:\\:getAuthAdapter\\(\\) should return Laminas\\\\Authentication\\\\Adapter\\\\AdapterInterface but returns false\\.$#"

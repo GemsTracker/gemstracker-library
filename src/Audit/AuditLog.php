@@ -269,7 +269,7 @@ class AuditLog
         return false;
     }
 
-    public function logChange(ServerRequestInterface $request, mixed $message = null, mixed $data = null, ?int $respondentId = null): ? int
+    public function logChange(ServerRequestInterface $request, mixed $message = null, array $data = [], ?int $respondentId = null): ? int
     {
         if (null === $respondentId) {
             $respondentId = 0;
