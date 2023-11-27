@@ -120,7 +120,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
     protected function afterSave($changed)
     {
         if ($changed) {
-            $this->auditLog->logChange($this->request, null, $this->formData);
+            $this->logChanges($changed);
 
             // Reload the current user data
             $user = $this->userLoader->getUser($this->currentUser->getLoginName(), $this->currentUser->getBaseOrganizationId());
@@ -355,6 +355,11 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
         ];
 
         $texts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
+
+        if (! $texts) {
+            $this->addMessage($this->_('No phone code send as no communication template exists!'));
+            return false;
+        }
 
         $twigLoader = new ArrayLoader([
             'message' => trim($texts['subject'] . PHP_EOL . PHP_EOL . $texts['body']),

@@ -40,13 +40,20 @@ class AuditLog
         'active-toggle', 'answer-export', 'ask\\.lost', 'attributes', 'cacheclean', 'change', 'check', 'cleanup',
         'correct', 'create', 'delete', 'download', 'edit', 'execute', 'export', 'import', 'insert', 'lock',
         'maintenance-mode', 'merge', 'patches', 'ping', 'recalc', 'reset', 'run', 'seeds', 'subscribe',
-        'synchronize', 'two-factor', 'undelete', 'unsubscribe',
+        'synchronize', 'tfa', 'two-factor', 'undelete', 'unsubscribe',
         ];
 
     protected ServerRequestInterface $request;
 
     protected array $respondentIdFields = [
         'grs_id_user', 'gr2o_id_user', 'gr2t_id_user', 'gap_id_user', 'gec_id_user', 'gto_id_respondent', 'grr_id_respondent'
+    ];
+
+    protected ?User $user = null;
+
+    protected array $userAttributes = [
+        AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE,
+        AuthenticationMiddleware::CURRENT_USER_WITHOUT_TFA_ATTRIBUTE
     ];
 
     public function __construct(
@@ -121,7 +128,7 @@ class AuditLog
 
     protected function getCurrentRole(): string
     {
-        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        $currentUser = $this->getCurrentUser();
         if ($currentUser instanceof User) {
             return $currentUser->getRole();
         }
@@ -129,10 +136,24 @@ class AuditLog
         return 'nologin';
     }
 
+    protected function getCurrentUser(): ?User
+    {
+        if (null === $this->user && isset($this->request)) {
+            foreach ($this->userAttributes as $attr) {
+                $current = $this->request->getAttribute($attr);
+                if ($current instanceof User) {
+                    $this->user = $current;
+                    break;
+                }
+            }
+        }
+
+        return $this->user;
+    }
 
     protected function getCurrentUserId(): int
     {
-        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        $currentUser = $this->getCurrentUser();
         if ($currentUser instanceof User) {
             return $currentUser->getUserId();
         }
@@ -193,6 +214,25 @@ class AuditLog
             case 'POST':
                 $data = $this->request->getParsedBody() + $data;
                 break;
+        }
+        // Obfuscate passwords / tfa's
+        foreach ($data as $name => $value) {
+            if ($value instanceof \DateTimeInterface) {
+                $data[$name] = $value->format('c');
+            }
+            if (is_object($value)) {
+                $data[$name] = get_class($value);
+            }
+            foreach (['password', 'pwd', 'tfa'] as $check) {
+                if (str_contains($name, $check)) {
+                    $data[$name] = '******';
+                }
+            }
+            foreach (['csrf'] as $check) {
+                if (str_contains($name, $check)) {
+                    unset($data[$name]);
+                }
+            }
         }
 
         return $data;
@@ -269,6 +309,14 @@ class AuditLog
         return false;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param mixed|null $message
+     * @param array $data
+     * @param int|null $respondentId
+     * @return int|null
+     * @deprecated Use the register functions!
+     */
     public function logChange(ServerRequestInterface $request, mixed $message = null, array $data = [], ?int $respondentId = null): ? int
     {
         if (null === $respondentId) {
@@ -308,6 +356,11 @@ class AuditLog
         $this->request = $request;
     }
 
+    protected function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
     protected function matchAction($route, $action): bool
     {
         if (str_contains($action, '\\.')) {
@@ -339,22 +392,28 @@ class AuditLog
         return $this->lastLogId;
     }
 
-    public function registerRequest(ServerRequestInterface $request):? int
+    public function registerRequest(ServerRequestInterface $request, array $messages = [], bool $changed = false):? int
     {
         $this->setRequest($request);
         $actionData = $this->getAction();
 
-        if (!$this->shouldLogAction($actionData)) {
+        if (!$this->shouldLogAction($actionData, $changed)) {
             return null;
         }
 
         $data         = $this->getRequestData();
-        $message      = $this->getRequestMessages();
+        $message      = $messages + $this->getRequestMessages();
         $respondentId = $this->getRespondentId($data);
 
-        $this->lastLogId = $this->storeLogEntry($actionData['gls_id_action'], $message, $data, false, $respondentId, 0);
+        $this->lastLogId = $this->storeLogEntry($actionData['gls_id_action'], $message, $data, $changed, $respondentId, 0);
 
         return $this->lastLogId;
+    }
+
+    public function registerUserRequest(ServerRequestInterface $request, User $user, array $messages = []):? int
+    {
+        $this->setUser($user);
+        return $this->registerRequest($request, $messages, true);
     }
 
     public function shouldLogAction(array $actionData, bool $change = false): bool

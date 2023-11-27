@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Auth;
 
+use Gems\Audit\AuditLog;
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\TfaService;
@@ -20,11 +22,19 @@ class LogoutHandler implements RequestHandlerInterface
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly UrlHelper $urlHelper,
+        private readonly AuditLog $auditLog,
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_WITHOUT_TFA_ATTRIBUTE);
+        if ($user) {
+            $this->auditLog->registerUserRequest($request, $user,
+                [sprintf('%s logged out', $user->getLoginName())]
+            );
+        }
+
         /** @var SessionInterface $session */
         $session = $request->getAttribute(SessionInterface::class);
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);

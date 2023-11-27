@@ -17,7 +17,6 @@ use Gems\User\User;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
-use Mezzio\Helper\UrlHelper;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,6 +32,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
 
     public function __construct(
         private readonly Adapter $db,
+        private readonly AuditLog $auditLog,
         private readonly TranslatorInterface $translator,
         private readonly LayoutRenderer $layoutRenderer,
         private readonly PasswordChecker $passwordChecker,
@@ -106,6 +106,9 @@ class ChangePasswordHandler implements RequestHandlerInterface
         LoginStatusTracker::make($session, $user)->setPasswordResetActive(false);
 
         $this->statusMessenger->addSuccess($this->translator->trans('New password is active.'));
+        $this->auditLog->registerUserRequest($request, $user,
+            [sprintf('Password changed of %s', $user->getLoginName())]
+        );
 
         return new RedirectResponse($request->getUri());
     }

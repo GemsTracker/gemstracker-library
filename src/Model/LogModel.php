@@ -17,7 +17,6 @@ use Gems\Model\Type\MaskedJsonType;
 use Gems\User\Mask\MaskRepository;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
-use Zalt\Model\Type\JsonType;
 
 /**
  *
@@ -119,17 +118,19 @@ class LogModel extends GemsMaskedModel
         ]);
 
         $this->metaModel->set('gla_message', [
-            'label' => $this->_('Message')
+            'label' => $this->_('Message'),
+            'type' => new MaskedJsonType($this->maskRepository),
         ]);
-        $jdType = new JsonType();
-        $jdType->apply($this->metaModel, 'gla_message');
-
+//        $jdType = new JsonType();
+//        $jdType->apply($this->metaModel, 'gla_message');
+//
         if ($detailed) {
             $this->metaModel->set('gla_data', [
                 'label' => $this->_('Data'),
+                'type' => new MaskedJsonType($this->maskRepository),
             ]);
-            $mjdType = new MaskedJsonType($this->maskRepository);
-            $mjdType->apply($this->metaModel, 'gla_data');
+//            $mjdType = new MaskedJsonType($this->maskRepository);
+//            $mjdType->apply($this->metaModel, 'gla_data');
 
             $this->metaModel->set('gla_method', [
                 'label' => $this->_('Method'),

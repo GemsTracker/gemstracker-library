@@ -12,7 +12,7 @@
 namespace Gems\Handlers;
 
 use DateTimeImmutable;
-use Gems\Model;
+use Gems\Model\LogModel;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Log\LogSearchSnippet;
@@ -60,9 +60,8 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected Model $modelLoader,
         protected PeriodSelectRepository $periodSelectRepository,
-        protected Model\LogModel $logModel
+        protected LogModel $logModel
     )
     {
         parent::__construct($responder, $translate, $cache);

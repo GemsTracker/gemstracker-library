@@ -14,10 +14,10 @@ namespace Gems\Handlers\Respondent;
 use Gems\Exception;
 use Gems\Handlers\LogHandler;
 use Gems\Model;
+use Gems\Model\LogModel;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\FullDataInterface;
@@ -50,12 +50,11 @@ class RespondentLogHandler extends LogHandler
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        Model $modelLoader,
         PeriodSelectRepository $periodSelectRepository,
         protected RespondentRepository $respondentRepository,
-        Model\LogModel $logModel,
+        LogModel $logModel,
     ) {
-        parent::__construct($responder, $translate, $cache, $modelLoader, $periodSelectRepository, $logModel);
+        parent::__construct($responder, $translate, $cache, $periodSelectRepository, $logModel);
     }
 
     protected function createModel(bool $detailed, string $action): FullDataInterface

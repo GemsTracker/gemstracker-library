@@ -196,5 +196,4 @@ abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
         $oldData = $this->loadCsrfData() + $this->getDefaultFormValues() + $this->requestInfo->getRequestMatchedParams();
         $this->auditLog->registerChanges($this->cleanupLogData($this->formData), $oldData);
     }
-
 }

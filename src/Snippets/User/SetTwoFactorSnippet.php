@@ -19,7 +19,6 @@ use Gems\Layout\LayoutSettings;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\SessionNamespace;
 use Gems\Snippets\FormSnippetAbstract;
-use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
 use Mezzio\Session\SessionInterface;
 use Zalt\Base\RequestInfo;
@@ -298,7 +297,12 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
             $this->generateNewKey();
         }
 
-        return 0;
+        return 1;
+    }
+
+    protected function logChanges(int $changes)
+    {
+        $this->auditLog->registerChanges($this->cleanupLogData($this->formData), []);
     }
 
     protected function onFakeSubmit()

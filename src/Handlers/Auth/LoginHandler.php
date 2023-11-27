@@ -47,13 +47,15 @@ class LoginHandler implements RequestHandlerInterface
         private readonly UrlHelper $urlHelper,
         private readonly Adapter $db,
         private readonly UserLoader $userLoader,
-        //private readonly AuditLog $auditLog,
+        private readonly AuditLog $auditLog,
         private readonly PasswordChecker $passwordChecker,
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $this->auditLog->registerRequest($request);
+
         $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
         $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
@@ -141,6 +143,8 @@ class LoginHandler implements RequestHandlerInterface
         ) {
             LoginStatusTracker::make($session, $user)->setPasswordResetActive();
         }
+
+        $this->auditLog->registerUserRequest($request, $user, [sprintf('%s logged in', $user->getLoginName())]);
 
         return AuthenticationMiddleware::redirectToIntended($authenticationService, $session, $this->urlHelper);
     }

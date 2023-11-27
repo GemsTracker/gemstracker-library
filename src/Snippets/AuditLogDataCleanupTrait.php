@@ -45,6 +45,9 @@ trait AuditLogDataCleanupTrait
             if ($value instanceof DateTimeInterface) {
                 $newData[$name] = $value->format('c');
             }
+            if (is_object($value)) {
+                $newData[$name] = get_class($value);
+            }
         }
 
         return $newData;
