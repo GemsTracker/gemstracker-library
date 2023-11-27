@@ -281,9 +281,12 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                         COALESCE(gems__staff.gsf_first_name, ''),
                         COALESCE(CONCAT(' ', gems__staff.gsf_surname_prefix), '')
                     ) AS gsf_name
-                FROM gems__staff INNER JOIN gems__respondent2track ON gsf_id_user = gr2t_created_by
-                WHERE $orgWhere AND
-                    gr2t_active = 1
+                FROM gems__staff
+                WHERE gsf_id_user IN (
+                    SELECT DISTINCT gr2t_created_by FROM gems__respondent2track
+                        WHERE $orgWhere AND
+                        gr2t_active = 1
+                    )
                 ORDER BY 2";
     }
 
