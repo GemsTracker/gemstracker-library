@@ -270,11 +270,10 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function getAllCreators(array $allowedOrgs, array $data)
     {
-        if (count($allowedOrgs) > 1) {
+        if ($allowedOrgs) {
             $orgWhere = "gr2t_id_organization IN (" . implode(", ", array_keys($allowedOrgs)) . ")";
         } else {
-            reset($allowedOrgs);
-            $orgWhere = "gr2t_id_organization = " . intval(key($allowedOrgs));
+            $orgWhere = "1 = 1";
         }
         return "SELECT DISTINCT gsf_id_user, CONCAT(
                         COALESCE(gems__staff.gsf_last_name, ''),
