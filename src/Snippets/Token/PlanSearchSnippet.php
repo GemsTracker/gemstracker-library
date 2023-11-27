@@ -347,6 +347,14 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
             $orgIn = $orgWhere = "1 = 1";
         }
 
+        // Fetch the track IDs separately - much faster than using a subquery or inner join.
+        $trackIds = $this->resultFetcher->fetchCol('SELECT gtr_id_track FROM gems__tracks WHERE gtr_active = 1');
+        if ($trackIds) {
+            $trackWhereIn = sprintf('(%s)', implode(',', $trackIds));
+        } else {
+            $trackWhereIn = '(-1)';
+        }
+
         /**
          * Explanation:
          *  Select all unique round descriptions for active rounds in active tracks
@@ -363,10 +371,10 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 
                 (SELECT DISTINCT gto_round_description as gro_round_description, gto_round_description
                     FROM gems__tokens
-                    INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
                     WHERE
                         gto_id_round = 0 AND
                         LENGTH(gto_round_description) > 0 AND
+                        gto_id_track IN $trackWhereIn AND
                         $orgIn
                 )
                 ORDER BY gro_round_description";
