@@ -15,7 +15,7 @@ use Gems\Menu\RouteHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -48,14 +48,14 @@ class TokenDateSelector extends DateSelectorAbstract
     protected array $statiUsed = ['O', 'P', 'I', 'M', 'A'];
 
     public function __construct(
-        Translator $translator,
+        TranslatorInterface $translate,
         Localized $localized,
         \Zend_Db_Adapter_Abstract $db,
         RouteHelper $routeHelper,
         Translated $translatedUtil,
         protected TokenRepository $tokenRepository
     ) {
-        parent::__construct($translator, $localized, $db, $routeHelper, $translatedUtil);
+        parent::__construct($translate, $localized, $db, $routeHelper, $translatedUtil);
     }
 
     /**
@@ -78,7 +78,7 @@ class TokenDateSelector extends DateSelectorAbstract
     protected function loadFields()
     {
         $this->addField('tokens')
-                ->setLabel($this->translator->_('Activated surveys'))
+                ->setLabel($this->translate->_('Activated surveys'))
                 ->setToCount("gto_id_token");
 
         foreach ($this->statiUsed as $key) {

@@ -20,8 +20,8 @@ use Gems\Menu\RouteHelper;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
 use MUtil\Model\Transform\RequiredRowsTransformer;
-use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HrefArrayAttribute;
 use Zalt\Late\Late;
 use Zalt\Late\RepeatableInterface;
@@ -125,7 +125,7 @@ abstract class DateSelectorAbstract
     protected RequestInfo $requestInfo; 
 
     public function __construct(
-        protected Translator $translator,
+        protected TranslatorInterface $translate,
         protected Localized $localized,
         protected \Zend_Db_Adapter_Abstract $db,
         protected RouteHelper $routeHelper,
@@ -295,18 +295,18 @@ abstract class DateSelectorAbstract
         }
         if ($this->dateRange > 0) {
             $requiredRows[-$this->dateRange]['df_link']  = $this->dateFactor - ($this->dateRange * 2);
-            $requiredRows[-$this->dateRange]['df_label'] = $this->translator->_('<<');
+            $requiredRows[-$this->dateRange]['df_label'] = $this->translate->_('<<');
             $requiredRows[ $this->dateRange]['df_link']  = $this->dateFactor + ($this->dateRange * 2);
-            $requiredRows[ $this->dateRange]['df_label'] = $this->translator->_('>>');
+            $requiredRows[ $this->dateRange]['df_label'] = $this->translate->_('>>');
             if ($this->dateRange > 1) {
                 $i = intval($this->dateRange / 2);
                 $requiredRows[-$i]['df_link']  = $this->dateFactor - 1;
-                $requiredRows[-$i]['df_label'] = $this->translator->_('<');
+                $requiredRows[-$i]['df_label'] = $this->translate->_('<');
                 $requiredRows[ $i]['df_link']  = $this->dateFactor + 1;
-                $requiredRows[ $i]['df_label'] = $this->translator->_('>');
+                $requiredRows[ $i]['df_label'] = $this->translate->_('>');
             }
             $requiredRows[ 0]['df_link']  = $this->dateFactor ? '0' : null;
-            $requiredRows[ 0]['df_label'] = $this->translator->_('Now!');
+            $requiredRows[ 0]['df_label'] = $this->translate->_('Now!');
         }
 
         if ($this->dateFactor) {
@@ -352,20 +352,20 @@ abstract class DateSelectorAbstract
     protected function getDateDescriptions()
     {
         return array(
-            'D' => $this->translator->_('Show by day'),
-            'W' => $this->translator->_('Show by week'),
-            'M' => $this->translator->_('Show by month'),
-            'Y' => $this->translator->_('Show by year'),
+            'D' => $this->translate->_('Show by day'),
+            'W' => $this->translate->_('Show by week'),
+            'M' => $this->translate->_('Show by month'),
+            'Y' => $this->translate->_('Show by year'),
             );
     }
 
     protected function getDateLabels()
     {
         return array_map('strtolower', array(
-            'D' => $this->translator->_('D'),
-            'W' => $this->translator->_('W'),
-            'M' => $this->translator->_('M'),
-            'Y' => $this->translator->_('Y'),
+            'D' => $this->translate->_('D'),
+            'W' => $this->translate->_('W'),
+            'M' => $this->translate->_('M'),
+            'Y' => $this->translate->_('Y'),
             ));
     }
 
@@ -545,7 +545,7 @@ abstract class DateSelectorAbstract
     protected function setTableBody(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $this->getBaseUrl();
-        $onEmpty = $this->translator->_('-');
+        $onEmpty = $this->translate->_('-');
 
         foreach ($this->getFields() as $name => $field) {
             $bridge->tr(array('class' => ($this->dateGroup == $name) ? 'selectedRow' : null));
@@ -593,7 +593,7 @@ abstract class DateSelectorAbstract
         $baseurl = $this->getBaseUrl();
         
         // Left cell with period types
-        $th = $bridge->th($this->translator->_('Period'), ' ');
+        $th = $bridge->th($this->translate->_('Period'), ' ');
         $th->class = 'middleAlign';
         $thdiv = $th->span()->spaced(); // array('class' => 'rightFloat'));
         $contents = $this->getDateLabels();
@@ -601,7 +601,7 @@ abstract class DateSelectorAbstract
             if (isset($contents[$letter])) {
                 $content = $contents[$letter];
             } else {
-                $content = strtolower($this->translator->_($letter));
+                $content = strtolower($this->translate->_($letter));
             }
             if ($letter == $this->dateType) {
                 $thdiv->span($content, array('class' => 'browselink btn btn-primary btn-xs disabled'));
@@ -621,7 +621,7 @@ abstract class DateSelectorAbstract
 
             case 'W':
                 $header = array($repeater->period_1, \Zalt\Html\Html::create()->br(),
-                    Late::call('sprintf', $this->translator->_('week %s'), $repeater->period_2));
+                    Late::call('sprintf', $this->translate->_('week %s'), $repeater->period_2));
                 break;
 
             case 'M':
