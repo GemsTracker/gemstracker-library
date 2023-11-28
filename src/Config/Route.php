@@ -1262,7 +1262,7 @@ class Route
                 'show-log',
             ],
             parameters: [
-                \Gems\Model::LOG_ITEM_ID => '\d+',
+                \MUtil\Model::REQUEST_ID => '\d+',
             ],
             postRoutes: [
                 'edit',
