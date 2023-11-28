@@ -2,12 +2,13 @@
 
 namespace Gems\Model;
 
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\Transform\AddValuesTransformer;
 use Gems\Model\Transform\EmailToTransformer;
 use Gems\Repository\CommJobRepository;
 use Gems\Repository\CommRepository;
 use Gems\Tracker;
-use MUtil\Translate\Translator;
+use Gems\User\User;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
@@ -20,6 +21,7 @@ class EmailTokenModel extends GemsJoinModel
         protected CommJobRepository $commJobRepository,
         protected CommRepository $commRepository,
         protected Tracker $tracker,
+        CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct('gems__tokens', $metaModelLoader, $sqlRunner, $translator, 'emailTokenModel');
 
@@ -86,25 +88,28 @@ class EmailTokenModel extends GemsJoinModel
                 ],
             ],
         ]);
-        $this->metaModel->set('subject', [
-            'label' => $this->translate->_('Subject'),
-            'apiName' => 'subject',
-            'size' => 100,
-            'value' => null,
-            'default' => null,
-        ]);
-        $this->metaModel->set('body', [
-            'label' => $this->translate->_('Message'),
-            'apiName' => 'body',
-            'elementClass' => 'EmailNowMessage',
-        ]);
 
         $this->metaModel->addTransformer(new EmailToTransformer());
-        $this->metaModel->addTransformer(new AddValuesTransformer([
-            'from' => null,
-            'subject' => null,
-            'body' => null,
-        ]));
+
+        $currentUser = $currentUserRepository->getCurrentUser();
+        if ($currentUser !== null && $currentUser->hasPrivilege('pr.token.mail.freetext')) {
+            $this->metaModel->set('subject', [
+                'label' => $this->translate->_('Subject'),
+                'apiName' => 'subject',
+                'size' => 100,
+                'value' => null,
+                'default' => null,
+            ]);
+            $this->metaModel->set('body', [
+                'label' => $this->translate->_('Message'),
+                'apiName' => 'body',
+                'elementClass' => 'EmailNowMessage',
+            ]);
+            $this->metaModel->addTransformer(new AddValuesTransformer([
+                'subject' => null,
+                'body' => null,
+            ]));
+        }
     }
 
     public function save(array $newValues, array $filter = null, array $saveTables = null): array
