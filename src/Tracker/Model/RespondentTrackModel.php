@@ -339,6 +339,17 @@ class RespondentTrackModel extends HiddenOrganizationModel
                 $values = $db->fetchRow($sql, array($filter['gr2o_patient_nr'], $filter['gr2o_id_organization'])) + $values;
                 $values['gr2t_id_user']         = $values['gr2o_id_user'];
                 $values['gr2t_id_organization'] = $values['gr2o_id_organization'];
+            } elseif (isset($filter['gr2o_id_user'], $filter['gr2o_id_organization'])) {
+                $sql = "SELECT *,
+                            CONCAT(
+                                COALESCE(CONCAT(grs_last_name, ', '), '-, '),
+                                COALESCE(CONCAT(grs_first_name, ' '), ''),
+                                COALESCE(grs_surname_prefix, '')) AS respondent_name
+                        FROM gems__respondents INNER JOIN gems__respondent2org ON grs_id_user = gr2o_id_user
+                        WHERE gr2o_id_user = ? AND gr2o_id_organization = ?";
+                $values = $db->fetchRow($sql, array($filter['gr2o_id_user'], $filter['gr2o_id_organization'])) + $values;
+                $values['gr2t_id_user']         = $values['gr2o_id_user'];
+                $values['gr2t_id_organization'] = $values['gr2o_id_organization'];
             }
             if (isset($filter['gtr_id_track'])) {
                 $sql = 'SELECT * FROM gems__tracks WHERE gtr_id_track = ?';
