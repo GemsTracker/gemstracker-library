@@ -143,14 +143,14 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                             gro_active=1 AND
                             gtr_active=1";
         if ($trackId > -1) {
-            $sqlGroups .= $this->db->quoteInto(" AND gtr_id_track = ?", $trackId);
+            $sqlGroups .= " AND gtr_id_track = $trackId";
         }
 
         $sqlRelations = "SELECT DISTINCT gtf_field_name as ggp_name
                         FROM gems__track_fields
                         WHERE gtf_field_type = 'relation'";
         if ($trackId > -1) {
-            $sqlRelations .= $this->db->quoteInto(" AND gtf_id_track = ?", $trackId);
+            $sqlRelations .= " AND gtf_id_track = $trackId";
         }
 
         $sql = "SELECT ggp_name, ggp_name as label FROM ("
@@ -292,11 +292,11 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 
     /**
      *
-     * @param string $orgWhere
+     * @param array $allowedOrgs
      * @param array $data The $form field values (can be useful, but no need to set them)
      * @return mixed SQL string or array
      */
-    protected function getAllGroups($allowedOrgs, array $data)
+    protected function getAllGroups(array $allowedOrgs, array $data)
     {
         if ($allowedOrgs) {
             $orgIn = "gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")";
@@ -332,11 +332,11 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 
     /**
      *
-     * @param string $orgWhere
+     * @param array $allowedOrgs
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return mixed SQL string or array
      */
-    protected function getAllTrackRounds($allowedOrgs, array $data)
+    protected function getAllTrackRounds(array $allowedOrgs, array $data)
     {
         if ($allowedOrgs) {
             $orgIn = "gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")";
@@ -382,11 +382,11 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 
     /**
      *
-     * @param string $orgWhere
+     * @param array $allowedOrgs
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return mixed SQL string or array
      */
-    protected function getAllTrackTypes($allowedOrgs, array $data)
+    protected function getAllTrackTypes(array $allowedOrgs, array $data)
     {
         return $this->trackDataRepository->getActiveTracksForOrgs(array_keys($allowedOrgs));
     }
