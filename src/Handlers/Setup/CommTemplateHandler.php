@@ -84,7 +84,7 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel(bool $detailed, string $action): ModelAbstract
+    public function createModel(bool $detailed, string $action): CommTemplateModel
     {
         /**
          * @var CommTemplateModel

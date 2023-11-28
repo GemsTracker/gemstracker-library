@@ -27,12 +27,22 @@ class CommRepository
         string $from = null,
         string $fromName = null,
         string $to = null,
+        string $subject = null,
+        string $body = null,
     ): bool
     {
         $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
         $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
 
-        $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
+        if ($subject !== null && $body !== null) {
+            $mailTexts = [
+                'subject' => $subject,
+                'body' => $body,
+            ];
+        } elseif ($templateId !== null) {
+            $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
+        }
+
         if ($mailTexts === null) {
             throw new \MailException('No template data found');
         }
@@ -44,16 +54,16 @@ class CommRepository
         $email = $this->communicationRepository->getNewEmail();
         $email->subject($mailTexts['subject'], $mailFields);
 
+        $job = [
+            'gcj_id_message' => $templateId,
+        ];
+
         try {
             $email->addFrom(new Address($from, $fromName));
             $email->addTo(new Address($to, $token->getRespondentName()));
 
             $email->htmlTemplate($this->communicationRepository->getTemplate($token->getOrganization()), $mailTexts['body'], $mailFields);
             $mailer->send($email);
-
-            $job = [
-                'gcj_id_message' => $templateId,
-            ];
 
             $event = new TokenEventMailSent($email, $token, $currentUserId, $job);
             $this->event->dispatch($event, $event::NAME);

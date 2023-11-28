@@ -9,6 +9,7 @@ use Gems\Model\CommTemplateModel;
 use Gems\Model\EmailTokenModel;
 use Gems\Model\InsertableQuestionnaireModel;
 use Gems\Model\SimpleTrackModel;
+use Gems\Model\Type\CommTemplateSingleLanguageFlatModel;
 
 class ApiRoutes extends RestModelConfigProviderAbstract
 {
@@ -87,6 +88,21 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                 ],
             ),
             ...$this->createModelRoute(
+                endpoint: 'single-language-comm-template',
+                applySettings: ['applyDetailSettings'],
+                model: CommTemplateSingleLanguageFlatModel::class,
+                methods: ['GET'],
+                allowedFields: [
+                    'id',
+                    'name',
+                    'code',
+                    'mailTarget',
+                    'subject',
+                    'body',
+                ],
+            ),
+
+            ...$this->createModelRoute(
                 endpoint: 'respondent/email-token',
                 model: EmailTokenModel::class,
                 methods: ['GET', 'PATCH'],
@@ -101,12 +117,14 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                     'preferredLanguage',
                     'template',
                     'subject',
-                    'message',
+                    'body',
                 ],
                 allowedSaveFields: [
                     'gto_id_token',
                     'to',
-                    'communicationTemplate',
+                    'template',
+                    'subject',
+                    'body',
                 ],
             ),
             ...$this->createRoute(

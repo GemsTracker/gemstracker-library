@@ -6,6 +6,7 @@ use Gems\Db\ResultFetcher;
 use Gems\Tracker\Token;
 use Gems\Tracker\Token\LaminasTokenSelect;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Expression;
 use Zalt\Base\TranslatorInterface;
 
 class TokenMailFields extends RespondentMailFields
@@ -102,13 +103,14 @@ class TokenMailFields extends RespondentMailFields
         $tSelect = new LaminasTokenSelect($this->resultFetcher);
 
         $tSelect->columns([
-            'all'   => 'COUNT(*)',
-            'track' => sprintf('SUM(CASE WHEN gto_id_respondent_track = %d THEN 1 ELSE 0 END)', $this->token->getRespondentTrackId()),
+            'all'   => new Expression('COUNT(*)'),
+            'track' => new Expression(sprintf('SUM(CASE WHEN gto_id_respondent_track = %d THEN 1 ELSE 0 END)', $this->token->getRespondentTrackId())),
         ]);
         $tSelect->andSurveys(array())
             ->forRespondent($this->token->getRespondentId(), $this->token->getOrganizationId())
             ->forGroupId($this->token->getSurvey()->getGroupId())
             ->onlyValid();
+
         return $tSelect->fetchRow();
     }
 }

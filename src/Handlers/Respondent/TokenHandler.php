@@ -19,6 +19,7 @@ use Gems\Model\MetaModelLoader;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
+use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Respondent\TokenEmailSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Respondent;
@@ -117,7 +118,10 @@ class TokenHandler extends TokenSearchHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $emailSnippets = [TokenEmailSnippet::class];
+    protected array $emailSnippets = [
+        ContentTitleSnippet::class,
+        TokenEmailSnippet::class,
+    ];
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -272,6 +276,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
         if ($this->emailSnippets) {
             $params = $this->_processParameters($this->emailParameters + $this->defaultTokenParameters);
             $params['submitLabel'] = $this->translate->_('Send email');
+            $params['contentTitle'] = $this->translate->_('Send email');
 
             $this->addSnippets($this->emailSnippets, $params);
         }

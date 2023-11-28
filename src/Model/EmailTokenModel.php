@@ -2,91 +2,125 @@
 
 namespace Gems\Model;
 
+use Gems\Model\Transform\AddValuesTransformer;
 use Gems\Model\Transform\EmailToTransformer;
 use Gems\Repository\CommJobRepository;
 use Gems\Repository\CommRepository;
 use Gems\Tracker;
 use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
 
-class EmailTokenModel extends JoinModel
+class EmailTokenModel extends GemsJoinModel
 {
     public function __construct(
-        protected Translator $translator,
+        MetaModelLoader $metaModelLoader,
+        SqlRunnerInterface $sqlRunner,
+        TranslatorInterface $translator,
         protected CommJobRepository $commJobRepository,
         protected CommRepository $commRepository,
         protected Tracker $tracker,
-    )
-    {
-        parent::__construct('emailTokenModel', 'gems__tokens', 'gto', false);
-        $this->addTable('gems__tracks', ['gto_id_track' => 'gtr_id_track'], 'gtr', false);
-        $this->addTable('gems__surveys', ['gto_id_survey' => 'gsu_id_survey'], 'gsu', false);
-        $this->addTable('gems__respondents', ['gto_id_respondent' => 'grs_id_user'], 'grs', false);
-        $this->addTable('gems__respondent2org', ['gto_id_respondent' => 'gr2o_id_user', 'gto_id_organization' => 'gr2o_id_organization'], 'gr2o', false);
+    ) {
+        parent::__construct('gems__tokens', $metaModelLoader, $sqlRunner, $translator, 'emailTokenModel');
 
-        $this->set('gto_id_token', [
-            'label' => $this->translator->_('Token'),
+        $this->addTable('gems__tracks', ['gto_id_track' => 'gtr_id_track']);
+        $this->addTable('gems__surveys', ['gto_id_survey' => 'gsu_id_survey']);
+        $this->addTable('gems__respondents', ['gto_id_respondent' => 'grs_id_user']);
+        $this->addTable('gems__respondent2org', ['gto_id_respondent' => 'gr2o_id_user', 'gto_id_organization' => 'gr2o_id_organization']);
+
+        $this->metaModel->set('gto_id_token', [
+            'label' => $this->translate->_('Token'),
             'apiName' => 'id',
             'elementClass' => 'html',
         ]);
 
-        $this->set('to', [
-            'label' => $this->translator->_('To'),
+        $this->metaModel->set('to', [
+            'label' => $this->translate->_('To'),
             'elementClass' => 'html',
         ]);
-        $this->set('gtr_track_name', [
-            'label' => $this->translator->_('Track'),
+
+        $this->metaModel->set('gtr_track_name', [
+            'label' => $this->translate->_('Track'),
             'apiName' => 'trackName',
             'elementClass' => 'html',
         ]);
-        $this->set('gto_round_description', [
-            'label' => $this->translator->_('Round'),
+        $this->metaModel->set('gto_round_description', [
+            'label' => $this->translate->_('Round'),
             'apiName' => 'roundName',
             'elementClass' => 'html',
         ]);
-        $this->set('gsu_survey_name', [
-            'label' => $this->translator->_('Survey'),
+        $this->metaModel->set('gsu_survey_name', [
+            'label' => $this->translate->_('Survey'),
             'apiName' => 'surveyName',
             'elementClass' => 'html',
         ]);
-        $this->set('gto_mail_sent_date', [
-            'label' => $this->translator->_('Last contact'),
+        $this->metaModel->set('gto_mail_sent_date', [
+            'label' => $this->translate->_('Last contact'),
             'apiName' => 'lastContact',
             'elementClass' => 'html',
         ]);
-        $this->set('grs_iso_country', [
-            'label' => $this->translator->_('Preferred language'),
+        $this->metaModel->set('grs_iso_country', [
+            'label' => $this->translate->_('Preferred language'),
             'apiName' => 'preferredLanguage',
             'elementClass' => 'html',
         ]);
-        $this->set('communicationTemplate', [
-            'label' => $this->translator->_('Template'),
+        $this->metaModel->set('communicationTemplate', [
+            'label' => $this->translate->_('Template'),
             'apiName' => 'template',
-            'multiOptions' => $this->commJobRepository->getCommTemplates('token'),
+            //'multiOptions' => $this->commJobRepository->getCommTemplates('token'),
+            'multiOptionSettings' => [
+                'reference' => 'single-language-comm-template',
+                'key' => 'id',
+                'value' => 'name',
+                'onChange' => [
+                    'subject' => [
+                        'valueFromField' => [
+                            'subject',
+                        ],
+                    ],
+                    'body' => [
+                        'valueFromField' => [
+                            'body',
+                        ],
+                    ],
+                ],
+            ],
         ]);
-        /*$this->set('subject', [
-            'label' => $this->translator->_('Subject'),
-            'elementClass' => 'html',
+        $this->metaModel->set('subject', [
+            'label' => $this->translate->_('Subject'),
+            'apiName' => 'subject',
+            'size' => 100,
+            'value' => null,
+            'default' => null,
         ]);
-        $this->set('message', [
-            'label' => $this->translator->_('Message'),
-            'elementClass' => 'html',
-        ]);*/
+        $this->metaModel->set('body', [
+            'label' => $this->translate->_('Message'),
+            'apiName' => 'body',
+            'elementClass' => 'EmailNowMessage',
+        ]);
 
-        $this->addTransformer(new EmailToTransformer());
+        $this->metaModel->addTransformer(new EmailToTransformer());
+        $this->metaModel->addTransformer(new AddValuesTransformer([
+            'from' => null,
+            'subject' => null,
+            'body' => null,
+        ]));
     }
 
-    protected function _save(array $newValues, array $filter = null, array $saveTables = null): array
+    public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
         if (!isset($newValues['gto_id_token'])) {
-            new \Exception('Missing token ID');
+            throw new \Exception('Missing token ID');
         }
         $token = $this->tracker->getToken($newValues['gto_id_token']);
         $templateId = $newValues['communicationTemplate'] ?? null;
         $from = $newValues['from'] ?? $token->getOrganization()->getEmail();
         $fromName = $newValues['fromName'] ?? $token->getOrganization()->getContactName();
         $to = $token->getEmail();
+        $subject = $newValues['subject'] ?? null;
+        $body = $newValues['body'] ?? null;
 
-        if ($this->commRepository->sendEmail($token, $templateId, $from, $fromName, $to)) {
+        if ($this->commRepository->sendEmail($token, $templateId, $from, $fromName, $to, $subject, $body)) {
             return $newValues;
         }
 
