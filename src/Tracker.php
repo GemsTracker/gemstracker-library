@@ -249,7 +249,9 @@ class Tracker implements TrackerInterface
         // Create the filter values for creating the track
         $filter['gtr_id_track']         = $trackId;
         $filter['gr2t_id_user']         = $respondentId;
+        $filter['gr2o_id_user']         = $respondentId;
         $filter['gr2t_id_organization'] = $organizationId;
+        $filter['gr2o_id_organization'] = $organizationId;
 
         // Load all other new data
         $respTrackModel = $this->getRespondentTrackModel();
