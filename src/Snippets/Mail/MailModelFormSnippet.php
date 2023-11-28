@@ -180,17 +180,18 @@ class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
         $sub = $this->model->getMetaModel()->get('gctt', 'model');
 
         if ($sub instanceof MetaModellerInterface && (! $sub->getMetaModel()->has('preview_html'))) {
-            $sub->getMetaModel()->set('preview_html', 'label', $this->_('Preview HTML'),
-                'elementClass', 'Html',
-                'noHidden', true
-                );
+            $sub->getMetaModel()->set('preview_html', [
+                'label' => $this->_('Preview HTML'),
+                'elementClass' => 'Html',
+                'noHidden' => true,
+               ]);
 //                $sub->set('preview_text', 'label', $this->_('Preview Text'),
 //                          'elementClass', 'Html',
 //                          'noHidden', true
