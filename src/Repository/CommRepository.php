@@ -34,6 +34,7 @@ class CommRepository
         $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
         $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
 
+        $mailTexts = null;
         if ($subject !== null && $body !== null) {
             $mailTexts = [
                 'subject' => $subject,

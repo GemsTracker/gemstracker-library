@@ -598,10 +598,9 @@ abstract class MailerAbstract extends \MUtil\Registry\TargetAbstract
      */
     public function setTemplateByCode($templateCode)
     {
-        $select = $this->loader->getModels()->getCommTemplateModel()->getSelect();
-        $select->where('gct_code = ?', $templateCode);
+        $select = $this->loader->getModels()->getCommTemplateModel();
 
-        $template = $this->db->fetchRow($select);
+        $template = $select->loadFirst(['gct_code' => $templateCode]);
         if ($template) {
             $this->setTemplate($template['gct_id_template']);
             return true;

@@ -14,6 +14,8 @@ namespace Gems\Snippets\Mail;
 use Gems\Model\CommTemplateModel;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\MetaModellerInterface;
 
 /**
  *
@@ -62,7 +64,7 @@ class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var CommTemplateModel
      */
     protected $model;
 
@@ -182,20 +184,17 @@ class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
-        if ($this->model instanceof CommTemplateModel)
-        {
-            $sub = $this->model->get('gctt', 'model');
-            
-            if ($sub instanceof \MUtil\Model\ModelAbstract && (! $sub->has('preview_html'))) {
-                $sub->set('preview_html', 'label', $this->_('Preview HTML'),
-                    'elementClass', 'Html',
-                    'noHidden', true
-                    );
+        $sub = $this->model->getMetaModel()->get('gctt', 'model');
+
+        if ($sub instanceof MetaModellerInterface && (! $sub->getMetaModel()->has('preview_html'))) {
+            $sub->getMetaModel()->set('preview_html', 'label', $this->_('Preview HTML'),
+                'elementClass', 'Html',
+                'noHidden', true
+                );
 //                $sub->set('preview_text', 'label', $this->_('Preview Text'),
 //                          'elementClass', 'Html',
 //                          'noHidden', true
 //                );
-            }
         }
         
         return $this->model;
