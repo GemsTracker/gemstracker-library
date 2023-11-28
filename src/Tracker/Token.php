@@ -1936,7 +1936,7 @@ class Token
     public function setMessageSent(): void
     {
         $values = [
-            'gto_mail_sent_num' => new \Zend_Db_Expr('gto_mail_sent_num + 1'),
+            'gto_mail_sent_num' => new Expression('gto_mail_sent_num + 1'),
             'gto_mail_sent_date' => (new DateTimeImmutable())->format('Y-m-d'),
         ];
 
