@@ -229,7 +229,7 @@ class RespondentTrack
             $orgId  = $this->_respTrackData['gr2t_id_organization'];
 
             if ($row = $this->resultFetcher->fetchRow($sql, [$respId, $orgId])) {
-                $this->_respTrackData = $this->_respTrackData + $row;
+                $this->_respTrackData = $row + $this->_respTrackData;
             } else {
                 $trackId = $this->_respTrackId;
                 throw new Exception("Respondent data missing for track $trackId.");
