@@ -12,8 +12,10 @@
 namespace Gems\Snippets\Respondent;
 
 use Gems\Html;
+use Gems\Model\Respondent\RespondentModel;
 use Zalt\Html\AElement;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
@@ -27,6 +29,11 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  */
 class RespondentTableSnippet extends RespondentTableSnippetAbstract
 {
+    /**
+     * @var bool When true and the columns are specified, use those
+     */
+    protected bool $useColumns = false;
+
     /**
      * Add first columns (group) from the model to the bridge that creates the browse table.
      *
@@ -49,12 +56,12 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
             $model->set('grc_description', 'label', $this->_('Rejection code'));
             $column2 = 'grc_description';
 
-        } elseif (isset($this->searchFilter[\MUtil\Model::REQUEST_ID2])) {
+        } elseif (isset($this->searchFilter[MetaModelInterface::REQUEST_ID2])) {
             $model->setIfExists('gr2o_opened', 'tableDisplay', 'small');
             $column2 = 'gr2o_opened';
 
         } else {
-            $column2 = 'gr2o_id_organization';
+            $column2 = 'gor_name';
         }
 
         $bridge->addMultiSort('gr2o_patient_nr', $br, $column2);
@@ -105,7 +112,10 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
         $model = $dataModel->getMetaModel();
         $br = Html::create('br');
 
-        if ($model->hasAlias('gems__respondent2track')) {
+        /**
+         * @var RespondentModel $dataModel
+         */
+        if ($dataModel->getJoinStore()->hasTable('gems__respondent2track')) {
             $model->set('gtr_track_name',  'label', $this->_('Track'));
             $model->set('gr2t_track_info', 'label', $this->_('Track description'));
 

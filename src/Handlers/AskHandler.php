@@ -16,7 +16,9 @@ use Gems\Locale\Locale;
 use Gems\Menu\RouteHelper;
 use Gems\Menu\RouteNotFoundException;
 use Gems\Middleware\ClientIpMiddleware;
+use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Middleware\LocaleMiddleware;
 use Gems\Project\ProjectSettings;
 use Gems\Snippets\Ask\MaintenanceModeAskSnippet;
 use Gems\Snippets\Ask\ResumeLaterSnippet;
@@ -31,6 +33,8 @@ use Gems\User\User;
 use Gems\Util\Lock\MaintenanceLock;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\RequestInfoFactory;
@@ -48,6 +52,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class AskHandler extends SnippetLegacyHandlerAbstract
 {
+    use CookieHandlerTrait;
     use CsrfHandlerTrait;
 
     protected User|null $currentUser = null;
@@ -139,14 +144,14 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
-        protected Tracker $tracker,
-        CurrentUserRepository $currentUserRepository,
-        protected Locale $locale,
+        protected readonly Tracker $tracker,
+        protected readonly CurrentUserRepository $currentUserRepository,
+        protected readonly Locale $locale,
         protected ProjectSettings $project,
-        protected RouteHelper $routeHelper,
-        protected MaintenanceLock $maintenanceLock,
-        protected TokenHelpers $tokenHelpers,
-        protected array $config,
+        protected readonly RouteHelper $routeHelper,
+        protected readonly MaintenanceLock $maintenanceLock,
+        protected readonly TokenHelpers $tokenHelpers,
+        protected readonly array $config,
     ) {
         parent::__construct($responder, $translate);
         $this->currentUser = $currentUserRepository->getCurrentUser();
@@ -190,21 +195,25 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             return false;
         }
 
-        if (! (($this->currentUser instanceof User && $this->currentUser->isActive()) || $this->token->getSurvey()->isTakenByStaff())) {
-            $tokenLang = strtolower($this->token->getRespondentLanguage());
-            $tokenOrganizationId = $this->token->getOrganizationId();
-
-            if ($this->currentUser instanceof User) {
-                if ($tokenOrganizationId !== $this->currentUser->getCurrentOrganizationId()) {
-                    $this->currentUser->setCurrentOrganization($this->token->getOrganization());
-                }
-                if ($tokenLang != $this->locale->getLanguage()) {
-                    if ($this->currentUser->switchLocale($tokenLang)) {
-                        // Reload url as the menu has already been loaded in the previous language
-                        $url = $this->token->getOrganization()->getLoginUrl() . '/ask/forward/' . $this->tokenId;
-                        $this->redirectUrl = $url;
-                    }
-                }
+        $tokenOrganizationId = $this->token->getOrganizationId();
+        $tokenLang = strtolower($this->token->getRespondentLanguage());
+        if (($this->currentUser instanceof User && $this->currentUser->isActive())) {
+            if ($tokenOrganizationId !== $this->currentUser->getCurrentOrganizationId()) {
+                $this->currentUser->setCurrentOrganization($this->token->getOrganization());
+                $this->currentUserRepository->setCurrentOrganizationId($tokenOrganizationId);
+            }
+            if ($tokenLang != $this->locale->getLanguage()) {
+                $this->currentUser->setLocale($tokenLang);
+                $this->locale->setCurrentLanguage($tokenLang);
+            }
+        } else {
+            if ($tokenOrganizationId != $this->currentUserRepository->getCurrentOrganizationId()) {
+                $this->addSiteCookie(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE, (string) $tokenOrganizationId);
+                $this->currentUserRepository->setCurrentOrganizationId($tokenOrganizationId);
+            }
+            if ($tokenLang != $this->locale->getLanguage()) {
+                $this->addSiteCookie(LocaleMiddleware::LOCALE_ATTRIBUTE, $tokenLang);
+                $this->locale->setCurrentLanguage($tokenLang);
             }
         }
 
@@ -325,13 +334,12 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         );
 
         $screen = $this->token->getOrganization()->getTokenAskScreen();
-        if ($screen) {
-            $params   = $screen->getParameters($this->token);
-            $snippets = $screen->getSnippets($this->token);
-            if (false !== $snippets) {
-                $this->forwardSnippets = $snippets;
-            }
+        $params   = $screen->getParameters($this->token);
+        $snippets = $screen->getSnippets($this->token);
+        if (false !== $snippets) {
+            $this->forwardSnippets = $snippets;
         }
+
         $params['token'] = $this->token;
         $params['clientIp'] = $this->getClientIpAddress();
 
@@ -378,6 +386,11 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     public function getRequestInfo(): RequestInfo
     {
         return RequestInfoFactory::getMezzioRequestInfo($this->request);
+    }
+
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        return $this->processResponseCookies(parent::handle($request));
     }
 
     /**
