@@ -125,6 +125,16 @@ class Menu
                             'label' => $this->translator->trans('Change organization'),
                             'type' => 'route-link-item',
                         ],
+                        [
+                            'name' => 'respondent.delete',
+                            'type' => 'alias',
+                            'alias' => 'respondent.show',
+                        ],
+                        [
+                            'name' => 'respondent.undelete',
+                            'type' => 'alias',
+                            'alias' => 'respondent.show',
+                        ],
 
 
                         [

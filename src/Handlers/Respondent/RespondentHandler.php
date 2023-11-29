@@ -21,6 +21,8 @@ use Gems\Repository\TrackDataRepository;
 use Gems\Screens\ConsentInterface;
 use Gems\Screens\ProcessModelInterface;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\Respondent\DeleteRespondentSnippet;
+use Gems\Snippets\Respondent\RespondentDetailsSnippet;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Psr\Cache\CacheItemPoolInterface;
@@ -181,16 +183,11 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         'showButtons'    => false,
     ];
 
-    /**
-     * The snippets used for the delete action.
-     *
-     * @var mixed String or array of snippets name
-     */
     public array $deleteSnippets = [
-        'Respondent\\RespondentDetailsSnippet',
-        'Respondent\\DeleteRespondentSnippet',
+        RespondentDetailsSnippet::class,
+        DeleteRespondentSnippet::class,
         CurrentButtonRowSnippet::class,
-        ];
+    ];
 
     /**
      *

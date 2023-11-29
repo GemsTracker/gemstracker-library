@@ -59,8 +59,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
     protected array $hiddenItems = ['grs_id_user'];
 
     /**
-     *
-     * @var \MUtil\Model\ModelAbstract
+     * @var RespondentModel
      */
     protected $model;
 
@@ -117,20 +116,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
-        if ($this->model instanceof RespondentModel) {
-            $model = $this->model;
-
-        } else {
-            if ($this->respondent instanceof Respondent) {
-                $model = $this->respondent->getRespondentModel();
-
-            } else {
-                $model = $this->modelLoader->getRespondentModel(true);;
-            }
-            $model->applyDetailSettings();
-        }
-
-        return $model;
+        return $this->model;
     }
 
     /**
@@ -163,12 +149,13 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
             parent::loadFormData();
         }
 
-        $model = $this->getModel();
+        $metaModel = $this->getModel()->getMetaModel();
 
-        $model->set('restore_tracks', 'label', $this->_('Restore tracks'),
-            'description', $this->_('Restores tracks with the same code as the respondent.'),
-            'elementClass', 'Checkbox'
-        );
+        $metaModel->set('restore_tracks', [
+            'label' => $this->_('Restore tracks'),
+            'description' => $this->_('Restores tracks with the same code as the respondent.'),
+            'elementClass' => 'Checkbox',
+        ]);
 
         if (! array_key_exists('restore_tracks', $this->formData)) {
             $this->formData['restore_tracks'] = 1;
