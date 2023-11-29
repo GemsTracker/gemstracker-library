@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Respondent;
 
 use Gems\Html;
+use Gems\Model\Respondent\RespondentModel;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -26,6 +27,11 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  */
 class MinimalTableSnippet extends RespondentTableSnippetAbstract
 {
+    /**
+     * @var bool When true and the columns are specified, use those
+     */
+    protected bool $useColumns = false;
+
     /**
      * Add first columns (group) from the model to the bridge that creates the browse table.
      *
@@ -59,8 +65,11 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
      */
     protected function addBrowseColumn2(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        $dataModel->setIfExists('gr2o_opened', 'tableDisplay', 'small');
-        $bridge->addSortable('gr2o_opened');
+        $metaModel = $dataModel->getMetaModel();
+        $metaModel->setIfExists('gr2o_opened', ['tableDisplay' => 'small',]);
+        if ($metaModel->has('gr2o_opened')) {
+            $bridge->addSortable('gr2o_opened', $this->_('Opened on'));
+        }
     }
 
     /**
@@ -80,11 +89,11 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
     {
 
         if (isset($this->searchFilter['grc_success']) && (! $this->searchFilter['grc_success'])) {
-            $dataModel->set('grc_description', 'label', $this->_('Rejection code'));
+            $dataModel->getMetaModel()->set('grc_description', 'label', $this->_('Rejection code'));
             $bridge->addSortable('grc_description');
 
         } elseif (! isset($this->searchFilter[MetaModelInterface::REQUEST_ID2])) {
-            $bridge->addSortable('gr2o_id_organization');
+            $bridge->addSortable('gor_name');
         }
     }
 
@@ -103,11 +112,15 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
      */
     protected function addBrowseColumn4(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        if ($dataModel->hasAlias('gems__respondent2track')) {
+        $metaModel = $dataModel->getMetaModel();
+        /**
+         * @var RespondentModel $dataModel
+         */
+        if ($dataModel->getJoinStore()->hasTable('gems__respondent2track')) {
             $br = Html::create('br');
 
-            $dataModel->set('gtr_track_name',  'label', $this->_('Track'));
-            $dataModel->set('gr2t_track_info', 'label', $this->_('Track description'));
+            $metaModel->set('gtr_track_name',  'label', $this->_('Track'));
+            $metaModel->set('gr2t_track_info', 'label', $this->_('Track description'));
 
             $bridge->addMultiSort('gtr_track_name', $br, 'gr2t_track_info');
         }

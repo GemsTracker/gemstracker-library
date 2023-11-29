@@ -32,28 +32,9 @@ use Zalt\SnippetsLoader\SnippetOptions;
 abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
-     * @var \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @var bool When true and the columns are specified, use those
      */
-    protected $bridge;
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     * When true and the columns are specified, use those
-     *
-     * @var boolean
-     */
-    protected $useColumns = true;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected bool $useColumns = true;
 
     /**
      *
@@ -163,25 +144,25 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseTableColumnsColumns(TableBridge $bridge, DataReaderInterface $dataModel)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        $this->bridge = $bridge;
-
         if ($this->useColumns && $this->columns) {
             parent::addBrowseTableColumns($bridge, $dataModel);
             return;
         }
 
-        $model = $dataModel->getMetaModel();
-        if ($model->has('row_class')) {
+        $metaModel = $dataModel->getMetaModel();
+        $keys      = $this->getRouteMaps($metaModel);
+        if ($metaModel->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
 
         if ($this->showMenu) {
-            $showMenuItems = $this->getShowUrls($bridge, []);
-
-            foreach ($showMenuItems as $menuItem) {
-                $bridge->addItemLink(Html::actionLink($menuItem, $this->_('Show')));
+            foreach ($this->getShowUrls($bridge, $keys) as $linkParts) {
+                if (! isset($linkParts['label'])) {
+                    $linkParts['label'] = $this->_('Show');
+                }
+                $bridge->addItemLink(Html::actionLink($linkParts['url'], $linkParts['label']));
             }
         }
 
@@ -192,10 +173,11 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
         $this->addBrowseColumn5($bridge, $dataModel);
 
         if ($this->showMenu) {
-            $editMenuItems = $this->getEditUrls($bridge, []);
-
-            foreach ($editMenuItems as $menuItem) {
-                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Edit')));
+            foreach ($this->getEditUrls($bridge, $keys) as $linkParts) {
+                if (! isset($linkParts['label'])) {
+                    $linkParts['label'] = $this->_('Edit');
+                }
+                $bridge->addItemLink(Html::actionLink($linkParts['url'], $linkParts['label']));
             }
         }
     }
