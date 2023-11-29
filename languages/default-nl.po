@@ -8570,11 +8570,10 @@ msgid "Multiple mask may have the same order."
 msgstr "Meerdere maskers kunnen de zelfde volgorde hebben."
 
 #: src/Snippets/Mask/MaskUsageInformation.php:38
-#, fuzzy
 msgid "This may result in the mask selection being random when two mask match!"
 msgstr ""
 "Dit kan resulteren in de willekeurige selectie van een masker omdat twee "
-"maskers overlappen."
+"maskers overlappen!"
 
 #: src/Snippets/Mask/MaskUsageInformation.php:40
 msgid "An example"
