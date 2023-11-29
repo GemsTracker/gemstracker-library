@@ -129,6 +129,11 @@ class TrackDataRepository
         );
     }
 
+    public function getAllActiveTrackOptions(): array
+    {
+        return array_column($this->getAllActiveTrackData(), 'gtr_track_name', 'gtr_id_track');
+    }
+
     public function getAllActiveTrackData(): array
     {
         $trackData = $this->getAllTrackData();
