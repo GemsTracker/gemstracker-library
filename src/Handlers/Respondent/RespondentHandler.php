@@ -47,9 +47,9 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $autofilterParameters = [
-        'columns'     => 'getBrowseColumns',
-        'extraSort'   => ['gr2o_opened' => SORT_DESC],
-        'respondent'  => null,
+        'columns' => 'getBrowseColumns',
+        'extraSort' => ['gr2o_opened' => SORT_DESC],
+        'respondent' => null,
     ];
 
     /**
@@ -72,15 +72,15 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $changeConsentParameters = [
-        'addCurrentParent'   => true,
+        'addCurrentParent' => true,
         'addCurrentSiblings' => true,
-        'csrfName'           => 'getCsrfTokenName',
-        'csrfToken'          => 'getCsrfToken',
-        'editMailable'       => true,
-        'menuShowSiblings'   => true,
-        'menuShowChildren'   => true,
-        'resetRoute'         => true,
-        'useTabbedForm'      => false,
+        'csrfName' => 'getCsrfTokenName',
+        'csrfToken' => 'getCsrfToken',
+        'editMailable' => true,
+        'menuShowSiblings' => true,
+        'menuShowChildren' => true,
+        'resetRoute' => true,
+        'useTabbedForm' => false,
     ];
 
     /**
@@ -91,7 +91,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     protected array $changeConsentSnippets = [
         'Respondent\\Consent\\RespondentConsentFormSnippet',
         'Respondent\\Consent\\RespondentConsentLogSnippet',
-        ];
+    ];
 
     /**
      * The parameters used for the change organization action.
@@ -104,8 +104,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $changeOrganizationParameters = [
-        'csrfName'    => 'getCsrfTokenName',
-        'csrfToken'   => 'getCsrfToken',
+        'csrfName' => 'getCsrfTokenName',
+        'csrfToken' => 'getCsrfToken',
         'keepConsent' => false,
     ];
 
@@ -131,8 +131,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     protected array $createEditParameters = [
         'menuShowSiblings' => true,
         'menuShowChildren' => true,
-        'resetRoute'       => true,
-        'useTabbedForm'    => false,
+        'resetRoute' => true,
+        'useTabbedForm' => false,
     ];
 
     /**
@@ -142,8 +142,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $createEditSnippets = [
         'Respondent\\RespondentFormSnippet',
-        'Respondent\\Consent\\RespondentConsentLogSnippet',
-        ];
+    ];
 
     /**
      * The parameters used for the edit actions, overrules any values in
@@ -178,10 +177,10 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $deleteParameters = [
-        'baseUrl'        => 'getItemUrlArray',
-        'forOtherOrgs'   => 'getOtherOrgs',
+        'baseUrl' => 'getItemUrlArray',
+        'forOtherOrgs' => 'getOtherOrgs',
         // 'respondentData' => 'getRespondentData',
-        'showButtons'    => false,
+        'showButtons' => false,
     ];
 
     public array $deleteSnippets = [
@@ -236,7 +235,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $overviewSnippets   = ['Respondent\\RespondentOverviewSnippet'];
+    protected array $overviewSnippets = ['Respondent\\RespondentOverviewSnippet'];
 
     /**
      * The parameters used for the show action
@@ -250,11 +249,11 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $showParameters = [
         'addCurrentParent' => true,
-        'forOtherOrgs'     => 'getOtherOrgs',
+        'forOtherOrgs' => 'getOtherOrgs',
         // 'respondentData'   => 'getRespondentData',
-        '-run-once'        => 'openedRespondent',
-        'tag'              => 'show-respondent',
-        'vueOptions'       => [
+        '-run-once' => 'openedRespondent',
+        'tag' => 'show-respondent',
+        'vueOptions' => [
             ':show-respondent-info' => 1,
         ],
     ];
@@ -268,7 +267,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         'Generic\\ContentTitleSnippet',
         //'Respondent\\MultiOrganizationTab',
         //'Respondent\\RespondentDetailsSnippet',
-    	//'Tracker\\AddTracksSnippet',
+        //'Tracker\\AddTracksSnippet',
         'Vue\\PatientVueSnippet',
     ];
 
@@ -331,13 +330,13 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         if ($this->enableScreens) {
             $edit = false;
-            $org  = $this->getRespondent()->getOrganization();
+            $org = $this->getRespondent()->getOrganization();
 
             if ($org) {
                 $edit = $org->getRespondentEditScreen();
             }
 
-            if (! $edit) {
+            if (!$edit) {
                 $group = $this->currentUser->getGroup();
                 if ($group) {
                     $edit = $group->getRespondentEditScreen();
@@ -355,17 +354,18 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                     $this->changeConsentParameters = $edit->getConsentParameters() + $this->changeConsentParameters;
                     $changeSnippets = $edit->getConsentSnippets();
                     if (false !== $changeSnippets) {
-                        $this->changeConsentSnippets =  $changeSnippets;
+                        $this->changeConsentSnippets = $changeSnippets;
                     }
                 }
             }
         }
         if ($this->changeConsentSnippets) {
             $params = $this->_processParameters(
-                    $this->changeConsentParameters +
-                    $this->editParameters +
-                    $this->createEditParameters +
-                    ['createData' => false]);
+                $this->changeConsentParameters +
+                $this->editParameters +
+                $this->createEditParameters +
+                ['createData' => false]
+            );
 
             $this->addSnippets($this->changeConsentSnippets, $params);
         }
@@ -378,10 +378,11 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         if ($this->changeOrganizationSnippets) {
             $params = $this->_processParameters(
-                    $this->changeOrganizationParameters +
-                    $this->editParameters +
-                    $this->createEditParameters +
-                    ['createData' => false]);
+                $this->changeOrganizationParameters +
+                $this->editParameters +
+                $this->createEditParameters +
+                ['createData' => false]
+            );
 
             $this->addSnippets($this->changeOrganizationSnippets, $params);
         }
@@ -402,14 +403,14 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 $edit = $org->getRespondentEditScreen();
             }
 
-            if (! $edit) {
+            if (!$edit) {
                 $group = $this->currentUser->getGroup();
                 if ($group) {
                     $edit = $group->getRespondentEditScreen();
                 }
             }
 
-            if ($edit ) {
+            if ($edit) {
                 if ($edit instanceof ProcessModelInterface) {
                     $edit->processModel($this->getModel());
                 }
@@ -461,13 +462,13 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         if ($this->enableScreens) {
             $edit = false;
-            $org  = $this->getRespondent()->getOrganization();
+            $org = $this->getRespondent()->getOrganization();
 
             if ($org) {
                 $edit = $org->getRespondentEditScreen();
             }
 
-            if (! $edit) {
+            if (!$edit) {
                 $group = $this->currentUser->getGroup();
                 if ($group) {
                     $edit = $group->getRespondentEditScreen();
@@ -504,9 +505,9 @@ class RespondentHandler extends RespondentChildHandlerAbstract
 
         //Now show the export form
         $export = $this->loader->getRespondentExport();
-        $form   = $export->getForm();
-        $div    = $this->html->div(['id' => 'mainform']);
-        $div[]  = $form;
+        $form = $export->getForm();
+        $div = $this->html->div(['id' => 'mainform']);
+        $div[] = $form;
 
         $params = $this->request->getQueryParams() + $this->request->getParsedBody();
 
@@ -514,10 +515,10 @@ class RespondentHandler extends RespondentChildHandlerAbstract
 
         if ($this->requestInfo->isPost()) {
             $respondent = $this->getRespondent();
-            $patients   = [
+            $patients = [
                 [
                     'gr2o_id_organization' => $respondent->getOrganizationId(),
-                    'gr2o_patient_nr'      => $respondent->getPatientNumber()
+                    'gr2o_patient_nr' => $respondent->getPatientNumber()
                 ]
             ];
 
@@ -570,10 +571,10 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 return sprintf($this->_('Edit respondent nr %s'), $respondent->getPatientNumber());
             }
             return sprintf(
-                    $this->_('Edit respondent nr %s: %s'),
-                    $respondent->getPatientNumber(),
-                    $respondent->getName()
-                    );
+                $this->_('Edit respondent nr %s: %s'),
+                $respondent->getPatientNumber(),
+                $respondent->getName()
+            );
         }
         return parent::getEditTitle();
     }
@@ -646,10 +647,10 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      *
      * It does not return the actual filter used in the query.
      *
-     * @see getSearchFilter()
-     *
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array
+     * @see getSearchFilter()
+     *
      */
     public function getSearchData(bool $useRequest = true): array
     {
@@ -672,9 +673,9 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     /**
      * Function to allow the creation of search defaults in code
      *
+     * @return array
      * @see getSearchFilter()
      *
-     * @return array
      */
     public function getSearchDefaults(): array
     {
@@ -741,7 +742,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
             unset($filter['locations']);
         }
         // dd($filter);
-        if (! isset($filter['show_with_track'])) {
+        if (!isset($filter['show_with_track'])) {
             $filter['show_with_track'] = 1;
         }
 
@@ -778,7 +779,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
 
                 // All are arrays, so easy to set
                 $this->autofilterParameters = $browse->getAutofilterParameters() + $this->autofilterParameters;
-                $this->indexParameters      = $browse->getStartStopParameters() + $this->indexParameters;
+                $this->indexParameters = $browse->getStartStopParameters() + $this->indexParameters;
 
                 $autoSnippets = $browse->getAutofilterSnippets();
                 if (false !== $autoSnippets) {
@@ -795,7 +796,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
             }
         }
         if ($this->currentUser->hasPrivilege('pr.respondent.multiorg') ||
-                $this->currentUser->getCurrentOrganization()->canHaveRespondents()) {
+            $this->currentUser->getCurrentOrganization()->canHaveRespondents()) {
             parent::indexAction();
         } else {
             $this->addSnippet('Organization\\ChooseOrganizationSnippet');
@@ -828,7 +829,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     /**
      * Action for showing overview for a patient
      */
-    public function overviewAction() {
+    public function overviewAction()
+    {
         if ($this->overviewSnippets) {
             $params = $this->_processParameters($this->overviewParameters);
 
@@ -847,12 +849,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         if ($this->enableScreens) {
             $show = false;
-            $org  = $this->getRespondent()->getOrganization();
+            $org = $this->getRespondent()->getOrganization();
             if ($org) {
                 $show = $org->getRespondentShowScreen();
             }
 
-            if (! $show) {
+            if (!$show) {
                 $group = $this->currentUser->getGroup();
                 if ($group) {
                     $show = $group->getRespondentShowScreen();
