@@ -94,8 +94,9 @@ class Route
                 ...$this->getSetupRoutes(),
                 ...$this->getTrackBuilderRoutes(),
                 ...$this->getOptionRoutes(),
-                ...$this->getApiRoutes(),
             ]),
+
+            ...$this->getApiRoutes(),
 
 
             ...$this->routeGroup([
