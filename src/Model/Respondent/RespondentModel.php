@@ -377,6 +377,17 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $changers,
         ]);
 
+        $this->setIfExists('grs_changed', ['elementClass' => 'Exhibitor']);
+        $this->setIfExists('grs_changed_by', [
+            'multiOptions' => $changers,
+            'elementClass' => 'Exhibitor'
+        ]);
+        $this->setIfExists('grs_created', ['elementClass' => 'Exhibitor']);
+        $this->setIfExists('grs_created_by',  [
+            'multiOptions' => $changers,
+            'elementClass' => 'Exhibitor'
+        ]);
+
         $event = new RespondentModelSetEvent($this);
         $this->eventDispatcher->dispatch($event, RespondentModelSetEvent::class);
 
@@ -534,6 +545,11 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 'grs_phone_2' => sprintf($this->_('Phone %s'), 2),
                 'grs_phone_3' => sprintf($this->_('Phone %s'), 3),
                 'grs_phone_4' => sprintf($this->_('Phone %s'), 4),
+
+                'grs_changed' => $this->_('Changed on'),
+                'grs_changed_by' => $this->_('Changed by'),
+                'grs_created' => $this->_('Created on'),
+                'grs_created_by' => $this->_('Created by'),
             ];
 
             $event = new RespondentModelInitEvent($this, $this->_labels);
