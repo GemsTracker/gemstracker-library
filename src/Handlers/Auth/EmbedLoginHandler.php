@@ -35,7 +35,6 @@ class EmbedLoginHandler implements RequestHandlerInterface
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly DeferredRouteHelper $routeHelper,
         private readonly UserLoader $userLoader,
-        private readonly RespondentRepository $respondentRepository,
         HelperAdapter $cacheHelper,
         private readonly array $config,
     ) {
@@ -86,7 +85,6 @@ class EmbedLoginHandler implements RequestHandlerInterface
             /** @var EmbedAuthenticationResult $result */
             $result = $authenticationService->authenticate(new EmbedAuthentication(
                 $this->userLoader,
-                $this->respondentRepository,
                 $input['epd'],
                 $input['key'],
                 $input['usr'],
