@@ -11,8 +11,8 @@
 
 namespace Gems\User\Embed\Redirect;
 
-use Gems\Menu\RouteHelper;
 use Gems\Repository\RespondentRepository;
+use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\User;
 use Zalt\Base\TranslatorInterface;
 
@@ -44,7 +44,7 @@ class RespondentShowCreatePage extends RespondentShowPage
     }
 
     public function getRedirectUrl(
-        RouteHelper $routeHelper,
+        DeferredRouteHelper $routeHelper,
         User $embeddedUser,
         User $deferredUser,
         $patientId,

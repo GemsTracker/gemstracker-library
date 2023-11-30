@@ -11,7 +11,7 @@
 
 namespace Gems\User\Embed\Redirect;
 
-use Gems\Menu\RouteHelper;
+use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\User;
 
@@ -35,7 +35,7 @@ class RespondentSearchPage extends RedirectAbstract
     }
 
     public function getRedirectUrl(
-        RouteHelper $routeHelper,
+        DeferredRouteHelper $routeHelper,
         User $embeddedUser,
         User $deferredUser,
         string $patientId,
@@ -44,6 +44,6 @@ class RespondentSearchPage extends RedirectAbstract
         // Add search params
         // \MUtil\Model::TEXT_FILTER           => $patientId,
         // \MUtil\Model::REQUEST_ID2           => $deferredUser->getCurrentOrganizationId(),
-        return $routeHelper->getRouteUrl('respondent.index');
+        return $routeHelper->getRouteUrl('respondent.index', [], [], $deferredUser->getRole());
     }
 }

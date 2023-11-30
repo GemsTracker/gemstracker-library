@@ -11,7 +11,7 @@
 
 namespace Gems\User\Embed\Redirect;
 
-use Gems\Menu\RouteHelper;
+use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\User;
 
@@ -35,7 +35,7 @@ class StaffAccountPage extends RedirectAbstract
     }
 
     public function getRedirectUrl(
-        RouteHelper $routeHelper,
+        DeferredRouteHelper $routeHelper,
         User $embeddedUser,
         User $deferredUser,
         string $patientId,

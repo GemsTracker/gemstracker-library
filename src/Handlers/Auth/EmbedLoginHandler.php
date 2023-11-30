@@ -11,11 +11,11 @@ use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\Cache\HelperAdapter;
 use Gems\Cache\RateLimiter;
-use Gems\Menu\RouteHelper;
 use Gems\Repository\RespondentRepository;
+use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\UserLoader;
+use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
-use Mezzio\Helper\UrlHelper;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,7 +33,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
-        private readonly RouteHelper $routeHelper,
+        private readonly DeferredRouteHelper $routeHelper,
         private readonly UserLoader $userLoader,
         private readonly RespondentRepository $respondentRepository,
         HelperAdapter $cacheHelper,
@@ -55,6 +55,23 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
         if ($this->rateLimiter->tooManyAttempts(self::MAX_ATTEMPTS_KEY, $this->throttleMaxAttempts)) {
             throw new \Gems\Exception($this->translator->trans("Too many login attempts"));
+        }
+
+        // Backwards compatibility with old id types
+        if (isset($input['id1'], $input['id2'], $input['id3'], $input['id4'])) {
+            $input['org'] = $input['id1'];
+            $input['key'] = $input['id2'];
+            $input['epd'] = $input['id3'];
+            $input['usr'] = $input['id4'];
+            unset($input['id1']);
+            unset($input['id2']);
+            unset($input['id3']);
+            unset($input['id4']);
+        }
+
+        if (isset($input['patientId'])) {
+            $input['pid'] = $input['patientId'];
+            unset($input['patientId']);
         }
 
         // TODO: org should be an existing organization?
@@ -101,9 +118,27 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 [$identity->getOrganizationId()],
             );
 
-            return new RedirectResponse($url);
-        } else {
-            throw new \Gems\Exception($this->translator->trans("Unable to authenticate"));
+            if ($url) {
+                return new RedirectResponse($url);
+            }
         }
+
+        /* Debug help
+        if (isset($input['key'])) {
+            $input['key'] = '*******';
+        }
+
+        $messages = [];
+        if ($result) {
+            $messages = $result->getMessages();
+        }
+
+        return new JsonResponse([
+            'error' => 'Unable to Authenticate',
+            'usedInput' => $input,
+            'result' => $messages,
+        ], 401);*/
+
+        throw new \Gems\Exception($this->translator->trans("Unable to authenticate"));
     }
 }
