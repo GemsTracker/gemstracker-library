@@ -11,10 +11,12 @@
 
 namespace Gems\User\Embed\Redirect;
 
+use Gems\Repository\RespondentRepository;
 use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\User;
 use MUtil\Model;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -26,6 +28,14 @@ use MUtil\Model;
  */
 class RespondentShowPage extends RedirectAbstract
 {
+    public function __construct(
+        TranslatorInterface $translator,
+        protected readonly RespondentRepository $respondentRepository,
+    )
+    {
+        parent::__construct($translator);
+    }
+
     /**
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
@@ -43,6 +53,12 @@ class RespondentShowPage extends RedirectAbstract
         array $organizations,
     ): ?string {
         $orgId = $deferredUser->getCurrentOrganizationId();
+
+        $patient = $this->respondentRepository->getPatient($patientId, $orgId);
+
+        if ($patient === null) {
+            throw new \Gems\Exception($this->translator->trans('Requested patient nr not found in organization'));
+        }
 
         return $routeHelper->getRouteUrl('respondent.show', [
             Model::REQUEST_ID1 => $patientId,

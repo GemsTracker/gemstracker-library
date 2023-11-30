@@ -28,10 +28,10 @@ class RespondentShowCreatePage extends RespondentShowPage
 
     public function __construct(
         TranslatorInterface $translator,
-        protected RespondentRepository $respondentRepository,
+        RespondentRepository $respondentRepository,
     )
     {
-        parent::__construct($translator);
+        parent::__construct($translator, $respondentRepository);
     }
 
     /**
