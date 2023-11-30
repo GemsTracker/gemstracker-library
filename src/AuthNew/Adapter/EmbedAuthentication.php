@@ -12,7 +12,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
 {
     public function __construct(
         private readonly UserLoader $userLoader,
-        private readonly RespondentRepository $respondentRepository,
+        //private readonly RespondentRepository $respondentRepository,
         private readonly string $systemUserLoginName,
         private readonly string $systemUserSecretKey,
         private readonly string $deferredLoginName,
