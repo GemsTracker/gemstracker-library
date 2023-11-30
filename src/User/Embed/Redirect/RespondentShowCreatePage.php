@@ -64,6 +64,6 @@ class RespondentShowCreatePage extends RespondentShowPage
             $patientId
         );*/
 
-        return $routeHelper->getRouteUrl('respondent.create');
+        return $routeHelper->getRouteUrl('respondent.create', [], [], $deferredUser->getRole());
     }
 }

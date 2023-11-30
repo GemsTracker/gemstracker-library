@@ -63,6 +63,6 @@ class RespondentShowPage extends RedirectAbstract
         return $routeHelper->getRouteUrl('respondent.show', [
             Model::REQUEST_ID1 => $patientId,
             Model::REQUEST_ID2 => $orgId,
-        ]);
+        ], [], $deferredUser->getRole());
     }
 }

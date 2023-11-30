@@ -41,6 +41,6 @@ class StaffAccountPage extends RedirectAbstract
         string $patientId,
         array $organizations,
     ): ?string {
-        return $routeHelper->getRouteUrl('option.edit');
+        return $routeHelper->getRouteUrl('option.edit', [], [], $deferredUser->getRole());
     }
 }
