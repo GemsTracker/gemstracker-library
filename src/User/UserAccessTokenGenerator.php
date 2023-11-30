@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use DateInterval;
 use Error;
 use Exception;
+use Gems\OAuth2\Repository\KeyRepository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use TypeError;
 use Gems\Legacy\CurrentUserRepository;
@@ -34,7 +35,10 @@ class UserAccessTokenGenerator
         array $config,
     )
     {
-        $privateKey = $config['certificates']['private'] ?? '';
+        $keyRepository = new KeyRepository();
+        $certificates = $keyRepository->getCertificates($config, true);
+
+        $privateKey = $certificates['private'] ?? '';
         $this->privateKey = new CryptKey($privateKey);
         $this->oauth2Config = $config['oauth2'] ?? [];
     }
