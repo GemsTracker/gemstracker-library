@@ -17,6 +17,9 @@
 
 namespace Gems\Model\Type;
 
+use MUtil\Model\ModelAbstract;
+use Zalt\Model\MetaModelInterface;
+
 /**
  *
  * @package    Gems
@@ -28,7 +31,7 @@ namespace Gems\Model\Type;
 class EncryptedField
 {
     /**
-     * @var string 
+     * @var string
      */
     protected $maskedValue = '********';
 
@@ -55,11 +58,10 @@ class EncryptedField
     /**
      * Use this function for a default application of this type to the model
      *
-     * @param \MUtil\Model\ModelAbstract $model
      * @param string $valueField The field containing the value to be encrypted
-     * @return \Gems\Model\Type\EncryptedField (continuation pattern)
+     * @return EncryptedField (continuation pattern)
      */
-    public function apply(\MUtil\Model\ModelAbstract $model, $valueField)
+    public function apply(ModelAbstract|MetaModelInterface $model, $valueField): self
     {
         $model->setSaveWhen($valueField, array($this, 'saveWhen'));
         $model->setOnLoad($valueField, array($this, 'loadValue'));
@@ -74,7 +76,7 @@ class EncryptedField
             $model->setSaveWhen($repeatField, false);
             $model->setOnLoad($repeatField, array($this, 'loadValue'));
         }
-        
+
         return $this;
     }
 
@@ -96,7 +98,7 @@ class EncryptedField
     public function loadValue($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
         if (\MUtil\StringUtil\StringUtil::endsWith($name, '__repeat')) {
-            // Fill value for repeat element 
+            // Fill value for repeat element
             $origName = substr($name, 0, - 8);
             if (isset($context[$origName])) {
                 $value = $context[$origName];
@@ -112,7 +114,7 @@ class EncryptedField
 
         return $value;
     }
-    
+
     /**
      * A ModelAbstract->setOnSave() function that returns a value
      *

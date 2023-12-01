@@ -19,6 +19,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Model\TrackBuilder\SourceModel;
 use Gems\Tracker;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
@@ -86,6 +87,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         protected Translated $translatedUtil,
         protected AuditLog $accesslog,
         protected ValueEncryptor $valueEncryptor,
+        protected readonly SourceModel $sourceModel,
 
     ) {
         parent::__construct($responder, $translate, $cache);
@@ -220,115 +222,13 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         return $batchRunner->getResponse($this->request);
     }
 
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return ModelAbstract
-     */
-    public function createModel(bool $detailed, string $action): ModelAbstract
+    public function createModel(bool $detailed, string $action): SourceModel
     {
-        $tracker = $this->tracker;
-        $model   = new \MUtil\Model\TableModel('gems__sources');
-
-        $model->set('gso_source_name', 'label', $this->_('Name'),
-            'description', $this->_('E.g. the name of the project - for single source projects.'),
-            'size', 15,
-            'minlength', 4,
-            'validators[unique]', ModelUniqueValidator::class
-        );
-        $model->set('gso_ls_url',      'label', $this->_('Source Url'),
-            'default', 'http://',
-            'description', $this->_('For creating token-survey url.'),
-            'size', 50,
-            'validators[unique]', ModelUniqueValidator::class,
-            'validators[url]', 'Uri'
-        );
-
-        $sourceClasses = $tracker->getSourceClasses();
-        end($sourceClasses);
-        $model->set('gso_ls_class',    'label', $this->_('Adaptor class'),
-            'default', key($sourceClasses),
-            'multiOptions', $sourceClasses
-        );
-
-        $sourceDatabaseClasses = $tracker->getSourceDatabaseClasses();
-
-        $model->set('gso_ls_adapter',  'label', $this->_('Database Server'),
-            'default', reset($sourceDatabaseClasses),
-            'description', $this->_('The database server used by the source.'),
-            'multiOptions', $sourceDatabaseClasses
-        );
-        $model->set('gso_ls_table_prefix', 'label', $this->_('Table prefix'),
-            'default', 'ls__',
-            'description', $this->_('Do not forget the underscores.'),
-            'size', 15
-        );
-
-
         if ($detailed) {
-            $inGems = $this->_('Leave empty for the Gems database settings.');
-
-            $model->set('gso_ls_dbhost',       'label', $this->_('Database host'),
-                'description', $inGems,
-                'size', 15
-            );
-            $model->set('gso_ls_dbport',       'label', $this->_('Database port'),
-                'description', $inGems . ' ' . $this->_('Usually port 3306'),
-                'size', 6,
-                'validators[int]', 'Digits',
-                'validators[between]', ['Between', true, [0, 65535]]
-            );
-            $model->set('gso_ls_database',     'label', $this->_('Database'),
-                'description', $inGems,
-                'size', 15
-            );
-            $model->set('gso_ls_username',     'label', $this->_('Database Username'),
-                'description', $inGems,
-                'size', 15
-            );
-
-            $model->set('gso_ls_password',     'label', $this->_('Database Password'),
-                'elementClass', 'Password',
-                'renderPassword', true,
-                'repeatLabel', $this->_('Repeat password'),
-                'required', false,
-                'size', 15
-            );
-            if ('create' == $action) {
-                $model->set('gso_ls_password', 'description', $inGems);
-            } else {
-                $model->set('gso_ls_password', 'description', $this->_('Enter new or remove stars to empty'));
-            }
-            $type = new \Gems\Model\Type\EncryptedField($this->valueEncryptor, true);
-            $type->apply($model, 'gso_ls_password');
-
-            $model->set('gso_ls_charset',     'label', $this->_('Charset'),
-                'description', $inGems,
-                'size', 15
-            );
-            $model->set('gso_active',         'label', $this->_('Active'),
-                'default', 0,
-                'multiOptions', $this->translatedUtil->getYesNo(),
-            );
+            $this->sourceModel->applyDetailSettings($action);
         }
 
-        $model->set('gso_status',             'label', $this->_('Status'),
-            'default', 'Not checked',
-            'elementClass', 'Exhibitor'
-        );
-        $model->set('gso_last_synch',         'label', $this->_('Last synchronisation'),
-            'elementClass', 'Exhibitor'
-        );
-
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gso');
-
-        return $model;
+        return $this->sourceModel;
     }
 
     /**
