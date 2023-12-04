@@ -67,10 +67,8 @@ class LogShowSnippet extends ModelDetailTableSnippetAbstract
 
         $footer = $bridge->tfrow();
         if (isset($row['gla_respondent_id'], $row['gla_organization'])) {
-            dump($row);
             $patientNr = $this->respondentRepository->getPatientNr($row['gla_respondent_id'], $row['gla_organization']);
 
-            dump($patientNr);
             if ($patientNr) {
                 $params = [
                     MetaModelInterface::REQUEST_ID1 => $patientNr,
