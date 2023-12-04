@@ -12,13 +12,14 @@
 namespace Gems\Model;
 
 use Gems\Agenda\Agenda;
+use Gems\Db\ResultFetcher;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util;
-use MUtil\Model\Type\JsonData;
+use Gems\Util\Translated;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
 use Zalt\Model\Sql\SqlRunnerInterface;
@@ -82,8 +83,9 @@ class AppointmentModel extends GemsMaskedModel
         protected Agenda $agenda,
         CurrentUserRepository $currentUserRepository,
         MaskRepository $maskRepository,
+        protected readonly ResultFetcher $resultFetcher,
         protected readonly Util $util,
-        protected readonly Util\Translated $translatedUtil,
+        protected readonly Translated $translatedUtil,
     ) {
         // gems__respondents MUST be first table for INSERTS!!
         parent::__construct('gems__appointments', $this->metaModelLoader, $sqlRunner, $translate, $maskRepository);
@@ -356,7 +358,7 @@ class AppointmentModel extends GemsMaskedModel
                 FROM gems__appointments
                 WHERE gap_id_in_source = ? AND gap_id_organization = ? AND gap_source = ?";
 
-            $id = $this->db->fetchOne(
+            $id = $this->resultFetcher->fetchOne(
                 $sql,
                 array($newValues['gap_id_in_source'], $newValues['gap_id_organization'], $newValues['gap_source'])
             );
