@@ -27,6 +27,7 @@ use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -394,7 +395,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         if ($this->enableScreens) {
             $edit = false;
 
-            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId());
+            $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId());
             $org = $this->organizationRepository->getOrganization($organizationId);
 
             if ($org) {
@@ -434,7 +435,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return RespondentModel
      */
     protected function createModel(bool $detailed, string $action): RespondentModel
     {
@@ -596,8 +597,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         $queryParams = $this->request->getQueryParams();
         return [
-            \MUtil\Model::REQUEST_ID1 => isset($queryParams[\MUtil\Model::REQUEST_ID1]) ? $queryParams[\MUtil\Model::REQUEST_ID1] : null,
-            \MUtil\Model::REQUEST_ID2 => isset($queryParams[\MUtil\Model::REQUEST_ID2]) ? $queryParams[\MUtil\Model::REQUEST_ID2] : null,
+            MetaModelInterface::REQUEST_ID1 => isset($queryParams[MetaModelInterface::REQUEST_ID1]) ? $queryParams[MetaModelInterface::REQUEST_ID1] : null,
+            MetaModelInterface::REQUEST_ID2 => isset($queryParams[MetaModelInterface::REQUEST_ID2]) ? $queryParams[MetaModelInterface::REQUEST_ID2] : null,
         ];
     }
 
@@ -654,8 +655,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         $data = parent::getSearchData($useRequest);
 
-        if (isset($data[\MUtil\Model::REQUEST_ID2])) {
-            $organizationIds = [intval($data[\MUtil\Model::REQUEST_ID2])];
+        if (isset($data[MetaModelInterface::REQUEST_ID2])) {
+            $organizationIds = [intval($data[MetaModelInterface::REQUEST_ID2])];
         } else {
             $organizationIds = $this->currentUser->getRespondentOrgFilter();
         }
@@ -677,13 +678,13 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     public function getSearchDefaults(): array
     {
-        if (! isset($this->defaultSearchData[\MUtil\Model::REQUEST_ID2])) {
+        if (! isset($this->defaultSearchData[MetaModelInterface::REQUEST_ID2])) {
             $currentOrganization = $this->currentUser->getCurrentOrganization();
             if ($this->currentUser->hasPrivilege('pr.respondent.multiorg') &&
                     (! $currentOrganization->canHaveRespondents())) {
-                $this->defaultSearchData[\MUtil\Model::REQUEST_ID2] = '';
+                $this->defaultSearchData[MetaModelInterface::REQUEST_ID2] = '';
             } else {
-                $this->defaultSearchData[\MUtil\Model::REQUEST_ID2] = $currentOrganization->getId();
+                $this->defaultSearchData[MetaModelInterface::REQUEST_ID2] = $currentOrganization->getId();
             }
         }
 
@@ -809,12 +810,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         $routeParams = $this->requestInfo->getRequestMatchedParams();
         $orgId = null;
-        if (isset($routeParams[\MUtil\Model::REQUEST_ID2])) {
-            $orgId = $routeParams[\MUtil\Model::REQUEST_ID2];
+        if (isset($routeParams[MetaModelInterface::REQUEST_ID2])) {
+            $orgId = $routeParams[MetaModelInterface::REQUEST_ID2];
         }
         $patientNr = null;
-        if (isset($routeParams[\MUtil\Model::REQUEST_ID1])) {
-            $patientNr = $routeParams[\MUtil\Model::REQUEST_ID1];
+        if (isset($routeParams[MetaModelInterface::REQUEST_ID1])) {
+            $patientNr = $routeParams[MetaModelInterface::REQUEST_ID1];
         }
 
         if ($patientNr && $orgId) {
