@@ -14,9 +14,9 @@ namespace Gems\SnippetsActions;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Delete\DeleteAction;
 use Gems\SnippetsActions\Export\ExportAction;
+use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
 use Gems\SnippetsActions\Show\ShowAction;
-use Gems\SnippetsActions\Vue\CreateAction;
 use Zalt\SnippetsActions\SnippetActionInterface;
 
 /**
