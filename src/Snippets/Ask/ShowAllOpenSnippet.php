@@ -103,7 +103,7 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
             $html->p(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurvey()->getExternalName()), ['class' => 'info']);
         } else {
             if ($welcome = $org->getWelcome()) {
-                $html->p($welcome, ['class' => 'info']);
+                $html->p(['class' => 'info'])->raw(str_replace(["\n"], ["\n<br/>"], $welcome), );
             }
         }
 
