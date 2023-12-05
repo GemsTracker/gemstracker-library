@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Short description of file
  *
@@ -12,9 +14,19 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Loader;
+use Gems\Model;
+use Gems\Model\MetaModelLoader;
+use Gems\Model\SqlTableModel;
+use Gems\Project\ProjectSettings;
+use Gems\Tracker;
 use Gems\Tracker\TrackEvents;
+use Gems\Util;
 use Gems\Util\Translated;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\ActivatingYesNoType;
+use Zalt\Model\Type\ConcatenatedType;
 use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
@@ -26,170 +38,140 @@ use Zalt\Validator\Model\ModelUniqueValidator;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class TrackModel extends \MUtil\Model\TableModel
+class TrackModel extends SqlTableModel
 {
-    /**
-     * Holds the trackData in array with key trackId, for internal caching use only
-     *
-     * @var array
-     */
-    protected $_trackData = array();
+    public function __construct(
+        MetaModelLoader $metaModelLoader,
+        SqlRunnerInterface $sqlRunner,
+        TranslatorInterface $translate,
+        protected Model $model,
+        protected Tracker $tracker,
+        protected Translated $translatedUtil,
+        protected ProjectSettings $project,
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected Loader $loader,
+        protected TrackEvents $trackEvents,
+        protected Util $util
+    ) {
+        parent::__construct('gems__tracks', $metaModelLoader, $sqlRunner, $translate);
 
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
-
-    /**
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
-
-    /**
-     * @var TrackEvents
-     */
-    protected $trackEvents;
-
-    /**
-     * @var \Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    /**
-     * Construct a track model
-     */
-    public function __construct()
-    {
-        parent::__construct('gems__tracks');
-
+        $this->setFilter(["gtr_track_class != 'SingleSurveyEngine'"]);
         $this->addColumn("CASE WHEN gtr_track_class = 'SingleSurveyEngine' THEN 'deleted' ELSE '' END", 'row_class');
 
-        \Gems\Model::setChangeFieldsByPrefix($this, 'gtr');
+        $metaModelLoader->setChangeFields($this->metaModel, 'gtr');
 
-        $this->set('gtr_date_start', 'default', new \DateTimeImmutable());
-        $this->setKeys(['trackId' => 'gtr_id_track']);
+        $this->metaModel->set('gtr_date_start', ['default' => new \DateTimeImmutable()]);
+        $this->metaModel->setKeys(['trackId' => 'gtr_id_track']);
     }
 
     /**
      * Sets the labels, format functions, etc...
      *
-     * @param boolean $detailed True when shopwing detailed information
+     * @param boolean $detailed True when showing detailed information
      * @param boolean $edit When true use edit settings
-     * @return \Gems\Tracker\Model\TrackModel
      */
-    public function applyFormatting($detailed = false, $edit = false)
+    public function applyFormatting(bool $detailed = false, bool $edit = false): TrackModel
     {
-        $translator = $this->getTranslateAdapter();
+        $this->metaModel->resetOrder();
 
-        $this->resetOrder();
+        $this->metaModel->set('gtr_track_name', [
+            'label' => $this->translate->_('Name'),
+            'translate' => true
+        ]);
+        $this->metaModel->set('gtr_external_description', [
+            'label' => $this->translate->_('External Name'),
+            'description' => $this->translate->_(
+                'Optional alternate external description for communication with respondents'
+            ),
+            'translate' => true
+        ]);
+        $this->metaModel->set('gtr_track_class', [
+            'label' => $this->translate->_('Track Engine'),
+            'multiOptions' => $this->tracker->getTrackEngineList($detailed)
+        ]);
+        $this->metaModel->set('gtr_survey_rounds', ['label' => $this->translate->_('Surveys')]);
 
-        $this->set('gtr_track_name',
-            'label', $translator->_('Name'),
-            'translate', true
-        );
-        $this->set('gtr_external_description', 
-                   'label', $translator->_('External Name'),
-                   'description', $translator->_('Optional alternate external description for communication with respondents'),
-                   'translate', true
-        );
-        $this->set('gtr_track_class',   'label', $translator->_('Track Engine'),
-                'multiOptions', $this->tracker->getTrackEngineList($detailed));
-        $this->set('gtr_survey_rounds', 'label', $translator->_('Surveys'));
-
-        $this->set('gtr_active',        'label', $translator->_('Active'),
-            'multiOptions', $this->translatedUtil->getYesNo(),
-            ActivatingYesNoType::$activatingValue, 1,
-            ActivatingYesNoType::$deactivatingValue, 0
-        );
-        $this->set('gtr_date_start', [
-            'label' => $translator->_('From'),
+        $this->metaModel->set('gtr_active', [
+            'label' => $this->translate->_('Active'),
+            'multiOptions' => $this->translatedUtil->getYesNo(),
+            ActivatingYesNoType::$activatingValue => 1,
+            ActivatingYesNoType::$deactivatingValue => 0
+        ]);
+        $this->metaModel->set('gtr_date_start', [
+            'label' => $this->translate->_('From'),
             'elementClass' => 'Date',
         ]);
-        $this->set('gtr_date_until', [
-            'label', $translator->_('Use until'),
+        $this->metaModel->set('gtr_date_until', [
+            'label' => $this->translate->_('Use until'),
             'elementClass' => 'Date',
         ]);
-        $this->setIfExists('gtr_code',  'label', $translator->_('Track code'),
-                'size', 10,
-                'description', $translator->_('Optional code name to link the track to program code.'));
+        $this->metaModel->setIfExists('gtr_code', [
+            'label' => $this->translate->_('Track code'),
+            'size' => 10,
+            'description' => $this->translate->_('Optional code name to link the track to program code.')
+        ]);
 
-        $this->loader->getModels()->addDatabaseTranslationEditFields($this);
+        $this->model->addDatabaseTranslationEditFields($this->metaModel);
 
         if ($detailed) {
-
             $caList = $this->trackEvents->listTrackCalculationEvents();
             if (count($caList) > 1) {
-                $this->setIfExists('gtr_calculation_event', 'label', $translator->_('Before (re)calculation'),
-                        'multiOptions', $caList
-                        );
+                $this->metaModel->setIfExists('gtr_calculation_event', [
+                    'label' => $this->translate->_('Before (re)calculation'),
+                    'multiOptions' => $caList
+                ]);
             }
 
             $coList = $this->trackEvents->listTrackCompletionEvents();
             if (count($coList) > 1) {
-                $this->setIfExists('gtr_completed_event', 'label', $translator->_('After completion'),
-                        'multiOptions', $coList
-                        );
+                $this->metaModel->setIfExists('gtr_completed_event', [
+                    'label' => $this->translate->_('After completion'),
+                    'multiOptions' => $coList
+                ]);
             }
 
             $bfuList = $this->trackEvents->listTrackBeforeFieldUpdateEvents();
             if (count($bfuList) > 1) {
-                $this->setIfExists('gtr_beforefieldupdate_event', 'label', $translator->_('Before field update'),
-                        'multiOptions', $bfuList
-                        );
+                $this->metaModel->setIfExists('gtr_beforefieldupdate_event', [
+                    'label' => $this->translate->_('Before field update'),
+                    'multiOptions' => $bfuList
+                ]);
             }
 
             $fuList = $this->trackEvents->listTrackFieldUpdateEvents();
             if (count($fuList) > 1) {
-                $this->setIfExists('gtr_fieldupdate_event', 'label', $translator->_('After field update'),
-                        'multiOptions', $fuList
-                        );
+                $this->metaModel->setIfExists('gtr_fieldupdate_event', [
+                    'label' => $this->translate->_('After field update'),
+                    'multiOptions' => $fuList
+                ]);
             }
-            $this->setIfExists('gtr_organizations', 'label', $translator->_('Organizations'),
-                    'elementClass', 'MultiCheckbox',
-                    'multiOptions', $this->util->getDbLookup()->getOrganizationsWithRespondents(),
-                    'required', true
-                    );
-            $ct = new \MUtil\Model\Type\ConcatenatedRow('|', $translator->_(', '));
-            $ct->apply($this, 'gtr_organizations');
+            $this->metaModel->setIfExists('gtr_organizations', [
+                'label' => $this->translate->_('Organizations'),
+                'elementClass' => 'MultiCheckbox',
+                'multiOptions' => $this->util->getDbLookup()->getOrganizationsWithRespondents(),
+                'required' => true
+            ]);
+            $ct = new ConcatenatedType('|', $this->translate->_(', '));
+            $ct->apply($this->metaModel, 'gtr_organizations');
         }
+
         if ($edit) {
-            $this->set('toggleOrg',
-                    'elementClass', 'ToggleCheckboxes',
-                    'selectorName', 'gtr_organizations'
-                    );
-            $this->set('gtr_track_name',
-                    'minlength', 4,
-                    'size', 30,
-                    'validators[unique]', ModelUniqueValidator::class
-                    );
+            $this->metaModel->set('toggleOrg', [
+                'elementClass' => 'ToggleCheckboxes',
+                'selectorName' => 'gtr_organizations'
+            ]);
+            $this->metaModel->set('gtr_track_name', [
+                'minlength' => 4,
+                'size' => 30,
+                'validators[unique]' => ModelUniqueValidator::class
+            ]);
         }
+
         if ($this->project->translateDatabaseFields()) {
             if ($edit) {
-                $this->loader->getModels()->addDatabaseTranslationEditFields($this);
+                $this->model->addDatabaseTranslationEditFields($this->metaModel);
             } else {
-                $this->loader->getModels()->addDatabaseTranslations($this);
+                $this->model->addDatabaseTranslations($this->metaModel);
             }
         }
         return $this;
@@ -201,9 +183,9 @@ class TrackModel extends \MUtil\Model\TableModel
      *
      * @return boolean False if required are missing.
      */
-    public function checkRegistryRequestsAnswers()
+    public function checkRegistryRequestsAnswers(): bool
     {
-        return $this->tracker && $this->translate && $this->util;
+        return $this->tracker && $this->util;
     }
 
     /**
@@ -216,20 +198,20 @@ class TrackModel extends \MUtil\Model\TableModel
      */
     public function delete($filter = null): int
     {
-        $this->setChanged(0);
+        $this->resetChanged();
         $tracks = $this->load($filter);
 
         if ($tracks) {
             foreach ($tracks as $row) {
                 if (isset($row['gtr_id_track'])) {
                     $trackId = $row['gtr_id_track'];
-                    if ($this->isDeleteable($trackId)) {
+                    if ($this->isDeletable($trackId)) {
                         $this->db->delete('gems__tracks', $this->db->quoteInto('gtr_id_track = ?', $trackId));
 
                         // Now cascade to children, they should take care of further cascading
                         // Delete rounds
                         $trackEngine = $this->tracker->getTrackEngine($trackId);
-                        $roundModel  = $trackEngine->getRoundModel(true, 'index');
+                        $roundModel = $trackEngine->getRoundModel(true, 'index');
                         $roundModel->delete(['gro_id_track' => $trackId]);
 
                         // Delete trackfields
@@ -237,10 +219,13 @@ class TrackModel extends \MUtil\Model\TableModel
                         $trackFieldModel->delete(['gtf_id_track' => $trackId]);
 
                         // Delete assigned but unused tracks
-                        $this->db->delete('gems__respondent2track',  $this->db->quoteInto('gr2t_id_track = ?', $trackId));
+                        $this->db->delete(
+                            'gems__respondent2track',
+                            $this->db->quoteInto('gr2t_id_track = ?', $trackId)
+                        );
                     } else {
                         $values['gtr_id_track'] = $trackId;
-                        $values['gtr_active']   = 0;
+                        $values['gtr_active'] = 0;
                         $this->save($values);
                     }
                     $this->addChanged();
@@ -257,44 +242,17 @@ class TrackModel extends \MUtil\Model\TableModel
      *
      * @return array Should be an array or arrays, containing the default fields
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
-        /*
-        $defaultFields = array(
-            array(
-                'gtf_field_name'        => 'Treatment',
-                'gtf_field_code'        => 'treatment',
-                'gtf_field_description' => 'Enter the shorthand code for the treatment here',
-                'gtf_field_values'      => null,
-                'gtf_field_type'        => 'text',
-                'gtf_required'          => 1,
-                'gtf_readonly'          => 0
-            ),
-            array(
-                'gtf_field_name'        => 'Physician',
-                'gtf_field_code'        => 'physicion',
-                'gtf_field_description' => '',
-                'gtf_field_values'      => null,
-                'gtf_field_type'        => 'text',
-                'gtf_required'          => 0,
-                'gtf_readonly'          => 0
-            )
-        );
-        return $defaultFields;
-        */
-
         return [];
     }
 
     /**
      * Get the number of times someone started answering a round in this track.
-     *
-     * @param int $trackId
-     * @return int
      */
-    public function getStartCount($trackId)
+    public function getStartCount(int $trackId): int
     {
-        if (! $trackId) {
+        if (!$trackId) {
             return 0;
         }
 
@@ -303,44 +261,22 @@ class TrackModel extends \MUtil\Model\TableModel
     }
 
     /**
-     * Returns a translate adaptor
-     *
-     * @return \Zend_Translate_Adapter
-     */
-    protected function getTranslateAdapter()
-    {
-        if ($this->translate instanceof \Zend_Translate)
-        {
-            return $this->translate->getAdapter();
-        }
-
-        if (! $this->translate instanceof \Zend_Translate_Adapter) {
-            $this->translate = new \MUtil\Translate\Adapter\Potemkin();
-        }
-
-        return $this->translate;
-    }
-
-    /**
      * Can this track be deleted as is?
-     *
-     * @param int $trackId
-     * @return boolean
      */
-    public function isDeleteable($trackId)
+    public function isDeletable(int $trackId): bool
     {
-        if (! $trackId) {
+        if (!$trackId) {
             return true;
         }
         $sql = "SELECT gto_id_token FROM gems__tokens WHERE gto_id_track = ? AND gto_start_time IS NOT NULL";
-        return (boolean) ! $this->db->fetchOne($sql, $trackId);
+        return (boolean)!$this->db->fetchOne($sql, $trackId);
     }
 
     public function save(array $newValues, array $filter = null): array
     {
         // Allow to add default fields to any new track
         if ($defaultFields = $this->getDefaultFields()) {
-            $keys = $this->getKeys();
+            $keys = $this->metaModel->getKeys();
             $keys = array_flip($keys);
             $missing = array_diff_key($keys, $newValues);     // On copy track the key exists but is null
 
@@ -348,17 +284,17 @@ class TrackModel extends \MUtil\Model\TableModel
             if (!empty($missing)) {
                 // We have an insert!
                 $foundKeys = array_intersect_key($newValues, $missing);
-                // Now get the fieldmodel
-                $engine     = $this->loader->getTracker()->getTrackEngine($foundKeys['gtr_id_track']);
-                $fieldmodel = $engine->getFieldsMaintenanceModel(true, 'create');
-                $lastOrder  = 0;
+                // Now get the fieldModel
+                $engine = $this->loader->getTracker()->getTrackEngine($foundKeys['gtr_id_track']);
+                $fieldModel = $engine->getFieldsMaintenanceModel(true, 'create');
+                $lastOrder = 0;
                 foreach ($defaultFields as $field) {
                     // Load defaults
-                    $record = $fieldmodel->loadNew();
+                    $record = $fieldModel->loadNew();
                     $record['gtf_id_order'] = $lastOrder + 10;
 
                     $record = $field + $record;             // Add defaults to the new field
-                    $record = $fieldmodel->save($record);
+                    $record = $fieldModel->save($record);
                     $lastOrder = $record['gtf_id_order'];   // Save order for next record
                 }
             }

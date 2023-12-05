@@ -82,7 +82,7 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
     {
         $metaModel = $dataModel->getMetaModel();
 
-        if (! $this->createData) {
+        if (!$this->createData) {
             $bridge->addHidden('gtr_id_track');
             $bridge->addHidden('table_keys');
         }
@@ -98,37 +98,23 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
 
         // gtr_track_class
         if ($this->trackEngine) {
-            $options      = $dataModel->get('gtr_track_class', 'multiOptions');
-            /*$alternatives = $this->trackEngine->getConversionTargets($options);
-            if (count($alternatives) > 1) {
-                $options = $alternatives;
-
-                $bridge->addHidden($this->_oldClassName);
-
-                if (! isset($this->formData[$this->_oldClassName])) {
-                    $this->formData[$this->_oldClassName] = $this->formData['gtr_track_class'];
-                }
-
-                $classEdit = true;
-            } else {*/
-                $classEdit = false;
-            //}
+            $options = $metaModel->get('gtr_track_class', 'multiOptions');
+            $classEdit = false;
         } else {
             $options = $this->tracker->getTrackEngineList(true, true);
             $classEdit = true;
         }
         $metaModel->set('gtr_track_class', 'multiOptions', $options, 'escape', false);
         if ($classEdit) {
-            $bridge->addRadio(    'gtr_track_class');
+            $bridge->addRadio('gtr_track_class');
         } else {
             $bridge->addExhibitor('gtr_track_class');
         }
 
         $bridge->addDate('gtr_date_start');
         $bridge->addDate('gtr_date_until');
-        //if (! $this->createData) {
-            $bridge->addCheckbox('gtr_active');
-        //}
+        $bridge->addCheckbox('gtr_active');
+
         if ($metaModel->has('gtr_code')) {
             $bridge->addText('gtr_code');
         }
@@ -147,7 +133,7 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
         $bridge->add('gtr_organizations');
 
         $element = new ToggleCheckboxes('toggleOrg', ['selectorName' => 'gtr_organizations']);
-        $element->setLabel(sprintf('Toggle %s',$metaModel->get('gtr_organizations', 'label')));
+        $element->setLabel(sprintf('Toggle %s', $metaModel->get('gtr_organizations', 'label')));
         $bridge->addElement($element);
     }
 
@@ -168,17 +154,17 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
      *
      * @return array
      * /
-    protected function getMenuList()
-    {
-        $links = $this->menu->getMenuList();
-        $links->addParameterSources($this->request, $this->menu->getParameterSource());
-
-        $links->addByController('track', 'show-track', $this->_('Show track'))
-                ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addByController('respondent', 'show', $this->_('Show respondent'));
-
-        return $links;
-    } // */
+     * protected function getMenuList()
+     * {
+     * $links = $this->menu->getMenuList();
+     * $links->addParameterSources($this->request, $this->menu->getParameterSource());
+     *
+     * $links->addByController('track', 'show-track', $this->_('Show track'))
+     * ->addByController('track', 'index', $this->_('Show tracks'))
+     * ->addByController('respondent', 'show', $this->_('Show respondent'));
+     *
+     * return $links;
+     * } // */
 
     /**
      * Helper function to allow generalized statements about the items in the model to used specific item names.
@@ -217,7 +203,7 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
      */
     public function hasHtmlOutput(): bool
     {
-        if ($this->trackEngine && (! $this->trackId)) {
+        if ($this->trackEngine && (!$this->trackId)) {
             $this->trackId = $this->trackEngine->getTrackId();
         }
 
@@ -226,11 +212,10 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
             $this->createData = false;
 
             // Try to get $this->trackEngine filled
-            if (! $this->trackEngine) {
+            if (!$this->trackEngine) {
                 // Set the engine used
                 $this->trackEngine = $this->tracker->getTrackEngine($this->trackId);
             }
-
         } else {
             // We are inserting
             $this->createData = true;
@@ -250,7 +235,7 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
         parent::loadFormData();
 
         // feature request #200
-        if (isset($this->formData['gtr_organizations']) && (! is_array($this->formData['gtr_organizations']))) {
+        if (isset($this->formData['gtr_organizations']) && (!is_array($this->formData['gtr_organizations']))) {
             $this->formData['gtr_organizations'] = explode('|', trim($this->formData['gtr_organizations'], '|'));
         }
         return $this->formData;
@@ -283,13 +268,12 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
                 $this->trackId = $this->formData['gtr_id_track'];
             }
         } elseif ($this->trackEngine &&
-                isset($this->formData[$this->_oldClassName], $this->formData['gtr_track_class']) &&
-                $this->formData[$this->_oldClassName] != $this->formData['gtr_track_class']) {
-
+            isset($this->formData[$this->_oldClassName], $this->formData['gtr_track_class']) &&
+            $this->formData[$this->_oldClassName] != $this->formData['gtr_track_class']) {
             // Track conversion
             $this->trackEngine->convertTo($this->formData['gtr_track_class']);
         }
-        
+
         return $output;
     }
 }

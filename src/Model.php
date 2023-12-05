@@ -44,6 +44,7 @@ use MUtil\Model\ModelAbstract;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Transform\ModelTransformerInterface;
 use Zend_Db_Adapter_Abstract;
 use Zend_Db_Expr;
@@ -139,10 +140,8 @@ class Model
 
     /**
      * Add database translations to a model
-     *
-     * @param ModelAbstract $model
      */
-    public function addDatabaseTranslations(ModelAbstract $model): void
+    public function addDatabaseTranslations(ModelAbstract|MetaModelInterface $model): void
     {
         if ($this->project->translateDatabaseFields()) {
             /**
@@ -155,10 +154,8 @@ class Model
 
     /**
      * Add database translation edit to model
-     *
-     * @param ModelAbstract $model
      */
-    public function addDatabaseTranslationEditFields(ModelAbstract $model): void
+    public function addDatabaseTranslationEditFields(ModelAbstract|MetaModelInterface $model): void
     {
         if ($this->project->translateDatabaseFields()) {
             /**
