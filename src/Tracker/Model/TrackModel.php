@@ -55,9 +55,6 @@ class TrackModel extends SqlTableModel
     ) {
         parent::__construct('gems__tracks', $metaModelLoader, $sqlRunner, $translate);
 
-        $this->setFilter(["gtr_track_class != 'SingleSurveyEngine'"]);
-        $this->addColumn("CASE WHEN gtr_track_class = 'SingleSurveyEngine' THEN 'deleted' ELSE '' END", 'row_class');
-
         $metaModelLoader->setChangeFields($this->metaModel, 'gtr');
 
         $this->metaModel->set('gtr_date_start', ['default' => new \DateTimeImmutable()]);
