@@ -31,7 +31,9 @@ class GemsUserLoginAttemptsForeignKeysPatch extends PatchAbstract
 
     public function up(): array
     {
-        $statements = [];
+        $statements = [
+            'ALTER TABLE gems__user_login_attempts MODIFY COLUMN gula_id_organization bigint unsigned NOT NULL',
+        ];
         foreach ($this->foreignKeys as $foreignKeyData) {
             list($col, $refTable, $refCol) = $foreignKeyData;
             if (!$this->databaseInfo->tableHasForeignKey($this->table, $col, $refTable, $refCol)) {

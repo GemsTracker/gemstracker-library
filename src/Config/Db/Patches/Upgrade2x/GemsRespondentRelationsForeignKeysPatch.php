@@ -32,7 +32,9 @@ class GemsRespondentRelationsForeignKeysPatch extends PatchAbstract
 
     public function up(): array
     {
-        $statements = [];
+        $statements = [
+            'ALTER TABLE gems__respondent_relations MODIFY COLUMN grr_id_respondent bigint unsigned NOT NULL',
+        ];
         foreach ($this->foreignKeys as $foreignKeyData) {
             list($col, $refTable, $refCol) = $foreignKeyData;
             if (!$this->databaseInfo->tableHasForeignKey($this->table, $col, $refTable, $refCol)) {
