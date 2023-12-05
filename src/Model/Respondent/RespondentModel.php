@@ -366,22 +366,13 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'elementClass' => 'Hidden',  // Has little use to show: is usually editor, but otherwise is set to null during save
             'multiOptions' => $changers
         ]);
-        $this->setIfExists('gr2o_changed');
+        $this->setIfExists('gr2o_changed', ['elementClass' => 'Exhibitor']);
         $this->setIfExists('gr2o_changed_by', [
-            'multiOptions' => $changers,
-        ]);
-        $this->setIfExists('gr2o_created');
-        $this->setIfExists('gr2o_created_by',  [
-            'multiOptions' => $changers,
-        ]);
-
-        $this->setIfExists('grs_changed', ['elementClass' => 'Exhibitor']);
-        $this->setIfExists('grs_changed_by', [
             'multiOptions' => $changers,
             'elementClass' => 'Exhibitor'
         ]);
-        $this->setIfExists('grs_created', ['elementClass' => 'Exhibitor']);
-        $this->setIfExists('grs_created_by',  [
+        $this->setIfExists('gr2o_created', ['elementClass' => 'Exhibitor']);
+        $this->setIfExists('gr2o_created_by',  [
             'multiOptions' => $changers,
             'elementClass' => 'Exhibitor'
         ]);
