@@ -27,4 +27,20 @@ class DatabaseInfo
 
         return in_array($columnName, $columns);
     }
+
+    public function tableHasForeignKey(string $tableName, string $referencingColumn, string $referencedTable, string $referencedColumn): bool
+    {
+        $metaData = Factory::createSourceFromAdapter($this->adapter);
+        $constraints = $metaData->getConstraints($tableName);
+        foreach ($constraints as $constraint) {
+            if ($constraint->isForeignKey() &&
+                $constraint->getReferencedTableName() == $referencedTable &&
+                in_array($referencingColumn, $constraint->getColumns()) &&
+                in_array($referencedColumn, $constraint->getReferencedColumns())) {
+                    return true;
+            }
+        }
+
+        return false;
+    }
 }
