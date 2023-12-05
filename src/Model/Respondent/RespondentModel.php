@@ -383,6 +383,15 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->applyMask();
     }
 
+    public function makeConsentEditable(): void
+    {
+        $this->setIfExists('gr2o_consent', [
+            'elementClass' => 'Radio',
+            'multiOptions' => $this->consentRepository->getUserConsentOptions(),
+            'separator' => ' ',
+        ]);
+    }
+
     public function checkIds(array $newValues)
     {
         $id = false;

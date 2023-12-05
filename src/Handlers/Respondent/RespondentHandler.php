@@ -328,6 +328,10 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     public function changeConsentAction(): void
     {
+        /** @var RespondentModel $respondentModel */
+        $respondentModel = $this->getModel();
+        $respondentModel->makeConsentEditable();
+
         if ($this->enableScreens) {
             $edit = false;
             $org = $this->getRespondent()->getOrganization();
