@@ -58,8 +58,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     protected array $hiddenItems = ['gr2t_id_respondent_track', 'gr2t_id_user', 'gr2t_id_organization'];
 
     /**
-     *
-     * @var \MUtil\Model\ModelAbstract
+     * @var Tracker\Model\TrackModel|Tracker\Model\RespondentTrackModel
      */
     protected $model;
 

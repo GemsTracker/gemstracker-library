@@ -692,8 +692,8 @@ class ImportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
 
             $trackModel = $this->loader->getTracker()->getTrackModel();
             $trackModel->applyFormatting(true, true);
-            $model->set('gtr_track_name', $trackModel->get('gtr_track_name') + array('respondentData' => true));
-            $model->set('gtr_organizations', $trackModel->get('gtr_organizations') + array('respondentData' => true));
+            $model->set('gtr_track_name', $trackModel->getMetaModel()->get('gtr_track_name') + array('respondentData' => true));
+            $model->set('gtr_organizations', $trackModel->getMetaModel()->get('gtr_organizations') + array('respondentData' => true));
 
             $this->importModel = $model;
         }

@@ -24,6 +24,7 @@ use MUtil\Model;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
 use Zalt\Snippets\TranslatableSnippetAbstract;
@@ -76,7 +77,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
 
     /**
      *
-     * @var \Zalt\Model\Data\DataReaderInterface;
+     * @var DataReaderInterface|MetaModelInterface
      */
     protected $model;
 
