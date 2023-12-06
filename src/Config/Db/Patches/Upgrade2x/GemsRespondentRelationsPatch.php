@@ -4,9 +4,8 @@ namespace Gems\Config\Db\Patches\Upgrade2x;
 
 use Gems\Db\Migration\PatchAbstract;
 use Gems\Db\ResultFetcher;
-use Laminas\Db\Adapter\Adapter;
 
-class GemsRespondentRelationsFirstPatch extends PatchAbstract
+class GemsRespondentRelationsPatch extends PatchAbstract
 {
     var array $gems_table_constraints;
 
@@ -39,6 +38,7 @@ class GemsRespondentRelationsFirstPatch extends PatchAbstract
 
         $statements = [
             'ALTER TABLE gems__respondent_relations MODIFY COLUMN grr_comments TEXT',
+            'ALTER TABLE gems__respondent_relations ADD KEY temp_grr_id_respondent (grr_id_respondent)', // For foreign key
         ];
         // Check if the keys we want to drop exist.
         // If they do, we need to drop them.
@@ -52,6 +52,8 @@ class GemsRespondentRelationsFirstPatch extends PatchAbstract
                 continue;
             }
         }
+        $statements[] = 'ALTER TABLE gems__respondent_relations ADD KEY grr_id_respondent (grr_id_respondent, grr_id_staff)';
+        $statements[] = 'ALTER TABLE gems__respondent_relations DROP KEY temp_grr_id_respondent';
 
         return $statements;
     }

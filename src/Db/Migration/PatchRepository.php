@@ -179,7 +179,7 @@ class PatchRepository extends MigrationRepositoryAbstract
             if ($localTransaction && $connection->inTransaction()) { // @phpstan-ignore-line
                 try {
                     $connection->commit();
-                } catch(\Exception $e) {
+                } catch(\Exception $commitException) {
                     // Could not commit, probably one of the statements
                     // caused an implicit commit.
                 }
@@ -201,7 +201,7 @@ class PatchRepository extends MigrationRepositoryAbstract
             if ($localTransaction && $connection->inTransaction()) {
                 try {
                     $connection->rollback();
-                } catch(\Exception $e) {
+                } catch(\Exception $commitException) {
                     // Could not rollback, probably one of the statements
                     // caused an implicit commit.
                 }

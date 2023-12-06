@@ -35,6 +35,11 @@ class RunAllPatchesSnippet extends SnippetAbstract
             return;
         }
 
+        // Sort the patch items.
+        usort($patchItems, function($a, $b) {
+            return $a['order'] - $b['order'];
+        });
+
         foreach($patchItems as $patchItem) {
             try {
                 $this->patchRepository->runPatch($patchItem);
