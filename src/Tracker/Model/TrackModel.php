@@ -58,7 +58,7 @@ class TrackModel extends SqlTableModel
         $metaModelLoader->setChangeFields($this->metaModel, 'gtr');
 
         $this->metaModel->set('gtr_date_start', ['default' => new \DateTimeImmutable()]);
-        $this->metaModel->setKeys(['trackId' => 'gtr_id_track']);
+//        $this->metaModel->setKeys(['trackId' => 'gtr_id_track']);
     }
 
     /**
@@ -172,6 +172,24 @@ class TrackModel extends SqlTableModel
             }
         }
         return $this;
+    }
+
+    public function applySummary(): void
+    {
+        $this->metaModel->getKeys(true);
+
+        $this->metaModel->resetOrder();
+
+        $this->metaModel->set('gtr_track_name', ['label' => $this->_('Track')]);
+        $this->metaModel->set('gtr_survey_rounds', ['label' => $this->_('Survey #')]);
+        $this->metaModel->set('gtr_date_start', [
+            'label' => $this->_('From'),
+            'tdClass' => 'date'
+        ]);
+        $this->metaModel->set('gtr_date_until', [
+            'label' => $this->_('Until'),
+            'tdClass' => 'date'
+        ]);
     }
 
     /**
