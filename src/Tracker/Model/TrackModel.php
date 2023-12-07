@@ -14,14 +14,15 @@ declare(strict_types=1);
 
 namespace Gems\Tracker\Model;
 
-use Gems\Loader;
+use DateTimeImmutable;
+use Gems\Db\ResultFetcher;
 use Gems\Model;
 use Gems\Model\MetaModelLoader;
 use Gems\Model\SqlTableModel;
 use Gems\Project\ProjectSettings;
+use Gems\Repository\OrganizationRepository;
 use Gems\Tracker;
 use Gems\Tracker\TrackEvents;
-use Gems\Util;
 use Gems\Util\Translated;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
@@ -44,28 +45,27 @@ class TrackModel extends SqlTableModel
         MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
-        protected Model $model,
-        protected Tracker $tracker,
-        protected Translated $translatedUtil,
-        protected ProjectSettings $project,
-        protected \Zend_Db_Adapter_Abstract $db,
-        protected Loader $loader,
-        protected TrackEvents $trackEvents,
-        protected Util $util
+        protected readonly Model $model,
+        protected readonly Tracker $tracker,
+        protected readonly Translated $translatedUtil,
+        protected readonly ProjectSettings $project,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly TrackEvents $trackEvents,
+        protected readonly OrganizationRepository $organizationRepository,
     ) {
         parent::__construct('gems__tracks', $metaModelLoader, $sqlRunner, $translate);
 
         $metaModelLoader->setChangeFields($this->metaModel, 'gtr');
 
-        $this->metaModel->set('gtr_date_start', ['default' => new \DateTimeImmutable()]);
+        $this->metaModel->set('gtr_date_start', ['default' => new DateTimeImmutable()]);
 //        $this->metaModel->setKeys(['trackId' => 'gtr_id_track']);
     }
 
     /**
      * Sets the labels, format functions, etc...
      *
-     * @param boolean $detailed True when showing detailed information
-     * @param boolean $edit When true use edit settings
+     * @param bool $detailed True when showing detailed information
+     * @param bool $edit When true use edit settings
      */
     public function applyFormatting(bool $detailed = false, bool $edit = false): TrackModel
     {
@@ -145,11 +145,10 @@ class TrackModel extends SqlTableModel
             $this->metaModel->setIfExists('gtr_organizations', [
                 'label' => $this->translate->_('Organizations'),
                 'elementClass' => 'MultiCheckbox',
-                'multiOptions' => $this->util->getDbLookup()->getOrganizationsWithRespondents(),
-                'required' => true
+                'multiOptions' => $this->organizationRepository->getOrganizationsWithRespondents(),
+                'required'=> true,
+                'type' => new ConcatenatedType('|', $this->translate->_(', ')),
             ]);
-            $ct = new ConcatenatedType('|', $this->translate->_(', '));
-            $ct->apply($this->metaModel, 'gtr_organizations');
         }
 
         if ($edit) {
@@ -193,17 +192,6 @@ class TrackModel extends SqlTableModel
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers(): bool
-    {
-        return $this->tracker && $this->util;
-    }
-
-    /**
      * Delete items from the model
      *
      * This method also takes care of cascading to track fields and rounds
@@ -213,7 +201,6 @@ class TrackModel extends SqlTableModel
      */
     public function delete($filter = null): int
     {
-        $this->resetChanged();
         $tracks = $this->load($filter);
 
         if ($tracks) {
@@ -221,7 +208,8 @@ class TrackModel extends SqlTableModel
                 if (isset($row['gtr_id_track'])) {
                     $trackId = $row['gtr_id_track'];
                     if ($this->isDeletable($trackId)) {
-                        $this->db->delete('gems__tracks', $this->db->quoteInto('gtr_id_track = ?', $trackId));
+
+                        $this->resultFetcher->query('DELETE FROM gems__tracks WHERE gtr_id_track = ?', [$trackId]);
 
                         // Now cascade to children, they should take care of further cascading
                         // Delete rounds
@@ -234,10 +222,7 @@ class TrackModel extends SqlTableModel
                         $trackFieldModel->delete(['gtf_id_track' => $trackId]);
 
                         // Delete assigned but unused tracks
-                        $this->db->delete(
-                            'gems__respondent2track',
-                            $this->db->quoteInto('gr2t_id_track = ?', $trackId)
-                        );
+                        $this->resultFetcher->query('DELETE FROM gems__respondent2track WHERE gr2t_id_track = ?', [$trackId]);
                     } else {
                         $values['gtr_id_track'] = $trackId;
                         $values['gtr_active'] = 0;
@@ -272,7 +257,7 @@ class TrackModel extends SqlTableModel
         }
 
         $sql = "SELECT COUNT(DISTINCT gto_id_respondent_track) FROM gems__tokens WHERE gto_id_track = ? AND gto_start_time IS NOT NULL";
-        return $this->db->fetchOne($sql, $trackId);
+        return $this->resultFetcher->fetchOne($sql, [$trackId]);
     }
 
     /**
@@ -284,7 +269,7 @@ class TrackModel extends SqlTableModel
             return true;
         }
         $sql = "SELECT gto_id_token FROM gems__tokens WHERE gto_id_track = ? AND gto_start_time IS NOT NULL";
-        return (boolean)!$this->db->fetchOne($sql, $trackId);
+        return (bool)!$this->resultFetcher->fetchOne($sql, [$trackId]);
     }
 
     public function save(array $newValues, array $filter = null): array
@@ -300,7 +285,7 @@ class TrackModel extends SqlTableModel
                 // We have an insert!
                 $foundKeys = array_intersect_key($newValues, $missing);
                 // Now get the fieldModel
-                $engine = $this->loader->getTracker()->getTrackEngine($foundKeys['gtr_id_track']);
+                $engine = $this->tracker->getTrackEngine($foundKeys['gtr_id_track']);
                 $fieldModel = $engine->getFieldsMaintenanceModel(true, 'create');
                 $lastOrder = 0;
                 foreach ($defaultFields as $field) {
