@@ -30,10 +30,12 @@ class AclMiddleware implements MiddlewareInterface
         $route = $routeResult->getMatchedRoute();
         $options = $route->getOptions();
 
-        $userRole = null;
-        $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-        if ($user) {
-            $userRole = $user->getRole();
+        $userRole = $request->getAttribute('user_role');
+        if ($userRole === null) {
+            $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+            if ($user) {
+                $userRole = $user->getRole();
+            }
         }
 
         $disablePrivileges = isset($this->config['temp_config']['disable_privileges']) && $this->config['temp_config']['disable_privileges'] === true;
