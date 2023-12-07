@@ -12,6 +12,7 @@ namespace Gems\Snippets;
 
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Util\Monitor\Monitor;
 use Gems\Util\Monitor\MonitorJob;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -29,9 +30,18 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class MonitorSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
+    public const CRON_MAIl = 'cronmail';
+    public const MAINTENANCE = 'maintenanece';
+
+
     public ?string $caption = null;
 
     public $confirmParameter = 'delete';
+
+    /**
+     * @var string The monito job to use
+     */
+    protected string $currentMonitor = self::MAINTENANCE;
 
     /**
      *
@@ -45,6 +55,7 @@ class MonitorSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        protected readonly Monitor $monitor,
         protected readonly MenuSnippetHelper $menuSnippetHelper,
     )
     {
@@ -52,6 +63,18 @@ class MonitorSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 
         if (null === $this->title) {
             $this->title = $this->_('Monitorjob overview');
+        }
+
+        switch ($this->currentMonitor) {
+            case self::CRON_MAIl:
+                $this->monitorJob = $monitor->getCronMailMonitor();
+                break;
+
+            case self::MAINTENANCE:
+                $this->monitorJob = $monitor->getMaintenanceMonitor();
+                break;
+
+            // Intentional no default, assume montorJob has been assigned
         }
     }
 
@@ -100,7 +123,7 @@ class MonitorSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
         
         // Skip when job is not started
         if ((! isset($data['setTime'])) || $data['setTime'] == 0) {
-            return;
+            return [];
         }
         
         $data['firstCheck'] = date(MonitorJob::$monitorDateFormat, $data['firstCheck']);

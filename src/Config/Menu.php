@@ -2,6 +2,7 @@
 
 namespace Gems\Config;
 
+use Gems\Handlers\Setup\CommJobHandler;
 use Gems\Handlers\Setup\ConsentHandler;
 use Gems\Handlers\Setup\MailCodeHandler;
 use Gems\Handlers\Setup\ReceptionCodeHandler;
@@ -1204,50 +1205,16 @@ class Menu
                     'label' => $this->translator->trans('Communication'),
                     'type' => 'container',
                     'children' => [
-                        [
-                            'name' => 'setup.communication.job.index',
-                            'label' => $this->translator->trans('Automatic messaging'),
-                            'type' => 'route-link-item',
-                            'children' => [
-                                [
-                                    'name' => 'setup.communication.job.create',
-                                    'label' => $this->translator->trans('New'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
-                                    'name' => 'setup.communication.job.show',
-                                    'label' => $this->translator->trans('Show'),
-                                    'type' => 'route-link-item',
-                                    'children' => [
-                                        [
-                                            'name' => 'setup.communication.job.edit',
-                                            'label' => $this->translator->trans('Edit'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'setup.communication.job.execute',
-                                            'label' => $this->translator->trans('Execute'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'setup.communication.job.delete',
-                                            'label' => $this->translator->trans('Delete'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                    ],
-                                ],
-                                [
-                                    'name' => 'setup.communication.job.monitor',
-                                    'label' => $this->translator->trans('Monitor'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
-                                    'name' => 'setup.communication.job.execute-all',
-                                    'label' => $this->translator->trans('Execute all'),
-                                    'type' => 'route-link-item',
-                                ],
+                        $this->createMenuForHandler(
+                            CommJobHandler::class,
+                            'setup.communication.job',
+                            $this->translator->trans('Automatic message jobs'),
+                            [
+                                'execute' => $this->translator->trans('Execute'),
+                                'monitor' => $this->translator->trans('Monitor'),
+                                'execute-all' => $this->translator->trans('Execute all'),
                             ],
-                        ],
+                        ),
                         [
                             'name' => 'setup.communication.messenger.index',
                             'label' => $this->translator->trans('Messenger'),

@@ -6151,41 +6151,6 @@ parameters:
 			path: src/Snippets/ModelFormSnippetAbstract.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Bridge\\\\FormBridgeInterface\\:\\:addSelect\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/ModelFormVariableFieldSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\FullDataInterface\\:\\:get\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/ModelFormVariableFieldSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\FullDataInterface\\:\\:getItemsOrdered\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/ModelFormVariableFieldSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zend_View_Abstract\\:\\:headScript\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/ModelFormVariableFieldSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zend_View_Abstract\\:\\:inlineScript\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/ModelFormVariableFieldSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\ModelFormSnippetAbstract\\:\\:getHtmlOutput\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: src/Snippets/ModelFormVariableFieldSnippet.php
-
-		-
-			message: "#^Method Zalt\\\\Snippets\\\\ModelFormSnippetAbstract\\:\\:addFormElements\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: src/Snippets/ModelFormVariableFieldSnippet.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\ModelImportSnippet\\:\\:\\$request\\.$#"
 			count: 1
 			path: src/Snippets/ModelImportSnippet.php
@@ -6219,11 +6184,6 @@ parameters:
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$model$#"
 			count: 1
 			path: src/Snippets/ModelTableSnippetAbstract.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\MonitorSnippet\\:\\:getReadableData\\(\\) should return array but empty return statement found\\.$#"
-			count: 1
-			path: src/Snippets/MonitorSnippet.php
 
 		-
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Organization\\\\AutosearchOrganizationSnippet\\:\\:\\$loader\\.$#"

@@ -21,7 +21,7 @@ use Zalt\Model\Dependency\DependencyAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 08-Aug-2019 19:09:20
  */
-class Senderdependency extends DependencyAbstract
+class SenderDependency extends DependencyAbstract
 {
     /**
      * Array of name => name of items dependency depends on.

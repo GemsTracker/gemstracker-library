@@ -13,30 +13,37 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
-use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Handlers\BrowseChangeHandler;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
-use Gems\Model\CommJobModel;
+use Gems\Model\Setup\CommJobModel;
 use Gems\Repository\CommJobRepository;
 use Gems\Snippets\Communication\CommJobButtonRowSnippet;
 use Gems\Snippets\Communication\CommJobIndexButtonRowSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\SnippetsActions\Browse\BrowseFilteredAction;
+use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Delete\DeleteAction;
+use Gems\SnippetsActions\Export\ExportAction;
+use Gems\SnippetsActions\Form\CreateAction;
+use Gems\SnippetsActions\Form\EditAction;
+use Gems\SnippetsActions\Monitor\CommJobMonitorAction;
+use Gems\SnippetsActions\Show\ShowAction;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
 use Gems\Util\Lock\CommJobLock;
-use Gems\Util\Monitor\Monitor;
-use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\MetaModelInterface;
+use Zalt\Model\MetaModelLoader;
+use Zalt\SnippetsHandler\ConstructorModelHandlerTrait;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -48,8 +55,24 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
+class CommJobHandler extends BrowseChangeHandler
 {
+    use ConstructorModelHandlerTrait;
+
+    /**
+     * @inheritdoc 
+     */
+    public static $actions = [
+        'autofilter' => BrowseFilteredAction::class,
+        'index'      => BrowseSearchAction::class,
+        'create'     => CreateAction::class,
+        'export'     => ExportAction::class,
+        'edit'       => EditAction::class,
+        'delete'     => DeleteAction::class,
+        'show'       => ShowAction::class,
+        'monitor'    => CommJobMonitorAction::class,
+    ];
+
     protected array $autofilterParameters = [
         'extraSort'    => ['gcj_id_order' => SORT_ASC],
         'searchFields' => 'getSearchFields'
@@ -63,16 +86,11 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
     public array $cacheTags = ['comm-jobs',];
 
     /**
-     * The snippets used for the create and edit actions.
-     *
-     * @var mixed String or array of snippets name
-     */
-    //protected array $createEditSnippets = ['ModelFormVariableFieldSnippet'];
-
-    /**
      * @var array
      */
-    public $config;
+    public array $config;
+
+    protected int $currentUserId;
 
     /**
      * @var null|LoggerInterface
@@ -88,18 +106,6 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
 
     protected array $indexStopSnippets = [CommJobIndexButtonRowSnippet::class];
 
-    protected $monitorParameters = [
-        'monitorJob' => 'getMailMonitorJob'
-    ];
-
-    protected $monitorSnippets = 'MonitorSnippet';
-
-    /**
-     * Query to get the round descriptions for options
-     * @var string
-     */
-    protected string $roundDescQuery = "SELECT gro_round_description, gro_round_description FROM gems__rounds WHERE gro_id_track = ? GROUP BY gro_round_description";
-
     /**
      * The snippets used for the show action
      *
@@ -113,6 +119,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function __construct(
         SnippetResponderInterface $responder,
+        MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
@@ -120,48 +127,16 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
         protected ProjectOverloader $overloader,
         protected Tracker $tracker,
         protected readonly BatchRunnerLoader $batchRunnerLoader,
+        protected readonly CommJobModel $commJobModel,
         protected readonly CommJobRepository $commJobRepository,
         protected readonly CommJobLock $communicationJobLock,
-        protected readonly Monitor $monitor,
         protected readonly RouteHelper $routeHelper,
     )
     {
-        parent::__construct($responder, $translate, $cache);
+        parent::__construct($responder, $metaModelLoader, $translate, $cache);
 
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
-    }
-
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
-     */
-    protected function createModel(bool $detailed, string $action): ModelAbstract
-    {
-        /**
-         * @var CommJobModel $model
-         */
-        $model = $this->overloader->create(CommJobModel::class);
-
-        if ($detailed) {
-            $model->applyDetailSettings();
-            if ($action == 'create') {
-                // Set the default round order
-                $newOrder = $this->resultFetcher->fetchOne('SELECT MAX(gcj_id_order) FROM gems__comm_jobs');
-
-                if ($newOrder) {
-                    $model->set('gcj_id_order', 'default', $newOrder + 10);
-                }
-            }
-        }
-
-        return $model;
+        $this->model = $this->commJobModel;
     }
 
     public function lockAction()
@@ -302,11 +277,6 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
         return $this->_('Automatic message jobs');
     }
 
-    public function getMailMonitorJob()
-    {
-        return $this->monitor->getCronMailMonitor();
-    }
-
     /**
      * Returns the fields for autosearch with
      *
@@ -351,35 +321,17 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
             }*/
         }
 
-        parent::indexAction();
+        // parent::indexAction();
 
-        $this->html->pInfo($this->_('With automatic messaging jobs and a cron job on the server, messages can be sent without manual user action.'));
-    }
-
-    public function monitorAction() {
-        if ($this->monitorSnippets) {
-            $params = $this->_processParameters($this->monitorParameters);
-
-            $this->addSnippets($this->monitorSnippets, $params);
-        }
+        // $this->html->pInfo($this->_('With automatic messaging jobs and a cron job on the server, messages can be sent without manual user action.'));
     }
 
     /**
      * Execute a single message job
      */
-    public function previewAction() {
-        $this->executeAction(true);
-    }
-
-    /**
-     * Ajax return function for round selection
-     */
-    public function roundselectAction()
+    public function previewAction()
     {
-        $trackId = $this->requestInfo->getParam('sourceValue');
-        $rounds = $this->resultFetcher->fetchPairs($this->roundDescQuery, [$trackId]);
-
-        return new JsonResponse($rounds);
+        $this->executeAction(true);
     }
 
     /**
@@ -387,7 +339,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function showAction()
     {
-        parent::showAction();
+        // parent::showAction();
 
         $jobId = $this->request->getAttribute('id');
         if (!is_null($jobId)) {
@@ -423,12 +375,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
                 'tokenOnEmpty'         => $this->_('No tokens found to message'),
                 'tokenExtraSort'       => ['gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC]
             ];
-            $this->addSnippet('TokenPlanTableSnippet', $params);
+            // $this->addSnippet('TokenPlanTableSnippet', $params);
         }
-    }
-
-    public function sortAction()
-    {
-        //$this->_helper->getHelper('SortableTable')->ajaxAction('gems__comm_jobs','gcj_id_job', 'gcj_id_order');
     }
 }

@@ -19,6 +19,7 @@ use Gems\Log\Loggers;
 use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Project\ProjectSettings;
+use Gems\Snippets\MonitorSnippet;
 use Gems\Util\Lock\MaintenanceLock;
 use Gems\Util\Monitor\Monitor;
 use Gems\Versions;
@@ -44,7 +45,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
 class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 {
     protected $monitorParameters = [
-        'monitorJob' => 'getMaintenanceMonitorJob'
+        'currentMonitor' => MonitorSnippet::MAINTENANCE,
     ];
 
     protected $monitorSnippets = 'MonitorSnippet';
@@ -258,11 +259,6 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             return;
         }
         $this->html->div()->append($this->_('No log file set for output'));
-    }
-
-    public function getMaintenanceMonitorJob()
-    {
-        return $this->monitor->getMaintenanceMonitor();
     }
 
     /**
