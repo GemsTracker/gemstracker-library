@@ -4,8 +4,10 @@ namespace Gems\Dev\Clockwork\Factory;
 
 use Clockwork\Authentication\NullAuthenticator;
 use Clockwork\Clockwork;
+use Clockwork\DataSource\DBALDataSource;
 use Clockwork\DataSource\PhpDataSource;
 use Clockwork\Storage\FileStorage;
+use Doctrine\DBAL\Connection;
 use Gems\Dev\Clockwork\DataSource\LaminasDbDataSource;
 use Gems\Dev\Clockwork\DataSource\MonologDataSource;
 use Gems\Dev\Clockwork\DataSource\TwigDataSource;
@@ -39,6 +41,10 @@ class ClockworkFactory implements FactoryInterface
         // Add Zend Db Profiler
         $adapter = $container->get(\Zend_Db_Adapter_Abstract::class);
         $clockwork->addDataSource(new ZendDbDataSource($adapter));
+
+        // Add Doctrine DataSource
+        $adapter = $container->get(Connection::class);
+        $clockwork->addDataSource(new DBALDataSource($adapter));
 
         // Add Monolog
         /**
