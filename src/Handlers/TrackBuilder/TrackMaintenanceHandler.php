@@ -81,12 +81,12 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
      * @var \Gems\User\User
      */
     public $currentUser;
-    
+
     /**
      * The default search data to use.
      */
     protected array $defaultSearchData = ['active' => 1];
-    
+
     protected array $deleteParameters = [
         'trackId' => '_getIdParam'
     ];
@@ -197,6 +197,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected RouteHelper $routeHelper,
+        protected TrackModel $trackModel,
     ) {
         parent::__construct($responder, $translate, $cache, $tracker);
     }
@@ -287,24 +288,11 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         parent::createAction();
     }
 
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return TrackModel
-     */
     public function createModel(bool $detailed, string $action): TrackModel
     {
-        $model = $this->tracker->getTrackModel();
-        $model->applyFormatting($detailed);
-        $model->addFilter(array("gtr_track_class != 'SingleSurveyEngine'"));
+        $this->trackModel->applyFormatting($detailed);
 
-        return $model;
+        return $this->trackModel;
     }
 
     /**
@@ -338,20 +326,20 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
     public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
-        
+
         if (array_key_exists('active', $filter)) {
             switch ($filter['active']) {
                 case 0:
                     // Inactive
                     $filter['gtr_active'] = 0;
                     break;
-                    
+
                 case 1:
                     // Active now
                     $filter['gtr_active'] = 1;
                     $filter[] = 'gtr_date_start <= CURRENT_TIMESTAMP AND (gtr_date_until IS NULL OR gtr_date_until >= CURRENT_TIMESTAMP)';
                     break;
-                    
+
                 case 2:
                     //Expired
                     $filter['gtr_active'] = 1;
@@ -445,18 +433,18 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
 
     /**
      *  Pass the h3 tag to all snippets except the first one
-     */    
+     */
     public function showAction(): void
     {
         $showSnippets = $this->showSnippets;
         $first = array_shift($showSnippets);
         $next  = $showSnippets;
-        
+
         $this->showSnippets = [$first];
         parent::showAction();
-        
+
         $this->showParameters['tagName'] = 'h3';
-        
+
         $this->showSnippets = $next;
         parent::showAction();
 

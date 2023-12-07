@@ -15,11 +15,13 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\Tracker\TrackSurveyOverviewSnippet;
+use Gems\Tracker\Model\TrackModel;
 use Gems\User\User;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -53,7 +55,7 @@ class ProjectTracksHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
     ];
 
     protected User $currentUser;
-    
+
     /**
      * The parameters used for the show action
      *
@@ -80,7 +82,7 @@ class ProjectTracksHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         ModelDetailTableSnippet::class,
         CurrentButtonRowSnippet::class,
         TrackSurveyOverviewSnippet::class,
-    ]; 
+    ];
 
     public function __construct(
         SnippetResponderInterface $responder,
@@ -88,38 +90,19 @@ class ProjectTracksHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
         protected Translated $translatedUtil,
+        protected TrackModel $trackModel,
     )
     {
         parent::__construct($responder, $translate, $cache);
-        
+
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
-     */
-    protected function createModel($detailed, $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): DataReaderInterface
     {
-        $model = new \MUtil\Model\TableModel('gems__tracks');
+        $this->trackModel->applySummary();
 
-        $model->set('gtr_track_name',    'label', $this->_('Track'));
-        $model->set('gtr_survey_rounds', 'label', $this->_('Survey #'));
-        $model->set('gtr_date_start',    'label', $this->_('From'),
-                'tdClass', 'date'
-                );
-        $model->set('gtr_date_until',    'label', $this->_('Until'),
-                'tdClass', 'date'
-                );
-
-        return $model;
+        return $this->trackModel;
     }
 
     /**

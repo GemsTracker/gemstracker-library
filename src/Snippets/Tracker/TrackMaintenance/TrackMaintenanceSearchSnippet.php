@@ -64,7 +64,7 @@ class TrackMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 
         if ($elements) {
             $br = Html::create('br');
-            $elements[] = $this->_createSelectElement('gtr_track_class', $this->model, $this->_('(all track engines)'));
+            $elements[] = $this->_createSelectElement('gtr_track_class', $this->model->getMetaModel(), $this->_('(all track engines)'));
 
             $elements[] = $br;
 
@@ -75,7 +75,7 @@ class TrackMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
                 3 => $this->_('Future')
             ];
             $elementA = $this->_createSelectElement('active', $optionsA, $this->_('(all)'));
-            $elementA->setLabel($this->model->get('gtr_active', 'label'));
+            $elementA->setLabel($this->model->getMetaModel()->get('gtr_active', 'label'));
             $elements[] = $elementA;
 
             $optionsO = $this->currentUser->getRespondentOrganizations();

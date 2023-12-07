@@ -1,5 +1,5 @@
 <?php
-                
+
 /**
  *
  * @package    Gem
@@ -13,6 +13,7 @@ namespace Gems\Snippets\Condition;
 
 use Gems\Condition\ConditionLoader;
 use Gems\Snippets\AutosearchFormSnippet;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
