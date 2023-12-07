@@ -40,7 +40,7 @@ class DoctrineOrmFactory implements FactoryInterface
 
         $namingStrategy = new UnderscoreNamingStrategy(CASE_LOWER, true);
         $config->setNamingStrategy($namingStrategy);
-        $entityManager = EntityManager::create($connection, $config);
+        $entityManager = new EntityManager($connection, $config);
 
         return $entityManager;
     }
