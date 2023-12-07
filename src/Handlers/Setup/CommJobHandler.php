@@ -24,25 +24,25 @@ use Gems\Snippets\Communication\CommJobIndexButtonRowSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
-use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Browse\CommJobBrowseSearchAction;
 use Gems\SnippetsActions\Delete\DeleteAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
+use Gems\SnippetsActions\Lock\CommLockAction;
 use Gems\SnippetsActions\Monitor\CommJobMonitorAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
-use Gems\Util\Lock\CommJobLock;
-use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Html\Html;
 use Zalt\Loader\ProjectOverloader;
-use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModelLoader;
+use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsHandler\ConstructorModelHandlerTrait;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -60,22 +60,18 @@ class CommJobHandler extends BrowseChangeHandler
     use ConstructorModelHandlerTrait;
 
     /**
-     * @inheritdoc 
+     * @inheritdoc
      */
     public static $actions = [
         'autofilter' => BrowseFilteredAction::class,
-        'index'      => BrowseSearchAction::class,
+        'index'      => CommJobBrowseSearchAction::class,
         'create'     => CreateAction::class,
         'export'     => ExportAction::class,
         'edit'       => EditAction::class,
         'delete'     => DeleteAction::class,
         'show'       => ShowAction::class,
+        'lock'       => CommLockAction::class,
         'monitor'    => CommJobMonitorAction::class,
-    ];
-
-    protected array $autofilterParameters = [
-        'extraSort'    => ['gcj_id_order' => SORT_ASC],
-        'searchFields' => 'getSearchFields'
     ];
 
     /**
@@ -129,7 +125,6 @@ class CommJobHandler extends BrowseChangeHandler
         protected readonly BatchRunnerLoader $batchRunnerLoader,
         protected readonly CommJobModel $commJobModel,
         protected readonly CommJobRepository $commJobRepository,
-        protected readonly CommJobLock $communicationJobLock,
         protected readonly RouteHelper $routeHelper,
     )
     {
@@ -137,25 +132,6 @@ class CommJobHandler extends BrowseChangeHandler
 
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
         $this->model = $this->commJobModel;
-    }
-
-    public function lockAction()
-    {
-        if ($this->communicationJobLock->isLocked()) {
-            $this->communicationJobLock->unlock();
-
-            /**
-             * @var StatusMessengerInterface $messenger
-             */
-            $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-            $messenger->clearMessages();
-            $messenger->addSuccess($this->_('Cron jobs are active'));
-        } else {
-            $this->communicationJobLock->lock();
-        }
-
-        // Redirect
-        return new RedirectResponse($this->routeHelper->getRouteUrl('setup.communication.job.index'));
     }
 
     /**
@@ -278,18 +254,6 @@ class CommJobHandler extends BrowseChangeHandler
     }
 
     /**
-     * Returns the fields for autosearch with
-     *
-     * @return array
-     */
-    public function getSearchFields()
-    {
-        return [
-            'gcj_active' => $this->_('(all execution methods)')
-        ];
-    }
-
-    /**
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
@@ -301,29 +265,22 @@ class CommJobHandler extends BrowseChangeHandler
     }
 
     /**
-     * Action for showing a browse page
+     * @inheritdoc
      */
-    public function indexAction()
+    public function prepareAction(SnippetActionInterface $action): void
     {
-        if ($this->communicationJobLock->isLocked()) {
-            /**
-             * @var StatusMessengerInterface $messenger
-             */
-            $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-            $messenger->addError(
-                sprintf(
-                    $this->_('Automatic messaging have been turned off since %s.'),
-                    $this->communicationJobLock->getLockTime()->format('H:i d-m-Y')
-                ));
+        parent::prepareAction($action);
 
-            /*if ($menuItem = $this->menu->findController('cron', 'cron-lock')) {
-                $menuItem->set('label', $this->_('Turn Automatic Messaging Jobs ON'));
-            }*/
+        // \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.maintenance-mode'), $maintenanceLockLabel),
+        if ($action instanceof CommJobBrowseSearchAction) {
+            $action->extraSort['gcj_id_order'] = SORT_ASC;
+
+            $action->searchFields['gcj_id_communication_messenger'] = $this->_('(any communication method)');
+            $action->searchFields['gcj_id_message'] = $this->_('(all templates)');
+            $action->searchFields[] = Html::br();
+            $action->searchFields['gcj_active'] = $this->_('(all execution methods)');
+            $action->searchFields['gcj_target'] = $this->_('(all fillers)');
         }
-
-        // parent::indexAction();
-
-        // $this->html->pInfo($this->_('With automatic messaging jobs and a cron job on the server, messages can be sent without manual user action.'));
     }
 
     /**

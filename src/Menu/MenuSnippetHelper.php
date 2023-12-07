@@ -332,6 +332,7 @@ class MenuSnippetHelper
     {
         try {
             $menuItem = $this->menu->find($route);
+            dump(get_class($menuItem));
             $menuItem->setLabel($label);
         } catch (MenuItemNotFoundException $minfe) {
             dump($route. $minfe->getMessage());
