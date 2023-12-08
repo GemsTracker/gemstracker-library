@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Gems\SnippetsActions\Form;
 
 use Gems\Snippets\ModelFormSnippet;
-use Gems\Snippets\UsageSnippet;
+use Gems\Snippets\Usage\UsageSnippet;
 use Gems\SnippetsActions\UsageCounterActionTrait;
 use Zalt\SnippetsActions\ParameterActionInterface;
 

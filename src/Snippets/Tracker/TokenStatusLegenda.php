@@ -58,4 +58,26 @@ class TokenStatusLegenda extends \Zalt\Snippets\TranslatableSnippetAbstract
 
         return $table;
     }
+
+    public function setSnippetOptions(SnippetOptions $snippetOptions): self
+    {
+        $options = $snippetOptions->getOptions();
+        $tokenOptions = [];
+
+        foreach($options as $name => $value) {
+            if (property_exists($this, $name)) {
+                $this->setSnippetOption($name, $value);
+            }
+            if ('tokenParams' == $name) {
+                $tokenOptions = $value;
+            }
+        }
+        foreach ($tokenOptions as $name => $value) {
+            if (property_exists($this, $name)) {
+                $this->setSnippetOption($name, $value);
+            }
+        }
+
+        return $this;
+    }
 }

@@ -12,7 +12,7 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Actions\ProjectSettings;
-use Gems\Handlers\BrowseChangeHandler;
+use Gems\Handlers\BrowseChangeUsageHandler;
 use Gems\Model\Setup\ReceptionCodeModel;
 use Gems\Model\Setup\ReceptionCodeUsageCounter;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
@@ -32,7 +32,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class ReceptionCodeHandler extends BrowseChangeHandler
+class ReceptionCodeHandler extends BrowseChangeUsageHandler
 {
     use ConstructorModelHandlerTrait;
 

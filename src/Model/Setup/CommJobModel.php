@@ -40,7 +40,7 @@ class CommJobModel extends GemsJoinModel implements ApplyActionInterface
         protected readonly Translated $translateUtil,
     )
     {
-        parent::__construct('gems__comm_jobs', $metaModelLoader, $sqlRunner, $translator, 'coomJobModel', true);
+        parent::__construct('gems__comm_jobs', $metaModelLoader, $sqlRunner, $translator, 'commJobModel', true);
 
         $metaModelLoader->setChangeFields($this->metaModel, 'gcj');
         $this->currentUserId = $currentUserRepository->getCurrentUserId();

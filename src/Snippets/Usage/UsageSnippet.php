@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  */
 
-namespace Gems\Snippets;
+namespace Gems\Snippets\Usage;
 
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Usage\UsageCounterInterface;

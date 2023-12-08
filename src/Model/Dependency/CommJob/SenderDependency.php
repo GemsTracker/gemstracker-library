@@ -3,7 +3,7 @@
 /**
  *
  * @package    Gems
- * @subpackage Model\Dependency\CoomJob
+ * @subpackage Model\Dependency\CommJob
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2019, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
@@ -16,7 +16,7 @@ use Zalt\Model\Dependency\DependencyAbstract;
 /**
  *
  * @package    Gems
- * @subpackage Model\Dependency\CoomJob
+ * @subpackage Model\Dependency\CommJob
  * @copyright  Copyright (c) 2019, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
  * @since      Class available since version 1.8.6 08-Aug-2019 19:09:20

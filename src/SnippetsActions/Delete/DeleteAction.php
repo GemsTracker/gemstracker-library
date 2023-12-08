@@ -11,9 +11,8 @@ declare(strict_types=1);
 
 namespace Gems\SnippetsActions\Delete;
 
-use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelConfirmDeleteSnippet;
-use Gems\Snippets\UsageSnippet;
+use Gems\Snippets\Usage\UsageSnippet;
 use Gems\SnippetsActions\ContentTitleActionTrait;
 use Gems\SnippetsActions\UsageCounterActionTrait;
 use Zalt\Model\MetaModellerInterface;

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  */
 
-namespace Gems\SnippetsActions\Lock;
+namespace Gems\Handlers\Setup\CommunicationActions;
 
 use Gems\Snippets\Communication\CommLockSwitchSnippet;
 

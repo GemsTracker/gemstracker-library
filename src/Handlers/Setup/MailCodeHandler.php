@@ -11,7 +11,7 @@
 
 namespace Gems\Handlers\Setup;
 
-use Gems\Handlers\BrowseChangeHandler;
+use Gems\Handlers\BrowseChangeUsageHandler;
 use Gems\Model\Setup\MailCodeModel;
 use Gems\Model\Setup\MailCodeUsageCounter;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
@@ -29,7 +29,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class MailCodeHandler extends BrowseChangeHandler
+class MailCodeHandler extends BrowseChangeUsageHandler
 {
     use ConstructorModelHandlerTrait;
 

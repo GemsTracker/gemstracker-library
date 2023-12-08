@@ -19,6 +19,7 @@ use Zalt\Html\TableElement;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Snippet for showing the tokens for the applied filter over multiple respondents.
@@ -106,12 +107,13 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
         $bridge->addSortable('gto_completion_time');
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
-        $metaModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
-        $metaModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $space = Html::create('span', ' ');
+        $metaModel->set('gr2t_track_info', 'tableDisplay', 'small');
+        $metaModel->set('gto_round_description', 'tableDisplay', 'small');
         $bridge->addMultiSort(
-            'gtr_track_name', 'gr2t_track_info',
+            'gtr_track_name', $space, 'gr2t_track_info',
             array($bridge->gtr_track_name->if(Html::raw(' &raquo; ')), ' '),
-            'gsu_survey_name', 'gto_round_description');
+            'gsu_survey_name', $space, 'gto_round_description');
 
         $bridge->addSortable('assigned_by');
     }
@@ -184,5 +186,27 @@ class PlanTokenSnippet extends TokenModelSnippetAbstract
         if ($link) {
             return $link;
         }
+    }
+
+    public function setSnippetOptions(SnippetOptions $snippetOptions): self
+    {
+        $options = $snippetOptions->getOptions();
+        $tokenOptions = [];
+
+        foreach($options as $name => $value) {
+            if (property_exists($this, $name)) {
+                $this->setSnippetOption($name, $value);
+            }
+            if ('tokenParams' == $name) {
+                $tokenOptions = $value;
+            }
+        }
+        foreach ($tokenOptions as $name => $value) {
+            if (property_exists($this, $name)) {
+                $this->setSnippetOption($name, $value);
+            }
+        }
+
+        return $this;
     }
 }

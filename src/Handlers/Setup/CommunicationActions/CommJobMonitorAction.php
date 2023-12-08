@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  */
 
-namespace Gems\SnippetsActions\Monitor;
+namespace Gems\Handlers\Setup\CommunicationActions;
 
 use Gems\Snippets\MonitorSnippet;
 

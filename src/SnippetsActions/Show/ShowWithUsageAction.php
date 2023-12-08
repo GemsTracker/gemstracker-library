@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 /**
- *
  * @package    Gems
  * @subpackage SnippetsActions\Show
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -14,21 +13,18 @@ namespace Gems\SnippetsActions\Show;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\Snippets\Usage\EnableUsageSnippet;
 use Gems\Snippets\Usage\UsageSnippet;
-use Gems\SnippetsActions\ButtonRowActiontrait;
-use Gems\SnippetsActions\ContentTitleActionTrait;
-use Zalt\Model\MetaModellerInterface;
+use Gems\SnippetsActions\UsageCounterActionTrait;
 
 /**
- *
  * @package    Gems
  * @subpackage SnippetsActions\Show
- * @since      Class available since version 1.9.2
+ * @since      Class available since version 1.0
  */
-class ShowAction extends \Zalt\SnippetsActions\Show\ShowAction
+class ShowWithUsageAction extends ShowAction
 {
-    use ButtonRowActiontrait;
-    use ContentTitleActionTrait;
+    use UsageCounterActionTrait;
 
     /**
      * @inheritDoc
@@ -37,13 +33,10 @@ class ShowAction extends \Zalt\SnippetsActions\Show\ShowAction
         ContentTitleSnippet::class,
         ModelDetailTableSnippet::class,
         CurrentButtonRowSnippet::class,
-        ];
-
-    public string $class = 'displayer table';
-
-    public MetaModellerInterface $model;
+        EnableUsageSnippet::class,
+    ];
 
     public array $usageSnippets = [
         UsageSnippet::class,
-        ];
+    ];
 }

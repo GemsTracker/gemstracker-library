@@ -13,15 +13,17 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
-use Gems\Handlers\BrowseChangeHandler;
+use Gems\Handlers\BrowseChangeUsageHandler;
 use Gems\Handlers\Setup\CommunicationActions\CommJobBrowseSearchAction;
+use Gems\Handlers\Setup\CommunicationActions\CommJobMonitorAction;
+use Gems\Handlers\Setup\CommunicationActions\CommJobShowAction;
+use Gems\Handlers\Setup\CommunicationActions\CommLockAction;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\Setup\CommJobModel;
 use Gems\Repository\CommJobRepository;
 use Gems\Snippets\Communication\CommJobButtonRowSnippet;
-use Gems\Snippets\Communication\CommJobIndexButtonRowSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
@@ -29,19 +31,14 @@ use Gems\SnippetsActions\Delete\DeleteAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
-use Gems\SnippetsActions\Lock\CommLockAction;
-use Gems\SnippetsActions\Monitor\CommJobMonitorAction;
-use Gems\SnippetsActions\Show\ShowAction;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
-use Gems\Util\Lock\CommJobLock;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Loader\ProjectOverloader;
-use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\SnippetsActions\SnippetActionInterface;
@@ -57,7 +54,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class CommJobHandler extends BrowseChangeHandler
+class CommJobHandler extends BrowseChangeUsageHandler
 {
     use ConstructorModelHandlerTrait;
 
@@ -71,7 +68,7 @@ class CommJobHandler extends BrowseChangeHandler
         'export'     => ExportAction::class,
         'edit'       => EditAction::class,
         'delete'     => DeleteAction::class,
-        'show'       => ShowAction::class,
+        'show'       => CommJobShowAction::class,
         'lock'       => CommLockAction::class,
         'monitor'    => CommJobMonitorAction::class,
     ];
@@ -96,15 +93,6 @@ class CommJobHandler extends BrowseChangeHandler
     public $cronLog = null;
 
     /**
-     * The snippets used for the index action, before those in autofilter
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet'];
-
-    protected array $indexStopSnippets = [CommJobIndexButtonRowSnippet::class];
-
-    /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
@@ -125,7 +113,6 @@ class CommJobHandler extends BrowseChangeHandler
         protected ProjectOverloader $overloader,
         protected Tracker $tracker,
         protected readonly BatchRunnerLoader $batchRunnerLoader,
-        protected readonly CommJobLock $communicationJobLock,
         protected readonly CommJobModel $commJobModel,
         protected readonly CommJobRepository $commJobRepository,
         protected readonly RouteHelper $routeHelper,
@@ -274,27 +261,7 @@ class CommJobHandler extends BrowseChangeHandler
     {
         parent::prepareAction($action);
 
-        // \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.maintenance-mode'), $maintenanceLockLabel),
         if ($action instanceof CommJobBrowseSearchAction) {
-            if ($this->communicationJobLock->isLocked()) {
-                /**
-                 * @var StatusMessengerInterface $messenger
-                 */
-                $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-                $messenger->addMessage(sprintf(
-                    $this->_('Automatic messaging have been turned off since %s.'),
-                    $this->communicationJobLock->getLockTime()->format('H:i d-m-Y')
-                ));
-
-                // Set here because otherwise the button has already been rendered
-                $commLockLabel = $this->_('Turn Autmatic Messaging Jobs ON');
-            } else {
-                $commLockLabel = $this->_('Turn Autmatic Messaging Jobs OFF');
-            }
-
-            $action->extraRoutesLabelled['setup.communication.job.monitor'] = $this->_('Monitor');
-            $action->extraRoutesLabelled['setup.communication.job.lock'] = $commLockLabel;
-
             $action->extraSort['gcj_id_order'] = SORT_ASC;
 
             $action->searchFields['gcj_id_communication_messenger'] = $this->_('(any communication method)');
@@ -302,6 +269,41 @@ class CommJobHandler extends BrowseChangeHandler
             $action->searchFields[] = Html::br();
             $action->searchFields['gcj_active'] = $this->_('(all execution methods)');
             $action->searchFields['gcj_target'] = $this->_('(all fillers)');
+        }
+
+        if ($action instanceof CommJobShowAction) {
+            $jobId = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID);
+            if (null !== $jobId) {
+                $jobId = (int) $jobId;
+                $job   = $this->commJobRepository->getJob($jobId);
+
+                // Show a different color when not active,
+                switch ($job['gcj_active']) {
+                    case 0:
+                        $class   = ' disabled';
+                        $caption = $this->_('Message job inactive, can not be sent');
+                        break;
+
+                    case 2:
+                        $class = ' manual';
+                        $caption = $this->_('Message job manual, can only be sent using run');
+                        break;
+
+                    // gcj_active = 1
+                    default:
+                        $class = '';
+                        $caption = $this->_('Message job automatic, can be sent using run or run all');
+                        break;
+                }
+                $action->tokenParams = [
+                    'model'           => $this->tracker->getTokenModel(),
+                    'searchFilter'    => $this->commJobRepository->getJobFilter($job),
+                    'class'           => 'browser table compliance mailjob' . $class,
+                    'caption'         => $caption,
+                    'onEmpty'         => $this->_('No tokens found for message'),
+                    'extraSort'       => ['gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC]
+                ];
+            }
         }
     }
 
@@ -311,50 +313,5 @@ class CommJobHandler extends BrowseChangeHandler
     public function previewAction()
     {
         $this->executeAction(true);
-    }
-
-    /**
-     * Action for showing an item page with title
-     */
-    public function showAction()
-    {
-        // parent::showAction();
-
-        $jobId = $this->request->getAttribute('id');
-        if (!is_null($jobId)) {
-            $jobId = (int) $jobId;
-            $job   = $this->commJobRepository->getJob($jobId);
-
-            // Show a different color when not active,
-            switch ($job['gcj_active']) {
-                case 0:
-                    $class   = ' disabled';
-                    $caption = $this->_('Message job inactive, can not be sent');
-                    break;
-
-                case 2:
-                    $class = ' manual';
-                    $caption = $this->_('Message job manual, can only be sent using run');
-                    break;
-
-                // gcj_active = 1
-                default:
-                    $class = '';
-                    $caption = $this->_('Message job automatic, can be sent using run or run all');
-                    break;
-            }
-            $model  = $this->tracker->getTokenModel();
-            $filter = $this->commJobRepository->getJobFilter($job);
-            $params = [
-                'tokenModel'           => $model,
-                'tokenFilter'          => $filter,
-                'tokenShowActionLinks' => false,
-                'tokenClass'           => 'browser table mailjob' . $class,
-                'tokenCaption'         => $caption,
-                'tokenOnEmpty'         => $this->_('No tokens found to message'),
-                'tokenExtraSort'       => ['gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC]
-            ];
-            // $this->addSnippet('TokenPlanTableSnippet', $params);
-        }
     }
 }

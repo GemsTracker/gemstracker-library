@@ -7776,26 +7776,6 @@ parameters:
 			path: src/Snippets/TokenModelSnippetAbstract.php
 
 		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gtr_track_name\\.$#"
-			count: 1
-			path: src/Snippets/TokenPlanTableSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:addColumn\\(\\)\\.$#"
-			count: 3
-			path: src/Snippets/TokenPlanTableSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:setDefaultRowClass\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/TokenPlanTableSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:tr\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/TokenPlanTableSnippet.php
-
-		-
 			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Track/CheckRoundsInformation.php

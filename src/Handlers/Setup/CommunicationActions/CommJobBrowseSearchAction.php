@@ -12,8 +12,8 @@ namespace Gems\Handlers\Setup\CommunicationActions;
 
 use Gems\Snippets\Agenda\AutosearchFormSnippet;
 use Gems\Snippets\Communication\CommInfoSnippet;
+use Gems\Snippets\Communication\CommJobIndexButtonRowSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
-use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 
 /**
  * @package    Gems
@@ -28,7 +28,7 @@ class CommJobBrowseSearchAction extends \Gems\SnippetsActions\Browse\BrowseSearc
     ];
 
     protected array $_stopSnippets = [
-        CurrentButtonRowSnippet::class,
+        CommJobIndexButtonRowSnippet::class,
         CommInfoSnippet::class,
     ];
 

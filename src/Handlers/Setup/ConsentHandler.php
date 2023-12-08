@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Setup;
 
-use Gems\Handlers\BrowseChangeHandler;
+use Gems\Handlers\BrowseChangeUsageHandler;
 use Gems\Model\Setup\ConsentModel;
 use Gems\Model\Setup\ConsentUsageCounter;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
@@ -28,7 +28,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  * @subpackage Handlers\Setup
  * @since      Class available since version 1.9.2
  */
-class ConsentHandler extends BrowseChangeHandler
+class ConsentHandler extends BrowseChangeUsageHandler
 {
     use ConstructorModelHandlerTrait;
 
