@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  */
 
-namespace Gems\SnippetsActions\Browse;
+namespace Gems\Handlers\Setup\CommunicationActions;
 
 use Gems\Snippets\Agenda\AutosearchFormSnippet;
-use Gems\Snippets\Communication\CommStatusSnippet;
+use Gems\Snippets\Communication\CommInfoSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 
@@ -20,7 +20,7 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
  * @subpackage SnippetsActions\Browse
  * @since      Class available since version 1.0
  */
-class CommJobBrowseSearchAction extends BrowseSearchAction
+class CommJobBrowseSearchAction extends \Gems\SnippetsActions\Browse\BrowseSearchAction
 {
     protected array $_startSnippets = [
         ContentTitleSnippet::class,
@@ -29,7 +29,7 @@ class CommJobBrowseSearchAction extends BrowseSearchAction
 
     protected array $_stopSnippets = [
         CurrentButtonRowSnippet::class,
-        CommStatusSnippet::class,
+        CommInfoSnippet::class,
     ];
 
     /**

@@ -1211,8 +1211,6 @@ class Menu
                             $this->translator->trans('Automatic message jobs'),
                             [
                                 'execute' => $this->translator->trans('Execute'),
-                                'lock'  => $this->translator->trans('Turn Autmatic Messaging Jobs OFF'),
-                                'monitor' => $this->translator->trans('Monitor'),
                                 'execute-all' => $this->translator->trans('Execute all'),
                             ],
                         ),

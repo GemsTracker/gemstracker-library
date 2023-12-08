@@ -14,6 +14,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Handlers\BrowseChangeHandler;
+use Gems\Handlers\Setup\CommunicationActions\CommJobBrowseSearchAction;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
@@ -24,7 +25,6 @@ use Gems\Snippets\Communication\CommJobIndexButtonRowSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
-use Gems\SnippetsActions\Browse\CommJobBrowseSearchAction;
 use Gems\SnippetsActions\Delete\DeleteAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
@@ -34,12 +34,14 @@ use Gems\SnippetsActions\Monitor\CommJobMonitorAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
+use Gems\Util\Lock\CommJobLock;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\SnippetsActions\SnippetActionInterface;
@@ -123,6 +125,7 @@ class CommJobHandler extends BrowseChangeHandler
         protected ProjectOverloader $overloader,
         protected Tracker $tracker,
         protected readonly BatchRunnerLoader $batchRunnerLoader,
+        protected readonly CommJobLock $communicationJobLock,
         protected readonly CommJobModel $commJobModel,
         protected readonly CommJobRepository $commJobRepository,
         protected readonly RouteHelper $routeHelper,
@@ -273,6 +276,25 @@ class CommJobHandler extends BrowseChangeHandler
 
         // \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.maintenance-mode'), $maintenanceLockLabel),
         if ($action instanceof CommJobBrowseSearchAction) {
+            if ($this->communicationJobLock->isLocked()) {
+                /**
+                 * @var StatusMessengerInterface $messenger
+                 */
+                $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+                $messenger->addMessage(sprintf(
+                    $this->_('Automatic messaging have been turned off since %s.'),
+                    $this->communicationJobLock->getLockTime()->format('H:i d-m-Y')
+                ));
+
+                // Set here because otherwise the button has already been rendered
+                $commLockLabel = $this->_('Turn Autmatic Messaging Jobs ON');
+            } else {
+                $commLockLabel = $this->_('Turn Autmatic Messaging Jobs OFF');
+            }
+
+            $action->extraRoutesLabelled['setup.communication.job.monitor'] = $this->_('Monitor');
+            $action->extraRoutesLabelled['setup.communication.job.lock'] = $commLockLabel;
+
             $action->extraSort['gcj_id_order'] = SORT_ASC;
 
             $action->searchFields['gcj_id_communication_messenger'] = $this->_('(any communication method)');
