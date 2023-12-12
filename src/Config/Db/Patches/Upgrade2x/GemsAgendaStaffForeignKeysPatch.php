@@ -10,8 +10,8 @@ class GemsAgendaStaffForeignKeysPatch extends PatchAbstract
     private string $table = 'gems__agenda_staff';
 
     private array $foreignKeys = [
-        [ 'gas_id_user', 'gems__staff', 'gsf_id_user' ],
         [ 'gas_id_organization', 'gems__organizations', 'gor_id_organization' ],
+        [ 'gas_id_user', 'gems__staff', 'gsf_id_user' ],
     ];
 
     public function __construct(
