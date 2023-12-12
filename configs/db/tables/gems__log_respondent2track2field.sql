@@ -5,7 +5,7 @@ CREATE TABLE if not exists gems__log_respondent2track2field (
 
         glrtf_id_respondent_track   bigint unsigned not null references gems__respondent2track (gr2t_id_respondent_track),
         glrtf_id_sub                varchar(8) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
-        glrtf_id_field              bigint not null references gems__track_fields (gtf_id_field),
+        glrtf_id_field              bigint unsigned not null references gems__track_fields (gtf_id_field),
 
         glrtf_old_value             text CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
         glrtf_old_value_manual      boolean not null default 0,
