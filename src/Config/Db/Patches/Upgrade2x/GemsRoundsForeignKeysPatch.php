@@ -10,6 +10,10 @@ class GemsRoundsForeignKeysPatch extends PatchAbstract
     private string $table = 'gems__rounds';
 
     private array $foreignKeys = [
+        [ 'gro_id_track', 'gems__tracks', 'gtr_id_track' ],
+        [ 'gro_id_survey', 'gems__surveys', 'gsu_id_survey' ],
+        [ 'gro_valid_after_id', 'gems__rounds', 'gro_id_round' ],
+        [ 'gro_valid_for_id', 'gems__rounds', 'gro_id_round' ],
         [ 'gro_condition', 'gems__conditions', 'gcon_id' ],
     ];
 
