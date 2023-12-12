@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__survey_questions (
-        gsq_id_survey       int unsigned not null references gems__surveys (gsu_id_survey),
+        gsq_id_survey       bigint unsigned not null references gems__surveys (gsu_id_survey),
         gsq_name            varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
 
         gsq_name_parent     varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',

@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__survey_question_options (
-        gsqo_id_survey      int unsigned not null references gems__surveys (gsu_id_survey),
+        gsqo_id_survey      bigint unsigned not null references gems__surveys (gsu_id_survey),
         gsqo_name           varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
         -- Order is key as you never now what is in the key used by the providing system
         gsqo_order          int unsigned not null default 0,

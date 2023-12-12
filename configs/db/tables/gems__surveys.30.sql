@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__surveys (
-        gsu_id_survey               int unsigned not null auto_increment,
+        gsu_id_survey               bigint unsigned not null auto_increment,
         gsu_survey_name             varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
         gsu_survey_description      varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
         gsu_external_description    varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',

@@ -52,7 +52,7 @@ CREATE TABLE if not exists gems__comm_jobs (
         gcj_id_organization         bigint unsigned null references gems__organizations (gor_id_organization),
         gcj_id_track                bigint unsigned null references gems__tracks (gtr_id_track),
         gcj_round_description       varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
-        gcj_id_survey               int unsigned null references gems__surveys (gsu_id_survey),
+        gcj_id_survey               bigint unsigned null references gems__surveys (gsu_id_survey),
 
         gcj_changed                 timestamp not null default current_timestamp on update current_timestamp,
         gcj_changed_by              bigint unsigned not null,
