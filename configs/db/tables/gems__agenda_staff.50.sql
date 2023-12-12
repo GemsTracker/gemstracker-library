@@ -5,7 +5,7 @@ CREATE TABLE if not exists gems__agenda_staff (
         gas_function        varchar(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
 
         gas_id_organization bigint unsigned not null references gems__organizations (gor_id_organization),
-        gas_id_user         bigint unsigned null default null, -- references gems__staff (gsf_id_user),
+        gas_id_user         bigint unsigned null default null references gems__staff (gsf_id_user),
 
         gas_match_to        varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
 
