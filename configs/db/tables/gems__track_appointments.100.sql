@@ -1,7 +1,7 @@
 
 CREATE TABLE if not exists gems__track_appointments (
         gtap_id_app_field       bigint unsigned not null auto_increment,
-        gtap_id_track           int unsigned not null references gems__tracks (gtr_id_track),
+        gtap_id_track           bigint unsigned not null references gems__tracks (gtr_id_track),
 
         gtap_id_order           int not null default 10,
 

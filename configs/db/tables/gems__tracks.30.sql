@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__tracks (
-        gtr_id_track                int unsigned not null auto_increment,
+        gtr_id_track                bigint unsigned not null auto_increment,
         gtr_track_name              varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null unique key,
         gtr_external_description    varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
 
