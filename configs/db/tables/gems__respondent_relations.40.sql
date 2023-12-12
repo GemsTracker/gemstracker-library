@@ -5,7 +5,7 @@ CREATE TABLE if not exists gems__respondent_relations (
         grr_type                    varchar(64) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
 
         -- When staff this holds the id
-        grr_id_staff                bigint(20) NULL DEFAULT NULL references gems__staff (gsf_id_user),
+        grr_id_staff                bigint(20) unsigned NULL DEFAULT NULL references gems__staff (gsf_id_user),
 
         -- when not staff, we need at least name, gender and email
         grr_email                   varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,

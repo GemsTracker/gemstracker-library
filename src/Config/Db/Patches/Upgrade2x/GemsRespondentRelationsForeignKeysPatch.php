@@ -34,6 +34,7 @@ class GemsRespondentRelationsForeignKeysPatch extends PatchAbstract
     {
         $statements = [
             'ALTER TABLE gems__respondent_relations MODIFY COLUMN grr_id_respondent bigint unsigned NOT NULL',
+            'ALTER TABLE gems__respondent_relations MODIFY COLUMN grr_id_staff bigint unsigned NULL',
         ];
         foreach ($this->foreignKeys as $foreignKeyData) {
             list($col, $refTable, $refCol) = $foreignKeyData;
