@@ -5,7 +5,7 @@ CREATE TABLE if not exists gems__staff (
         gsf_id_user             bigint unsigned not null references gems__user_ids (gui_id_user),
 
         gsf_login               varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
-        gsf_id_organization     bigint not null references gems__organizations (gor_id_organization),
+        gsf_id_organization     bigint unsigned not null references gems__organizations (gor_id_organization),
 
         gsf_active              boolean not null default 1,
 
