@@ -11,6 +11,9 @@ class GemsLogRespondentConsentsForeignKeysPatch extends PatchAbstract
 
     private array $foreignKeys = [
         [ 'glrc_id_organization', 'gems__organizations', 'gor_id_organization' ],
+        [ 'glrc_id_user', 'gems__respondents', 'grs_id_user' ],
+        [ 'glrc_old_consent', 'gems__consents', 'gco_description' ],
+        [ 'glrc_new_consent', 'gems__consents', 'gco_description' ],
     ];
 
     public function __construct(

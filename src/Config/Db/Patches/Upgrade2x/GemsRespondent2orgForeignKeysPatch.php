@@ -13,6 +13,8 @@ class GemsRespondent2orgForeignKeysPatch extends PatchAbstract
         [ 'gr2o_id_organization', 'gems__organizations', 'gor_id_organization' ],
         [ 'gr2o_id_user', 'gems__respondents', 'grs_id_user' ],
         [ 'gr2o_mailable', 'gems__mail_codes', 'gmc_id' ],
+        [ 'gr2o_consent', 'gems__consents', 'gco_description' ],
+        [ 'gr2o_reception_code', 'gems__reception_codes', 'grc_id_reception_code' ],
     ];
 
     public function __construct(

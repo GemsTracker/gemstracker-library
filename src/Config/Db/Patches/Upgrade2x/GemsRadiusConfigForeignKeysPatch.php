@@ -5,18 +5,12 @@ namespace Gems\Config\Db\Patches\Upgrade2x;
 use Gems\Db\Migration\DatabaseInfo;
 use Gems\Db\Migration\PatchAbstract;
 
-class GemsTokensForeignKeysPatch extends PatchAbstract
+class GemsRadiusConfigForeignKeysPatch extends PatchAbstract
 {
-    private string $table = 'gems__tokens';
+    private string $table = 'gems__radius_config';
 
     private array $foreignKeys = [
-        [ 'gto_id_respondent_track', 'gems__respondent2track', 'gr2t_id_respondent_track' ],
-        [ 'gto_id_round', 'gems__rounds', 'gro_id_round' ],
-        [ 'gto_id_respondent', 'gems__respondents', 'grs_id_user' ],
-        [ 'gto_id_organization', 'gems__organizations', 'gor_id_organization' ],
-        [ 'gto_id_track', 'gems__tracks', 'gtr_id_track' ],
-        [ 'gto_id_survey', 'gems__surveys', 'gsu_id_survey' ],
-        [ 'gto_reception_code', 'gems__reception_codes', 'grc_id_reception_code' ],
+        [ 'grcfg_id_organization', 'gems__organizations', 'gor_id_organization' ],
     ];
 
     public function __construct(

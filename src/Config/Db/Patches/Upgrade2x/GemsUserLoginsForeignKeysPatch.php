@@ -11,6 +11,7 @@ class GemsUserLoginsForeignKeysPatch extends PatchAbstract
 
     private array $foreignKeys = [
         [ 'gul_id_organization', 'gems__organizations', 'gor_id_organization' ],
+        [ 'gul_login', 'gems__staff', 'gsf_login' ],
     ];
 
     public function __construct(

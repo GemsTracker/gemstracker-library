@@ -5,18 +5,12 @@ namespace Gems\Config\Db\Patches\Upgrade2x;
 use Gems\Db\Migration\DatabaseInfo;
 use Gems\Db\Migration\PatchAbstract;
 
-class GemsTokensForeignKeysPatch extends PatchAbstract
+class GemsRespondentsForeignKeysPatch extends PatchAbstract
 {
-    private string $table = 'gems__tokens';
+    private string $table = 'gems__respondents';
 
     private array $foreignKeys = [
-        [ 'gto_id_respondent_track', 'gems__respondent2track', 'gr2t_id_respondent_track' ],
-        [ 'gto_id_round', 'gems__rounds', 'gro_id_round' ],
-        [ 'gto_id_respondent', 'gems__respondents', 'grs_id_user' ],
-        [ 'gto_id_organization', 'gems__organizations', 'gor_id_organization' ],
-        [ 'gto_id_track', 'gems__tracks', 'gtr_id_track' ],
-        [ 'gto_id_survey', 'gems__surveys', 'gsu_id_survey' ],
-        [ 'gto_reception_code', 'gems__reception_codes', 'grc_id_reception_code' ],
+        [ 'grs_id_user', 'gems__user_ids', 'gui_id_user' ],
     ];
 
     public function __construct(
@@ -37,7 +31,10 @@ class GemsTokensForeignKeysPatch extends PatchAbstract
 
     public function up(): array
     {
-        $statements = [];
+        $statements = [
+            'ALTER TABLE gems__respondent_relations MODIFY COLUMN grr_id_respondent bigint unsigned NOT NULL',
+            'ALTER TABLE gems__respondent_relations MODIFY COLUMN grr_id_staff bigint unsigned NULL',
+        ];
         foreach ($this->foreignKeys as $foreignKeyData) {
             list($col, $refTable, $refCol) = $foreignKeyData;
             if (!$this->databaseInfo->tableHasForeignKey($this->table, $col, $refTable, $refCol)) {

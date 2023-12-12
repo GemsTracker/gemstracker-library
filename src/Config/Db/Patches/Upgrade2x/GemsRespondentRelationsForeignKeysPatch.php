@@ -12,6 +12,7 @@ class GemsRespondentRelationsForeignKeysPatch extends PatchAbstract
     private array $foreignKeys = [
         [ 'grr_id_respondent', 'gems__respondents', 'grs_id_user' ],
         [ 'grr_id_staff', 'gems__staff', 'gsf_id_user' ],
+        [ 'grr_mailable', 'gems__mail_codes', 'gmc_id' ],
     ];
 
     public function __construct(

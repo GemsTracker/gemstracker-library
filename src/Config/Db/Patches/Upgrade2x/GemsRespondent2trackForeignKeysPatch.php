@@ -14,6 +14,7 @@ class GemsRespondent2trackForeignKeysPatch extends PatchAbstract
         [ 'gr2t_id_track', 'gems__tracks', 'gtr_id_track' ],
         [ 'gr2t_id_organization', 'gems__organizations', 'gor_id_organization' ],
         [ 'gr2t_mailable', 'gems__mail_codes', 'gmc_id' ],
+        [ 'gr2t_reception_code', 'gems__reception_codes', 'grc_id_reception_code' ],
     ];
 
     public function __construct(
