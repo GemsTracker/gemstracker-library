@@ -28,6 +28,9 @@ trait AuditLogDataCleanupTrait
 
     public function cleanupLogData(array $newData, DataWriterInterface $model = null): array
     {
+        $metaModel = $model->getMetaModel();
+        $output    = [];
+
         unset($newData[$this->csrfName], $newData['auto_form_focus_tracker'], $newData['__tmpEvenOut']);
 
         foreach ($this->extraNotLoggedFields as $field) {
@@ -41,15 +44,22 @@ trait AuditLogDataCleanupTrait
             }
         }
 
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($newData, true) . "\n", FILE_APPEND);
         foreach ($newData as $name => $value) {
+            if ($metaModel->hasOnSave($name)) {
+                $value = $metaModel->getOnSave($value, false, $name, $newData);
+            }
             if ($value instanceof DateTimeInterface) {
-                $newData[$name] = $value->format('c');
+                $format = $metaModel->getWithDefault($name, 'storageFormat', 'c');
+                $value = $value->format($format);
             }
             if (is_object($value)) {
-                $newData[$name] = get_class($value);
+                $value = get_class($value);
             }
+            $output[$name] = $value;
         }
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($output, true) . "\n", FILE_APPEND);
 
-        return $newData;
+        return $output;
     }
 }

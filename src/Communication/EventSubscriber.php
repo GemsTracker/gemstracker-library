@@ -62,7 +62,7 @@ class EventSubscriber implements EventSubscriberInterface
             $token = $event->getToken();
             $logData['grco_id_token']     = $token->getTokenId();
         }
-        $subject = null;
+        $subject = '';
         $from = [];
         $to = [];
         if ($event instanceof RespondentMailSent) {

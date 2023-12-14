@@ -26,10 +26,12 @@ trait HandlerMenuTrait
      * @param string $controllerClass The Handler class for the menu item
      * @param string $name The start name of the routes
      * @param string $label The label for the parent item
-     * @param array $otherActions
+     * @param string[] $otherActions action => label for main menu label actions
+     * @param string[] $otherShowActions action => label for show item menu label actions
+     * @param string|int|null $position Optional position
      * @return array|string[]
      */
-    protected function createMenuForHandler(string $controllerClass, string $name, string $label, array $otherActions = [], string|int|null $position = null, string|null $parent = null)
+    protected function createMenuForHandler(string $controllerClass, string $name, string $label, array $otherActions = [], array $otherShowActions = [], string|int|null $position = null, string|null $parent = null)
     {
         $actions = $controllerClass::$actions;
 
@@ -57,6 +59,11 @@ trait HandlerMenuTrait
                 unset($actions['delete']);
             }
 
+            foreach ($actions as $action => $actionClass) {
+                if (isset($otherShowActions[$action])) {
+                    $show['children'][] = $this->createMenuItem($name . '.' . $action, $otherShowActions[$action]);
+                }
+            }
             $parent['children'][] = $show;
         }
         if (isset($actions['export'])) {

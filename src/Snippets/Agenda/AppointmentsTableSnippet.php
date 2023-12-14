@@ -97,7 +97,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
-        protected AppointmentModel $model,
+        protected AppointmentModel $appointmentModel,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
         $this->currentUser = $currentUserRepository->getCurrentUser();
@@ -182,7 +182,8 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
     protected function createModel(): DataReaderInterface
     {
-        $model = $this->model;
+        $model = $this->appointmentModel;
+        $model->applyBrowseSettings();
 
         $model->addColumn("CONVERT(gap_admission_time, DATE)", 'date_only');
         $model->getMetaModel()->set('date_only', ['formatFunction' => [$this, 'formatDate']]);
@@ -196,10 +197,11 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $model->getMetaModel()->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
         if ($this->respondent instanceof Respondent) {
-//            $model->addFilter([
-//                'gap_id_user' => $this->respondent->getId(),
-//                'gap_id_organization' => $this->respondent->getOrganizationId(),
-//            ]);
+            $model->setFilter([
+                'gap_id_user' => $this->respondent->getId(),
+                'gap_id_organization' => $this->respondent->getOrganizationId(),
+            ]);
+            $model->setFilter(['gap_admission_time' => SORT_DESC]);
         }
 
         return $model;

@@ -341,7 +341,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
          */
         $model = $this->getModel();
 
-        $this->auditLog->registerChanges($this->cleanupLogData($this->formData,$model), $model->getOldValues() ?? []);
+        $this->auditLog->registerChanges($this->cleanupLogData($this->formData, $model), $model->getOldValues() ?? []);
     }
 
     /**

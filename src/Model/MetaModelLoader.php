@@ -88,7 +88,7 @@ class MetaModelLoader extends \Zalt\Model\MetaModelLoader
     protected function setChangeField(MetaModelInterface $metaModel, string $fieldName, mixed $defaultValue, bool $createdOnly)
     {
         if ($metaModel->has($fieldName)) {
-            $metaModel->set($fieldName, ['default' => $defaultValue, 'elementClass' => 'None']);
+            $metaModel->set($fieldName, ['default' => $defaultValue, 'elementClass' => 'None', 'changeField' => true]);
             $metaModel->setOnSave($fieldName, $defaultValue);
             if ($createdOnly) {
                 $metaModel->setSaveWhenNew($fieldName);

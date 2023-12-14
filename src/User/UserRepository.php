@@ -21,8 +21,8 @@ class UserRepository
         $select->where(['gsf_id_user' => $userId]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
-        if ($result->valid() && $result->current()) {
-            return $result['gsf_email'];
+        if ($result->valid() && $data = $result->current()) {
+            return $data['gsf_email'];
         }
         return null;
     }
