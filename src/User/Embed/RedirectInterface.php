@@ -24,7 +24,7 @@ use Gems\User\User;
 interface RedirectInterface extends HelperInterface
 {
     /**
-     * @return array redirect route
+     * @return string|null redirect route
      */
     public function getRedirectUrl(
         DeferredRouteHelper $routeHelper,
