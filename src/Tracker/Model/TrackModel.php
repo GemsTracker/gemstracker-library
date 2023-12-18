@@ -58,7 +58,7 @@ class TrackModel extends SqlTableModel
         $metaModelLoader->setChangeFields($this->metaModel, 'gtr');
 
         $this->metaModel->set('gtr_date_start', ['default' => new DateTimeImmutable()]);
-//        $this->metaModel->setKeys(['trackId' => 'gtr_id_track']);
+        $this->metaModel->setKeys(['trackId' => 'gtr_id_track']);
     }
 
     /**
