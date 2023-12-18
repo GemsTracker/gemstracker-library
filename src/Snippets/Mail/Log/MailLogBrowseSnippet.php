@@ -94,6 +94,7 @@ class MailLogBrowseSnippet extends ModelTableSnippet
             $params = [
                 Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
                 Model::REQUEST_ID2 => $bridge->getLate('gr2o_id_organization'),
+                \Gems\Model::RESPONDENT_TRACK => $bridge->getLate('gto_id_respondent_track'),
                 Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
             ];
             $url = $this->menuHelper->getLateRouteUrl('respondent.tracks.show', $params);

@@ -215,9 +215,10 @@ class CommLogModel extends HiddenOrganizationModel
     {
         if ($tokenId) {
             $token = $this->tracker->getToken($tokenId);
-            $url = $this->routeHelper->getRouteUrl('respondent.tracks.show', [
+            $url = $this->routeHelper->getRouteUrl('respondent.tracks.token.show', [
                 Model::REQUEST_ID1 => $token->getPatientNumber(),
                 Model::REQUEST_ID2 => $token->getOrganizationId(),
+                \Gems\Model::RESPONDENT_TRACK => $token->getRespondentTrackId(),
                 Model::REQUEST_ID => $tokenId,
             ]);
 
