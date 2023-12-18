@@ -30,6 +30,11 @@ class DatabaseInfo
 
     public function tableHasForeignKey(string $tableName, string $referencingColumn, string $referencedTable, string $referencedColumn): bool
     {
+        return is_string($this->getForeignKeyName($tableName, $referencingColumn, $referencedTable, $referencedColumn));
+    }
+
+    public function getForeignKeyName(string $tableName, string $referencingColumn, string $referencedTable, string $referencedColumn): string|null
+    {
         $metaData = Factory::createSourceFromAdapter($this->adapter);
         $constraints = $metaData->getConstraints($tableName);
         foreach ($constraints as $constraint) {
@@ -37,10 +42,10 @@ class DatabaseInfo
                 $constraint->getReferencedTableName() == $referencedTable &&
                 in_array($referencingColumn, $constraint->getColumns()) &&
                 in_array($referencedColumn, $constraint->getReferencedColumns())) {
-                    return true;
+                    return $constraint->getName();
             }
         }
 
-        return false;
+        return null;
     }
 }

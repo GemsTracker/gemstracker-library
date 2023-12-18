@@ -15,7 +15,6 @@ class GemsLogRespondentCommunicationsForeignKeysPatch extends PatchAbstract
         [ 'grco_id_token', 'gems__tokens', 'gto_id_token' ],
         [ 'grco_id_message', 'gems__comm_templates', 'gct_id_template' ],
         [ 'grco_id_job', 'gems__comm_jobs', 'gcj_id_job' ],
-        [ 'grco_id_by', 'gems__staff', 'gsf_id_user', ],
     ];
 
     public function __construct(
