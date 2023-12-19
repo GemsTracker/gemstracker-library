@@ -276,6 +276,11 @@ class Menu
                                                     'label' => $this->translator->trans('(Re)check answers'),
                                                     'type' => 'route-link-item',
                                                 ],
+                                                [
+                                                    'name' => 'respondent.tracks.token.email',
+                                                    'type' => 'alias',
+                                                    'alias' => 'respondent.tracks.token',
+                                                ],
                                             ],
                                         ],
                                     ],
