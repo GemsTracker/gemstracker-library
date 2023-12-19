@@ -1237,6 +1237,11 @@ class Menu
                                     'label' => $this->translator->trans('Export'),
                                     'type' => 'route-link-item',
                                 ],
+                                [
+                                    'name' => 'setup.communication.job.monitor',
+                                    'type' => 'alias',
+                                    'alias' => 'setup.communication.job',
+                                ],
                             ],
                         ],
                         [
