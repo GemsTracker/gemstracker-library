@@ -11,6 +11,8 @@
 
 namespace Gems\Export\ModelSource;
 
+use Gems\Tracker;
+
 /**
  *
  * @package    Gems
@@ -260,8 +262,15 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
             
             if (!empty($codes)) {
                 $tracker = $this->loader->getTracker();
-                $transformer = new \Gems\Tracker\Model\AddTrackFieldsByCodeTransformer($tracker, $codes, 'resptrackid');
-                $model->addTransformer($transformer);
+                if ($tracker instanceof Tracker) {
+                    $transformer = new \Gems\Tracker\Model\AddTrackFieldsByCodeTransformer(
+                        $tracker,
+                        $codes,
+                        'resptrackid'
+                    );
+                    $model->addTransformer($transformer);
+                }
+
             }
         }
     }
