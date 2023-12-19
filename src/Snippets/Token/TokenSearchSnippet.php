@@ -45,9 +45,9 @@ class TokenSearchSnippet extends PlanSearchSnippet
      *
      * @param array $allowedOrgs
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return mixed SQL string or array
+     * @return array of creators
      */
-    protected function getAllCreators(array $allowedOrgs, array $data)
+    protected function getAllCreators(array $allowedOrgs, array $data): array
     {
         if (count($allowedOrgs) > 1) {
             $orgWhere = "gr2t_id_organization IN (" . implode(", ", array_keys($allowedOrgs)) . ")";
@@ -74,9 +74,9 @@ class TokenSearchSnippet extends PlanSearchSnippet
      *
      * @param string $orgWhere
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return mixed SQL string or array
+     * @return array of groups
      */
-    protected function getAllGroups($allowedOrgs, array $data)
+    protected function getAllGroups($allowedOrgs, array $data): array
     {
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
@@ -111,9 +111,9 @@ class TokenSearchSnippet extends PlanSearchSnippet
      *
      * @param string $orgWhere
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return mixed SQL string or array
+     * @return array of track rounds
      */
-    protected function getAllTrackRounds($allowedOrgs, array $data)
+    protected function getAllTrackRounds($allowedOrgs, array $data): array
     {
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
@@ -151,9 +151,9 @@ class TokenSearchSnippet extends PlanSearchSnippet
      *
      * @param string $orgWhere
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return mixed SQL string or array
+     * @return array of track types
      */
-    protected function getAllTrackTypes($allowedOrgs, array $data)
+    protected function getAllTrackTypes($allowedOrgs, array $data): array
     {
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
@@ -173,9 +173,9 @@ class TokenSearchSnippet extends PlanSearchSnippet
      *
      * @param string $orgWhere
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return mixed SQL string or array
+     * @return array of surveys
      */
-    protected function getAllSurveys($allowedOrgs, array $data)
+    protected function getAllSurveys($allowedOrgs, array $data): array
     {
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .

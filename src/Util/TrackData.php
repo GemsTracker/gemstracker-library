@@ -165,7 +165,7 @@ class TrackData extends UtilAbstract
      *
      * @return array
      */
-    public function getAllSurveysAndDescriptions()
+    public function getAllSurveysAndDescriptions(): array
     {
         $cacheId = HelperAdapter::cleanupForCacheId(__CLASS__ . '_' . __FUNCTION__);
 
@@ -232,7 +232,7 @@ class TrackData extends UtilAbstract
      * @param int $organizationId Optional organization id
      * @return array
      */
-    public function getInsertableSurveys($organizationId = null)
+    public function getInsertableSurveys($organizationId = null): array
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
 
@@ -274,7 +274,7 @@ class TrackData extends UtilAbstract
      * @param int $trackId
      * @return array
      */
-    public function getRoundsFor($trackId)
+    public function getRoundsFor($trackId): array
     {
         return $this->db->fetchPairs("SELECT gro_id_round, CONCAT(gro_id_order, ' - ', SUBSTR(gsu_survey_name, 1, 80)) AS name FROM gems__rounds INNER JOIN gems__surveys ON gro_id_survey = gsu_id_survey WHERE gro_id_track = ? ORDER BY gro_id_order", $trackId);
     }
@@ -284,7 +284,7 @@ class TrackData extends UtilAbstract
      * @return array
      * @deprecated Since 1.7.1 getAllTracks() is all we need
      */
-    public function getSteppedTracks()
+    public function getSteppedTracks(): array
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
@@ -307,7 +307,7 @@ class TrackData extends UtilAbstract
      *
      * @return array
      */
-    public function getSurveyLanguages()
+    public function getSurveyLanguages(): array
     {
         $return = [];
         $sql = "SELECT DISTINCT gsu_survey_languages
@@ -353,7 +353,7 @@ class TrackData extends UtilAbstract
      * @param string $code
      * @return array survey id => survey name
      */
-    public function getSurveysByCode($code)
+    public function getSurveysByCode($code): array
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $code;
 
@@ -416,7 +416,7 @@ class TrackData extends UtilAbstract
      * @param int $trackId
      * @return array
      */
-    public function getTrackDateFields($trackId)
+    public function getTrackDateFields($trackId): array
     {
         $dateFields = $this->db->fetchPairs("SELECT gtf_id_field, gtf_field_name FROM gems__track_fields WHERE gtf_id_track = ? AND gtf_field_type = 'date' ORDER BY gtf_id_order", $trackId);
 
@@ -433,7 +433,7 @@ class TrackData extends UtilAbstract
      * @param int $surveyId
      * @return array survey id => survey name
      */
-    public function getTracksBySurvey($surveyId)
+    public function getTracksBySurvey($surveyId): array
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $surveyId;
 
@@ -460,7 +460,7 @@ class TrackData extends UtilAbstract
      * @param array $orgs orgId => org name
      * @return array
      */
-    public function getTracksForOrgs(array $orgs)
+    public function getTracksForOrgs(array $orgs): array
     {
         $orgWhere = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($orgs)) .
@@ -485,7 +485,7 @@ class TrackData extends UtilAbstract
      *
      * @return array
      */
-    public function getTracksDateFields()
+    public function getTracksDateFields(): array
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
 

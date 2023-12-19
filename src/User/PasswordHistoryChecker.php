@@ -64,7 +64,7 @@ class PasswordHistoryChecker
         $this->getHistoryLength();
 
         $previousHashes = $this->getPasswordHistory();
-        if (is_null($previousHashes)) {
+        if (empty($previousHashes)) {
             return null;
         }
 
@@ -93,9 +93,9 @@ class PasswordHistoryChecker
     /**
      * Get the list of previous password hashes.
      *
-     * @return string[]|null Array of password hashes.
+     * @return string[] Array of password hashes.
      */
-    private function getPasswordHistory(): array|null
+    private function getPasswordHistory(): array
     {
         $select = $this->resultFetcher->getSelect('gems__user_password_history');
         $select->columns(['guph_password'])

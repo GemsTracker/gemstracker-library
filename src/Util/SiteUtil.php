@@ -193,7 +193,7 @@ class SiteUtil extends UtilAbstract
      *
      * @return array [$orgId]
      */
-    public function getUnspecificOrganizations()
+    public function getUnspecificOrganizations(): array
     {
         $existingOrganizations = array_keys($this->util->getDbLookup()->getOrganizations());
 

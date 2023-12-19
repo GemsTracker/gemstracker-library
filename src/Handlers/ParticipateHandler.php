@@ -97,7 +97,7 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
     /**
      * Return a list of organizations where the field $onfield has a value.
      */
-    protected function _getScreenOrgs($onfield)
+    protected function _getScreenOrgs($onfield): array
     {
         $select = $this->resultFetcher->getSelect('gems__organizations')
                 ->columns(['gor_id_organization', 'gor_name'])

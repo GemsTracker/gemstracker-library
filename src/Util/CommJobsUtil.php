@@ -11,6 +11,9 @@
 
 namespace Gems\Util;
 
+use Gems\Repository\CommJobRepository;
+use Gems\Tracker;
+
 /**
  *
  * @package    Gems
@@ -21,11 +24,12 @@ namespace Gems\Util;
  */
 class CommJobsUtil extends UtilAbstract
 {
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
-    
+    public function __construct(
+        protected CommJobRepository $commJobRepository,
+        protected Tracker $tracker,
+    )
+    { }
+
     /**
      *
      * @param array $filter
@@ -364,7 +368,7 @@ class CommJobsUtil extends UtilAbstract
      *
      * @return array
      */
-    public function getCommunicationMessengers()
+    public function getCommunicationMessengers(): array
     {
         $select = $this->db->select();
         $select->from('gems__comm_messengers', ['gcm_id_messenger', 'gcm_name'])
@@ -455,12 +459,12 @@ class CommJobsUtil extends UtilAbstract
 
     /**
      * @param array $jobData
-     * @return \Gems\Communication\JobMessenger\JobMessengerAbstract|null
+     * @return \Gems\Communication\JobMessenger\JobMessengerInterface|null
      */
     public function getJobMessenger(array $jobData)
     {
         $messengerName = $jobData['gcm_type'];
-        $messenger     = $this->loader->getCommunicationLoader()->getJobMessenger($messengerName);
+        $messenger     = $this->commJobRepository->getJobMessenger($messengerName);
         
         return $messenger;
     }
@@ -470,7 +474,7 @@ class CommJobsUtil extends UtilAbstract
      *
      * @return array job_id => description
      */
-    public function getJobsOverview()
+    public function getJobsOverview(): array
     {
         $fMode = "CASE ";
         foreach ($this->getBulkFilterOptions() as $key => $label) {
@@ -504,7 +508,7 @@ class CommJobsUtil extends UtilAbstract
     public function getTokenData(array $jobData, $respondentId = null, $organizationId = null, $forceSent = false)
     {
         $filter = $this->getJobFilter($jobData, $respondentId, $organizationId, $forceSent);
-        $model  = $this->loader->getTracker()->getTokenModel();
+        $model  = $this->tracker->getTokenModel();
 
         // Fix for #680: token with the valid from the longest in the past should be the
         // used as first token and when multiple rounds start at the same date the
@@ -512,9 +516,9 @@ class CommJobsUtil extends UtilAbstract
         $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
 
         // Prevent out of memory errors, only load the tokenid
-        $model->trackUsage();
-        $model->set('gto_id_token');
+        $metaModel = $model->getMetaModel();
+        $metaModel->disableOnLoad();
 
-        return $model->load($filter);
+        return $model->load($filter, [], ['gto_id_token']);
     }
 }

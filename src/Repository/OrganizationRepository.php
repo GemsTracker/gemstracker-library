@@ -90,7 +90,7 @@ class OrganizationRepository
      * @param int $orgId
      * @return array
      */
-    public function getAllowedOrganizationsFor(int $orgId): ?array
+    public function getAllowedOrganizationsFor(int $orgId): array
     {
         $key = static::class . 'allowedOrganizationsFor_' . $orgId;
 
@@ -105,8 +105,7 @@ class OrganizationRepository
                 ->unnest()
                 ->equalTo('gor_active', 1);
 
-        $result = $this->cachedResultFetcher->fetchPairs($key, $select, null, $this->cacheTags);
-        return $result;
+        return $this->cachedResultFetcher->fetchPairs($key, $select, null, $this->cacheTags);
     }
 
     /**
@@ -157,7 +156,7 @@ class OrganizationRepository
         return static::getNotOrganizationArray();
     }
 
-    public function getOrganizationsPerSite()
+    public function getOrganizationsPerSite(): array
     {
         $select = $this->cachedResultFetcher->getSelect();
         $select->from('gems__organizations')

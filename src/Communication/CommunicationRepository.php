@@ -169,7 +169,7 @@ class CommunicationRepository
         return new Mailer($combinedTransport, $this->messageBus, $this->eventDispatcher);
     }
 
-    protected function getMailServers(): ?array
+    protected function getMailServers(): array
     {
         $select = $this->resultFetcher->getSelect('gems__mail_servers');
         $select->columns(['gms_id_server', 'gms_server', 'gms_port', 'gms_user', 'gms_password']);
@@ -323,6 +323,19 @@ class CommunicationRepository
             ->columns(['gct_id_template']);
 
         return $this->resultFetcher->fetchOne($select);
+    }
+
+    public function getTemplateName(int $templateId): string
+    {
+        $select = $this->resultFetcher->getSelect('gems__comm_templates');
+        $select->where(['gct_id_template' => $templateId,]);
+
+        $template = $this->resultFetcher->fetchRow($select);
+        if ($template && !empty($template['gct_name'])) {
+            return $template['gct_name'];
+        }
+
+        return '(unknwon template)';
     }
 
     public function getTokenMailFields(Token $token, string $language = null): array

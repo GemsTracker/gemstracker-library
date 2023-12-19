@@ -26,8 +26,8 @@ trait HandlerMenuTrait
      * @param string $controllerClass The Handler class for the menu item
      * @param string $name The start name of the routes
      * @param string $label The label for the parent item
-     * @param string[] $otherActions action => label for main menu label actions
-     * @param string[] $otherShowActions action => label for show item menu label actions
+     * @param array $otherActions action => label|array for main menu label actions
+     * @param array $otherShowActions action => label|array for show item menu label actions
      * @param string|int|null $position Optional position
      * @return array|string[]
      */
@@ -61,7 +61,14 @@ trait HandlerMenuTrait
 
             foreach ($actions as $action => $actionClass) {
                 if (isset($otherShowActions[$action])) {
-                    $show['children'][] = $this->createMenuItem($name . '.' . $action, $otherShowActions[$action]);
+                    if (is_array($otherShowActions[$action])) {
+                        if (isset($otherShowActions[$action]['type']) && ('alias' == $otherShowActions[$action]['type']) && (! isset($otherShowActions[$action]['alias']))) {
+                            $otherShowActions[$action]['alias'] = $parent['name'];
+                        }
+                        $show['children'][] = $this->createMenuItem($name . '.' . $action, ...$otherShowActions[$action]);
+                    } else {
+                        $show['children'][] = $this->createMenuItem($name . '.' . $action, $otherShowActions[$action]);
+                    }
                 }
             }
             $parent['children'][] = $show;
@@ -73,14 +80,21 @@ trait HandlerMenuTrait
         }
         foreach ($actions as $action => $actionClass) {
             if (isset($otherActions[$action])) {
-                $parent['children'][] = $this->createMenuItem($name . '.' . $action, $otherActions[$action]);
+                if (is_array($otherActions[$action])) {
+                    if (isset($otherActions[$action]['type']) && ('alias' == $otherActions[$action]['type']) && (! isset($otherActions[$action]['alias']))) {
+                        $otherActions[$action]['alias'] = $parent['name'];
+                    }
+                    $parent['children'][] = $this->createMenuItem($name . '.' . $action, ...$otherActions[$action]);
+                } else {
+                    $parent['children'][] = $this->createMenuItem($name . '.' . $action, $otherActions[$action]);
+                }
             }
         }
 
         return $parent;
     }
 
-    public function createMenuItem(string $name, string $label, string $type = 'route-link-item', string|int|null $position = null, string|null $parent = null)
+    public function createMenuItem(string $name, string $label, string $type = 'route-link-item', string|int|null $position = null, string|null $parent = null, string|null $alias = null)
     {
         $item = [
             'name'  => $name,
@@ -93,6 +107,9 @@ trait HandlerMenuTrait
         }
         if ($parent !== null) {
             $item['parent'] = $parent;
+        }
+        if ($alias !== null) {
+            $item['alias'] = $alias;
         }
 
         return $item;

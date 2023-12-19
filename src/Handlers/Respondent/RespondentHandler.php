@@ -606,9 +606,9 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      * The organizations whose tokens are shown.
      *
      * When true: show tokens for all organizations, false: only current organization, array => those organizations
-     * @return boolean|array
+     * @return array
      */
-    public function getOtherOrgs()
+    public function getOtherOrgs(): array
     {
         return $this->organizationRepository->getAllowedOrganizationsFor($this->getRespondent()->getOrganizationId());
     }

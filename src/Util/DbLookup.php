@@ -194,7 +194,7 @@ class DbLookup extends UtilAbstract
      * @staticvar array $data
      * @return array The tempalteId => subject list
      */
-    public function getCommTemplates($mailTarget = false)
+    public function getCommTemplates($mailTarget = false): array
     {
         static $data;
 
@@ -520,7 +520,7 @@ class DbLookup extends UtilAbstract
      * @param int $surveyId Optional survey id
      * @return array
      */
-    public function getRoundsForExport($trackId = null, $surveyId = null)
+    public function getRoundsForExport($trackId = null, $surveyId = null): array
     {
         // Read some data from tables, initialize defaults...
         $select = $this->db->select();
@@ -633,7 +633,7 @@ class DbLookup extends UtilAbstract
      * @param string $organizationId
      * @return array
      */
-    public function getSurveysWithSid($organizationId = null)
+    public function getSurveysWithSid($organizationId = null): array
     {
         $where = "";
 

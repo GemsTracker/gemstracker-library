@@ -24,7 +24,7 @@ class ConfigProvider
                 'migrations'   => $this->getMigrations(),
                 'sites' => $this->getSitesSettings(),
                 'email' => [
-                    'dsn' => 'smtp://mailhog:1025',
+                    'dsn' => 'smtp://mailpit:1025',
                     'site' => 'test@gemstracker.test',
                 ],
                 'password' => null,

@@ -25,6 +25,4 @@ class SendCommJobMessage
     {
         return $this->tokenId;
     }
-
-
 }

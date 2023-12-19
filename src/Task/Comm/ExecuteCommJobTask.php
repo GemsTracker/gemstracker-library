@@ -125,7 +125,7 @@ class ExecuteCommJobTask extends \MUtil\Task\TaskAbstract
 
             if ($communicate == true) {
                 $messenger = $jobsUtil->getJobMessenger($job);
-                $messenger->setBatch($this->getBatch());
+                // $messenger->setBatch($this->getBatch());
                 
                 $result = $messenger->sendCommunication($job, $tokenData, $preview);
 

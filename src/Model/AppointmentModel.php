@@ -132,16 +132,18 @@ class AppointmentModel extends GemsMaskedModel
      */
     protected function _addJoinTables()
     {
-        $this->addTable('gems__respondents', array('gap_id_user' => 'grs_id_user'));
+        if (! $this->joinStore->hasTable('gems__respondents')) {
+            $this->addTable('gems__respondents', array('gap_id_user' => 'grs_id_user'));
+        }
 
-        if ($this->metaModel->has('gap_id_organization')) {
+        if ($this->metaModel->has('gap_id_organization') && ! $this->joinStore->hasTable('gems__organizations')) {
             $this->addTable(
                 'gems__organizations',
                 array('gap_id_organization' => 'gor_id_organization'),
                 false
             );
         }
-        if ($this->metaModel->has('gap_id_attended_by')) {
+        if ($this->metaModel->has('gap_id_attended_by') && ! $this->joinStore->hasTable('gems__agenda_staff')) {
             $this->addLeftTable(
                 'gems__agenda_staff',
                 array('gap_id_attended_by' => 'gas_id_staff'),
@@ -155,21 +157,21 @@ class AppointmentModel extends GemsMaskedModel
                     array('gap_id_referred_by' => 'ref_staff.gas_id_staff')
                     );
         } // */
-        if ($this->metaModel->has('gap_id_activity')) {
+        if ($this->metaModel->has('gap_id_activity') && ! $this->joinStore->hasTable('gems__agenda_activities')) {
             $this->addLeftTable(
                 'gems__agenda_activities',
                 array('gap_id_activity' => 'gaa_id_activity'),
                 false
             );
         }
-        if ($this->metaModel->has('gap_id_procedure')) {
+        if ($this->metaModel->has('gap_id_procedure') && ! $this->joinStore->hasTable('gems__agenda_procedures')) {
             $this->addLeftTable(
                 'gems__agenda_procedures',
                 array('gap_id_procedure' => 'gapr_id_procedure'),
                 false
             );
         }
-        if ($this->metaModel->has('gap_id_location')) {
+        if ($this->metaModel->has('gap_id_location') && ! $this->joinStore->hasTable('gems__locations')) {
             $this->addLeftTable(
                 'gems__locations',
                 array('gap_id_location' => 'glo_id_location'),

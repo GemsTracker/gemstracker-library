@@ -404,9 +404,9 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Returns all surveys for synchronization
      *
-     * @return null|array{int: int} of sourceId values or false
+     * @return array{int: int} of sourceId values or false
      */
-    protected function _getSourceSurveysForSynchronisation(): array|null
+    protected function _getSourceSurveysForSynchronisation(): array
     {
         // Surveys in LS
         $lsResultFetcher = $this->getSourceResultFetcher();

@@ -63,10 +63,13 @@ class MailJobMessenger implements JobMessengerInterface
             $email->addTo(new Address($to, $token->getRespondentName()));
 
             $email->htmlTemplate($this->communicationRepository->getTemplate($token->getOrganization()), $mailTexts['body'], $mailFields);
-            $mailer->send($email);
 
-            $event = new TokenEventMailSent($email, $token, $currentUserId, $job);
-            $this->event->dispatch($event, $event::NAME);
+            if (! $preview) {
+                $mailer->send($email);
+
+                $event = new TokenEventMailSent($email, $token, $currentUserId, $job);
+                $this->event->dispatch($event, $event::NAME);
+            }
 
         } catch (TransportExceptionInterface  $exception) {
 

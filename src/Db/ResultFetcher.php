@@ -20,7 +20,7 @@ class ResultFetcher
         $this->sql = new Sql($db);
     }
 
-    public function fetchPairs(Select|string $select, ?array $params = null): ?array
+    public function fetchPairs(Select|string $select, ?array $params = null): array
     {
         $resultArray = $this->fetchAllAssociative($select, $params);
         if (count($resultArray) === 0) {
@@ -44,16 +44,16 @@ class ResultFetcher
         return $table->delete($where);
     }
 
-    public function fetchAll(Select|string $select, ?array $params = null): ?array
+    public function fetchAll(Select|string $select, ?array $params = null): array
     {
         return $this->fetchAllAssociative($select, $params);
     }
 
-    public function fetchCol(Select|string $select, ?array $params = null): ?array
+    public function fetchCol(Select|string $select, ?array $params = null): array
     {
         $resultArray = $this->fetchAllAssociative($select, $params);
         if (count($resultArray) === 0) {
-            return null;
+            return [];
         }
         $firstRow = reset($resultArray);
         $valueKey = key($firstRow);
@@ -86,7 +86,7 @@ class ResultFetcher
         return null;
     }
 
-    public function fetchAllAssociative(Select|string $select, ?array $params = null): ?array
+    public function fetchAllAssociative(Select|string $select, ?array $params = null): array
     {
         $result = $this->query($select, $params);
         return $result->toArray();

@@ -1951,22 +1951,7 @@ parameters:
 			path: src/FormattedData.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Handlers\\\\AskHandler\\:\\:\\$redirectUrl\\.$#"
-			count: 1
-			path: src/Handlers/AskHandler.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\User\\\\User\\:\\:switchLocale\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/AskHandler.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:snippet\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/AskHandler.php
-
-		-
-			message: "#^If condition is always true\\.$#"
 			count: 1
 			path: src/Handlers/AskHandler.php
 
@@ -1984,11 +1969,6 @@ parameters:
 			message: "#^Access to an undefined property Gems\\\\AuthNew\\\\Adapter\\\\AuthenticationResult\\:\\:\\$user\\.$#"
 			count: 1
 			path: src/Handlers/Auth/LoginHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\BrowseChangeHandler\\:\\:\\$actions contains unresolvable type\\.$#"
-			count: 1
-			path: src/Handlers/BrowseChangeHandler.php
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\SnippetsActions\\\\ModelActionInterface&Zalt\\\\SnippetsActions\\\\SnippetActionInterface\\:\\:\\$model\\.$#"
@@ -2451,11 +2431,6 @@ parameters:
 			path: src/Handlers/Respondent/RespondentHandler.php
 
 		-
-			message: "#^PHPDoc tag @return with type MUtil\\\\Model\\\\ModelAbstract is incompatible with native type Gems\\\\Model\\\\Respondent\\\\RespondentModel\\.$#"
-			count: 1
-			path: src/Handlers/Respondent/RespondentHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Respondent\\\\RespondentHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Respondent/RespondentHandler.php
@@ -2477,11 +2452,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Respondent\\\\RespondentHandler\\:\\:\\$createEditSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Respondent/RespondentHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Respondent\\\\RespondentHandler\\:\\:\\$deleteSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Respondent/RespondentHandler.php
 
@@ -2747,11 +2717,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\CommJobHandler\\:\\:\\$indexStartSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/CommJobHandler.php
 
@@ -3109,11 +3074,6 @@ parameters:
 			message: "#^Negated boolean expression is always false\\.$#"
 			count: 1
 			path: src/Handlers/SnippetLegacyHandlerAbstract.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ChartConfigHandler.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:getMeta\\(\\)\\.$#"
@@ -3851,11 +3811,6 @@ parameters:
 			path: src/Model/Bridge/ThreeColumnTableBridge.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:addTransformer\\(\\)\\.$#"
-			count: 1
-			path: src/Model/CommTemplateModel.php
-
-		-
 			message: "#^Call to an undefined method Zend_Db_Statement_Interface\\:\\:close\\(\\)\\.$#"
 			count: 1
 			path: src/Model/DbaModel.php
@@ -3874,11 +3829,6 @@ parameters:
 			message: "#^Call to an undefined method Gems\\\\Condition\\\\ConditionInterface\\:\\:getRoundDisplay\\(\\)\\.$#"
 			count: 1
 			path: src/Model/Dependency/Condition/RoundDependency.php
-
-		-
-			message: "#^Call to Exception\\:\\:__construct\\(\\) on a separate line has no effect\\.$#"
-			count: 1
-			path: src/Model/EmailTokenModel.php
 
 		-
 			message: "#^If condition is always true\\.$#"
@@ -4437,11 +4387,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$exception of class Gems\\\\Event\\\\Application\\\\TokenEventMailFailed constructor expects Exception, Symfony\\\\Component\\\\Mailer\\\\Exception\\\\TransportExceptionInterface given\\.$#"
-			count: 1
-			path: src/Repository/CommRepository.php
-
-		-
-			message: "#^Undefined variable\\: \\$job$#"
 			count: 1
 			path: src/Repository/CommRepository.php
 
@@ -5101,11 +5046,6 @@ parameters:
 			path: src/Snippets/AutosearchFormSnippet.php
 
 		-
-			message: "#^Instanceof between array\\|string and Zalt\\\\Model\\\\MetaModelInterface will always evaluate to false\\.$#"
-			count: 1
-			path: src/Snippets/AutosearchFormSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\AutosearchFormSnippet\\:\\:_createCheckboxElement\\(\\) should return Zend_Form_Element_Checkbox\\|null but returns Zend_Form_Element\\.$#"
 			count: 1
 			path: src/Snippets/AutosearchFormSnippet.php
@@ -5199,11 +5139,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$token of method Gems\\\\Communication\\\\JobMessenger\\\\JobMessengerInterface\\:\\:sendCommunication\\(\\) expects Gems\\\\Tracker\\\\Token, array given\\.$#"
 			count: 1
 			path: src/Snippets/Communication/ResendCommLogItemSnippet.php
-
-		-
-			message: "#^Parameter \\#2 \\$options of method Gems\\\\Snippets\\\\AutosearchFormSnippet\\:\\:_createSelectElement\\(\\) expects array\\|string, Zalt\\\\Model\\\\Data\\\\DataReaderInterface given\\.$#"
-			count: 2
-			path: src/Snippets/Condition/ConditionSearchFormSnippet.php
 
 		-
 			message: "#^Method Gems\\\\Snippets\\\\Contact\\\\AboutSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\Sequence\\.$#"
@@ -6341,21 +6276,6 @@ parameters:
 			path: src/Snippets/Respondent/DeleteRespondentSnippet.php
 
 		-
-			message: "#^Call to an undefined method Gems\\\\Model\\\\Respondent\\\\RespondentModel\\:\\:applyDetailSettings\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/DeleteRespondentSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:set\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/DeleteRespondentSnippet.php
-
-		-
-			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/DeleteRespondentSnippet.php
-
-		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 1
 			path: src/Snippets/Respondent/DeleteRespondentSnippet.php
@@ -6444,21 +6364,6 @@ parameters:
 			message: "#^If condition is always true\\.$#"
 			count: 2
 			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:hasAlias\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/MinimalTableSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:set\\(\\)\\.$#"
-			count: 3
-			path: src/Snippets/Respondent/MinimalTableSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:setIfExists\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/MinimalTableSnippet.php
 
 		-
 			message: "#^Property Zalt\\\\Snippets\\\\TabSnippetAbstract\\:\\:\\$defaultTab \\(string\\|null\\) does not accept int\\.$#"
@@ -6604,11 +6509,6 @@ parameters:
 			message: "#^Left side of \\|\\| is always true\\.$#"
 			count: 1
 			path: src/Snippets/Respondent/RespondentSearchSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\MetaModelInterface\\:\\:hasAlias\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/RespondentTableSnippet.php
 
 		-
 			message: "#^Negated boolean expression is always true\\.$#"
@@ -6994,16 +6894,6 @@ parameters:
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Staff\\\\StaffSearchSnippet\\:\\:\\$currentUser\\.$#"
 			count: 2
 			path: src/Snippets/Staff/StaffSearchSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
-			count: 4
-			path: src/Snippets/Staff/StaffSearchSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/Staff/SystemUserSearchSnippet.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:actionLink\\(\\)\\.$#"
@@ -7431,16 +7321,6 @@ parameters:
 			path: src/Snippets/Token/PlanRespondentSnippet.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Token\\\\PlanSearchSnippet\\:\\:\\$db\\.$#"
-			count: 2
-			path: src/Snippets/Token/PlanSearchSnippet.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$orgWhere$#"
-			count: 3
-			path: src/Snippets/Token/PlanSearchSnippet.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Token\\\\PlanTokenSnippet\\:\\:\\$tokenDataRepository\\.$#"
 			count: 1
 			path: src/Snippets/Token/PlanTokenSnippet.php
@@ -7477,11 +7357,6 @@ parameters:
 
 		-
 			message: "#^Method Gems\\\\Snippets\\\\Token\\\\PlanTokenSnippet\\:\\:createShowTokenButton\\(\\) should return Zalt\\\\Html\\\\AElement\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Snippets/Token/PlanTokenSnippet.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$model$#"
 			count: 1
 			path: src/Snippets/Token/PlanTokenSnippet.php
 
@@ -7766,16 +7641,6 @@ parameters:
 			path: src/Snippets/TokenModelSnippetAbstract.php
 
 		-
-			message: "#^Instanceof between MUtil\\\\Model\\\\ModelAbstract and Gems\\\\Tracker\\\\Model\\\\TokenModel will always evaluate to false\\.$#"
-			count: 1
-			path: src/Snippets/TokenModelSnippetAbstract.php
-
-		-
-			message: "#^PHPDoc tag @param for parameter \\$bridge with type MUtil\\\\Model\\\\Bridge\\\\TableBridge is incompatible with native type Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\.$#"
-			count: 1
-			path: src/Snippets/TokenModelSnippetAbstract.php
-
-		-
 			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Track/CheckRoundsInformation.php
@@ -7986,11 +7851,6 @@ parameters:
 			path: src/Snippets/Tracker/DeleteTrackSnippet.php
 
 		-
-			message: "#^Method MUtil\\\\Model\\\\ModelAbstract\\:\\:set\\(\\) invoked with 7 parameters, 1\\-5 required\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/DeleteTrackSnippet.php
-
-		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$changed\\)\\: Unexpected token \"\\$changed\", expected type at offset 117$#"
 			count: 1
 			path: src/Snippets/Tracker/DeleteTrackSnippet.php
@@ -8036,11 +7896,6 @@ parameters:
 			path: src/Snippets/Tracker/Fields/FieldShowSnippet.php
 
 		-
-			message: "#^Parameter \\#2 \\$options of method Gems\\\\Snippets\\\\AutosearchFormSnippet\\:\\:_createSelectElement\\(\\) expects array\\|string, Zalt\\\\Model\\\\Data\\\\DataReaderInterface given\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Fields/FieldsAutosearchForm.php
-
-		-
 			message: "#^Instanceof between Gems\\\\Tracker\\\\Model\\\\RoundModel and Gems\\\\Tracker\\\\Model\\\\FieldMaintenanceModel will always evaluate to false\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/Fields/FieldsTableSnippet.php
@@ -8054,11 +7909,6 @@ parameters:
 			message: "#^Property Gems\\\\Snippets\\\\Tracker\\\\Fields\\\\FieldsTableSnippet\\:\\:\\$model \\(Gems\\\\Tracker\\\\Model\\\\RoundModel\\) does not accept Gems\\\\Tracker\\\\Model\\\\FieldMaintenanceModel\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/Fields/FieldsTableSnippet.php
-
-		-
-			message: "#^Parameter \\#2 \\$options of method Gems\\\\Snippets\\\\AutosearchFormSnippet\\:\\:_createSelectElement\\(\\) expects array\\|string, Zalt\\\\Model\\\\MetaModelInterface given\\.$#"
-			count: 2
-			path: src/Snippets/Tracker/Fields/FilterSearchFormSnippet.php
 
 		-
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Tracker\\\\InsertSurveySnippet\\:\\:\\$respondent\\.$#"
@@ -8219,16 +8069,6 @@ parameters:
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\TableElement\\:\\:throw\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/TokenStatusLegenda.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/TrackMaintenance/TrackMaintenanceSearchSnippet.php
-
-		-
-			message: "#^Parameter \\#2 \\$options of method Gems\\\\Snippets\\\\AutosearchFormSnippet\\:\\:_createSelectElement\\(\\) expects array\\|string, Zalt\\\\Model\\\\Data\\\\DataReaderInterface given\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/TrackMaintenance/TrackMaintenanceSearchSnippet.php
 
 		-
 			message: "#^Property Gems\\\\Snippets\\\\Tracker\\\\TrackSearchFormSnippetAbstract\\:\\:\\$trackFieldId \\(bool\\) does not accept string\\.$#"
@@ -9041,26 +8881,6 @@ parameters:
 			path: src/Tracker/Model/TokenModel.php
 
 		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: src/Tracker/Model/TrackModel.php
-
-		-
-			message: "#^Method Gems\\\\Tracker\\\\Model\\\\TrackModel\\:\\:getStartCount\\(\\) should return int but returns string\\|false\\|null\\.$#"
-			count: 1
-			path: src/Tracker/Model/TrackModel.php
-
-		-
-			message: "#^Right side of && is always true\\.$#"
-			count: 2
-			path: src/Tracker/Model/TrackModel.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: src/Tracker/Model/TrackModel.php
-
-		-
 			message: "#^Method Gems\\\\Tracker\\\\ReceptionCode\\:\\:isForRespondents\\(\\) should return bool but returns int\\<0, 1\\>\\.$#"
 			count: 1
 			path: src/Tracker/ReceptionCode.php
@@ -9418,11 +9238,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Bridge\\\\FormBridgeInterface\\:\\:addText\\(\\)\\.$#"
 			count: 3
-			path: src/Tracker/Snippets/EditTrackEngineSnippetGeneric.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\FullDataInterface\\:\\:get\\(\\)\\.$#"
-			count: 1
 			path: src/Tracker/Snippets/EditTrackEngineSnippetGeneric.php
 
 		-
@@ -10001,11 +9816,6 @@ parameters:
 			path: src/Translate/TranslationFactory.php
 
 		-
-			message: "#^Function twig_escape_filter not found\\.$#"
-			count: 1
-			path: src/Twig/Csrf.php
-
-		-
 			message: "#^Cannot access offset string on int\\.$#"
 			count: 3
 			path: src/UpgradesAbstract.php
@@ -10194,11 +10004,6 @@ parameters:
 			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
 			count: 1
 			path: src/User/Embed/Redirect/StaffAccountPage.php
-
-		-
-			message: "#^PHPDoc tag @return with type array is incompatible with native type string\\|null\\.$#"
-			count: 1
-			path: src/User/Embed/RedirectInterface.php
 
 		-
 			message: "#^Call to an undefined method Zend_Translate\\:\\:_\\(\\)\\.$#"

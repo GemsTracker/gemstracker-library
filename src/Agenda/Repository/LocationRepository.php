@@ -116,9 +116,6 @@ class LocationRepository
             'glo_filter',
         ])->order('glo_name');
         $result = $this->cachedResultFetcher->fetchAll('locations', $select, null, $this->locationsCacheTags);
-        if ($result === null) {
-            return [];
-        }
 
         foreach($result as $key=>$row) {
             $result[$key]['glo_organizations'] = array_filter(explode(static::ORGANIZATION_SEPARATOR, $row['glo_organizations']));

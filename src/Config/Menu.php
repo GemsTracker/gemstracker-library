@@ -276,6 +276,11 @@ class Menu
                                                     'label' => $this->translator->trans('(Re)check answers'),
                                                     'type' => 'route-link-item',
                                                 ],
+                                                [
+                                                    'name' => 'respondent.tracks.token.email',
+                                                    'type' => 'alias',
+                                                    'alias' => 'respondent.tracks.token',
+                                                ],
                                             ],
                                         ],
                                     ],
@@ -1206,13 +1211,14 @@ class Menu
                     'type' => 'container',
                     'children' => [
                         $this->createMenuForHandler(
-                            CommJobHandler::class,
-                            'setup.communication.job',
-                            $this->translator->trans('Automatic message jobs'),
-                            [
-                                'execute' => $this->translator->trans('Execute'),
+                            controllerClass: CommJobHandler::class,
+                            name: 'setup.communication.job',
+                            label: $this->translator->trans('Automatic message jobs'),
+                            otherActions: [
                                 'execute-all' => $this->translator->trans('Execute all'),
-                            ],
+                                'monitor' => ['label' => $this->translator->trans('Monitor'), 'type' => 'alias',],
+                                ],
+                            otherShowActions: ['execute' => $this->translator->trans('Execute'),],
                         ),
                         [
                             'name' => 'setup.communication.messenger.index',
