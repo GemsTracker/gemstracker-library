@@ -72,13 +72,13 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
 
     protected SessionInterface $session;
 
-    private readonly SessionNamespace $sessionNamespace;
+    private SessionNamespace $sessionNamespace;
 
-    private readonly FlashMessagesInterface $flash;
+    private FlashMessagesInterface $flash;
 
-    private readonly bool $verify;
+    private bool $verify;
 
-    private readonly string $defaultCountryCode;
+    private string $defaultCountryCode;
 
     public function __construct(
         SnippetOptions $snippetOptions,
