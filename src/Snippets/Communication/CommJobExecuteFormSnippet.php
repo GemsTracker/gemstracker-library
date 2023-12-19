@@ -66,6 +66,15 @@ class CommJobExecuteFormSnippet extends \Gems\Snippets\FormSnippetAbstract
         $form->addElement($element);
     }
 
+    protected function getButtons(): array
+    {
+        $showLabel = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID) ? $this->_('Show') : $this->_('Cancel');
+
+        return [
+            ['url' => $this->menuHelper->getCurrentParentUrl(), 'label' => $showLabel],
+            ];
+    }
+
     protected function getDefaultFormValues(): array
     {
         return ['preview' => 1];

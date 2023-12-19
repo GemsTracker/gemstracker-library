@@ -14,6 +14,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SetCommJobTokenAsSent;
 use Gems\Tracker;
+use Gems\Tracker\Token;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\TranslatorInterface;
 
@@ -678,7 +679,20 @@ class CommJobRepository
             throw new Exception('Mail job not found!');
         }
 
-        $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId, $forced);
+        $reload = true;
+        while ($reload) {
+            $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId, $forced);
+            $reload   = false;
+            foreach($tokenIds as $tokenData) {
+                $token = $this->tracker->getToken($tokenData['gto_id_token']);
+                if ($token->inSource()) {
+                    if ($token->checkTokenCompletion($this->currentUserId)) {
+                        // Completion may change the result of the initial query
+                        $reload = true;
+                    }
+                }
+            }
+        }
 
         $output = [];
         $sentContactData = [];

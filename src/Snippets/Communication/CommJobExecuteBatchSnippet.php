@@ -15,6 +15,7 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Messenger\Message\CommJob;
 use Gems\Repository\CommJobRepository;
 use Gems\Util\Lock\MaintenanceLock;
+use Gems\Util\Monitor\Monitor;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Zalt\Base\RequestInfo;
@@ -43,6 +44,7 @@ class CommJobExecuteBatchSnippet extends MessageableSnippetAbstract
         protected readonly MaintenanceLock $maintenanceLock,
         protected readonly MenuSnippetHelper $menuHelper,
         protected readonly MessageBusInterface $messageBus,
+        protected readonly Monitor $monitor,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
     }
@@ -52,6 +54,7 @@ class CommJobExecuteBatchSnippet extends MessageableSnippetAbstract
         $html = $this->getHtmlSequence();
         $html->h3($this->formTitle, array('class' => 'title'));
 
+        $cancelLabel = $this->_('Cancel');
         if ($this->maintenanceLock->isLocked()) {
             $this->addMessage($this->_('Cannot execute mail job, system is in maintenance mode.'));
         } else {
@@ -64,14 +67,16 @@ class CommJobExecuteBatchSnippet extends MessageableSnippetAbstract
                 } else {
                     $jobs[] = $job;
                 }
+                $cancelLabel = $this->_('Show');
 
             } else {
                 $jobs = $this->commJobRepository->getActiveJobs();
             }
             if ($jobs) {
+                $preview = (bool) $this->requestInfo->getParam('preview', false);
                 $ol = $html->ul();
                 foreach($jobs as $jobData) {
-                    $commJobMessage = new CommJob($jobData, (bool) $this->requestInfo->getParam('preview', false));
+                    $commJobMessage = new CommJob($jobData, $preview);
                     $envelope = $this->messageBus->dispatch($commJobMessage);
                     /**
                      * @var HandledStamp $stamp
@@ -79,13 +84,16 @@ class CommJobExecuteBatchSnippet extends MessageableSnippetAbstract
                     $stamp = $envelope->last(HandledStamp::class);
                     $ol->append($stamp->getResult());
                 }
+                if (! ($jobId || $preview)) {
+                    $this->monitor->startCronMailMonitor();
+                }
             }
         }
 
         $url = [$this->menuHelper->getCurrentUrl(), 'step' => commJobExecuteAllAction::STEP_RESET];
         $html->a($url, $this->_('Reset'), ['class' => 'btn actionLink']);
         $html->br();
-        $html->a([$this->menuHelper->getCurrentParentUrl()], $this->_('Show'), ['class' => 'btn actionLink']);
+        $html->a([$this->menuHelper->getCurrentParentUrl()], $cancelLabel, ['class' => 'btn actionLink']);
 
         return $html;
     }
