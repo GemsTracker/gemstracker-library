@@ -79,11 +79,7 @@ class AgendaStaffRepository
             'gas_active',
             'gas_filter',
         ]);
-        $result = $this->cachedResultFetcher->fetchAll('agendaStaff', $select, null, $this->staffCacheTags);
-        if ($result !== null) {
-            return $result;
-        }
-        return [];
+        return $this->cachedResultFetcher->fetchAll('agendaStaff', $select, null, $this->staffCacheTags);
     }
 
     public function getAllStaffOptions(int|null $organizationId = null): array

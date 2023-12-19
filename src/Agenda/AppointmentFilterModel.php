@@ -350,22 +350,16 @@ class AppointmentFilterModel extends GemsJoinModel
      * @param array $context Optional, the other values being saved
      * @return array
      */
-    public function loadTracks($value, $isNew = false, $name = null, array $context = array())
+    public function loadTracks($value, $isNew = false, $name = null, array $context = array()): array
     {
         if ($isNew || (! isset($context['gaf_id']))) {
             return [];
         }
-        $output = $this->resultFetcher->fetchAll(
+        return $this->resultFetcher->fetchAll(
                 "SELECT gtr_id_track, gtr_track_name, gtap_id_app_field, gtap_field_name
                     FROM gems__track_appointments INNER JOIN gems__tracks ON gtap_id_track = gtr_id_track
                     WHERE gtap_filter_id = ?",
                 [$context['gaf_id']]);
-
-        if ($output) {
-            return $output;
-        }
-
-        return [];
     }
 
     /**

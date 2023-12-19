@@ -106,7 +106,7 @@ class LimeSurvey5m00FieldMap extends LimeSurvey3m00FieldMap
 
             $attributes = $this->lsResultFetcher->fetchAll($sql, [$this->sourceSurveyId]);
 
-            if (null === $attributes) {
+            if (empty($attributes)) {
                 // If DB lookup failed, return the default
                 return $default;
             }

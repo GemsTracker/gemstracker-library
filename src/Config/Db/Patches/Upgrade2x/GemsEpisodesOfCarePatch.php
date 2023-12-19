@@ -20,7 +20,7 @@ class GemsEpisodesOfCarePatch extends PatchAbstract
     protected function prepare(): void
     {
         $sql = sprintf('SELECT * FROM information_schema.table_constraints_extensions WHERE constraint_schema = "%s" AND table_name = "%s"', $this->config['db']['database'], 'gems__episodes_of_care');
-        $this->gems_table_constraints = $this->resultFetcher->fetchAll($sql) ?? [];
+        $this->gems_table_constraints = $this->resultFetcher->fetchAll($sql);
     }
 
     public function getDescription(): string|null

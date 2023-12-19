@@ -91,7 +91,7 @@ class FilterRepository
     {
         $sql = 'SELECT * FROM gems__appointment_filters ORDER BY gaf_id_order';
 
-        return $this->cachedResultFetcher->fetchAll('allAppointmentFilters', $sql, null, $this->cacheTags) ?? [];
+        return $this->cachedResultFetcher->fetchAll('allAppointmentFilters', $sql, null, $this->cacheTags);
     }
 
     public function getAllFilterOptions(int|null $organizationId = null): array

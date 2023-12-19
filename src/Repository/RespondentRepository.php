@@ -118,9 +118,9 @@ class RespondentRepository
      * Get all existing patients with a specific ssn
      *
      * @param $ssn
-     * @return array|null
+     * @return array
      */
-    public function getPatientsBySsn(string $ssn, string $epdId): ?array
+    public function getPatientsBySsn(string $ssn, string $epdId): array
     {
         $select = $this->resultFetcher->getSelect('gems__respondent2org');
         $select
@@ -129,13 +129,7 @@ class RespondentRepository
             ->columns(['gr2o_id_user', 'gr2o_patient_nr', 'gr2o_id_organization'])
             ->where(['grs_ssn' => $ssn,]);
 
-        $result = $this->resultFetcher->fetchAll($select);
-
-        if (count($result) === 0) {
-            return null;
-        }
-
-        return $result;
+        return $this->resultFetcher->fetchAll($select);
     }
 
     public function getRespondent(?string $patientId, ?int $organizationId, ?int $respondentId = null): Respondent
