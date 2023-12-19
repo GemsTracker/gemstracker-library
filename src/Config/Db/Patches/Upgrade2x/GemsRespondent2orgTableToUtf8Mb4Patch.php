@@ -19,7 +19,7 @@ class GemsRespondent2orgTableToUtf8Mb4Patch extends PatchAbstract
 
     protected function prepare(): void
     {
-        $this->gems_tables = $this->resultFetcher->fetchAll('SELECT * FROM information_schema.tables WHERE table_schema = "' . $this->config['db']['database'] . '"') ?? [];
+        $this->gems_tables = $this->resultFetcher->fetchAll('SELECT * FROM information_schema.tables WHERE table_schema = "' . $this->config['db']['database'] . '"');
     }
 
     public function getDescription(): string|null

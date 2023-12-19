@@ -477,7 +477,7 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
             ->limit(10)
             ->offset($cleanupOffset);
         $removeIds = $resultFetcher->fetchCol($select);
-        if (is_array($removeIds)) {
+        if ($removeIds) {
             $where = new Where;
             $where->in('guph_id', $removeIds);
             $resultFetcher->deleteFromTable('gems__user_password_history', $where);

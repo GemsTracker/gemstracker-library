@@ -12,7 +12,7 @@ class CachedResultFetcher
     public function __construct(protected ResultFetcher $resultFetcher, protected HelperAdapter $cache)
     {}
 
-    protected function fetchCached(string $functionName, string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): mixed
+    protected function fetchCached(string $functionName, string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null, $default = null): mixed
     {
         $cacheKey = HelperAdapter::cleanupForCacheId($cacheKey);
 
@@ -25,22 +25,22 @@ class CachedResultFetcher
             $this->cache->setCacheItem($cacheKey, $results, $tags);
             return $results;
         }
-        return null;
+        return $default;
     }
 
-    public function fetchPairs(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): ?array
+    public function fetchPairs(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): array
     {
-        return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags);
+        return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags, []);
     }
 
-    public function fetchAll(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): ?array
+    public function fetchAll(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): array
     {
-        return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags);
+        return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags, []);
     }
 
-    public function fetchCol(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): ?array
+    public function fetchCol(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): array
     {
-        return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags);
+        return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags, []);
     }
 
     public function fetchOne(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): string|int|null
@@ -58,9 +58,9 @@ class CachedResultFetcher
         return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags);
     }
 
-    public function fetchAllAssociative(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): ?array
+    public function fetchAllAssociative(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): array
     {
-        return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags);
+        return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags, []);
     }
 
     public function getAdapter(): Adapter

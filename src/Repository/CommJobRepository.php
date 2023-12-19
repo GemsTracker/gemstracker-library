@@ -53,12 +53,7 @@ class CommJobRepository
             ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger')
             ->where('gcj_active > 0');
 
-        $result = $this->cachedResultFetcher->fetchAll('activeCommJobs', $select, null, $this->cacheTags);
-        if ($result) {
-            return $result;
-        }
-
-        return [];
+        return $this->cachedResultFetcher->fetchAll('activeCommJobs', $select, null, $this->cacheTags);
     }
 
     public function getActiveOptions(): array
@@ -76,12 +71,7 @@ class CommJobRepository
         $select->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
             ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger');
 
-        $result = $this->cachedResultFetcher->fetchAll('allCommJobs', $select, null, $this->cacheTags);
-        if ($result) {
-            return $result;
-        }
-
-        return [];
+        return $this->cachedResultFetcher->fetchAll('allCommJobs', $select, null, $this->cacheTags);
     }
 
     /**
@@ -280,7 +270,7 @@ class CommJobRepository
 
         $sql = $sql . " ORDER BY ggp_name";
 
-        return $this->cachedResultFetcher->fetchPairs($cacheId, $sql, $params, ['groups', 'tracks']) ?? [];
+        return $this->cachedResultFetcher->fetchPairs($cacheId, $sql, $params, ['groups', 'tracks']);
     }
 
     /**

@@ -169,7 +169,7 @@ class CommunicationRepository
         return new Mailer($combinedTransport, $this->messageBus, $this->eventDispatcher);
     }
 
-    protected function getMailServers(): ?array
+    protected function getMailServers(): array
     {
         $select = $this->resultFetcher->getSelect('gems__mail_servers');
         $select->columns(['gms_id_server', 'gms_server', 'gms_port', 'gms_user', 'gms_password']);

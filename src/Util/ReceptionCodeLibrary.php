@@ -306,7 +306,7 @@ class ReceptionCodeLibrary
      *
      * @return array a value => label array.
      */
-    public function getTrackRestoreCodes()
+    public function getTrackRestoreCodes(): array
     {
         $select = $this->_getRestoreSelect();
         $select->where->nest()->equalTo('grc_for_tracks', 1)->or->equalTo('grc_for_surveys', self::APPLY_STOP);
@@ -319,7 +319,7 @@ class ReceptionCodeLibrary
      *
      * @return array a value => label array.
      */
-    public function getUnansweredTokenDeletionCodes()
+    public function getUnansweredTokenDeletionCodes(): array
     {
         $select = $this->_getDeletionCodeSelect();
         $select->where([

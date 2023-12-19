@@ -72,7 +72,7 @@ class StaffRepository
      *
      * @return array
      */
-    public function getActiveStaff()
+    public function getActiveStaff(): array
     {
         $sql = "SELECT gsf_id_user,
                     CONCAT(
@@ -93,7 +93,7 @@ class StaffRepository
      *
      * @return array
      */
-    public function getStaff()
+    public function getStaff(): array
     {
         $sql = "SELECT gsf_id_user,
                         CONCAT(

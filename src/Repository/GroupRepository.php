@@ -51,11 +51,7 @@ class GroupRepository
     {
         $select = $this->cachedResultFetcher->getSelect('gems__groups');
 
-        $result = $this->cachedResultFetcher->fetchAll(__CLASS__ . __FUNCTION__, $select, null, $this->cacheTags);
-        if (is_array($result)) {
-            return $result;
-        }
-        return [];
+        return $this->cachedResultFetcher->fetchAll(__CLASS__ . __FUNCTION__, $select, null, $this->cacheTags);
     }
 
     public function getGroupOptions(): array

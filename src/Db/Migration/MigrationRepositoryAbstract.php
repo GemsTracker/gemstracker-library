@@ -58,8 +58,7 @@ abstract class MigrationRepositoryAbstract
 
         $select->where->in('gml_id_migration', $subSelect);
 
-        $result = $resultFetcher->fetchAll($select);
-        return $result;
+        return $resultFetcher->fetchAll($select);
     }
 
     public function getModel(): DataReaderInterface

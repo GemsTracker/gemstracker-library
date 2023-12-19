@@ -368,7 +368,7 @@ class CommJobsUtil extends UtilAbstract
      *
      * @return array
      */
-    public function getCommunicationMessengers()
+    public function getCommunicationMessengers(): array
     {
         $select = $this->db->select();
         $select->from('gems__comm_messengers', ['gcm_id_messenger', 'gcm_name'])
@@ -474,7 +474,7 @@ class CommJobsUtil extends UtilAbstract
      *
      * @return array job_id => description
      */
-    public function getJobsOverview()
+    public function getJobsOverview(): array
     {
         $fMode = "CASE ";
         foreach ($this->getBulkFilterOptions() as $key => $label) {

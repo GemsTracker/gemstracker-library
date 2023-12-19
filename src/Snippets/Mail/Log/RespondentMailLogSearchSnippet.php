@@ -78,7 +78,7 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
         return $elements;
     }
 
-    protected function getRespondentSurveyNames()
+    protected function getRespondentSurveyNames(): array
     {
         $surveysSql = 'SELECT gsu_id_survey, gsu_survey_name FROM gems__respondent2track
                         JOIN gems__respondent2org ON gr2t_id_user = gr2o_id_user AND gr2o_patient_nr = ? AND gr2o_id_organization = ?
@@ -95,7 +95,7 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
         return $surveyNames;
     }
 
-    protected function getRespondentTrackNames()
+    protected function getRespondentTrackNames(): array
     {
         $tracksSql = 'SELECT gtr_id_track, gtr_track_name FROM gems__respondent2track
                         JOIN gems__respondent2org ON gr2t_id_user = gr2o_id_user AND gr2o_patient_nr = ? AND gr2o_id_organization = ?

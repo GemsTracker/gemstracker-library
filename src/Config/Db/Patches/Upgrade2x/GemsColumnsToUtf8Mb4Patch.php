@@ -19,7 +19,7 @@ class GemsColumnsToUtf8Mb4Patch extends PatchAbstract
 
     protected function prepare(): void
     {
-        $this->gems_columns = $this->resultFetcher->fetchAll('SELECT * FROM information_schema.columns WHERE table_schema = "' . $this->config['db']['database'] . '"') ?? [];
+        $this->gems_columns = $this->resultFetcher->fetchAll('SELECT * FROM information_schema.columns WHERE table_schema = "' . $this->config['db']['database'] . '"');
     }
 
     public function getDescription(): string|null

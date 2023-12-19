@@ -37,7 +37,7 @@ class TrackFieldFilterRepository
         $filterDataList = $this->cachedResultFetcher->fetchAll('allActivelyUsedAppointmentFilters', $sql, null, $this->cacheTags);
 
         $filters = [];
-        foreach((array)$filterDataList as $filterData) {
+        foreach ($filterDataList as $filterData) {
             $appointmentFilter = $this->filterRepository->getFilterFromData($filterData);
             $filters[] = new TrackFieldFilterCalculation(
                 $filterData['gtap_id_app_field'],
