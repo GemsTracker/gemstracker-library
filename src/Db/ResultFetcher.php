@@ -20,7 +20,7 @@ class ResultFetcher
         $this->sql = new Sql($db);
     }
 
-    public function fetchPairs(Select|string $select, ?array $params = null): ?array
+    public function fetchPairs(Select|string $select, ?array $params = null): array
     {
         $resultArray = $this->fetchAllAssociative($select, $params);
         if (count($resultArray) === 0) {
