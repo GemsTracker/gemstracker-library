@@ -419,7 +419,7 @@ class CommJobRepository
 
     public function getJob(int $jobId): ?array
     {
-        $activeJobs = $this->getActiveJobs();
+        $activeJobs = $this->getAllJobs();
         foreach($activeJobs as $job) {
             if (isset($job['gcj_id_job']) && $job['gcj_id_job'] == $jobId) {
                 return $job;
@@ -598,19 +598,18 @@ class CommJobRepository
     public function getTokenData(array $jobData, $respondentId = null, $organizationId = null, $forceSent = false): array
     {
         $filter = $this->getJobFilter($jobData, $respondentId, $organizationId, $forceSent);
-
         $model  = $this->tracker->getTokenModel();
 
         // Fix for #680: token with the valid from the longest in the past should be the
         // used as first token and when multiple rounds start at the same date the
         // lowest round order should be used.
-        $model->setSort(['gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC]);
+        $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
 
         // Prevent out of memory errors, only load the tokenid
-        $model->trackUsage();
-        $model->set('gto_id_token');
+        $metaModel = $model->getMetaModel();
+        $metaModel->disableOnLoad();
 
-        return $model->load($filter);
+        return $model->load($filter, null, ['gto_id_token']);
     }
 
     /**
@@ -670,6 +669,67 @@ class CommJobRepository
             'send' => $sendTokenList,
             'markSent' => $incrementWithoutSendingList,
         ];
+    }
+
+    /**
+     * @param int $commJobId
+     * @param int|null $respondentId
+     * @param int|null $organizationId
+     * @param bool $forced
+     * @return array  tokenId => array [tokendId] a token id to send and a array of tokens to set as sent
+     * @throws Exception
+     * @throws Exception\Coding
+     */
+    public function getSendableTokensNested(int $commJobId, ?int $respondentId = null, ?int $organizationId = null, bool $forced = false): array
+    {
+        $jobData = $this->getJob($commJobId);
+
+        if (empty($jobData)) {
+            throw new Exception('Mail job not found!');
+        }
+
+        $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId, $forced);
+
+        $output = [];
+        $sentContactData = [];
+
+        foreach($tokenIds as $tokenData) {
+            $token   = $this->tracker->getToken($tokenData['gto_id_token']);
+            $tokenId = $token->getTokenId();
+
+            $contactData  = $jobData['gcj_target'] . $jobData['gcj_to_method'];
+            $respondentId = $token->getRespondentId();
+            if ($relationId = $token->getRelationId()) {
+                $respondentId  .= 'R' . $relationId;
+            }
+
+            switch ($jobData['gcj_process_method']) {
+                case 'M':   // Each token sends an email
+                    $output[$tokenId][$tokenId] = $tokenId;
+                    break;
+
+                case 'A':   // Only first token mailed and marked
+                    if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
+                        $output[$tokenId][$tokenId] = $tokenId;
+                        $sentContactData[$respondentId][$contactData] = $tokenId;
+                    }
+                    break;
+
+                case 'O':   // Only first token mailed, all marked
+                    if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
+                        $output[$tokenId][$tokenId] = $tokenId;
+                        $sentContactData[$respondentId][$contactData] = $tokenId;
+                    } else {
+                        $output[$sentContactData[$respondentId][$contactData]][$tokenId] = $tokenId;
+                    }
+                    break;
+
+                default:
+                    throw new Exception('Invalid option for `Processing Method`');
+            }
+        }
+
+        return $output;
     }
 
     public function isTokenInQueue(string $tokenId): bool

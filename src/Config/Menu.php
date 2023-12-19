@@ -1210,45 +1210,16 @@ class Menu
                     'label' => $this->translator->trans('Communication'),
                     'type' => 'container',
                     'children' => [
-                        [
-                            'name' => 'setup.communication.job.index',
-                            'label' => $this->translator->trans('Automatic message jobs'),
-                            'type' => 'route-link-item',
-                            'children' => [
-                                [
-                                    'name' => 'setup.communication.job.create',
-                                    'label' => $this->translator->trans('New'),
-                                    'type' => 'route-link-item',
+                        $this->createMenuForHandler(
+                            controllerClass: CommJobHandler::class,
+                            name: 'setup.communication.job',
+                            label: $this->translator->trans('Automatic message jobs'),
+                            otherActions: [
+                                'execute-all' => $this->translator->trans('Execute all'),
+                                'monitor' => ['label' => $this->translator->trans('Monitor'), 'type' => 'alias',],
                                 ],
-                                [
-                                    'name' => 'setup.communication.job.show',
-                                    'label' => $this->translator->trans('Show'),
-                                    'type' => 'route-link-item',
-                                    'children' => [
-                                        [
-                                            'name' => 'setup.communication.job.edit',
-                                            'label' => $this->translator->trans('Edit'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'setup.communication.job.delete',
-                                            'label' => $this->translator->trans('Delete'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                    ],
-                                ],
-                                [
-                                    'name' => 'setup.communication.job.export',
-                                    'label' => $this->translator->trans('Export'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
-                                    'name' => 'setup.communication.job.monitor',
-                                    'type' => 'alias',
-                                    'alias' => 'setup.communication.job',
-                                ],
-                            ],
-                        ],
+                            otherShowActions: ['execute' => $this->translator->trans('Execute'),],
+                        ),
                         [
                             'name' => 'setup.communication.messenger.index',
                             'label' => $this->translator->trans('Messenger'),

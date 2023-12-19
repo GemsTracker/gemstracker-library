@@ -15,6 +15,8 @@ use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Handlers\BrowseChangeUsageHandler;
 use Gems\Handlers\Setup\CommunicationActions\CommJobBrowseSearchAction;
+use Gems\Handlers\Setup\CommunicationActions\CommJobExecuteAction;
+use Gems\Handlers\Setup\CommunicationActions\CommJobExecuteAllAction;
 use Gems\Handlers\Setup\CommunicationActions\CommJobMonitorAction;
 use Gems\Handlers\Setup\CommunicationActions\CommJobShowAction;
 use Gems\Handlers\Setup\CommunicationActions\CommLockAction;
@@ -62,15 +64,17 @@ class CommJobHandler extends BrowseChangeUsageHandler
      * @inheritdoc
      */
     public static $actions = [
-        'autofilter' => BrowseFilteredAction::class,
-        'index'      => CommJobBrowseSearchAction::class,
-        'create'     => CreateAction::class,
-        'export'     => ExportAction::class,
-        'edit'       => EditAction::class,
-        'delete'     => DeleteAction::class,
-        'show'       => CommJobShowAction::class,
-        'lock'       => CommLockAction::class,
-        'monitor'    => CommJobMonitorAction::class,
+        'autofilter'  => BrowseFilteredAction::class,
+        'index'       => CommJobBrowseSearchAction::class,
+        'create'      => CreateAction::class,
+        'export'      => ExportAction::class,
+        'edit'        => EditAction::class,
+        'delete'      => DeleteAction::class,
+        'show'        => CommJobShowAction::class,
+        'execute'     => CommJobExecuteAction::class,
+        'lock'        => CommLockAction::class,
+        'monitor'     => CommJobMonitorAction::class,
+        'execute-all' => CommJobExecuteAllAction::class,
     ];
 
     /**
@@ -269,6 +273,22 @@ class CommJobHandler extends BrowseChangeUsageHandler
             $action->searchFields[] = Html::br();
             $action->searchFields['gcj_active'] = $this->_('(all execution methods)');
             $action->searchFields['gcj_target'] = $this->_('(all fillers)');
+        }
+
+        if ($action instanceof CommJobExecuteAllAction) {
+            $action->csrfName = $this->getCsrfTokenName();
+            $action->csrfToken = $this->getCsrfToken($action->csrfName);
+            $step = $this->requestInfo->getParam('step');
+            if ($step) {
+                if (CommJobExecuteAllAction::STEP_RESET !== $step) {
+                    $action->step = $step;
+                }
+            }
+            if ($this->requestInfo->getRequestMatchedParams()) {
+                $action->formTitle = $this->_('Execute automatic messaging job');
+            } else {
+                $action->formTitle = $this->_('Execute automatic messaging jobs');
+            }
         }
 
         if ($action instanceof CommJobShowAction) {

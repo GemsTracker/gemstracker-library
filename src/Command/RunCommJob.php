@@ -12,6 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
 
 #[AsCommand(name: 'comm-job:run', description: 'Run the communication job, or add it to the queue')]
 class RunCommJob extends Command
@@ -42,10 +43,14 @@ class RunCommJob extends Command
         $this->consoleSettings->setConsoleUser();
 
         $jobs = $this->commJobRepository->getActiveJobs();
-
         foreach($jobs as $jobData) {
-            $commJobMessage = new CommJob((int)$jobData['gcj_id_job']);
-            $this->messageBus->dispatch($commJobMessage);
+            $commJobMessage = new CommJob($jobData);
+            $envelope = $this->messageBus->dispatch($commJobMessage);
+            /**
+             * @var HandledStamp $stamp
+             */
+            $stamp = $envelope->last(HandledStamp::class);
+            $output->writeln($stamp->getResult());
         }
 
         $output->writeln(sprintf('<info>Added %d jobs</info>', count($jobs)));

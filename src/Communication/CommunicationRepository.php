@@ -325,6 +325,19 @@ class CommunicationRepository
         return $this->resultFetcher->fetchOne($select);
     }
 
+    public function getTemplateName(int $templateId): string
+    {
+        $select = $this->resultFetcher->getSelect('gems__comm_templates');
+        $select->where(['gct_id_template' => $templateId,]);
+
+        $template = $this->resultFetcher->fetchRow($select);
+        if ($template && !empty($template['gct_name'])) {
+            return $template['gct_name'];
+        }
+
+        return '(unknwon template)';
+    }
+
     public function getTokenMailFields(Token $token, string $language = null): array
     {
         $mailFieldCreator = new TokenMailFields($token, $this->translator, $this->resultFetcher, $this->config);

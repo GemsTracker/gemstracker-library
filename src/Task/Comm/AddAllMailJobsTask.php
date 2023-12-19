@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Task\Mail;
+namespace Gems\Task\Comm;
 
 /**
  * Description
@@ -39,8 +39,8 @@ class AddAllMailJobsTask extends \MUtil\Task\TaskAbstract
     /**
      * Adds all jobs to the queue
      *
-     * @param $respondentId Optional, execute for just one respondent
-     * @param $organizationId Optional, execute for just one organization
+     * @param ?int $respondentId execute for just one respondent
+     * @param ?int $organizationId execute for just one organization
      */
     public function execute($respondentId = null, $organizationId = null, $forceSent = false)
     {
