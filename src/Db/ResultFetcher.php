@@ -44,7 +44,7 @@ class ResultFetcher
         return $table->delete($where);
     }
 
-    public function fetchAll(Select|string $select, ?array $params = null): ?array
+    public function fetchAll(Select|string $select, ?array $params = null): array
     {
         return $this->fetchAllAssociative($select, $params);
     }
