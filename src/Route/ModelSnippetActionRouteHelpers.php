@@ -188,7 +188,17 @@ trait ModelSnippetActionRouteHelpers
         foreach ($parameters as $parameterName => $parameterRegex) {
             $combinedParameters[] = '{' . $parameterName . ':'. $parameterRegex . '}';
         }
+
         $parameterString = join('/', $combinedParameters);
+        $optionalParameters = null;
+        if (property_exists($controllerClass, 'optionalParameters')) {
+            $optionalParameters = $controllerClass::$optionalParameters;
+            $optionalParameterString = '';
+            foreach (array_reverse($optionalParameters) as $parameterName => $parameterRegex) {
+                $optionalParameterString = '[/{' . $parameterName . ':'. $parameterRegex . '}' . $optionalParameterString . ']';
+            }
+            $parameterString .= $optionalParameterString;
+        }
 
         // Create the sub routes
         $routes = [];
@@ -214,6 +224,9 @@ trait ModelSnippetActionRouteHelpers
             if (isset($interfaces[ParameterActionInterface::class])) {
                 $route['path'] .= '/' . $parameterString;
                 $route['params'] = array_merge($route['params'], array_keys($parameters));
+                if (property_exists($controllerClass, 'optionalParameters')) {
+                    $route['params'] = array_merge($route['params'], array_keys($controllerClass::$optionalParameters));
+                }
             }
             if (isset($interfaces[PostActionInterface::class])) {
                 $route['allowed_methods'][] = 'POST';
