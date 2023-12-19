@@ -115,10 +115,10 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $sourceId = $this->getSourceId();
 
-        $where    = 'gsu_id_source = ?';
+        $where    = ['gsu_id_source' => $sourceId];
 
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where, $sourceId);
+        $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
