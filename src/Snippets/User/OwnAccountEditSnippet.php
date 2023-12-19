@@ -113,7 +113,7 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
         }
 
         if ($this->cacheTags && ($this->cache instanceof HelperAdapter)) {
-            $this->cache->invalidateTags((array)[$this->cacheTags]);
+            $this->cache->invalidateTags((array)$this->cacheTags);
         }
     }
 

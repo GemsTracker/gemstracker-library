@@ -133,7 +133,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
         }
 
         if ($this->cacheTags && ($this->cache instanceof HelperAdapter)) {
-            $this->cache->invalidateTags([$this->cacheTags]);
+            $this->cache->invalidateTags((array)$this->cacheTags);
         }
 
         $this->afterSaveRouteUrl = $this->request->getUri();
