@@ -49,11 +49,11 @@ class ResultFetcher
         return $this->fetchAllAssociative($select, $params);
     }
 
-    public function fetchCol(Select|string $select, ?array $params = null): ?array
+    public function fetchCol(Select|string $select, ?array $params = null): array
     {
         $resultArray = $this->fetchAllAssociative($select, $params);
         if (count($resultArray) === 0) {
-            return null;
+            return [];
         }
         $firstRow = reset($resultArray);
         $valueKey = key($firstRow);
