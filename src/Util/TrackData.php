@@ -307,7 +307,7 @@ class TrackData extends UtilAbstract
      *
      * @return array
      */
-    public function getSurveyLanguages()
+    public function getSurveyLanguages(): array
     {
         $return = [];
         $sql = "SELECT DISTINCT gsu_survey_languages

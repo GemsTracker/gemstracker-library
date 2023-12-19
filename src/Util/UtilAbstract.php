@@ -147,7 +147,7 @@ class UtilAbstract extends TargetAbstract
      * @param boolean $natSort Perform a natsort over the output
      * @return array With a column ofr values
      */
-    protected function _getSelectColCached($cacheId, $sql, $binds = array(), $tags = array(), $natSort = false)
+    protected function _getSelectColCached($cacheId, $sql, $binds = array(), $tags = array(), $natSort = false): array
     {
         $cacheId = strtr(get_class($this) . '_a_' . $cacheId, '\\/', '__');
 

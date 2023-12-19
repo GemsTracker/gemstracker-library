@@ -186,12 +186,12 @@ class TrackDataRepository
             ->join('gems__rounds', 'gsu_id_survey = gro_id_survey', [])
             ->join('gems__tracks', 'gro_id_track = gtr_id_track', [])
             ->where(['gro_active' => 1, 'gtr_active' => 1, 'gtr_id_track' => $trackId]);
-        $result1 = $this->resultFetcher->fetchCol($select1) ?: [];
+        $result1 = $this->resultFetcher->fetchCol($select1);
 
         $select2 = $this->resultFetcher->getSelect('gems__track_fields');
         $select2->columns(['gtf_field_name'])
             ->where(['gtf_field_type' => 'relation', 'gtf_id_track' => $trackId]);
-        $result2 = $this->resultFetcher->fetchCol($select2) ?: [];
+        $result2 = $this->resultFetcher->fetchCol($select2);
         
         $output = array_unique(array_merge($result1, $result2));
         
@@ -210,7 +210,7 @@ class TrackDataRepository
                     FROM gems__surveys
                     ORDER BY gsu_survey_languages";
 
-        $result = $this->resultFetcher->fetchCol($sql) ?: [];
+        $result = $this->resultFetcher->fetchCol($sql);
 
         foreach ($result as $value) {
             if (strpos($value, ', ') !== false) {

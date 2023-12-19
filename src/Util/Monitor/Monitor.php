@@ -76,7 +76,7 @@ class Monitor
             "SELECT DISTINCT gor_contact_email FROM gems__organizations WHERE LENGTH(gor_contact_email) > 5 AND gor_active = 1 AND $where"
         );
 
-        return $orgTo ?? [];
+        return $orgTo;
     }
 
     /**
@@ -120,7 +120,7 @@ class Monitor
         $userTo = $this->resultFetcher->fetchCol(
                 "SELECT DISTINCT gsf_email FROM gems__staff $joins WHERE LENGTH(gsf_email) > 5 AND gsf_active = 1 AND $where"
                 );
-        return $userTo ?? [];
+        return $userTo;
     }
 
     /**
