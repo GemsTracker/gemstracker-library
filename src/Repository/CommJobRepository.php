@@ -592,7 +592,7 @@ class CommJobRepository
      * @param array $jobData
      * @param int   $respondentId Optional
      * @param int   $organizationId Optional
-     * @param false $forceSent Ignore previous mails
+     * @param bool  $forceSent Ignore previous mails
      * @return mixed
      */
     public function getTokenData(array $jobData, $respondentId = null, $organizationId = null, $forceSent = false): array

@@ -48,7 +48,7 @@ class SendTokenMessageHandler
                 $token = $this->tracker->getToken($tokenId);
                 $event = new TokenMarkedAsSent($token, $jobData);
 
-                $this->eventDispatcher->dispatch($event, TokenMarkedAsSent::NAME);
+                $this->eventDispatcher->dispatch($event);
             }
         }
     }

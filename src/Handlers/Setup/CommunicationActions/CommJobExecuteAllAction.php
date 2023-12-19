@@ -13,7 +13,6 @@ namespace Gems\Handlers\Setup\CommunicationActions;
 use Gems\Snippets\Communication\CommJobExecuteBatchSnippet;
 use Gems\Snippets\Communication\CommJobExecuteFormSnippet;
 use Gems\SnippetsActions\ContentTitleActionTrait;
-use Gems\Task\Comm\CommJonRunnerBatch;
 use Zalt\SnippetsActions\PostActionInterface;
 
 /**
@@ -36,11 +35,6 @@ class CommJobExecuteAllAction extends \Zalt\SnippetsActions\AbstractAction imple
         CommJobExecuteFormSnippet::class,
         CommJobExecuteBatchSnippet::class,
     ];
-
-    /**
-     * @var CommJonRunnerBatch Set in ExecutePreviwwSnippet->hasHtmlOutput()
-     */
-    public CommJonRunnerBatch $batch;
 
     /**
      * Field name for crsf protection field.

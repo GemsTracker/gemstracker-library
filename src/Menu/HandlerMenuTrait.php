@@ -26,8 +26,8 @@ trait HandlerMenuTrait
      * @param string $controllerClass The Handler class for the menu item
      * @param string $name The start name of the routes
      * @param string $label The label for the parent item
-     * @param string[] $otherActions action => label for main menu label actions
-     * @param string[] $otherShowActions action => label for show item menu label actions
+     * @param array $otherActions action => label|array for main menu label actions
+     * @param array $otherShowActions action => label|array for show item menu label actions
      * @param string|int|null $position Optional position
      * @return array|string[]
      */

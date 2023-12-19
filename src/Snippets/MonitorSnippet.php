@@ -108,6 +108,7 @@ class MonitorSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
             $seq->actionLink([$this->menuSnippetHelper->getCurrentUrl(), $this->confirmParameter => 1], $this->_('Delete'));
         }
         $seq->br();
+        // @phpstan-ignore-next-line
         $seq->actionLink([$this->menuSnippetHelper->getCurrentParentUrl()], $this->_('Cancel'));
 
         return $seq;

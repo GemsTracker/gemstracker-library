@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Gems\Snippets\Communication;
 
 use Gems\Audit\AuditLog;
-use Gems\Handlers\Setup\CommunicationActions\commJobExecuteAllAction;
+use Gems\Handlers\Setup\CommunicationActions\CommJobExecuteAllAction;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Task\Comm\CommJonRunnerBatch;
 use Mezzio\Session\SessionInterface;

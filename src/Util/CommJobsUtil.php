@@ -459,7 +459,7 @@ class CommJobsUtil extends UtilAbstract
 
     /**
      * @param array $jobData
-     * @return \Gems\Communication\JobMessenger\JobMessengerAbstract|null
+     * @return \Gems\Communication\JobMessenger\JobMessengerInterface|null
      */
     public function getJobMessenger(array $jobData)
     {
