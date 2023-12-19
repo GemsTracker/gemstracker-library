@@ -131,7 +131,7 @@ class DbTranslations extends \MUtil\Registry\TargetAbstract
      * If no config is supplied, it will be generated from the select
      *
      * @param \Zend_Db_Select $select
-     * @return array list of database rows already translated
+     * @return array|null list of database rows already translated
      * @throws \Zend_Db_Select_Exception
      */
     public function translatePairsFromSelect(\Zend_Db_Select $select)

@@ -147,7 +147,7 @@ class LaminasAppointmentSelect
 
     /**
      *
-     * @param mixed $spec The column(s) and direction to order by.
+     * @param string|array|Expression $spec The column(s) and direction to order by.
      * @return self
      */
     public function order(string|array|Expression $spec): self

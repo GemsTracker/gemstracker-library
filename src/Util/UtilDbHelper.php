@@ -146,7 +146,7 @@ class UtilDbHelper
             $result = $this->fetchSortedCached('fetchPairs', $cacheKey, $select, null, $tags, $sort);
         }
 
-        if ($result && $this->translateDatabaseFields) {
+        if ($result && isset($select) && $this->translateDatabaseFields) {
             $translateSelect = $this->resultFetcher->getSelect('gems__translations');
             $translateSelect->columns(['gtrs_keys', 'gtrs_translation'])
                 ->where([

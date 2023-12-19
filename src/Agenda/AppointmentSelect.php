@@ -101,7 +101,7 @@ class AppointmentSelect
      *
      * Add's the filter sql where and remembers the filter
      *
-     * @param \Gems\Agenda\AppointmentFilterInterface $filter
+     * @param AppointmentFilterInterface $filter
      * @return \Gems\Agenda\AppointmentSelect
      */
     public function forFilter(AppointmentFilterInterface $filter)

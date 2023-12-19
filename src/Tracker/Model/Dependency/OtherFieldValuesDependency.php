@@ -163,7 +163,7 @@ class OtherFieldValuesDependency extends DependencyAbstract
                     'order' => 'gtap_id_order',
                 ]
             )
-            ->where('gtap_id_track = ?', $trackId);
+            ->where(['gtap_id_track' => $trackId]);
 
         $trackfieldSelect->combine($appointmentFieldSelect)
             ->order('order');

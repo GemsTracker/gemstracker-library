@@ -786,11 +786,6 @@ parameters:
 			path: src/Agenda/Agenda.php
 
 		-
-			message: "#^Parameter \\#2 \\$combination of method Laminas\\\\Db\\\\Sql\\\\Select\\:\\:where\\(\\) expects string, int given\\.$#"
-			count: 1
-			path: src/Agenda/Agenda.php
-
-		-
 			message: "#^Method Gems\\\\Agenda\\\\Appointment\\:\\:getProcedureDescription\\(\\) should return string but returns null\\.$#"
 			count: 1
 			path: src/Agenda/Appointment.php
@@ -809,16 +804,6 @@ parameters:
 			message: "#^Strict comparison using \\=\\=\\= between false and string\\|null will always evaluate to false\\.$#"
 			count: 3
 			path: src/Agenda/Appointment.php
-
-		-
-			message: "#^PHPDoc tag @param for parameter \\$filter with type Gems\\\\Agenda\\\\AppointmentFilterInterface is not subtype of native type Gems\\\\Agenda\\\\Filter\\\\AppointmentFilterInterface\\.$#"
-			count: 1
-			path: src/Agenda/AppointmentSelect.php
-
-		-
-			message: "#^Parameter \\$filter of method Gems\\\\Agenda\\\\AppointmentSelect\\:\\:forFilter\\(\\) has invalid type Gems\\\\Agenda\\\\AppointmentFilterInterface\\.$#"
-			count: 1
-			path: src/Agenda/AppointmentSelect.php
 
 		-
 			message: "#^Parameter \\#1 \\$filterId of method Gems\\\\Agenda\\\\Repository\\\\FilterRepository\\:\\:getFilter\\(\\) expects int, string given\\.$#"
@@ -859,11 +844,6 @@ parameters:
 			message: "#^Property Gems\\\\Agenda\\\\Filter\\\\LocationAppointmentFilter\\:\\:\\$_locations \\(array\\) does not accept true\\.$#"
 			count: 1
 			path: src/Agenda/Filter/LocationAppointmentFilter.php
-
-		-
-			message: "#^PHPDoc tag @param for parameter \\$spec with type mixed is not subtype of native type array\\|Laminas\\\\Db\\\\Sql\\\\Expression\\|string\\.$#"
-			count: 1
-			path: src/Agenda/LaminasAppointmentSelect.php
 
 		-
 			message: "#^Call to an undefined method Zend_Form_Element\\:\\:img\\(\\)\\.$#"
@@ -1014,11 +994,6 @@ parameters:
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
 			count: 5
 			path: src/ConfigProvider.php
-
-		-
-			message: "#^Method Gems\\\\Db\\\\DbTranslations\\:\\:translatePairsFromSelect\\(\\) should return array but returns null\\.$#"
-			count: 1
-			path: src/Db/DbTranslations.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\|Zalt\\\\Model\\\\Data\\\\DataWriterInterface\\:\\:setData\\(\\)\\.$#"
@@ -2136,16 +2111,6 @@ parameters:
 			path: src/Handlers/Overview/ComplianceHandler.php
 
 		-
-			message: "#^Parameter \\#1 \\$predicate of method Laminas\\\\Db\\\\Sql\\\\Select\\:\\:having\\(\\) expects array\\|Closure\\|Laminas\\\\Db\\\\Sql\\\\Where\\|string, Laminas\\\\Db\\\\Sql\\\\Having given\\.$#"
-			count: 1
-			path: src/Handlers/Overview/ComplianceHandler.php
-
-		-
-			message: "#^Parameter \\#2 \\$on of method Laminas\\\\Db\\\\Sql\\\\Select\\:\\:join\\(\\) expects Laminas\\\\Db\\\\Sql\\\\Predicate\\\\Expression\\|string, Laminas\\\\Db\\\\Sql\\\\Expression given\\.$#"
-			count: 1
-			path: src/Handlers/Overview/ComplianceHandler.php
-
-		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
 			count: 1
 			path: src/Handlers/Overview/ConsentPlanHandler.php
@@ -2234,11 +2199,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\RespondentPlanHandler\\:\\:\\$indexStopSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Overview/RespondentPlanHandler.php
-
-		-
-			message: "#^Parameter \\#1 \\$predicate of method Laminas\\\\Db\\\\Sql\\\\Select\\:\\:having\\(\\) expects array\\|Closure\\|Laminas\\\\Db\\\\Sql\\\\Where\\|string, Laminas\\\\Db\\\\Sql\\\\Having given\\.$#"
-			count: 1
-			path: src/Handlers/Overview/SummaryHandler.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\|Zalt\\\\Model\\\\Data\\\\DataWriterInterface\\:\\:applyDetailedFormatting\\(\\)\\.$#"
@@ -5041,11 +5001,6 @@ parameters:
 			path: src/Snippets/AutosearchFormSnippet.php
 
 		-
-			message: "#^Instanceof between array and Laminas\\\\Db\\\\Sql\\\\Select will always evaluate to false\\.$#"
-			count: 1
-			path: src/Snippets/AutosearchFormSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\AutosearchFormSnippet\\:\\:_createCheckboxElement\\(\\) should return Zend_Form_Element_Checkbox\\|null but returns Zend_Form_Element\\.$#"
 			count: 1
 			path: src/Snippets/AutosearchFormSnippet.php
@@ -7731,11 +7686,6 @@ parameters:
 			path: src/Snippets/Tracker/AddTracksSnippet.php
 
 		-
-			message: "#^Variable \\$select might not be defined\\.$#"
-			count: 2
-			path: src/Snippets/Tracker/AddTracksSnippet.php
-
-		-
 			message: "#^Variable \\$top might not be defined\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/AddTracksSnippet.php
@@ -8221,11 +8171,6 @@ parameters:
 			path: src/Snippets/User/OwnAccountEditAuthSnippet.php
 
 		-
-			message: "#^Parameter \\#1 \\$tags of method Symfony\\\\Component\\\\Cache\\\\Adapter\\\\TagAwareAdapter\\:\\:invalidateTags\\(\\) expects array\\<string\\>, array\\<int, array\\> given\\.$#"
-			count: 1
-			path: src/Snippets/User/OwnAccountEditAuthSnippet.php
-
-		-
 			message: "#^Parameter \\#1 \\$validator of method Zend_Form_Element\\:\\:addValidator\\(\\) expects string\\|Zend_Validate_Interface, Laminas\\\\Validator\\\\Digits given\\.$#"
 			count: 2
 			path: src/Snippets/User/OwnAccountEditAuthSnippet.php
@@ -8244,11 +8189,6 @@ parameters:
 			message: "#^Variable \\$parsedPhone might not be defined\\.$#"
 			count: 1
 			path: src/Snippets/User/OwnAccountEditAuthSnippet.php
-
-		-
-			message: "#^Parameter \\#1 \\$tags of method Symfony\\\\Component\\\\Cache\\\\Adapter\\\\TagAwareAdapter\\:\\:invalidateTags\\(\\) expects array\\<string\\>, array\\<int, array\\> given\\.$#"
-			count: 1
-			path: src/Snippets/User/OwnAccountEditSnippet.php
 
 		-
 			message: "#^Call to an undefined method Gems\\\\AuthTfa\\\\Method\\\\OtpMethodInterface\\:\\:verifyForSecret\\(\\)\\.$#"
@@ -8707,11 +8647,6 @@ parameters:
 
 		-
 			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
-			count: 1
-			path: src/Tracker/Model/Dependency/OtherFieldValuesDependency.php
-
-		-
-			message: "#^Parameter \\#2 \\$combination of method Laminas\\\\Db\\\\Sql\\\\Select\\:\\:where\\(\\) expects string, int given\\.$#"
 			count: 1
 			path: src/Tracker/Model/Dependency/OtherFieldValuesDependency.php
 
@@ -9671,16 +9606,6 @@ parameters:
 			path: src/Tracker/Token/TokenHelpers.php
 
 		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$fields$#"
-			count: 1
-			path: src/Tracker/Token/TokenSelect.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$surveyId$#"
-			count: 1
-			path: src/Tracker/Token/TokenSelect.php
-
-		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 1
 			path: src/Tracker/Token/TokenValidator.php
@@ -10476,11 +10401,6 @@ parameters:
 			path: src/Util/BasePath.php
 
 		-
-			message: "#^Call to an undefined method Gems\\\\Loader\\:\\:getCommunicationLoader\\(\\)\\.$#"
-			count: 1
-			path: src/Util/CommJobsUtil.php
-
-		-
 			message: "#^Variable \\$sql might not be defined\\.$#"
 			count: 1
 			path: src/Util/CommJobsUtil.php
@@ -10802,11 +10722,6 @@ parameters:
 
 		-
 			message: "#^Constructor of class Gems\\\\Util\\\\UtilDbHelper has an unused parameter \\$config\\.$#"
-			count: 1
-			path: src/Util/UtilDbHelper.php
-
-		-
-			message: "#^Variable \\$select might not be defined\\.$#"
 			count: 1
 			path: src/Util/UtilDbHelper.php
 
