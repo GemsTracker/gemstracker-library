@@ -129,6 +129,13 @@ class ResultFetcher
         return $this->db->query($select, $params, $resultSet);
     }
 
+    public function insertIntoTable(string $tableName, array $values): int
+    {
+        $table = new TableGateway($tableName, $this->getAdapter());
+        $table->insert($values);
+        return $this->getAdapter()->getDriver()->getLastGeneratedValue();
+    }
+
     public function updateTable(string $tableName, array $values, mixed $where): int
     {
         $table = new TableGateway($tableName, $this->getAdapter());
