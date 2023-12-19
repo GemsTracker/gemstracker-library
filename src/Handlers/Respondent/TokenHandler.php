@@ -370,9 +370,9 @@ class TokenHandler extends TokenSearchHandlerAbstract
         $data['gto_id_respondent']   = $this->getRespondentId();
 
         $orgsFor = $this->organizationRepository->getAllowedOrganizationsFor($this->request->getAttribute(MetaModelInterface::REQUEST_ID2));
-        if (is_array($orgsFor)) {
+        if (!empty($orgsFor)) {
             $data['gto_id_organization'] = array_keys($orgsFor);
-        } elseif (true !== $orgsFor) {
+        } else {
             $data['gto_id_organization'] = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
         }
 

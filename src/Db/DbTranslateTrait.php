@@ -89,7 +89,7 @@ trait DbTranslateTrait
      * Key value database translations
      * @return array List of translations
      */
-    public function getTranslations()
+    public function getTranslations(): array
     {
         if (!$this->translations) {
 

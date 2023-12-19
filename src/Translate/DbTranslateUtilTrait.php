@@ -83,7 +83,7 @@ trait DbTranslateUtilTrait
      * @param array $data  
      * @return array
      */
-    protected function translateTable($tableName, $keyValue, array $data)
+    protected function translateTable($tableName, $keyValue, array $data): array
     {
         if ($this->dbTranslationOff) {
             return $data;

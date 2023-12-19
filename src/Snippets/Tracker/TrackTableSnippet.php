@@ -69,7 +69,7 @@ class TrackTableSnippet extends ModelTableSnippetAbstract
 
         if (isset($filter['gr2o_id_organization'])) {
             $otherOrgs = $this->organizationRepository->getAllowedOrganizationsFor((int)$filter['gr2o_id_organization']);
-            if (is_array($otherOrgs)) {
+            if (!empty($otherOrgs)) {
                 // If more than one org, do not use patient number but resp id
                 if (isset($filter['gr2o_patient_nr'])) {
                     $filter['gr2o_id_user'] = $this->respondent->getId();

@@ -166,7 +166,7 @@ class RespondentRepository
             ->order('gco_order');
         $sql = "SELECT gco_description, gco_description FROM gems__consents ORDER BY gco_order";
 
-        return $this->resultFetcher->fetchPairs($select) ?: [];
+        return $this->resultFetcher->fetchPairs($select);
     }
 
     public function getRespondentId(string $patientNr, ?int $organizationId=null): ?int

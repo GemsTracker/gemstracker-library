@@ -722,7 +722,7 @@ class Token
      *
      * @return array tokenId => tokenId
      */
-    public function getCopiedTo(): array|null
+    public function getCopiedTo(): array
     {
         if (null === $this->_copiedToTokenIds) {
             $this->_copiedToTokenIds = $this->resultFetcher->fetchPairs(

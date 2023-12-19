@@ -88,7 +88,7 @@ class TrackDataRepository
      *
      * @return array
      */
-    public function getAllSurveysAndDescriptions()
+    public function getAllSurveysAndDescriptions(): array
     {
         $select = 'SELECT gsu_id_survey,
             	CONCAT(

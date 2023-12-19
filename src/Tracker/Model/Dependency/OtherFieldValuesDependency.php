@@ -170,6 +170,6 @@ class OtherFieldValuesDependency extends DependencyAbstract
 
         $options = $this->resultFetcher->fetchPairs($trackfieldSelect);
 
-        return $options ?? [];
+        return $options;
     }
 }

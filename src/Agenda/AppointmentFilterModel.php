@@ -323,7 +323,7 @@ class AppointmentFilterModel extends GemsJoinModel
      * @param array $context Optional, the other values being saved
      * @return array [filterId => filter name]
      */
-    public function loadFilters($value, $isNew = false, $name = null, array $context = array())
+    public function loadFilters($value, $isNew = false, $name = null, array $context = array()): array
     {
         if ($isNew || (! isset($context['gaf_id']))) {
             return [];
