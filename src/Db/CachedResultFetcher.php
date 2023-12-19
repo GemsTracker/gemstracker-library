@@ -58,9 +58,9 @@ class CachedResultFetcher
         return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags);
     }
 
-    public function fetchAllAssociative(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): ?array
+    public function fetchAllAssociative(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): array
     {
-        return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags);
+        return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags, []);
     }
 
     public function getAdapter(): Adapter

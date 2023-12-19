@@ -86,7 +86,7 @@ class ResultFetcher
         return null;
     }
 
-    public function fetchAllAssociative(Select|string $select, ?array $params = null): ?array
+    public function fetchAllAssociative(Select|string $select, ?array $params = null): array
     {
         $result = $this->query($select, $params);
         return $result->toArray();
