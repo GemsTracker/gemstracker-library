@@ -12,7 +12,7 @@ class CachedResultFetcher
     public function __construct(protected ResultFetcher $resultFetcher, protected HelperAdapter $cache)
     {}
 
-    protected function fetchCached(string $functionName, string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): mixed
+    protected function fetchCached(string $functionName, string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null, $default = null): mixed
     {
         $cacheKey = HelperAdapter::cleanupForCacheId($cacheKey);
 
@@ -25,7 +25,7 @@ class CachedResultFetcher
             $this->cache->setCacheItem($cacheKey, $results, $tags);
             return $results;
         }
-        return null;
+        return $default;
     }
 
     public function fetchPairs(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null): ?array
