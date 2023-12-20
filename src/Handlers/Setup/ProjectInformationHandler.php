@@ -25,10 +25,10 @@ use Gems\Util\Monitor\Monitor;
 use Gems\Versions;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
+use Mezzio\Session\SessionInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use MUtil\Model;
-use Psr\Log\LoggerInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Message\StatusMessengerInterface;
@@ -424,6 +424,16 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
     public function sessionAction()
     {
         $this->html->h2($this->_('Session content'));
-        $this->_showTable($this->_('Session'), $_SESSION);
+        $session = $this->request->getAttribute(SessionInterface::class);
+        if ($session) {
+            // Mezzio session.
+            $sessionData = $session->toArray();
+        } elseif (isset($_SESSION)) {
+            // PHP session.
+            $sessionData = $_SESSION;
+        } else {
+            $sessionData = [];
+        }
+        $this->_showTable($this->_('Session'), $sessionData);
     }
 }
