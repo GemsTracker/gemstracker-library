@@ -285,8 +285,8 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         return sprintf(
             $this->_('%s - %s free of %s = %d%% available'),
             $directory,
-            \Zalt\File\File::getByteSized($free),
-            \Zalt\File\File::getByteSized($total),
+            \Zalt\File\File::getByteSized((int)$free),
+            \Zalt\File\File::getByteSized((int)$total),
             $percent
         );
     }
