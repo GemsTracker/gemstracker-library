@@ -26,9 +26,9 @@ class EmbedLoginHandler implements RequestHandlerInterface
 {
     private const MAX_ATTEMPTS_KEY = 'embed_login_max_attempts';
 
-    private readonly RateLimiter $rateLimiter;
-    private readonly int $throttleMaxAttempts;
-    private readonly int $throttleBlockSeconds;
+    private RateLimiter $rateLimiter;
+    private int $throttleMaxAttempts;
+    private int $throttleBlockSeconds;
 
     public function __construct(
         private readonly TranslatorInterface $translator,
