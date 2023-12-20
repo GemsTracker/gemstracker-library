@@ -28,10 +28,10 @@ use Mezzio\Helper\UrlHelper;
 use Mezzio\Session\SessionInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use MUtil\Model;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Message\StatusMessengerInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -163,7 +163,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $this->html->h2($caption);
 
         $params = $this->requestInfo->getRequestMatchedParams();
-        if ($emptyLabel && (isset($params[Model::REQUEST_ID]) && 1 == $params[\MUtil\Model::REQUEST_ID]) && file_exists($logFile)) {
+        if ($emptyLabel && (isset($params[MetaModelInterface::REQUEST_ID]) && 1 == $params[MetaModelInterface::REQUEST_ID]) && file_exists($logFile)) {
             unlink($logFile);
         }
 
@@ -189,7 +189,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             if ($error) {
                 $buttons->actionDisabled($emptyLabel);
             } else {
-                $buttons->actionLink(array(\MUtil\Model::REQUEST_ID => 1), $emptyLabel);
+                $buttons->actionLink([MetaModelInterface::REQUEST_ID => 1], $emptyLabel);
             }
         }
 
@@ -285,8 +285,8 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         return sprintf(
             $this->_('%s - %s free of %s = %d%% available'),
             $directory,
-            \MUtil\File::getByteSized($free),
-            \MUtil\File::getByteSized($total),
+            \Zalt\File\File::getByteSized($free),
+            \Zalt\File\File::getByteSized($total),
             $percent
         );
     }
