@@ -109,6 +109,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
             //}
 
             $url = $redirector?->getRedirectUrl(
+                $request,
                 $this->routeHelper,
                 $result->systemUser,
                 $result->deferredUser,
