@@ -12,6 +12,7 @@
 namespace Gems\User\Embed;
 
 use Gems\User\User;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  *
@@ -27,6 +28,7 @@ interface RedirectInterface extends HelperInterface
      * @return string|null redirect route
      */
     public function getRedirectUrl(
+        ServerRequestInterface $request,
         DeferredRouteHelper $routeHelper,
         User $embeddedUser,
         User $deferredUser,

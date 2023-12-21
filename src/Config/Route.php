@@ -180,6 +180,7 @@ class Route
                     ClientIpMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
                     EmbedLoginHandler::class,
                 ],
             ],

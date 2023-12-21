@@ -14,6 +14,7 @@ namespace Gems\User\Embed\Redirect;
 use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\User;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  *
@@ -35,6 +36,7 @@ class RespondentSearchPage extends RedirectAbstract
     }
 
     public function getRedirectUrl(
+        ServerRequestInterface $request,
         DeferredRouteHelper $routeHelper,
         User $embeddedUser,
         User $deferredUser,

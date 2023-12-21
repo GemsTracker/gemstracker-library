@@ -14,6 +14,7 @@ namespace Gems\User\Embed\Redirect;
 use Gems\Repository\RespondentRepository;
 use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\User;
+use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
 
 /**
@@ -44,6 +45,7 @@ class RespondentShowCreatePage extends RespondentShowPage
     }
 
     public function getRedirectUrl(
+        ServerRequestInterface $request,
         DeferredRouteHelper $routeHelper,
         User $embeddedUser,
         User $deferredUser,
@@ -55,7 +57,7 @@ class RespondentShowCreatePage extends RespondentShowPage
         $respondent = $this->respondentRepository->getRespondent($patientId, $orgId);
 
         if ($respondent->exists) {
-            return parent::getRedirectUrl($routeHelper, $embeddedUser, $deferredUser, $patientId, $organizations);
+            return parent::getRedirectUrl($request, $routeHelper, $embeddedUser, $deferredUser, $patientId, $organizations);
         }
 
         // Add Message ?

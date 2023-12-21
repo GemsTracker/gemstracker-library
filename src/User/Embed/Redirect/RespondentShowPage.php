@@ -16,6 +16,7 @@ use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\User;
 use MUtil\Model;
+use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
 
 /**
@@ -46,6 +47,7 @@ class RespondentShowPage extends RedirectAbstract
     }
 
     public function getRedirectUrl(
+        ServerRequestInterface $request,
         DeferredRouteHelper $routeHelper,
         User $embeddedUser,
         User $deferredUser,
