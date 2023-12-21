@@ -25,6 +25,7 @@ use Gems\SnippetsActions\ApplyLegacyActionInterface;
 use Gems\SnippetsActions\ApplyLegacyActionTrait;
 use Gems\Tracker;
 use Gems\Tracker\Model\Dependency\SurveyMaintenanceDependency;
+use Gems\Tracker\Token\LaminasTokenSelect;
 use Gems\Tracker\TrackEvents;
 use Gems\Util\Translated;
 use Laminas\Db\Sql\Expression;
@@ -403,14 +404,15 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
             return $this->_('incalculable');
         }
 
-        $fields['cnt'] = 'COUNT(DISTINCT gto_id_token)';
-        $fields['avg'] = 'ROUND(AVG(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END))';
-        $fields['std'] = 'STDDEV_POP(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
-        $fields['min'] = 'MIN(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
-        $fields['max'] = 'MAX(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
+        $fields['cnt'] = new Expression('COUNT(DISTINCT gto_id_token)');
+        $fields['avg'] = new Expression('ROUND(AVG(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END))');
+        $fields['std'] = new Expression('STDDEV_POP(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)');
+        $fields['min'] = new Expression('MIN(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)');
+        $fields['max'] = new Expression('MAX(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)');
 
-        $select = $this->tracker->getTokenSelect($fields);
-        $select->forSurveyId($surveyId)
+        $select = new LaminasTokenSelect($this->resultFetcher);
+        $select->columns($fields)
+                ->forSurveyId($surveyId)
                 ->onlyCompleted();
 
         $row = $select->fetchRow();

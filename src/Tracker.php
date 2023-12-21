@@ -911,38 +911,41 @@ class Tracker implements TrackerInterface
     {
         $userId = $this->_checkUserId($userId);
 
-        $tokenSelect = $this->getTokenSelect(['gto_id_token']);
-        $tokenSelect->onlyActive($quickCheck)
+        $tokenSelect = new LaminasTokenSelect($this->unbufferedResultFetcher);
+        $tokenSelect->columns(['gto_id_token'])
+                    ->onlyActive($quickCheck)
                     ->forRespondent($respondentId)
                     ->andSurveys(['gsu_surveyor_id'])
-                    ->forWhere('gsu_surveyor_active = 1')
+                    ->forWhere(['gsu_surveyor_active' => 1])
                     ->order('gsu_surveyor_id');
 
         if (null !== $orgId) {
-            $tokenSelect->forWhere('gto_id_organization = ?', $orgId);
+            $tokenSelect->forWhere(['gto_id_organization' => $orgId]);
         }
 
-        $statement = $tokenSelect->getSelect()->query();
+        $resultSet = $this->unbufferedResultFetcher->query($tokenSelect->getSelect());
         //Process one row at a time to prevent out of memory errors for really big resultsets
         $tokens = [];
-        $tokencount = 0;
         $activeId = 0;
         $maxCount = 100;    // Arbitrary value, change as needed
-        while ($tokenData = $statement->fetch()) {
-            $tokenId = $tokenData['gto_id_token'];
-            $surveyorId = $tokenData['gsu_surveyor_id'];
-            if ($activeId <> $surveyorId || count($tokens) > $maxCount) {
-                // Flush
-                if (count($tokens)> 0) {
-                    $batch->addTask('Tracker\\BulkCheckTokenCompletion', $tokens, $userId);
+        if ($resultSet instanceof ResultSet) {
+            while ($resultSet->valid()) {
+                $tokenData = $resultSet->current();
+                $tokenId = $tokenData['gto_id_token'];
+                $surveyorId = $tokenData['gsu_surveyor_id'];
+                if ($activeId <> $surveyorId || count($tokens) > $maxCount) {
+                    // Flush
+                    if (count($tokens)> 0) {
+                        $batch->addTask('Tracker\\BulkCheckTokenCompletion', $tokens, $userId);
+                    }
+
+                    $activeId = $surveyorId;
+                    $tokens = [];
                 }
+                $tokens[] = $tokenId;
 
-                $activeId = $surveyorId;
-                $tokens = [];
+                $batch->addToCounter('tokens');
             }
-            $tokens[] = $tokenId;
-
-            $batch->addToCounter('tokens');
         }
         if (count($tokens)> 0) {
             $batch->addTask('Tracker\\BulkCheckTokenCompletion', $tokens, $userId);
@@ -1094,27 +1097,28 @@ class Tracker implements TrackerInterface
      * Refreshes the tokens in the source
      *
      * @param string $batch_id A unique identifier for the current batch
-     * @param string $cond An optional where statement
+     * @param ?array $where An optional where statement
      * @return TaskRunnerBatch A batch to process the changes
      */
-    public function refreshTokenAttributes(SessionInterface $session, string $batchId, ?string $cond = null, mixed $bind = null): TaskRunnerBatch
+    public function refreshTokenAttributes(SessionInterface $session, string $batchId, ?array $where = null): TaskRunnerBatch
     {
         $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
 
         if (! $batch->isLoaded()) {
 
-            $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
-            $tokenSelect->andSurveys([])
-                        ->forWhere('gsu_surveyor_active = 1')
-                        ->forWhere('gto_in_source = 1');
+            $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
+            $tokenSelect->columns(['gto_id_token'])
+                        ->andSurveys([])
+                        ->forWhere(['gsu_surveyor_active' => 1,
+                                    'gto_in_source' => 1]);
 
-            if ($cond) {
+            if ($where) {
                 // Add all connections for filtering, but select only surveys that are active in the source
                 $tokenSelect->andReceptionCodes([])
                         ->andRespondents([])
                         ->andRespondentOrganizations([])
                         ->andConsents([])
-                        ->forWhere($cond, $bind);
+                        ->forWhere($where);
             }
 
             $tokens = $tokenSelect->fetchAll();

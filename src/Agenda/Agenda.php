@@ -392,8 +392,8 @@ class Agenda
                 );
             }
 
-            $select->where('gr2o_patient_nr = ?', $patientNr)
-                    ->where('gr2o_id_organization = ?', $organizationId);
+            $select->where(['gr2o_patient_nr' => $patientNr,
+                            'gr2o_id_organization' => $organizationId]);
         }
 
         // \MUtil\EchoOut\EchoOut::track($select->__toString());

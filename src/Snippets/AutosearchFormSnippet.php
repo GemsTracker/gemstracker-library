@@ -258,7 +258,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      *
      * @param string        $class   Name of the class to use
      * @param string        $name    Name of the select element
-     * @param string|array|MetaModelInterface  $options Can be a SQL select string or key/value array of options
+     * @param string|array|MetaModelInterface|Select  $options Can be a SQL select string or key/value array of options
      * @param string        $empty   Text to display for the empty selector
      * @return \Zend_Form_Element_Multi
      */

@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Tracker;
 
 use Gems\Cache\HelperAdapter;
+use Gems\Exception\Coding;
 use Gems\Html;
 use Gems\Loader;
 use Gems\Locale\Locale;
@@ -157,6 +158,9 @@ class AddTracksSnippet extends TranslatableSnippetAbstract
                         ->where('gsu_insert_organizations LIKE \'%|'.$orgId.'|%\'')
                         ->order('gsu_survey_name');
                     break;
+
+                default:
+                    throw new Coding(sprintf('Unsupported track type: %s', (string)$trackType));
             }
 
             if ($translateDatabaseFields) {

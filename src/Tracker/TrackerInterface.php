@@ -359,10 +359,10 @@ interface TrackerInterface
      *
      * @param SessionInterface $session
      * @param string $batch_id A unique identifier for the current batch
-     * @param string $cond An optional where statement
+     * @param ?array $where An optional where statement
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function refreshTokenAttributes(SessionInterface $session, string $batchId, ?string $cond = null): TaskRunnerBatch;
+    public function refreshTokenAttributes(SessionInterface $session, string $batchId, ?array $where = null): TaskRunnerBatch;
 
     /**
      * Remove token from cache for saving memory

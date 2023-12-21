@@ -273,6 +273,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         if (array_key_exists('fillerfilter', $filter)) {
             $having = new Having();
             $having->equalTo('filler', $filter['fillerfilter']);
+            /** @phpstan-ignore-next-line https://github.com/laminas/laminas-db/issues/296 */
             $select->having($having);
         }
 
