@@ -5551,21 +5551,6 @@ parameters:
 			path: src/Snippets/FolderModelTableSnippet.php
 
 		-
-			message: "#^Method Gems\\\\Snippets\\\\FormSnippetAbstract\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Snippets/FormSnippetAbstract.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$menuList$#"
-			count: 1
-			path: src/Snippets/FormSnippetAbstract.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$view$#"
-			count: 1
-			path: src/Snippets/FormSnippetAbstract.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\FormSnippetAbstractMUtil\\:\\:\\$request\\.$#"
 			count: 2
 			path: src/Snippets/FormSnippetAbstractMUtil.php

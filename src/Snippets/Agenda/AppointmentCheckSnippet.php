@@ -11,11 +11,21 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Agenda\Agenda;
 use Gems\Agenda\FilterTracer;
+use Gems\Audit\AuditLog;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
-use Gems\Snippets\FormSnippetAbstractMUtil;
+use Gems\Snippets\FormSnippetAbstract;
+use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Util\Translated;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Html\Sequence;
+use Zalt\Message\MessengerInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -25,14 +35,8 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 07-Jan-2020 11:49:55
  */
-class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
+class AppointmentCheckSnippet extends FormSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\Agenda\Agenda
-     */
-    protected $agenda;
-
     /**
      *
      * @var \Gems\Agenda\Appointment
@@ -43,7 +47,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
      *
      * @var \Gems\Loader
      */
-    protected $loader;
+//    protected $loader;
 
     /**
      * The form Id used for the save button
@@ -52,7 +56,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
      *
      * @var string
      */
-    protected $saveButtonId = null;
+    protected $saveButtonId = '';
 
     /**
      *
@@ -60,24 +64,38 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
      */
     protected $tracer;
 
-    /**
-     *
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        AuditLog $auditLog,
+        MenuSnippetHelper $menuHelper,
+        protected readonly Agenda $agenda,
+        protected readonly Tracker $tracker,
+        protected readonly Translated $translatedUtil,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+        $this->tracer = new FilterTracer();
+
+        $appId = $this->requestInfo->getParam(Model::APPOINTMENT_ID);
+        if ($appId) {
+            $this->appointment = $this->agenda->getAppointment($appId);
+        }
+    }
 
     /**
      * Add the elements to the form
      *
      * @param \Zend_Form $form
      */
-    protected function addFormElements(\Zend_Form $form)
+    protected function addFormElements(mixed $form)
     {
+        /**
+         * @var \Zend_Form $form
+         */
         $options = [
             'label' => $this->_('Check mode:'),
             'description' => $this->_('This option can change tracks!'),
@@ -96,48 +114,25 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
      *
-     * This function is no needed if the classes are setup correctly
-     *
-     * @return void
+     * @param \Zalt\Html\Sequence $seq
      */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->agenda      = $this->loader->getAgenda();
-        $queryParams = $this->requestInfo->getRequestQueryParams();
-        if (isset($queryParams[Model::APPOINTMENT_ID])) {
-            $this->appointment = $this->agenda->getAppointment($queryParams[Model::APPOINTMENT_ID]);
-        }
-        $this->tracer      = new FilterTracer();
-        $this->tracker     = $this->loader->getTracker();
-    }
-
-    /**
-     *
-     * @param \MUtil\Html\Sequence $seq
-     */
-    protected function appendCheckedTracks(\MUtil\Html\Sequence $seq)
+    protected function appendCheckedTracks(Sequence $seq)
     {
         $tracks = $this->tracer->getTracks();
         $seq->h2($this->_('Existing tracks check'));
         if ($tracks) {
-            $baseUrl       = [
-                'gr2o_patient_nr'      => $this->appointment->getPatientNumber(),
-                'gr2o_id_organization' => $this->appointment->getOrganizationId(),
-                ];
             $list          = $seq->ol();
-            $menuRespTrack = $this->menu->findAllowedController('track', 'show-track');
 
             foreach ($tracks as $respTrackId => $trackData) {
                 $li = $list->li();
 
-                if ($menuRespTrack) {
+                $respTrackUrl = $this->menuHelper->getRouteUrl('respondent.tracks.show',
+                    $this->requestInfo->getRequestMatchedParams() + [Model::RESPONDENT_TRACK => $respTrackId]
+                );
+                if ($respTrackUrl) {
                     $li->em()->a(
-                            $menuRespTrack->toHRefAttribute($baseUrl + ['gr2t_id_respondent_track' => $respTrackId]),
+                            $respTrackUrl,
                             $trackData['trackName']
                             );
                 } else {
@@ -180,23 +175,23 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
 
     /**
      *
-     * @param \MUtil\Html\Sequence $seq
+     * @param \Zalt\Html\Sequence $seq
      */
-    protected function appendFiltersChecked(\MUtil\Html\Sequence $seq)
+    protected function appendFiltersChecked(Sequence $seq)
     {
         $seq->h2($this->_('Creation by filter check'));
 
         $filters = $this->tracer->getFilters();
         if ($filters) {
             $baseUrl       = [
-                'gr2o_patient_nr'      => $this->appointment->getPatientNumber(),
-                'gr2o_id_organization' => $this->appointment->getOrganizationId(),
+                MetaModelInterface::REQUEST_ID1 => $this->appointment->getPatientNumber(),
+                MetaModelInterface::REQUEST_ID2 => $this->appointment->getOrganizationId(),
                 ];
             $list          = $seq->ol();
-            $menuField     = $this->menu->findAllowedController('track-fields', 'show');
-            $menuFilter    = $this->menu->findAllowedController('agenda-filter', 'show');
-            $menuRespTrack = $this->menu->findAllowedController('track', 'show-track');
-            $menuTrack     = $this->menu->findAllowedController('track-maintenance', 'show');
+//            $menuField     = $this->menu->findAllowedController('track-fields', 'show');
+//            $menuFilter    = $this->menu->findAllowedController('agenda-filter', 'show');
+//            $menuRespTrack = $this->menu->findAllowedController('track', 'show-track');
+//            $menuTrack     = $this->menu->findAllowedController('track-maintenance', 'show');
 
             foreach ($filters as $filterId => $filterData) {
                 $li = $list->li();
@@ -205,67 +200,62 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
                 $field  = isset($fields[$filterData['filterField']]) ? $fields[$filterData['filterField']] : null;
 
                 $li->append(sprintf($this->_('%s: '), ucfirst($this->_('filter'))));
-                if ($menuFilter) {
+                $menuFilterUrl = $this->menuHelper->getRouteUrl('setup.agenda.filter.show', [MetaModelInterface::REQUEST_ID => $filterId]);
+                if ($menuFilterUrl) {
                     $li->em()->a(
-                            $menuFilter->toHRefAttribute([\MUtil\Model::REQUEST_ID => $filterId]),
-                            $filterData['filterName']
-                            );
+                        $menuFilterUrl,
+                        $filterData['filterName']
+                        );
                 } else {
                     $li->em($filterData['filterName']);
                 }
+
                 $li->append(sprintf($this->_(', %s: '), $this->plural('track', 'tracks', 1)));
-                if ($menuTrack) {
-                    $li->em()->a(
-                            $menuTrack->toHRefAttribute([\MUtil\Model::REQUEST_ID => $filterData['filterTrack']]),
-                            $track->getTrackName()
-                            );
+                $menuTrackUrl = $this->menuHelper->getRouteUrl('track-builder.track-maintenance.show', ['trackId' => $filterData['filterTrack']]);
+                if ($menuTrackUrl) {
+                    $li->em()->a($menuTrackUrl, $track->getTrackName());
                 } else {
                     $li->em($track->getTrackName());
                 }
                 if ($field) {
                     $li->append(sprintf($this->_(', %s: '), $this->plural('field', 'fields', 1)));
-                    if ($menuField) {
-                        $li->em()->a(
-                                $menuField->toHRefAttribute(
-                                        ['gtf_id_track' => $filterData['filterTrack']] +
-                                        FieldsDefinition::splitKey($filterData['filterField'])
-                                        ),
-                                $field
-                                );
+                    $fieldSplit = FieldsDefinition::splitKey($filterData['filterField']);
+                    $menuFieldUrl = $this->menuHelper->getRouteUrl('track-builder.track-maintenance.track-fields.show', [
+                        'trackId' => $filterData['filterTrack'],
+                        Model::FIELD_ID => $fieldSplit['gtf_id_field'],
+                        'sub' => $fieldSplit['sub'],
+                    ]);
+                    if ($menuFieldUrl) {
+                        $li->em()->a($menuFieldUrl, $field);
                     } else {
                         $li->em($field);
                     }
                 }
                 $li->br();
 
-                if ($filterData['createTrack']) {
+                if ($filterData['respTrackId']) {
+                    $menuRespTrackUrl = $this->menuHelper->getRouteUrl('respondent.tracks.show', $baseUrl + [Model::RESPONDENT_TRACK => $filterData['respTrackId']]);;
+                } else {
+                    $menuRespTrackUrl = false;
+                }
+                if ($filterData['skipMessage']) {
+                    $li->strong($this->_('track not created because: '));
+                    if ($menuRespTrackUrl) {
+                        $li->em()->a($menuRespTrackUrl, $filterData['skipMessage']);
+                    } else {
+                        $li->em($filterData['skipMessage']);
+                    }
+                    $li->append('.');
+                } elseif ($filterData['createTrack']) {
                     if ($this->tracer->executeChanges) {
-                        if ($menuRespTrack && $filterData['respTrackId']) {
-                            $li->em()->a(
-                                    $menuRespTrack->toHRefAttribute($baseUrl + [
-                                        'gr2t_id_respondent_track' => $filterData['respTrackId'],
-                                        ]),
-                                    $this->_('track was created!')
-                                    );
+                        if ($menuRespTrackUrl) {
+                            $li->em()->a($menuRespTrackUrl, $this->_('track was created!'));
                         } else {
                             $li->em($this->_('track was created!'));
                         }
                     } else {
                         $li->em($this->_('track would be created!'));
                     }
-                } elseif ($filterData['skipMessage']) {
-                    $li->strong($this->_('track not created because: '));
-                    if ($menuRespTrack && $filterData['respTrackId']) {
-                        $li->em()->a(
-                                $menuRespTrack->toHRefAttribute($baseUrl + [
-                                    'gr2t_id_respondent_track' => $filterData['respTrackId'],
-                                    ]),
-                                $filterData['skipMessage']
-                                );
-                    } else {
-                        $li->em($filterData['skipMessage']);
-                    }
-                    $li->append('.');
                 } else {
                     $li->em($this->_('track not created, reason unknown!'));
                 }
@@ -277,9 +267,9 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
 
     /**
      *
-     * @param \MUtil\Html\Sequence $seq
+     * @param \Zalt\Html\Sequence $seq
      */
-    protected function appendFiltersSkipped(\MUtil\Html\Sequence $seq)
+    protected function appendFiltersSkipped(Sequence $seq)
     {
         $seq->h2($this->_('Creation by filter check skipped'));
         if ($this->appointment->isActive()) {
@@ -291,9 +281,9 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
 
     /**
      *
-     * @param \MUtil\Html\Sequence $seq
+     * @param \Zalt\Html\Sequence $seq
      */
-    protected function appendFormInfo(\MUtil\Html\Sequence $seq)
+    protected function appendFormInfo(Sequence $seq)
     {
         $seq->br();
 
@@ -311,23 +301,14 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
      *
      * @return array
      */
-    protected function getDefaultFormValues()
+    protected function getDefaultFormValues(): array
     {
         return ['runmode' => 0];
     }
 
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
-        // \MUtil\EchoOut\EchoOut::track('Hi');
-        $form = parent::getHtmlOutput($view);
+        $form = parent::getHtmlOutput();
 
         $seq = $this->getHtmlSequence();
         $seq->append($form);
@@ -347,7 +328,6 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
             $this->appendFiltersChecked($seq);
         }
 
-        $seq->append(parent::getMenuList());
         return $seq;
     }
 
@@ -406,7 +386,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
      */
     protected function setAfterSaveRoute(array $params = array())
     {
-        $this->afterSaveRouteUrl = false;
+        $this->afterSaveRouteUrl = '';
 
         return $this;
     }

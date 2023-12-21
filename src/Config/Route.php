@@ -566,6 +566,29 @@ class Route
                 parameters:                        [
                     \Gems\Model::APPOINTMENT_ID => '\d+',
                 ],
+                pages: [
+                    'index',
+                    'autofilter',
+                    'create',
+                    'check',
+                    'show',
+                    'edit',
+                    'delete'
+                ],
+                parameterRoutes: [
+                    'show',
+                    'check',
+                    'edit',
+                    'delete',
+                ],
+                postRoutes: [
+                    'autofilter',
+                    'check',
+                    'create',
+                    'edit',
+                    'index',
+                    'delete',
+                ]
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
                 controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,

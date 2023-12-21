@@ -355,7 +355,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
             $keys   = $this->getModel()->getMetaModel()->getKeys();
             $params = $this->requestInfo->getRequestMatchedParams();
             foreach ($keys as $key => $field) {
-                if (isset($this->formData[$field]) && $this->formData[$field]) {
+                if (isset($this->formData[$field]) && (strlen((string) $this->formData[$field]) > 0)) {
                     $params[$key] = $this->formData[$field];
                 } elseif (! isset($params[$key])) {
                     $params[$key] = null;

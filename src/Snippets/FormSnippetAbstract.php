@@ -155,12 +155,7 @@ abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
     }
 
     /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @inheritdoc
      */
     public function getHtmlOutput()
     {

@@ -183,6 +183,11 @@ class Menu
                                     'type' => 'route-link-item',
                                     'children' => [
                                         [
+                                            'name' => 'respondent.appointments.check',
+                                            'label' => $this->translator->trans('Check'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
                                             'name' => 'respondent.appointments.edit',
                                             'label' => $this->translator->trans('Edit'),
                                             'type' => 'route-link-item',

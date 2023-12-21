@@ -329,7 +329,7 @@ class FieldMaintenanceModel extends UnionModel
 
         $this->set('gtf_create_track', 'label', $this->_('When not assigned'),
                 'description', $this->_('Create a track if the respondent does not have a track where this field is empty.'),
-                'multiOptions', $yesNo
+                'multiOptions', $this->loader->getAgenda()->getTrackCreateOptions(),
                 );
         $this->set('gtf_create_wait_days'); // Set order
 

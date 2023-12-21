@@ -42,6 +42,8 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
      */
     protected $calSearchFilter;
 
+    public $extraSort = ['gap_admission_time' => SORT_ASC];
+
     protected ?DataReaderInterface $model = null;
 
     protected string $onEmptyAlt = '';

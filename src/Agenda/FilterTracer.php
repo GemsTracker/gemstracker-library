@@ -34,13 +34,13 @@ class FilterTracer
      *
      * @var array
      */
-    protected array $filters;
+    protected array $filters = [];
 
     /**
      *
      * @var array
      */
-    protected array $tracks;
+    protected array $tracks = [];
 
     /**
      *
@@ -64,13 +64,24 @@ class FilterTracer
     public function addFilter(TrackFieldFilterCalculationInterface $filter, bool $createTrack, RespondentTrack|null $respTrack = null): self
     {
         $appointmentFilter = $filter->getAppointmentFilter();
-        $this->filters[$appointmentFilter->getFilterId()] = [
+
+        $filterId = $appointmentFilter->getFilterId();
+
+        if ($this->skipMessage) {
+            $skipMessage = $this->skipMessage;
+        } elseif (isset($this->filters[$filterId]) && $this->filters[$filterId]['skipMessage']) {
+            $skipMessage = $this->filters[$filterId]['skipMessage'];
+        }  else {
+            $skipMessage = '';
+        }
+
+        $this->filters[$filterId] = [
             'filterName'  => $appointmentFilter->getName(),
             'filterTrack' => $filter->getTrackId(),
             'filterField' => $filter->getFieldId(),
             'respTrackId' => $respTrack ? $respTrack->getRespondentTrackId() : null,
             'createTrack' => $createTrack,
-            'skipMessage' => $this->skipMessage,
+            'skipMessage' => $skipMessage,
              ];
 
         $this->skipMessage = '';

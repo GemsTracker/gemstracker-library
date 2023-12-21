@@ -90,6 +90,8 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $checkParameters = [
+        'csrfName'     => 'getCsrfTokenName',
+        'csrfToken'    => 'getCsrfToken',
         'contentTitle' => 'getCheckTitle',
     ];
 
@@ -102,6 +104,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         'Generic\\ContentTitleSnippet',
         'Agenda\\AppointmentShortSnippet',
         'Agenda\\AppointmentCheckSnippet',
+        CurrentButtonRowSnippet::class,
         'Agenda\\ApplyFiltersInformation',
     ];
 
@@ -173,7 +176,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     }
 
     /**
-     * Perform checks on an Episode of care
+     * Perform checks on an appointment
      */
     public function checkAction(): array
     {

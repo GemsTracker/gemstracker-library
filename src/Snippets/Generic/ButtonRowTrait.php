@@ -55,7 +55,6 @@ trait ButtonRowTrait
     protected ?string $parentLabel = null;
 
     /**
-     * @param array $menuList
      * @return array of label url arrays
      */
     protected function getButtons(): array
