@@ -1933,14 +1933,14 @@ class Token
     /**
      * Add 1 to the number of messages sent and change the sent date
      */
-    public function setMessageSent(): void
+    public function setMessageSent(int $userId): void
     {
         $values = [
             'gto_mail_sent_num' => new Expression('gto_mail_sent_num + 1'),
             'gto_mail_sent_date' => (new DateTimeImmutable())->format('Y-m-d'),
         ];
 
-        $this->_updateToken($values, $this->currentUser instanceof User ? $this->currentUser->getUserId() : 0);
+        $this->_updateToken($values, $userId);
     }
 
     /**

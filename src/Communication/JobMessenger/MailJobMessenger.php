@@ -56,7 +56,7 @@ class MailJobMessenger implements JobMessengerInterface
 
         $mailer = $this->communicationRepository->getMailer($from);
 
-        $currentUserId = $this->currentUserRepository->getCurrentUserId();
+        $currentUserId = $job['gcj_id_user_as'];
 
         try {
             $email->addFrom(new Address($from, $fromName));

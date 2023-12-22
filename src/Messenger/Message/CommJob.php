@@ -32,6 +32,14 @@ class CommJob
     }
 
     /**
+     * @return array
+     */
+    public function getJobData(): array
+    {
+        return $this->jobData;
+    }
+
+    /**
      * @return int
      */
     public function getMessengerId(): int

@@ -97,7 +97,7 @@ class MailLogBrowseSnippet extends ModelTableSnippet
                 \Gems\Model::RESPONDENT_TRACK => $bridge->getLate('gto_id_respondent_track'),
                 Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
             ];
-            $url = $this->menuHelper->getLateRouteUrl('respondent.tracks.show', $params);
+            $url = $this->menuHelper->getLateRouteUrl('respondent.tracks.token.show', $params);
 
             $label = Html::create('strong', $this->_('+'));
             $bridge->addItemLink(\Gems\Html::actionLink($url['url'], $label));

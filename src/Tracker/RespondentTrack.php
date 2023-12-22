@@ -583,6 +583,14 @@ class RespondentTrack
      */
     public function checkTrackTokens(int $userId, ?Token $fromToken = null, ?Token $skipToken = null): int
     {
+        $disable = $this->maskRepository->isEnabled();
+        if ($disable) {
+            $this->maskRepository->disableMaskRepository();
+            $this->refresh();
+            if ($this->_respondentObject) {
+                $this->_respondentObject->refresh();;
+            }
+        }
         // Execute any defined functions
         $count = $this->handleTrackCalculation($userId);
 
@@ -602,6 +610,14 @@ class RespondentTrack
 
         // Update token completion count and possible enddate
         $this->_checkTrackCount($userId);
+
+        if ($disable) {
+            $this->maskRepository->enableMaskRepository();
+            $this->refresh();
+            if ($this->_respondentObject) {
+                $this->_respondentObject->refresh();;
+            }
+        }
 
         return $count;
     }

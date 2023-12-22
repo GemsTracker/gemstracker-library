@@ -12,6 +12,11 @@ class TokenMarkedAsSent extends Event implements TokenEventInterface
     public function __construct(protected Token $token, protected array $jobData)
     {}
 
+    public function getCurrentUserId(): int
+    {
+        return $this->jobData['gcj_id_user_as'];
+    }
+
     /**
      * @return array
      */

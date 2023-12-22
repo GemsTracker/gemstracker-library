@@ -116,7 +116,7 @@ class EventSubscriber implements EventSubscriberInterface
     public function updateToken(TokenEventInterface $event): void
     {
         $token = $event->getToken();
-        $token->setMessageSent();
+        $token->setMessageSent($event->getCurrentUserId());
     }
 
     public function removeFromJobQueueList(TokenEventInterface $event): void

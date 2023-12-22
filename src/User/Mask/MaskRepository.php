@@ -444,6 +444,11 @@ class MaskRepository
         return null;
     }
 
+    public function isEnabled(): bool
+    {
+        return $this->enableMasks;
+    }
+
     /**
      * NOT IN USE!
      *

@@ -36,7 +36,7 @@ class SendTokenMessageHandler
     {
         $job     = $message->getJob();
         $jobId   = $job->getId();
-        $jobData = $this->commJobRepository->getJob($jobId);
+        $jobData = $job->getJobData();
 
         $token = $this->tracker->getToken($message->getTokenId());
 

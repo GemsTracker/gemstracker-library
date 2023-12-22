@@ -7,6 +7,7 @@ use Gems\Messenger\Message\CommJob;
 use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SendTokenMessage;
 use Gems\Repository\CommJobRepository;
+use Gems\User\Mask\MaskRepository;
 use Gems\Util\Monitor\Monitor;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -17,6 +18,7 @@ class CommJobHandler
     public function __construct(
         protected CommJobRepository $commJobRepository,
         protected CommunicationRepository $communicationRepository,
+        protected readonly MaskRepository $maskRepository,
         protected MessageBusInterface $messageBus,
         protected readonly Monitor $monitor,
     )
@@ -24,6 +26,7 @@ class CommJobHandler
 
     public function __invoke(CommJob $commJob): string
     {
+        $this->maskRepository->disableMaskRepository();
         $tokensNested = $this->commJobRepository->getSendableTokensNested($commJob->getId(), forced: $commJob->isForced());
 
         $allTokenCount = 0;
@@ -41,6 +44,7 @@ class CommJobHandler
             }
         }
         $this->monitor->startCronMailMonitor();
+        $this->maskRepository->enableMaskRepository();
 
         $templateName = $this->communicationRepository->getTemplateName($commJob->getTemplateId());
         $sendCount    = count($tokensNested);
