@@ -11,10 +11,9 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Event\Application\TrackFieldDependencyListEvent;
 use Gems\Event\Application\TrackFieldsListEvent;
 use Gems\Html;
-use Gems\Event\Application\NamedArrayEvent;
-use Gems\Event\Application\TranslatableNamedArrayEvent;
 use Gems\Util\Translated;
 use Laminas\Validator\GreaterThan;
 use MUtil\Model\UnionModel;
@@ -688,8 +687,8 @@ class FieldMaintenanceModel extends UnionModel
 
     protected function setAdditionalDependencies()
     {
-        $event = new NamedArrayEvent($this->dependencies);
-        $this->event->dispatch($event, 'gems.tracker.fielddependencies.get');
+        $event = new TrackFieldDependencyListEvent($this->dependencies);
+        $this->event->dispatch($event, TrackFieldDependencyListEvent::class);
         $this->dependencies = $event->getList();
     }
 }
