@@ -28,7 +28,6 @@ use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
 use Zalt\Snippets\TranslatableSnippetAbstract;
-use Zalt\SnippetsHandler\SnippetHandler;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -99,6 +98,15 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      * @var string Id for auto search button
      */
     protected $searchButtonId = 'AUTO_SEARCH_TEXT_BUTTON';
+
+    /**
+     * Array of model name => empty text to allow adding select boxes in a flexible way
+     *
+     * When key is numeric, the value is added to the elements as-is
+     *
+     * @var array
+     */
+    protected array $searchFields = [];
 
     /**
      *
@@ -341,13 +349,24 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      */
     protected function getAutoSearchElements(array $data)
     {
-        if (! $this->textSearchField) {
-            return [];
-        }
-        // Search text
-        $element = $this->form->createElement('text', $this->textSearchField,
+        if ($this->textSearchField) {
+            // Search text
+            $elements[$this->textSearchField] = $this->form->createElement('text', $this->textSearchField,
                 array('label' => $this->searchLabel, 'size' => 20, 'maxlength' => 30));
-        return array($element);
+        } else {
+            $elements = [];
+        }
+
+        // Auto search fields
+        foreach ($this->searchFields as $searchField => $emptyTxt) {
+            if (!is_numeric($searchField)) {
+                $elements[$searchField] = $this->_createSelectElement($searchField, $this->model->getMetaModel()->get($searchField, 'multiOptions'), $emptyTxt);
+            } else {
+                $elements[$searchField] = $emptyTxt;
+            }
+        }
+
+        return $elements;
     }
 
     /**

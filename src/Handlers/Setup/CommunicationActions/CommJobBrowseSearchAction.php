@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Setup\CommunicationActions;
 
-use Gems\Snippets\Agenda\AutosearchFormSnippet;
+use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Snippets\Communication\CommInfoSnippet;
 use Gems\Snippets\Communication\CommJobIndexButtonRowSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;

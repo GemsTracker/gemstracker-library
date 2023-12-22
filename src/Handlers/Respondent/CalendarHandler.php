@@ -114,9 +114,9 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
     /**
      * Get the date format used for the appointment date
      *
-     * @return array
+     * @return string
      */
-    public function getDateFormat()
+    public function getDateFormat(): string
     {
         $model = $this->getModel();
 
@@ -163,7 +163,7 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $where = $this->periodSelectRepository->createPeriodFilter($filter, $this->getDateFormat(),'Y-m-d H:i:s');
+        $where = $this->periodSelectRepository->createPeriodFilter($filter, $this->getDateFormat(),'Y-m-d H:i:s', $this->getSearchDefaults());
 
         if ($where) {
             $filter[] = $where;

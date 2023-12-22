@@ -81,11 +81,12 @@ class PeriodSelectRepository
      * Helper function to generate a period query string
      *
      * @param array $filter A filter array or $request->getParams()
-     * @param $inFormat Optional format to use for date when reading
-     * @param $outFormat Optional format to use for date in query
+     * @param ?string $inFormat Optional format to use for date when reading
+     * @param ?string $outFormat Optional format to use for date in query
+     * @param array $defaults Default values to use when the current are empty
      * @return string
      */
-    public function createPeriodFilter(array &$filter, $inFormat = null, $outFormat = null)
+    public function createPeriodFilter(array &$filter, ?string $inFormat = null, ?string $outFormat = null, array $defaults = [])
     {
         $from   = array_key_exists('datefrom', $filter) ? $filter['datefrom'] : null;
         $until  = array_key_exists('dateuntil', $filter) ? $filter['dateuntil'] : null;
@@ -109,9 +110,9 @@ class PeriodSelectRepository
         if (! $this->lastUsedType) {
             $this->lastUsedType = self::getFormatDataType($outFormat);
         }
-        
-        $datefrom  = $this->dateToString($from, $inFormat, $outFormat);
-        $dateuntil = $this->dateToString($until, $inFormat, $outFormat);
+
+        $datefrom  = $this->dateToString($from, $inFormat, $outFormat, $defaults['datefrom'] ?? null);
+        $dateuntil = $this->dateToString($until, $inFormat, $outFormat, $defaults['dateuntil'] ?? null);
 
         if (! ($datefrom || $dateuntil)) {
             return;
@@ -212,19 +213,29 @@ class PeriodSelectRepository
      * @param mixed $value
      * @param string $inFormat
      * @param string $outFormat
+     * @param mixed $default
      * @return string|null
      */
-    public function dateToString(mixed $value, string $inFormat, string $outFormat): ?string
+    public function dateToString(mixed $value, string $inFormat, string $outFormat, mixed $default): ?string
     {
         if ($value === null) {
-            return null;
+            if ($default === null) {
+                return null;
+            }
+            $value = $default;
         }
         if ($value instanceof DateTimeInterface) {
             $date = $value;
         } else {
             $date = DateTimeImmutable::createFromFormat($inFormat, trim($value));
+            if ((! $date) && $default) {
+                if ($default instanceof DateTimeInterface) {
+                    $date = $default;
+                } else {
+                    $date = DateTimeImmutable::createFromFormat($inFormat, $default);
+                }
+            }
         }
-
         if (! $date) {
             return null;
         }

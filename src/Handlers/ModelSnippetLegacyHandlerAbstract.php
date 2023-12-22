@@ -53,6 +53,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         'onEmpty'         => 'getOnEmptyText',
         'pageItems'       => 'getPageItems',
         'pageNumber'      => 'getPageNumber',
+        'searchFields'    => 'getSearchFields',
         'sortParamAsc'    => 'asrt',
         'sortParamDesc'   => 'dsrt',
         'textSearchField' => 'searchText',
@@ -545,6 +546,16 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     public function getRequestQueryParams(): array
     {
         return $this->request->getQueryParams();
+    }
+
+    /**
+     * Returns the fields for autosearch with labels for the all option
+     *
+     * @return array
+     */
+    public function getSearchFields(): array
+    {
+        return [];
     }
 
     /**

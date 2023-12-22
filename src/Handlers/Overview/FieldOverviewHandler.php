@@ -9,6 +9,7 @@ namespace Gems\Handlers\Overview;
  */
 
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\Type\GemsDateTimeType;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -139,7 +140,9 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         }
 
         // Add the period filter - if any
-        if ($where = $this->periodSelectRepository->createPeriodFilter($filter)) {
+        $type  = new GemsDateTimeType($this->translate);
+        $where = $this->periodSelectRepository->createPeriodFilter($filter, $type->dateFormat, $type->storageFormat, $this->getSearchDefaults());
+        if ($where) {
             $this->autofilterParameters['extraFilter'][] = $where;
         }
 

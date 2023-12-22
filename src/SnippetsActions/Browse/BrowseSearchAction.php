@@ -38,6 +38,15 @@ class BrowseSearchAction extends BrowseFilteredAction
     ];
 
     /**
+     * Array of model name => empty text to allow adding select boxes in a flexible way using the model as source for options
+     *
+     * When key is numeric, the value is added to the elements as-is
+     *
+     * @var array
+     */
+    public array $searchFields = [];
+
+    /**
      * @var array The raw data the search is based on
      */
     public array $searchData = [];

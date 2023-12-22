@@ -13,7 +13,7 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Agenda\Agenda;
 use Gems\Model\AgendaDiagnosisModel;
-use Gems\Snippets\Agenda\AutosearchFormSnippet;
+use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
@@ -44,7 +44,6 @@ class AgendaDiagnosisHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
     protected array $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
         'extraSort'   => ['gad_diagnosis_code' => SORT_ASC, 'gad_description' => SORT_ASC],
-        'searchFields' => 'getSearchFields',
     ];
 
     /**
@@ -151,7 +150,7 @@ class AgendaDiagnosisHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
      *
      * @return array
      */
-    public function getSearchFields()
+    public function getSearchFields(): array
     {
         return [
             'gad_coding_method' => $this->_('(all coding systems)'),

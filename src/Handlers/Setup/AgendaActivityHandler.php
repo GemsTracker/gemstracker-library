@@ -12,7 +12,7 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Model\AgendaActivityModel;
-use Gems\Snippets\Agenda\AutosearchFormSnippet;
+use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
@@ -43,7 +43,6 @@ class AgendaActivityHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
     protected array $autofilterParameters = [
         'columns'      => 'getBrowseColumns',
         'extraSort'    => ['gaa_name' => SORT_ASC],
-        'searchFields' => 'getSearchFields',
     ];
 
     /**
@@ -150,7 +149,7 @@ class AgendaActivityHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
      * 
      * @return array
      */
-    public function getSearchFields()
+    public function getSearchFields(): array
     {
         return [
             'gaa_filter' => $this->_('(all filters)')

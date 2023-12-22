@@ -4,6 +4,7 @@ namespace Gems\Handlers\Overview;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\Type\GemsDateTimeType;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Repository\TrackDataRepository;
@@ -145,7 +146,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
-            $model->addFilter(array('gr2t_id_organization' => $this->currentUser->getRespondentOrgFilter()));
+            $this->autofilterParameters['extraFilter']['gr2t_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         }
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
             $this->autofilterParameters['extraFilter'][1] = 0;
@@ -154,10 +155,10 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         }
 
         // Add the period filter - if any
-        if ($where = $this->periodSelectRepository->createPeriodFilter($filter)) {
-            $model->addFilter(array($where));
+        $type = new GemsDateTimeType($this->translate);
+        if ($where = $this->periodSelectRepository->createPeriodFilter($filter, $type->dateFormat, $type->storageFormat, $this->getSearchDefaults())) {
+            $this->autofilterParameters['extraFilter'][] = $where;
         }
-
         $fields['filler'] = new Expression('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
 
         $select = $this->resultFetcher->getSelect();

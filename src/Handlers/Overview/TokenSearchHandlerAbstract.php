@@ -226,7 +226,7 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
 
         unset($filter['AUTO_SEARCH_TEXT_BUTTON']);
 
-        $where = $this->periodSelectRepository->createPeriodFilter($filter, null, 'Y-m-d H:i:s');
+        $where = $this->periodSelectRepository->createPeriodFilter($filter, null, 'Y-m-d H:i:s', $this->getSearchDefaults());
         if ($where) {
             $filter[] = $where;
         }

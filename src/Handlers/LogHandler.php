@@ -13,6 +13,7 @@ namespace Gems\Handlers;
 
 use DateTimeImmutable;
 use Gems\Model\LogModel;
+use Gems\Model\Type\GemsDateTimeType;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Log\LogSearchSnippet;
@@ -121,8 +122,8 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $where = $this->periodSelectRepository->createPeriodFilter($filter);
-
+        $type  = new GemsDateTimeType($this->translate);
+        $where = $this->periodSelectRepository->createPeriodFilter($filter, $type->dateFormat, $type->storageFormat, $this->getSearchDefaults());
         if ($where) {
             $filter[] = $where;
         }

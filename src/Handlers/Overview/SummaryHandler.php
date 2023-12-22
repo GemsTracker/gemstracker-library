@@ -13,6 +13,7 @@ namespace Gems\Handlers\Overview;
 
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\MetaModelLoader;
+use Gems\Model\Type\GemsDateTimeType;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -156,7 +157,9 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         if (isset($filter['gto_id_track']) && $filter['gto_id_track']) {
             // Add the period filter
-            if ($where = $this->periodSelectRepository->createPeriodFilter($filter)) {
+            $type  = new GemsDateTimeType($this->translate);
+            $where = $this->periodSelectRepository->createPeriodFilter($filter, $type->dateFormat, $type->storageFormat, $this->getSearchDefaults());
+            if ($where) {
                 $select->join('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', [], Select::JOIN_LEFT);
                 $this->autofilterParameters['extraFilter'][] = $where;
             }

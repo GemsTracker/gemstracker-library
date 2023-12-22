@@ -15,6 +15,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Model\CommLogModel;
+use Gems\Model\Type\GemsDateType;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\AutosearchFormSnippet;
 use DateTimeImmutable;
@@ -165,7 +166,8 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $where = $this->periodSelectRepository->createPeriodFilter($filter);
+        $type  = new GemsDateType($this->translate);
+        $where = $this->periodSelectRepository->createPeriodFilter($filter, $type->dateFormat, $type->storageFormat, $this->getSearchDefaults());
         if ($where) {
             $filter[] = $where;
         }
