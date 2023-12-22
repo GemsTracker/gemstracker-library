@@ -10,6 +10,7 @@ use Gems\Auth\Acl\DbRoleAdapter;
 use Gems\Auth\Acl\GroupAdapterInterface;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Cache\CacheFactory;
+use Gems\Cache\HelperAdapter;
 use Gems\Command\ClearConfigCache;
 use Gems\Command\ConsumeMessageCommandFactory;
 use Gems\Command\DebugMessageCommandFactory;
@@ -323,6 +324,7 @@ class ConfigProvider
 
                 // Cache
                 \Symfony\Component\Cache\Adapter\AdapterInterface::class => CacheFactory::class,
+                HelperAdapter::class => CacheFactory::class,
 
                 // Database
                 \PDO::class => PdoFactory::class,
