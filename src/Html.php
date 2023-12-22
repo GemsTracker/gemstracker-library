@@ -14,7 +14,6 @@ namespace Gems;
 use MUtil\Html\Creator;
 use Zalt\Html\AElement;
 use Zalt\Html\ElementInterface;
-use Zalt\Html\ImgElement;
 use Zalt\Late\Late;
 
 /**

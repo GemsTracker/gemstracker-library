@@ -914,10 +914,13 @@ class Tracker implements TrackerInterface
         $tokenSelect = new LaminasTokenSelect($this->unbufferedResultFetcher);
         $tokenSelect->columns(['gto_id_token'])
                     ->onlyActive($quickCheck)
-                    ->forRespondent($respondentId)
                     ->andSurveys(['gsu_surveyor_id'])
                     ->forWhere(['gsu_surveyor_active' => 1])
                     ->order('gsu_surveyor_id');
+
+        if ($respondentId) {
+            $tokenSelect->forRespondent($respondentId);
+        }
 
         if (null !== $orgId) {
             $tokenSelect->forWhere(['gto_id_organization' => $orgId]);
@@ -931,20 +934,22 @@ class Tracker implements TrackerInterface
         if ($resultSet instanceof ResultSet) {
             while ($resultSet->valid()) {
                 $tokenData = $resultSet->current();
-                $tokenId = $tokenData['gto_id_token'];
-                $surveyorId = $tokenData['gsu_surveyor_id'];
-                if ($activeId <> $surveyorId || count($tokens) > $maxCount) {
-                    // Flush
-                    if (count($tokens)> 0) {
-                        $batch->addTask('Tracker\\BulkCheckTokenCompletion', $tokens, $userId);
+                if ($tokenData) {
+                    $tokenId = $tokenData['gto_id_token'];
+                    $surveyorId = $tokenData['gsu_surveyor_id'];
+                    if ($activeId <> $surveyorId || count($tokens) > $maxCount) {
+                        // Flush
+                        if (count($tokens) > 0) {
+                            $batch->addTask('Tracker\\BulkCheckTokenCompletion', $tokens, $userId);
+                        }
+
+                        $activeId = $surveyorId;
+                        $tokens = [];
                     }
+                    $tokens[] = $tokenId;
 
-                    $activeId = $surveyorId;
-                    $tokens = [];
+                    $batch->addToCounter('tokens');
                 }
-                $tokens[] = $tokenId;
-
-                $batch->addToCounter('tokens');
             }
         }
         if (count($tokens)> 0) {

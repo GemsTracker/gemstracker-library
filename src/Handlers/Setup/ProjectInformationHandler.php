@@ -14,6 +14,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Audit\AuditLog;
 use Gems\Cache\HelperAdapter;
 use Gems\Handlers\SnippetLegacyHandlerAbstract;
+use Gems\Html;
 use Gems\Log\ErrorLogger;
 use Gems\Log\Loggers;
 use Gems\Menu\RouteHelper;
@@ -29,7 +30,7 @@ use Mezzio\Session\SessionInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Html\Html;
+use Zalt\Html\UrlArrayAttribute;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -94,6 +95,8 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
     )
     {
         parent::__construct($responder, $translate);
+
+        Html::init();
     }
 
     /**
@@ -162,9 +165,11 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
     {
         $this->html->h2($caption);
 
-        $params = $this->requestInfo->getRequestMatchedParams();
-        if ($emptyLabel && (isset($params[MetaModelInterface::REQUEST_ID]) && 1 == $params[MetaModelInterface::REQUEST_ID]) && file_exists($logFile)) {
-            unlink($logFile);
+        dump($this->requestInfo);
+        $param = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID);
+        if ($emptyLabel && (1 == $param) && file_exists($logFile)) {
+            file_put_contents($logFile, '');
+//            unlink($logFile);
         }
 
         if (file_exists($logFile)) {
@@ -189,7 +194,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             if ($error) {
                 $buttons->actionDisabled($emptyLabel);
             } else {
-                $buttons->actionLink([MetaModelInterface::REQUEST_ID => 1], $emptyLabel);
+                $buttons->actionLink(UrlArrayAttribute::toUrlString([$this->requestInfo->getBasePath(), MetaModelInterface::REQUEST_ID => 1]), $emptyLabel);
             }
         }
 
