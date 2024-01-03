@@ -52,7 +52,7 @@ class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
 
     /**
      *
-     * @var \Gems\Model\JoinModel
+     * @var \Gems\Model\JoinModel|RoundModel
      */
     protected $_model;
 
@@ -80,8 +80,8 @@ class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuSnippetHelper,
         Translator $translate,
-        protected Translated $translatedUtil
-
+        protected Translated $translatedUtil,
+        protected readonly RoundModel $roundModel
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuSnippetHelper, $translate);
         $this->caption = $this->translate->_('Rounds with this condition');
@@ -89,36 +89,26 @@ class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
 
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         if (! $this->_model instanceof RoundModel) {
-            $this->_model = new RoundModel();
+            $this->roundModel->addTable('gems__tracks', ['gro_id_track' => 'gtr_id_track']);
+            $this->roundModel->addTable('gems__surveys', ['gro_id_survey' => 'gsu_id_survey']);
+            $this->roundModel->addLeftTable('gems__groups', ['gsu_id_primary_group' => 'ggp_id_group']);
 
-            $this->_model->addTable('gems__tracks', ['gro_id_track' => 'gtr_id_track']);
-            $this->_model->addTable('gems__surveys', ['gro_id_survey' => 'gsu_id_survey']);
-            $this->_model->addLeftTable('gems__groups', ['gsu_id_primary_group' => 'ggp_id_group']);
+            $this->roundModel->addColumn("CASE WHEN gro_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
-            $this->_model->addColumn("CASE WHEN gro_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
-
-            $this->_model->set('gro_id_round');
-            $this->_model->set('gtr_track_name',        'label', $this->_('Track name'));
-            $this->_model->set('gro_id_order',          'label', $this->_('Round order'));
-            $this->_model->set('gro_round_description', 'label', $this->_('Description'));
-            $this->_model->set('gsu_survey_name',       'label', $this->_('Survey'));
-            $this->_model->set('ggp_name',              'label', $this->_('Assigned to'));
-            $this->_model->set('gro_active',            'label', $this->_('Active'),
+            $this->roundModel->getMetaModel()->set('gro_id_round');
+            $this->roundModel->getMetaModel()->set('gtr_track_name',        'label', $this->_('Track name'));
+            $this->roundModel->getMetaModel()->set('gro_id_order',          'label', $this->_('Round order'));
+            $this->roundModel->getMetaModel()->set('gro_round_description', 'label', $this->_('Description'));
+            $this->roundModel->getMetaModel()->set('gsu_survey_name',       'label', $this->_('Survey'));
+            $this->roundModel->getMetaModel()->set('ggp_name',              'label', $this->_('Assigned to'));
+            $this->roundModel->getMetaModel()->set('gro_active',            'label', $this->_('Active'),
                     'multiOptions', $this->translatedUtil->getYesNo());
+
+            $this->_model = $this->roundModel;
         }
-
-        // Now add the joins so we can sort on the real name
-        //
-
-        // $this->_model->set('gsu_survey_name', $this->_model->get('gro_id_survey'));
 
         return $this->_model;
     }
