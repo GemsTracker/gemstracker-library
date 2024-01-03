@@ -16,7 +16,7 @@ class Locale
             $this->config = $config['locale'];
         }
 
-        $this->currentLanguage = $this->getDefaultLanguage();
+        $this->setCurrentLanguage($this->getDefaultLanguage());
     }
 
     public function getAvailableLanguages(): array
@@ -90,6 +90,7 @@ class Locale
      */
     public function setCurrentLanguage(string $currentLanguage): void
     {
+        \Locale::setDefault($currentLanguage);
         $this->currentLanguage = $currentLanguage;
     }
 }

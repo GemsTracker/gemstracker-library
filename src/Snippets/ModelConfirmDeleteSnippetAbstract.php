@@ -134,7 +134,7 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
         }
 
         // Set correct route
-        if ($output != DeleteModeEnum::Delete) {
+        if ($output !== DeleteModeEnum::Delete) {
             $this->deleteRoute = 'show';
         }
         $route = $this->menuSnippetHelper->getRelatedRoute($this->deleteRoute);

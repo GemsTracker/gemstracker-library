@@ -15,6 +15,7 @@ use Gems\Snippets\ModelConfirmDeleteSnippetAbstract;
 use Gems\Tracker\Model\RoundModel;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\Snippets\DeleteModeEnum;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
 
 /**
@@ -26,7 +27,7 @@ use Zalt\Snippets\ModelBridge\DetailTableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 22-apr-2015 15:32:11
  */
-class RoundDeleteDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
+class RoundDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
 {
     /**
      *
@@ -67,7 +68,7 @@ class RoundDeleteDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
-        if (! $this->model instanceof RoundModel) {
+        if (!$this->model instanceof RoundModel) {
             $this->model = $this->trackEngine->getRoundModel(false, 'index');
         }
 
@@ -79,15 +80,30 @@ class RoundDeleteDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
         return $this->model;
     }
 
+    protected function getDeletionMode(DataReaderInterface $dataModel): DeleteModeEnum
+    {
+        parent::getDeletionMode($dataModel);
+
+        if (
+            $this->deletionMode !== DeleteModeEnum::Block &&
+            $dataModel instanceof RoundModel &&
+            $dataModel->isDeleteable($this->roundId)
+        ) {
+            $this->deletionMode = DeleteModeEnum::Delete;
+        }
+
+        return $this->deletionMode;
+    }
+
+
     /**
      * Set what to do when the form is 'finished'.
      */
-    protected function setAfterDeleteRoute()
+    protected function setAfterActionRoute(): void
     {
         $this->afterActionRouteUrl = $this->menuSnippetHelper->getRouteUrl('track-builder.track-maintenance.show', [
             'trackId' => $this->trackId,
         ]);
-
     }
 
     /**
@@ -105,25 +121,35 @@ class RoundDeleteDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
         if ($dataModel instanceof RoundModel) {
             $refCount = $dataModel->getRefCount($this->roundId);
             if ($refCount) {
-                $this->messenger->addMessage(sprintf($this->plural(
-                    'This round is used %s time in another round.', 'This round is used %s times in other rounds.',
-                    $refCount
-                ), $refCount));
+                $this->messenger->addMessage(
+                    sprintf(
+                        $this->plural(
+                            'This round is used %s time in another round.',
+                            'This round is used %s times in other rounds.',
+                            $refCount
+                        ),
+                        $refCount
+                    )
+                );
             }
-            
+
             $this->useCount = $dataModel->getStartCount($this->roundId);
-            
+
             if ($this->useCount) {
-                $this->messenger->addMessage(sprintf($this->plural(
-                    'This round has been completed %s time.', 'This round has been completed %s times.',
-                    $this->useCount
-                ), $this->useCount));
+                $this->messenger->addMessage(
+                    sprintf(
+                        $this->plural(
+                            'This round has been completed %s time.',
+                            'This round has been completed %s times.',
+                            $this->useCount
+                        ),
+                        $this->useCount
+                    )
+                );
             }
 
             if ($refCount || $this->useCount) {
                 $this->messenger->addMessage($this->_('This round cannot be deleted, only deactivated.'));
-                $this->question = $this->_('Do you want to deactivate this round?');
-                // $this->displayTitle   = $this->_('Deactivate round');
             }
         }
 

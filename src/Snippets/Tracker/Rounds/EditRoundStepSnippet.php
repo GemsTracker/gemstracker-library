@@ -48,7 +48,17 @@ class EditRoundStepSnippet extends EditRoundSnippetAbstract
         CurrentUserRepository $currentUserRepository,
         protected Locale $locale,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper, $tracker, $trackDataRepository, $currentUserRepository);
+        parent::__construct(
+            $snippetOptions,
+            $requestInfo,
+            $translate,
+            $messenger,
+            $auditLog,
+            $menuHelper,
+            $tracker,
+            $trackDataRepository,
+            $currentUserRepository
+        );
     }
 
     /**
@@ -61,8 +71,13 @@ class EditRoundStepSnippet extends EditRoundSnippetAbstract
         parent::loadFormData();
 
         if ($this->trackEngine instanceof StepEngineAbstract) {
-            if ($this->trackEngine->updateRoundModelToItem($this->getModel(), $this->formData, $this->locale->getLanguage())) {
-
+            if (
+                $this->trackEngine->updateRoundModelToItem(
+                    $this->getModel()->getMetaModel(),
+                    $this->formData,
+                    $this->locale->getLanguage()
+                )
+            ) {
                 if (isset($this->formData[$this->saveButtonId])) {
                     // Disable validation & save
                     unset($this->formData[$this->saveButtonId]);
