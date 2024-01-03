@@ -69,12 +69,12 @@ class TrackDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
 
     protected function getDeletionMode(DataReaderInterface $dataModel): DeleteModeEnum
     {
-        $output = parent::getDeletionMode($dataModel);
+        $this->deletionMode = parent::getDeletionMode($dataModel);
 
         if ($dataModel instanceof TrackModel) {
             $this->useCount = $dataModel->getStartCount($this->trackId);
 
-            if ($this->useCount) {
+            if ($this->useCount !== 0) {
                 $this->messenger->addMessage(sprintf($this->plural(
                     'This track has been started %s time.', 'This track has been started %s times.',
                     $this->useCount
@@ -82,13 +82,19 @@ class TrackDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
                 $this->messenger->addMessage($this->_('This track cannot be deleted, only deactivated.'));
 
                 $this->question = $this->_('Do you want to deactivate this track?');
-                // $this->displayTitle   = $this->_('Deactivate track');
 
-                $output = DeleteModeEnum::Activate;
+                $this->deletionMode = DeleteModeEnum::Activate;
+            } else {
+                $this->deletionMode = DeleteModeEnum::Delete;
             }
         }
 
-        return $output;
+        return $this->deletionMode;
+    }
+
+    protected function setAfterActionRoute(): void
+    {
+        $this->afterActionRouteUrl = $this->menuSnippetHelper->getRouteUrl('track-builder.track-maintenance.index');
     }
 
     /**
