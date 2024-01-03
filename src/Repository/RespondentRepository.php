@@ -33,7 +33,8 @@ class RespondentRepository
         int $organizationId,
         bool $pairs = true,
         bool $combined = false,
-        bool $withOrganizationName = false
+        bool $withOrganizationName = false,
+        int|null $userOrganizationId = null,
     ): array
     {
         $subSelect = $this->resultFetcher->getSelect('gems__respondent2org')
@@ -60,6 +61,8 @@ class RespondentRepository
             $organizationColumns['organizationName'] = 'gor_name';
         }
 
+        $accessibleById = $userOrganizationId ?? $organizationId;
+
         $select = $this->resultFetcher->getSelect('gems__respondent2org')
             ->join('gems__organizations', 'gor_id_organization = gr2o_id_organization', $organizationColumns)
             ->join('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', [])
@@ -69,7 +72,7 @@ class RespondentRepository
                 'gr2o_id_user' => $subSelect,
                 new PredicateSet([
                     $currentOrganizationPredicate,
-                    new Like('gor_accessible_by', '%'.$organizationId.'%'),
+                    new Like('gor_accessible_by', '%'.$accessibleById.'%'),
                 ], PredicateSet::COMBINED_BY_OR),
             ]);
 
@@ -140,7 +143,6 @@ class RespondentRepository
             }
         }
         $newResp = $this->overLoader->create('Tracker\\Respondent', $patientId, $organizationId, $respondentId);
-        $patientId = $newResp->getPatientNumber();
 
         if (! isset($this->respondents[$organizationId][$patientId])) {
             $this->respondents[$organizationId][$patientId] = $newResp;
