@@ -950,6 +950,7 @@ class Tracker implements TrackerInterface
 
                     $batch->addToCounter('tokens');
                 }
+                $resultSet->next();
             }
         }
         if (count($tokens)> 0) {
