@@ -45,7 +45,7 @@ class HelperAdapter extends TagAwareAdapter
     public function setCacheItem(string $key, mixed $value, array|string $tag=null,
         DateInterval|int|null$expiresAfter=null)
     {
-        $item = $this->pool->getItem($key);
+        $item = $this->getItem($key);
         if ($tag !== null && $item instanceof CacheItem) {
             try {
                 $item->tag($tag);
@@ -55,6 +55,6 @@ class HelperAdapter extends TagAwareAdapter
             $item->expiresAfter($expiresAfter);
         }
         $item->set($value);
-        $this->pool->save($item);
+        $this->save($item);
     }
 }
