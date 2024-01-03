@@ -72,11 +72,6 @@ class RoundDeleteSnippet extends ModelConfirmDeleteSnippetAbstract
             $this->model = $this->trackEngine->getRoundModel(false, 'index');
         }
 
-        // Now add the joins so we can sort on the real name
-        // $this->model->addTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
-
-        // $this->model->set('gsu_survey_name', $this->model->get('gro_id_survey'));
-
         return $this->model;
     }
 

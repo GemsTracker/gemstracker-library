@@ -14,7 +14,6 @@ namespace Gems\Snippets\Tracker\Rounds;
 use Gems\Condition\ConditionInterface;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Menu\MenuSnippetHelper;
-use Gems\Menu\RouteHelper;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker\Model\RoundModel;
 use Gems\Util\Translated;

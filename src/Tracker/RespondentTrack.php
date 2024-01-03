@@ -588,7 +588,7 @@ class RespondentTrack
             $this->maskRepository->disableMaskRepository();
             $this->refresh();
             if ($this->_respondentObject) {
-                $this->_respondentObject->refresh();;
+                $this->_respondentObject->refresh();
             }
         }
         // Execute any defined functions

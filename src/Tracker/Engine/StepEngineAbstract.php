@@ -705,7 +705,8 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
             $metaModel->set('gro_valid_after_length', [
                 'label' => $this->translator->_('Add to date'),
                 'description' => $this->translator->_('Can be negative'),
-                'required' => false,
+                'required' => true,
+                'default' => 10,
                 'filter' => new NumberFormat(),
                 'validator' => new IsInt()
             ]);
@@ -768,7 +769,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
             $metaModel->set('gro_valid_for_length', [
                 'label' => $this->translator->_('Add to date'),
                 'description' => $this->translator->_('Can be negative'),
-                'required' => false,
+                'required' => true,
                 'default' => 2,
                 'filter' => new NumberFormat(),
                 'validator' => new IsInt()
