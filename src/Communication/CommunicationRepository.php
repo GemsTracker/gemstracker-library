@@ -5,6 +5,7 @@ namespace Gems\Communication;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
+use Gems\Helper\Env;
 use Gems\Mail\MailBouncer;
 use Gems\Mail\ManualMailerFactory;
 use Gems\Mail\OrganizationMailFields;
@@ -365,7 +366,7 @@ class CommunicationRepository
     public function getTransports(): array
     {
         $transports = [];
-        $dsn = getenv('MAILER_DSN');
+        $dsn = Env::get('MAILER_DSN');
         if (!$dsn) {
             $dsn = $this->config['email']['dsn'] ?? null;
         }

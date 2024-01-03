@@ -2,6 +2,8 @@
 
 namespace Gems\Config;
 
+use Gems\Helper\Env;
+
 class App
 {
     public function __invoke(): array
@@ -9,8 +11,8 @@ class App
         return [
             'name' => 'GemsTracker',
             'description' => 'GEneric Medical Survey Tracker',
-            'env' => getenv('APP_ENV'),
-            'key' => getenv('APP_KEY'),
+            'env' => Env::get('APP_ENV', 'production'),
+            'key' => Env::get('APP_KEY'),
         ];
     }
 }

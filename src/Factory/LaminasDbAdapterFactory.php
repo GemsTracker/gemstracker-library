@@ -2,6 +2,7 @@
 
 namespace Gems\Factory;
 
+use Gems\Db\ConfigRepository;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
@@ -55,7 +56,10 @@ class LaminasDbAdapterFactory implements FactoryInterface
             }
         }
 
-        $config = $container->get('config');
-        return new Adapter($config['db'], null, null, $profiler);
+        /**
+         * @var ConfigRepository $config
+         */
+        $config = $container->get(ConfigRepository::class);
+        return new Adapter($config->getConfig(), null, null, $profiler);
     }
 }

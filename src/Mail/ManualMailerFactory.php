@@ -3,6 +3,7 @@
 namespace Gems\Mail;
 
 use Gems\Db\ResultFetcher;
+use Gems\Helper\Env;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\Like;
@@ -49,15 +50,7 @@ class ManualMailerFactory
             return $dsn;
         }
 
-        if (getenv('MAILER_DSN')) {
-            return getenv('MAILER_DSN');
-        }
-
-        if (isset($this->config['dsn'])) {
-            return $this->config['dsn'];
-        }
-
-        return $this->defaultDsn;
+        return Env::get('MAILER_DSN', $this->config['dsn'] ?? $this->defaultDsn);
     }
 
     protected function getMailServerInfo(?string $from): ?array

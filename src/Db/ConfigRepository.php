@@ -2,6 +2,8 @@
 
 namespace Gems\Db;
 
+use Gems\Helper\Env;
+
 class ConfigRepository
 {
     public function __construct(
@@ -14,11 +16,11 @@ class ConfigRepository
     {
         return [
             'driver'    => 'pdo_mysql',
-            'dsn'       => getenv('DB_DSN') ? getenv('DB_DSN') : $this->config['db']['dsn'] ?? null,
-            'host'      => getenv('DB_HOST') ? getenv('DB_HOST') : $this->config['db']['host'] ?? null,
-            'username'  => getenv('DB_USER') ? getenv('DB_USER') : $this->config['db']['username'] ?? null,
-            'password'  => getenv('DB_PASS') ? getenv('DB_PASS') : $this->config['db']['password'] ?? null,
-            'database'  => getenv('DB_NAME') ? getenv('DB_NAME') : $this->config['db']['database'] ?? null,
+            'dsn'       => Env::get('DB_DSN', $this->config['db']['dsn'] ?? null),
+            'host'      => Env::get('DB_HOST', $this->config['db']['host'] ?? null),
+            'username'  => Env::get('DB_USER', $this->config['db']['username'] ?? null),
+            'password'  => Env::get('DB_PASS', $this->config['db']['password'] ?? null),
+            'database'  => Env::get('DB_NAME', $this->config['db']['database'] ?? null),
             'options'   => $this->config['db']['options'] ?? [],
         ];
     }

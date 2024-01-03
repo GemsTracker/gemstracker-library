@@ -283,10 +283,10 @@ class ConfigProvider
     {
         return [
             'driver'    => 'pdo_mysql',
-            'host'      => getenv('DB_HOST') ?? null,
-            'username'  => getenv('DB_USER') ?? null,
-            'password'  => getenv('DB_PASS') ?? null,
-            'database'  => getenv('DB_NAME') ?? null,
+            'host'      => $_ENV['DB_HOST'] ?? null,
+            'username'  => $_ENV['DB_USER'] ?? null,
+            'password'  => $_ENV['DB_PASS'] ?? null,
+            'database'  => $_ENV['DB_NAME'] ?? null,
         ];
     }
 

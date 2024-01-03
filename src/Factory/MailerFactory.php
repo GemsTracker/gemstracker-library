@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Gems\Factory;
 
+use Gems\Helper\Env;
 use Gems\Mail\MailBouncer;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -31,12 +32,9 @@ class MailerFactory implements FactoryInterface
 
     protected function getTransport(array $config): TransportInterface
     {
-        $envDsn = getenv('MAILER_DSN') ? getenv('MAILER_DSN') : null;
-        if ($envDsn) {
-            return Transport::fromDsn($envDsn);
-        }
-        if (isset($config['mail']['dsn'])) {
-            return Transport::fromDsn($config['mail']['dsn']);
+        $dsn = Env::get('MAILER_DSN',$config['mail']['dsn'] ?? null);
+        if ($dsn) {
+            return Transport::fromDsn($dsn);
         }
 
         return new SendmailTransport();
