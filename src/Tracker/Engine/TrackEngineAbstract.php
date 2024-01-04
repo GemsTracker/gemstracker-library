@@ -14,6 +14,7 @@ namespace Gems\Tracker\Engine;
 use Gems\Condition\ConditionLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Exception;
+use Gems\Model;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Task\TaskRunnerBatch;
@@ -41,9 +42,13 @@ use MUtil\EchoOut\EchoOut;
 use MUtil\Model\Type\ConcatenatedRow;
 use MUtil\Registry\TargetAbstract;
 use MUtil\Translate\Translator;
+use Zalt\Html\ImgElement;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Dependency\DependencyInterface;
 use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\Model\Type\ActivatingYesNoType;
+use Zalt\Model\Type\ConcatenatedType;
 use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
@@ -104,8 +109,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
         protected readonly TrackDataRepository $trackDataRepository,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly Translated $translatedUtil,
-    )
-    {
+    ) {
         $this->_trackData = $trackData;
         $this->_trackId   = $trackData['gtr_id_track'];
 
@@ -479,14 +483,13 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
     }
 
     /**
-     * Create model for rounds. Allowes overriding by sub classes.
+     * Create model for rounds. Allows overriding by subclasses.
      *
      * @return RoundModel
      */
     protected function createRoundModel(): RoundModel
     {
-        $roundModel = new RoundModel();
-        return $roundModel;
+        return $this->overloader->create(RoundModel::class);
     }
 
     /**
@@ -809,54 +812,63 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
      */
     public function getRoundModel(bool $detailed, string $action): RoundModel
     {
-        $model      = $this->createRoundModel();
+        $model = $this->createRoundModel();
+        $metaModel = $model->getMetaModel();
 
         // Set the keys to the parameters in use.
-        $model->setKeys([
-            \MUtil\Model::REQUEST_ID => 'gro_id_track',
+        $metaModel->setKeys([
+            MetaModelInterface::REQUEST_ID => 'gro_id_track',
             \Gems\Model::ROUND_ID => 'gro_id_round'
         ]);
 
         if ($detailed) {
-            $model->set('gro_id_track', [
+            $metaModel->set('gro_id_track', [
                 'label' => $this->translator->_('Track'),
                 'elementClass' => 'exhibitor',
                 'multiOptions' => $this->trackDataRepository->getAllTracks(),
             ]);
         }
 
-        $model->set('gro_id_survey',         'label', $this->translator->_('Survey'),
-                'multiOptions', $this->trackDataRepository->getAllSurveysAndDescriptions()
-                );
-        $model->set('gro_icon_file',         'label', $this->translator->_('Icon'));
-        $model->set('gro_id_order',          'label', $this->translator->_('Order'),
-                'default', 10,
-                'filters[digits]', 'Digits',
-                'required', true,
-                'validators[uni]', [ModelUniqueValidator::class, true, ['with' => 'gro_id_track']]
-                );
-        $model->set('gro_round_description', 'label', $this->translator->_('Description'),
-                'size', '30'
-                );
+        $metaModel->set('gro_id_survey', [
+            'label' => $this->translator->_('Survey'),
+            'multiOptions' => $this->trackDataRepository->getAllSurveysAndDescriptions()
+        ]);
+        $metaModel->set('gro_icon_file', ['label' => $this->translator->_('Icon')]);
+        $metaModel->set('gro_id_order', [
+            'label' => $this->translator->_('Order'),
+            'default' => 10,
+            'filters[digits]' => 'Digits',
+            'required' => true,
+            'validators[uni]' => [ModelUniqueValidator::class, true, ['with' => 'gro_id_track']]
+        ]);
+        $metaModel->set('gro_round_description', [
+            'label' => $this->translator->_('Description'),
+            'size' => '30'
+        ]);
 
         $list = $this->trackEvents->listRoundChangedEvents();
         if (count($list) > 1) {
-            $model->set('gro_changed_event', 'label', $this->translator->_('After change'),   'multiOptions', $list);
+            $metaModel->set('gro_changed_event', [
+                'label' => $this->translator->_('After change'),
+                'multiOptions' => $list
+            ]);
         }
         $list = $this->trackEvents->listSurveyDisplayEvents();
         if (count($list) > 1) {
-            $model->set('gro_display_event', 'label', $this->translator->_('Answer display'),
-                    'multiOptions', $list
-                    );
+            $metaModel->set('gro_display_event', [
+                'label' => $this->translator->_('Answer display'),
+                'multiOptions' => $list
+            ]);
         }
-        $model->set('gro_active',            'label', $this->translator->_('Active'),
-                'elementClass', 'checkbox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
-        $model->setIfExists('gro_code',      'label', $this->translator->_('Round code'),
-                'description', $this->translator->_('Optional code name to link the field to program code.'),
-                'size', 10
-                );
+        $metaModel->set('gro_active', [
+            'label' => $this->translator->_('Active'),
+            'type' => new ActivatingYesNoType($this->translatedUtil->getYesNo(), 'row_class'),
+        ]);
+        $metaModel->setIfExists('gro_code', [
+            'label' => $this->translator->_('Round code'),
+            'description' => $this->translator->_('Optional code name to link the field to program code.'),
+            'size' => 10
+        ]);
 
         $model->addColumn(
             "CASE WHEN gro_active = 1 THEN '' ELSE 'deleted' END",
@@ -866,52 +878,58 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
             'org_specific_round');
         $model->addColumn('gro_organizations', 'organizations');
 
-        $model->set('organizations', 'label', $this->translator->_('Organizations'),
-                'elementClass', 'MultiCheckbox',
-                'multiOptions', $this->organizationRepository->getOrganizations(),
-                'data-source', 'org_specific_round'
-                );
-        $tp = new ConcatenatedRow('|', $this->translator->_(', '));
-        $tp->apply($model, 'organizations');
+        $metaModel->set('organizations', [
+            'label' => $this->translator->_('Organizations'),
+            'elementClass' => 'MultiCheckbox',
+            'multiOptions' => $this->organizationRepository->getOrganizations(),
+            'data-source' => 'org_specific_round',
+            'type' => new ConcatenatedType('|', $this->translator->_(', '))
+        ]);
 
-        $model->set('gro_condition',
-                'label', $this->translator->_('Condition'),
-                'autoSubmit', true,
-                'elementClass', 'Select',
-                'multiOptions', $this->conditionLoader->getConditionsFor(ConditionLoader::ROUND_CONDITION)
-                );
+        $metaModel->set('gro_condition', [
+            'label' => $this->translator->_('Condition'),
+            'autoSubmit' => true,
+            'elementClass' => 'Select',
+            'multiOptions' => $this->conditionLoader->getConditionsFor(ConditionLoader::ROUND_CONDITION)
+        ]);
 
-        $model->set('condition_display', 'label', $this->translator->_('Condition help'), 'elementClass', 'Hidden', 'no_text_search', true, 'noSort', true);
+        $metaModel->set('condition_display', [
+            'label' => $this->translator->_('Condition help'),
+            'elementClass' => 'Hidden',
+            'no_text_search' => true,
+            'noSort' => true,
+            SqlRunnerInterface::NO_SQL => true,
+        ]);
 
-        $model->addDependency('Condition\\RoundDependency');
+        $metaModel->addDependency('Condition\\RoundDependency');
 
         switch ($action) {
             case 'create':
                 $this->_ensureRounds();
 
                 if ($this->_rounds && ($round = end($this->_rounds))) {
-                    $model->set('gro_id_order', 'default', $round['gro_id_order'] + 10);
+                    $metaModel->set('gro_id_order', ['default' => $round['gro_id_order'] + 10]);
                 }
 
                 // Intentional fall through
                 // break;
             case 'edit':
             case 'show':
-            	$model->set('gro_icon_file',
-                        'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->_getAvailableIcons()
-                        );
-                $model->set('org_specific_round', [
+                $metaModel->set('gro_icon_file', [
+                    'multiOptions' => $this->translatedUtil->getEmptyDropdownArray() + $this->_getAvailableIcons()
+                ]);
+                $metaModel->set('org_specific_round', [
                     'label' => $this->translator->_('Organization specific round'),
                     'default' => 0,
                     'multiOptions' => $this->translatedUtil->getYesNo(),
                     'elementClass' => 'radio',
                     'autoSubmit' => true
-                    ]);
+                ]);
 
                 break;
 
             default:
-                $model->set('gro_icon_file', 'formatFunction', array('\\MUtil\\Html\\ImgElement', 'imgFile'));
+                $metaModel->set('gro_icon_file', ['formatFunction' => [ImgElement::class, 'imgFile']]);
                 break;
 
         }

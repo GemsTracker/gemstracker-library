@@ -149,8 +149,9 @@ class AnyStepEngine extends StepEngineAbstract
     {
         $model = parent::getRoundModel($detailed, $action);
 
-        $model->set('gro_valid_for_id',
-                'default', '0');
+        $model->getMetaModel()->set('gro_valid_for_id', [
+            'default' => '0'
+        ]);
 
         return $model;
     }

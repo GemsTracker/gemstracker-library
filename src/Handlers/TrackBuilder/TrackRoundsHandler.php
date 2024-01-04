@@ -13,6 +13,7 @@ namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Db\ResultFetcher;
 use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\Tracker\Rounds\RoundDeleteSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\RoundModel;
 use MUtil\Model;
@@ -77,7 +78,7 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $deleteSnippets = ['Tracker\\Rounds\\RoundDeleteSnippet'];
+    protected array $deleteSnippets = [RoundDeleteSnippet::class];
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -162,29 +163,18 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
     public function createModel(bool $detailed, string $action): RoundModel
     {
         $trackEngine = $this->getTrackEngine();
-        $trackId     = $trackEngine->getTrackId();
+        $trackId = $trackEngine->getTrackId();
 
-        $model = $trackEngine->getRoundModel($detailed, $action);
-        $model->set('gro_id_track', 'default', $trackId);
+        $roundModel = $trackEngine->getRoundModel($detailed, $action);
+
+        $roundModel->setDefaultTrackId($trackId);
         $this->defaultParameters['extraFilter'] = ['gro_id_track' => $trackId];
 
-        if ($detailed) {
-            if ($action == 'create') {
-                // Set the default round order
-                $newOrder = $this->resultFetcher->fetchOne(
-                    "SELECT MAX(gro_id_order) FROM gems__rounds WHERE gro_id_track = ?",
-                    [$trackId]
-                );
-
-                if ($newOrder) {
-                    $model->set('gro_id_order', 'default', $newOrder + 10);
-                } else {
-                    $model->set('gro_valid_after_source', 'default', 'rtr');
-                }
-            }
+        if ($detailed && $action === 'create') {
+            $roundModel->setDefaultOrder($trackId);
         }
 
-        return $model;
+        return $roundModel;
     }
 
     /**

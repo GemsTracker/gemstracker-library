@@ -92,9 +92,9 @@ class RoundDependency extends DependencyAbstract
                 $condition = $this->conditionLoader->loadCondition($context['gro_condition']);
                 $callback  = [$condition, 'isValid'];
                 $validator = new Callback($callback);
-                $validator->setMessage($condition->getNotValidReason($context['gro_condition'], $context), $validator::INVALID_VALUE);                    
+                $validator->setMessage($condition->getNotValidReason($context['gro_condition'], $context), $validator::INVALID_VALUE);
 
-                return [                
+                return [
                     'condition_display' => [
                         'elementClass' => 'Exhibitor',
                         'value' => $condition->getRoundDisplay((int)$context['gro_id_track'], (int)$context['gro_id_round'])
@@ -112,11 +112,11 @@ class RoundDependency extends DependencyAbstract
                 ];
             }
         }
-        
-        return [ 
+
+        return [
             'condition_display' => [
                 'elementClass' => 'Hidden',
-                'value' => null                
+                'value' => ''
             ]
         ];
     }

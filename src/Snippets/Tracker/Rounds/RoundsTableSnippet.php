@@ -98,21 +98,23 @@ class RoundsTableSnippet extends ModelTableSnippetAbstract
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        // Make sure these fields are loaded
-        $dataModel->get('gro_valid_after_field');
-        $dataModel->get('gro_valid_after_id');
-        $dataModel->get('gro_valid_after_length');
-        $dataModel->get('gro_valid_after_source');
-        $dataModel->get('gro_valid_after_unit');
+        $metaModel = $dataModel->getMetaModel();
 
-        $dataModel->get('gro_valid_for_field');
-        $dataModel->get('gro_valid_for_id');
-        $dataModel->get('gro_valid_for_length');
-        $dataModel->get('gro_valid_for_source');
-        $dataModel->get('gro_valid_for_unit');
+        // Make sure these fields are loaded
+        $metaModel->get('gro_valid_after_field');
+        $metaModel->get('gro_valid_after_id');
+        $metaModel->get('gro_valid_after_length');
+        $metaModel->get('gro_valid_after_source');
+        $metaModel->get('gro_valid_after_unit');
+
+        $metaModel->get('gro_valid_for_field');
+        $metaModel->get('gro_valid_for_id');
+        $metaModel->get('gro_valid_for_length');
+        $metaModel->get('gro_valid_for_source');
+        $metaModel->get('gro_valid_for_unit');
 
         // We want to markt the row for inactive surveys so it visually stands out
-        $dataModel->get('gsu_active');
+        $metaModel->get('gsu_active');
 //        $bridge->tr()->appendAttrib('class', \MUtil\Lazy::iif(
 //            $bridge->gsu_active,
 //            '',
@@ -145,16 +147,11 @@ class RoundsTableSnippet extends ModelTableSnippetAbstract
         return parent::cleanUpFilter($filter, $metaModel);
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof RoundModel) {
             $this->model = $this->trackEngine->getRoundModel(false, 'index');
-            $this->model->setKeys(['rid' => 'gro_id_round']);
+            $this->model->getMetaModel()->setKeys(['rid' => 'gro_id_round']);
         }
         $this->extraFilter['gro_id_track'] = $this->trackEngine->getTrackId();
 
@@ -178,10 +175,10 @@ class RoundsTableSnippet extends ModelTableSnippetAbstract
         $this->columns[50] = [$fromHeader,'gro_valid_after_field', $sp, 'gro_valid_after_source', $sp, 'gro_valid_after_id'];
         $this->columns[60] = [$untilHeader, 'gro_valid_for_field', $sp, 'gro_valid_for_source', $sp, 'gro_valid_for_id'];
         $this->columns[70] = ['gro_active'];
-        if ($label = $this->model->get('gro_changed_event', 'label')) {
+        if ($this->model->getMetaModel()->get('gro_changed_event', 'label')) {
             $this->columns[80] = ['gro_changed_event'];
         }
-        if ($label = $this->model->get('gro_changed_event', 'label')) {
+        if ($this->model->getMetaModel()->get('gro_changed_event', 'label')) {
             $this->columns[90] = ['gro_display_event'];
         }
         $this->columns[100] = ['gro_code'];

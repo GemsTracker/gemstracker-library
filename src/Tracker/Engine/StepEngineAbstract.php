@@ -36,7 +36,10 @@ use Gems\Tracker\TrackEvents;
 use Gems\Translate\DbTranslationRepository;
 use Gems\User\User;
 use Gems\Util\Translated;
+use Laminas\Db\Sql\Expression;
 use Laminas\Filter\Digits;
+use Laminas\I18n\Filter\NumberFormat;
+use Laminas\I18n\Validator\IsInt;
 use MUtil\Model\TableModel;
 use MUtil\Ra;
 use MUtil\Translate\Translator;
@@ -644,165 +647,170 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     public function getRoundModel(bool $detailed, string $action): RoundModel
     {
         $model = parent::getRoundModel($detailed, $action);
+        $metaModel = $model->getMetaModel();
 
         // Add information about surveys and groups
         $model->addLeftTable('gems__surveys', ['gro_id_survey' => 'gsu_id_survey']);
         $model->addLeftTable('gems__groups', ['gsu_id_primary_group' => 'ggp_id_group']);
-        $model->addLeftTable('gems__track_fields', ['gro_id_relationfield = gtf_id_field'], 'gtf', false);
+        $model->addLeftTable('gems__track_fields', ['gro_id_relationfield = gtf_id_field'], false, 'gtf');
 
-        $model->addColumn(new \Zend_Db_Expr('COALESCE(gtf_field_name, ggp_name)'), 'ggp_name');
-        $model->set('ggp_name', 'label', $this->translator->_('Assigned to'));
+        $model->addColumn(new Expression('COALESCE(gtf_field_name, ggp_name)'), 'ggp_name');
+        $metaModel->set('ggp_name', ['label' => $this->translator->_('Assigned to')]);
 
         // Reset display order to class specific order
-        $model->resetOrder();
+        $metaModel->resetOrder();
         if (! $detailed) {
-            $model->set('gro_id_order');
+            $metaModel->set('gro_id_order');
         }
-        $model->set('gro_id_track');
-        $model->set('gro_id_survey');
-        $model->set('gro_round_description');
+        $metaModel->set('gro_id_track');
+        $metaModel->set('gro_id_survey');
+        $metaModel->set('gro_round_description');
         if ($detailed) {
-            $model->set('gro_id_order');
+            $metaModel->set('gro_id_order');
         }
-        $model->set('gro_icon_file');
+        $metaModel->set('gro_icon_file');
 
         // Calculate valid from
         if ($detailed) {
             $html = \Zalt\Html\Html::create()->h4($this->translator->_('Valid from calculation'));
-            $model->set('valid_after',
-                    'default', $html,
-                    'label', ' ',
-                    'elementClass', 'html',
-                    'value', $html
-                    );
+            $metaModel->set('valid_after', [
+                'default' => $html,
+                'label' => ' ',
+                'elementClass' => 'html',
+                'value' => $html
+            ]);
         }
-        $model->set('gro_valid_after_source',
-                'label', $this->translator->_('Date source'),
-                'default', self::TOKEN_TABLE,
-                'elementClass', 'Radio',
-                'escape', false,
-                'required', true,
-                'autoSubmit', true,
-                'multiOptions', $this->getSourceList(true, false, false)
-                );
-        $model->set('gro_valid_after_id',
-                'label', $this->translator->_('Round used'),
-                'autoSubmit', true
-                );
+        $metaModel->set('gro_valid_after_source', [
+            'label' => $this->translator->_('Date source'),
+            'default' => self::TOKEN_TABLE,
+            'elementClass' => 'Radio',
+            'escape' => false,
+            'required' => true,
+            'autoSubmit' => true,
+            'multiOptions' => $this->getSourceList(true, false, false)
+        ]);
+        $metaModel->set('gro_valid_after_id', [
+            'label' => $this->translator->_('Round used'),
+            'autoSubmit' => true
+        ]);
 
         if ($detailed) {
             $periodUnits = $this->translatedUtil->getPeriodUnits();
 
-            $model->set('gro_valid_after_field',
-                    'label', $this->translator->_('Date used'),
-                    'default', 'gto_valid_from',
-                    'autoSubmit', true
-                    );
-            $model->set('gro_valid_after_length',
-                    'label', $this->translator->_('Add to date'),
-                    'description', $this->translator->_('Can be negative'),
-                    'required', false,
-                    'filter', Digits::class
-                    );
-            $model->set('gro_valid_after_unit',
-                    'label', $this->translator->_('Add to date unit'),
-                    'multiOptions', $periodUnits
-                    );
+            $metaModel->set('gro_valid_after_field', [
+                'label' => $this->translator->_('Date used'),
+                'default' => 'gto_valid_from',
+                'autoSubmit' => true
+            ]);
+            $metaModel->set('gro_valid_after_length', [
+                'label' => $this->translator->_('Add to date'),
+                'description' => $this->translator->_('Can be negative'),
+                'required' => true,
+                'default' => 10,
+                'filter' => new NumberFormat(),
+                'validator' => new IsInt()
+            ]);
+            $metaModel->set('gro_valid_after_unit', [
+                'label' => $this->translator->_('Add to date unit'),
+                'multiOptions' => $periodUnits
+            ]);
         } else {
-            $model->set('gro_valid_after_source',
-                    'label', $this->translator->_('Source'),
-                    'tableDisplay', 'small'
-                    );
-            $model->set('gro_valid_after_id', 'label', $this->translator->_('Round'),
-                    'multiOptions', $this->getRoundTranslations(),
-                    'tableDisplay', 'small'
-                    );
-            $model->setOnLoad('gro_valid_after_id', array($this, 'displayRoundId'));
-            $model->set('gro_valid_after_field',
-                    'label', $this->translator->_('Date calculation'),
-                    'tableHeaderDisplay', 'small'
-                    );
-            $model->setOnLoad('gro_valid_after_field', array($this, 'displayDateCalculation'));
-            $model->set('gro_valid_after_length');
-            $model->set('gro_valid_after_unit');
+            $metaModel->set('gro_valid_after_source', [
+                'label' => $this->translator->_('Source'),
+                'tableDisplay' => 'small'
+            ]);
+            $metaModel->set('gro_valid_after_id', [
+                'label' => $this->translator->_('Round'),
+                'multiOptions' => $this->getRoundTranslations(),
+                'tableDisplay' => 'small'
+            ]);
+            $metaModel->setOnLoad('gro_valid_after_id', [$this, 'displayRoundId']);
+            $metaModel->set('gro_valid_after_field', [
+                'label' => $this->translator->_('Date calculation'),
+                'tableHeaderDisplay' => 'small',
+            ]);
+            $metaModel->setOnLoad('gro_valid_after_field', [$this, 'displayDateCalculation']);
+            $metaModel->set('gro_valid_after_length');
+            $metaModel->set('gro_valid_after_unit');
         }
 
         if ($detailed) {
             // Calculate valid until
             $html = \Zalt\Html\Html::create()->h4($this->translator->_('Valid for calculation'));
-            $model->set('valid_for',
-                    'label', ' ',
-                    'default', $html,
-                    'elementClass', 'html',
-                    'value', $html
-                    );
+            $metaModel->set('valid_for', [
+                'label' => ' ',
+                'default' => $html,
+                'elementClass' => 'html',
+                'value' => $html
+            ]);
         }
 
-        $model->set('gro_valid_for_source',
-                'label', $this->translator->_('Date source'),
-                'default', self::TOKEN_TABLE,
-                'elementClass', 'Radio',
-                'escape', false,
-                'required', true,
-                'autoSubmit', true,
-                'multiOptions', $this->getSourceList(false, false, false)
-                );
-        $model->set('gro_valid_for_id',
-                'label', $this->translator->_('Round used'),
-                'default', '',
-                'autoSubmit', true,
-                );
+        $metaModel->set('gro_valid_for_source', [
+            'label' => $this->translator->_('Date source'),
+            'default' => self::TOKEN_TABLE,
+            'elementClass' => 'Radio',
+            'escape' => false,
+            'required' => true,
+            'autoSubmit' => true,
+            'multiOptions' => $this->getSourceList(false, false, false)
+        ]);
+        $metaModel->set('gro_valid_for_id', [
+            'label' => $this->translator->_('Round used'),
+            'default' => '',
+            'autoSubmit' => true,
+        ]);
 
         if ($detailed) {
-            $model->set('gro_valid_for_field',
-                    'label', $this->translator->_('Date used'),
-                    'default', 'gto_valid_from',
-                    'autoSubmit', true,
-                    );
-            $model->set('gro_valid_for_length',
-                    'label', $this->translator->_('Add to date'),
-                    'description', $this->translator->_('Can be negative'),
-                    'required', false,
-                    'default', 2,
-                    'filter', Digits::class
-                    );
-            $model->set('gro_valid_for_unit',
-                    'label', $this->translator->_('Add to date unit'),
-                    'multiOptions', $periodUnits
-                    );
+            $metaModel->set('gro_valid_for_field', [
+                'label' => $this->translator->_('Date used'),
+                'default' => 'gto_valid_from',
+                'autoSubmit' => true,
+            ]);
+            $metaModel->set('gro_valid_for_length', [
+                'label' => $this->translator->_('Add to date'),
+                'description' => $this->translator->_('Can be negative'),
+                'required' => true,
+                'default' => 2,
+                'filter' => new NumberFormat(),
+                'validator' => new IsInt()
+            ]);
+            $metaModel->set('gro_valid_for_unit', [
+                'label' => $this->translator->_('Add to date unit'),
+                'multiOptions' => $periodUnits
+            ]);
 
             // Calculate valid until
             $html = \Zalt\Html\Html::create()->h4($this->translator->_('Validity calculation'));
-            $model->set('valid_cond',
-                        'label', ' ',
-                        'default', $html,
-                        'elementClass', 'html',
-                        'value', $html
-            );
+            $metaModel->set('valid_cond', [
+                'label' => ' ',
+                'default' => $html,
+                'elementClass' => 'html',
+                'value' => $html
+            ]);
 
             // Continue with last round level items
-            $model->set('gro_condition');
-            $model->set('condition_display');
-            $model->set('gro_active');
-            $model->set('gro_changed_event');
+            $metaModel->set('gro_condition');
+            $metaModel->set('condition_display');
+            $metaModel->set('gro_active');
+            $metaModel->set('gro_changed_event');
         } else {
-            $model->set('gro_valid_for_source',
-                    'label', $this->translator->_('Source'),
-                    'tableDisplay', 'small'
-                    );
-            $model->set('gro_valid_for_id',
-                    'label', $this->translator->_('Round'),
-                    'multiOptions', $this->getRoundTranslations(),
-                    'tableDisplay', 'small'
-                    );
-            $model->setOnLoad('gro_valid_for_id', array($this, 'displayRoundId'));
-            $model->set('gro_valid_for_field',
-                    'label', $this->translator->_('Date calculation'),
-                    'tableHeaderDisplay', 'small'
-                    );
-            $model->setOnLoad('gro_valid_for_field', array($this, 'displayDateCalculation'));
-            $model->set('gro_valid_for_length');
-            $model->set('gro_valid_for_unit');
+            $metaModel->set('gro_valid_for_source', [
+                'label' => $this->translator->_('Source'),
+                'tableDisplay' => 'small'
+            ]);
+            $metaModel->set('gro_valid_for_id', [
+                'label' => $this->translator->_('Round'),
+                'multiOptions' => $this->getRoundTranslations(),
+                'tableDisplay' => 'small'
+            ]);
+            $metaModel->setOnLoad('gro_valid_for_id', [$this, 'displayRoundId']);
+            $metaModel->set('gro_valid_for_field', [
+                'label' => $this->translator->_('Date calculation'),
+                'tableHeaderDisplay' => 'small'
+            ]);
+            $metaModel->setOnLoad('gro_valid_for_field', [$this, 'displayDateCalculation']);
+            $metaModel->set('gro_valid_for_length');
+            $metaModel->set('gro_valid_for_unit');
         }
 
         return $model;

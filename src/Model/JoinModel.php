@@ -67,7 +67,7 @@ class JoinModel extends \MUtil\Model\JoinModel
         $matches = [];
         preg_match_all('/([a-z]\w+\.[a-z][1-2a-z]+_\w+|[a-z][1-2a-z]+_\w+)/i', $expression, $matches);
         // \MUtil\EchoOut\EchoOut::track($expression, array_unique($matches[0]));
-        
+
         foreach (array_unique($matches[0]) as $field) {
             switch (strtoupper($field)) {
                 case 'CONCAT_WS':
@@ -82,7 +82,7 @@ class JoinModel extends \MUtil\Model\JoinModel
                 case 'TIME_FORMAT':
                     // do nothing for common functions
                     break;
-                    
+
                 default:
                     $this->_findFieldTable($tables, $field);
             }
@@ -98,7 +98,7 @@ class JoinModel extends \MUtil\Model\JoinModel
         // Check for tablename.fieldname, unless the field name is an aliased table
         if ((! $this->has($field)) && \MUtil\StringUtil\StringUtil::contains($field, '.')) {
             list($table, $newField) = explode('.', $field, 2);
-            
+
             if ($table == $this->get($newField, 'table')) {
                 $field = $newField;
             }
@@ -113,7 +113,7 @@ class JoinModel extends \MUtil\Model\JoinModel
                     }
                 }
             }
-            
+
             $tables[$table] = $table;
         }
     }
@@ -209,7 +209,7 @@ class JoinModel extends \MUtil\Model\JoinModel
     }
 
     /**
-     * Get a minimized select statement with a less complicated join using only the fields in the filter  
+     * Get a minimized select statement with a less complicated join using only the fields in the filter
      *
      * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
      * @param array $cols Optional fields to return in the select
@@ -222,11 +222,11 @@ class JoinModel extends \MUtil\Model\JoinModel
         }
         // Remove selector fields
         unset($filter['limit'], $filter['page'], $filter['items']);
-        
+
         $filter = $this->_checkFilterUsed($filter);
-        
+
         $baseSelect = $this->getSelect();
-        
+
         $usedTables = [];
         foreach ($cols as $alias => $field) {
             $this->_findFieldTable($usedTables, $field);
@@ -257,7 +257,7 @@ class JoinModel extends \MUtil\Model\JoinModel
                     case \Zend_Db_Select::LEFT_JOIN:
                         $outputSelect->joinLeft($joinTable, $froms[$table]['joinCondition'], []);
                         break;
-                        
+
                     case \Zend_Db_Select::RIGHT_JOIN:
                         $outputSelect->joinRight($joinTable, $froms[$table]['joinCondition'], []);
                         break;

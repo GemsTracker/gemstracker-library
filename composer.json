@@ -68,6 +68,7 @@
         "laminas/laminas-diactoros": "^2.11",
         "laminas/laminas-filter": "^2.17",
         "laminas/laminas-hydrator": "^4.5",
+        "laminas/laminas-i18n": "2.26.x-dev",
         "laminas/laminas-permissions-acl": "^2.9",
         "laminas/laminas-servicemanager": "^3.11",
         "laminas/laminas-stratigility": "^3.9.0",
