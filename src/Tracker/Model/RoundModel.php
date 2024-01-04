@@ -59,15 +59,15 @@ class RoundModel extends GemsJoinModel
                 if (isset($row['gro_id_round'])) {
                     $roundId = $row['gro_id_round'];
                     if ($this->isDeleteable($roundId)) {
-                        $this->resultFetcher->deleteFromTable(
-                            'gems__rounds',
-                            (new Where())->equalTo('gro_id_round', $roundId)
-                        );
-
                         // Delete the round before anyone starts using it
                         $this->resultFetcher->deleteFromTable(
                             'gems__tokens',
                             (new Where())->equalTo('gto_id_round', $roundId)
+                        );
+
+                        $this->resultFetcher->deleteFromTable(
+                            'gems__rounds',
+                            (new Where())->equalTo('gro_id_round', $roundId)
                         );
                     } else {
                         $values['gro_id_round'] = $roundId;

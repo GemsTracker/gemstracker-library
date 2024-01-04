@@ -652,7 +652,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         // Add information about surveys and groups
         $model->addLeftTable('gems__surveys', ['gro_id_survey' => 'gsu_id_survey']);
         $model->addLeftTable('gems__groups', ['gsu_id_primary_group' => 'ggp_id_group']);
-        $model->addLeftTable('gems__track_fields', ['gro_id_relationfield = gtf_id_field'], 'gtf', false);
+        $model->addLeftTable('gems__track_fields', ['gro_id_relationfield = gtf_id_field'], false, 'gtf');
 
         $model->addColumn(new Expression('COALESCE(gtf_field_name, ggp_name)'), 'ggp_name');
         $metaModel->set('ggp_name', ['label' => $this->translator->_('Assigned to')]);

@@ -208,9 +208,6 @@ class TrackModel extends SqlTableModel
                 if (isset($row['gtr_id_track'])) {
                     $trackId = $row['gtr_id_track'];
                     if ($this->isDeletable($trackId)) {
-
-                        $this->resultFetcher->query('DELETE FROM gems__tracks WHERE gtr_id_track = ?', [$trackId]);
-
                         // Now cascade to children, they should take care of further cascading
                         // Delete rounds
                         $trackEngine = $this->tracker->getTrackEngine($trackId);
@@ -223,6 +220,8 @@ class TrackModel extends SqlTableModel
 
                         // Delete assigned but unused tracks
                         $this->resultFetcher->query('DELETE FROM gems__respondent2track WHERE gr2t_id_track = ?', [$trackId]);
+
+                        $this->resultFetcher->query('DELETE FROM gems__tracks WHERE gtr_id_track = ?', [$trackId]);
                     } else {
                         $values['gtr_id_track'] = $trackId;
                         $values['gtr_active'] = 0;

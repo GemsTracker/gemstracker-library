@@ -147,11 +147,6 @@ class RoundsTableSnippet extends ModelTableSnippetAbstract
         return parent::cleanUpFilter($filter, $metaModel);
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof RoundModel) {

@@ -91,7 +91,7 @@ class ShowRoundSnippetAbstract extends ModelDetailTableSnippetAbstract
         protected RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        protected RouteHelper $routeHelper, 
+        protected RouteHelper $routeHelper,
         protected Tracker $tracker)
     {
         // We're setting trait variables so no constructor promotion
@@ -100,11 +100,6 @@ class ShowRoundSnippetAbstract extends ModelDetailTableSnippetAbstract
         parent::__construct($snippetOptions, $this->requestInfo, $translate);
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         return $this->trackEngine->getRoundModel(true, 'show');
