@@ -1776,46 +1776,6 @@ parameters:
 			path: src/Form/Decorator/Tabs.php
 
 		-
-			message: "#^Call to an undefined method Zend_View_Interface\\:\\:escape\\(\\)\\.$#"
-			count: 1
-			path: src/Form/Decorator/Tooltip.php
-
-		-
-			message: "#^Call to an undefined method Zend_View_Interface\\:\\:headLink\\(\\)\\.$#"
-			count: 1
-			path: src/Form/Decorator/Tooltip.php
-
-		-
-			message: "#^Call to an undefined method Zend_View_Interface\\:\\:headScript\\(\\)\\.$#"
-			count: 1
-			path: src/Form/Decorator/Tooltip.php
-
-		-
-			message: "#^Call to an undefined method Zend_View_Interface\\:\\:jQuery\\(\\)\\.$#"
-			count: 1
-			path: src/Form/Decorator/Tooltip.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Form/Decorator/Tooltip.php
-
-		-
-			message: "#^Method Gems\\\\Form\\\\Decorator\\\\Tooltip\\:\\:getEscape\\(\\) should return true but returns bool\\.$#"
-			count: 1
-			path: src/Form/Decorator/Tooltip.php
-
-		-
-			message: "#^Method Gems\\\\Form\\\\Decorator\\\\Tooltip\\:\\:setTag\\(\\) should return Zend_Form_Decorator_Description but returns \\$this\\(Gems\\\\Form\\\\Decorator\\\\Tooltip\\)\\.$#"
-			count: 1
-			path: src/Form/Decorator/Tooltip.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: src/Form/Decorator/Tooltip.php
-
-		-
 			message: "#^Call to an undefined method Zend_View_Interface\\:\\:addHelperPath\\(\\)\\.$#"
 			count: 1
 			path: src/Form/Element/CKEditor.php
@@ -10479,36 +10439,6 @@ parameters:
 			message: "#^Call to an undefined method Gems\\\\Util\\\\OrganizationUtil\\:\\:_getTranslatedPairsCached\\(\\)\\.$#"
 			count: 4
 			path: src/Util/OrganizationUtil.php
-
-		-
-			message: "#^Access to an undefined property Zend_Session_Namespace\\:\\:\\$requestCache\\.$#"
-			count: 1
-			path: src/Util/RequestCache.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Util\\\\RequestCache\\:\\:getMenu\\(\\)\\.$#"
-			count: 1
-			path: src/Util/RequestCache.php
-
-		-
-			message: "#^Negated boolean expression is always false\\.$#"
-			count: 1
-			path: src/Util/RequestCache.php
-
-		-
-			message: "#^Parameter \\$menu of method Gems\\\\Util\\\\RequestCache\\:\\:setMenu\\(\\) has invalid type Gems\\\\Menu\\.$#"
-			count: 2
-			path: src/Util/RequestCache.php
-
-		-
-			message: "#^Property Gems\\\\Util\\\\RequestCache\\:\\:\\$_baseUrl \\(array\\) does not accept null\\.$#"
-			count: 1
-			path: src/Util/RequestCache.php
-
-		-
-			message: "#^Property Gems\\\\Util\\\\RequestCache\\:\\:\\$menu has unknown class Gems\\\\Menu as its type\\.$#"
-			count: 1
-			path: src/Util/RequestCache.php
 
 		-
 			message: "#^Call to an undefined method Zend_Controller_Request_Abstract\\:\\:getServer\\(\\)\\.$#"

@@ -344,7 +344,7 @@ abstract class DateSelectorAbstract
         return $model;
     }
 
-    protected function getBaseUrl(): string
+    protected function getBasicUrl(): string
     {
         return $this->routeHelper->getRouteUrlOnMatch($this->requestInfo->getRouteName(), $this->requestInfo->getRequestMatchedParams());
     }
@@ -544,7 +544,7 @@ abstract class DateSelectorAbstract
 
     protected function setTableBody(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
-        $baseurl = $this->getBaseUrl();
+        $baseurl = $this->getBasicUrl();
         $onEmpty = $this->translate->_('-');
 
         foreach ($this->getFields() as $name => $field) {
@@ -567,7 +567,7 @@ abstract class DateSelectorAbstract
 
     protected function setTableFooter(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
-        $baseurl = $this->getBaseUrl();
+        $baseurl = $this->getBasicUrl();
 
         // Empty cell for left column
         $bridge->tf();
@@ -590,7 +590,7 @@ abstract class DateSelectorAbstract
 
     protected function setTableHeader(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
-        $baseurl = $this->getBaseUrl();
+        $baseurl = $this->getBasicUrl();
         
         // Left cell with period types
         $th = $bridge->th($this->translate->_('Period'), ' ');

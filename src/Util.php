@@ -87,12 +87,6 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems\Util\RequestCache
-     */
-    protected $requestCache;
-
-    /**
-     *
      * @var \Gems\Util\SiteUtil
      */
     protected $sites;
@@ -380,17 +374,6 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
     public function getReceptionCodeRepository(): ReceptionCodeRepository
     {
         return $this->containerLoad(ReceptionCodeRepository::class);
-    }
-
-    /**
-     *
-     * @param string  $sourceAction    The action to get the cache from if not the current one.
-     * @param boolean $readonly        Optional, tell the cache not to store any new values
-     * @return \Gems\Util\RequestCache
-     */
-    public function getRequestCache($sourceAction = null, $readonly = false)
-    {
-        return $this->_getClass('requestCache', null, array($sourceAction, $readonly));
     }
 
     /**
