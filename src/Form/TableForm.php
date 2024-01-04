@@ -49,11 +49,6 @@ class TableForm extends \Gems\Form
     }
 
     public static function doRow($content, $label, $class, $element) {
-        if ($element->getAttrib('tooltip')) {
-            $dec = new \Gems\Form\Decorator\Tooltip();
-            $dec->setElement($element);
-            $label .= $dec->render('');
-        }
         if ($element instanceof \Zend_Form_Element) {
             $style = $element->isRequired() ? 'required' : 'optional';
             $labelClass = sprintf(' class="%s"', $style);
