@@ -2,9 +2,12 @@
 
 namespace Gems\Config;
 
+use Gems\Api\Handlers\PingHandler;
 use Gems\Api\RestModelConfigProviderAbstract;
 use Gems\Handlers\Api\CommFieldsHandler;
 use Gems\Handlers\Api\Respondent\OtherPatientNumbersHandler;
+use Gems\Middleware\LocaleMiddleware;
+use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Model\CommTemplateModel;
 use Gems\Model\EmailTokenModel;
 use Gems\Model\InsertableQuestionnaireModel;
@@ -16,18 +19,44 @@ class ApiRoutes extends RestModelConfigProviderAbstract
 
     public function __invoke()
     {
-        return $this->routeGroup(
-            [
-                'path' => $this->pathPrefix,
-                'middleware' => $this->getMiddleware(),
-            ],
-            $this->getRoutes()
-        );
+        return [
+            ...$this->routeGroup(
+                [
+                    'path' => $this->pathPrefix,
+                    'middleware' => $this->getMiddleware(),
+                ],
+                $this->getRoutes()
+            ),
+            ...$this->routeGroup(
+                [
+                    'path' => $this->pathPrefix,
+                    'middleware' => [
+                        SecurityHeadersMiddleware::class,
+                        LocaleMiddleware::class,
+                    ],
+                ],
+                [
+                    ...$this->createRoute(
+                        name: 'status',
+                        path: '/status',
+                        handler: PingHandler::class,
+                        allowedMethods: ['GET'],
+                    ),
+                ]
+            ),
+
+        ];
     }
 
     public function getRoutes(): array
     {
         return [
+            ...$this->createRoute(
+                name: 'ping',
+                path: '/ping',
+                handler: PingHandler::class,
+                allowedMethods: ['GET'],
+            ),
             ...$this->createModelRoute(
                 endpoint: 'tracks',
                 model: SimpleTrackModel::class,
