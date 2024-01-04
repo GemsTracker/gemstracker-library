@@ -10,7 +10,7 @@ class DebugConfigProvider
 {
     public function __invoke(): array
     {
-        $debug = (bool)Env::get('APP_DEBUG', false);
+        $debug = (bool)Env::get('APP_DEBUG');
         if ($debug) {
             return [
                 'pipeline' => [
