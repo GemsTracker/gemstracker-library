@@ -108,15 +108,8 @@ class ShowRoundStepSnippet extends ShowRoundSnippetAbstract
         $bridge->addItem('valid_after');
 
         $this->_addIf(array('gro_valid_after_source', 'gro_valid_after_id', 'gro_valid_after_field'), $bridge, $dataModel);
-//        if ($dataModel->has('gro_valid_after_length', 'label')) {
-            //$bridge->addItem(array($bridge->gro_valid_after_length, ' ', $bridge->gro_valid_after_unit), $dataModel->get('gro_valid_after_length', 'label'));
-//        }
 
-        //$bridge->addItem($dataModel->get('valid_for', 'value'));
         $this->_addIf(array('gro_valid_for_source', 'gro_valid_for_id', 'gro_valid_for_field'), $bridge, $dataModel);
-//        if ($dataModel->has('gro_valid_for_length', 'label')) {
-            //$bridge->addItem(array($bridge->gro_valid_for_length, ' ', $bridge->gro_valid_for_unit), $dataModel->get('gro_valid_after_length', 'label'));
-//        }
 
         $bridge->addItem('valid_cond');
         $bridge->addItem('condition_display');
