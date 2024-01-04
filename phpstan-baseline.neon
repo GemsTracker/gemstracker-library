@@ -992,7 +992,7 @@ parameters:
 
 		-
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
-			count: 5
+			count: 1
 			path: src/ConfigProvider.php
 
 		-
@@ -2316,11 +2316,6 @@ parameters:
 			path: src/Handlers/Respondent/CalendarHandler.php
 
 		-
-			message: "#^Parameter \\#1 \\$format of method DateTimeImmutable\\:\\:format\\(\\) expects string, array given\\.$#"
-			count: 1
-			path: src/Handlers/Respondent/CalendarHandler.php
-
-		-
 			message: "#^Parameter \\#1 \\$targetModel of method Zalt\\\\Model\\\\Translator\\\\ModelTranslatorInterface\\:\\:setTargetModel\\(\\) expects Zalt\\\\Model\\\\Data\\\\DataWriterInterface, Zalt\\\\Model\\\\Data\\\\DataReaderInterface given\\.$#"
 			count: 1
 			path: src/Handlers/Respondent/CalendarHandler.php
@@ -2847,11 +2842,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:pre\\(\\)\\.$#"
-			count: 2
-			path: src/Handlers/Setup/ProjectInformationHandler.php
-
-		-
-			message: "#^Parameter \\#1 \\$size of static method MUtil\\\\File\\:\\:getByteSized\\(\\) expects int, float given\\.$#"
 			count: 2
 			path: src/Handlers/Setup/ProjectInformationHandler.php
 
@@ -4661,41 +4651,6 @@ parameters:
 			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
 
 		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:br\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:div\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:h1\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
-			count: 3
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:ol\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 4
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Call to method findAllowedController\\(\\) on an unknown class Gems\\\\Menu\\.$#"
-			count: 5
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\Agenda\\\\AppointmentCheckSnippet\\:\\:getMenuList\\(\\) has invalid return type Gems\\\\Menu\\\\MenuList\\.$#"
 			count: 1
 			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
@@ -4717,11 +4672,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\|null\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Agenda\\\\AppointmentCheckSnippet\\:\\:\\$tracker \\(Gems\\\\Tracker\\) does not accept Gems\\\\Tracker\\\\TrackerInterface\\.$#"
 			count: 1
 			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
 
@@ -5306,11 +5256,6 @@ parameters:
 			path: src/Snippets/Export/ExportFormSnippet.php
 
 		-
-			message: "#^Method Gems\\\\Snippets\\\\Export\\\\ExportFormSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Snippets/Export/ExportFormSnippet.php
-
-		-
 			message: "#^Parameter \\#2 \\$code of class Zalt\\\\SnippetsLoader\\\\SnippetException constructor expects int, class\\-string\\|false given\\.$#"
 			count: 1
 			path: src/Snippets/Export/ExportFormSnippet.php
@@ -5614,11 +5559,6 @@ parameters:
 			message: "#^Property Gems\\\\Snippets\\\\FormSnippetAbstractMUtil\\:\\:\\$menu has unknown class Gems\\\\Menu as its type\\.$#"
 			count: 1
 			path: src/Snippets/FormSnippetAbstractMUtil.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$menuList$#"
-			count: 1
-			path: src/Snippets/Generic/ButtonRowSnippet.php
 
 		-
 			message: "#^Access to an undefined property MUtil\\\\Html\\\\TableElement\\:\\:\\$class\\.$#"
@@ -6013,11 +5953,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Bridge\\\\FormBridgeInterface\\:\\:addTab\\(\\)\\.$#"
 			count: 2
-			path: src/Snippets/ModelFormSnippetAbstract.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$menuList$#"
-			count: 1
 			path: src/Snippets/ModelFormSnippetAbstract.php
 
 		-
@@ -7866,24 +7801,9 @@ parameters:
 			path: src/Snippets/Tracker/InsertSurveySnippet.php
 
 		-
-			message: "#^Parameter \\#1 \\$model of method Gems\\\\Tracker\\\\Engine\\\\StepEngineAbstract\\:\\:updateRoundModelToItem\\(\\) expects Zalt\\\\Model\\\\MetaModelInterface, Zalt\\\\Model\\\\Data\\\\DataReaderInterface given\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Rounds/EditRoundStepSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
-			count: 11
-			path: src/Snippets/Tracker/Rounds/RoundsTableSnippet.php
-
-		-
 			message: "#^Property Gems\\\\Snippets\\\\Tracker\\\\Rounds\\\\RoundsTableSnippet\\:\\:\\$menuActionController \\(array\\) does not accept default value of type string\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/Rounds/RoundsTableSnippet.php
-
-		-
-			message: "#^PHPDoc tag @param for parameter \\$bridge with type MUtil\\\\Model\\\\Bridge\\\\VerticalTableBridge is incompatible with native type Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Rounds/ShowRoundStepSnippet.php
 
 		-
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Tracker\\\\ShowTrackUsageSnippet\\:\\:\\$menu\\.$#"
@@ -8531,7 +8451,17 @@ parameters:
 			path: src/Tracker/Engine/StepEngineAbstract.php
 
 		-
+			message: "#^Call to an undefined method Gems\\\\Tracker\\\\Model\\\\RoundModel\\:\\:saveAll\\(\\)\\.$#"
+			count: 1
+			path: src/Tracker/Engine/TrackEngineAbstract.php
+
+		-
 			message: "#^Call to function is_null\\(\\) with \\(0\\|''\\|'0'\\) will always evaluate to false\\.$#"
+			count: 1
+			path: src/Tracker/Engine/TrackEngineAbstract.php
+
+		-
+			message: "#^Method Zalt\\\\Model\\\\Sql\\\\JoinModel\\:\\:loadNew\\(\\) invoked with 1 parameter, 0 required\\.$#"
 			count: 1
 			path: src/Tracker/Engine/TrackEngineAbstract.php
 
@@ -8674,16 +8604,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$array of function key expects array\\|object, int given\\.$#"
 			count: 1
 			path: src/Tracker/Model/RespondentTrackModel.php
-
-		-
-			message: "#^Method Gems\\\\Tracker\\\\Model\\\\RoundModel\\:\\:getRefCount\\(\\) should return int but returns string\\|false\\|null\\.$#"
-			count: 1
-			path: src/Tracker/Model/RoundModel.php
-
-		-
-			message: "#^Method Gems\\\\Tracker\\\\Model\\\\RoundModel\\:\\:getStartCount\\(\\) should return int but returns string\\|false\\|null\\.$#"
-			count: 1
-			path: src/Tracker/Model/RoundModel.php
 
 		-
 			message: "#^Access to an undefined property Gems\\\\Util\\\\Translated\\:\\:\\$formatDateTimeNa\\.$#"
