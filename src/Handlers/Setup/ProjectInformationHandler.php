@@ -165,7 +165,6 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
     {
         $this->html->h2($caption);
 
-        dump($this->requestInfo);
         $param = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID);
         if ($emptyLabel && (1 == $param) && file_exists($logFile)) {
             file_put_contents($logFile, '');
