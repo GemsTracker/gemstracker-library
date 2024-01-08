@@ -236,13 +236,11 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
         $rawFieldData    = $respondentTrack->getFieldData();    // Date (time) fields are unprocessed here
         $results         = [];
 
-        foreach ($fieldCode2Label as $key => $label) {
+        foreach ($fieldCode2Label as $key => $value) {
             if (array_key_exists($key, $rawFieldData)) {
-                $value = $rawFieldData[$key];
-                
                 // If it is a date(/time) field export it in ISO format
                 if ($rawFieldData[$key] instanceof \DateTimeInterface) {
-                    $value = $value->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat'));
+                    $value = $rawFieldData[$key]->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat'));
                 }
                 $results[$key] = $value;
             }
