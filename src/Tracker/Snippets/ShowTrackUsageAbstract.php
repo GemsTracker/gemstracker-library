@@ -125,24 +125,23 @@ abstract class ShowTrackUsageAbstract extends \Gems\Snippets\ModelTableSnippetAb
         return $this->db && $this->loader;
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         $model = $this->loader->getTracker()->getRespondentTrackModel();
 
-        $model->set('gtr_track_name',    'label', $this->_('Track'));
-        $model->set('gr2t_track_info',   'label', $this->_('Description'),
-            'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
-        $model->set('assigned_by',       'label', $this->_('Assigned by'));
-        $model->set('gr2t_start_date',   'label', $this->_('Start'),
-            'dateFormat', 'dd-MM-yyyy',
-            'formatFunction', $this->translatedUtil->formatDate,
-            'default', new \DateTimeImmutable());
-        $model->set('gr2t_reception_code');
+        $model->getMetaModel()->set('gtr_track_name', ['label' => $this->_('Track')]);
+        $model->getMetaModel()->set('gr2t_track_info', [
+            'label' => $this->_('Description'),
+            'description' => $this->_('Enter the particulars concerning the assignment to this respondent.')
+        ]);
+        $model->getMetaModel()->set('assigned_by', ['label' => $this->_('Assigned by')]);
+        $model->getMetaModel()->set('gr2t_start_date', [
+            'label' => $this->_('Start'),
+            'dateFormat' => 'dd-MM-yyyy',
+            'formatFunction' => $this->translatedUtil->formatDate,
+            'default' => new \DateTimeImmutable()
+        ]);
+        $model->getMetaModel()->set('gr2t_reception_code');
 
         return $model;
     }

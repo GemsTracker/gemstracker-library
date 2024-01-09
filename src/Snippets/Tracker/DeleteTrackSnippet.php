@@ -47,8 +47,12 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
      * @var array
      */
     protected array $exhibitItems = [
-        'gr2o_patient_nr', 'respondent_name', 'gtr_track_name', 'gr2t_track_info', 'gr2t_start_date',
-        ];
+        'gr2o_patient_nr',
+        'respondent_name',
+        'gtr_track_name',
+        'gr2t_track_info',
+        'gr2t_start_date',
+    ];
 
     /**
      * Array of items that should be kept, but as hidden
@@ -100,9 +104,16 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
         CurrentUserRepository $currentUserRepository,
         protected ReceptionCodeRepository $receptionCodeRepository,
         protected Tracker $tracker,
-    )
-    {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper, $currentUserRepository);
+    ) {
+        parent::__construct(
+            $snippetOptions,
+            $requestInfo,
+            $translate,
+            $messenger,
+            $auditLog,
+            $menuHelper,
+            $currentUserRepository
+        );
     }
 
 
@@ -118,26 +129,22 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
         // Do nothing, performed in setReceptionCode()
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): FullDataInterface
     {
-        if (! $this->model instanceof \Gems\Tracker\Model\TrackModel) {
+        if (!$this->model instanceof \Gems\Tracker\Model\TrackModel) {
             $this->model = $this->tracker->getRespondentTrackModel();
 
-            if (! $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
+            if (!$this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
                 $this->trackEngine = $this->respondentTrack->getTrackEngine();
             }
             $this->model->applyEditSettings($this->trackEngine);
         }
 
-        $this->model->set('restore_tokens', 'label', $this->_('Restore tokens'),
-                'description', $this->_('Restores tokens with the same code as the track.'),
-                'elementClass', 'Checkbox'
-                );
+        $this->model->getMetaModel()->set('restore_tokens', [
+            'label' => $this->_('Restore tokens'),
+            'description' => $this->_('Restores tokens with the same code as the track.'),
+            'elementClass' => 'Checkbox'
+        ]);
 
         return $this->model;
     }
@@ -177,8 +184,11 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     protected function setAfterSaveRoute()
     {
         // Default is just go to the index
-        if ($this->respondentTrack && ! $this->afterSaveRouteUrl) {
-            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.show', $this->requestInfo->getRequestMatchedParams());
+        if ($this->respondentTrack && !$this->afterSaveRouteUrl) {
+            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl(
+                'respondent.tracks.show',
+                $this->requestInfo->getRequestMatchedParams()
+            );
         }
 
         parent::setAfterSaveRoute();
@@ -195,7 +205,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     {
         $oldCode = $this->respondentTrack->getReceptionCode();
 
-        if (! $newCode instanceof ReceptionCode) {
+        if (!$newCode instanceof ReceptionCode) {
             $newCode = $this->receptionCodeRepository->getReceptionCode($newCode);
         }
 
@@ -208,11 +218,16 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
             if (isset($this->formData['restore_tokens']) && $this->formData['restore_tokens']) {
                 $count = $this->respondentTrack->restoreTokens($oldCode, $newCode);
 
-                $this->addMessage(sprintf($this->plural(
-                        '%d token reception codes restored.',
-                        '%d tokens reception codes restored.',
+                $this->addMessage(
+                    sprintf(
+                        $this->plural(
+                            '%d token reception codes restored.',
+                            '%d tokens reception codes restored.',
+                            $count
+                        ),
                         $count
-                        ), $count));
+                    )
+                );
             }
         } else {
             if ($newCode->isStopCode()) {

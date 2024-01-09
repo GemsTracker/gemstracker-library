@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  *
  * @package    Gems
@@ -11,16 +13,23 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Db\ResultFetcher;
 use Gems\Loader;
+use Gems\Model as GemsModel;
+use Gems\Model\GemsMaskedModel;
 use Gems\Model\HiddenOrganizationModel;
+use Gems\Model\MetaModelLoader;
 use Gems\Tracker\Engine\TrackEngineInterface;
+use Gems\User\Mask\MaskRepository;
 use Gems\Util;
 use Gems\Util\Translated;
 use MUtil\JQuery\Form\Element\DatePicker;
 use MUtil\Model;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
 
 /**
  * The RespondentTrackModel is the model used to display and edit
@@ -45,7 +54,7 @@ use Zalt\Model\MetaModelInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class RespondentTrackModel extends HiddenOrganizationModel
+class RespondentTrackModel extends GemsMaskedModel
 {
     /**
      *
@@ -53,48 +62,49 @@ class RespondentTrackModel extends HiddenOrganizationModel
      */
     protected bool $hideWhollyMasked = true;
 
-    /**
-     * @var Loader
-     */
-    protected $loader;
+    public function __construct(
+        MetaModelLoader $metaModelLoader,
+        SqlRunnerInterface $sqlRunner,
+        TranslatorInterface $translate,
+        MaskRepository $maskRepository,
+        protected readonly GemsModel $gemsModel,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly Loader $loader,
+        protected readonly Translated $translatedUtil,
+        protected readonly Util $util,
+    ) {
+        parent::__construct(
+            'gems__respondent2track',
+            $metaModelLoader,
+            $sqlRunner,
+            $translate,
+            $maskRepository,
+            'surveys',
+        );
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+        $metaModelLoader->setChangeFields($this->metaModel, 'gr2t');
 
-    /**
-     *
-     * @var Util
-     */
-    protected $util;
-
-    /**
-     * Default constructor
-     *
-     * @param string $name Optional different name for model
-     */
-    public function __construct($name = 'surveys')
-    {
-        parent::__construct($name, 'gems__respondent2track', 'gr2t', true);
-        $this->addTable('gems__respondents',     array('gr2t_id_user' => 'grs_id_user'), 'grs', false);
+        $this->addTable('gems__respondents', ['gr2t_id_user' => 'grs_id_user'], false, 'grs');
         $this->addTable(
             'gems__respondent2org',
-            array('gr2t_id_user' => 'gr2o_id_user', 'gr2t_id_organization' => 'gr2o_id_organization'),
-            'gr2o',
-            false
+            ['gr2t_id_user' => 'gr2o_id_user', 'gr2t_id_organization' => 'gr2o_id_organization'],
+            false,
+            'gr2o'
         );
-        $this->addTable('gems__tracks',          array('gr2t_id_track' => 'gtr_id_track'), 'gtr', false);
-        $this->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'), 'grc', false);
-        $this->addLeftTable('gems__staff',       array('gr2t_created_by' => 'gsf_id_user'));
+        $this->addTable('gems__tracks', ['gr2t_id_track' => 'gtr_id_track'], false, 'gtr');
+        $this->addTable('gems__reception_codes', ['gr2t_reception_code' => 'grc_id_reception_code'], false, 'grc');
+        $this->addLeftTable('gems__staff', ['gr2t_created_by' => 'gsf_id_user']);
 
         // No need to send all this information to the user
-        $this->setCol($this->getItemsFor('table', 'gems__staff'), 'elementClass', 'None');
+        $this->metaModel->setCol(
+            $this->metaModel->getItemsFor(['table' => 'gems__staff']),
+            ['elementClass' => 'None']
+        );
 
-        $this->setKeys([
-            \Gems\Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
-            \MUtil\Model::REQUEST_ID1 => 'gr2o_patient_nr',
-            \MUtil\Model::REQUEST_ID2 => 'gr2t_id_organization',
+        $this->metaModel->setKeys([
+            GemsModel::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
+            MetaModelInterface::REQUEST_ID1 => 'gr2o_patient_nr',
+            MetaModelInterface::REQUEST_ID2 => 'gr2t_id_organization',
         ]);
 
         $this->addColumn(
@@ -108,113 +118,124 @@ class RespondentTrackModel extends HiddenOrganizationModel
                         COALESCE(CONCAT(' ', gsf_surname_prefix), '')
                     )
                 END",
-            'assigned_by');
+            'assigned_by'
+        );
         $this->addColumn(
             "CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END",
-            'row_class');
+            'row_class'
+        );
 
         $this->addColumn(
             "CASE WHEN grc_success = 1 THEN 1 ELSE 0 END",
-            'can_edit');
+            'can_edit'
+        );
 
-        $this->addColumn("CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))",
-            'respondent_name');
+        $this->addColumn(
+            "CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))",
+            'respondent_name'
+        );
     }
 
     /**
      * Set those settings needed for the browse display
-     *
-     * @return self
      */
-    public function applyBrowseSettings()
+    public function applyBrowseSettings(): self
     {
         $formatDate = $this->translatedUtil->formatDate;
 
-        $this->resetOrder();
+        $this->metaModel->resetOrder();
 
-        $this->setKeys(array(
-            \Gems\Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
-            \MUtil\Model::REQUEST_ID1     => 'gr2o_patient_nr',
-            \MUtil\Model::REQUEST_ID2 => 'gr2o_id_organization',
-        ));
+        // TODO(Koen) delete?
+//        $this->metaModel->setKeys([
+//            \Gems\Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
+//            MetaModelInterface::REQUEST_ID1     => 'gr2o_patient_nr',
+//            MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization',
+//        ]);
 
-        $this->set('gtr_track_name',    'label', $this->_('Track'));
-        $this->set('gr2t_track_info',   'label', $this->_('Description'),
-            'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
-        $this->set('assigned_by',       'label', $this->_('Assigned by'));
-        $this->set('gr2t_start_date',   'label', $this->_('Start'),
-            'dateFormat', 'd-m-Y',
-            'formatFunction', $formatDate,
-            'default', new \DateTimeImmutable(),
-            'type', MetaModelInterface::TYPE_DATE
-            );
-        $this->set('gr2t_start_date', 'description', $this->_('dd-mm-yyyy'));
+        $this->metaModel->set('gtr_track_name', ['label' => $this->_('Track')]);
+        $this->metaModel->set('gr2t_track_info', [
+            'label' => $this->_('Description'),
+            'description' => $this->_('Enter the particulars concerning the assignment to this respondent.')
+        ]);
+        $this->metaModel->set('assigned_by', ['label' => $this->_('Assigned by')]);
+        $this->metaModel->set('gr2t_start_date', [
+            'label' => $this->_('Start'),
+            'dateFormat' => 'd-m-Y',
+            'formatFunction' => $formatDate,
+            'default' => new \DateTimeImmutable(),
+            'type' => MetaModelInterface::TYPE_DATE
+        ]);
+        $this->metaModel->set('gr2t_start_date', ['description' => $this->_('dd-mm-yyyy')]);
 
-            $this->set('gr2t_end_date',   'label', $this->_('Ending on'),
-            'dateFormat', 'd-m-Y',
-            'formatFunction', $formatDate);
-        $this->set('gr2t_reception_code');
-        $this->set('gr2t_comment',       'label', $this->_('Comment'));
+        $this->metaModel->set('gr2t_end_date', [
+            'label' => $this->_('Ending on'),
+            'dateFormat' => 'd-m-Y',
+            'formatFunction' => $formatDate
+        ]);
+        $this->metaModel->set('gr2t_reception_code');
+        $this->metaModel->set('gr2t_comment', ['label' => $this->_('Comment')]);
 
         $this->addColumn('CONCAT(gr2t_completed, \'' . $this->_(' of ') . '\', gr2t_count)', 'progress');
-        $this->set('progress', 'label', $this->_('Progress'));
+        $this->metaModel->set('progress', ['label' => $this->_('Progress')]);
 
-        $this->loader->getModels()->addDatabaseTranslations($this);
+        $this->gemsModel->addDatabaseTranslations($this->metaModel);
 
         return $this;
     }
 
     /**
      * Set those settings needed for the detailed display
-     *
-     * @param TrackEngineInterface $trackEngine
-     * @param boolean $edit When true the fields are added in edit mode
-     * @return self
      */
-    public function applyDetailSettings(TrackEngineInterface $trackEngine, $edit = false)
+    public function applyDetailSettings(TrackEngineInterface $trackEngine, bool $edit = false): self
     {
-        $this->resetOrder();
+        $this->metaModel->resetOrder();
 
         $formatDate = $this->translatedUtil->formatDate;
 
-        $this->set('gr2o_patient_nr',   'label', $this->_('Respondent number'));
-        $this->set('respondent_name',   'label', $this->_('Respondent name'));
-        $this->set('gtr_track_name',    'label', $this->_('Track'));
+        $this->metaModel->set('gr2o_patient_nr', 'label', $this->_('Respondent number'));
+        $this->metaModel->set('respondent_name', 'label', $this->_('Respondent name'));
+        $this->metaModel->set('gtr_track_name', 'label', $this->_('Track'));
 
         $mailCodes = $this->util->getDbLookup()->getRespondentTrackMailCodes();
         end($mailCodes);
         $defaultMailCode = key($mailCodes);
-        $this->set('gr2t_mailable',
-            'label', $this->_('May be mailed'),
-            'default', $defaultMailCode,
-            'elementClass', 'radio',
-            'separator', ' ',
-            'multiOptions', $mailCodes
-        );
+        $this->metaModel->set('gr2t_mailable', [
+            'label' => $this->_('May be mailed'),
+            'default' => $defaultMailCode,
+            'elementClass' => 'radio',
+            'separator' => ' ',
+            'multiOptions' => $mailCodes
+        ]);
 
-        $this->set('assigned_by',          'label', $this->_('Assigned by'));
-        $this->set('gr2t_start_date',      'label', $this->_('Start'),
-            'dateFormat', 'd-m-Y',
-            'formatFunction', $formatDate,
-            'description', $this->_('dd-mm-yyyy'));
+        $this->metaModel->set('assigned_by', ['label' => $this->_('Assigned by')]);
+        $this->metaModel->set('gr2t_start_date', [
+            'label' => $this->_('Start'),
+            'dateFormat' => 'd-m-Y',
+            'formatFunction' => $formatDate,
+            'description' => $this->_('dd-mm-yyyy')
+        ]);
 
         // Integrate fields
-        $trackEngine->addFieldsToModel($this, $edit);
+        $trackEngine->addFieldsToModel($this->metaModel, $edit);
 
-        $this->set('gr2t_end_date_manual', [
+        $this->metaModel->set('gr2t_end_date_manual', [
             'label' => $this->_('Set ending on'),
             'description' => $this->_('Manually set dates are fixed and will never be (re)calculated.'),
             'elementClass' => 'OnOffEdit',
             'multiOptions' => $this->translatedUtil->getDateCalculationOptions(),
             'separator' => ' ',
-            ]);
-        $this->set('gr2t_end_date',        'label', $this->_('Ending on'),
-            'dateFormat', 'd-m-Y',
-            'formatFunction', $formatDate);
-        $this->set('gr2t_track_info',      'label', $this->_('Description'));
-        $this->set('gr2t_comment',         'label', $this->_('Comment'));
-        $this->set('grc_description',      'label', $this->_('Reception code'),
-            'elementClass', 'Exhibitor');
+        ]);
+        $this->metaModel->set('gr2t_end_date', [
+            'label' => $this->_('Ending on'),
+            'dateFormat' => 'd-m-Y',
+            'formatFunction' => $formatDate
+        ]);
+        $this->metaModel->set('gr2t_track_info', ['label' => $this->_('Description')]);
+        $this->metaModel->set('gr2t_comment', ['label' => $this->_('Comment')]);
+        $this->metaModel->set('grc_description', [
+            'label' => $this->_('Reception code'),
+            'elementClass' => 'Exhibitor'
+        ]);
 
         $this->applyMask();
 
@@ -223,44 +244,44 @@ class RespondentTrackModel extends HiddenOrganizationModel
 
     /**
      * Set those values needed for editing
-     *
-     * @param TrackEngineInterface $trackEngine
-     * @return self
      */
-    public function applyEditSettings(TrackEngineInterface $trackEngine)
+    public function applyEditSettings(TrackEngineInterface $trackEngine): self
     {
         $this->applyDetailSettings($trackEngine, true);
 
-        $this->set('gr2t_id_user', [
+        $this->metaModel->set('gr2t_id_user', [
             'elementClass' => 'Hidden',
         ]);
 
-        $this->set('gr2o_patient_nr',     'elementClass', 'Exhibitor');
-        $this->set('respondent_name',     'elementClass', 'Exhibitor');
-        $this->set('gtr_track_name',      'elementClass', 'Exhibitor');
+        $this->metaModel->set('gr2o_patient_nr', ['elementClass' => 'Exhibitor']);
+        $this->metaModel->set('respondent_name', ['elementClass' => 'Exhibitor']);
+        $this->metaModel->set('gtr_track_name', ['elementClass' => 'Exhibitor']);
 
-        $this->set('gr2t_id_user',        'elementClass', 'Hidden');
-        $this->set('gr2t_id_track',       'elementClass', 'Hidden');
+        $this->metaModel->set('gr2t_id_user', ['elementClass' => 'Hidden']);
+        $this->metaModel->set('gr2t_id_track', ['elementClass' => 'Hidden']);
         // Fields set in details
 
-        $this->set('gr2t_track_info',     'elementClass', 'None');
-        $this->set('assigned_by',         'elementClass', 'None');
-        $this->set('gr2t_reception_code', 'elementClass', 'None');
-        $this->set('gr2t_start_date',     'elementClass', 'Date',
-            'default',  new \DateTimeImmutable(),
-            'required', true,
-            'size',     30
-        );
-        $this->set('gr2t_end_date',   'elementClass', 'Date',
-            'default', null,
-            'size',    30
-        );
-        $this->set('gr2t_comment',    'elementClass', 'Textarea',
-            'cols', 80,
-            'rows', 5
-        );
+        $this->metaModel->set('gr2t_track_info', ['elementClass' => 'None']);
+        $this->metaModel->set('assigned_by', ['elementClass' => 'None']);
+        $this->metaModel->set('gr2t_reception_code', ['elementClass' => 'None']);
+        $this->metaModel->set('gr2t_start_date', [
+            'elementClass' => 'Date',
+            'default' => new \DateTimeImmutable(),
+            'required' => true,
+            'size' => 30
+        ]);
+        $this->metaModel->set('gr2t_end_date', [
+            'elementClass' => 'Date',
+            'default' => null,
+            'size' => 30
+        ]);
+        $this->metaModel->set('gr2t_comment', [
+            'elementClass' => 'Textarea',
+            'cols' => 80,
+            'rows' => 5
+        ]);
 
-        $this->loader->getModels()->addDatabaseTranslations($this);
+        $this->gemsModel->addDatabaseTranslations($this->metaModel);
 
         return $this;
     }
@@ -275,25 +296,26 @@ class RespondentTrackModel extends HiddenOrganizationModel
      */
     public function applyParameters(array $parameters, $includeNumericFilters = false)
     {
+        // TODO(Koen) eehm deze bestaat dus alleen in ModelAbstract, de vraag is wat het alternatief is
         if ($parameters) {
             // Altkey
-            if (isset($parameters[\Gems\Model::RESPONDENT_TRACK])) {
-                $id = $parameters[\Gems\Model::RESPONDENT_TRACK];
-                unset($parameters[\Gems\Model::RESPONDENT_TRACK]);
+            if (isset($parameters[GemsModel::RESPONDENT_TRACK])) {
+                $id = $parameters[GemsModel::RESPONDENT_TRACK];
+                unset($parameters[GemsModel::RESPONDENT_TRACK]);
                 $parameters['gr2t_id_respondent_track'] = $id;
             }
 
-            if (isset($parameters[\Gems\Model::TRACK_ID])) {
-                $id = $parameters[\Gems\Model::TRACK_ID];
-                unset($parameters[\Gems\Model::TRACK_ID]);
+            if (isset($parameters[GemsModel::TRACK_ID])) {
+                $id = $parameters[GemsModel::TRACK_ID];
+                unset($parameters[GemsModel::TRACK_ID]);
                 $parameters['gtr_id_track'] = $id;
             }
-
-            return parent::applyParameters($parameters, $includeNumericFilters);
+//            return parent::applyParameters($parameters, $includeNumericFilters);
         }
 
-        return array();
+        return [];
     }
+
 
     /**
      * Creates new items - in memory only. Extended to load information from linked table using $filter().
@@ -314,20 +336,18 @@ class RespondentTrackModel extends HiddenOrganizationModel
         $values = array();
 
         // Get the defaults
-        foreach ($this->getItemNames() as $name) {
-            $value = $this->get($name, 'default');
+        foreach ($this->metaModel->getItemNames() as $name) {
+            $value = $this->metaModel->get($name, 'default');
 
             // Load 'Value' if set
             if (null === $value) {
-                $value = $this->get($name, 'value');
+                $value = $this->metaModel->get($name, 'value');
             }
             $values[$name] = $value;
         }
 
         // Create the extra values for the result
         if ($filter) {
-            $db = $this->getAdapter();
-
             if (isset($filter['gr2o_patient_nr'], $filter['gr2o_id_organization'])) {
                 $sql = "SELECT *,
                             CONCAT(
@@ -336,8 +356,9 @@ class RespondentTrackModel extends HiddenOrganizationModel
                                 COALESCE(grs_surname_prefix, '')) AS respondent_name
                         FROM gems__respondents INNER JOIN gems__respondent2org ON grs_id_user = gr2o_id_user
                         WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?";
-                $values = $db->fetchRow($sql, array($filter['gr2o_patient_nr'], $filter['gr2o_id_organization'])) + $values;
-                $values['gr2t_id_user']         = $values['gr2o_id_user'];
+                $values = $this->resultFetcher
+                        ->fetchRow($sql, [$filter['gr2o_patient_nr'], $filter['gr2o_id_organization']]) + $values;
+                $values['gr2t_id_user'] = $values['gr2o_id_user'];
                 $values['gr2t_id_organization'] = $values['gr2o_id_organization'];
             } elseif (isset($filter['gr2o_id_user'], $filter['gr2o_id_organization'])) {
                 $sql = "SELECT *,
@@ -347,15 +368,16 @@ class RespondentTrackModel extends HiddenOrganizationModel
                                 COALESCE(grs_surname_prefix, '')) AS respondent_name
                         FROM gems__respondents INNER JOIN gems__respondent2org ON grs_id_user = gr2o_id_user
                         WHERE gr2o_id_user = ? AND gr2o_id_organization = ?";
-                $values = $db->fetchRow($sql, array($filter['gr2o_id_user'], $filter['gr2o_id_organization'])) + $values;
-                $values['gr2t_id_user']         = $values['gr2o_id_user'];
+                $values = $this->resultFetcher
+                        ->fetchRow($sql, [$filter['gr2o_id_user'], $filter['gr2o_id_organization']]) + $values;
+                $values['gr2t_id_user'] = $values['gr2o_id_user'];
                 $values['gr2t_id_organization'] = $values['gr2o_id_organization'];
             }
             if (isset($filter['gtr_id_track'])) {
                 $sql = 'SELECT * FROM gems__tracks WHERE gtr_id_track = ?';
-                $values = $db->fetchRow($sql, $filter['gtr_id_track']) + $values;
-                $values['gr2t_id_track']        = $values['gtr_id_track'];
-                $values['gr2t_count']           = $values['gtr_survey_rounds'];
+                $values = $this->resultFetcher->fetchRow($sql, $filter['gtr_id_track']) + $values;
+                $values['gr2t_id_track'] = $values['gtr_id_track'];
+                $values['gr2t_count'] = $values['gtr_survey_rounds'];
             }
             if (isset($filter['gr2t_id_user'])) {
                 $values['gr2t_id_user'] = $filter['gr2t_id_user'];
@@ -366,16 +388,17 @@ class RespondentTrackModel extends HiddenOrganizationModel
         }
 
         // \MUtil\EchoOut\EchoOut::track($filter, $values);
-        $rows = $this->processAfterLoad(array($values), true);
-        $row  = reset($rows);
+        $rows = $this->metaModel->processAfterLoad([$values], true);
+        $row = reset($rows);
 
         // Return only a single row when no count is specified
         if (null === $count) {
             return $row;
-        } else {
-            return array_fill(0, $count, $row);
         }
+
+        return array_fill(0, $count, $row);
     }
+
 
     /**
      * Save a single model item.
@@ -385,26 +408,29 @@ class RespondentTrackModel extends HiddenOrganizationModel
      * to decide on update versus insert.
      * @return array The values as they are after saving (they may change).
      */
-    public function save(array $newValues, array $filter = null): array
+    public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
-        $keys = $this->getKeys();
+        $keys = $this->metaModel->getKeys();
 
         // This is the only key to save on, no matter
         // the keys used to initiate the model.
-        $this->setKeys($this->_getKeysFor('gems__respondent2track'));
+        $this->metaModel->setKeys($this->metaModel->getItemsFor(['table' => 'gems__respondent2track']));
 
         // Change the end date until the end of the day
-        if (isset($newValues['gr2t_end_date']) && $newValues['gr2t_end_date'])  {
-            $displayFormat = $this->get('gr2t_end_date', 'dateFormat');
-            if ( ! $displayFormat) {
+        if (isset($newValues['gr2t_end_date']) && $newValues['gr2t_end_date']) {
+            $displayFormat = $this->metaModel->get('gr2t_end_date', 'dateFormat');
+            if (!$displayFormat) {
                 $displayFormat = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
             }
 
             // Of course do not do so when we got a time format
             $list = DatePicker::splitTojQueryDateTimeFormat($displayFormat);
-            if (! $list[2]) {
+            if (!$list[2]) {
                 if (!$newValues['gr2t_end_date'] instanceof DateTimeInterface) {
-                    $newValues['gr2t_end_date'] = DateTimeImmutable::createFromFormat($displayFormat, $newValues['gr2t_end_date']);
+                    $newValues['gr2t_end_date'] = DateTimeImmutable::createFromFormat(
+                        $displayFormat,
+                        $newValues['gr2t_end_date']
+                    );
                 }
                 $newValues['gr2t_end_date']->setTime(23, 59, 59);
             }
@@ -412,7 +438,7 @@ class RespondentTrackModel extends HiddenOrganizationModel
 
         $newValues = parent::save($newValues, $filter);
 
-        $this->setKeys($keys);
+        $this->metaModel->setKeys($keys);
 
         return $newValues;
     }

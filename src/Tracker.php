@@ -227,6 +227,7 @@ class Tracker implements TrackerInterface
      */
     public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int|null $userId = null, int|array|null $respTrackData = [], array $trackFieldsData = [], SessionInterface $session = null): RespondentTrack
     {
+        var_dump('create respondent track'); exit;
         $userId = $this->_checkUserId($userId);
         $trackEngine = $this->getTrackEngine($trackId);
 

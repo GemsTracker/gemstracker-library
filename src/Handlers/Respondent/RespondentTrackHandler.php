@@ -196,20 +196,18 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
         if ($detailed) {
             $engine = $this->getTrackEngine();
 
-            if ($engine) {
-                switch ($action) {
-                    case 'export':
-                    case 'show':
-                        $model->applyDetailSettings($engine);
-                        break;
+            switch ($action) {
+                case 'export':
+                case 'show':
+                    $model->applyDetailSettings($engine);
+                    break;
 
-                    default:
-                        $model->applyEditSettings($engine);
-                        break;
-                }
-
-                $apply = false;
+                default:
+                    $model->applyEditSettings($engine);
+                    break;
             }
+
+            $apply = false;
         }
         if ($apply) {
             $model->applyBrowseSettings();
