@@ -75,7 +75,7 @@ class ReflectionAbstractFactory implements AbstractFactoryInterface
             if ($dependencyName === ContainerInterface::class) {
                 return $container;
             }
-            
+
             if (null !== $dependencyName) {
                 // Return named parameter
                 if ($container->has($dependencyName)) {
@@ -87,7 +87,7 @@ class ReflectionAbstractFactory implements AbstractFactoryInterface
                     return $container->get($dependency->getName());
                 }
             }
-            
+
             // Try the default value
             return $this->resolveDefault($dependency);
         }, $askedDependencies);
