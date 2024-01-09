@@ -2,6 +2,8 @@
 
 namespace Gems\Util;
 
+use Laminas\Stdlib\ArrayUtils\MergeReplaceKey;
+
 trait RouteGroupTrait
 {
     public function routeGroup(array $groupOptions, array $routes): array
@@ -12,10 +14,17 @@ trait RouteGroupTrait
             }
 
             if (isset($groupOptions['middleware'])) {
-                $route['middleware'] = array_unique(array_merge(
-                    (array)$groupOptions['middleware'],
-                    (array)($route['middleware'] ?? [])
-                ));
+                if ($route['middleware'] instanceof MergeReplaceKey) {
+                    $route['middleware'] = new MergeReplaceKey(array_unique(array_merge(
+                        (array)$groupOptions['middleware'],
+                        (array)($route['middleware']->getData() ?? [])
+                    )));
+                } else {
+                    $route['middleware'] = array_unique(array_merge(
+                        (array)$groupOptions['middleware'],
+                        (array)($route['middleware'] ?? [])
+                    ));
+                }
             }
 
             if (isset($groupOptions['options'])) {
