@@ -138,7 +138,7 @@ class TrackFieldsHandler extends TrackMaintenanceWithEngineHandlerAbstract
     /**
      * Helper function to get the question for the delete action.
      *
-     * @return $string
+     * @return string
      */
     public function getDeleteQuestion(): string
     {
@@ -179,7 +179,7 @@ class TrackFieldsHandler extends TrackMaintenanceWithEngineHandlerAbstract
     /**
      * Helper function to get the title for the create action.
      *
-     * @return $string
+     * @return string
      */
     public function getCreateTitle(): string
     {

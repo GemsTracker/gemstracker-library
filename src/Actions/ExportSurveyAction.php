@@ -64,7 +64,7 @@ class ExportSurveyAction extends \Gems\Actions\ExportSurveyActionAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
     public function getIndexTitle()
     {

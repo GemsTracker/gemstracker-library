@@ -68,7 +68,7 @@ class TemplateAction extends \MUtil\Controller\ModelSnippetActionAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
     public function getIndexTitle()
     {
@@ -79,7 +79,7 @@ class TemplateAction extends \MUtil\Controller\ModelSnippetActionAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
     public function getTopic($count = 1)
     {

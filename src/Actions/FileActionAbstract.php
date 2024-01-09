@@ -205,7 +205,7 @@ abstract class FileActionAbstract extends \MUtil\Controller\ModelSnippetActionAb
     /**
      * Helper function to get the title for the edit action.
      *
-     * @return $string
+     * @return string
      */
     public function getEditTitle()
     {
@@ -266,7 +266,7 @@ abstract class FileActionAbstract extends \MUtil\Controller\ModelSnippetActionAb
     /**
      * Helper function to get the title for the show action.
      *
-     * @return $string
+     * @return string
      */
     public function getShowTitle()
     {
@@ -277,7 +277,7 @@ abstract class FileActionAbstract extends \MUtil\Controller\ModelSnippetActionAb
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
     public function getTopic($count = 1)
     {
@@ -287,7 +287,7 @@ abstract class FileActionAbstract extends \MUtil\Controller\ModelSnippetActionAb
     /**
      * Helper function to get the title for the upload action.
      *
-     * @return $string
+     * @return string
      */
     public function getUploadTitle()
     {

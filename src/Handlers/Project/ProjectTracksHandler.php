@@ -108,7 +108,7 @@ class ProjectTracksHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
     public function getIndexTitle(): string
     {

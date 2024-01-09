@@ -68,7 +68,7 @@ class SurveyCodeBookMultiExportAction extends \Gems\Actions\ExportMultiSurveysAc
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
     public function getIndexTitle() {
         return $this->_('Export codebooks from multiple surveys');

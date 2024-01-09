@@ -157,7 +157,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
      * Helper function to allow generalized statements about the items in the model to used specific item names.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
     public function getTopic($count = 1)
     {
