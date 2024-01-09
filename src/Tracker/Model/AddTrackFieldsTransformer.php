@@ -13,6 +13,7 @@ namespace Gems\Tracker\Model;
 
 use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
+use MUtil\Model\ModelAbstract;
 use Zalt\Model\MetaModel;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
@@ -150,15 +151,8 @@ class AddTrackFieldsTransformer extends ModelTransformerAbstract
 
             // We use setFieldData instead of saveFields() since it handles updating related values
             // like dates derived from appointments
-            // TODO(Koen) add tracking of changes back in? If so how?
-//            $before = $respTrack->getFieldData();       // Get old so we can detect changes
             $after = $respTrack->setFieldData($row);
             $row = $after + $row;
-//            $changed = ($before !== $after);
-
-//            if ($changed && (! $model->getChanged())) {
-//                $model->addChanged(1);
-//            }
         }
 
         // No changes
