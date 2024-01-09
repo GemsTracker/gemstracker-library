@@ -14,6 +14,7 @@ namespace Gems\Handlers\TrackBuilder;
 use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Html;
+use Gems\Model\GemsJoinModel;
 use Gems\Repository\OrganizationRepository;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
@@ -22,6 +23,7 @@ use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Sql\Laminas\LaminasSelectModel;
+use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -92,7 +94,8 @@ class TrackOverviewHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected function createModel(bool $detailed, string $action): DataReaderInterface
     {
-        $select = $this->getSelect();
+        $select = $this->resultFetcher->getSelect();
+        $select->from('gems__tracks');
 
         $dataModel = $this->metaModelLoader->createModel(LaminasSelectModel::class, 'track-overview', $select);
         $metaModel = $dataModel->getMetaModel();
@@ -107,14 +110,17 @@ class TrackOverviewHandler extends ModelSnippetLegacyHandlerAbstract
         $metaModel->set('total', [
             'label' => $this->_('Total'),
             'no_text_search' => true,
+            'column_expression' => new Expression("(LENGTH(gtr_organizations) - LENGTH(REPLACE(gtr_organizations, '|', ''))-1)")
         ]);
 
+        $sql = "CASE WHEN gtr_organizations LIKE '%%|%s|%%' THEN 1 ELSE 0 END";
         foreach ($organizations as $orgId => $orgName) {
             $metaModel->set('O' . $orgId, [
                 'label' => $orgName,
                 'tdClass' => 'rightAlign',
                 'thClass' => 'rightAlign',
                 'no_text_search' => true,
+                'column_expression' => new Expression(sprintf($sql, $orgId))
             ]);
 
             if ($action !== 'export') {
@@ -135,26 +141,6 @@ class TrackOverviewHandler extends ModelSnippetLegacyHandlerAbstract
             return Html::create('span', ['class'=>'checked'])->i(['class' => 'fa fa-check', 'style' => 'color: green;']);
         }
         return null;
-    }
-
-    public function getSelect() : Select
-    {
-        $fields = ['gtr_track_name'];
-
-        $sql = "CASE WHEN gtr_organizations LIKE '%%|%s|%%' THEN 1 ELSE 0 END";
-        $organizations = $this->organizationRepository->getOrganizations();
-        foreach ($organizations as $orgId => $orgName) {
-            $fields['O'.$orgId] = new Expression(sprintf($sql, $orgId));
-        }
-
-        $fields['total'] = new Expression("(LENGTH(gtr_organizations) - LENGTH(REPLACE(gtr_organizations, '|', ''))-1)");
-        $fields[] = 'gtr_id_track';
-
-        $select = $this->resultFetcher->getSelect();
-        $select->from('gems__tracks')
-               ->columns($fields);
-
-        return $select;
     }
 
     /**
