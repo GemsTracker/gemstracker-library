@@ -72,6 +72,9 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
             $where .= sprintf(" OR gto_completion_time >= %s", $filterTime->format('Y-m-d H:i:s'));
         }
 
+        // Ensure correct precedence of OR operators in this part of the query.
+        $where = "($where)";
+
         // Get the tokens
         $tokens = $this->token->getAllUnansweredTokens([$where]);
         $output = [];
