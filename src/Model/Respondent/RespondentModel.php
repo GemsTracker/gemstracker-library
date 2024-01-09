@@ -308,6 +308,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $this->setIfExists('calc_email', [
                'elementClass' => 'Checkbox',
                 'required' => true,
+                'no_text_search' => true,
                 'order' => $this->metaModel->getOrder('gr2o_email') + 1,
                 'validator' => new OneOf(
                     $this->_('Respondent has no e-mail'),
@@ -359,6 +360,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->setIfExists('gr2o_opened', [
             'default' => date('Y-m-d H:i:s'),
             'elementClass' => 'None',  // Has little use to show: is now
+            'no_text_search' => true,
         ]);
 
         $this->setIfExists('gr2o_opened_by', [
@@ -366,12 +368,18 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'elementClass' => 'Hidden',  // Has little use to show: is usually editor, but otherwise is set to null during save
             'multiOptions' => $changers
         ]);
-        $this->setIfExists('gr2o_changed', ['elementClass' => 'Exhibitor']);
+        $this->setIfExists('gr2o_changed', [
+            'elementClass' => 'Exhibitor',
+            'no_text_search' => true,
+        ]);
         $this->setIfExists('gr2o_changed_by', [
             'multiOptions' => $changers,
             'elementClass' => 'Exhibitor'
         ]);
-        $this->setIfExists('gr2o_created', ['elementClass' => 'Exhibitor']);
+        $this->setIfExists('gr2o_created', [
+            'elementClass' => 'Exhibitor',
+            'no_text_search' => true,
+        ]);
         $this->setIfExists('gr2o_created_by',  [
             'multiOptions' => $changers,
             'elementClass' => 'Exhibitor'
