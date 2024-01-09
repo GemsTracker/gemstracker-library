@@ -14,6 +14,7 @@ namespace Gems\User\Embed\Redirect;
 use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\User;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -42,7 +43,7 @@ class StaffAccountPage extends RedirectAbstract
         User $deferredUser,
         string $patientId,
         array $organizations,
-    ): ?string {
+    ): RedirectResponse|string|null {
         return $routeHelper->getRouteUrl('option.edit', [], [], $deferredUser->getRole());
     }
 }

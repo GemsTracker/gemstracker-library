@@ -15,6 +15,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\User;
+use Laminas\Diactoros\Response\RedirectResponse;
 use MUtil\Model;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
@@ -53,7 +54,7 @@ class RespondentShowPage extends RedirectAbstract
         User $deferredUser,
         string $patientId,
         array $organizations,
-    ): ?string {
+    ): RedirectResponse|string|null {
         $orgId = $deferredUser->getCurrentOrganizationId();
 
         $patient = $this->respondentRepository->getPatient($patientId, $orgId);

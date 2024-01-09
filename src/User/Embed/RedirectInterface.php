@@ -12,6 +12,7 @@
 namespace Gems\User\Embed;
 
 use Gems\User\User;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -25,7 +26,7 @@ use Psr\Http\Message\ServerRequestInterface;
 interface RedirectInterface extends HelperInterface
 {
     /**
-     * @return string|null redirect route
+     * @return RedirectResponse|string|null redirect route
      */
     public function getRedirectUrl(
         ServerRequestInterface $request,
@@ -34,5 +35,5 @@ interface RedirectInterface extends HelperInterface
         User $deferredUser,
         string $patientId,
         array $organizations,
-    ): ?string;
+    ): RedirectResponse|string|null;
 }

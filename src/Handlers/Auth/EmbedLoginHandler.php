@@ -117,6 +117,10 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 [$identity->getOrganizationId()],
             );
 
+            if ($url instanceof RedirectResponse) {
+                return $url;
+            }
+
             if ($url) {
                 return new RedirectResponse($url);
             }
