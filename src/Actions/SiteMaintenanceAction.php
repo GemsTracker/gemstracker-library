@@ -78,7 +78,7 @@ class SiteMaintenanceAction extends \MUtil\Controller\ModelSnippetActionAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
     public function getTopic($count = 1)
     {

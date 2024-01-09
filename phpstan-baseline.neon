@@ -201,16 +201,6 @@ parameters:
 			path: src/Actions/DatabaseAction.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Actions/DatabaseAction.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Actions/DatabaseAction.php
-
-		-
 			message: "#^PHPDoc type mixed of property Gems\\\\Actions\\\\DatabaseAction\\:\\:\\$autofilterParameters is not covariant with PHPDoc type array of overridden property MUtil\\\\Controller\\\\ModelSnippetActionAbstract\\:\\:\\$autofilterParameters\\.$#"
 			count: 1
 			path: src/Actions/DatabaseAction.php
@@ -361,17 +351,7 @@ parameters:
 			path: src/Actions/ExportMultiSurveysAction.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Actions/ExportMultiSurveysAction.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Actions\\\\ExportSurveyAction\\:\\:\\$loader\\.$#"
-			count: 1
-			path: src/Actions/ExportSurveyAction.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
 			count: 1
 			path: src/Actions/ExportSurveyAction.php
 
@@ -426,21 +406,6 @@ parameters:
 			path: src/Actions/FileActionAbstract.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Actions/FileActionAbstract.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 87$#"
-			count: 2
-			path: src/Actions/FileActionAbstract.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 89$#"
-			count: 1
-			path: src/Actions/FileActionAbstract.php
-
-		-
 			message: "#^PHPDoc type mixed of property Gems\\\\Actions\\\\FileActionAbstract\\:\\:\\$autofilterParameters is not covariant with PHPDoc type array of overridden property MUtil\\\\Controller\\\\ModelSnippetActionAbstract\\:\\:\\$autofilterParameters\\.$#"
 			count: 1
 			path: src/Actions/FileActionAbstract.php
@@ -456,27 +421,12 @@ parameters:
 			path: src/Actions/FileImportAction.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Actions/FileImportAction.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Actions\\\\ImportedFailuresAction\\:\\:\\$loader\\.$#"
 			count: 1
 			path: src/Actions/ImportedFailuresAction.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Actions/ImportedFailuresAction.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Actions\\\\ImportedFilesAction\\:\\:\\$loader\\.$#"
-			count: 1
-			path: src/Actions/ImportedFilesAction.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
 			count: 1
 			path: src/Actions/ImportedFilesAction.php
 
@@ -511,11 +461,6 @@ parameters:
 			path: src/Actions/LogFileAction.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Actions/LogFileAction.php
-
-		-
 			message: "#^PHPDoc type mixed of property Gems\\\\Actions\\\\LogFileAction\\:\\:\\$autofilterParameters is not covariant with PHPDoc type array of overridden property MUtil\\\\Controller\\\\ModelSnippetActionAbstract\\:\\:\\$autofilterParameters\\.$#"
 			count: 1
 			path: src/Actions/LogFileAction.php
@@ -527,16 +472,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined static method MUtil\\\\Controller\\\\ModelSnippetActionAbstract\\:\\:getExportModel\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/PrivilegesAction.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Actions/PrivilegesAction.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
 			count: 1
 			path: src/Actions/PrivilegesAction.php
 
@@ -591,11 +526,6 @@ parameters:
 			path: src/Actions/RespondentMailLogHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 97$#"
-			count: 1
-			path: src/Actions/RespondentMailLogHandler.php
-
-		-
 			message: "#^PHPDoc tag @return with type MUtil\\\\Model\\\\ModelAbstract is not subtype of native type Gems\\\\Model\\\\CommLogModel\\.$#"
 			count: 1
 			path: src/Actions/RespondentMailLogHandler.php
@@ -641,16 +571,6 @@ parameters:
 			path: src/Actions/RoleOverviewAction.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Actions/RoleOverviewAction.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Actions/RoleOverviewAction.php
-
-		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \", expected type at offset 107$#"
 			count: 1
 			path: src/Actions/RoleOverviewAction.php
@@ -666,11 +586,6 @@ parameters:
 			path: src/Actions/SiteMaintenanceAction.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Actions/SiteMaintenanceAction.php
-
-		-
 			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, DateTimeImmutable\\|null given\\.$#"
 			count: 1
 			path: src/Actions/SiteMaintenanceAction.php
@@ -681,27 +596,12 @@ parameters:
 			path: src/Actions/SurveyCodeBookMultiExportAction.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Actions/SurveyCodeBookMultiExportAction.php
-
-		-
 			message: "#^Call to an undefined method Gems\\\\Actions\\\\TemplateAction\\:\\:getInstanceId\\(\\)\\.$#"
 			count: 1
 			path: src/Actions/TemplateAction.php
 
 		-
 			message: "#^Call to an undefined method MUtil\\\\Model\\\\ModelAbstract\\:\\:reset\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/TemplateAction.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 140$#"
-			count: 1
-			path: src/Actions/TemplateAction.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 91$#"
 			count: 1
 			path: src/Actions/TemplateAction.php
 
@@ -1911,16 +1811,6 @@ parameters:
 			path: src/Handlers/GemsHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/LogHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/LogHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\LogHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/LogHandler.php
@@ -1981,11 +1871,6 @@ parameters:
 			path: src/Handlers/NotFoundHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/OptionHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\OptionHandler\\:\\:\\$createEditSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/OptionHandler.php
@@ -2041,16 +1926,6 @@ parameters:
 			path: src/Handlers/Overview/ComplianceHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Overview/ComplianceHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Overview/ComplianceHandler.php
-
-		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \", expected type at offset 107$#"
 			count: 1
 			path: src/Handlers/Overview/ComplianceHandler.php
@@ -2071,11 +1946,6 @@ parameters:
 			path: src/Handlers/Overview/ComplianceHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Overview/ConsentPlanHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\ConsentPlanHandler\\:\\:\\$indexStartSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Overview/ConsentPlanHandler.php
@@ -2084,16 +1954,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\ConsentPlanHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Overview/ConsentPlanHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Overview/FieldOverviewHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Overview/FieldOverviewHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\FieldOverviewHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
@@ -2112,16 +1972,6 @@ parameters:
 
 		-
 			message: "#^Method Gems\\\\Handlers\\\\Overview\\\\FieldReportHandler\\:\\:valueCount\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/Handlers/Overview/FieldReportHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Overview/FieldReportHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
 			count: 1
 			path: src/Handlers/Overview/FieldReportHandler.php
 
@@ -2191,24 +2041,9 @@ parameters:
 			path: src/Handlers/Project/ProjectSurveysHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Project/ProjectSurveysHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Project/ProjectSurveysHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Project\\\\ProjectSurveysHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Project/ProjectSurveysHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Project/ProjectTracksHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Project\\\\ProjectTracksHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
@@ -2286,11 +2121,6 @@ parameters:
 			path: src/Handlers/Respondent/CareEpisodeHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 97$#"
-			count: 1
-			path: src/Handlers/Respondent/CareEpisodeHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Respondent\\\\CareEpisodeHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Respondent/CareEpisodeHandler.php
@@ -2338,11 +2168,6 @@ parameters:
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
 			count: 4
-			path: src/Handlers/Respondent/RespondentHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
 			path: src/Handlers/Respondent/RespondentHandler.php
 
 		-
@@ -2446,11 +2271,6 @@ parameters:
 			path: src/Handlers/Respondent/TrackHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Respondent/TrackHandler.php
-
-		-
 			message: "#^PHPDoc tag @return with type MUtil\\\\Model\\\\ModelAbstract is not subtype of native type Gems\\\\Tracker\\\\Model\\\\RespondentTrackModel\\.$#"
 			count: 1
 			path: src/Handlers/Respondent/TrackHandler.php
@@ -2476,16 +2296,6 @@ parameters:
 			path: src/Handlers/Respondent/TrackHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaActivityHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaActivityHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\AgendaActivityHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/AgendaActivityHandler.php
@@ -2504,16 +2314,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\AgendaActivityHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/AgendaActivityHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaDiagnosisHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaDiagnosisHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\AgendaDiagnosisHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
@@ -2561,16 +2361,6 @@ parameters:
 			path: src/Handlers/Setup/AgendaFilterHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaProcedureHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaProcedureHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\AgendaProcedureHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/AgendaProcedureHandler.php
@@ -2589,16 +2379,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\AgendaProcedureHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/AgendaProcedureHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaStaffHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaStaffHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\AgendaStaffHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
@@ -2622,16 +2402,6 @@ parameters:
 
 		-
 			message: "#^Call to function is_null\\(\\) with int will always evaluate to false\\.$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
 			count: 1
 			path: src/Handlers/Setup/CommJobHandler.php
 
@@ -2661,26 +2431,6 @@ parameters:
 			path: src/Handlers/Setup/CommTemplateHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/ConsentHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/ConsentHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/GroupHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/GroupHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\GroupHandler\\:\\:\\$createEditSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/GroupHandler.php
@@ -2694,16 +2444,6 @@ parameters:
 			message: "#^Variable \\$value on left side of \\?\\? always exists and is not nullable\\.$#"
 			count: 1
 			path: src/Handlers/Setup/GroupHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/LocationHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/LocationHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\LocationHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
@@ -2721,29 +2461,9 @@ parameters:
 			path: src/Handlers/Setup/LocationHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/LogMaintenanceHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/LogMaintenanceHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\LogMaintenanceHandler\\:\\:\\$indexStartSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/LogMaintenanceHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/MailServerHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/MailServerHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\MailServerHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
@@ -2851,39 +2571,9 @@ parameters:
 			path: src/Handlers/Setup/RoleHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/RoleHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/RoleHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\RoleHandler\\:\\:\\$createEditSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/RoleHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/StaffHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 87$#"
-			count: 1
-			path: src/Handlers/Setup/StaffHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/StaffHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 93$#"
-			count: 2
-			path: src/Handlers/Setup/StaffHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\StaffHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
@@ -2939,26 +2629,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$staff_id of method Gems\\\\User\\\\UserLoader\\:\\:getUserByStaffId\\(\\) expects int, string given\\.$#"
 			count: 1
 			path: src/Handlers/Setup/StaffLogHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/Setup/SystemUserHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 87$#"
-			count: 1
-			path: src/Handlers/Setup/SystemUserHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 88$#"
-			count: 1
-			path: src/Handlers/Setup/SystemUserHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 93$#"
-			count: 2
-			path: src/Handlers/Setup/SystemUserHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\SystemUserHandler\\:\\:\\$createEditSnippets with type mixed is not subtype of native type array\\.$#"
@@ -3056,16 +2726,6 @@ parameters:
 			path: src/Handlers/TrackBuilder/SurveyMaintenanceHandler.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 89$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/TrackFieldsHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 92$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/TrackFieldsHandler.php
-
-		-
 			message: "#^PHPDoc tag @return with type Gems\\\\Tracker\\\\Model\\\\TrackModel is incompatible with native type Gems\\\\Tracker\\\\Model\\\\FieldMaintenanceModel\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/TrackFieldsHandler.php
@@ -3119,11 +2779,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$oldTrackId of method Gems\\\\Tracker\\\\Engine\\\\TrackEngineInterface\\:\\:copyTrack\\(\\) expects int, string\\|null given\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/TrackMaintenanceHandler.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 136$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/TrackOverviewHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\TrackOverviewHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
@@ -5511,11 +5166,6 @@ parameters:
 			path: src/Snippets/FormSnippetAbstractMUtil.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 164$#"
-			count: 1
-			path: src/Snippets/FormSnippetAbstractMUtil.php
-
-		-
 			message: "#^Property Gems\\\\Snippets\\\\FormSnippetAbstractMUtil\\:\\:\\$menu has unknown class Gems\\\\Menu as its type\\.$#"
 			count: 1
 			path: src/Snippets/FormSnippetAbstractMUtil.php
@@ -6084,11 +5734,6 @@ parameters:
 			message: "#^Variable \\$message might not be defined\\.$#"
 			count: 1
 			path: src/Snippets/Respondent/ChangeRespondentOrganization.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 164$#"
-			count: 1
-			path: src/Snippets/Respondent/Consent/RespondentConsentFormSnippet.php
 
 		-
 			message: "#^Left side of && is always true\\.$#"
@@ -7456,11 +7101,6 @@ parameters:
 			path: src/Snippets/Token/TokenForgottenSnippet.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 164$#"
-			count: 1
-			path: src/Snippets/Token/TokenForgottenSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\Token\\\\TokenNotFoundSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns null\\.$#"
 			count: 1
 			path: src/Snippets/Token/TokenNotFoundSnippet.php
@@ -8057,11 +7697,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Gems\\\\AuthTfa\\\\Method\\\\OtpMethodInterface\\:\\:verifyForSecret\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/User/SetTwoFactorSnippet.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 164$#"
 			count: 1
 			path: src/Snippets/User/SetTwoFactorSnippet.php
 
@@ -8966,11 +8601,6 @@ parameters:
 			path: src/Tracker/Snippets/EditRoundSnippetAbstract.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 164$#"
-			count: 1
-			path: src/Tracker/Snippets/EditRoundSnippetAbstract.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\|Zalt\\\\Model\\\\Data\\\\DataWriterInterface\\:\\:applyDetailedFormatting\\(\\)\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/EditTokenSnippetAbstract.php
@@ -8987,11 +8617,6 @@ parameters:
 
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/EditTokenSnippetAbstract.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 164$#"
 			count: 1
 			path: src/Tracker/Snippets/EditTokenSnippetAbstract.php
 
@@ -9068,11 +8693,6 @@ parameters:
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
 			count: 4
-			path: src/Tracker/Snippets/EditTrackSnippetAbstract.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$string\\)\\: Unexpected token \"\\$string\", expected type at offset 164$#"
-			count: 1
 			path: src/Tracker/Snippets/EditTrackSnippetAbstract.php
 
 		-

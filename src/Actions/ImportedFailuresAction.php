@@ -32,7 +32,7 @@ class ImportedFailuresAction extends \Gems\Actions\FileActionAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
     public function getIndexTitle()
     {

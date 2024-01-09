@@ -248,7 +248,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
     public function getTopic(int $count = 1): string
     {

@@ -240,7 +240,7 @@ class CommJobHandler extends BrowseChangeUsageHandler
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
     public function getIndexTitle(): string
     {
@@ -251,7 +251,7 @@ class CommJobHandler extends BrowseChangeUsageHandler
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
     public function getTopic(int $count = 1): string
     {

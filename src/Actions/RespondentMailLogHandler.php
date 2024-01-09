@@ -118,7 +118,7 @@ class RespondentMailLogHandler extends RespondentChildHandlerAbstract
     /**
      * Helper function to get the informed title for the index action.
      *
-     * @return $string
+     * @return string
      */
     public function getContentTitle()
     {

@@ -288,7 +288,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
     /**
      * Helper function to get the title for the deactivate action.
      *
-     * @return $string
+     * @return string
      */
     public function getDeactivateTitle(): string
     {
@@ -304,7 +304,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
     public function getIndexTitle(): string
     {
@@ -326,7 +326,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
     /**
      * Helper function to get the title for the reactivate action.
      *
-     * @return $string
+     * @return string
      */
     public function getReactivateTitle(): string
     {
@@ -383,7 +383,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
     /**
      * Helper function to get the title for the show action.
      *
-     * @return $string
+     * @return string
      */
     public function getShowTitle(): string
     {
@@ -400,7 +400,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
     public function getTopic(int $count = 1): string
     {
