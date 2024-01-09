@@ -35,6 +35,7 @@ class GemsStaffForeignKeysPatch extends PatchAbstract
     {
         $statements = [
             'ALTER TABLE gems__staff MODIFY COLUMN gsf_id_organization bigint unsigned NOT NULL',
+            'INSERT INTO gems__user_ids (gui_id_user) SELECT gsf_id_user FROM gems__staff WHERE gsf_id_user NOT IN (SELECT gui_id_user FROM gems__user_ids)',
         ];
         foreach ($this->foreignKeys as $foreignKeyData) {
             list($col, $refTable, $refCol) = $foreignKeyData;
