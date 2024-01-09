@@ -34,7 +34,9 @@ class GemsLogRespondentConsentsForeignKeysPatch extends PatchAbstract
 
     public function up(): array
     {
-        $statements = [];
+        $statements = [
+            'UPDATE gems__log_respondent_consents SET glrc_old_consent=null WHERE glrc_old_consent=""',
+        ];
         foreach ($this->foreignKeys as $foreignKeyData) {
             list($col, $refTable, $refCol) = $foreignKeyData;
             if (!$this->databaseInfo->tableHasForeignKey($this->table, $col, $refTable, $refCol)) {
