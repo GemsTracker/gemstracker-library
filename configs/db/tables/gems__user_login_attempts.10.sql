@@ -3,7 +3,7 @@
 --
 CREATE TABLE if not exists gems__user_login_attempts (
         gula_login            varchar(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null,
-        gula_id_organization  bigint not null references gems__organizations (gor_id_organization),
+        gula_id_organization  bigint not null,
 
     	gula_failed_logins    int(11) unsigned not null default 0,
         gula_last_failed      timestamp null,
