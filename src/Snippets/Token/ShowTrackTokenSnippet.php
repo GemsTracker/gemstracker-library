@@ -231,12 +231,6 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
                  * @var HtmlElement $buttons[$item['route']]
                  */
                 $buttons[$item['route']] = Html::actionLink($url, $item['label']);
-                if (isset($item['class'])) {
-                    $buttons[$item['route']]->appendAttrib('class', $item['class']);
-                }
-                if (isset($item['gt-target-id'])) {
-                    $buttons[$item['route']]->setAttrib('gt-target-id', $item['gt-target-id']);
-                }
             }
         }
 
