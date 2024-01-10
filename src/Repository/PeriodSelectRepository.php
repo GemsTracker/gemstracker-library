@@ -247,9 +247,9 @@ class PeriodSelectRepository
     {
         $dateChars = 'dmYyDjlNSwzWFMntLoXxYycr';
         $timeChars = 'HisaABGGhuveIOPTZcru';
-        
-        $noDate = (false == strpbrk($format, $dateChars));
-        $noTime = (false == strpbrk($format, $dateChars));
+
+        $noDate = (false === strpbrk($format, $dateChars));
+        $noTime = (false === strpbrk($format, $timeChars));
         
         if ($noTime && $noDate) {
             return 0;
