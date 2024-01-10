@@ -209,8 +209,6 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             [
                 'route' => 'respondent.tracks.token.answer',
                 'label' => $this->_('Answers'),
-                'class' => 'newWindowOnClick',
-                'gt-target-id' => $this->tokenId,
                 'disabled' => !$this->token->isStarted(),
             ],
             [
