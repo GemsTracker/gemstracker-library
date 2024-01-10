@@ -7,6 +7,7 @@ use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LegacyModelMiddleware;
 use Gems\SnippetsLoader\SnippetMiddleware;
+use Laminas\Stdlib\ArrayUtils\MergeReplaceKey;
 use Zalt\SnippetsActions\NoCsrfInterface;
 use Zalt\SnippetsActions\ParameterActionInterface;
 use Zalt\SnippetsActions\PostActionInterface;
@@ -295,10 +296,10 @@ trait ModelSnippetActionRouteHelpers
         foreach($pages as $pageName) {
             $route = [];
             if ($controllerClass !== null) {
-                $route['middleware'] = [
+                $route['middleware'] = new MergeReplaceKey([
                     LegacyCurrentUserMiddleware::class,
                     $controllerClass,
-                ];
+                ]);
             }
 
             $routes[$baseName . '.' . $pageName] = $route;

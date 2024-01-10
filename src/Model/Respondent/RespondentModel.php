@@ -308,6 +308,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $this->setIfExists('calc_email', [
                'elementClass' => 'Checkbox',
                 'required' => true,
+                'no_text_search' => true,
                 'order' => $this->metaModel->getOrder('gr2o_email') + 1,
                 'validator' => new OneOf(
                     $this->_('Respondent has no e-mail'),
@@ -348,9 +349,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->setIfExists('gr2o_consent', [
             'default' => $this->consentRepository->getDefaultConsent(),
             'description' => $this->_('Has the respondent signed the informed consent letter?'),
-            'elementClass' => 'radio',
-            'multiOptions' => $this->consentRepository->getUserConsentOptions(),
-            'separator' => ' ',
+            'elementClass' => 'Exhibitor',
         ]);
         foreach ($this->consentFields as $consent) {
             $this->addColumn($consent, 'old_' . $consent);
@@ -361,6 +360,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->setIfExists('gr2o_opened', [
             'default' => date('Y-m-d H:i:s'),
             'elementClass' => 'None',  // Has little use to show: is now
+            'no_text_search' => true,
         ]);
 
         $this->setIfExists('gr2o_opened_by', [
@@ -368,19 +368,36 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'elementClass' => 'Hidden',  // Has little use to show: is usually editor, but otherwise is set to null during save
             'multiOptions' => $changers
         ]);
-        $this->setIfExists('gr2o_changed');
+        $this->setIfExists('gr2o_changed', [
+            'elementClass' => 'Exhibitor',
+            'no_text_search' => true,
+        ]);
         $this->setIfExists('gr2o_changed_by', [
             'multiOptions' => $changers,
+            'elementClass' => 'Exhibitor'
         ]);
-        $this->setIfExists('gr2o_created');
+        $this->setIfExists('gr2o_created', [
+            'elementClass' => 'Exhibitor',
+            'no_text_search' => true,
+        ]);
         $this->setIfExists('gr2o_created_by',  [
             'multiOptions' => $changers,
+            'elementClass' => 'Exhibitor'
         ]);
 
         $event = new RespondentModelSetEvent($this);
         $this->eventDispatcher->dispatch($event, RespondentModelSetEvent::class);
 
         $this->applyMask();
+    }
+
+    public function makeConsentEditable(): void
+    {
+        $this->setIfExists('gr2o_consent', [
+            'elementClass' => 'Radio',
+            'multiOptions' => $this->consentRepository->getUserConsentOptions(),
+            'separator' => ' ',
+        ]);
     }
 
     public function checkIds(array $newValues)

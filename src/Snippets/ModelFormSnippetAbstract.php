@@ -83,7 +83,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      * @var int
      */
     protected int $layoutFixedWidth = 0;
-    
+
     /**
      * When true a tabbed form is used.
      *
@@ -109,10 +109,10 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
-     
+
         $this->saveLabel = $this->_('Save');
     }
-    
+
     /**
      * Adds elements from the model to the bridge that creates the form.
      *
@@ -201,7 +201,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
         if ("OK" == $this->saveLabel) {
             $this->saveLabel = $this->_('Save');
         }
-        
+
         if ($this->_form instanceof \Gems\TabForm) {
             $this->_form->resetContext();
         }

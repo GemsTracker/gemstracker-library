@@ -11,13 +11,16 @@
 
 namespace Gems\Handlers\TrackBuilder;
 
+use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Html;
 use Gems\Repository\OrganizationRepository;
-use MUtil\Model\ModelAbstract;
-use MUtil\Model\SelectModel;
+use Laminas\Db\Sql\Expression;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelLoader;
+use Zalt\Model\Sql\Laminas\LaminasSelectModel;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -68,7 +71,8 @@ class TrackOverviewHandler extends ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected OrganizationRepository $organizationRepository,
-        protected \Zend_Db_Adapter_Abstract $db,
+        protected readonly MetaModelLoader $metaModelLoader,
+        protected readonly ResultFetcher $resultFetcher,
     )
     {
         parent::__construct($responder, $translate, $cache);
@@ -83,58 +87,49 @@ class TrackOverviewHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): DataReaderInterface
     {
-        $fields = [];
-        // Export all
-        if ('export' === $action) {
-            $detailed = true;
-        }
+        $select = $this->resultFetcher->getSelect();
+        $select->from('gems__tracks');
+
+        $dataModel = $this->metaModelLoader->createModel(LaminasSelectModel::class, 'track-overview', $select);
+        $metaModel = $dataModel->getMetaModel();
 
         $organizations = $this->organizationRepository->getOrganizations();
 
+        $metaModel->set('gtr_id_track');
+        $metaModel->resetOrder();
+        $metaModel->set('gtr_track_name', [
+            'label' => $this->_('Track name'),
+        ]);
+        $metaModel->set('total', [
+            'label' => $this->_('Total'),
+            'no_text_search' => true,
+            'column_expression' => new Expression("(LENGTH(gtr_organizations) - LENGTH(REPLACE(gtr_organizations, '|', ''))-1)")
+        ]);
 
-        $fields[] = 'gtr_track_name';
-
-        $sql      = "CASE WHEN gtr_organizations LIKE '%%|%s|%%' THEN 1 ELSE 0 END";
-
+        $sql = "CASE WHEN gtr_organizations LIKE '%%|%s|%%' THEN 1 ELSE 0 END";
         foreach ($organizations as $orgId => $orgName) {
-            $fields['O'.$orgId] = new \Zend_Db_Expr(sprintf($sql, $orgId));
-        }
-
-        $fields['total'] = new \Zend_Db_Expr("(LENGTH(gtr_organizations) - LENGTH(REPLACE(gtr_organizations, '|', ''))-1)");
-
-        $fields[] = 'gtr_id_track';
-
-        $select = $this->db->select();
-        $select->from('gems__tracks', $fields);
-
-        $model = new SelectModel($select, 'track-verview');
-        $model->setKeys(array('gtr_id_track'));
-        $model->resetOrder();
-
-        $model->set('gtr_track_name', 'label', $this->_('Track name'));
-
-        $model->set('total', 'label', $this->_('Total'));
-        $model->setOnTextFilter('total', array($this, 'noTextFilter'));
-
-        foreach ($organizations as $orgId => $orgName) {
-            $model->set('O' . $orgId, 'label', $orgName,
-                    'tdClass', 'rightAlign',
-                    'thClass', 'rightAlign');
-
-            $model->setOnTextFilter('O' . $orgId, array($this, 'noTextFilter'));
+            $metaModel->set('O' . $orgId, [
+                'label' => $orgName,
+                'tdClass' => 'rightAlign',
+                'thClass' => 'rightAlign',
+                'no_text_search' => true,
+                'column_expression' => new Expression(sprintf($sql, $orgId))
+            ]);
 
             if ($action !== 'export') {
-                $model->set('O'. $orgId, 'formatFunction', array($this, 'formatCheckmark'));
+                $metaModel->set('O'. $orgId, [
+                    'formatFunction' => [$this, 'formatCheckmark'],
+                ]);
             }
         }
 
          // \MUtil\Model::$verbose = true;
 
-        return $model;
+        return $dataModel;
     }
 
     public function formatCheckmark($value)

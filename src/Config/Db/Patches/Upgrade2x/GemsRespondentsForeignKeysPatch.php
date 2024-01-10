@@ -34,6 +34,7 @@ class GemsRespondentsForeignKeysPatch extends PatchAbstract
         $statements = [
             'ALTER TABLE gems__respondent_relations MODIFY COLUMN grr_id_respondent bigint unsigned NOT NULL',
             'ALTER TABLE gems__respondent_relations MODIFY COLUMN grr_id_staff bigint unsigned NULL',
+            'INSERT INTO gems__user_ids (gui_id_user) SELECT grs_id_user FROM gems__respondents WHERE grs_id_user NOT IN (SELECT gui_id_user FROM gems__user_ids)',
         ];
         foreach ($this->foreignKeys as $foreignKeyData) {
             list($col, $refTable, $refCol) = $foreignKeyData;

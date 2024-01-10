@@ -574,7 +574,7 @@ class Token
                 ->onlySucces()
                 ->forWhere([
                     'gsu_active' => 1,
-                    'gro_active = 1 OR gro_active IS NULL',
+                    '(gro_active = 1 OR gro_active IS NULL)',
                 ])
                 ->order([
                     'gtr_track_name',
@@ -917,7 +917,7 @@ class Token
                 ->onlyValid()
                 ->forWhere([
                     'gsu_active' => 1,
-                    'gro_active = 1 OR gro_active IS NULL',
+                    '(gro_active = 1 OR gro_active IS NULL)',
                 ])
                 ->order(['gto_valid_from', 'gto_round_order']);
 
@@ -1413,7 +1413,7 @@ class Token
                 ->onlyValid()
                 ->forWhere([
                     'gsu_active' => 1,
-                    'gro_active = 1 OR gro_active IS NULL',
+                    '(gro_active = 1 OR gro_active IS NULL)',
                 ])
                 ->withoutToken($this->_tokenId);
 
