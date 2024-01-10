@@ -12,6 +12,7 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Tracker\Model\RespondentTrackModel;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -69,17 +70,16 @@ class ShowTrackUsageSnippet extends \Gems\Tracker\Snippets\ShowTrackUsageAbstrac
         $bridge->addItemLink($menuList->getActionLink($controller, 'edit-track'));
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
-    protected function createModel(): DataReaderInterface
+    protected function createModel(): RespondentTrackModel
     {
         $model = parent::createModel();
 
         $model->addColumn('CONCAT(gr2t_completed, \'' . $this->_(' of ') . '\', gr2t_count)', 'progress');
-        $model->set('progress', 'label', $this->_('Progress'), 'tdClass', 'rightAlign', 'thClass', 'rightAlign');
+        $model->getMetaModel()->set('progress', [
+            'label' => $this->_('Progress'),
+            'tdClass' => 'rightAlign',
+            'thClass' => 'rightAlign'
+        ]);
 
         return $model;
     }

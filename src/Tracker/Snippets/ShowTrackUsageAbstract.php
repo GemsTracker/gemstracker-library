@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\Util\Translated;
 use Zalt\Model\Data\DataReaderInterface;
 
@@ -125,7 +126,7 @@ abstract class ShowTrackUsageAbstract extends \Gems\Snippets\ModelTableSnippetAb
         return $this->db && $this->loader;
     }
 
-    protected function createModel(): DataReaderInterface
+    protected function createModel(): RespondentTrackModel
     {
         $model = $this->loader->getTracker()->getRespondentTrackModel();
 

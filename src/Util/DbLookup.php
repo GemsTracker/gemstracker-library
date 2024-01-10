@@ -463,7 +463,7 @@ class DbLookup extends UtilAbstract
     }
 
     /**
-     * @return array mailId => descr
+     * @return int|string|null
      */
     public function getRespondentTrackNoMailCodeValue()
     {
