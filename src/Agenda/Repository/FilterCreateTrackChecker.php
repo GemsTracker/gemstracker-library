@@ -297,7 +297,6 @@ class FilterCreateTrackChecker
         FilterTracer|null $filterTracer = null
     ): bool
     {
-        dump($filter->getCreatorType());
         return match($filter->getCreatorType()) {
             0 => $this->createNever($appointment, $filter, $respTrack, $filterTracer),
             1 => $this->createWhenNoOpen($appointment, $filter, $respTrack, $filterTracer),
