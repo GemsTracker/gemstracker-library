@@ -10,7 +10,6 @@ class GemsLogRespondent2track2fieldForeignKeysPatch extends PatchAbstract
     private string $table = 'gems__log_respondent2track2field';
 
     private array $foreignKeys = [
-        [ 'glrtf_id_field', 'gems__track_fields', 'gtf_id_field' ],
         [ 'glrtf_id_respondent_track', 'gems__respondent2track', 'gr2t_id_respondent_track' ],
     ];
 
