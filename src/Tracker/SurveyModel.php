@@ -12,7 +12,8 @@
 namespace Gems\Tracker;
 
 use Gems\Model\JoinModel;
-use Gems\Tracker\Model\AddAnswersTransformer;
+use Gems\Tracker;
+use Gems\Tracker\Model\Transform\AddAnswersTransformer;
 use Gems\Tracker\Source\SourceInterface;
 
 /**
@@ -47,6 +48,11 @@ class SurveyModel extends JoinModel
      * @var Survey
      */
     protected $survey;
+
+    /**
+     * @var Tracker
+     */
+    protected $tracker;
 
     /**
      *
@@ -91,7 +97,7 @@ class SurveyModel extends JoinModel
      */
     protected function addAnswersToModel()
     {
-        $transformer = new AddAnswersTransformer($this->survey, $this->source);
+        $transformer = new AddAnswersTransformer($this->survey, $this->source, $this->tracker);
         $this->addTransformer($transformer);
     }
 

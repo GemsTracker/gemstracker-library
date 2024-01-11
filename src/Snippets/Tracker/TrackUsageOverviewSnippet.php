@@ -116,11 +116,6 @@ class TrackUsageOverviewSnippet extends ModelTableSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         $model = $this->tracker->getRespondentTrackModel();

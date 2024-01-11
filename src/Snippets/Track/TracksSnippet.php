@@ -40,7 +40,7 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected $_fixedSort = array(
         'gr2t_start_date' => SORT_ASC,
-        );
+    );
 
     /**
      * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
@@ -71,32 +71,32 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         protected Tracker $tracker,
-        protected Translated $translatedUtil,       
-    )
-    {
+        protected Translated $translatedUtil,
+    ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         $model = $this->tracker->getRespondentTrackModel();
 
         $model->addColumn('CONCAT(gr2t_completed, \'' . $this->_(' of ') . '\', gr2t_count)', 'progress');
 
-        $model->resetOrder();
-        $model->set('gtr_track_name',    'label', $this->_('Track'));
-        $model->set('gr2t_track_info',   'label', $this->_('Description'));
-        $model->set('gr2t_start_date',   'label', $this->_('Start'),
-            'formatFunction', $this->translatedUtil->formatDate,
-            'default', new \DateTimeImmutable());
-        $model->set('gr2t_reception_code');
-        $model->set('progress', 'label', $this->_('Progress')); // , 'tdClass', 'rightAlign', 'thClass', 'rightAlign');
-        $model->set('assigned_by',       'label', $this->_('Assigned by'));
+        $model->getMetaModel()->resetOrder();
+        $model->getMetaModel()->set('gtr_track_name', ['label' => $this->_('Track')]);
+        $model->getMetaModel()->set('gr2t_track_info', ['label' => $this->_('Description')]);
+        $model->getMetaModel()->set('gr2t_start_date', [
+            'label' => $this->_('Start'),
+            'formatFunction' => $this->translatedUtil->formatDate,
+            'default' => new \DateTimeImmutable()
+        ]);
+        $model->getMetaModel()->set('gr2t_reception_code');
+        $model->getMetaModel()->set('progress', [
+            'label' => $this->_('Progress'),
+//            'tdClass' => 'rightAlign',
+//            'thClass' => 'rightAlign'
+        ]);
+        $model->getMetaModel()->set('assigned_by', ['label' => $this->_('Assigned by')]);
 
         return $model;
     }

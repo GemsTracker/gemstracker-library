@@ -161,17 +161,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
         }
     }
 
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(bool $detailed, string $action): RespondentTrackModel
     {
         $apply = true;

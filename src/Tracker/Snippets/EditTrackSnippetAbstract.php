@@ -114,11 +114,6 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): FullDataInterface
     {
         $model   = $this->tracker->getRespondentTrackModel();

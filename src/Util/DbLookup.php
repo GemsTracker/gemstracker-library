@@ -448,7 +448,7 @@ class DbLookup extends UtilAbstract
     }
 
     /**
-     * @return int lowest mailId
+     * @return array lowest mailId
      */
     public function getRespondentTrackMailCodes()
     {
@@ -463,7 +463,7 @@ class DbLookup extends UtilAbstract
     }
 
     /**
-     * @return array mailId => descr
+     * @return int|string|null
      */
     public function getRespondentTrackNoMailCodeValue()
     {

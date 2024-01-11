@@ -262,7 +262,7 @@ interface SourceInterface
      * @param $answers array Field => Value array
      * @param int $surveyId \Gems Survey ID
      * @param int|string|null $sourceSurveyId Optional Survey ID used by source
-     * @return true When answers changed
+     * @return bool True When answers changed
      */
     public function setRawTokenAnswers(Token $token, array $answers, int $surveyId, int|string|null $sourceSurveyId = null): bool;
 

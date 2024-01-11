@@ -11,10 +11,13 @@
 namespace Gems\Export;
 
 use Gems\Util\Translated;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\Snippets\ModelBridge\TableBridgeAbstract;
+use Zalt\Snippets\ModelBridge\VerticalTableBridge;
 
 /**
  * Handles export of all tracks/surveys for a respondent
- * 
+ *
  * To enable Word export option add "phpoffice/phpword": "v0.16.*" to require section of composer.json
  *
  * @package    Gems
@@ -86,7 +89,7 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
      * @var bool The login was in an embedded browser frame
      */
     protected $isFramed = false;
-    
+
     /**
      *
      * @var \Gems\Loader
@@ -250,7 +253,7 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
 
         return false;
     }
-    
+
     /**
      * Exports all the tokens of a single track, grouped by round
      *
@@ -348,16 +351,20 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
 
         $trackModel = $this->loader->getTracker()->getRespondentTrackModel();
         $trackModel->applyDetailSettings($respTrack->getTrackEngine(), false);
-        $trackModel->resetOrder();
-        $trackModel->set('gtr_track_name',    'label', $this->_('Track'));
-        $trackModel->set('gr2t_track_info',   'label', $this->_('Description'),
-            'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
-        $trackModel->set('assigned_by',       'label', $this->_('Assigned by'));
-        $trackModel->set('gr2t_start_date',   'label', $this->_('Start'),
-            'formatFunction', $this->translatedUtil->formatDate,
-            'default', new \DateTimeImmutable());
-        $trackModel->set('gr2t_reception_code');
-        $trackModel->set('gr2t_comment',       'label', $this->_('Comment'));
+        $trackModel->getMetaModel()->resetOrder();
+        $trackModel->getMetaModel()->set('gtr_track_name', ['label' => $this->_('Track')]);
+        $trackModel->getMetaModel()->set('gr2t_track_info', [
+            'label' => $this->_('Description'),
+            'description' => $this->_('Enter the particulars concerning the assignment to this respondent.')
+        ]);
+        $trackModel->getMetaModel()->set('assigned_by', ['label' => $this->_('Assigned by')]);
+        $trackModel->getMetaModel()->set('gr2t_start_date', [
+            'label' => $this->_('Start'),
+            'formatFunction' => $this->translatedUtil->formatDate,
+            'default' => new \DateTimeImmutable()
+        ]);
+        $trackModel->getMetaModel()->set('gr2t_reception_code');
+        $trackModel->getMetaModel()->set('gr2t_comment', ['label' => $this->_('Comment')]);
         $trackModel->setFilter(array('gr2t_id_respondent_track' => $respTrack->getRespondentTrackId()));
         $trackData = $trackModel->loadFirst();
 
@@ -367,8 +374,8 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
         $bridge->setRepeater(\MUtil\Lazy::repeat(array($trackData)));
         $bridge->th($this->_('Track information'), array('colspan' => 2));
         $bridge->setColumnCount(1);
-        foreach($trackModel->getItemsOrdered() as $name) {
-            if ($label = $trackModel->get($name, 'label')) {
+        foreach($trackModel->getMetaModel()->getItemsOrdered() as $name) {
+            if ($label = $trackModel->getMetaModel()->get($name, 'label')) {
                 $bridge->addItem($name, $label);
             }
         }
@@ -412,7 +419,7 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
             'data', $respondentData,
             'respondentId', $respondentId);
         $this->html->br();
-        
+
         $tracker = $this->loader->getTracker();
         $tracks = $tracker->getRespondentTracks($respondentData['gr2o_id_user'], $respondentData['gr2o_id_organization']);
 
@@ -465,7 +472,7 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
 
         // Do not know why, but for some reason menu is not loaded automatically.
         $this->menu   = $this->loader->getMenu();
-        
+
         $this->isFramed = $this->currentUser->isSessionFramed();
     }
 
@@ -501,7 +508,7 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
                 }
             } while  ($headers->length > 0);
         }
-        
+
         do {
             // The list is dynamic so search again until no longer found
             $canvas = $dom->getElementsByTagName('canvas' . $i);
@@ -569,17 +576,17 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
 
         return $form;
     }
-    
+
     /**
      * Prepares string for Word export
      *
-     * @param string $string 
+     * @param string $string
      */
     public function prepareWordExport($string)
     {
         // convert encoding
         $string = mb_convert_encoding($string, 'html-entities', 'utf-8');
-        
+
         // clear scripting
         $string = preg_replace( '@<(script|style|head|header|footer)[^>]*?>.*?</\\1>@si', '', $string );
         $string = preg_replace('/&(?!(#[0-9]{2,4}|[A-z]{2,6})+;)/', '&amp;', $string);
@@ -588,26 +595,26 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
         $dom = new \DOMDocument();
         $dom->loadHTML($string);
         // file_put_contents('D:\temp\beforeDom.html', $string);
-        
+
         $dom = $this->cleanDom($dom);
-        
+
         $string = $dom->saveHTML();
-        
+
         // correct breaks for processing
         $string = str_ireplace('<br>', '<br />', $string);
-        
+
         // clear scripting and unnecessary tags
         $string = preg_replace( '@<(script|style|head|header|footer)[^>]*?>.*?</\\1>@si', '', $string );
         $string = strip_tags( $string, '<p><h1><h2><h3><h4><h5><h6><#text><strong><b><em><i><u><sup><sub><span><font><table><tr><td><th><ul><ol><li><img><br><a>' );
-        
+
         // Cleanup nested empty tags used with font awesome, as well as links unused because of the cleanup
         $string = preg_replace("@<i[^>]*></i>@si", '', $string);
         $string = preg_replace("@<span[^>]*></span>@si", '', $string);
         $string = preg_replace("@<a[^>]*></a>@si", '', $string);
-        
+
         return trim( $string );
     }
-    
+
     /**
      * Renders the entire report (including layout)
      *
@@ -667,16 +674,16 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
             if (is_array($respondentId) && isset($respondentId['gr2o_id_organization'])) {
                 $respondentId = $respondentId['gr2o_patient_nr'];
             }
-            
+
             $content = $this->prepareWordExport($content);
             file_put_contents('D:\temp\wordExport.html', $content);
-            
+
             $section = $this->_word->addSection();
             \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
             \PhpOffice\PhpWord\Shared\Html::addHtml($section, $content, false, false);
 
             if ($format == 'pdf') {
-                \PhpOffice\PhpWord\Settings::setPdfRenderer(\PhpOffice\PhpWord\Settings::PDF_RENDERER_DOMPDF, VENDOR_DIR . '/dompdf/dompdf');  
+                \PhpOffice\PhpWord\Settings::setPdfRenderer(\PhpOffice\PhpWord\Settings::PDF_RENDERER_DOMPDF, VENDOR_DIR . '/dompdf/dompdf');
                 $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
 
                 header("Content-Type: application/pdf");
@@ -705,8 +712,8 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
         } else {
             echo $content;
         }
-		
+
         $this->menu->setVisible(true);
     }
-    
+
 }

@@ -13,7 +13,11 @@ namespace Gems\Tracker\Model;
 
 use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
+use MUtil\Model\ModelAbstract;
+use Zalt\Model\MetaModel;
 use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\Model\Transform\ModelTransformerAbstract;
 
 /**
  *
@@ -24,7 +28,7 @@ use Zalt\Model\MetaModelInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.3 13-feb-2014 16:33:25
  */
-class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
+class AddTrackFieldsTransformer extends ModelTransformerAbstract
 {
     /**
      *
@@ -40,12 +44,13 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
 
     /**
      *
-     * @param \Gems\Loader; $loader
-     * @param \Gems\Tracker\Engine\FieldsDefinition; $fieldsDefinition
-     * @param mixed $respTrackIdField Overwrite the default field that contains the respondent track id (gr2t_id_respondent_track)
+     * @param string|null $respTrackIdField Overwrite the default field that contains the respondent track id (gr2t_id_respondent_track)
      */
-    public function __construct(protected Tracker $tracker, FieldsDefinition $fieldsDefinition, ?string $respTrackIdField = null)
-    {
+    public function __construct(
+        protected Tracker $tracker,
+        FieldsDefinition $fieldsDefinition,
+        ?string $respTrackIdField = null
+    ) {
         $this->fieldsDefinition = $fieldsDefinition;
         if ($respTrackIdField !== null) {
             $this->respTrackIdField = $respTrackIdField;
@@ -68,24 +73,25 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
      * know which fields to add by then (optionally using the model
      * for that).
      *
-     * @param \MUtil\Model\ModelAbstract $model The parent model
+     * @param MetaModelInterface $model The parent model
      * @return array Of field name => set() values
      */
-    public function getFieldInfo(MetaModelInterface $model)
+    public function getFieldInfo(MetaModelInterface $model): array
     {
         // Many definitions use load transformers
-        $model->setMeta(\MUtil\Model\ModelAbstract::LOAD_TRANSFORMER, true);
+        $model->setMeta(MetaModel::LOAD_TRANSFORMER, true);
 
         $settings = $this->fieldsDefinition->getDataModelSettings();
         foreach ($settings as $field => &$setting) {
             $setting['noSort'] = true;
             $setting['no_text_search'] = true;
-            
-            if (isset($setting[\MUtil\Model\ModelAbstract::SAVE_TRANSFORMER])) {
-                $model->setMeta(\MUtil\Model\ModelAbstract::SAVE_TRANSFORMER, true);
+            $setting[SqlRunnerInterface::NO_SQL] = true;
+
+            if (isset($setting[MetaModel::SAVE_TRANSFORMER])) {
+                $model->setMeta(MetaModel::SAVE_TRANSFORMER, true);
             }
         }
-        
+
         return $settings;
     }
 
@@ -93,7 +99,7 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
-     * @param \MUtil\Model\ModelAbstract $model The parent model
+     * @param MetaModelInterface $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
@@ -104,16 +110,14 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
         if ($isPostData) {
             return $data;
         }
-        
+
         $empty = false;
 
         foreach ($data as $key => $row) {
-
             if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
                 $fields = $this->fieldsDefinition->getFieldsDataFor($row[$this->respTrackIdField]);
             } else {
-
-                if (! $empty) {
+                if (!$empty) {
                     $empty = $this->getEmptyFieldsData();
                 }
                 $fields = $empty;
@@ -131,30 +135,24 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
      * This transform function performs the actual save (if any) of the transformer data and is called after
      * the saving of the data in the source model.
      *
-     * @param \MUtil\Model\ModelAbstract $model The parent model
+     * @param MetaModelInterface $model The parent model
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
     public function transformRowAfterSave(MetaModelInterface $model, array $row)
     {
         if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
-            if ((! $this->respTrackIdField) || ($this->respTrackIdField == 'gr2t_id_respondent_track')) {
+            if ((!$this->respTrackIdField) || ($this->respTrackIdField == 'gr2t_id_respondent_track')) {
                 // Load && refresh when using standard gems__respondent2track data
                 $respTrack = $this->tracker->getRespondentTrack($row);
             } else {
                 $respTrack = $this->tracker->getRespondentTrack($row[$this->respTrackIdField]);
             }
 
-            // We use setFieldDate instead of saveFields() since it handles updating related values
+            // We use setFieldData instead of saveFields() since it handles updating related values
             // like dates derived from appointments
-            $before = $respTrack->getFieldData();       // Get old so we can detect changes
-            $after  = $respTrack->setFieldData($row);
+            $after = $respTrack->setFieldData($row);
             $row = $after + $row;
-            $changed = ($before !== $after);
-
-            if ($changed && (! $model->getChanged())) {
-                $model->addChanged(1);
-            }
         }
 
         // No changes
