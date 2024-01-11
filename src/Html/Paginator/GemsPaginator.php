@@ -37,6 +37,8 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
 
     protected string $pageLinkClass = 'page-link';
 
+    protected string $pageNumberClass = 'page-number';
+
     public string $pagesClass = 'pagination pagination-sm pull-left';
 
     public string $pageItemClass = 'page-item';
@@ -98,17 +100,21 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
             return null;
         }
 
+        $class = $this->pageItemClass;
+
+        if (!$isSpecialLink) {
+            $class .= ' ' . $this->pageNumberClass;
+        }
+
         if ($pageNumber === $this->pageNumber) {
-            $class = $this->pageItemClass;
             if ($isSpecialLink) {
                 $class .= ' disabled';
             } else {
                 $class .= ' active';
             }
-            return Html::create('li', $output, ['class' => $class]);
         }
 
-        return Html::create('li', $output);
+        return Html::create('li', $output, ['class' => $class]);
     }
 
     protected function getPagesHolder(): ElementInterface
