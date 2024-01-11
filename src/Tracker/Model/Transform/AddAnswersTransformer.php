@@ -11,7 +11,11 @@
 
 namespace Gems\Tracker\Model\Transform;
 
+use Gems\Tracker\Source\SourceInterface;
+use Gems\Tracker\Survey;
+use Gems\Tracker\TrackerInterface;
 use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Transform\ModelTransformerAbstract;
 
 /**
  *
@@ -22,30 +26,22 @@ use Zalt\Model\MetaModelInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.3 13-feb-2014 16:33:25
  */
-class AddAnswersTransformer extends \MUtil\Model\ModelTransformerAbstract
+class AddAnswersTransformer extends ModelTransformerAbstract
 {
 
-    protected $changed = 0;
-
-    /**
-     * @var \Gems\Tracker\Source\SourceInterface
-     */
-    protected $source;
-
-    /**
-     * @var \Gems\Tracker\Survey
-     */
-    protected $survey;
+    protected int $changed = 0;
 
     /**
      * @var string The field in the suppied data array that holds the Token ID
      */
-    protected $tokenField = 'gto_id_token';
+    protected string $tokenField = 'gto_id_token';
 
-    public function __construct(\Gems\Tracker\Survey $survey, \Gems\Tracker\Source\SourceInterface $source)
+    public function __construct(
+        protected readonly Survey $survey,
+        protected readonly SourceInterface $source,
+        protected readonly TrackerInterface $tracker,
+    )
     {
-        $this->survey = $survey;
-        $this->source = $source;
     }
 
     /**
@@ -53,7 +49,7 @@ class AddAnswersTransformer extends \MUtil\Model\ModelTransformerAbstract
      *
      * @return int
      */
-    public function getChanged()
+    public function getChanged(): int
     {
         return $this->changed;
     }
@@ -68,11 +64,11 @@ class AddAnswersTransformer extends \MUtil\Model\ModelTransformerAbstract
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MetaModelInterface $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(MetaModelInterface $model, array $data, $new = false, $isPostData = false): array
     {
         // get tokens
 
-        $tokens = \MUtil\Ra::column('gto_id_token', $data);
+        $tokens = \MUtil\Ra::column($this->tokenField, $data);
 
         $answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
         $resultRows = array();
@@ -80,7 +76,7 @@ class AddAnswersTransformer extends \MUtil\Model\ModelTransformerAbstract
         $emptyRow = array_fill_keys($model->getItemNames(), null);
 
         foreach ($data as $row) {
-            $tokenId = $row['gto_id_token'];
+            $tokenId = $row[$this->tokenField];
 
             if (isset($answerRows[$tokenId])) {
                 $resultRows[$tokenId] = $row + $answerRows[$tokenId] + $emptyRow;
@@ -105,9 +101,9 @@ class AddAnswersTransformer extends \MUtil\Model\ModelTransformerAbstract
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(MetaModelInterface $model, array $row)
+    public function transformRowAfterSave(MetaModelInterface $model, array $row): array
     {
-        $token = $this->source->getToken($row['gto_id_token']);
+        $token = $this->tracker->getToken($row[$this->tokenField]);
         $answers = $row;
         $surveyId = $this->survey->getSurveyId();
         if ($this->source->setRawTokenAnswers($token, $answers, $surveyId)) {
