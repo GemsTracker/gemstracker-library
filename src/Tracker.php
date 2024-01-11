@@ -607,7 +607,7 @@ class Tracker implements TrackerInterface
         /**
          * @var SurveyModel
          */
-        return $this->overLoader->create('Tracker\\SurveyModel', $survey, $source);
+        return $this->overLoader->create('Tracker\\SurveyModel', $survey, $source, $this);
     }
 
     /**

@@ -59,7 +59,7 @@ class SurveyModel extends JoinModel
      * @param Survey $survey
      * @param SourceInterface $source
      */
-    public function __construct(Survey $survey, SourceInterface $source)
+    public function __construct(Survey $survey, SourceInterface $source, Tracker $tracker)
     {
         parent::__construct($survey->getName(), 'gems__tokens', 'gto');
 
@@ -87,6 +87,7 @@ class SurveyModel extends JoinModel
 
         $this->source = $source;
         $this->survey = $survey;
+        $this->tracker = $tracker;
         $this->addAnswersToModel();
     }
 
