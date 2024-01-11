@@ -12,7 +12,7 @@
 namespace Gems\Tracker;
 
 use Gems\Model\JoinModel;
-use Gems\Tracker\Model\AddAnswersTransformer;
+use Gems\Tracker\Model\Transform\AddAnswersTransformer;
 use Gems\Tracker\Source\SourceInterface;
 
 /**

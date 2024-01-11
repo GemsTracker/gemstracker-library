@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Tracker\Model;
+namespace Gems\Tracker\Model\Transform;
 
 use Zalt\Model\MetaModelInterface;
 

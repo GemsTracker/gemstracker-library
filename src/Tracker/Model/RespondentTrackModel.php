@@ -14,11 +14,10 @@ declare(strict_types=1);
 namespace Gems\Tracker\Model;
 
 use Gems\Db\ResultFetcher;
-use Gems\Loader;
 use Gems\Model as GemsModel;
 use Gems\Model\GemsMaskedModel;
-use Gems\Model\HiddenOrganizationModel;
 use Gems\Model\MetaModelLoader;
+use Gems\Repository\MailRepository;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util;
@@ -69,9 +68,8 @@ class RespondentTrackModel extends GemsMaskedModel
         MaskRepository $maskRepository,
         protected readonly GemsModel $gemsModel,
         protected readonly ResultFetcher $resultFetcher,
-        protected readonly Loader $loader,
         protected readonly Translated $translatedUtil,
-        protected readonly Util $util,
+        protected readonly MailRepository $mailRepository,
     ) {
         parent::__construct(
             'gems__respondent2track',
@@ -196,7 +194,7 @@ class RespondentTrackModel extends GemsMaskedModel
         $this->metaModel->set('respondent_name', 'label', $this->_('Respondent name'));
         $this->metaModel->set('gtr_track_name', 'label', $this->_('Track'));
 
-        $mailCodes = $this->util->getDbLookup()->getRespondentTrackMailCodes();
+        $mailCodes = $this->mailRepository->getRespondentTrackMailCodes();
         end($mailCodes);
         $defaultMailCode = key($mailCodes);
         $this->metaModel->set('gr2t_mailable', [
