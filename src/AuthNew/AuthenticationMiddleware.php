@@ -52,7 +52,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $user = $authenticationService->getLoggedInUser();
 
         if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid(true, $user)) {
-            return $this->redirectWithIntended(null, $request, $this->routeHelper>getRouteUrl('auth.login'));
+            return $this->redirectWithIntended(null, $request, $this->routeHelper->getRouteUrl('auth.login'));
         }
 
         if (static::CHECK_TFA) {
