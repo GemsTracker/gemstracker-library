@@ -4,7 +4,7 @@ namespace Gems\Config\Db\Patches\Upgrade2x;
 
 use Gems\Db\Migration\PatchAbstract;
 
-class GemsEventClassNamesPatch extends PatchAbstract
+class GemsEventClassNamesV2Patch extends PatchAbstract
 {
     private array $eventColumns = [
         [ 'gems__rounds', 'gro_changed_event' ],
