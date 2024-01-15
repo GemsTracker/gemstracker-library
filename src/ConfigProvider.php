@@ -526,6 +526,17 @@ class ConfigProvider
                     ],
                 ],
             ],
+            'siteLogger' => [
+                'writers' => [
+                    'stream' => [
+                        'name' => 'stream',
+                        'priority' => LogLevel::NOTICE,
+                        'options' => [
+                            'stream' => 'data/logs/site-block.log',
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 

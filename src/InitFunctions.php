@@ -65,15 +65,20 @@ class InitFunctions
         // - $app->pipe('/docs', $apiDocMiddleware);
         // - $app->pipe('/files', $filesMiddleware);
 
+        // Fix basedir:
+        // BaseDir::setBaseDir('/dir');
         $path = BaseDir::getBaseDir();
+        // $path = '/dir';
         if ($path) {
             /** @var \Mezzio\Helper\UrlHelper $helper */
             $helper = $container->get(\Mezzio\Helper\UrlHelper::class);
             $helper->setBasePath($path);
+            $app->pipe($path, RouteMiddleware::class);
+        } else {
+            // Register the routing middleware in the middleware pipeline.
+            // This middleware registers the Mezzio\Router\RouteResult request attribute.
+            $app->pipe(RouteMiddleware::class);
         }
-        // Register the routing middleware in the middleware pipeline.
-        // This middleware registers the Mezzio\Router\RouteResult request attribute.
-        $app->pipe($path, RouteMiddleware::class);
 
         // The following handle routing failures for common conditions:
         // - HEAD request but no routes answer that method
@@ -81,12 +86,12 @@ class InitFunctions
         // - method not allowed
         // Order here matters; the MethodNotAllowedMiddleware should be placed
         // after the Implicit*Middleware.
-        $app->pipe($path, ImplicitHeadMiddleware::class);
-        $app->pipe($path, ImplicitOptionsMiddleware::class);
-        $app->pipe($path, \Gems\Middleware\MethodNotAllowedMiddleware::class);
+        $app->pipe(ImplicitHeadMiddleware::class);
+        $app->pipe(ImplicitOptionsMiddleware::class);
+        $app->pipe(\Gems\Middleware\MethodNotAllowedMiddleware::class);
 
         // Seed the UrlHelper with the routing results:
-        $app->pipe($path, UrlHelperMiddleware::class);
+        $app->pipe(UrlHelperMiddleware::class);
 
         // Add more middleware here that needs to introspect the routing results; this
         // might include:
@@ -99,19 +104,19 @@ class InitFunctions
         if (isset($config['pipeline'])) {
             ksort($config['pipeline'], SORT_NUMERIC);
             foreach($config['pipeline'] as $middleware) {
-                $app->pipe($path, $middleware);
+                $app->pipe($middleware);
             }
         }
 
-        $app->pipe($path, \Gems\Middleware\DbProfilerMiddleware::class);
+        $app->pipe(\Gems\Middleware\DbProfilerMiddleware::class);
 
         // Register the dispatch middleware in the middleware pipeline
-        $app->pipe($path, DispatchMiddleware::class);
+        $app->pipe(DispatchMiddleware::class);
 
         // At this point, if no Response is returned by any middleware, the
         // NotFoundHandler kicks in; alternately, you can provide other fallback
         // middleware to execute.
-        $app->pipe($path, NotFoundHandler::class);
+        $app->pipe(NotFoundHandler::class);
     }
 
     /**
