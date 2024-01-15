@@ -95,7 +95,7 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
                     $admission = $context['gap_admission_time'];
                 }
                 $where['gec_startdate <= ?'] = $admission;
-                $where['gec_enddate IS NULL OR gec_enddate > ?'] = $admission;
+                $where['(gec_enddate IS NULL OR gec_enddate > ?)'] = $admission;
             } else {
                 $where = null;
             }
