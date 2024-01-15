@@ -66,7 +66,8 @@ class ConditionModel extends \Gems\Model\JoinModel
         $this->set('gcon_type', 'label', $this->_('Type'),
             'description', $this->_('Determines where the condition can be applied.'),
             'multiOptions', $types,
-            'default', $default
+            'default', $default,
+            'autoSubmit', true
         );
 
         $conditionsClasses = [];
@@ -76,7 +77,8 @@ class ConditionModel extends \Gems\Model\JoinModel
             }
         }
         $this->set('gcon_class', 'label', $this->_('Condition'),
-            'multiOptions', $conditionsClasses
+            'multiOptions', $conditionsClasses,
+            'autoSubmit', true
         );
 
         $this->set('gcon_name', 'label', $this->_('Name'));
