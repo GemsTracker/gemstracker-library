@@ -176,7 +176,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
         return $where;
     }
 
-    protected function loadFieldList(string|null $field, string|null $searchTxt): array|bool|null
+    protected function loadFieldList(string|null $field, string|null $searchTxt): array|null
     {
         $result = null;
 
@@ -189,8 +189,6 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
                 $sql    = "SELECT $id, $id FROM $table WHERE $like ORDER BY $id";
                 $result = $this->resultFetcher->fetchPairs(sprintf($sql, addslashes($searchTxt)));
             }
-        } else {
-            $result = true;
         }
 
         return $result;
