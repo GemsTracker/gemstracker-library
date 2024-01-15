@@ -373,7 +373,7 @@ class RespondentTrackModel extends GemsMaskedModel
             }
             if (isset($filter['gtr_id_track'])) {
                 $sql = 'SELECT * FROM gems__tracks WHERE gtr_id_track = ?';
-                $values = $this->resultFetcher->fetchRow($sql, $filter['gtr_id_track']) + $values;
+                $values = $this->resultFetcher->fetchRow($sql, [$filter['gtr_id_track']]) + $values;
                 $values['gr2t_id_track'] = $values['gtr_id_track'];
                 $values['gr2t_count'] = $values['gtr_survey_rounds'];
             }
