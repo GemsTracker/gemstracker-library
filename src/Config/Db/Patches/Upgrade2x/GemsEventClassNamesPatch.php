@@ -34,6 +34,8 @@ class GemsEventClassNamesPatch extends PatchAbstract
         foreach ($this->eventColumns as $data) {
             list($table, $column) = $data;
             $statements[] = sprintf('UPDATE %s SET %s = REPLACE(%s, "_", "\\\\") WHERE %s LIKE "%%\\_%%"', $table, $column, $column, $column);
+            $statements[] = sprintf('UPDATE %s SET %s = TRIM(LEADING "\\\\" FROM %s)', $table, $column, $column);
+
         }
 
         return $statements;
