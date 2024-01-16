@@ -21,6 +21,7 @@ class GemsRoleNamesPatch extends PatchAbstract
         return [
             'UPDATE gems__roles SET grl_name=LOWER(REPLACE(REPLACE(grl_name,"_",""),"-",""))',
             'UPDATE gems__groups SET ggp_role=LOWER(REPLACE(REPLACE(ggp_role,"_",""),"-",""))',
+            'UPDATE gems__groups INNER JOIN gems__roles ON ggp_role=grl_id_role SET ggp_role=grl_name',
         ];
     }
 }

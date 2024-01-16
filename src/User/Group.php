@@ -288,19 +288,6 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
             $data = $this->_noGroup;
         }
 
-        // Translate numeric role id
-        if (is_array($data)) {
-            if (intval($data['ggp_role'])) {
-                $data['ggp_role'] = \Gems\Roles::getInstance()->translateToRoleName($data['ggp_role']);
-            }
-            if (! isset($data['ggp_mask_settings'])) {
-                $data['ggp_mask_settings'] = array();
-            } elseif (! is_array($data['ggp_mask_settings'])) {
-                $data['ggp_mask_settings'] = (array) json_decode($data['ggp_mask_settings']);
-            }
-            // \MUtil\EchoOut\EchoOut::track($data['ggp_mask_settings']);
-        }
-
         return $data;
     }
 }

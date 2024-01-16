@@ -2018,6 +2018,27 @@ class Token
     }
 
     /**
+     * Directly set the token result field from an array of answers
+     *
+     * @param array $answers
+     * @param $userId
+     * @return bool
+     */
+    public function setResult(array $answers, $userId): bool
+    {
+        $resultField = $this->getSurvey()->getResultField();
+        if (isset($answers[$resultField])) {
+            $values = [
+                'gto_result' => $answers[$resultField],
+            ];
+            $this->_updateToken($values, $userId);
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Set a round description for the token
      *
      * @param  string The new round description
