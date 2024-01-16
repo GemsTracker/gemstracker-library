@@ -543,8 +543,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 'grs_address_1' => $this->_('Street'),
                 'grs_address_2' => $this->_(' '),
                 'grs_zipcode' => $this->_('Zipcode'),
-                'grs_city' => $this->_('Street'),
-                'grs_region' => $this->_('City'),
+                'grs_city' => $this->_('City'),
+                'grs_region' => $this->_('Region'),
                 'grs_iso_country' => $this->_('Country'),
 
                 'grs_phone_1' => trim(sprintf($this->_('Phone %s'), '')),
