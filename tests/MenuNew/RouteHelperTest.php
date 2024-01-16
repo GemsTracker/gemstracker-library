@@ -2,6 +2,8 @@
 
 namespace GemsTest\MenuNew;
 
+use Gems\Fake\User;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Menu\RouteNotFoundException;
 use Laminas\Permissions\Acl\Acl;
@@ -12,6 +14,15 @@ use Psr\Http\Server\MiddlewareInterface;
 
 class RouteHelperTest extends \PHPUnit\Framework\TestCase
 {
+    private function buildMockUserRepository()
+    {
+        $currentUserRepository = $this->createMock(CurrentUserRepository::class);
+        $user = new User();
+        $currentUserRepository->expects($this->any())->method('getCurrentUser')->willReturn($user);
+
+        return $currentUserRepository;
+    }
+
     private function buildRouteHelper(?string $userRole = null): RouteHelper
     {
         $config = [
@@ -42,6 +53,9 @@ class RouteHelperTest extends \PHPUnit\Framework\TestCase
             ],
         ];
 
+        $currentUserRepository = $this->buildMockUserRepository();
+        $currentUserRepository->getCurrentUser()->setRole($userRole);
+
         $acl = new Acl();
         $acl->addResource('privilege-b');
         $acl->addResource('privilege-c');
@@ -61,7 +75,7 @@ class RouteHelperTest extends \PHPUnit\Framework\TestCase
             ));
         }
 
-        return new RouteHelper($acl, $urlHelper, $userRole, $config);
+        return new RouteHelper($acl, $urlHelper, $currentUserRepository, $config);
     }
 
     public function testCanGetRoute()

@@ -29,22 +29,15 @@ class RouteHelperFactory implements FactoryInterface
          */
         $config = $container->get('config');
 
-        $userRole = null;
-        if ($container->has(CurrentUserRepository::class)) {
-            /**
-             * @var CurrentUserRepository $currentUserRepository
-             */
-            $currentUserRepository = $container->get(CurrentUserRepository::class);
-            $currentUser = $currentUserRepository->getCurrentUser();
-            if ($currentUser instanceof User) {
-                $userRole = $currentUser->getRole();
-            }
-        }
+        /**
+         * @var CurrentUserRepository $currentUserRepository
+         */
+        $currentUserRepository = $container->get(CurrentUserRepository::class);
 
         return new RouteHelper(
             $acl,
             $urlHelper,
-            $userRole,
+            $currentUserRepository,
             $config,
         );
     }

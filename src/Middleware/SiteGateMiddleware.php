@@ -45,9 +45,9 @@ class SiteGateMiddleware implements MiddlewareInterface
 //            $data = ['statusMessenger' => $statusMessenger];
             $logger = $this->loggers->getLogger($this->logName);
             $logger->warning(sprintf('Unknown host: %s', $e->getUrl()));
-            $data['content'] = Html::create('p', $this->translator->_('This apge was blocked for security reasons!'));
+            $data['content'] = Html::create('p', $this->translator->_('This page was blocked for security reasons!'));
 
-            return new HtmlResponse($this->layoutRenderer->render($this->layoutSettings, $request, $data), 404);
+            return new HtmlResponse($this->layoutRenderer->render($this->layoutSettings, $request, $data), 403);
         }
 
         $site = $this->siteUtil->getCurrentSite($request);

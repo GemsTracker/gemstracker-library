@@ -3,6 +3,8 @@
 namespace Gems\Menu;
 
 use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\User\User;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\Exception\RuntimeException;
@@ -13,18 +15,22 @@ use Zalt\Model\Bridge\BridgeInterface;
 
 class RouteHelper
 {
+    private bool $disablePrivileges = false;
     private array $routes;
+
+    private $userRole = null;
 
     public function __construct(
         private readonly Acl $acl,
         private readonly UrlHelper $urlHelper,
-        private readonly ?string $userRole,
-        private readonly array $config,
+        private readonly CurrentUserRepository $currentUserRepository,
+        array $config,
     ) {
         $this->routes = [];
         foreach ($config['routes'] as $route) {
             $this->routes[$route['name']] = $route;
         }
+        $this->disablePrivileges = isset($config['temp_config']['disable_privileges']) && $config['temp_config']['disable_privileges'] === true;
     }
 
     /**
@@ -274,8 +280,19 @@ class RouteHelper
 
     public function hasPrivilege(string $resource): bool
     {
-        $disablePrivileges = isset($this->config['temp_config']['disable_privileges']) && $this->config['temp_config']['disable_privileges'] === true;
-        return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource) || $disablePrivileges;
+        if ($this->disablePrivileges || (false === $this->userRole)) {
+            return true;
+        }
+        if (null == $this->userRole) {
+            $user = $this->currentUserRepository->getCurrentUser();
+            if ($user instanceof User) {
+                $this->userRole = $user->getRole();
+            } else {
+                $this->userRole = false;
+                return true;
+            }
+        }
+        return $this->acl->isAllowed($this->userRole, $resource);
     }
     
     public function tryGeneration(string $name, array $params): string

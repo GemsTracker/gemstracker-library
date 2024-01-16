@@ -232,17 +232,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     * Get a role with a check on the value in case of integers
-     *
-     * @param string $roleField
-     * @return mixed
-     */
-    protected function _getRole($roleField)
-    {
-        return $this->_getVar($roleField);
-    }
-
-    /**
      * Get a value in whatever store is used by this object.
      *
      * @param string $name
@@ -679,12 +668,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
                 // This way changes to this user object are reflected in the CurrentUser object and vice versa.
                 $this->setAsCurrentUser();
             }
-        }
-
-        // Change a numeric role id to it's string value
-        $this->_getRole('user_role');
-        if ($this->_hasVar('current_user_role')) {
-            $this->_getRole('current_user_role');
         }
 
         return (boolean) $this->acl && $this->userLoader;
@@ -1267,9 +1250,9 @@ class User extends \MUtil\Translate\TranslateableAbstract
     public function getRole($current = true)
     {
         if ($current && $this->_hasVar('current_user_role')) {
-            return $this->_getRole('current_user_role');
+            return $this->_getVar('current_user_role');
         }
-        return $this->_getRole('user_role');
+        return $this->_getVar('user_role');
     }
 
     /**
@@ -1747,7 +1730,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
             $this->_setVar($key, $value);
         }
 
-        $this->_getRole('user_role');
+        $this->_getVar('user_role');
 
         return $this;
     }
