@@ -281,7 +281,7 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
 
         if (! isset($groups[$groupId])) {
             $groups[$groupId] = $this->_loadClass('Group', true, array($groupId));
-    }
+        }
 
         return $groups[$groupId];
     }

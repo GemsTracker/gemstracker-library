@@ -143,12 +143,11 @@ class RespondentTrackModel extends GemsMaskedModel
 
         $this->metaModel->resetOrder();
 
-        // TODO(Koen) delete?
-//        $this->metaModel->setKeys([
-//            \Gems\Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
-//            MetaModelInterface::REQUEST_ID1     => 'gr2o_patient_nr',
-//            MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization',
-//        ]);
+        $this->metaModel->setKeys([
+            \Gems\Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
+            MetaModelInterface::REQUEST_ID1     => 'gr2o_patient_nr',
+            MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization',
+        ]);
 
         $this->metaModel->set('gtr_track_name', ['label' => $this->_('Track')]);
         $this->metaModel->set('gr2t_track_info', [
@@ -283,37 +282,6 @@ class RespondentTrackModel extends GemsMaskedModel
 
         return $this;
     }
-
-    /**
-     * Stores the fields that can be used for sorting or filtering in the
-     * sort / filter objects attached to this model.
-     *
-     * @param array $parameters
-     * @param boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
-     * @return array The $parameters minus the sort & textsearch keys
-     */
-    public function applyParameters(array $parameters, $includeNumericFilters = false)
-    {
-        // TODO(Koen) eehm deze bestaat dus alleen in ModelAbstract, de vraag is wat het alternatief is
-        if ($parameters) {
-            // Altkey
-            if (isset($parameters[GemsModel::RESPONDENT_TRACK])) {
-                $id = $parameters[GemsModel::RESPONDENT_TRACK];
-                unset($parameters[GemsModel::RESPONDENT_TRACK]);
-                $parameters['gr2t_id_respondent_track'] = $id;
-            }
-
-            if (isset($parameters[GemsModel::TRACK_ID])) {
-                $id = $parameters[GemsModel::TRACK_ID];
-                unset($parameters[GemsModel::TRACK_ID]);
-                $parameters['gtr_id_track'] = $id;
-            }
-//            return parent::applyParameters($parameters, $includeNumericFilters);
-        }
-
-        return [];
-    }
-
 
     /**
      * Creates new items - in memory only. Extended to load information from linked table using $filter().

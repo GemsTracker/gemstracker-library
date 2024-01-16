@@ -44,13 +44,14 @@ class Vite extends AbstractExtension
 
         $assetDir = $this->publicDir . '/' . $this->buildDir;
         $manifest = $this->getManifest($assetDir);
+        $tagDir   = rtrim($this->urlHelper->getBasePath(), '/') . '/' . $this->buildDir . '/';
 
         $tags = [];
         foreach($resources as $resourceName) {
             if (!isset($manifest[$resourceName], $manifest[$resourceName]['file'])) {
                 throw new Exception("Resource {$resourceName} not found.");
             }
-            $tags[] = $this->makeTag($this->urlHelper->getBasePath() . $this->buildDir . '/' . $manifest[$resourceName]['file']);
+            $tags[] = $this->makeTag($tagDir . $manifest[$resourceName]['file']);
         }
         return join("\n", $tags);
     }
