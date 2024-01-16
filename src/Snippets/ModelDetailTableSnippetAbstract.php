@@ -11,8 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\Snippets;
 
-use MUtil\Model;
-use Zalt\Html\HtmlException;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -37,11 +36,11 @@ abstract class ModelDetailTableSnippetAbstract extends \Zalt\Snippets\ModelDetai
     
     public function getOnEmpty(): mixed
     {
-        if ($this->requestInfo->getParam(Model::REQUEST_ID)) {
+        if ($this->requestInfo->getParam(MetaModelInterface::REQUEST_ID)) {
             return sprintf(
                 $this->_('%s "%s" not found!'),
                 ucfirst($this->getTopic(1)),
-                $this->requestInfo->getParam(Model::REQUEST_ID)
+                $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID)
             );
         }
         return sprintf(

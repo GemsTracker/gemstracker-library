@@ -17,9 +17,8 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker\Model\RoundModel;
 use Gems\Util\Translated;
-use MUtil\Model;
-use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeAbstract;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
@@ -78,7 +77,7 @@ class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuSnippetHelper,
-        Translator $translate,
+        TranslatorInterface $translate,
         protected Translated $translatedUtil,
         protected readonly RoundModel $roundModel
     ) {
@@ -146,8 +145,8 @@ class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
             $conditionId = $this->condition->getConditionId();
         } else {
             $queryParams = $this->requestInfo->getRequestQueryParams();
-            if (isset($queryParams[Model::REQUEST_ID])) {
-                $conditionId = $queryParams[Model::REQUEST_ID];
+            if (isset($queryParams[MetaModelInterface::REQUEST_ID])) {
+                $conditionId = $queryParams[MetaModelInterface::REQUEST_ID];
             }
         }
 

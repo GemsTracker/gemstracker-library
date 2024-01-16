@@ -137,7 +137,9 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $url['org'] = $this->formData['org_id'];
         $url['usr'] = $this->formData['login_id'];
         $url['pid'] = $this->formData['pid'];
-        $url['key'] = $auth->getExampleKey($this->selectedUser);
+        if ($auth) {
+            $url['key'] = $auth->getExampleKey($this->selectedUser);
+        }
 
         $url_string = '';
         foreach ($url as $key => $val) {

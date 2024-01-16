@@ -57,6 +57,11 @@ class TypeDependency extends DependencyAbstract
         'gcon_class' => ['multiOptions', 'default']
         ];
 
+    /**
+     * @var array settings to enable for autosubmit
+     */
+    protected array $autoSubmitSettings = [];
+
     public function __construct(
         TranslatorInterface $translate,
         protected readonly ConditionLoader $conditionLoader,

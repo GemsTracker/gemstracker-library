@@ -82,11 +82,20 @@ class AgendaStaffRepository
         return $this->cachedResultFetcher->fetchAll('agendaStaff', $select, null, $this->staffCacheTags);
     }
 
+    /**
+     * Return an array with staff id => name, sorted by staff name.
+     *
+     * @param integer|null|null $organizationId
+     * @return array
+     */
     public function getAllStaffOptions(int|null $organizationId = null): array
     {
-        $staff = $this->getActiveStaffData($organizationId);
+        $staffData = $this->getActiveStaffData($organizationId);
 
-        return array_column($staff, 'gas_name', 'gas_id_staff');
+        $staff = array_column($staffData, 'gas_name', 'gas_id_staff');
+        natcasesort($staff);
+
+        return $staff;
     }
 
     protected function getMatchList(): array

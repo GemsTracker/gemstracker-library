@@ -63,11 +63,13 @@ class ConditionModel extends \Gems\Model\JoinModel
         $types = $this->conditionLoader->getConditionTypes();
         reset($types);
         $default = key($types);
-        $this->set('gcon_type', 'label', $this->_('Type'),
-            'description', $this->_('Determines where the condition can be applied.'),
-            'multiOptions', $types,
-            'default', $default
-        );
+        $this->set('gcon_type', [
+            'label' => $this->_('Type'),
+            'description' => $this->_('Determines where the condition can be applied.'),
+            'multiOptions' => $types,
+            'default' => $default,
+            'autoSubmit' => true
+        ]);
 
         $conditionsClasses = [];
         if ($addCount) { // Are we in a browse mode
@@ -75,16 +77,21 @@ class ConditionModel extends \Gems\Model\JoinModel
                 $conditionsClasses += $this->conditionLoader->listConditionsForType($type);
             }
         }
-        $this->set('gcon_class', 'label', $this->_('Condition'),
-            'multiOptions', $conditionsClasses
-        );
+        $this->set('gcon_class', [
+            'label' => $this->_('Condition'),
+            'multiOptions' => $conditionsClasses,
+            'autoSubmit' => true
+        ]);
 
-        $this->set('gcon_name', 'label', $this->_('Name'));
-        $this->set('gcon_active', 'label', $this->_('Active'),
-            'multiOptions', $yesNo,
-            ActivatingYesNoType::$activatingValue, 1,
-            ActivatingYesNoType::$deactivatingValue, 0
-        );
+        $this->set('gcon_name', [
+            'label' => $this->_('Name'),
+        ]);
+        $this->set('gcon_active', [
+            'label' => $this->_('Active'),
+            'multiOptions' => $yesNo,
+            ActivatingYesNoType::$activatingValue => 1,
+            ActivatingYesNoType::$deactivatingValue => 0,
+        ]);
 
         $this->addColumn("CASE WHEN gcon_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
@@ -93,10 +100,11 @@ class ConditionModel extends \Gems\Model\JoinModel
                 "(SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gcon_id = gro_condition)",
                 'usage'
             );
-            $this->set('usage', 'label', $this->_('Rounds'),
-                'description', $this->_('The number of rounds using this condition.'),
-                'elementClass', 'Exhibitor'
-            );
+            $this->set('usage', [
+                'label' => $this->_('Rounds'),
+                'description' => $this->_('The number of rounds using this condition.'),
+                'elementClass' => 'Exhibitor',
+            ]);
 
             $this->addColumn(new \Zend_Db_Expr(
                 "(SELECT COUNT(*)
@@ -110,10 +118,11 @@ class ConditionModel extends \Gems\Model\JoinModel
                         )
                 )"
             ), 'usecondition');
-            $this->set('usecondition', 'label', $this->_('Conditions'),
-                'description', $this->_('The number of uses of this condition in other conditions.'),
-                'elementClass', 'Exhibitor'
-            );
+            $this->set('usecondition', [
+                'label' => $this->_('Conditions'),
+                'description' => $this->_('The number of uses of this condition in other conditions.'),
+                'elementClass' => 'Exhibitor',
+            ]);
         }
         if (! $addCount) {
             $this->addDependency('Condition\\TypeDependency');
@@ -137,9 +146,14 @@ class ConditionModel extends \Gems\Model\JoinModel
 
         $this->set('gcon_type');
         $this->set('gcon_class');
-        $this->set('gcon_name', 'description', $this->_('A name for this condition, will be used to select it when applying the condition.'));
+        $this->set('gcon_name', [
+            'description' => $this->_('A name for this condition, will be used to select it when applying the condition.')
+        ]);
 
-        $this->set('condition_help', 'label', $this->_('Help'), 'elementClass', 'Exhibitor');
+        $this->set('condition_help', [
+            'label' => $this->_('Help'),
+            'elementClass' => 'Exhibitor',
+        ]);
 
         // Set the order
         $this->set('gcon_condition_text1');
@@ -147,9 +161,10 @@ class ConditionModel extends \Gems\Model\JoinModel
         $this->set('gcon_condition_text3');
         $this->set('gcon_condition_text4');
 
-        $this->set('gcon_active', 'label', $this->_('Active'),
-            'multiOptions', $yesNo
-        );
+        $this->set('gcon_active', [
+            'label' => $this->_('Active'),
+            'multiOptions' => $yesNo,
+        ]);
 
         $this->addDependency('Condition\\ClassDependency');
 
@@ -165,16 +180,22 @@ class ConditionModel extends \Gems\Model\JoinModel
     {
         $this->applyDetailSettings();
 
-        $this->set('gcon_type', 'default', ConditionLoader::ROUND_CONDITION);
+        $this->set('gcon_type', [
+            'default' => ConditionLoader::ROUND_CONDITION,
+        ]);
 
-        $this->set('gcon_name', 'validators[unique]', $this->createUniqueValidator(['gcon_name', 'gcon_type'], ['gcon_id']));
+        $this->set('gcon_name', [
+            'validators[unique]' => $this->createUniqueValidator(['gcon_name', 'gcon_type'], ['gcon_id']),
+        ]);
 
         // gcon_id is not needed for some validators
-        $this->set('gcon_id',            'elementClass', 'Hidden');
+        $this->set('gcon_id', [
+            'elementClass' => 'Hidden',
+        ]);
 
-        $this->set('gcon_active',
-            'elementClass', 'Checkbox',
-        );
+        $this->set('gcon_active', [
+            'elementClass' => 'Checkbox',
+        ]);
 
         return $this;
     }

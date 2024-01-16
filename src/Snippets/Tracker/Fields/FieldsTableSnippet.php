@@ -65,7 +65,7 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
     /**
      *
-     * @var \Gems\Tracker\Model\RoundModel
+     * @var FieldMaintenanceModel
      */
     protected $model;
 
@@ -80,7 +80,7 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
-     * @return boolean False if required values are missing.
+     * @return bool False if required values are missing.
      */
     public function checkRegistryRequestsAnswers()
     {
@@ -101,7 +101,7 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {
