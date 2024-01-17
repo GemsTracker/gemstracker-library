@@ -70,12 +70,6 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
 
-    public function beforeDisplay()
-    {
-        parent::beforeDisplay();
-    }
-
-
     public function getResponse(): ?ResponseInterface
     {
         return $this->response;
