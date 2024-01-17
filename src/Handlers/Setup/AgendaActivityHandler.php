@@ -12,12 +12,14 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Model\AgendaActivityModel;
+use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Util;
 use Gems\Util\Translated;
 use Psr\Cache\CacheItemPoolInterface;
@@ -131,6 +133,19 @@ class AgendaActivityHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
      */
     protected function createModel($detailed, $action): AgendaActivityModel
     {
+        if ($detailed && (! $this->agendaActivityModel->getMetaModel()->hasDependency('gaa_active'))) {
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $menuHelper = $this->responder->getMenuSnippetHelper();
+            } else {
+                $menuHelper = null;
+            }
+            $metaModel = $this->agendaActivityModel->getMetaModel();
+            $metaModel->addDependency(new ActivationDependency(
+                $this->translate,
+                $metaModel,
+                $menuHelper,
+            ));
+        }
         return $this->agendaActivityModel;
     }
 

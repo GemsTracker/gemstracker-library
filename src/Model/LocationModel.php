@@ -26,8 +26,6 @@ class LocationModel extends SqlTableModel
 
         $metaModelLoader->setChangeFields($this->metaModel, 'glo');
 
-        $this->addColumn("CASE WHEN glo_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
-
         $this->applySettings();
     }
 
@@ -97,10 +95,7 @@ class LocationModel extends SqlTableModel
         $this->metaModel->setIfExists('glo_active', [
             'label' => $this->_('Active'),
             'description' => $this->_('Inactive means assignable only through automatich processes.'),
-            'elementClass' => 'Checkbox',
-            'multiOptions' => $yesNo,
-            ActivatingYesNoType::$activatingValue => 1,
-            ActivatingYesNoType::$deactivatingValue => 0
+            'type' => new ActivatingYesNoType($yesNo, 'row_class'),
         ]);
         $this->metaModel->setIfExists('glo_filter', [
             'label' => $this->_('Filter'),

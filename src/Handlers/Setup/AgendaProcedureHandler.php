@@ -12,12 +12,14 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Model\AgendaProcedureModel;
+use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Util;
 use Gems\Util\Translated;
 use Psr\Cache\CacheItemPoolInterface;
@@ -130,6 +132,19 @@ class AgendaProcedureHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
      */
     protected function createModel(bool $detailed, string $action): AgendaProcedureModel
     {
+        if ($detailed && (! $this->agendaProcedureModel->getMetaModel()->hasDependency('gap_active'))) {
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $menuHelper = $this->responder->getMenuSnippetHelper();
+            } else {
+                $menuHelper = null;
+            }
+            $metaModel = $this->agendaProcedureModel->getMetaModel();
+            $metaModel->addDependency(new ActivationDependency(
+                $this->translate,
+                $metaModel,
+                $menuHelper,
+            ));
+        }
         return $this->agendaProcedureModel;
     }
 

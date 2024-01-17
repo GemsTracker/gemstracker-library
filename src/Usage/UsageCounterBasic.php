@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Gems\Usage;
 
 use Gems\Db\ResultFetcher;
-use Gems\Model\Setup\ConsentUsageCounter;
 use Zalt\Base\TranslateableTrait;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Snippets\DeleteModeEnum;
@@ -144,5 +143,4 @@ class UsageCounterBasic implements UsageCounterInterface
 
         return $this->report;
     }
-
 }

@@ -23,7 +23,7 @@ class AgendaStaffModel extends SqlTableModel
 
         $metaModelLoader->setChangeFields($this->metaModel, 'gas');
 
-        $this->addColumn("CASE WHEN gas_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
+        // $this->addColumn("CASE WHEN gas_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
         $this->applySettings();
     }
@@ -58,10 +58,7 @@ class AgendaStaffModel extends SqlTableModel
         $this->metaModel->setIfExists('gas_active', [
             'label' => $this->_('Active'),
             'description' => $this->_('Inactive means assignable only through automatich processes.'),
-            'elementClass' => 'Checkbox',
-            'multiOptions' => $this->translatedUtil->getYesNo(),
-            ActivatingYesNoType::$activatingValue => 1,
-            ActivatingYesNoType::$deactivatingValue => 0
+            'type' => new ActivatingYesNoType($this->translatedUtil->getYesNo(), 'row_class'),
         ]);
         $this->metaModel->setIfExists('gas_filter', [
             'label' => $this->_('Filter'),
