@@ -15,15 +15,15 @@ use Zalt\Model\Bridge\BridgeInterface;
 
 class RouteHelper
 {
-    private bool $disablePrivileges = false;
+    private readonly bool $disablePrivileges;
     private array $routes;
 
-    private $userRole = null;
+    // private $userRole = false;
 
     public function __construct(
         private readonly Acl $acl,
         private readonly UrlHelper $urlHelper,
-        private readonly CurrentUserRepository $currentUserRepository,
+        private ?string $userRole,
         array $config,
     ) {
         $this->routes = [];
@@ -280,21 +280,9 @@ class RouteHelper
 
     public function hasPrivilege(string $resource): bool
     {
-        if ($this->disablePrivileges || (false === $this->userRole)) {
-            return true;
-        }
-        if (null == $this->userRole) {
-            $user = $this->currentUserRepository->getCurrentUser();
-            if ($user instanceof User) {
-                $this->userRole = $user->getRole();
-            } else {
-                $this->userRole = false;
-                return true;
-            }
-        }
-        return $this->acl->isAllowed($this->userRole, $resource);
+        return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource) || $this->disablePrivileges;
     }
-    
+
     public function tryGeneration(string $name, array $params): string
     {
         try {

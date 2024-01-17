@@ -23,9 +23,9 @@ class MenuMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
 
-        $menu = $this->menuRepository->getMenu();
+        $menu = $this->menuRepository->getMenu($user);
 
         // TODO: Disable default param
 
