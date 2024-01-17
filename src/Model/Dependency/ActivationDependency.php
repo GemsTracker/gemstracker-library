@@ -39,7 +39,7 @@ class ActivationDependency extends \Zalt\Model\Dependency\DependencyAbstract
         parent::__construct($translate);
 
         $this->addDependsOn(array_keys(ActivatingYesNoType::getActivatingValues($this->metaModel)));
-        $this->addDependsOn(array_keys(ActivatingYesNoType::getDectivatingValues($this->metaModel)));
+        $this->addDependsOn(array_keys(ActivatingYesNoType::getDeactivatingValues($this->metaModel)));
     }
 
     /**
