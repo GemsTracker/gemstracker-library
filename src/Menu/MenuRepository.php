@@ -21,7 +21,6 @@ class MenuRepository
     public function __construct(
         private readonly TemplateRendererInterface $templateRenderer,
         private readonly Acl $acl,
-        private readonly CurrentUserRepository $currentUserRepository,
         private readonly UrlHelper $urlHelper,
         private readonly TranslatorInterface $translator,
         private readonly EventDispatcherInterface $eventDispatcher,
@@ -29,12 +28,12 @@ class MenuRepository
     )
     {}
 
-    public function getMenu(): Menu
+    public function getMenu(?User $user): Menu
     {
         if (!$this->menu instanceof Menu) {
-            $routeHelper = $this->getRouteHelper();
+            $routeHelper = $this->getRouteHelper($user?->getRole());
 
-            $menu = new Menu($this->templateRenderer, $routeHelper, $this->getMenuConfig(), $this->currentUserRepository->getCurrentUser());
+            $menu = new Menu($this->templateRenderer, $routeHelper, $this->getMenuConfig(), $user);
 
             $event = new CreateMenuEvent($menu);
             $this->eventDispatcher->dispatch($event);
@@ -60,8 +59,8 @@ class MenuRepository
         return $this->menuConfig;
     }
 
-    protected function getRouteHelper(): RouteHelper
+    protected function getRouteHelper(?string $userRole): RouteHelper
     {
-        return new RouteHelper($this->acl, $this->urlHelper, $this->currentUserRepository, $this->config);
+        return new RouteHelper($this->acl, $this->urlHelper, $userRole, $this->config);
     }
 }
