@@ -403,6 +403,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
             $prev = null;
             foreach (Ra::flatten($elements) as $element) {
                 if ($element instanceof \Zend_Form_Element) {
+                    $row = $span->div(['class' => 'form-group']);
                     $appendLabel = false;
                     if ($element->getLabel()) {
                         $labelDecor = $element->getDecorator('Label');
@@ -411,13 +412,13 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
                             $appendLabel = \Zend_Form_Decorator_Abstract::APPEND === $labelDecor->getPlacement();
 
                             if (! $appendLabel) {
-                                $span->label($element);
+                                $row->label($element);
                             }
                         }
                     }
-                    $span->input($element);
+                    $row->input($element);
                     if ($appendLabel) {
-                        $span->label($element);
+                        $row->label($element);
                     }
                     // TODO: Elementen automatisch toevoegen in Form
                     $form->addElement($element);
