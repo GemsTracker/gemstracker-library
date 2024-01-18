@@ -10,12 +10,15 @@ declare(strict_types=1);
 
 namespace Gems\Html\Paginator;
 
+use Gems\Form;
 use Gems\Html;
 use Zalt\Html\ElementInterface;
 use Zalt\Html\HtmlElement;
 use Zalt\Html\HtmlInterface;
+use Zalt\Html\Paginator\PaginatorInterface;
 use Zalt\Html\Paginator\TranslatablePaginatorTrait;
 use Zalt\Html\Sequence;
+use Zalt\Html\UrlArrayAttribute;
 
 
 /**
@@ -43,9 +46,11 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
 
     public string $pageItemClass = 'page-item';
 
+    protected string $pageLinkLabelSeparator = ' ';
+
     public function getFirstPageLabel(): ?string
     {
-        return $this->_('<< First');
+        return $this->_('First');
     }
 
     public function getHtmlPagelinks(): HtmlInterface
@@ -61,12 +66,19 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
         $start = $this->getFirstItem();
         $end   = $this->getLastItem();
 
-        $elements = [
+        /*$elements = [
             sprintf($this->_('%d to '), $start),
             $this->getItemLink($this->getLessItems(), '-'),
             $end,
             $this->getItemLink($this->getMoreItems(), '+'),
+        ];*/
+
+        $elements = [
+            $this->getItemsPerPageSelect(),
+            sprintf('%d - %d', $start, $end),
+            ' ',
         ];
+
         if ($this->showCount) {
             $elements[] = sprintf($this->_('of %d'), $this->itemCount);
         }
@@ -79,9 +91,49 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
         return Html::create('div', ['class' => $this->itemsClass]);
     }
 
+    protected function getItemsPerPageSelect()
+    {
+        $options = [];
+        $previousItem = null;
+        foreach($this->itemProgression as $item) {
+            if ($this->pageItems !== $item && $this->pageItems > $previousItem && $this->pageItems < $item) {
+                $options[$this->pageItems] = $this->pageItems;
+            }
+
+            $options[$item] = $item;
+            $previousItem = $item;
+            if ($this->itemCount && $item > $this->itemCount) {
+                break;
+            }
+        }
+        if ($previousItem < $this->pageItems) {
+            $options[$this->pageItems] = $this->pageItems;
+        }
+
+        $form = new Form([
+            'class' => 'form-inline auto-submit',
+        ]);
+        $form->setMethod('get');
+
+        $url = $this->getUrl([PaginatorInterface::REQUEST_PAGE => $this->pageNumber]);
+        if (isset($url[PaginatorInterface::REQUEST_ITEMS])) {
+            unset($url[PaginatorInterface::REQUEST_ITEMS]);
+        }
+        $form->setAction(UrlArrayAttribute::toUrlString($url));
+
+        $form->clearElements();
+
+        $form->addElement($form->createElement('select', PaginatorInterface::REQUEST_ITEMS, [
+            'multiOptions' => $options,
+            'value' => $this->pageItems,
+        ]));
+
+        return $form;
+    }
+
     public function getLastPageLabel(): ?string
     {
-        return $this->_('Last >>');
+        return $this->_('Last');
     }
 
     /**
@@ -89,12 +141,12 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
      */
     public function getNextPageLabel(): ?string
     {
-        return $this->_('Next >');
+        return $this->_('Next');
     }
 
-    protected function getPageLink(int $pageNumber, ?string $label, bool $isSpecialLink): ?HtmlElement
+    protected function getPageLink(int $pageNumber, ?string $symbol, ?string $label, bool $isSpecialLink): ?HtmlElement
     {
-        $output = parent::getPageLink($pageNumber, $label, $isSpecialLink);
+        $output = parent::getPageLink($pageNumber, $symbol, $label, $isSpecialLink);
 
         if (null === $output) {
             return null;
@@ -127,6 +179,6 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
      */
     public function getPreviousPageLabel(): ?string
     {
-        return $this->_('< Previous');
+        return $this->_('Previous');
     }
 }
