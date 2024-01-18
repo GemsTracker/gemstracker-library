@@ -35,7 +35,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
     public function __construct(
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly OtpMethodBuilder $otpMethodBuilder,
-        private readonly RouteHelper $routeHelper,
+        private readonly UrlHelper $urlHelper,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -52,13 +52,13 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $user = $authenticationService->getLoggedInUser();
 
         if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid(true, $user)) {
-            return $this->redirectWithIntended(null, $request, $this->routeHelper->getRouteUrl('auth.login'));
+            return $this->redirectWithIntended(null, $request, $this->urlHelper->generate('auth.login'));
         }
 
         if (static::CHECK_TFA) {
             $tfaService = new TfaService($session, $authenticationService, $this->otpMethodBuilder);
             if ($tfaService->requiresAuthentication($user, $request)) {
-                return $this->redirectWithIntended(null, $request, $this->routeHelper->getRouteUrl('tfa.login'));
+                return $this->redirectWithIntended(null, $request, $this->urlHelper->generate('tfa.login'));
             }
 
             if (null !== ($currentGroupId = $session->get(ChangeGroupHandler::CURRENT_USER_GROUP_ATTRIBUTE))) {
@@ -91,7 +91,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 $this->translator->trans('You are not allowed to login from this location.'),
             ]);
 
-            return $this->redirectWithIntended(null, $request, $this->routeHelper->getRouteUrl('auth.login'));
+            return $this->redirectWithIntended(null, $request, $this->urlHelper->generate('auth.login'));
         }
 
         $loginStatusTracker = LoginStatusTracker::make($session, $user);
@@ -109,7 +109,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                     $this->translator->trans('Your password must be changed.'),
                 ]);
 
-                return $this->redirectWithIntended(null, $request, $this->routeHelper->getRouteUrl('auth.change-password'));
+                return $this->redirectWithIntended(null, $request, $this->urlHelper->generate('auth.change-password'));
             }
         } elseif (static::CHECK_TFA && $loginStatusTracker->isRequireAuthenticatorTotpActive()) {
             /** @var RouteResult $routeResult */
@@ -125,7 +125,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                     $this->translator->trans('Please configure Authenticator TFA to continue.'),
                 ]);
 
-                return $this->redirectWithIntended(null, $request, $this->routeHelper->getRouteUrl('option.two-factor'));
+                return $this->redirectWithIntended(null, $request, $this->urlHelper->generate('option.two-factor'));
             }
         }
 
