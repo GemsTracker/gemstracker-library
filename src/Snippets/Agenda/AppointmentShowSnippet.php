@@ -15,6 +15,7 @@ use Gems\Agenda\Agenda;
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Model\Dependency\ActivationDependency;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -51,8 +52,16 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstr
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {
             $this->model = $this->modelLoader->createAppointmentModel();
             $this->model->applyDetailSettings();
+
+            $metaModel = $this->model->getMetaModel();
+            $metaModel->addDependency(new ActivationDependency(
+                $this->translate,
+                $metaModel,
+                $this->menuHelper,
+            ));
+        } else {
+            $metaModel = $this->model->getMetaModel();
         }
-        $metaModel = $this->model->getMetaModel();
         $metaModel->set('gap_id_episode', 'formatFunction', [$this, 'displayEpisode']);
         $metaModel->set('gap_admission_time', 'formatFunction', [$this, 'displayDate']);
         $metaModel->set('gap_discharge_time', 'formatFunction', [$this, 'displayDate']);

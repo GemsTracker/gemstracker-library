@@ -13,9 +13,12 @@ namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Menu\RouteHelper;
+use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
+use Gems\Tracker\Model\TrackUsageCounter;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Cache\CacheItemPoolInterface;
@@ -88,15 +91,9 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
     protected array $defaultSearchData = ['active' => 1];
 
     protected array $deleteParameters = [
-        'trackId' => '_getIdParam'
+        'trackId' => '_getIdParam',
+        'usageCounter' => '_getUsageCounter',
     ];
-
-    /**
-     * The snippets used for the delete action.
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected array $deleteSnippets = ['Track\\TrackDeleteSnippet'];
 
     /**
      * The parameters used for the export action
@@ -195,9 +192,10 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         Tracker $tracker,
-        protected BatchRunnerLoader $batchRunnerLoader,
-        protected RouteHelper $routeHelper,
-        protected TrackModel $trackModel,
+        protected readonly BatchRunnerLoader $batchRunnerLoader,
+        protected readonly RouteHelper $routeHelper,
+        protected readonly TrackModel $trackModel,
+        protected readonly TrackUsageCounter $usageCounter,
     ) {
         parent::__construct($responder, $translate, $cache, $tracker);
     }
@@ -210,6 +208,11 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
     protected function _getIdParam(): ?string
     {
         return $this->request->getAttribute('trackId');
+    }
+
+    protected function _getUsageCounter(): TrackUsageCounter
+    {
+        return $this->usageCounter;
     }
 
     /**
@@ -291,6 +294,20 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
     public function createModel(bool $detailed, string $action): TrackModel
     {
         $this->trackModel->applyFormatting($detailed);
+        if ($detailed && (! $this->trackModel->getMetaModel()->hasDependency('gtr_active'))) {
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $menuHelper = $this->responder->getMenuSnippetHelper();
+            } else {
+                $menuHelper = null;
+            }
+            $metaModel = $this->trackModel->getMetaModel();
+            $metaModel->addDependency(new ActivationDependency(
+                $this->translate,
+                $metaModel,
+                $menuHelper,
+                $this->usageCounter
+            ));
+        }
 
         return $this->trackModel;
     }

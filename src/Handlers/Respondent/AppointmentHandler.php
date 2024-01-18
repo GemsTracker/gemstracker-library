@@ -17,6 +17,7 @@ use Gems\Exception;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\AppointmentModel;
 use Gems\Model;
+use Gems\Model\Dependency\ActivationDependency;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Agenda\AppointmentFormSnippet;
 use Gems\Snippets\Agenda\AppointmentShowSnippet;
@@ -24,6 +25,7 @@ use Gems\Snippets\Agenda\AppointmentTokensSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Track\TracksForAppointment;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
@@ -231,12 +233,19 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
             } else {
                 $this->appointmentModel->applyDetailSettings();
             }
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $menuHelper = $this->responder->getMenuSnippetHelper();
+            } else {
+                $menuHelper = null;
+            }
+            $metaModel = $this->appointmentModel->getMetaModel();
+            $metaModel->addDependency(new ActivationDependency(
+                $this->translate,
+                $metaModel,
+                $menuHelper,
+            ));
         } else {
             $this->appointmentModel->applyBrowseSettings();
-//            $this->appointmentModel->addFilter([
-//                'gap_id_user'         => $this->respondentId,
-//                'gap_id_organization' => $this->organizationId,
-//            ]);
         }
 
         return $this->appointmentModel;

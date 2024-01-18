@@ -12,11 +12,13 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Model\AgendaStaffModel;
+use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Util;
 use Gems\Util\Translated;
 use Psr\Cache\CacheItemPoolInterface;
@@ -127,7 +129,20 @@ class AgendaStaffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
      * @param string $action The current action.
      */
     protected function createModel(bool $detailed, string $action): AgendaStaffModel
-    {
+    {        if ($detailed && (! $this->agendaStaffModel->getMetaModel()->hasDependency('gas_active'))) {
+        if ($this->responder instanceof GemsSnippetResponder) {
+            $menuHelper = $this->responder->getMenuSnippetHelper();
+        } else {
+            $menuHelper = null;
+        }
+        $metaModel = $this->agendaStaffModel->getMetaModel();
+        $metaModel->addDependency(new ActivationDependency(
+            $this->translate,
+            $metaModel,
+            $menuHelper,
+        ));
+    }
+
         return $this->agendaStaffModel;
     }
 

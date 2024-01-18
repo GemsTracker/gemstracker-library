@@ -90,9 +90,7 @@ class TrackModel extends SqlTableModel
 
         $this->metaModel->set('gtr_active', [
             'label' => $this->translate->_('Active'),
-            'multiOptions' => $this->translatedUtil->getYesNo(),
-            ActivatingYesNoType::$activatingValue => 1,
-            ActivatingYesNoType::$deactivatingValue => 0
+            'type' => new ActivatingYesNoType($this->translatedUtil->getYesNo(), 'row_class'),
         ]);
         $this->metaModel->set('gtr_date_start', [
             'label' => $this->translate->_('From'),

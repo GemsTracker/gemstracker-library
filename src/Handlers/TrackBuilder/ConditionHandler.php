@@ -16,7 +16,9 @@ use Gems\Condition\ConditionLoader;
 use Gems\Event\Application\ModelCreateEvent;
 use Gems\Exception\Coding;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
@@ -71,13 +73,6 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
         'conditionId' => '_getIdParam'
     ];
     
-    /**
-     * The snippets used for the delete action.
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected array $deleteSnippets = ['Condition\\ConditionDeleteSnippet'];
-
     /**
      * The snippets used for the index action, before those in autofilter
      *
@@ -141,6 +136,19 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
                 $model->applyEditSettings(('create' == $action));
             } else {
                 $model->applyDetailSettings();
+            }
+            if (! $model->getMetaModel()->hasDependency('gcon_active')) {
+                if ($this->responder instanceof GemsSnippetResponder) {
+                    $menuHelper = $this->responder->getMenuSnippetHelper();
+                } else {
+                    $menuHelper = null;
+                }
+                $metaModel = $model->getMetaModel();
+                $metaModel->addDependency(new ActivationDependency(
+                    $this->translate,
+                    $metaModel,
+                    $menuHelper,
+                ));
             }
         } else {
             $model->applyBrowseSettings();

@@ -88,9 +88,7 @@ class ConditionModel extends \Gems\Model\JoinModel
         ]);
         $this->set('gcon_active', [
             'label' => $this->_('Active'),
-            'multiOptions' => $yesNo,
-            ActivatingYesNoType::$activatingValue => 1,
-            ActivatingYesNoType::$deactivatingValue => 0,
+            'type' => new ActivatingYesNoType($yesNo, 'row_class'),
         ]);
 
         $this->addColumn("CASE WHEN gcon_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
