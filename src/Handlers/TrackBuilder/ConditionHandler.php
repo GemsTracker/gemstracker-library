@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  *
  * @package    Gems
@@ -16,9 +18,9 @@ use Gems\Condition\ConditionLoader;
 use Gems\Event\Application\ModelCreateEvent;
 use Gems\Exception\Coding;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Model\ConditionModel;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use MUtil\Model;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
@@ -70,7 +72,7 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $deleteParameters = [
         'conditionId' => '_getIdParam'
     ];
-    
+
     /**
      * The snippets used for the delete action.
      *
@@ -116,29 +118,19 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
         CacheItemPoolInterface $cache,
         protected ConditionLoader $conditionLoader,
         protected EventDispatcherInterface $event,
+        protected readonly ConditionModel $conditionModel,
 
     ) {
         parent::__construct($responder, $translate, $cache);
     }
 
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return ModelAbstract
-     */
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): ConditionModel
     {
         $model = $this->conditionLoader->getConditionModel();
 
         if ($detailed) {
-            if (('edit' == $action) || ('create' == $action)) {
-                $model->applyEditSettings(('create' == $action));
+            if (('edit' === $action) || ('create' === $action)) {
+                $model->applyEditSettings(('create' === $action));
             } else {
                 $model->applyDetailSettings();
             }
@@ -146,7 +138,7 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
             $model->applyBrowseSettings();
         }
 
-        $event = new ModelCreateEvent($model, $detailed, $action);
+        $event = new ModelCreateEvent($model, $action, $detailed);
         $this->event->dispatch($event, $event->name);
 
         return $model;
@@ -187,15 +179,18 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
     {
         return $this->plural('condition', 'conditions', $count);
     }
-    
+
     /**
      * Action for showing an item page with title
      */
     public function showAction(): void
     {
         $model = $this->getModel();
-        if ($model->hasMeta('ConditionShowSnippets')) {
-            $this->showSnippets = array_merge($this->showSnippets, (array) $model->getMeta('ConditionShowSnippets'));
+        if ($model->getMetaModel()->hasMeta('ConditionShowSnippets')) {
+            $this->showSnippets = array_merge(
+                $this->showSnippets,
+                (array) $model->getMetaModel()->getMeta('ConditionShowSnippets')
+            );
         }
 
         parent::showAction();

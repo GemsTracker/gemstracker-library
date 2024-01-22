@@ -61,9 +61,6 @@ class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
      */
     protected $bridgeMode = BridgeAbstract::MODE_ROWS;
 
-    /**
-     * @var ConditionInterface
-     */
     protected ?ConditionInterface $condition = null;
 
     /**
@@ -119,8 +116,6 @@ class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
      * {@see \MUtil\Registry\TargetInterface}.
-     *
-     * @return boolean
      */
     public function hasHtmlOutput(): bool
     {
@@ -133,12 +128,10 @@ class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
 
     /**
      * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param MetaModelInterface $metaModel
      */
     public function getFilter(MetaModelInterface $metaModel): array
     {
-        $filter = parent::getFilter($metaModel);
+        $filter = [];
 
         $conditionId = null;
         if ($this->condition) {

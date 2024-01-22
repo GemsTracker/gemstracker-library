@@ -28,7 +28,7 @@ class MenuSnippetHelper
         protected Menu $menu,
         protected RequestInfo $requestInfo
     )
-    { 
+    {
         $this->routeHelper = $this->menu->routeHelper;
     }
 
@@ -65,6 +65,7 @@ class MenuSnippetHelper
             return [];
         }
         $routes = $this->getChildRoutes($current);
+        var_dump($this->getRouteUrls($routes, $this->requestInfo->getParams()));
         return $this->getRouteUrls($routes, $this->requestInfo->getParams());
     }
 
@@ -94,7 +95,7 @@ class MenuSnippetHelper
         }
         return $this->getParentRoute($current);
     }
-    
+
     public function getCurrentParentUrl(): ?string
     {
         $parent = $this->getCurrentParentRoute();
@@ -200,7 +201,7 @@ class MenuSnippetHelper
         }
         return $output;
     }
-    
+
     public function getParentRoute(string $route): ?string
     {
         try {
@@ -280,10 +281,10 @@ class MenuSnippetHelper
             try {
                 return $this->routeHelper->getRouteUrlOnMatch($route, $params);
             } catch (MenuItemNotFoundException $minfe) { }
-        }            
+        }
         return null;
     }
-    
+
     /**
      * @param array $routes an array of routenames
      * @param array $params Route parameter values
@@ -304,14 +305,14 @@ class MenuSnippetHelper
                 $url = $this->routeHelper->getRouteUrlOnMatch($menuItem->name, $params);
                 $output[$route] = [
                     'label' => $menuItem->label,
-                    'url'   => $url, 
+                    'url'   => $url,
                     ];
             }
         }
 
         return $output;
     }
-    
+
     /**
      * @param string $current
      * @return array routename => routename

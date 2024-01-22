@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  *
  * @package    Gems
@@ -12,7 +14,13 @@
 namespace Gems\Model;
 
 use Gems\Condition\ConditionLoader;
+use Gems\Db\ResultFetcher;
+use Gems\Util\Translated;
+use Laminas\Db\Sql\Expression;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\ActivatingYesNoType;
+use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
  *
@@ -22,48 +30,34 @@ use Zalt\Model\Type\ActivatingYesNoType;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class ConditionModel extends \Gems\Model\JoinModel
+class ConditionModel extends GemsJoinModel
 {
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    public function __construct(
+        MetaModelLoader $metaModelLoader,
+        SqlRunnerInterface $sqlRunner,
+        TranslatorInterface $translate,
+        protected readonly Translated $translatedUtil,
+        protected readonly ConditionLoader $conditionLoader,
+        protected readonly ResultFetcher $resultFetcher
+    ) {
+        parent::__construct('gems__conditions', $metaModelLoader, $sqlRunner, $translate);
 
-    /**
-     * @var ConditionLoader
-     */
-    protected $conditionLoader;
-
-    /**
-     *
-     * @var \Gems\Util\Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @param string $name
-     */
-    public function __construct($name = 'conditions')
-    {
-        parent::__construct($name, 'gems__conditions', 'gcon');
+        $metaModelLoader->setChangeFields($this->metaModel, 'gcon');
     }
 
     /**
      * Set those settings needed for the browse display
      *
      * @param boolean $addCount Add a count in rounds column
-     * @return \Gems\Model\ConditionModel
      */
-    public function applyBrowseSettings($addCount = true)
+    public function applyBrowseSettings($addCount = true): self
     {
         $yesNo = $this->translatedUtil->getYesNo();
 
         $types = $this->conditionLoader->getConditionTypes();
         reset($types);
         $default = key($types);
-        $this->set('gcon_type', [
+        $this->metaModel->set('gcon_type', [
             'label' => $this->_('Type'),
             'description' => $this->_('Determines where the condition can be applied.'),
             'multiOptions' => $types,
@@ -77,16 +71,16 @@ class ConditionModel extends \Gems\Model\JoinModel
                 $conditionsClasses += $this->conditionLoader->listConditionsForType($type);
             }
         }
-        $this->set('gcon_class', [
+        $this->metaModel->set('gcon_class', [
             'label' => $this->_('Condition'),
             'multiOptions' => $conditionsClasses,
             'autoSubmit' => true
         ]);
 
-        $this->set('gcon_name', [
+        $this->metaModel->set('gcon_name', [
             'label' => $this->_('Name'),
         ]);
-        $this->set('gcon_active', [
+        $this->metaModel->set('gcon_active', [
             'label' => $this->_('Active'),
             'multiOptions' => $yesNo,
             ActivatingYesNoType::$activatingValue => 1,
@@ -100,14 +94,15 @@ class ConditionModel extends \Gems\Model\JoinModel
                 "(SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gcon_id = gro_condition)",
                 'usage'
             );
-            $this->set('usage', [
+            $this->metaModel->set('usage', [
                 'label' => $this->_('Rounds'),
                 'description' => $this->_('The number of rounds using this condition.'),
                 'elementClass' => 'Exhibitor',
             ]);
 
-            $this->addColumn(new \Zend_Db_Expr(
-                "(SELECT COUNT(*)
+            $this->addColumn(
+                new Expression(
+                    "(SELECT COUNT(*)
                     FROM gems__conditions AS other
                     WHERE (gcon_class LIKE '%AndCondition' OR gcon_class LIKE '%OrCondition') AND
                         (
@@ -117,15 +112,17 @@ class ConditionModel extends \Gems\Model\JoinModel
                             gems__conditions.gcon_id = other.gcon_condition_text4
                         )
                 )"
-            ), 'usecondition');
-            $this->set('usecondition', [
+                ),
+                'usecondition'
+            );
+            $this->metaModel->set('usecondition', [
                 'label' => $this->_('Conditions'),
                 'description' => $this->_('The number of uses of this condition in other conditions.'),
                 'elementClass' => 'Exhibitor',
             ]);
         }
-        if (! $addCount) {
-            $this->addDependency('Condition\\TypeDependency');
+        if (!$addCount) {
+            $this->metaModel->addDependency('Condition\\TypeDependency');
         }
 
         return $this;
@@ -133,67 +130,65 @@ class ConditionModel extends \Gems\Model\JoinModel
 
     /**
      * Set those settings needed for the detailed display
-     *
-     * @return \Gems\Model\ConditionModel
      */
-    public function applyDetailSettings()
+    public function applyDetailSettings(): self
     {
         $this->applyBrowseSettings(false);
 
         $yesNo = $this->translatedUtil->getYesNo();
 
-        $this->resetOrder();
+        $this->metaModel->resetOrder();
 
-        $this->set('gcon_type');
-        $this->set('gcon_class');
-        $this->set('gcon_name', [
-            'description' => $this->_('A name for this condition, will be used to select it when applying the condition.')
+        $this->metaModel->set('gcon_type');
+        $this->metaModel->set('gcon_class');
+        $this->metaModel->set('gcon_name', [
+            'description' => $this->_(
+                'A name for this condition, will be used to select it when applying the condition.'
+            )
         ]);
 
-        $this->set('condition_help', [
+        $this->metaModel->set('condition_help', [
             'label' => $this->_('Help'),
             'elementClass' => 'Exhibitor',
         ]);
 
         // Set the order
-        $this->set('gcon_condition_text1');
-        $this->set('gcon_condition_text2');
-        $this->set('gcon_condition_text3');
-        $this->set('gcon_condition_text4');
+        $this->metaModel->set('gcon_condition_text1');
+        $this->metaModel->set('gcon_condition_text2');
+        $this->metaModel->set('gcon_condition_text3');
+        $this->metaModel->set('gcon_condition_text4');
 
-        $this->set('gcon_active', [
+        $this->metaModel->set('gcon_active', [
             'label' => $this->_('Active'),
             'multiOptions' => $yesNo,
         ]);
 
-        $this->addDependency('Condition\\ClassDependency');
+        $this->metaModel->addDependency('Condition\\ClassDependency');
 
         return $this;
     }
 
     /**
      * Set those values needed for editing
-     *
-     * @return \Gems\Model\ConditionModel
      */
-    public function applyEditSettings($create = false)
+    public function applyEditSettings(bool $create = false): self
     {
         $this->applyDetailSettings();
 
-        $this->set('gcon_type', [
+        $this->metaModel->set('gcon_type', [
             'default' => ConditionLoader::ROUND_CONDITION,
         ]);
 
-        $this->set('gcon_name', [
-            'validators[unique]' => $this->createUniqueValidator(['gcon_name', 'gcon_type'], ['gcon_id']),
+        $this->metaModel->set('gcon_name', [
+            'validators[unique]' => new ModelUniqueValidator('gcon_name', 'gcon_type'),
         ]);
 
         // gcon_id is not needed for some validators
-        $this->set('gcon_id', [
+        $this->metaModel->set('gcon_id', [
             'elementClass' => 'Hidden',
         ]);
 
-        $this->set('gcon_active', [
+        $this->metaModel->set('gcon_active', [
             'elementClass' => 'Checkbox',
         ]);
 
@@ -204,12 +199,12 @@ class ConditionModel extends \Gems\Model\JoinModel
      * Delete items from the model
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param array $saveTables Array of table names => save mode
+     * @param array|null $saveTables Array of table names => save mode
      * @return int The number of items deleted
      */
     public function delete($filter = null, array $saveTables = null): int
     {
-        $this->setChanged(0);
+        $this->resetChanged();
         $conditions = $this->load($filter);
 
         if ($conditions) {
@@ -217,10 +212,11 @@ class ConditionModel extends \Gems\Model\JoinModel
                 if (isset($row['gcon_id'])) {
                     $conditionId = $row['gcon_id'];
                     if ($this->isDeleteable($conditionId)) {
-                        $this->db->delete('gems__conditions', $this->db->quoteInto('gcon_id = ?', $conditionId));
+                        $this->resultFetcher
+                            ->query('DELETE FROM `gems__conditions` WHERE `gcon_id` = ?', [$conditionId]);
                     } else {
                         $values['gcon_id'] = $conditionId;
-                        $values['gcon_active']   = 0;
+                        $values['gcon_active'] = 0;
                         $this->save($values);
                     }
                     $this->addChanged();
@@ -233,17 +229,14 @@ class ConditionModel extends \Gems\Model\JoinModel
 
     /**
      * Get the number of times someone started answering a round in this track.
-     *
-     * @param int $conditionId
-     * @return int
      */
-    public function getUsedCount($conditionId)
+    public function getUsedCount(int $conditionId): int
     {
-        if (! $conditionId) {
+        if (!$conditionId) {
             return 0;
         }
 
-        $sqlRounds     = "SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gro_condition = ?";
+        $sqlRounds = "SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gro_condition = ?";
         $sqlConditions = "SELECT COUNT(*)
             FROM gems__conditions
             WHERE (gcon_class LIKE '%AndCondition' OR gcon_class LIKE '%OrCondition') AND
@@ -254,7 +247,11 @@ class ConditionModel extends \Gems\Model\JoinModel
                     gcon_condition_text4 = ?
                 )";
 
-        return (int) $this->db->fetchOne($sqlRounds, $conditionId) + (int) $this->db->fetchOne($sqlConditions, [$conditionId,$conditionId,$conditionId,$conditionId]);
+        return (int)$this->resultFetcher->fetchOne($sqlRounds, [$conditionId])
+            + (int)$this->resultFetcher->fetchOne(
+                $sqlConditions,
+                [$conditionId, $conditionId, $conditionId, $conditionId]
+            );
     }
 
     /**
@@ -265,11 +262,10 @@ class ConditionModel extends \Gems\Model\JoinModel
      */
     public function isDeleteable($conditionId)
     {
-        if (! $conditionId) {
+        if (!$conditionId) {
             return true;
         }
 
         return $this->getUsedCount($conditionId) === 0;
     }
-
 }

@@ -51,6 +51,8 @@ class ButtonRowSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
     {
         $menuList = $this->getButtons();
 
+        var_dump($menuList); exit;
+
         if (count($menuList)) {
             $container = Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true));
             foreach($menuList as $buttonInfo) {

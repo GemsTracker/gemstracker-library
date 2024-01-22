@@ -73,6 +73,7 @@ trait ButtonRowTrait
         }
         if ($this->addCurrentChildren) {
             $menuList += $this->menuHelper->getCurrentChildUrls();
+            var_dump($menuList);
         }
         if ($this->extraRoutes) {
             $menuList += $this->menuHelper->getRouteUrls($this->extraRoutes, $this->requestInfo->getParams());

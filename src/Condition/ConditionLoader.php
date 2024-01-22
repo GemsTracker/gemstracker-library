@@ -186,9 +186,9 @@ class ConditionLoader
             $filter['gcon_active'] = 1;
         }
 
-        $model->trackUsage();
-        $model->get('gcon_id');
-        $model->get('gcon_name');
+        $model->getMetaModel()->trackUsage();
+        $model->getMetaModel()->get('gcon_id');
+        $model->getMetaModel()->get('gcon_name');
         $conditions = $model->load($filter, ['gcon_name']);
 
         $output = $this->translatedUtil->getEmptyDropdownArray();

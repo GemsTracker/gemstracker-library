@@ -25,6 +25,7 @@ use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Data\FullDataInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
 use Zalt\Snippets\TranslatableSnippetAbstract;
@@ -272,7 +273,9 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      */
     private function _createMultiElement($class, $name, $options, $empty)
     {
-        if ($options instanceof MetaModelInterface) {
+        if ($options instanceof FullDataInterface) {
+            $options = $options->getMetaModel()->get($name, 'multiOptions');
+        } elseif ($options instanceof MetaModelInterface) {
             $options = $options->get($name, 'multiOptions');
         } elseif (is_string($options) || $options instanceof Select) {
             $options = $this->resultFetcher->fetchPairs($options);
