@@ -164,8 +164,8 @@ class AppointmentFilterModel extends GemsJoinModel
 
         $this->metaModel->set('gaf_active', [
             'label' => $this->_('Active'),
-                'multiOptions' => $yesNo
-                ]);
+            'multiOptions' => $yesNo
+        ]);
 
         $this->addColumn('NULL', 'usetrack');
         $this->metaModel->setOnLoad('usetrack', [$this, 'loadTracks']);

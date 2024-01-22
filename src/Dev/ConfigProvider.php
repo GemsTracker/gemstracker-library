@@ -19,7 +19,7 @@ class ConfigProvider
             return [
                 'dev' => $this->getDevSettings(),
                 'temp_config' => [
-                    // 'disable_privileges' => true,
+                     'disable_privileges' => true,
                 ],
                 'migrations'   => $this->getMigrations(),
                 'sites' => $this->getSitesSettings(),

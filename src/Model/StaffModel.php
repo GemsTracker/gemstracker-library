@@ -340,11 +340,11 @@ class StaffModel extends JoinModel
             );
         }
 
-        $this->set('gsf_active', 'label', $this->_('Active'),
-            'elementClass', 'None',
-            'multiOptions', $yesNo,
-            ActivatingYesNoType::$activatingValue, 1,
-            ActivatingYesNoType::$deactivatingValue, 0
+        $this->set('gsf_active', [
+            'label' => $this->_('Active'),
+            'elementClass' => 'None',
+            'type' => new ActivatingYesNoType($yesNo, 'row_class'),
+            ]
         );
 
         $this->setIfExists('has_authenticator_tfa', 'label', $this->_('Authenticator TFA'),

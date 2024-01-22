@@ -117,7 +117,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             }
         }
 
-        $fields[] = $buttons;
+        $fields[] = Html::create('div', $buttons, ['class' => 'buttons']);
 
         $bridge->addWithThird($fields);
 
@@ -237,26 +237,15 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         if ($buttons) {
             $bridge->tr();
             $bridge->tdh($this->_('Actions'));
-            $bridge->td($buttons, ['colspan' => 2, 'skiprowclass' => true]);
+            $bridge->td('', ['colspan' => 2, 'skiprowclass' => true])->div($buttons, ['class' => 'buttons']);
         }
 
         return true;
     }
 
-    /**
-     * Adds last group of rows cleaning up whatever is left to do in adding links etc.
-     *
-     * Overrule this function to add different columns to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param ThreeColumnTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @param \Gems\Menu\MenuList $links
-     * @return boolean True when there was row output
-     */
-    protected function addLastitems(ThreeColumnTableBridge $bridge)
+    protected function getLastButtonItems(): array
     {
-        $items = [
+        return [
             [
                 'route' => 'respondent.show',
                 'label' => $this->_('Show patient'),
@@ -283,18 +272,36 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
                 'label' => $this->_('(Re)check answers'),
             ],
         ];
+    }
+
+    /**
+     * Adds last group of rows cleaning up whatever is left to do in adding links etc.
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param ThreeColumnTableBridge $bridge
+     * @return boolean True when there was row output
+     */
+    protected function addLastitems(ThreeColumnTableBridge $bridge)
+    {
+        $items = $this->getLastButtonItems();
 
         $links = [];
         $urlParams = $this->token->getMenuUrlParameters();
         foreach($items as $item) {
             $url = $this->menuSnippetHelper->getRouteUrl($item['route'], $urlParams);
             if ($url) {
-                $links[$item['route']] = Html::actionLink($url, $item['label']);
+                if (isset($item['params'])) {
+                    $url .= '?' . http_build_query($item['params']);
+                }
+                $attributes = $item['attributes'] ?? [];
+                $links[$item['route']] = Html::actionLink($url, $item['label'], $attributes);
             }
         }
 
         if ($links) {
-            $bridge->tfrow($links, array('class' => 'centerAlign'));
+            $bridge->tfrow('', array('class' => 'centerAlign'))->div($links, ['class' => 'buttons']);
         }
 
         foreach ($bridge->tbody() as $row) {

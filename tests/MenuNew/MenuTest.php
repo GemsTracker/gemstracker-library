@@ -31,7 +31,6 @@ class MenuTest extends \PHPUnit\Framework\TestCase
         $template->addPath(__DIR__ . '/../../templates/menu', 'menu');
 
         $acl = $this->createMock(Acl::class);
-        $currentUserRepository = $this->buildMockUserRepository();
 
         $config = [
             'routes' => $routes ?? [
@@ -53,18 +52,9 @@ class MenuTest extends \PHPUnit\Framework\TestCase
             ],
         ];
 
-        $routeHelper = new RouteHelper($acl, $this->createMock(UrlHelper::class), $currentUserRepository, $config);
+        $routeHelper = new RouteHelper($acl, $this->createMock(UrlHelper::class), null, $config);
 
         return new Menu($template, $routeHelper, $menu);
-    }
-
-    private function buildMockUserRepository()
-    {
-        $currentUserRepository = $this->createMock(CurrentUserRepository::class);
-        $user = new User();
-        $currentUserRepository->expects($this->any())->method('getCurrentUser')->willReturn($user);
-
-        return $currentUserRepository;
     }
 
     public function testCanRenderEmptyMenu()
@@ -575,8 +565,6 @@ class MenuTest extends \PHPUnit\Framework\TestCase
         ];
 
         $template = $this->createMock(TemplateRendererInterface::class);
-        $currentUserRepository = $this->buildMockUserRepository();
-        $currentUserRepository->getCurrentUser()->setRole($userRole);
 
         $acl = new Acl();
         $acl->addResource('privilege-b');
@@ -590,7 +578,7 @@ class MenuTest extends \PHPUnit\Framework\TestCase
             'routes' => $routes,
         ];
 
-        $routeHelper = new RouteHelper($acl, $this->createMock(UrlHelper::class), $currentUserRepository, $config);
+        $routeHelper = new RouteHelper($acl, $this->createMock(UrlHelper::class), $userRole, $config);
 
         return new Menu($template, $routeHelper, $menu);
     }

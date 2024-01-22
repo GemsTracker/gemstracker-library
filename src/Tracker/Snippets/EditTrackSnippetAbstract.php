@@ -252,15 +252,17 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
         }
         if (isset($this->formData['gr2t_completed']) && $this->formData['gr2t_completed']) {
             // Cannot change start date after first answered token
-            $model->set('gr2t_start_date', 'elementClass', 'Exhibitor',
-                    'formatFunction', $this->translatedUtil->formatDateUnknown,
-                    'description', $this->_('Cannot be changed after first answered token.')
-                    );
+            $model->getMetaModel()->set('gr2t_start_date', [
+                'elementClass' => 'Exhibitor',
+                'formatFunction' => $this->translatedUtil->formatDateUnknown,
+                'description' => $this->_('Cannot be changed after first answered token.'),
+            ]);
         }
         if ((! $this->createData) && isset($this->formData['grc_success']) && (! $this->formData['grc_success'])) {
-            $model->set('grc_description', 'label', $this->_('Rejection code'),
-                    'elementClass', 'Exhibitor'
-                    );
+            $model->getMetaModel()->set('grc_description', [
+                'label' =>  $this->_('Rejection code'),
+                'elementClass' => 'Exhibitor',
+            ]);
         }
         return $this->formData;
     }

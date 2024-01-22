@@ -23,6 +23,7 @@ use Gems\Util\Translated;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
 use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\Model\Type\ActivatingMultiType;
 use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\Model\Type\JsonType;
 
@@ -103,28 +104,12 @@ class AppointmentModel extends GemsMaskedModel
         $this->addColumn("'appointment'", Model::ID_TYPE);
         $this->metaModel->setKeys([Model::APPOINTMENT_ID => 'gap_id_appointment']);
 
-        $this->addColumn(
-            "CASE WHEN gap_status IN ('" .
-            implode("', '", $this->agenda->getStatusKeysInactive()) .
-            "') THEN 'deleted' ELSE '' END",
-            'row_class'
-        );
-
-        $codes = $this->agenda->getStatusCodesInactive();
-        if (isset($codes['CA'])) {
-            $cancelCode = 'CA';
-        } elseif ($codes) {
-            reset($codes);
-            $cancelCode = key($codes);
-        } else {
-            $cancelCode = null;
-        }
-        if ($cancelCode) {
-            $this->metaModel->set('gap_status', [
-                ActivatingYesNoType::$activatingValue => 1,
-                ActivatingYesNoType::$deactivatingValue => 0
-            ]);
-        }
+        $this->metaModel->set('gap_status', [
+            'type' => new ActivatingMultiType(
+                $this->agenda->getStatusCodesActive(),
+                $this->agenda->getStatusCodesInactive(),
+                'row_class'),
+        ]);
     }
 
     /**

@@ -54,7 +54,7 @@ class RelatedTracksField extends MultiselectField
     /**
      * @var string class for showtracks list display
      */
-    protected string $displayClass;
+    protected string|null $displayClass = null;
 
     /**
      * @var bool When true the value is saved with padded seperators
@@ -194,7 +194,7 @@ class RelatedTracksField extends MultiselectField
                 $li = $ul->li();
                 $li->class = $this->getTrackClass($respondentTrack);
 
-                $url = $this->routeHelper->getRouteUrl('respondent.tracks.show-track', [
+                $url = $this->routeHelper->getRouteUrl('respondent.tracks.show', [
                    Model::REQUEST_ID1 => $respondentTrack->getPatientNumber(),
                    Model::REQUEST_ID2 => $respondentTrack->getOrganizationId(),
                    \Gems\Model::RESPONDENT_TRACK => $respondentTrack->getRespondentTrackId(),

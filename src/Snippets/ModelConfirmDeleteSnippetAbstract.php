@@ -19,7 +19,6 @@ use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
-use Zalt\Model\Data\FullDataInterface;
 use Zalt\Snippets\DeleteModeEnum;
 use Zalt\SnippetsLoader\SnippetOptions;
 

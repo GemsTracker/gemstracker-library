@@ -47,7 +47,7 @@ class UsageDependency extends \Zalt\Model\Dependency\DependencyAbstract
         $this->addEffected($this->fieldName, ['readonly', 'disabled']);
 
         $this->addDependsOn(array_keys(ActivatingYesNoType::getActivatingValues($this->metaModel)));
-        $this->addDependsOn(array_keys(ActivatingYesNoType::getDectivatingValues($this->metaModel)));
+        $this->addDependsOn(array_keys(ActivatingYesNoType::getDeactivatingValues($this->metaModel)));
     }
 
     /**

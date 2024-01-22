@@ -12,12 +12,14 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Html;
+use Gems\Model\Dependency\ActivationDependency;
 use Gems\Model\LocationModel;
 use Gems\Snippets\Agenda\CalendarTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Util;
 use Gems\Util\Translated;
 use Psr\Cache\CacheItemPoolInterface;
@@ -142,6 +144,19 @@ class LocationHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     protected function createModel(bool $detailed, string $action): LocationModel
     {
+        if ($detailed && (! $this->locationModel->getMetaModel()->hasDependency('glo_active'))) {
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $menuHelper = $this->responder->getMenuSnippetHelper();
+            } else {
+                $menuHelper = null;
+            }
+            $metaModel = $this->locationModel->getMetaModel();
+            $metaModel->addDependency(new ActivationDependency(
+                $this->translate,
+                $metaModel,
+                $menuHelper,
+            ));
+        }
         return $this->locationModel;
     }
 

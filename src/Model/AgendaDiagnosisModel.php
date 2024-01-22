@@ -21,11 +21,7 @@ class AgendaDiagnosisModel extends SqlTableModel
     ) {
         parent::__construct('gems__agenda_diagnoses', $metaModelLoader, $sqlRunner, $translate);
 
-        $this->copyKeys();
-
         $metaModelLoader->setChangeFields($this->metaModel, 'gad');
-
-        $this->addColumn("CASE WHEN gad_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
         $this->applySettings();
     }
@@ -58,10 +54,7 @@ class AgendaDiagnosisModel extends SqlTableModel
         $this->metaModel->setIfExists('gad_active', [
             'label' => $this->_('Active'),
             'description' => $this->_('Inactive means assignable only through automatich processes.'),
-            'elementClass' => 'Checkbox',
-            'multiOptions' => $this->translatedUtil->getYesNo(),
-            ActivatingYesNoType::$activatingValue => 1,
-            ActivatingYesNoType::$deactivatingValue => 0
+            'type' => new ActivatingYesNoType($this->translatedUtil->getYesNo(), 'row_class'),
         ]);
         $this->metaModel->setIfExists('gad_filter', [
             'label' => $this->_('Filter'),

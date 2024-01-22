@@ -327,6 +327,9 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
         } else {
             $this->appendFiltersChecked($seq);
         }
+        if ($this->tracer->executeChanges) {
+            $this->logChanges(1);
+        }
 
         return $seq;
     }

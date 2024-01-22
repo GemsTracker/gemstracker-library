@@ -20,6 +20,8 @@ class CurrentUserRepository
 
     protected ?int $organizationId = null;
 
+    protected ?string $role = null;
+
     protected ?UserLoader $userLoader = null;
 
     public function __construct(ProjectOverloader $loader)
@@ -69,6 +71,19 @@ class CurrentUserRepository
         }
 
         return UserLoader::SYSTEM_NO_ORG;
+    }
+
+    public function getCurrentUserRole(): string|null
+    {
+        if ($this->role) {
+            return $this->role;
+        }
+        if ($this->currentUser !== null) {
+            $this->loginName = $this->currentUser->getRole();
+            return $this->loginName;
+        }
+
+        return null;
     }
 
     public function getCurrentUserId(): int
@@ -129,5 +144,10 @@ class CurrentUserRepository
     public function setCurrentOrganizationId(int $organizationId): void
     {
         $this->organizationId = $organizationId;
+    }
+
+    public function setCurrentUserRole(string $role): void
+    {
+        $this->role = $role;
     }
 }
