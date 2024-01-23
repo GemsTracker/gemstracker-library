@@ -11,6 +11,10 @@ declare(strict_types=1);
 namespace Gems\Usage;
 
 use Gems\Db\ResultFetcher;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Predicate\Operator;
+use Laminas\Db\Sql\Predicate\Predicate;
+use Laminas\Db\Sql\Select;
 use Zalt\Base\TranslateableTrait;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Snippets\DeleteModeEnum;
@@ -42,12 +46,9 @@ class UsageCounterBasic implements UsageCounterInterface
     }
 
     /**
-     * @param string $tableField
-     * @param string $tableName
      * @param array|string $description
-     * @return void
      */
-    public function addTable(string $tableField, string $tableName, mixed $description)
+    public function addTable(string $tableField, string $tableName, mixed $description): self
     {
         $this->tables["$tableName.$tableField"] = [
             'field'       => $tableField,
@@ -56,19 +57,45 @@ class UsageCounterBasic implements UsageCounterInterface
             'sqlCheck'    => sprintf("SELECT %s FROM %s WHERE %s = ? LIMIT 1", $tableField, $tableName, $tableField),
             'sqlCount'    => sprintf("SELECT COUNT(%s) FROM %s WHERE %s = ? LIMIT 1", $tableField, $tableName, $tableField),
         ];
+
+        return $this;
     }
 
-    /**
-     * @param string $tableField
-     * @param string $tableName
-     * @param string $subject1
-     * @param string $subject2
-     * @return void
-     */
-    public function addTablePlural(string $tableField, string $tableName, string $subject1, string $subject2)
+    public function addCustomQuery(Select $query, array|string $description): self
     {
-        $this->addTable($tableField, $tableName, [$this->plural($subject1, $subject2, 1), $this->plural($subject1, $subject2, 2)]);
+        $columns = $query->getRawState(Select::COLUMNS);
+        $tableField = reset($columns);
+        $tableName = $query->getRawState(Select::TABLE);
+
+        $this->tables["$tableName.$tableField"] = [
+            'field'       => $tableField,
+            'table'       => $tableName,
+            'description' => $description,
+            'sqlCheck'    => clone $query,
+            'sqlCount'    => $query->columns(['count' => new Expression('COUNT(*)')]),
+        ];
+
+        return $this;
     }
+
+    public function addTablePlural(string $tableField, string $tableName, string $subjectSingle, string $subjectPlural): self
+    {
+        return $this->addTable($tableField, $tableName, $this->createDescription($subjectSingle, $subjectPlural));
+    }
+
+    public function addCustomQueryPlural(Select $query, string $subjectSingle, string $subjectPlural): self
+    {
+        return $this->addCustomQuery($query, $this->createDescription($subjectSingle, $subjectPlural));
+    }
+
+    private function createDescription(string $subjectSingle, string $subjectPlural): array
+    {
+        return [
+            $this->plural($subjectSingle, $subjectPlural, 1),
+            $this->plural($subjectSingle, $subjectPlural, 2)
+        ];
+    }
+
 
     public function getFieldName(): string
     {
@@ -90,7 +117,7 @@ class UsageCounterBasic implements UsageCounterInterface
         if (null === $this->used) {
             $this->used = false;
             foreach ($this->tables as $table) {
-                $output = $this->resultFetcher->fetchOne($table['sqlCheck'], [$value]);
+                $output = $this->getResults($table['sqlCheck'], $value);
 
                 if ($output) {
                     $this->used = true;
@@ -119,7 +146,7 @@ class UsageCounterBasic implements UsageCounterInterface
         }
         $this->report = [];
         foreach ($this->tables as $key => $table) {
-            $count = $this->resultFetcher->fetchOne($table['sqlCount'], [$value]);
+            $count = $this->getResults($table['sqlCount'], $value);
 
             if (is_array($table['description'])) {
                 $this->report[$key] = sprintf(
@@ -142,5 +169,37 @@ class UsageCounterBasic implements UsageCounterInterface
         }
 
         return $this->report;
+    }
+
+    private function getResults(string|Select $query, mixed $value): int|null|string
+    {
+        if (is_string($query)) {
+            return $this->resultFetcher->fetchOne($query, [$value]);
+        }
+
+        $requiredValuesCount = $this->processWheres($query->getRawState(Select::WHERE));
+
+        $values = array_pad([], $requiredValuesCount, $value);
+
+        return $this->resultFetcher->fetchOne($query, $values);
+    }
+
+    private function processWheres(Predicate $where): int
+    {
+        $predicates = $where->getPredicates();
+
+        $questionMarkCount = 0;
+
+        foreach ($predicates as $predicateArr) {
+            $predicate = $predicateArr[1];
+
+            if ($predicate instanceof Predicate) {
+                $questionMarkCount += $this->processWheres($predicate);
+            } elseif ($predicate instanceof Operator && $predicate->getRight() === '?') {
+                $questionMarkCount++;
+            }
+        }
+
+        return $questionMarkCount;
     }
 }

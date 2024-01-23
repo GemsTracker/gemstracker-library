@@ -65,7 +65,6 @@ class MenuSnippetHelper
             return [];
         }
         $routes = $this->getChildRoutes($current);
-        var_dump($this->getRouteUrls($routes, $this->requestInfo->getParams()));
         return $this->getRouteUrls($routes, $this->requestInfo->getParams());
     }
 

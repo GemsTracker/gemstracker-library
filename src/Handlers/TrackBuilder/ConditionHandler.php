@@ -18,9 +18,13 @@ use Gems\Condition\ConditionLoader;
 use Gems\Event\Application\ModelCreateEvent;
 use Gems\Exception\Coding;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\Model\Dependency\ActivationDependency;
+use Gems\Model\ConditionUsageCounter;
 use Gems\Model\ConditionModel;
+use Gems\Model\Dependency\ActivationDependency;
+use Gems\Model\Dependency\UsageDependency;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelConfirmDeleteSnippet;
+use Gems\Snippets\Usage\UsageSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use MUtil\Model;
 use Psr\Cache\CacheItemPoolInterface;
@@ -61,6 +65,11 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected ?ConditionInterface $condition = null;
 
+    protected array $deleteSnippets = [
+        ModelConfirmDeleteSnippet::class,
+        UsageSnippet::class
+    ];
+
     /**
      * The parameters used for the delete action.
      *
@@ -72,7 +81,8 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $deleteParameters = [
-        'conditionId' => '_getIdParam'
+        'conditionId' => '_getIdParam',
+        'usageCounter' => '_getUsageCounter',
     ];
 
     /**
@@ -92,6 +102,7 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected array $showParameters = [
         'condition' => 'getCondition',
+        'usageCounter' => '_getUsageCounter'
     ];
 
     /**
@@ -114,9 +125,15 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
         protected ConditionLoader $conditionLoader,
         protected EventDispatcherInterface $event,
         protected readonly ConditionModel $conditionModel,
+        protected readonly ConditionUsageCounter $conditionUsageCounter,
 
     ) {
         parent::__construct($responder, $translate, $cache);
+    }
+
+    protected function _getUsageCounter(): ConditionUsageCounter
+    {
+        return $this->conditionUsageCounter;
     }
 
     protected function createModel(bool $detailed, string $action): ConditionModel
@@ -136,9 +153,10 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
                     $menuHelper = null;
                 }
                 $metaModel = $model->getMetaModel();
-                $metaModel->addDependency(new ActivationDependency(
+                $metaModel->addDependency(new UsageDependency(
                     $this->translate,
                     $metaModel,
+                    $this->conditionUsageCounter,
                     $menuHelper,
                 ));
             }
