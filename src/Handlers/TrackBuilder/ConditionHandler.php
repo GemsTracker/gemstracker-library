@@ -20,7 +20,6 @@ use Gems\Exception\Coding;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\ConditionUsageCounter;
 use Gems\Model\ConditionModel;
-use Gems\Model\Dependency\ActivationDependency;
 use Gems\Model\Dependency\UsageDependency;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelConfirmDeleteSnippet;
@@ -124,7 +123,6 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
         CacheItemPoolInterface $cache,
         protected ConditionLoader $conditionLoader,
         protected EventDispatcherInterface $event,
-        protected readonly ConditionModel $conditionModel,
         protected readonly ConditionUsageCounter $conditionUsageCounter,
 
     ) {

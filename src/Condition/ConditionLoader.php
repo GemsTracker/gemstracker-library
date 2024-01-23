@@ -168,7 +168,7 @@ class ConditionLoader
         /**
          * @var ConditionModel $model
          */
-        $model = $this->overloader->create('Model\\ConditionModel');
+        $model = $this->overloader->create(ConditionModel::class);
         return $model;
     }
 

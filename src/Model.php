@@ -17,7 +17,6 @@ use Gems\Model\AppointmentModel;
 use Gems\Model\CommLogModel;
 use Gems\Model\CommMessengersModel;
 use Gems\Model\CommTemplateModel;
-use Gems\Model\ConditionModel;
 use Gems\Model\EpisodeOfCareModel;
 use Gems\Model\ExportDbaModel;
 use Gems\Model\JoinModel;
@@ -319,21 +318,6 @@ class Model
          * @var CommtemplateModel $model
          */
         $model = $this->_createModel('CommtemplateModel');
-
-        return $model;
-    }
-
-    /**
-     * Load the condition model
-     *
-     * @return ConditionModel
-     */
-    public function getConditionModel(): ConditionModel
-    {
-        /**
-         * @var ConditionModel $model
-         */
-        $model = $this->_createModel('ConditionModel');
 
         return $model;
     }
