@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  *
  * @package    Gems
@@ -16,11 +18,14 @@ use Gems\Condition\ConditionLoader;
 use Gems\Event\Application\ModelCreateEvent;
 use Gems\Exception\Coding;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\Model\Dependency\ActivationDependency;
+use Gems\Model\ConditionUsageCounter;
+use Gems\Model\ConditionModel;
+use Gems\Model\Dependency\UsageDependency;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelConfirmDeleteSnippet;
+use Gems\Snippets\Usage\UsageSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use MUtil\Model;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
@@ -59,6 +64,11 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected ?ConditionInterface $condition = null;
 
+    protected array $deleteSnippets = [
+        ModelConfirmDeleteSnippet::class,
+        UsageSnippet::class
+    ];
+
     /**
      * The parameters used for the delete action.
      *
@@ -70,9 +80,10 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $deleteParameters = [
-        'conditionId' => '_getIdParam'
+        'conditionId' => '_getIdParam',
+        'usageCounter' => '_getUsageCounter',
     ];
-    
+
     /**
      * The snippets used for the index action, before those in autofilter
      *
@@ -90,6 +101,7 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected array $showParameters = [
         'condition' => 'getCondition',
+        'usageCounter' => '_getUsageCounter'
     ];
 
     /**
@@ -111,29 +123,24 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
         CacheItemPoolInterface $cache,
         protected ConditionLoader $conditionLoader,
         protected EventDispatcherInterface $event,
+        protected readonly ConditionUsageCounter $conditionUsageCounter,
 
     ) {
         parent::__construct($responder, $translate, $cache);
     }
 
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return ModelAbstract
-     */
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function _getUsageCounter(): ConditionUsageCounter
+    {
+        return $this->conditionUsageCounter;
+    }
+
+    protected function createModel(bool $detailed, string $action): ConditionModel
     {
         $model = $this->conditionLoader->getConditionModel();
 
         if ($detailed) {
-            if (('edit' == $action) || ('create' == $action)) {
-                $model->applyEditSettings(('create' == $action));
+            if (('edit' === $action) || ('create' === $action)) {
+                $model->applyEditSettings(('create' === $action));
             } else {
                 $model->applyDetailSettings();
             }
@@ -144,9 +151,10 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
                     $menuHelper = null;
                 }
                 $metaModel = $model->getMetaModel();
-                $metaModel->addDependency(new ActivationDependency(
+                $metaModel->addDependency(new UsageDependency(
                     $this->translate,
                     $metaModel,
+                    $this->conditionUsageCounter,
                     $menuHelper,
                 ));
             }
@@ -154,7 +162,7 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
             $model->applyBrowseSettings();
         }
 
-        $event = new ModelCreateEvent($model, $detailed, $action);
+        $event = new ModelCreateEvent($model, $action, $detailed);
         $this->event->dispatch($event, $event->name);
 
         return $model;
@@ -195,15 +203,18 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
     {
         return $this->plural('condition', 'conditions', $count);
     }
-    
+
     /**
      * Action for showing an item page with title
      */
     public function showAction(): void
     {
         $model = $this->getModel();
-        if ($model->hasMeta('ConditionShowSnippets')) {
-            $this->showSnippets = array_merge($this->showSnippets, (array) $model->getMeta('ConditionShowSnippets'));
+        if ($model->getMetaModel()->hasMeta('ConditionShowSnippets')) {
+            $this->showSnippets = array_merge(
+                $this->showSnippets,
+                (array) $model->getMetaModel()->getMeta('ConditionShowSnippets')
+            );
         }
 
         parent::showAction();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  *
  * @package    Gem
@@ -12,6 +14,7 @@
 namespace Gems\Event\Application;
 
 use Symfony\Contracts\EventDispatcher\Event;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  *
@@ -22,71 +25,41 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class ModelCreateEvent extends Event
 {
-    const NAME_START = 'gems.model.create.';
+    public const NAME_START = 'gems.model.create.';
 
-    /**
-     * @var string Current action
-     */
-    public $action;
+    public string $action;
 
-    /**
-     * @var boolean Detailed display or not?
-     */
-    public $detailed;
+    public bool $detailed;
 
-    /**
-     * @var \MUtil\Model\ModelAbstract the model
-     */
-    public $model;
+    public FullDataInterface $model;
 
-    /**
-     * @var string the Event name for the listener
-     */
-    public $name;
+    public ?string $name;
 
-    /**
-     * ModelCreateEvent constructor.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     * @param string                     $action
-     * @param boolean                    $detailed
-     */
-    public function __construct(\MUtil\Model\ModelAbstract $model, $action, $detailed, $name = null)
+    public function __construct(FullDataInterface $model, string $action, bool $detailed, ?string $name = null)
     {
-        $this->model    = $model;
-        $this->action   = $action;
+        $model->getMetaModel();
+        $this->model = $model;
+        $this->action = $action;
         $this->detailed = $detailed;
-        $this->name     = self::NAME_START . ($name ? $name : $model->getName());
+        $this->name = self::NAME_START . ($name ?: $model->getName());
     }
 
-    /**
-     * @return string
-     */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
 
-    /**
-     * @return \MUtil\Model\ModelAbstract
-     */
-    public function getModel()
+    public function getModel(): FullDataInterface
     {
         return $this->model;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return bool
-     */
-    public function isDetailed()
+    public function isDetailed(): bool
     {
         return $this->detailed;
     }

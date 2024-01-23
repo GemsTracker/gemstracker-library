@@ -63,7 +63,7 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public $menuActionController = ['condition'];
+    public array $menuActionController = ['condition'];
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -79,8 +79,6 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
 
     /**
      * Creates the model
-     *
-     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {
@@ -94,12 +92,10 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
 
     /**
      * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param MetaModelInterface $metaModel
      */
     public function getFilter(MetaModelInterface $metaModel): array
     {
-        $filters = parent::getFilter($metaModel);
+        $filters = [];
         $attributes = $this->requestInfo->getRequestMatchedParams();
 
         if (isset($attributes[Model::REQUEST_ID])) {

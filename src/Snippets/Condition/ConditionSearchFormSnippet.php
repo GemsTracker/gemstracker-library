@@ -37,8 +37,15 @@ class ConditionSearchFormSnippet extends AutosearchFormSnippet
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $elements['gcon_type']   = $this->_createSelectElement('gcon_type',  $this->model, $this->_('(all types)'));
-        $elements['gcon_active'] = $this->_createSelectElement('gcon_active', $this->model, $this->_('(any active)'));
+        $elements['gcon_type'] = $this->_createSelectElement(
+            'gcon_type',
+            $this->model->getMetaModel(),
+            $this->_('(all types)')
+        );
+        $elements['gcon_active'] = $this->_createSelectElement(
+            'gcon_active',
+            $this->model->getMetaModel(),
+            $this->_('(any active)'));
 
         return $elements;
     }

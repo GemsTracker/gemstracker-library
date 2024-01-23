@@ -315,7 +315,6 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
             $action->csrfName = $this->getCsrfTokenName();
             $action->csrfToken = $this->getCsrfToken($action->csrfName);
             $action->subjects = [$this->getTopic(1), $this->getTopic(2)];
-
         }
 
         if (property_exists($this, 'usageCounter') && property_exists($action, 'usageCounter')) {

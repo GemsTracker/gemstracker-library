@@ -47,10 +47,10 @@ class DeleteAction extends \Zalt\SnippetsActions\Delete\DeleteAction
     public ?string $buttonYesClass = 'actionlink btn btn-primary btn-lg';
 
     /**
-     * @var string A calssname to append to the class attribute ofUseSn the main HtmlElement output of the snippet;
+     * @var string A classname to append to the class attribute ofUseSn the main HtmlElement output of the snippet;
      */
     public string $class = 'displayer';
-    
+
     /**
      * @var string Optional title to display at the head of this page.
      */
