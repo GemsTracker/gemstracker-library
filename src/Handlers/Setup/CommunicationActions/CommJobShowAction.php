@@ -14,7 +14,6 @@ use Gems\Snippets\Communication\CommJobButtonRowSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\Token\PlanTokenSnippet;
-use Gems\Snippets\TokenPlanTableSnippet;
 use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\Snippets\Usage\EnableUsageSnippet;
 

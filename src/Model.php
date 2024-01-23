@@ -17,17 +17,14 @@ use Gems\Model\AppointmentModel;
 use Gems\Model\CommLogModel;
 use Gems\Model\CommMessengersModel;
 use Gems\Model\CommTemplateModel;
-use Gems\Model\ConditionModel;
 use Gems\Model\EpisodeOfCareModel;
 use Gems\Model\ExportDbaModel;
 use Gems\Model\JoinModel;
-use Gems\Model\LogModel;
 use Gems\Model\MaskedModel;
 use Gems\Model\OrganizationModel;
 use Gems\Model\Respondent\RespondentModel;
 use Gems\Model\RespondentRelationModel;
 use Gems\Model\SiteModel;
-use Gems\Model\StaffLogModel;
 use Gems\Model\StaffModel;
 use Gems\Model\SurveyCodeBookModel;
 use Gems\Project\ProjectSettings;
@@ -321,21 +318,6 @@ class Model
          * @var CommtemplateModel $model
          */
         $model = $this->_createModel('CommtemplateModel');
-
-        return $model;
-    }
-
-    /**
-     * Load the condition model
-     *
-     * @return ConditionModel
-     */
-    public function getConditionModel(): ConditionModel
-    {
-        /**
-         * @var ConditionModel $model
-         */
-        $model = $this->_createModel('ConditionModel');
 
         return $model;
     }
