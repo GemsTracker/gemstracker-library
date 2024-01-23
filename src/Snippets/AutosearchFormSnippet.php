@@ -273,9 +273,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      */
     private function _createMultiElement($class, $name, $options, $empty)
     {
-        if ($options instanceof FullDataInterface) {
-            $options = $options->getMetaModel()->get($name, 'multiOptions');
-        } elseif ($options instanceof MetaModelInterface) {
+        if ($options instanceof MetaModelInterface) {
             $options = $options->get($name, 'multiOptions');
         } elseif (is_string($options) || $options instanceof Select) {
             $options = $this->resultFetcher->fetchPairs($options);
