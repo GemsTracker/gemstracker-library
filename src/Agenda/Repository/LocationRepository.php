@@ -89,7 +89,7 @@ class LocationRepository
 
         return array_filter($allLocations, function($location) use ($organizationId) {
             if ($organizationId) {
-                return ($location['glo_active']) && in_array($organizationId, $location['glo_organizations']);
+                return ($location['glo_active']) && $location['glo_organizations'] && in_array($organizationId, $location['glo_organizations']);
             }
             return (bool)$location['glo_active'];
         });
