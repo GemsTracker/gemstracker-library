@@ -312,7 +312,6 @@ This messages was send automatically.";
         $job  = $this->getMaintenanceMonitor();
 
         if ($this->maintenanceLock->isLocked()) {
-            dump('hi');
             $job->stop();
             $this->maintenanceLock->unlock();
             return false;
@@ -321,7 +320,6 @@ This messages was send automatically.";
         $this->maintenanceLock->lock();
         $to = $this->_getMailTo('maintenancemode');
 
-        dump($to);
         if (!$to) {
             return true;
         }
