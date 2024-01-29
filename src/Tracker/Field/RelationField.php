@@ -141,7 +141,7 @@ class RelationField extends FieldAbstract
                     ELSE CONCAT_WS(' ', grr_type, gsf_first_name, gsf_surname_prefix, gsf_last_name)
                 END")
         ])
-            ->join('gems__staff', 'gsf_id_user = grr_id_staff');
+            ->join('gems__staff', 'gsf_id_user = grr_id_staff', Select::SQL_STAR, Select::JOIN_LEFT);
 
         return $select;
     }
