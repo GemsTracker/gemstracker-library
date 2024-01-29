@@ -552,11 +552,12 @@ class TokenRepository
      * @param string $result
      * @return \Zalt\Html\HtmlElement
      */
-    public function getTokenStatusLink(MenuSnippetHelper $helper, string $tokenId, string $tokenStatus, string $patientNr, int $organizationId, string $roundDescr, string $surveyName, string $result): ?HtmlElement
+    public function getTokenStatusLink(MenuSnippetHelper $helper, string $tokenId, int $respondentTrackId, string $tokenStatus, string $patientNr, int $organizationId, string $roundDescr, string $surveyName, string $result): ?HtmlElement
     {
         if ($tokenId) {
-            $href = $helper->getRouteUrl('respondent.tracks.show', [
+            $href = $helper->getRouteUrl('respondent.tracks.token.show', [
                 MetaModelInterface::REQUEST_ID  => $tokenId,
+                Model::RESPONDENT_TRACK => $respondentTrackId,
                 MetaModelInterface::REQUEST_ID1 => $patientNr,
                 MetaModelInterface::REQUEST_ID2 => $organizationId,
             ]);
@@ -624,7 +625,7 @@ class TokenRepository
 
         return $this->getTokenStatusLink(
             $helper,
-            $tokenId, $token->getStatusCode(),
+            $tokenId, $token->getRespondentTrackId(), $token->getStatusCode(),
             $token->getPatientNumber(), $token->getOrganizationId(), $token->getRoundDescription(),
             $token->getSurveyName(), $token->getResult()
         );
