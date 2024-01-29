@@ -48,6 +48,17 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
 
     protected string $onEmptyAlt = '';
 
+    /**
+     * Enable browsing, so we have a query limit. This ensures we don't try to
+     * show *all* appointments on this page.
+     */
+    public $browse = true;
+
+    /**
+     * Don't run the count query, we don't need it.
+     */
+    public $showTotal = false;
+
     public function __construct(SnippetOptions $snippetOptions,
                                 RequestInfo $requestInfo,
                                 MenuSnippetHelper $menuHelper,
@@ -59,6 +70,14 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
         if ($this->onEmptyAlt) {
             $this->onEmpty = $this->onEmptyAlt;
         }
+    }
+
+    /**
+     * Don't add paginator controls, this snippet shows only a set of examples.
+     * The override is required because browse is set to true above.
+     */
+    protected function addPaginator(TableElement $table, int $count, int $page, int $items)
+    {
     }
 
     /**
