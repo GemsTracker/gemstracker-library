@@ -38,5 +38,5 @@ abstract class BrowseChangeHandler extends GemsHandler
         'edit'       => EditAction::class,
         'delete'     => DeleteAction::class,
         'show'       => ShowAction::class,
-        ];
+    ];
 }

@@ -37,7 +37,7 @@ class ShowAction extends \Zalt\SnippetsActions\Show\ShowAction
         ContentTitleSnippet::class,
         ModelDetailTableSnippet::class,
         CurrentButtonRowSnippet::class,
-        ];
+    ];
 
     public string $class = 'displayer table';
 
@@ -45,5 +45,5 @@ class ShowAction extends \Zalt\SnippetsActions\Show\ShowAction
 
     public array $usageSnippets = [
         UsageSnippet::class,
-        ];
+    ];
 }

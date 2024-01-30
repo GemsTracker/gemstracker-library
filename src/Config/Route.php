@@ -19,6 +19,7 @@ use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\InfoHandler;
+use Gems\Handlers\LogFileHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
 use Gems\Handlers\Setup\Database\PatchHandler;
 use Gems\Handlers\Setup\Database\SeedHandler;
@@ -1123,7 +1124,20 @@ class Route
                     'show',
                 ],
             ),
-
+            ...$this->createSnippetRoutes(baseName: 'setup.log-file',
+                controllerClass: LogFileHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show',
+                ],
+                parameters: [
+                    'id' => '.+'
+                ],
+                parameterRoutes: [
+                    'show',
+                ]
+            ),
         ];
     }
 

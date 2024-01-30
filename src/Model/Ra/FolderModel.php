@@ -4,6 +4,7 @@ namespace Gems\Model\Ra;
 
 use Gems\Model\Transform\FileInfoTransformer;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Zalt\Model\MetaModel;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModelLoader;
@@ -77,6 +78,26 @@ class FolderModel extends ArrayModelAbstract
 
     protected function _loadAll(): array
     {
+        $results = [];
+
+        /** @var SplFileInfo $file */
+        foreach(iterator_to_array($this->finder) as $file) {
+            $results[] = [
+                'fullpath' => $file->getRealPath(),
+                'path' => $file->getPath(),
+                'filename' => $file->getFilename(),
+                'relpath' => $file->getRelativePath(),
+                'urlpath' => '',
+                'extension' => $file->getExtension(),
+                'content' => $file->getContents(),
+                'size' => $file->getSize(),
+                'changed' => $file->getMTime(),
+            ];
+        }
+//        var_dump($results); exit;
+
+//        return $results;
+
         return iterator_to_array($this->finder);
     }
 }

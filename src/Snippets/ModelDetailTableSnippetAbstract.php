@@ -22,9 +22,9 @@ use Zalt\Model\MetaModelInterface;
 abstract class ModelDetailTableSnippetAbstract extends \Zalt\Snippets\ModelDetailTableSnippetAbstract
 {
     use TopicCallableTrait;
-    
+
     protected $class = 'displayer table';
-    
+
     public function getHtmlOutput()
     {
         if (! $this->onEmpty) {
@@ -33,7 +33,7 @@ abstract class ModelDetailTableSnippetAbstract extends \Zalt\Snippets\ModelDetai
 
         return parent::getHtmlOutput();
     }
-    
+
     public function getOnEmpty(): mixed
     {
         if ($this->requestInfo->getParam(MetaModelInterface::REQUEST_ID)) {
