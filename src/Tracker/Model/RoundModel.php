@@ -64,7 +64,13 @@ class RoundModel extends GemsJoinModel
                             'gems__tokens',
                             (new Where())->equalTo('gto_id_round', $roundId)
                         );
-
+                        // First break the self referencing foreign key.
+                        $this->resultFetcher->updateTable(
+                            'gems__rounds',
+                            ['gro_valid_for_id' => null],
+                            (new Where())->equalTo('gro_id_round', $roundId)
+                        );
+                        // Then delete the round itself.
                         $this->resultFetcher->deleteFromTable(
                             'gems__rounds',
                             (new Where())->equalTo('gro_id_round', $roundId)
