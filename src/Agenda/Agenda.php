@@ -309,10 +309,10 @@ class Agenda
     /**
      * Get an appointment object
      *
-     * @param mixed $appointmentData Appointment id or array containing appointment data
+     * @param array|string|int $appointmentData Appointment id or array containing appointment data
      * @return \Gems\Agenda\Appointment
      */
-    public function getAppointment(array|int $appointmentData): Appointment
+    public function getAppointment(array|string|int $appointmentData): Appointment
     {
         if (! $appointmentData) {
             throw new Coding('Provide at least the apppointment id when requesting an appointment.');
@@ -326,7 +326,7 @@ class Agenda
              }
             $appointmentId = $appointmentData['gap_id_appointment'];
         } else {
-            $appointmentId = $appointmentData;
+            $appointmentId = (int)$appointmentData;
             $appointmentData = $this->getAppointmentData($appointmentId);
         }
 
