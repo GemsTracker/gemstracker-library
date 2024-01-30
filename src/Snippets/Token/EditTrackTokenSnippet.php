@@ -207,7 +207,7 @@ class EditTrackTokenSnippet extends EditTokenSnippetAbstract
         unset($this->formData['reset_mail']);
 
         // Save the token using the model
-        parent::saveData();
+        $changed = parent::saveData();
         // $this->token->setValidFrom($this->formData['gto_valid_from'], $this->formData['gto_valid_until'], $this->loader->getCurrentUser()->getUserId());
 
         // \MUtil\EchoOut\EchoOut::track($this->formData);
@@ -223,14 +223,14 @@ class EditTrackTokenSnippet extends EditTokenSnippetAbstract
 
         $respTrack = $this->token->getRespondentTrack();
         $userId    = $this->currentUserId;
-        $changed   = $respTrack->checkTrackTokens($userId, $this->token);
+        $recalculated   = $respTrack->checkTrackTokens($userId, $this->token);
 
-        if ($changed) {
+        if ($recalculated) {
             $this->addMessage(sprintf($this->plural(
                     '%d token changed by recalculation.',
                     '%d tokens changed by recalculation.',
-                    $changed
-                    ), $changed));
+                    $recalculated
+                    ), $recalculated));
         }
         
         return $changed;
