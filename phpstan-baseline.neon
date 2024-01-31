@@ -2386,16 +2386,6 @@ parameters:
 			path: src/Handlers/Setup/AgendaStaffHandler.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with int will always evaluate to false\\.$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\CommJobHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\CommLogHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/CommLogHandler.php
