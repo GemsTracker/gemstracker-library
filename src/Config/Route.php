@@ -54,12 +54,12 @@ class Route
         LocaleMiddleware::class,
         AuthenticationMiddleware::class,
         CsrfMiddleware::class,
-        MenuMiddleware::class,
-        AclMiddleware::class,
         MaintenanceModeMiddleware::class,
         RateLimitMiddleware::class,
+        AclMiddleware::class,
         CurrentOrganizationMiddleware::class,
         AuditLogMiddleware::class,
+        MenuMiddleware::class,
     ];
 
     public static array $loggedOutMiddleware = [
