@@ -37,7 +37,7 @@ class DayKeySha256 extends HourKeySha256
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @return string Something to display as label.
      */
     public function getLabel(): string
     {
