@@ -100,7 +100,7 @@ class Monitor
 
                 if ($roles) {
                     $joins = "JOIN gems__groups ON gsf_id_primary_group = ggp_id_group 
-                      JOIN gems__roles ON ggp_role = grl_id_role";
+                      JOIN gems__roles ON ggp_role = grl_name";
 
                     $where = 'grl_name IN (' .
                             implode(', ', $roles) .
