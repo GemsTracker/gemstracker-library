@@ -278,7 +278,7 @@ class Organization extends CachedArrayTargetAbstract
      *
      * @return string|null
      */
-    public function getCode():
+    public function getCode()
     {
         return $this->_get('gor_code');
     }
