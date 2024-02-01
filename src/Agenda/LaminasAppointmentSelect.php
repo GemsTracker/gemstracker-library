@@ -83,8 +83,8 @@ class LaminasAppointmentSelect
 
     /**
      *
-     * @param DateTimeInterface $from Optional date after which the appointment must occur
-     * @param DateTimeInterface $until Optional date before which the appointment must occur
+     * @param DateTimeInterface|null $from Optional date after which the appointment must occur
+     * @param DateTimeInterface|null $until Optional date before which the appointment must occur
      * @param boolean $sortAsc Retrieve first or last appointment first
      * @return self
      */
@@ -94,7 +94,7 @@ class LaminasAppointmentSelect
             $this->select->where->greaterThanOrEqualTo('gap_admission_time', $from->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat')));
         }
         if ($until) {
-            $this->select->where->lessThanOrEqualTo('gap_admission_time', $from->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat')));
+            $this->select->where->lessThanOrEqualTo('gap_admission_time', $until->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat')));
         }
         if ($sortAsc) {
             $this->order('gap_admission_time ASC');
