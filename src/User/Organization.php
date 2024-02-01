@@ -276,9 +276,9 @@ class Organization extends CachedArrayTargetAbstract
     /**
      * Get the code attribute.
      *
-     * @return string
+     * @return string|null
      */
-    public function getCode()
+    public function getCode():
     {
         return $this->_get('gor_code');
     }
@@ -342,7 +342,7 @@ class Organization extends CachedArrayTargetAbstract
      * Return org dependent login url
      *
      * Synonym for getPreferredSiteUrl(), may devert in the future
-     * 
+     *
      * @return string
      */
     public function getLoginUrl()
