@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gems\Handlers\Auth;
 
 use Gems\Audit\AuditLog;
+use Gems\AuthNew\Adapter\GemsTrackerAuthenticationResult;
 use Gems\AuthNew\Adapter\GenericRoutedAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
@@ -121,6 +122,7 @@ class LoginHandler implements RequestHandlerInterface
             return $this->redirectBack($request, [$this->blockMessage($blockMinutes)]);
         }
 
+        /** @var GemsTrackerAuthenticationResult $result */
         $result = $authenticationService->authenticate(new GenericRoutedAuthentication(
             $this->userLoader,
             $this->translator,

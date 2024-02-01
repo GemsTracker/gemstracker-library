@@ -661,11 +661,6 @@ parameters:
 			path: src/Agenda/Agenda.php
 
 		-
-			message: "#^PHPDoc tag @param for parameter \\$appointmentData with type mixed is not subtype of native type array\\|int\\.$#"
-			count: 1
-			path: src/Agenda/Agenda.php
-
-		-
 			message: "#^PHPDoc tag @param for parameter \\$episodeData with type mixed is not subtype of native type array\\|int\\.$#"
 			count: 1
 			path: src/Agenda/Agenda.php
@@ -1801,11 +1796,6 @@ parameters:
 			path: src/Handlers/AskHandler.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\AuthNew\\\\Adapter\\\\AuthenticationResult\\:\\:\\$user\\.$#"
-			count: 1
-			path: src/Handlers/Auth/LoginHandler.php
-
-		-
 			message: "#^Access to an undefined property Zalt\\\\SnippetsActions\\\\ModelActionInterface&Zalt\\\\SnippetsActions\\\\SnippetActionInterface\\:\\:\\$model\\.$#"
 			count: 1
 			path: src/Handlers/GemsHandler.php
@@ -2396,16 +2386,6 @@ parameters:
 			path: src/Handlers/Setup/AgendaStaffHandler.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with int will always evaluate to false\\.$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\CommJobHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\CommLogHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/CommLogHandler.php
@@ -2651,27 +2631,12 @@ parameters:
 			path: src/Handlers/SnippetLegacyHandlerAbstract.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:getMeta\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:hasMeta\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
 			message: "#^Method Psr\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/ConditionHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\ConditionHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\ConditionHandler\\:\\:\\$deleteSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/ConditionHandler.php
 
@@ -2687,16 +2652,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\ConditionHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
-			message: "#^Parameter \\#2 \\$action of class Gems\\\\Event\\\\Application\\\\ModelCreateEvent constructor expects string, bool given\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
-			message: "#^Parameter \\#3 \\$detailed of class Gems\\\\Event\\\\Application\\\\ModelCreateEvent constructor expects bool, string given\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/ConditionHandler.php
 
@@ -2744,11 +2699,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\TrackFieldsHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/TrackFieldsHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\TrackMaintenanceHandler\\:\\:\\$deleteSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/TrackMaintenanceHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\TrackMaintenanceHandler\\:\\:\\$exportSnippets with type mixed is not subtype of native type array\\.$#"
@@ -7067,12 +7017,12 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$links$#"
-			count: 3
+			count: 2
 			path: src/Snippets/Token/ShowTrackTokenSnippet.php
 
 		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$model$#"
-			count: 4
+			count: 3
 			path: src/Snippets/Token/ShowTrackTokenSnippet.php
 
 		-
@@ -7361,17 +7311,7 @@ parameters:
 			path: src/Snippets/Tracker/Fields/FieldShowSnippet.php
 
 		-
-			message: "#^Instanceof between Gems\\\\Tracker\\\\Model\\\\RoundModel and Gems\\\\Tracker\\\\Model\\\\FieldMaintenanceModel will always evaluate to false\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Fields/FieldsTableSnippet.php
-
-		-
 			message: "#^Property Gems\\\\Snippets\\\\Tracker\\\\Fields\\\\FieldsTableSnippet\\:\\:\\$menuActionController \\(array\\) does not accept default value of type string\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Fields/FieldsTableSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Tracker\\\\Fields\\\\FieldsTableSnippet\\:\\:\\$model \\(Gems\\\\Tracker\\\\Model\\\\RoundModel\\) does not accept Gems\\\\Tracker\\\\Model\\\\FieldMaintenanceModel\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/Fields/FieldsTableSnippet.php
 
@@ -8101,16 +8041,6 @@ parameters:
 			path: src/Tracker/Mock/TokenReadonly.php
 
 		-
-			message: "#^Call to an undefined method Gems\\\\Tracker\\\\Source\\\\SourceInterface\\:\\:getToken\\(\\)\\.$#"
-			count: 1
-			path: src/Tracker/Model/AddAnswersTransformer.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Tracker/Model/AddAnswersTransformer.php
-
-		-
 			message: "#^Parameter \\#1 \\$options of class Laminas\\\\Validator\\\\GreaterThan constructor expects array\\|Traversable\\|null, int given\\.$#"
 			count: 1
 			path: src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php
@@ -8633,11 +8563,6 @@ parameters:
 		-
 			message: "#^Access to an undefined property Gems\\\\Util\\\\Translated\\:\\:\\$formatDateUnknown\\.$#"
 			count: 1
-			path: src/Tracker/Snippets/EditTrackSnippetAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:set\\(\\)\\.$#"
-			count: 2
 			path: src/Tracker/Snippets/EditTrackSnippetAbstract.php
 
 		-
@@ -9286,44 +9211,9 @@ parameters:
 			path: src/User/DbUserDefinitionAbstract.php
 
 		-
-			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/DayKeySha256.php
-
-		-
-			message: "#^Call to method DateTimeImmutable\\:\\:add\\(\\) on a separate line has no effect\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/HourKeySha256.php
-
-		-
-			message: "#^Call to method DateTimeImmutable\\:\\:sub\\(\\) on a separate line has no effect\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/HourKeySha256.php
-
-		-
-			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/HourKeySha256.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/PasswordVerify.php
-
-		-
-			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/PasswordVerify.php
-
-		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: src/User/Embed/Auth/PasswordVerify.php
-
-		-
-			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/SecretKey.php
 
 		-
 			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
@@ -9336,22 +9226,7 @@ parameters:
 			path: src/User/Embed/EmbedLoader.php
 
 		-
-			message: "#^PHPDoc tag @param for parameter \\$value with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/User/Embed/EmbeddedAuthAbstract.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\User\\\\Embed\\\\EmbeddedAuthAbstract\\:\\:\\$organizations with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/User/Embed/EmbeddedAuthAbstract.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Embed\\\\EmbeddedUserData\\:\\:getAuthenticator\\(\\) should return Gems\\\\User\\\\Embed\\\\EmbeddedAuthInterface\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/User/Embed/EmbeddedUserData.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Embed\\\\EmbeddedUserData\\:\\:getRedirector\\(\\) should return Gems\\\\User\\\\Embed\\\\RedirectInterface\\|null but return statement is missing\\.$#"
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: src/User/Embed/EmbeddedUserData.php
 
@@ -9484,11 +9359,6 @@ parameters:
 			message: "#^Method Gems\\\\User\\\\Form\\\\ResetRequestForm\\:\\:loadDefaultElements\\(\\) should return Gems\\\\User\\\\Form\\\\LoginForm but returns \\$this\\(Gems\\\\User\\\\Form\\\\ResetRequestForm\\)\\.$#"
 			count: 1
 			path: src/User/Form/ResetRequestForm.php
-
-		-
-			message: "#^Call to an undefined static method Gems\\\\Roles\\:\\:getInstance\\(\\)\\.$#"
-			count: 1
-			path: src/User/Group.php
 
 		-
 			message: "#^Left side of \\|\\| is always true\\.$#"
@@ -9692,11 +9562,6 @@ parameters:
 
 		-
 			message: "#^Method Gems\\\\User\\\\User\\:\\:getChangePasswordForm\\(\\) should return Gems\\\\Form but empty return statement found\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\User\\:\\:getEmbedderData\\(\\) should return Gems\\\\User\\\\Embed\\\\EmbeddedUserData but returns null\\.$#"
 			count: 1
 			path: src/User/User.php
 

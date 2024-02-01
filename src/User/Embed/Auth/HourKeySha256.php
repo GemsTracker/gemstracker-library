@@ -164,7 +164,7 @@ class HourKeySha256 extends EmbeddedAuthAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @return string Something to display as label.
      */
     public function getLabel(): string
     {
@@ -224,13 +224,13 @@ class HourKeySha256 extends EmbeddedAuthAbstract
         }
 
         $current = new DateTimeImmutable();
-        $current->sub(new DateInterval($this->getTimePeriodString($this->keyTimeValidRange)));
+        $current = $current->sub(new DateInterval($this->getTimePeriodString($this->keyTimeValidRange)));
         $addDate = new DateInterval($this->getTimePeriodString(1));
         $keys    = [];
 
         for ($i = -$this->keyTimeValidRange; $i <= $this->keyTimeValidRange; $i++) {
             $keys[$i] = $this->encryptKey(sprintf($keyStart, $current->format($this->keyTimeFormat)));
-            $current->add($addDate);
+            $current = $current->add($addDate);
         }
 
         if ($this->debug) {

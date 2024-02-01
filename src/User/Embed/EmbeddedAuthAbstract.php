@@ -32,7 +32,7 @@ abstract class EmbeddedAuthAbstract implements EmbeddedAuthInterface
 
     /**
      *
-     * @var mixed Organization or organizations for the user to try to login with
+     * @var array Organization or organizations for the user to try to login with
      */
     protected array $organizations;
 
@@ -73,7 +73,7 @@ abstract class EmbeddedAuthAbstract implements EmbeddedAuthInterface
 
     /**
      *
-     * @param mixed $value Organization or organizations for the user to try to login with
+     * @param array $value Organization or organizations for the user to try to login with
      */
     public function setOrganizations(array $value): void
     {

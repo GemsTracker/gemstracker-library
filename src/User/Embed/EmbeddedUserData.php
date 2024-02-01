@@ -62,6 +62,7 @@ class EmbeddedUserData extends \ArrayObject
         if ($authenticationClassName) {
             return $this->embedLoader->loadAuthenticator($authenticationClassName);
         }
+        return null;
     }
 
     /**
@@ -87,6 +88,7 @@ class EmbeddedUserData extends \ArrayObject
         if ($userLoader instanceof DeferredUserLoaderInterface) {
             return $userLoader->getDeferredUser($embeddedUser, $deferredLogin);
         }
+        return null;
     }
 
     /**
@@ -108,6 +110,7 @@ class EmbeddedUserData extends \ArrayObject
         if ($redirectorClassName) {
             return $this->embedLoader->loadRedirect($redirectorClassName);
         }
+        return null;
     }
 
     /**
