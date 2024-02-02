@@ -9,6 +9,7 @@ use Gems\Repository\OrganizationRepository;
 use Gems\Site\SiteUrl;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Laminas\Diactoros\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -17,6 +18,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class CurrentOrganizationMiddleware implements MiddlewareInterface
 {
     public const CURRENT_ORGANIZATION_ATTRIBUTE = 'current_organization';
+    public const CURRENT_ORGANIZATION_CODE_ATTRIBUTE = 'current_organization_code';
 
     public function __construct(
         protected OrganizationRepository $organizationRepository,
@@ -28,7 +30,13 @@ class CurrentOrganizationMiddleware implements MiddlewareInterface
     {
         $currentOrganizationId = $this->getCurrentOrganizationId($request);
 
-        $request = $request->withAttribute(static::CURRENT_ORGANIZATION_ATTRIBUTE, $currentOrganizationId);
+        $currentOrganization = $this->organizationRepository->getOrganization($currentOrganizationId);
+
+        /** @var ServerRequest $request */
+        $request = $request
+            ->withAttribute(self::CURRENT_ORGANIZATION_ATTRIBUTE, $currentOrganizationId)
+            ->withAttribute(self::CURRENT_ORGANIZATION_CODE_ATTRIBUTE, $currentOrganization->getCode() ?? '');
+
 
         /**
          * @var User|null $user
