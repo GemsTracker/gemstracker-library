@@ -42,7 +42,12 @@
         {% endif %}
         <div id="main-container" class="include-menu">
             <div id="main">
-                {% if breadcrumbs is defined %}{{ include('@layout/breadcrumbs.html.twig') }}{% endif %}
+                <div class="breadcrumb-wrapper" style="display: flex">
+                    <button id="menu-toggle">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    {% if breadcrumbs is defined %}{{ include('@layout/breadcrumbs.html.twig') }}{% endif %}
+                </div>
                 {% if statusMessenger is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
 
                 {% block content %}{% endblock %}
