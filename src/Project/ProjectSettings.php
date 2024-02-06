@@ -1181,11 +1181,11 @@ class ProjectSettings extends \ArrayObject
     /**
      * True when a response database with a table with one row for each token answer should exist.
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasResponseDatabase()
+    public function hasResponseDatabase(): bool
     {
-        return (boolean) isset($this['responses'], $this['responses']['adapter']) && $this['responses']['adapter'];
+        return isset($this['responseData']['enable']) && $this['responseData']['enabled'] === true;
     }
 
     /**

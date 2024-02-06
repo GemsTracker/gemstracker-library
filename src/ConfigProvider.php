@@ -25,6 +25,8 @@ use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Db\Migration\PatchAbstract;
 use Gems\Csrf\GemsCsrfGuardFactory;
+use Gems\Db\ResponseDbAdapter;
+use Gems\Db\ResponseDbAdapterFactory;
 use Gems\Error\ErrorLogEventListenerDelegatorFactory;
 use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\DoctrineOrmFactory;
@@ -166,6 +168,7 @@ class ConfigProvider
             'supplementary_privileges'   => $this->getSupplementaryPrivileges(),
             'routes'        => $routeSettings(),
             'ratelimit'     => $this->getRatelimitSettings(),
+            'responseData'  => $this->getResponseDataSettings(),
             'security'      => $this->getSecuritySettings(),
             'session'       => $this->getSession(),
             'sites'         => $this->getSitesSettings(),
@@ -332,6 +335,7 @@ class ConfigProvider
                 \PDO::class => PdoFactory::class,
                 Adapter::class => LaminasDbAdapterFactory::class,
                 'databaseAdapterGemsData' => LaminasDbAdapterFactory::class,
+                ResponseDbAdapter::class => ResponseDbAdapterFactory::class,
 
                 // Doctrine
                 Connection::class => DoctrineDbalFactory::class,
@@ -637,6 +641,14 @@ class ConfigProvider
                 'notAlphaNumCount' => 0,
                 'maxAge' => 365,
             ],
+        ];
+    }
+
+    protected function getResponseDataSettings(): array
+    {
+        return [
+            'enabled' => false,
+            // 'database' => 'gems_data',
         ];
     }
 
