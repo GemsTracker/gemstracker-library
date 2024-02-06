@@ -71,7 +71,8 @@ class TemplateRepository
 
         $options = [];
         foreach($templates as $templateFilename) {
-            $options[$templateFilename] = $this->getBaseTemplateName($templateFilename);
+            $baseName = $this->getBaseTemplateName($templateFilename);
+            $options[$baseName] = $baseName;
         }
 
         asort($options);
