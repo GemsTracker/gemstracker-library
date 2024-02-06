@@ -58,6 +58,8 @@ use Gems\Screens\ShowScreenInterface;
 use Gems\Screens\SubscribeScreenInterface;
 use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Session\PhpSessionPersistenceFactory;
+use Gems\Session\SessionCacheAdapter;
+use Gems\Session\SessionCacheAdapterFactory;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\SnippetsLoader\GemsSnippetResponderFactory;
 use Gems\Tracker\TrackEvent\RespondentChangedEventInterface;
@@ -338,6 +340,7 @@ class ConfigProvider
                 // Session
                 SessionMiddleware::class => SessionMiddlewareFactory::class,
                 CacheSessionPersistence::class => CacheSessionPersistenceFactory::class,
+                SessionCacheAdapter::class => SessionCacheAdapterFactory::class,
                 PhpSessionPersistence::class => PhpSessionPersistenceFactory::class,
                 FlashMessageMiddleware::class => fn () => new FlashMessageMiddleware(DecoratedFlashMessages::class),
                 CsrfMiddleware::class => CsrfMiddlewareFactory::class,
