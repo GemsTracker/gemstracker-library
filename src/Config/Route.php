@@ -304,6 +304,7 @@ class Route
                 'path' => '/organization/switch-ui',
                 'allowed_methods' => ['GET'],
                 'middleware' => [
+                    SecurityHeadersMiddleware::class,
                     ChangeOrganizationHandler::class,
                 ],
             ],
@@ -312,6 +313,7 @@ class Route
                 'path' => '/group/switch-ui',
                 'allowed_methods' => ['GET'],
                 'middleware' => [
+                    SecurityHeadersMiddleware::class,
                     ChangeGroupHandler::class,
                 ],
             ],
