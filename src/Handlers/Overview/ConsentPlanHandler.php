@@ -11,17 +11,21 @@
 
 namespace Gems\Handlers\Overview;
 
-use Gems\Html;
+use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelTableSnippet;
+use Laminas\Db\Sql\Expression;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Sql\Laminas\LaminasSelectModel;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -58,7 +62,7 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
     /**
      * The snippets used for the index action, before those in autofilter
      *
-     * @var mixed String or array of snippets name
+     * @var array String or array of snippets name
      */
     protected array $indexStartSnippets = [
         ContentTitleSnippet::class,
@@ -75,7 +79,7 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $showParameters = [
-        'browse'        => true,
+        'browse'        => false,
         'onEmpty'       => 'getOnEmptyText',
         'showMenu'      => false,
         'sortParamAsc'  => 'asrt',
@@ -83,21 +87,33 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
         ];
 
     /**
+     * The parameters used for the autofilter action.
+     *
+     * Disable row counting to speed up the page.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected array $autofilterParameters = [
+        'browse'    => false,
+    ];
+
+    /**
      * The snippets used for the show action.
      *
-     * @var mixed String or array of snippets name
+     * @var array String or array of snippets name
      */
     protected array $showSnippets = [
         ModelTableSnippet::class,
         CurrentSiblingsButtonRowSnippet::class,
-        ];
+    ];
 
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
-        protected \Zend_Db_Adapter_Abstract $db,
+        protected readonly MetaModelLoader $metaModelLoader,
+        protected readonly ResultFetcher $resultFetcher,
         protected ReceptionCodeRepository $receptionCodeRepository,
         protected RespondentRepository $respondentRepository,
     ) {
@@ -120,62 +136,70 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
         if ($detailed) {
             $year  = $this->_('Year');
             $month = $this->_('Month');
-            $fields[$year]  = new \Zend_Db_Expr("YEAR(gr2o_created)");
-            $fields[$month] = new \Zend_Db_Expr("MONTH(gr2o_created)");
+            $fields[$year]  = new Expression("YEAR(gr2o_created)");
+            $fields[$month] = new Expression("MONTH(gr2o_created)");
         }
 
         $consents = $this->respondentRepository->getRespondentConsents();
         $deleteds = $this->receptionCodeRepository->getRespondentDeletionCodes();
         $sql      = "SUM(CASE WHEN grc_success = 1 AND gr2o_consent = '%s' THEN 1 ELSE 0 END)";
         foreach ($consents as $consent => $translated) {
-            $fields[$translated] = new \Zend_Db_Expr(sprintf($sql, $consent));
+            $fields[$consent] = new Expression(sprintf($sql, $consent));
         }
-        $fields[$this->_('Total OK')] = new \Zend_Db_Expr("SUM(CASE WHEN grc_success = 1 THEN 1 ELSE 0 END)");
+        $fields[$this->_('Total OK')] = new Expression("SUM(CASE WHEN grc_success = 1 THEN 1 ELSE 0 END)");
 
         $sql      = "SUM(CASE WHEN gr2o_reception_code = '%s' THEN 1 ELSE 0 END)";
         foreach ($deleteds as $code => $translated) {
-            $fields[$translated] = new \Zend_Db_Expr(sprintf($sql, $code));
+            $fields[$code] = new Expression(sprintf($sql, $code));
         }
-        $fields[$this->_('Dropped')] = new \Zend_Db_Expr("SUM(CASE WHEN grc_success = 0 THEN 1 ELSE 0 END)");
-        $fields[$this->_('Total')]   = new \Zend_Db_Expr("COUNT(*)");
+        $fields[$this->_('Dropped')] = new Expression("SUM(CASE WHEN grc_success = 0 THEN 1 ELSE 0 END)");
+        $fields[$this->_('Total')]   = new Expression("COUNT(*)");
 
-        $select = $this->db->select();
+        $select = $this->resultFetcher->getSelect();
+        $select->from('gems__respondent2org')
+            ->columns($fields)
+            ->join('gems__reception_codes',
+                'gr2o_reception_code = grc_id_reception_code',
+                [])
+            ->join('gems__organizations',
+                'gr2o_id_organization = gor_id_organization',
+                ['gor_name', 'gor_id_organization']);
+        $select->group(['gor_name', 'gor_id_organization']);
 
-        $select->from('gems__respondent2org', $fields)
-                ->joinInner('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', array())
-                ->joinInner(
-                        'gems__organizations',
-                        'gr2o_id_organization = gor_id_organization',
-                        array('gor_name', 'gor_id_organization')
-                        );
-
-        $select->group(array('gor_name', 'gor_id_organization'));
         if ($detailed) {
-            $select->group(array($fields[$year], $fields[$month]));
+            $select->group([$fields[$year], $fields[$month]]);
         }
 
-        $model = new \MUtil\Model\SelectModel($select, 'consent-plan');
-        $model->setKeys(array('gor_id_organization'));
-        $model->resetOrder();
-        $model->set('gor_name', 'label', $this->_('Organization'));
+        $dataModel = $this->metaModelLoader->createModel(LaminasSelectModel::class, 'consent-plan', $select);
+        $metaModel = $dataModel->getMetaModel();
+        $metaModel->setKeys(['gor_id_organization']);
+        $metaModel->resetOrder();
+        $metaModel->set('gor_name', [
+            'label' => $this->_('Organization'),
+        ]);
         foreach ($fields as $field => $expr) {
             if ($field != $expr) {
-                $model->set($field, 'label', $field,
-                            'tdClass', 'rightAlign',
-                            'thClass', 'rightAlign');
+                $metaModel->set($field, [
+                    'label' => $field,
+                    'tdClass' => 'rightAlign',
+                    'thClass' => 'rightAlign'
+                ]);
             }
         }
         foreach ($deleteds as $code => $translated) {
-            $model->set($translated,
-                    'tdClass', 'rightAlign smallTime',
-                    'thClass', 'rightAlign smallTime');
+            $metaModel->set($code, [
+                'label' => $translated,
+                'tdClass' => 'rightAlign smallTime',
+                'thClass' => 'rightAlign smallTime',
+            ]);
         }
-        foreach (array($this->_('Total OK'), $this->_('Dropped'), $this->_('Total')) as $name) {
-            $model->set($name, 'itemDisplay', Html::create('strong'),
-                    'tableHeaderDisplay', Html::create('em'),
-                    'tdClass', 'rightAlign selectedColumn',
-                    'thClass', 'rightAlign selectedColumn'
-                    );
+        foreach ([$this->_('Total OK'), $this->_('Dropped'), $this->_('Total')] as $name) {
+            $metaModel->set($name, [
+                'itemDisplay' => Html::create('strong'),
+                'tableHeaderDisplay' => Html::create('em'),
+                'tdClass' => 'rightAlign selectedColumn',
+                'thClass' => 'rightAlign selectedColumn'
+            ]);
         }
 
         if ($detailed) {
@@ -184,11 +208,9 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
 
         // Only show organizations the user is allowed to see
         $allowed = $this->currentUser->getAllowedOrganizations();
-        $model->setFilter(array('gr2o_id_organization'=>array_keys($allowed)));
+        $this->autofilterParameters['extraFilter']['gr2o_id_organization'] = array_keys($allowed);
 
-        // \MUtil\Model::$verbose = true;
-
-        return $model;
+        return $dataModel;
     }
 
     /**

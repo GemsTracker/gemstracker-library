@@ -483,6 +483,12 @@ class Route
                     'export',
                     'show',
                 ],
+                parameterRoutes:                   [
+                    'show',
+                ],
+                parameters: [
+                    'id' => '\d+',
+                ],
                 genericExport: true,
             ),
         ];

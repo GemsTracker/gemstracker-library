@@ -1936,16 +1936,6 @@ parameters:
 			path: src/Handlers/Overview/ComplianceHandler.php
 
 		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\ConsentPlanHandler\\:\\:\\$indexStartSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Overview/ConsentPlanHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\ConsentPlanHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Overview/ConsentPlanHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\FieldOverviewHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Overview/FieldOverviewHandler.php
