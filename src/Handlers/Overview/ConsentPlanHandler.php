@@ -182,12 +182,19 @@ class ConsentPlanHandler extends GemsHandler
     public function prepareAction(SnippetActionInterface $action): void
     {
         parent::prepareAction($action);
+
+        $allowedOrganizations = array_keys($this->currentUserRepository->getCurrentUser()->getAllowedOrganizations());
+
         if ($action instanceof BrowseTableAction) {
-            $action->extraFilter['gr2o_id_organization'] = array_keys($this->currentUserRepository->getCurrentUser()->getAllowedOrganizations());
+            $action->extraFilter['gr2o_id_organization'] = $allowedOrganizations;
             $action->browse = false;
         }
         if ($action instanceof ShowAsTableAction) {
-            $action->extraFilter['gr2o_id_organization'] = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID);
+            $organizationId = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID);
+            if (!in_array($organizationId, $allowedOrganizations)) {
+                $organizationId = -1;
+            }
+            $action->extraFilter['gr2o_id_organization'] = $organizationId;
             $action->setSnippets($this->showSnippets);
             $action->menuShowRoutes = [];
         }
