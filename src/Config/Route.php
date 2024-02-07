@@ -64,7 +64,7 @@ class Route
         MenuMiddleware::class,
     ];
 
-    public static array $loggedOutMiddleware = [
+    public static array $maybeLoggedInMiddleware = [
         SecurityHeadersMiddleware::class,
         ClientIpMiddleware::class,
         SessionMiddleware::class,
@@ -121,7 +121,7 @@ class Route
 
 
             ...$this->routeGroup([
-                'middleware' => static::$loggedOutMiddleware,
+                'middleware' => static::$maybeLoggedInMiddleware,
             ], [
                 ...$this->getAskRoutes(),
                 ...$this->getContactRoutes(),
