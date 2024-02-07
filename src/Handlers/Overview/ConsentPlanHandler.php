@@ -119,6 +119,11 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
     ) {
         parent::__construct($responder, $translate, $cache);
         $this->currentUser = $currentUserRepository->getCurrentUser();
+
+        // Only show organizations the user is allowed to see.
+        $allowed = array_keys($this->currentUser->getAllowedOrganizations());
+        $this->autofilterParameters['extraFilter']['gr2o_id_organization'] = $allowed;
+        $this->showParameters['extraFilter']['gr2o_id_organization'] = $allowed;
     }
 
     /**
@@ -205,10 +210,6 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
         if ($detailed) {
             // $model->set($month, 'formatFunction', []);
         }
-
-        // Only show organizations the user is allowed to see
-        $allowed = $this->currentUser->getAllowedOrganizations();
-        $this->autofilterParameters['extraFilter']['gr2o_id_organization'] = array_keys($allowed);
 
         return $dataModel;
     }
