@@ -108,6 +108,7 @@ class LayoutRenderer
         $params += $defaultParams;
 
         $params['_config'] = [
+            'application_title' => $this->config['app']['name'] ?? null,
             'max_idle_time' => $this->config['session']['max_idle_time'],
             'auth_poll_interval' => $this->config['session']['auth_poll_interval'],
         ];
