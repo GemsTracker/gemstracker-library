@@ -23,6 +23,7 @@ class LayoutRenderer
         AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE,
         AuthenticationMiddleware::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE,
         CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE,
+        CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_CODE_ATTRIBUTE,
         CsrfMiddleware::GUARD_ATTRIBUTE,
     ];
 

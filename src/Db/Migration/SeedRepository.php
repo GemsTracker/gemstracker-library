@@ -14,6 +14,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\String\Str;
 
 class SeedRepository extends MigrationRepositoryAbstract
 {
@@ -136,6 +137,7 @@ class SeedRepository extends MigrationRepositoryAbstract
 
         foreach($seedClasses as $seedClassInfo) {
             $seedClassName = $seedClassInfo['class'];
+            $id = Str::kebab($seedClassName);
             $seedClass = $this->overloader->create($seedClassName);
             $description = null;
             if (!$seedClass instanceof SeedInterface) {
@@ -145,6 +147,7 @@ class SeedRepository extends MigrationRepositoryAbstract
             $reflectionClass = new \ReflectionClass($seedClassName);
 
             $seed = [
+                'id' => $id,
                 'name' => $seedClassName,
                 'module' => $seedClassInfo['module'] ?? 'gems',
                 'type' => 'seed',
@@ -156,7 +159,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 'db' => $seedClassInfo['db'],
             ];
 
-            $seeds[$seedClassName] = $seed;
+            $seeds[$id] = $seed;
         }
         return $seeds;
     }
@@ -178,9 +181,11 @@ class SeedRepository extends MigrationRepositoryAbstract
             foreach ($files as $file) {
                 $filenameParts = explode('.', $file->getBaseName());
                 $name = $filenameParts[0];
+                $id = Str::kebab($name);
                 $data = $this->getSeedDataFromFile($file);
                 $description = $data['description'] ?? null;
                 $seed = [
+                    'id' => $id,
                     'name' => $filenameParts[0],
                     'module' => $directory['module'] ?? 'gems',
                     'type' => 'seed',
@@ -194,7 +199,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 if (count($filenameParts) === 3 && is_numeric($filenameParts[1])) {
                     $seed['order'] = (int)$filenameParts[1];
                 }
-                $seeds[$name] = $seed;
+                $seeds[$id] = $seed;
             }
         }
 

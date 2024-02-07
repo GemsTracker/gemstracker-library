@@ -24,9 +24,11 @@ use Gems\Repository\RespondentRepository;
 use Gems\Repository\StaffRepository;
 use Gems\SnippetsActions\ApplyLegacyActionInterface;
 use Gems\SnippetsActions\ApplyLegacyActionTrait;
+use Gems\User\Filter\PhoneNumberFilter;
 use Gems\User\GemsUserIdGenerator;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
+use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
 use Gems\Validator\OneOf;
@@ -108,6 +110,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         protected readonly StaffRepository $staffRepository,
         protected readonly Translated $translatedUtil,
         protected readonly GemsUserIdGenerator $gemsUserIdGenerator,
+        protected readonly array $config,
     )
     {
         $this->currentUser    = $currentUserRepository->getCurrentUser();
@@ -334,10 +337,22 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $this->localizedUtil->getCountries(),
         ]);
 
-        $this->setIfExists('grs_phone_1');
-        $this->setIfExists('grs_phone_2');
-        $this->setIfExists('grs_phone_3');
-        $this->setIfExists('grs_phone_4');
+        $this->setIfExists('grs_phone_1', [
+            'validator' => new PhoneNumberValidator($this->config),
+        ]);
+        $this->setIfExists('grs_phone_2', [
+            'validator' => new PhoneNumberValidator($this->config),
+        ]);
+        $this->setIfExists('grs_phone_3', [
+            'validator' => new PhoneNumberValidator($this->config),
+        ]);
+        $this->setIfExists('grs_phone_4', [
+            'validator' => new PhoneNumberValidator($this->config),
+        ]);
+        $this->metaModel->setOnSave('grs_phone_1', (new PhoneNumberFilter($this->config))->filter(...));
+        $this->metaModel->setOnSave('grs_phone_2', (new PhoneNumberFilter($this->config))->filter(...));
+        $this->metaModel->setOnSave('grs_phone_3', (new PhoneNumberFilter($this->config))->filter(...));
+        $this->metaModel->setOnSave('grs_phone_4', (new PhoneNumberFilter($this->config))->filter(...));
 
         $this->currentGroup = $this->_('Settings');
         $this->setIfExists('grs_iso_lang', [

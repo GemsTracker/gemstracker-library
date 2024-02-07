@@ -4,7 +4,7 @@ namespace Gems\Config\Db\Patches\Upgrade2x;
 
 use Gems\Db\Migration\PatchAbstract;
 
-class GemsEventClassNamesV2Patch extends PatchAbstract
+class GemsEventClassNamesV3Patch extends PatchAbstract
 {
     private array $eventColumns = [
         [ 'gems__rounds', 'gro_changed_event' ],
@@ -16,6 +16,7 @@ class GemsEventClassNamesV2Patch extends PatchAbstract
         [ 'gems__tracks', 'gtr_calculation_event' ],
         [ 'gems__tracks', 'gtr_completed_event' ],
         [ 'gems__tracks', 'gtr_fieldupdate_event' ],
+        [ 'gems__conditions', 'gcon_class' ],
     ];
 
     public function getDescription(): string|null

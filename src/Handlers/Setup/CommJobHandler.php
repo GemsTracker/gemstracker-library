@@ -99,7 +99,7 @@ class CommJobHandler extends BrowseChangeUsageHandler
     /**
      * The snippets used for the show action
      *
-     * @var mixed String or array of snippets name
+     * @var array of snippet names
      */
     protected array $showSnippets = [
         ContentTitleSnippet::class,
@@ -145,7 +145,7 @@ class CommJobHandler extends BrowseChangeUsageHandler
 
         $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
 
-        if (!$batch->isLoaded() && !is_null(($jobId))) {
+        if (!$batch->isLoaded() && $jobId > 0) {
             $batch->addMessage(sprintf(
                     $this->_('Starting single message job %s'),
                     $jobId

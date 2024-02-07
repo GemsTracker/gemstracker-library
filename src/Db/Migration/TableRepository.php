@@ -6,6 +6,7 @@ use Gems\Db\ResultFetcher;
 use Gems\Event\Application\CreateTableMigrationEvent;
 use Laminas\Db\Adapter\Adapter;
 use Symfony\Component\Finder\Finder;
+use Zalt\String\Str;
 
 
 class TableRepository extends MigrationRepositoryAbstract
@@ -102,7 +103,9 @@ class TableRepository extends MigrationRepositoryAbstract
                     'VIEW' => 'view',
                     default => 'table',
                 };
+                $id = Str::kebab($tableName);
                 $table = [
+                    'id' => $id,
                     'name' => $tableName,
                     'module' => $this->getGroupName($tableName),
                     'type' => $tableType,
@@ -114,7 +117,7 @@ class TableRepository extends MigrationRepositoryAbstract
                     'db' => $dbName,
                 ];
 
-                $tables[$tableName] = $table;
+                $tables[$id] = $table;
             }
         }
         return $tables;
@@ -164,6 +167,7 @@ class TableRepository extends MigrationRepositoryAbstract
             foreach ($files as $file) {
                 $filenameParts = explode('.', $file->getFilenameWithoutExtension());
                 $name = $filenameParts[0];
+                $id = Str::kebab($name);
                 $fileContent = $file->getContents();
                 $firstRow = substr($fileContent, 0, strpos($fileContent, "\n"));
                 $description = null;
@@ -171,7 +175,9 @@ class TableRepository extends MigrationRepositoryAbstract
                     $description = trim(substr($firstRow, 2));
                 }
 
+
                 $table = [
+                    'id' => $id,
                     'name' => $name,
                     'module' => $this->getGroupName($name),
                     'type' => 'table',
@@ -187,7 +193,7 @@ class TableRepository extends MigrationRepositoryAbstract
                 if (count($filenameParts) === 2 && is_numeric($filenameParts[1])) {
                     $table['order'] = (int)$filenameParts[1];
                 }
-                $tables[$name] = $table;
+                $tables[$id] = $table;
             }
         }
 
