@@ -305,6 +305,7 @@ class Route
                 'allowed_methods' => ['GET'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     ChangeOrganizationHandler::class,
                 ],
             ],
@@ -314,6 +315,7 @@ class Route
                 'allowed_methods' => ['GET'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     ChangeGroupHandler::class,
                 ],
             ],
