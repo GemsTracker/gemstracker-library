@@ -12,20 +12,26 @@
 namespace Gems\Handlers\Overview;
 
 use Gems\Db\ResultFetcher;
-use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Handlers\GemsHandler;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Model\MetaModelLoader;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Repository\RespondentRepository;
-use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelTableSnippet;
+use Gems\SnippetsActions\Browse\BrowseFilteredAction;
+use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Show\ShowAsTableAction;
 use Laminas\Db\Sql\Expression;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\MetaModellerInterface;
+use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Sql\Laminas\LaminasSelectModel;
+use Zalt\SnippetsActions\Browse\BrowseTableAction;
+use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -37,65 +43,16 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
+class ConsentPlanHandler extends GemsHandler
 {
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
 
-    /**
-     * The parameters used for the index action minus those in autofilter.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected array $indexParameters = [
-        'addCurrentSiblings' => false,
-        ];
-
-    /**
-     * The snippets used for the index action, before those in autofilter
-     *
-     * @var array String or array of snippets name
-     */
-    protected array $indexStartSnippets = [
-        ContentTitleSnippet::class,
-        ];
-
-    /**
-     * The parameters used for the show action
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected array $showParameters = [
-        'browse'        => false,
-        'onEmpty'       => 'getOnEmptyText',
-        'showMenu'      => false,
-        'sortParamAsc'  => 'asrt',
-        'sortParamDesc' => 'dsrt',
-        ];
-
-    /**
-     * The parameters used for the autofilter action.
-     *
-     * Disable row counting to speed up the page.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected array $autofilterParameters = [
-        'browse'    => false,
+    public static $actions = [
+        'autofilter' => BrowseFilteredAction::class,
+        'index'      => BrowseSearchAction::class,
+        'show'       => ShowAsTableAction::class,
     ];
+
+    protected DataReaderInterface|null $model = null;
 
     /**
      * The snippets used for the show action.
@@ -109,36 +66,25 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function __construct(
         SnippetResponderInterface $responder,
+        MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        CurrentUserRepository $currentUserRepository,
-        protected readonly MetaModelLoader $metaModelLoader,
         protected readonly ResultFetcher $resultFetcher,
         protected ReceptionCodeRepository $receptionCodeRepository,
         protected RespondentRepository $respondentRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($responder, $translate, $cache);
-        $this->currentUser = $currentUserRepository->getCurrentUser();
-
-        // Only show organizations the user is allowed to see.
-        $allowed = array_keys($this->currentUser->getAllowedOrganizations());
-        $this->autofilterParameters['extraFilter']['gr2o_id_organization'] = $allowed;
-        $this->showParameters['extraFilter']['gr2o_id_organization'] = $allowed;
+        parent::__construct($responder, $metaModelLoader, $translate, $cache);
     }
 
     /**
-     * @inheritdoc 
+     * @inheritdoc
      */
-    protected function createModel($detailed, $action): DataReaderInterface
+    protected function createModel(SnippetActionInterface $action): DataReaderInterface
     {
-        // Export all
-        if ('export' === $action) {
-            $detailed = true;
-        }
-
         $fixed = ['gr2o_id_organization'];
         $fields = array_combine($fixed, $fixed);
-        if ($detailed) {
+        if ($action->isDetailed()) {
             $year  = $this->_('Year');
             $month = $this->_('Month');
             $fields[$year]  = new Expression("YEAR(gr2o_created)");
@@ -151,7 +97,7 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
         foreach ($consents as $consent => $translated) {
             $fields[$consent] = new Expression(sprintf($sql, $consent));
         }
-        $fields[$this->_('Total OK')] = new Expression("SUM(CASE WHEN grc_success = 1 THEN 1 ELSE 0 END)");
+        $fields[$this->_('Totaal OK')] = new Expression("SUM(CASE WHEN grc_success = 1 THEN 1 ELSE 0 END)");
 
         $sql      = "SUM(CASE WHEN gr2o_reception_code = '%s' THEN 1 ELSE 0 END)";
         foreach ($deleteds as $code => $translated) {
@@ -171,13 +117,13 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
                 ['gor_name', 'gor_id_organization']);
         $select->group(['gor_name', 'gor_id_organization']);
 
-        if ($detailed) {
+        if ($action->isDetailed()) {
             $select->group([$fields[$year], $fields[$month]]);
         }
 
         $dataModel = $this->metaModelLoader->createModel(LaminasSelectModel::class, 'consent-plan', $select);
         $metaModel = $dataModel->getMetaModel();
-        $metaModel->setKeys(['gor_id_organization']);
+        $metaModel->setKeys(['gr2o_id_organization']);
         $metaModel->resetOrder();
         $metaModel->set('gor_name', [
             'label' => $this->_('Organization'),
@@ -207,11 +153,19 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
             ]);
         }
 
-        if ($detailed) {
+        if ($action->isDetailed()) {
             // $model->set($month, 'formatFunction', []);
         }
 
         return $dataModel;
+    }
+
+    protected function getModel(SnippetActionInterface $action): MetaModellerInterface
+    {
+        if (!$this->model) {
+            $this->model = $this->createModel($action);
+        }
+        return $this->model;
     }
 
     /**
@@ -223,6 +177,20 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
     public function getTopic($count = 1): string
     {
         return $this->_('consent per organization');
+    }
+
+    public function prepareAction(SnippetActionInterface $action): void
+    {
+        parent::prepareAction($action);
+        if ($action instanceof BrowseTableAction) {
+            $action->extraFilter['gr2o_id_organization'] = array_keys($this->currentUserRepository->getCurrentUser()->getAllowedOrganizations());
+            $action->browse = false;
+        }
+        if ($action instanceof ShowAsTableAction) {
+            $action->extraFilter['gr2o_id_organization'] = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID);
+            $action->setSnippets($this->showSnippets);
+            $action->menuShowRoutes = [];
+        }
     }
 
 }
