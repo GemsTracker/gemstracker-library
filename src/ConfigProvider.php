@@ -649,6 +649,11 @@ class ConfigProvider
         return [
             'enabled' => false,
             // 'database' => 'gems_data',
+            'migrations' => [
+                'tables' => [
+                    __DIR__ . '/../configs/db_response_data/tables',
+                ],
+            ],
         ];
     }
 
