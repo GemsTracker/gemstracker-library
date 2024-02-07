@@ -82,6 +82,24 @@ class Route
         MenuMiddleware::class,
     ];
 
+    public static array $loggedOutMiddleware = [
+        SecurityHeadersMiddleware::class,
+        ClientIpMiddleware::class,
+        SessionMiddleware::class,
+        FlashMessageMiddleware::class,
+        LocaleMiddleware::class,
+        SiteGateMiddleware::class,
+        CsrfMiddleware::class,
+        HandlerCsrfMiddleware::class,
+        NotAuthenticatedMiddleware::class,
+        MaintenanceModeMiddleware::class,
+        RateLimitMiddleware::class,
+        AclMiddleware::class,
+        CurrentOrganizationMiddleware::class,
+        AuditLogMiddleware::class,
+        MenuMiddleware::class,
+    ];
+
     public static array $idlePollMiddleware = [
         SecurityHeadersMiddleware::class,
         ClientIpMiddleware::class,
@@ -103,6 +121,12 @@ class Route
     {
         return [
             ...$this->getCustomMiddlewareRoutes(),
+
+            ...$this->routeGroup([
+                'middleware' => static::$loggedOutMiddleware,
+            ], [
+                ...$this->getLoggedOutRoutes(),
+            ]),
 
             ...$this->routeGroup([
                 'middleware' => static::$loggedInMiddleware,
@@ -145,30 +169,6 @@ class Route
     public function getCustomMiddlewareRoutes(): array
     {
         return [
-            [
-                'name' => 'auth.login',
-                'path' => '/login',
-                'allowed_methods' => ['GET', 'POST'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    LocaleMiddleware::class,
-                    SiteGateMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    NotAuthenticatedMiddleware::class,
-                    MaintenanceModeMiddleware::class,
-                    RateLimitMiddleware::class,
-                    AclMiddleware::class,
-                    CurrentOrganizationMiddleware::class,
-                    AuditLogMiddleware::class,
-                    MenuMiddleware::class,
-                    LoginHandler::class,
-                ],
-            ],
-
             [
                 'name' => 'tfa.login',
                 'path' => '/tfa',
@@ -237,25 +237,25 @@ class Route
                     EmbedLoginHandler::class,
                 ],
             ],
+        ];
+    }
+
+    public function getLoggedOutRoutes(): array
+    {
+        return [
+            [
+                'name' => 'auth.login',
+                'path' => '/login',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    LoginHandler::class,
+                ],
+            ],
             [
                 'name' => 'language.change',
                 'path' => '/change-language/{language:[a-zA-Z0-9]+}',
                 'allowed_methods' => ['GET'],
                 'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    LocaleMiddleware::class,
-                    SiteGateMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    MaintenanceModeMiddleware::class,
-                    RateLimitMiddleware::class,
-                    AclMiddleware::class,
-                    CurrentOrganizationMiddleware::class,
-                    AuditLogMiddleware::class,
-                    // MenuMiddleware::class,
                     ChangeLanguageHandler::class,
                 ],
             ],
@@ -264,20 +264,6 @@ class Route
                 'path' => '/info',
                 'allowed_methods' => ['GET'],
                 'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    LocaleMiddleware::class,
-                    SiteGateMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    MaintenanceModeMiddleware::class,
-                    RateLimitMiddleware::class,
-                    AclMiddleware::class,
-                    CurrentOrganizationMiddleware::class,
-                    AuditLogMiddleware::class,
-                    MenuMiddleware::class,
                     InfoHandler::class,
                 ],
             ],
@@ -286,44 +272,14 @@ class Route
                 'path' => '/password-reset',
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    LocaleMiddleware::class,
-                    SiteGateMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    NotAuthenticatedMiddleware::class,
-                    MaintenanceModeMiddleware::class,
-                    RateLimitMiddleware::class,
-                    AclMiddleware::class,
-                    CurrentOrganizationMiddleware::class,
-                    AuditLogMiddleware::class,
-                    MenuMiddleware::class,
                     RequestPasswordResetHandler::class,
-                    ],
+                ],
             ],
             [
                 'name' => 'auth.password-reset.change',
                 'path' => '/index/resetpassword/key/{key:[a-zA-Z0-9]+}',
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    LocaleMiddleware::class,
-                    SiteGateMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    NotAuthenticatedMiddleware::class,
-                    MaintenanceModeMiddleware::class,
-                    RateLimitMiddleware::class,
-                    AclMiddleware::class,
-                    CurrentOrganizationMiddleware::class,
-                    AuditLogMiddleware::class,
-                    MenuMiddleware::class,
                     ResetPasswordChangeHandler::class,
                 ],
             ],
