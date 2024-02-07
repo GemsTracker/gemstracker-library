@@ -44,7 +44,7 @@ class ChangeGroupHandler implements RequestHandlerInterface
             return $serverParams['HTTP_REFERER'];
         }
 
-        return $this->urlHelper->generate('/');
+        return $this->urlHelper->generate('home');
     }
 
     private function setCurrentUserGroup(ServerRequestInterface $request, int $groupId): void
