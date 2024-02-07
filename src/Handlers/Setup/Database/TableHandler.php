@@ -25,7 +25,7 @@ class TableHandler extends MigrationHandlerAbstract
     ];
 
     public static array $parameters = [
-      'name' => '[a-zA-Z0-9-_]+',
+      'id' => '[a-zA-Z0-9-_]+',
     ];
 
     public function __construct(

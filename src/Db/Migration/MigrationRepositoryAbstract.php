@@ -71,8 +71,13 @@ abstract class MigrationRepositoryAbstract
             'maxlength' => 40,
             'type' => MetaModelInterface::TYPE_STRING,
         ]);
-        $metaModel->set('name', [
+
+        $metaModel->set('id', [
             'key' => true,
+            'maxlength' => 40,
+            'type' => MetaModelInterface::TYPE_STRING
+        ]);
+        $metaModel->set('name', [
             'maxlength' => 40,
             'type' => MetaModelInterface::TYPE_STRING
         ]);
