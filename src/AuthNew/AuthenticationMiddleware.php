@@ -174,6 +174,6 @@ class AuthenticationMiddleware implements MiddlewareInterface
             }
         }
 
-        return new RedirectResponse($urlHelper->generate('track-builder.source.index')); // TODO: Which route?
+        return new RedirectResponse($urlHelper->generate('respondent.index'));
     }
 }
