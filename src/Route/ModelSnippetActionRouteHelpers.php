@@ -133,7 +133,11 @@ trait ModelSnippetActionRouteHelpers
             ];
 
             if ($basePrivilege !== false) {
-                $route['options']['privilege'] = $basePrivilege . '.' . $pageName;
+                if ('autofilter' === $pageName) {
+                    $route['options']['privilege'] = $basePrivilege . '.index';
+                } else {
+                    $route['options']['privilege'] = $basePrivilege . '.' . $pageName;
+                }
             }
 
             if ($pageName === 'index' || $pageName === 'show') {
@@ -206,6 +210,8 @@ trait ModelSnippetActionRouteHelpers
         foreach ($controllerClass::$actions as $pageName => $actionClass) {
             $interfaces = class_implements($actionClass) ?? [];
 
+            $pagePrivilege = 'autofilter' == $pageName ? 'index' : $pageName;
+
             $route = [
                 'allowed_methods' => ['GET'],
                 'middleware'      => $middleware,
@@ -213,7 +219,7 @@ trait ModelSnippetActionRouteHelpers
                 'options' => [
                     'action'      => $pageName,
                     'controller'  => $controllerClass,
-                    'privilege'   => $basePrivilege . '.' . $pageName,
+                    'privilege'   => $basePrivilege . '.' . $pagePrivilege,
                 ],
                 'params'          => $parentParameters,
                 'path'            => $basePath . '/' . $pageName,
