@@ -102,7 +102,7 @@ class Route
     public function __invoke(): array
     {
         return [
-            ...$this->getLoggedOutRoutes(),
+            ...$this->getCustomMiddlewareRoutes(),
 
             ...$this->routeGroup([
                 'middleware' => static::$loggedInMiddleware,
@@ -142,7 +142,7 @@ class Route
         return $apiRoutes();
     }
 
-    public function getLoggedOutRoutes(): array
+    public function getCustomMiddlewareRoutes(): array
     {
         return [
             [
