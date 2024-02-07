@@ -82,6 +82,23 @@ class Route
         MenuMiddleware::class,
     ];
 
+    public static array $idlePollMiddleware = [
+        SecurityHeadersMiddleware::class,
+        ClientIpMiddleware::class,
+        SessionMiddleware::class,
+        FlashMessageMiddleware::class,
+        LocaleMiddleware::class,
+        SiteGateMiddleware::class,
+        CsrfMiddleware::class,
+        HandlerCsrfMiddleware::class,
+        // MaintenanceModeMiddleware::class,
+        RateLimitMiddleware::class,
+        AclMiddleware::class,
+        CurrentOrganizationMiddleware::class,
+        // AuditLogMiddleware::class,
+        // MenuMiddleware::class,
+    ];
+
     public function __invoke(): array
     {
         return [
@@ -109,6 +126,12 @@ class Route
                 ...$this->getAskRoutes(),
                 ...$this->getContactRoutes(),
                 ...$this->getParticipateRoutes(),
+            ]),
+
+            ...$this->routeGroup([
+                'middleware' => static::$idlePollMiddleware,
+            ], [
+                ...$this->getIdlePollRoutes(),
             ]),
         ];
     }
@@ -215,50 +238,6 @@ class Route
                 ],
             ],
             [
-                'name' => 'auth.idle.poll',
-                'path' => '/auth/idle-poll',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    LocaleMiddleware::class,
-                    SiteGateMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    // MaintenanceModeMiddleware::class,
-                    RateLimitMiddleware::class,
-                    AclMiddleware::class,
-                    CurrentOrganizationMiddleware::class,
-                    // AuditLogMiddleware::class,
-                    // MenuMiddleware::class,
-                    AuthIdleCheckHandler::class,
-                ],
-            ],
-            [
-                'name' => 'auth.idle.alive',
-                'path' => '/auth/idle-alive',
-                'allowed_methods' => ['POST'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    LocaleMiddleware::class,
-                    SiteGateMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    // MaintenanceModeMiddleware::class,
-                    RateLimitMiddleware::class,
-                    AclMiddleware::class,
-                    CurrentOrganizationMiddleware::class,
-                    // AuditLogMiddleware::class,
-                    // MenuMiddleware::class,
-                    AuthIdleCheckHandler::class,
-                ],
-            ],
-            [
                 'name' => 'language.change',
                 'path' => '/change-language/{language:[a-zA-Z0-9]+}',
                 'allowed_methods' => ['GET'],
@@ -346,6 +325,28 @@ class Route
                     AuditLogMiddleware::class,
                     MenuMiddleware::class,
                     ResetPasswordChangeHandler::class,
+                ],
+            ],
+        ];
+    }
+
+    public function getIdlePollRoutes(): array
+    {
+        return [
+            [
+                'name' => 'auth.idle.poll',
+                'path' => '/auth/idle-poll',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    AuthIdleCheckHandler::class,
+                ],
+            ],
+            [
+                'name' => 'auth.idle.alive',
+                'path' => '/auth/idle-alive',
+                'allowed_methods' => ['POST'],
+                'middleware' => [
+                    AuthIdleCheckHandler::class,
                 ],
             ],
         ];
