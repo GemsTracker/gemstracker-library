@@ -125,8 +125,8 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    LocaleMiddleware::class,
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,
                     HandlerCsrfMiddleware::class,
@@ -146,8 +146,8 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    LocaleMiddleware::class,
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,
                     HandlerCsrfMiddleware::class,
@@ -163,8 +163,8 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    LocaleMiddleware::class,
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,
                     HandlerCsrfMiddleware::class,
@@ -181,8 +181,8 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    LocaleMiddleware::class,
                     FlashMessageMiddleware::class,
                     RateLimitMiddleware::class,
                     EmbedLoginHandler::class,
@@ -195,8 +195,8 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    LocaleMiddleware::class,
                     FlashMessageMiddleware::class,
                     RateLimitMiddleware::class,
                     AuthIdleCheckHandler::class,
@@ -209,8 +209,8 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    LocaleMiddleware::class,
                     FlashMessageMiddleware::class,
                     RateLimitMiddleware::class,
                     AuthIdleCheckHandler::class,
@@ -223,8 +223,8 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    LocaleMiddleware::class,
                     RateLimitMiddleware::class,
                     ChangeLanguageHandler::class,
                 ],
@@ -250,8 +250,8 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    LocaleMiddleware::class,
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,
                     HandlerCsrfMiddleware::class,
@@ -270,8 +270,8 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    LocaleMiddleware::class,
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,
                     HandlerCsrfMiddleware::class,
@@ -293,6 +293,7 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
+                    SessionMiddleware::class,
                     LocaleMiddleware::class,
                     HandlerCsrfMiddleware::class,
                     RateLimitMiddleware::class,
@@ -306,6 +307,7 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
+                    SessionMiddleware::class,
                     ChangeOrganizationHandler::class,
                 ],
             ],
@@ -316,6 +318,7 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     ClientIpMiddleware::class,
+                    SessionMiddleware::class,
                     ChangeGroupHandler::class,
                 ],
             ],
