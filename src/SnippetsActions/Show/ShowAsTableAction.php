@@ -33,4 +33,9 @@ class ShowAsTableAction extends BrowseFilteredAction
     public array $menuEditRoutes = [];
 
     public array $menuShowRoutes = [];
+
+    public function isDetailed() : bool
+    {
+        return true;
+    }
 }
