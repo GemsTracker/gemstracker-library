@@ -42,7 +42,7 @@ class VueSnippetAbstract extends SnippetAbstract
 
     protected function getApiUrl(): string
     {
-        return $this->urlHelper->getBasePath() . 'api';
+        return rtrim($this->urlHelper->getBasePath(), '/')  . '/' . 'api';
     }
 
     public function getHtmlOutput()
