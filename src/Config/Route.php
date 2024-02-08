@@ -150,6 +150,7 @@ class Route
                 ...$this->getAskRoutes(),
                 ...$this->getContactRoutes(),
                 ...$this->getParticipateRoutes(),
+                ...$this->getAlwaysAvailableRoutes(),
             ]),
 
             ...$this->routeGroup([
@@ -157,6 +158,28 @@ class Route
             ], [
                 ...$this->getIdlePollRoutes(),
             ]),
+        ];
+    }
+
+    public function getAlwaysAvailableRoutes(): array
+    {
+        return [
+            [
+                'name' => 'language.change',
+                'path' => '/change-language/{language:[a-zA-Z0-9]+}',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    ChangeLanguageHandler::class,
+                ],
+            ],
+            [
+                'name' => 'info.show',
+                'path' => '/info',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    InfoHandler::class,
+                ],
+            ],
         ];
     }
 
@@ -249,22 +272,6 @@ class Route
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
                     LoginHandler::class,
-                ],
-            ],
-            [
-                'name' => 'language.change',
-                'path' => '/change-language/{language:[a-zA-Z0-9]+}',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    ChangeLanguageHandler::class,
-                ],
-            ],
-            [
-                'name' => 'info.show',
-                'path' => '/info',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    InfoHandler::class,
                 ],
             ],
             [
