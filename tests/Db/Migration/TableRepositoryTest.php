@@ -109,6 +109,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
 
         $expected = [
             'test__other_table' => [
+                'id' => 'test__other_table',
                 'name' => 'test__other_table',
                 'module' => 'test',
                 'type' => 'table',
@@ -122,6 +123,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
                 'status' => 'new',
             ],
             'test__table' => [
+                'id' => 'test__table',
                 'name' => 'test__table',
                 'module' => 'test',
                 'type' => 'table',
@@ -184,6 +186,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
 
         $expected = [
             'test__other_table' => [
+                'id' => 'test__other_table',
                 'name' => 'test__other_table',
                 'module' => 'test',
                 'type' => 'table',
@@ -196,6 +199,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
                 'db' => 'gems',
             ],
             'test__table' => [
+                'id' => 'test__table',
                 'name' => 'test__table',
                 'module' => 'test',
                 'type' => 'table',

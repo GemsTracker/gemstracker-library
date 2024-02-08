@@ -89,7 +89,9 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
         $patchInfo = $repository->getPatchesFromClasses();
 
         $expected = [
-            PhpPatch::class => [
+
+            'gems-test-test-data-db-patch-repository-php-patch' => [
+                'id' => 'gems-test-test-data-db-patch-repository-php-patch',
                 'name' => PhpPatch::class,
                 'type' => 'patch',
                 'description' => 'add created field to test table',
@@ -123,7 +125,8 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
         $data = file_get_contents(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.up.sql');
 
         $expected = [
-            'somePatch' => [
+            'some-patch' => [
+                'id' => 'some-patch',
                 'name' => 'somePatch',
                 'module' => 'gems',
                 'type' => 'patch',
@@ -152,7 +155,8 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
         $data = file_get_contents(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.up.sql');
 
         $expected = [
-            PhpPatch::class => [
+            'gems-test-test-data-db-patch-repository-php-patch' => [
+                'id' => 'gems-test-test-data-db-patch-repository-php-patch',
                 'name' => PhpPatch::class,
                 'type' => 'patch',
                 'description' => 'add created field to test table',
@@ -168,7 +172,8 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'source' => 'class',
                 'class' => new PhpPatch,
             ],
-            'somePatch' => [
+            'some-patch' => [
+                'id' => 'some-patch',
                 'name' => 'somePatch',
                 'module' => 'gems',
                 'type' => 'patch',
