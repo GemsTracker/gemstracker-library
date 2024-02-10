@@ -99,7 +99,7 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
         $newRoundCount = $oldRoundCount + 1;
 
         $newRoundDescription = substr($oldRoundDescription, 0, -strlen((string) $oldRoundCount)) . $newRoundCount;
-        $newOrder            = $token->getRoundOrder();
+        $newOrder            = $token->getRoundOrder() + 9;
         $respondentTrack     = $token->getRespondentTrack();
         $userId              = $this->currentUser->getUserId();
 

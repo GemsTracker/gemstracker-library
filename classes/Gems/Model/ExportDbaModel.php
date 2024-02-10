@@ -18,7 +18,7 @@ class ExportDbaModel extends \Gems_Model_DbaModel
      *
      * @var array
      */
-    protected $includeGroups = ['gems'];
+    protected $includeGroups = ['gems', 'gemsfaq'];
 
     /**
      * @var array List of database tables that do not contain respondent data
@@ -32,29 +32,46 @@ class ExportDbaModel extends \Gems_Model_DbaModel
         'gems__appointment_filters',
         'gems__chart_config',
         'gems__comm_jobs',
+        'gems__comm_messengers',
         'gems__comm_templates',
         'gems__comm_template_translations',
         'gems__conditions',
         'gems__consents',
         'gems__groups',
+        'gems__json_configs',
         'gems__locations',
         'gems__log_actions',
         'gems__log_setup',
         'gems__mail_codes',
+        'gems__mail_servers',
         'gems__oauth_scope',
+        'gems__openrosaforms',
         'gems__organizations',
         'gems__patches',
         'gems__patch_levels',
+        'gems__prediction_model_mapping',
+        'gems__prediction_models',
         'gems__reception_codes',
         'gems__roles',
         'gems__rounds',
+        'gems__sites',
+        'gems__staff',
         'gems__sources',
         'gems__surveys',
+        'gems__survey_environment_translations',
         'gems__survey_questions',
         'gems__survey_question_options',
+        'gems__systemuser_setup',
         'gems__tracks',
         'gems__track_appointments',
         'gems__track_fields',
+        'gems__translations',
+        'gems__user_ids',
+        'gems__user_logins',
+        'gems__user_passwords',
+        'gemsfaq__groups',
+        'gemsfaq__pages',
+        'gemsfaq__items',
     ];
 
     /**
