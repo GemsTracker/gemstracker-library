@@ -529,6 +529,18 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         return $this->batch;
     }
 
+    protected function getFormFor($step)
+    {
+        $this->_form = parent::getFormFor($step);
+
+        // Use Csrf when enabled
+        if ($this->csrfName && $this->csrfToken) {
+            $this->addCsrf($this->csrfName, $this->csrfToken);
+        }
+
+        return $this->_form;
+    }
+
     public function getResponse(): ?ResponseInterface
     {
         return $this->response;

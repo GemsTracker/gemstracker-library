@@ -105,7 +105,10 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected array $exportParameters = [];
+    protected array $exportParameters = [
+        'csrfName'           => 'getCsrfTokenName',
+        'csrfToken'          => 'getCsrfToken',
+    ];
 
     /**
      * The snippets used for the export action
