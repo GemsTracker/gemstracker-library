@@ -22,7 +22,7 @@
 >
 <div id="container" class="container-fluid">
     <header>
-        <div class="logo {{ current_organization_code }}"></div>
+        <div class="logo {{ current_organization_code ?? '' }}"></div>
         <div class="tools">
             {{ include('@layout/organization-switcher.html.twig') }}
             {{ include('@layout/group-switcher.html.twig') }}
