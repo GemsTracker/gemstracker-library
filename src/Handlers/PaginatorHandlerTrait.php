@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers;
 
+use Gems\Handlers\GemsHandler;
 use Mezzio\Session\SessionInterface;
 use Zalt\Html\Paginator\PaginatorInterface;
 
@@ -77,6 +78,10 @@ trait PaginatorHandlerTrait
 
     public function getPageNumber(): int
     {
+        // Return to the first page when the Reset Search button is clicked.
+        if ($this->requestInfo->getParam(GemsHandler::AUTOSEARCH_RESET)) {
+            return 1;
+        }
         return $this->getSessionRequestInt(PaginatorInterface::REQUEST_PAGE, 1);
     }
 }
