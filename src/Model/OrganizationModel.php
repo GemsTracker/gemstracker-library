@@ -349,7 +349,8 @@ class OrganizationModel extends \Gems\Model\JoinModel
                 );
         $this->set('gor_contact_email',
                 'size', 50,
-                'validator', 'SimpleEmail'
+                'validator', 'SimpleEmail',
+                'required', true
                 );
         $this->set('gor_contact_sms_from',
                 'size', 50,
