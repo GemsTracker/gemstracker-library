@@ -13,7 +13,7 @@ CREATE TABLE if not exists gems__tokens (
         -- values initially filled from gems__rounds, but that may get different values later on
         gto_id_survey           bigint unsigned not null references gems__surveys (gsu_id_survey),
 
-        -- values initially filled from gems__rounds, but that might get different values later on, but but not now
+        -- values initially filled from gems__rounds, but that might get different values later on, but not now
         gto_round_order         int not null default 10,
         gto_icon_file           varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
         gto_round_description   varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,

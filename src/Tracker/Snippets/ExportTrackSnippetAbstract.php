@@ -45,7 +45,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstract
 {
-    use ZendFormSnippetTrait;
+    use ZendFormSnippetTrait { ZendFormSnippetTrait::beforeDisplay as zendBeforeDisplay; }
 
     /**
      *
@@ -307,6 +307,13 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     protected function afterSave($changed)
     {
         $this->addMessage($this->_('Track export finished'));
+    }
+
+    public function beforeDisplay()
+    {
+        // $this->layoutAutoWidthFactor = 2;
+        $this->zendBeforeDisplay();
+        $this->beforeDisplayFor($this->currentStep);
     }
 
     /**
