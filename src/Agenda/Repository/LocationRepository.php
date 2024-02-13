@@ -18,7 +18,7 @@ class LocationRepository
 
     public function __construct(
         protected readonly CachedResultFetcher $cachedResultFetcher,
-        readonly CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
     )
     {
         $this->currentUserId = $this->currentUserRepository->getCurrentUserId();
@@ -126,11 +126,25 @@ class LocationRepository
         return $result;
     }
 
-    public function getLocationOptions(int|null $organizationId = null): array
+    public function getLocationOptions(): array
     {
-        $activeLocations = $this->getActiveLocationsData($organizationId);
+        $activeLocations = $this->getActiveLocationsData();
+        $allowedOrganizationIds = array_keys($this->currentUserRepository->getAllowedOrganizations());
 
-        $options = array_column($activeLocations, 'glo_name', 'glo_id_location');
+        $allowedLocations = array_filter($activeLocations, function($location) use ($allowedOrganizationIds) {
+            // If the location is enabled for no organization, show it for all of them.
+            if (!$location['glo_organizations']) {
+                return true;
+            }
+            foreach ($location['glo_organizations'] as $organizationId) {
+                if (in_array($organizationId, $allowedOrganizationIds)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        $options = array_column($allowedLocations, 'glo_name', 'glo_id_location');
         asort($options);
         return $options;
     }
