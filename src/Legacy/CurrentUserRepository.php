@@ -155,14 +155,18 @@ class CurrentUserRepository
 
     /**
      * Throw an exception if the organization ID is not an allowed organization,
-     * or if there is no logged in user.
+     * or if there is no logged in user. If the organizationId is null, we allow
+     * access under the assumption that the code will use the currentOrganizationId.
      *
-     * @param int|string $organizationId
+     * @param int|string|null $organizationId
      * @return void If the user has access to the organization
      * @throws \Gems\Exception If no user is logged in
      */
-    public function assertAccessToOrganizationId(string|int $organizationId): void
+    public function assertAccessToOrganizationId(string|int|null $organizationId): void
     {
+        if (is_null($organizationId)) {
+            return;
+        }
         $currentUser = $this->getCurrentUser();
         if ($currentUser) {
             $currentUser->assertAccessToOrganizationId($organizationId);
