@@ -55,7 +55,7 @@ class RespondentLogHandler extends LogHandler
         CacheItemPoolInterface $cache,
         PeriodSelectRepository $periodSelectRepository,
         LogModel $logModel,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected RespondentRepository $respondentRepository,
     ) {
         parent::__construct($responder, $translate, $cache, $periodSelectRepository, $logModel);

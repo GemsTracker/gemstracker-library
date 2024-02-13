@@ -15,6 +15,7 @@ use Gems\Db\ResultFetcher;
 use Gems\Handlers\GemsHandler;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
@@ -26,7 +27,6 @@ use Laminas\Db\Sql\Expression;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
-use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Sql\Laminas\LaminasSelectModel;
@@ -190,10 +190,8 @@ class ConsentPlanHandler extends GemsHandler
             $action->browse = false;
         }
         if ($action instanceof ShowAsTableAction) {
-            $organizationId = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID);
-            if (!in_array($organizationId, $allowedOrganizations)) {
-                $organizationId = -1;
-            }
+            $organizationId = $this->requestInfo->getParam(Model::REQUEST_ID);
+            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
             $action->extraFilter['gr2o_id_organization'] = $organizationId;
             $action->setSnippets($this->showSnippets);
             $action->menuShowRoutes = [];

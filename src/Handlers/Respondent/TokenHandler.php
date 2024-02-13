@@ -340,11 +340,13 @@ class TokenHandler extends TokenSearchHandlerAbstract
         // Survey action data
         $data['gto_id_respondent']   = $this->getRespondentId();
 
-        $orgsFor = $this->organizationRepository->getAllowedOrganizationsFor($this->request->getAttribute(MetaModelInterface::REQUEST_ID2));
+        $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
+        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+        $orgsFor = $this->organizationRepository->getAllowedOrganizationsFor($organizationId);
         if (!empty($orgsFor)) {
             $data['gto_id_organization'] = array_keys($orgsFor);
         } else {
-            $data['gto_id_organization'] = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
+            $data['gto_id_organization'] = $organizationId;
         }
 
         return $data;

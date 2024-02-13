@@ -318,8 +318,9 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
             if ($this->maskRepository->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 return sprintf($this->_('Appointments for respondent number %s'), $patientId);
             }
-            $orgId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
-            $respondent = $this->respondentRepository->getRespondent($patientId, $orgId);
+            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $respondent = $this->respondentRepository->getRespondent($patientId, $organizationId);
             return sprintf($this->_('Appointments for respondent number %s: %s'), $patientId, $respondent->getName());
         }
         return $this->getIndexTitle();
@@ -345,8 +346,9 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         if (! $this->_respondent) {
             $id = $this->request->getAttribute(\Gems\Model::APPOINTMENT_ID);
             $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
-            $orgId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
-            if ($id && ! ($patientNr || $orgId)) {
+            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            if ($id && ! ($patientNr || $organizationId)) {
                 $appointment = $this->agenda->getAppointment($id);
                 $this->_respondent = $appointment->getRespondent();
 
@@ -399,6 +401,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
             }
         } else {
             $this->organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            $this->currentUserRepository->assertAccessToOrganizationId($this->organizationId);
 
             if ($patientNr && $this->organizationId) {
                 $this->respondentId = $this->respondentRepository->getRespondentId($patientNr, $this->organizationId);

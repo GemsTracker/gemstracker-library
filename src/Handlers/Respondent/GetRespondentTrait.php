@@ -57,6 +57,7 @@ trait GetRespondentTrait
         if (! $this->_respondent) {
             $patientNumber  = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
             $organizationId = intval($this->request->getAttribute(MetaModelInterface::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId()));
+            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
 
             $this->_respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
 

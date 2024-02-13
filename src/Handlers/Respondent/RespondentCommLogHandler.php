@@ -38,7 +38,7 @@ class RespondentCommLogHandler extends CommLogHandler
         MaskRepository $maskRepository,
         ProjectOverloader $overloader,
         PeriodSelectRepository $periodSelectRepository,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected RespondentRepository $respondentRepository,
     ) {
         parent::__construct($responder, $translate, $cache, $maskRepository, $overloader, $periodSelectRepository);

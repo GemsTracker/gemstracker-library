@@ -14,10 +14,8 @@ namespace Gems\Handlers\Respondent;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
-use Gems\Model\RespondentRelationModel;
 use Gems\Model\Transform\RespondentIdTransformer;
 use Gems\Repository\RespondentRepository;
-use Gems\Tracker\Respondent;
 use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
@@ -46,7 +44,7 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected Model $modelLoader,
         protected RespondentRepository $respondentRepository,
     )
@@ -85,14 +83,18 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function deleteAction()
     {
+        $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+        $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+
         $this->deleteParameters['resetRoute'] = true;
         $this->deleteParameters['deleteAction'] = 'delete'; // Trick to not get aftersaveroute
         $this->deleteParameters['abortAction'] = 'index';
         $this->deleteParameters['afterSaveRouteUrl'] = [
             'action' => 'index',
             'controller' => 'respondent-relation',
-            \MUtil\Model::REQUEST_ID1 => $this->request->getAttribute(\MUtil\Model::REQUEST_ID1),
-            \MUtil\Model::REQUEST_ID2 => $this->request->getAttribute(\MUtil\Model::REQUEST_ID2),
+            \MUtil\Model::REQUEST_ID1 => $patientNr,
+            \MUtil\Model::REQUEST_ID2 => $organizationId,
         ];
 
         parent::deleteAction();
@@ -100,9 +102,13 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function indexAction()
     {
+        $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+        $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+
         $this->autofilterParameters['extraFilter'] = [
-            'gr2o_patient_nr' => $this->request->getAttribute(\MUtil\Model::REQUEST_ID1),
-            'gr2o_id_organization' => $this->request->getAttribute(\MUtil\Model::REQUEST_ID2),
+            'gr2o_patient_nr' => $patientNr,
+            'gr2o_id_organization' => $organizationId,
         ];
         parent::indexAction();
     }

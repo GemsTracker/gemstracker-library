@@ -406,6 +406,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
             $edit = false;
 
             $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId());
+            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
             $org = $this->organizationRepository->getOrganization($organizationId);
 
             if ($org) {
