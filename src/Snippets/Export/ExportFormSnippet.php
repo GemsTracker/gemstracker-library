@@ -83,7 +83,7 @@ class ExportFormSnippet extends FormSnippetAbstract
             $form->addElements($exportFormElements);
         }
 
-        $this->addCsrf($this->csrfName, $this->csrfToken);
+        $this->addCsrf($this->csrfName, $this->csrfToken, $form);
     }
 
     protected function createForm($options = null)
