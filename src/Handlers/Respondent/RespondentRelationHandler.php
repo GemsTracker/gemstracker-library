@@ -83,8 +83,8 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function deleteAction()
     {
-        $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
-        $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+        $patientNr = $this->request->getAttribute(Model::REQUEST_ID1);
+        $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
         $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
 
         $this->deleteParameters['resetRoute'] = true;
@@ -93,8 +93,8 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
         $this->deleteParameters['afterSaveRouteUrl'] = [
             'action' => 'index',
             'controller' => 'respondent-relation',
-            \MUtil\Model::REQUEST_ID1 => $patientNr,
-            \MUtil\Model::REQUEST_ID2 => $organizationId,
+            Model::REQUEST_ID1 => $patientNr,
+            Model::REQUEST_ID2 => $organizationId,
         ];
 
         parent::deleteAction();
@@ -102,8 +102,8 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function indexAction()
     {
-        $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
-        $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+        $patientNr = $this->request->getAttribute(Model::REQUEST_ID1);
+        $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
         $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
 
         $this->autofilterParameters['extraFilter'] = [

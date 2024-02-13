@@ -15,7 +15,6 @@ use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
-use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class RespondentCommLogHandler extends CommLogHandler
@@ -54,8 +53,8 @@ class RespondentCommLogHandler extends CommLogHandler
         $model = parent::createModel($detailed, $action);
         $model->setKeys([Model::LOG_ITEM_ID => 'grco_id_action']);
 
-        $model->addMap(MetaModelInterface::REQUEST_ID1, 'gr2o_patient_nr');
-        $model->addMap(MetaModelInterface::REQUEST_ID2, 'gr2o_id_organization');
+        $model->addMap(Model::REQUEST_ID1, 'gr2o_patient_nr');
+        $model->addMap(Model::REQUEST_ID2, 'gr2o_id_organization');
 
         return $model;
     }

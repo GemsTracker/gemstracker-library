@@ -70,8 +70,8 @@ class RespondentLogHandler extends LogHandler
         $this->logModel->addTable('gems__respondent2org', ['gla_respondent_id' => 'gr2o_id_user', 'gla_organization' => 'gr2o_id_organization']);
         $this->logModel->getMetaModel()->setKeys([Model::LOG_ITEM_ID => 'gla_id']);
 
-        $this->logModel->getMetaModel()->addMap(\MUtil\Model::REQUEST_ID1, 'gr2o_patient_nr');
-        $this->logModel->getMetaModel()->addMap(\MUtil\Model::REQUEST_ID2, 'gr2o_id_organization');
+        $this->logModel->getMetaModel()->addMap(Model::REQUEST_ID1, 'gr2o_patient_nr');
+        $this->logModel->getMetaModel()->addMap(Model::REQUEST_ID2, 'gr2o_id_organization');
 
         return $this->logModel;
     }

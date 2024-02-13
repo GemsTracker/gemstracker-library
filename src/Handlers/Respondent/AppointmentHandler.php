@@ -313,12 +313,12 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
      */
     public function getContentTitle(): string
     {
-        $patientId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+        $patientId = $this->request->getAttribute(Model::REQUEST_ID1);
         if ($patientId) {
             if ($this->maskRepository->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 return sprintf($this->_('Appointments for respondent number %s'), $patientId);
             }
-            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
             $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
             $respondent = $this->respondentRepository->getRespondent($patientId, $organizationId);
             return sprintf($this->_('Appointments for respondent number %s: %s'), $patientId, $respondent->getName());
@@ -344,9 +344,9 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     public function getRespondent(): Respondent
     {
         if (! $this->_respondent) {
-            $id = $this->request->getAttribute(\Gems\Model::APPOINTMENT_ID);
-            $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
-            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            $id = $this->request->getAttribute(Model::APPOINTMENT_ID);
+            $patientNr = $this->request->getAttribute(Model::REQUEST_ID1);
+            $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
             $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
             if ($id && ! ($patientNr || $organizationId)) {
                 $appointment = $this->agenda->getAppointment($id);
@@ -383,7 +383,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
      */
     protected function loadParams(): void
     {
-        $patientNr           = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+        $patientNr           = $this->request->getAttribute(Model::REQUEST_ID1);
         $this->appointmentId = $this->request->getAttribute(Model::APPOINTMENT_ID);
 
         if ($this->appointmentId) {
@@ -400,7 +400,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
                 $this->respondentId   = $data['gap_id_user'];
             }
         } else {
-            $this->organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            $this->organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
             $this->currentUserRepository->assertAccessToOrganizationId($this->organizationId);
 
             if ($patientNr && $this->organizationId) {

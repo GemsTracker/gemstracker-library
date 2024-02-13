@@ -14,6 +14,7 @@ namespace Gems\Handlers\Respondent;
 use Gems\Db\ResultFetcher;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
 use Gems\Model\Dependency\ActivationDependency;
 use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\OrganizationRepository;
@@ -29,7 +30,6 @@ use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\User\Mask\MaskRepository;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -405,7 +405,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         if ($this->enableScreens) {
             $edit = false;
 
-            $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId());
+            $organizationId = $this->request->getAttribute(Model::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId());
             $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
             $org = $this->organizationRepository->getOrganization($organizationId);
 
@@ -610,8 +610,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         $queryParams = $this->request->getQueryParams();
         return [
-            MetaModelInterface::REQUEST_ID1 => isset($queryParams[MetaModelInterface::REQUEST_ID1]) ? $queryParams[MetaModelInterface::REQUEST_ID1] : null,
-            MetaModelInterface::REQUEST_ID2 => isset($queryParams[MetaModelInterface::REQUEST_ID2]) ? $queryParams[MetaModelInterface::REQUEST_ID2] : null,
+            Model::REQUEST_ID1 => isset($queryParams[Model::REQUEST_ID1]) ? $queryParams[Model::REQUEST_ID1] : null,
+            Model::REQUEST_ID2 => isset($queryParams[Model::REQUEST_ID2]) ? $queryParams[Model::REQUEST_ID2] : null,
         ];
     }
 
@@ -652,8 +652,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         $data = parent::getSearchData($useRequest);
 
-        if (isset($data[MetaModelInterface::REQUEST_ID2])) {
-            $organizationIds = [intval($data[MetaModelInterface::REQUEST_ID2])];
+        if (isset($data[Model::REQUEST_ID2])) {
+            $organizationIds = [intval($data[Model::REQUEST_ID2])];
         } else {
             $organizationIds = $this->currentUser->getRespondentOrgFilter();
         }
@@ -675,13 +675,13 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     public function getSearchDefaults(): array
     {
-        if (! isset($this->defaultSearchData[MetaModelInterface::REQUEST_ID2])) {
+        if (! isset($this->defaultSearchData[Model::REQUEST_ID2])) {
             $currentOrganization = $this->currentUser->getCurrentOrganization();
             if ($this->currentUser->hasPrivilege('pr.respondent.multiorg') &&
                     (! $currentOrganization->canHaveRespondents())) {
-                $this->defaultSearchData[MetaModelInterface::REQUEST_ID2] = '';
+                $this->defaultSearchData[Model::REQUEST_ID2] = '';
             } else {
-                $this->defaultSearchData[MetaModelInterface::REQUEST_ID2] = $currentOrganization->getId();
+                $this->defaultSearchData[Model::REQUEST_ID2] = $currentOrganization->getId();
             }
         }
 
@@ -807,12 +807,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         $routeParams = $this->requestInfo->getRequestMatchedParams();
         $orgId = null;
-        if (isset($routeParams[MetaModelInterface::REQUEST_ID2])) {
-            $orgId = $routeParams[MetaModelInterface::REQUEST_ID2];
+        if (isset($routeParams[Model::REQUEST_ID2])) {
+            $orgId = $routeParams[Model::REQUEST_ID2];
         }
         $patientNr = null;
-        if (isset($routeParams[MetaModelInterface::REQUEST_ID1])) {
-            $patientNr = $routeParams[MetaModelInterface::REQUEST_ID1];
+        if (isset($routeParams[Model::REQUEST_ID1])) {
+            $patientNr = $routeParams[Model::REQUEST_ID1];
         }
 
         if ($patientNr && $orgId) {

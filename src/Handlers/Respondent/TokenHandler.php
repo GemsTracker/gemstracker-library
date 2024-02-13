@@ -16,6 +16,7 @@ use Gems\Batch\BatchRunnerLoader;
 use Gems\Exception;
 use Gems\Handlers\Overview\TokenSearchHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\PeriodSelectRepository;
@@ -26,9 +27,8 @@ use Gems\Tracker;
 use Gems\Tracker\Token;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Cache\CacheItemPoolInterface;
-use Zalt\Model\MetaModelInterface;
-use Zalt\Ra\Ra;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Ra\Ra;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -319,7 +319,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
      */
     public function getIndexTitle(): string
     {
-        return sprintf($this->_('Surveys assigned to respondent %s'), $this->request->getAttribute(MetaModelInterface::REQUEST_ID1));
+        return sprintf($this->_('Surveys assigned to respondent %s'), $this->request->getAttribute(Model::REQUEST_ID1));
     }
 
     /**
@@ -340,7 +340,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
         // Survey action data
         $data['gto_id_respondent']   = $this->getRespondentId();
 
-        $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
+        $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
         $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
         $orgsFor = $this->organizationRepository->getAllowedOrganizationsFor($organizationId);
         if (!empty($orgsFor)) {

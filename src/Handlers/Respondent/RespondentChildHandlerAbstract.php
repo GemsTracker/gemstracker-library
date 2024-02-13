@@ -13,7 +13,10 @@ namespace Gems\Handlers\Respondent;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
 use Gems\Repository\RespondentRepository;
+use Gems\Tracker\Respondent;
+use Gems\User\User;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
