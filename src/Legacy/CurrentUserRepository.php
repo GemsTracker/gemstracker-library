@@ -154,6 +154,20 @@ class CurrentUserRepository
     }
 
     /**
+     * Return a list of allowed organizations for the user, if there is one.
+     *
+     * @return array<int, string>
+     */
+    public function getAllowedOrganizations(): array
+    {
+        $currentUser = $this->getCurrentUser();
+        if (!$currentUser) {
+            return [];
+        }
+        return $currentUser->getAllowedOrganizations();
+    }
+
+    /**
      * Throw an exception if the organization ID is not an allowed organization,
      * or if there is no logged in user. If the organizationId is null, we allow
      * access under the assumption that the code will use the currentOrganizationId.
