@@ -21,6 +21,7 @@ use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
 use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 
 /**
@@ -221,9 +222,9 @@ class Survey
      * Returns a model for displaying the answers to this survey in the requested language.
      *
      * @param string $language (ISO) language string
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
-    public function getAnswerModel(string $language): MetaModelInterface
+    public function getAnswerModel(string $language): DataReaderInterface
     {
         $source = $this->getSource();
         return $source->getSurveyAnswerModel($this, $language, $this->getSourceSurveyId());

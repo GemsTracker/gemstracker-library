@@ -17,6 +17,8 @@ use Gems\Tracker\Survey;
 use Gems\Tracker\Token;
 use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
+use Symfony\Component\VarDumper\Cloner\Data;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  * Interface description of SourceInterface for (external) survey sources.
@@ -220,9 +222,9 @@ interface SourceInterface
      * @param Survey $survey
      * @param ?string $language Optional (ISO) language string
      * @param int|string|null $sourceSurveyId Optional Survey ID used by source
-     * @return ModelAbstract
+     * @return DataReaderInterface
      */
-    public function getSurveyAnswerModel(Survey $survey, string $language = null, int|string|null $sourceSurveyId = null): ModelAbstract;
+    public function getSurveyAnswerModel(Survey $survey, string $language = null, int|string|null $sourceSurveyId = null): DataReaderInterface;
 
     /**
      * Returns the url that (should) start the survey for this token

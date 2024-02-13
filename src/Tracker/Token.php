@@ -49,6 +49,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 
 
@@ -1375,9 +1376,9 @@ class Token
     /**
      *
      * @param string $language (ISO) language string
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
-    public function getSurveyAnswerModel(string $language): MetaModelInterface
+    public function getSurveyAnswerModel(string $language): DataReaderInterface
     {
         $survey = $this->getSurvey();
         return $survey->getAnswerModel($language);
@@ -1848,6 +1849,8 @@ class Token
                     ->addStatus()
                     ->addShowAnswers($groupId)
                     ->forTokenId($this->_tokenId);
+
+            $test = $tokenSelect->getSelect()->getSqlString($this->resultFetcher->getPlatform());
 
             $row = $tokenSelect->fetchRow();
             if ($row) {

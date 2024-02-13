@@ -37,6 +37,7 @@ use Laminas\Db\Sql\Ddl\Column\Varchar;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use MUtil\Translate\Translator;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  * LimeSurvey3m00Database is a Source interface that enables the use of LimeSurvey 3.x
@@ -1335,9 +1336,9 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param Survey $survey
      * @param ?string $language Optional (ISO) language string
      * @param int|string|null $sourceSurveyId Optional Survey ID used by source
-     * @return ModelAbstract
+     * @return DataReaderInterface
      */
-    public function getSurveyAnswerModel(Survey $survey, ?string $language = null, int|string|null $sourceSurveyId = null): ModelAbstract
+    public function getSurveyAnswerModel(Survey $survey, ?string $language = null, int|string|null $sourceSurveyId = null): DataReaderInterface
     {
         static $cache = array();        // working with 'real' cache produces out of memory error
 
@@ -1349,7 +1350,7 @@ class LimeSurvey3m00Database extends SourceAbstract
 
         if (!array_key_exists($cacheId, $cache)) {
             $model           = $this->tracker->getSurveyModel($survey, $this);
-            $this->_getFieldMap($sourceSurveyId, $language)->applyToModel($model);
+            $this->_getFieldMap($sourceSurveyId, $language)->applyToModel($model->getMetaModel());
             $cache[$cacheId] = $model;
         }
 

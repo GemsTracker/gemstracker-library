@@ -25,6 +25,8 @@ use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use MUtil\StringUtil\StringUtil;
 use MUtil\Translate\Translator;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
 
 /**
  * A fieldmap object adds LS source code knowledge and interpretation to the database data
@@ -710,7 +712,7 @@ class LimeSurvey3m00FieldMap
      *
      * @param ModelAbstract $model
      */
-    public function applyToModel(ModelAbstract $model): void
+    public function applyToModel(MetaModelInterface $model): void
     {
         $map    = $this->_getMap();
         $oldfld = null;
@@ -718,7 +720,7 @@ class LimeSurvey3m00FieldMap
 
         foreach ($map as $name => $field) {
 
-            $tmpres = array();
+            $tmpres = [];
             $tmpres['thClass']         = SurveyModel::CLASS_MAIN_QUESTION;
             if (isset($field['hidden']) && $field['hidden']) {
                 $tmpres['thClass']      .= ' hideAlwaysQuestion';
@@ -734,6 +736,7 @@ class LimeSurvey3m00FieldMap
             $tmpres['type']            = $this->_getType($field);
             $tmpres['survey_question'] = true;
             $tmpres['sourceId']        = $name;
+            $tmpres[SqlRunnerInterface::NO_SQL] = true;
 
             if ($tmpres['type'] === Model::TYPE_DATETIME || $tmpres['type'] === Model::TYPE_DATE || $tmpres['type'] === Model::TYPE_TIME) {
                 if ($dateFormats = $this->getDateFormats($name, $tmpres['type'])) {
