@@ -114,7 +114,11 @@ class AuditLog
 
     protected function getCurrentOrganizationId(): int
     {
+        $this->getCurrentUser();
         $organizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
+        if ($this->user) {
+            $this->user->assertAccessToOrganizationId($organizationId);
+        }
         if ($organizationId !== null) {
             return $organizationId;
         }
@@ -262,11 +266,15 @@ class AuditLog
             }
         }
 
-        $id1 = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
-        $id2 = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
+        $this->getCurrentUser();
+        $patientNr = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
+        $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
+        if ($this->user) {
+            $this->user->assertAccessToOrganizationId($organizationId);
+        }
 
-        if ($id1 !== null && $id2 !== null) {
-            return $this->respondentRepository->getRespondentId($id1, $id2);
+        if ($patientNr !== null && $organizationId !== null) {
+            return $this->respondentRepository->getRespondentId($patientNr, $organizationId);
         }
         return null;
     }
