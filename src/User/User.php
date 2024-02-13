@@ -378,6 +378,22 @@ class User
     }
 
     /**
+     * Throw an exception if the organization ID is not an allowed organization.
+     *
+     * @param int|string $organizationId
+     * @return void If the user has access to the organization
+     * @throws \Gems\Exception If the user does not have access to the organization
+     */
+    public function assertAccessToOrganizationId(int|string $organizationId): void
+    {
+        $orgs = $this->getAllowedOrganizations();
+        if (isset($orgs[$organizationId])) {
+            return;
+        }
+        throw new \Gems\Exception('Inaccessible or unknown organization', 403);
+    }
+
+    /**
      * @return string[] An array of code names that identify which sets of password rules are applicable for this user
      */
     public function getPasswordCheckerCodes(): array

@@ -6,6 +6,7 @@ namespace Gems\Legacy;
 
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
 class CurrentUserRepository
@@ -150,5 +151,24 @@ class CurrentUserRepository
     public function setCurrentUserRole(string $role): void
     {
         $this->role = $role;
+    }
+
+    /**
+     * Throw an exception if the organization ID is not an allowed organization,
+     * or if there is no logged in user.
+     *
+     * @param int|string $organizationId
+     * @return void If the user has access to the organization
+     * @throws \Gems\Exception If no user is logged in
+     */
+    public function assertAccessToOrganizationId(string|int $organizationId): void
+    {
+        $currentUser = $this->getCurrentUser();
+        if ($currentUser) {
+            $currentUser->assertAccessToOrganizationId($organizationId);
+            return;
+        }
+
+        throw new \Gems\Exception('Inaccessible or unknown organization', 403);
     }
 }
