@@ -183,10 +183,10 @@ class ConsentPlanHandler extends GemsHandler
     {
         parent::prepareAction($action);
 
-        $allowedOrganizations = array_keys($this->currentUserRepository->getCurrentUser()->getAllowedOrganizations());
+        $allowedOrganizationIds = $this->currentUserRepository->getAllowedOrganizationIds();
 
         if ($action instanceof BrowseTableAction) {
-            $action->extraFilter['gr2o_id_organization'] = $allowedOrganizations;
+            $action->extraFilter['gr2o_id_organization'] = $allowedOrganizationIds;
             $action->browse = false;
         }
         if ($action instanceof ShowAsTableAction) {
