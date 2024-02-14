@@ -14,6 +14,7 @@ namespace Gems\Task\Tracker;
 use Gems\Tracker\TrackerInterface;
 use Exception;
 use MUtil\Html\HtmlInterface;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -77,9 +78,10 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
         }
 
         $survey->setHash($hash, $this->loader->getCurrentUser()->getUserId());
+        $metaModel = $answerModel->getMetaModel();
 
-        foreach ($answerModel->getItemsOrdered() as $order => $name) {
-            if (true === $answerModel->get($name, 'survey_question')) {
+        foreach ($metaModel->getItemsOrdered() as $order => $name) {
+            if (true === $metaModel->get($name, 'survey_question')) {
                 $batch->addTask('Tracker\\RefreshQuestion', $survey->getSurveyId(), $name, $order);
             }
         }
@@ -117,21 +119,22 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
     }
 
     /**
-     * Handles creating or replacing the view for this survey
-     *
-     * @param \Gems\Tracker\Survey       $viewName
-     * @param \MUtil\Model\ModelAbstract $answerModel
+     * @param \Gems\Tracker\Survey $survey
+     * @param DataReaderInterface $answerModel
+     * @return void
      */
-    protected function replaceCreateView(\Gems\Tracker\Survey $survey, \MUtil\Model\ModelAbstract $answerModel)
+    protected function replaceCreateView(\Gems\Tracker\Survey $survey, DataReaderInterface $answerModel)
     {
         $viewName = $this->getViewName($survey);
         $responseDb = $this->project->getResponseDatabase();
         $fieldSql   = '';
 
-        foreach ($answerModel->getItemsOrdered() as $name) {
-            if (true === $answerModel->get($name, 'survey_question') && // It should be a question
+        $metaModel = $answerModel->getMetaModel();
+
+        foreach ($metaModel->getItemsOrdered() as $name) {
+            if (true === $metaModel->get($name, 'survey_question') && // It should be a question
                     !in_array($name, ['submitdate', 'startdate', 'datestamp']) && // Leave out meta info
-                    !$answerModel->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {         // Only real answers
+                    !$metaModel->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {         // Only real answers
                 $fieldSql .= ',MAX(IF(gdr_answer_id = ' . $responseDb->quote($name) . ', gdr_response, NULL)) AS ' . $responseDb->quoteIdentifier($name);
             }
         }

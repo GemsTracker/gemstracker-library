@@ -710,7 +710,7 @@ class LimeSurvey3m00FieldMap
     /**
      * Applies the fieldmap data to the model
      *
-     * @param ModelAbstract $model
+     * @param MetaModelInterface $model
      */
     public function applyToModel(MetaModelInterface $model): void
     {

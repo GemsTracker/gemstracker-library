@@ -163,8 +163,9 @@ class Survey
     {
         $answerModel = $this->getAnswerModel('en');
         $items       = [];
-        foreach($answerModel->getItemsOrdered() as $item) {
-                $result = $answerModel->get($item, ['label', 'type', 'multiOptions', 'parent_question', 'thClass', 'group', 'description']);
+        $metaModel = $answerModel->getMetaModel();
+        foreach($metaModel->getItemsOrdered() as $item) {
+                $result = $metaModel->get($item, ['label', 'type', 'multiOptions', 'parent_question', 'thClass', 'group', 'description']);
                 if (array_key_exists('label', $result)) {
                     $items[$item] = $result;
                 }

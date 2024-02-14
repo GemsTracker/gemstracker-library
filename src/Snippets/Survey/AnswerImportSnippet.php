@@ -14,6 +14,7 @@ namespace Gems\Snippets\Survey;
 use Gems\Snippets\ModelImportSnippet;
 use Gems\Util\Translated;
 use MUtil\Model;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Data\FullDataInterface;
 
 /**
@@ -56,6 +57,11 @@ class AnswerImportSnippet extends ModelImportSnippet
      * @var \Gems\Menu
      */
     protected $menu;
+
+    /**
+     * @var DataReaderInterface
+     */
+    protected $targetModel;
 
     /**
      * @var Translated
