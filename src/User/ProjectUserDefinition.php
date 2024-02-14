@@ -11,7 +11,11 @@
 
 namespace Gems\User;
 
-use Gems\User\Group;
+use Gems\Auth\Adapter\Callback;
+use Gems\Db\ResultFetcher;
+use Gems\Project\ProjectSettings;
+use Gems\Util;
+use Laminas\Authentication\Adapter\AdapterInterface;
 
 /**
  * The user defined in the project.ini by admin.user and admin.pwd.
@@ -22,24 +26,15 @@ use Gems\User\Group;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ProjectUserDefinition extends \Gems\User\UserDefinitionAbstract
+class ProjectUserDefinition extends UserDefinitionAbstract
 {
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
-
-    /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly ProjectSettings $project,
+        protected readonly Util $util,
+    )
+    {
+    }
 
     /**
      * Returns an initialized \Laminas\Authentication\Adapter\AdapterInterface
@@ -48,44 +43,44 @@ class ProjectUserDefinition extends \Gems\User\UserDefinitionAbstract
      * @param string $password
      * @return \Laminas\Authentication\Adapter\AdapterInterface
      */
-    public function getAuthAdapter(\Gems\User\User $user, $password)
+    public function getAuthAdapter(User $user, string $password): AdapterInterface
     {
-        $adapter = new \Gems\Auth\Adapter\Callback(array($this->project, 'checkSuperAdminPassword'), $user->getLoginName(), array($password));
+        $adapter = new Callback([$this->project, 'checkSuperAdminPassword'], $user->getLoginName(), array($password));
         return $adapter;
     }
 
     /**
      * Returns the data for a user object. It may be empty if the user is unknown.
      *
-     * @param string $login_name
-     * @param int $organization
+     * @param string $loginName
+     * @param int $organizationId
      * @return array Of data to fill the user with.
      */
-    public function getUserData($login_name, $organization): array
+    public function getUserData(string $loginName, int $organizationId): array
     {
         $orgs = null;
 
         try {
-            $orgs = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
+            $orgs = $this->resultFetcher->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
             natsort($orgs);
         } catch (\Zend_Db_Exception $zde) {
         }
         if (! $orgs) {
             // Table might not exist or be empty, so do something failsafe
-            $orgs = \Gems\User\UserLoader::getNotOrganizationArray();
+            $orgs = UserLoader::getNotOrganizationArray();
         }
         $login     = $this->project->getSuperAdminName();
         $twoFactor = $this->project->getSuperAdminTwoFactorKey();
 
         return array(
-            'user_id'                => \Gems\User\UserLoader::SYSTEM_USER_ID,
+            'user_id'                => UserLoader::SYSTEM_USER_ID,
             'user_login'             => $login,
             'user_two_factor_key'    => $twoFactor,
             'user_name'              => $login,
             'user_group'             => -1,
             'user_role'              => 'master',
             'user_style'             => 'gems',
-            'user_base_org_id'       => $organization,
+            'user_base_org_id'       => $organizationId,
             'user_allowed_ip_ranges' => $this->project->getSuperAdminIPRanges(),
             'user_blockable'         => false,
             'user_embedded'          => false,
@@ -94,14 +89,14 @@ class ProjectUserDefinition extends \Gems\User\UserDefinitionAbstract
     }
 
     /**
-     * Should this user be authorized using two factor authentication?
+     * Should this user be authorized using multi-factor authentication?
      *
      * @param string $ipAddress
      * @param boolean $hasKey
-     * @param Group $group
+     * @param Group|null $group
      * @return boolean
      */
-    public function isTwoFactorRequired($ipAddress, $hasKey, Group $group = null)
+    public function isTwoFactorRequired(string $ipAddress, bool $hasKey, Group|null $group = null): bool
     {
         if (! $this->project->getSuperAdminTwoFactorKey()) {
             return false;

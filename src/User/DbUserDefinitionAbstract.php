@@ -12,11 +12,13 @@
 namespace Gems\User;
 
 use Gems\Db\ResultFetcher;
-use Gems\User\PasswordHistoryChecker;
+use Gems\Model\MetaModelLoader;
+use Gems\Project\ProjectSettings;
 use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter;
-use Laminas\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
-use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Exception\RuntimeException;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Where;
 
 /**
@@ -28,93 +30,62 @@ use Laminas\Db\Sql\Where;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstract
+abstract class DbUserDefinitionAbstract extends UserDefinitionAbstract
 {
     /**
      * If passwords also need to be checked with the old hash method
-     * @var boolean
+     * @var bool
      */
-    public $checkOldHashes = true;
-
-    /**
-     * @var array
-     */
-    protected $config;
+    public bool $checkOldHashes = true;
 
     /**
      *
-     * @var \Zend_Db_Adapter_Abstract
+     * @var string The hash algorithm used for password_hash
      */
-    protected $db;
-
-    /**
-     *
-     * @var \Laminas\Db\Adapter\Adapter
-     */
-    protected $db2;
-
-    /**
-     *
-     * @var  int The hash algorithm used for password_hash
-     */
-    protected $hashAlgorithm = PASSWORD_DEFAULT;
+    protected string $hashAlgorithm = PASSWORD_DEFAULT;
 
     /**
      * The time period in hours a reset key is valid for this definition.
      *
      * @var int
      */
-    protected $hoursResetKeyIsValid = 24;
+    protected int $hoursResetKeyIsValid = 24;
 
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
+    public function __construct(
+        protected ResultFetcher $resultFetcher,
+        protected MetaModelLoader $metaModelLoader,
+        protected ProjectSettings $projectSettings,
+    )
+    {
+    }
 
     /**
      * Return true if a password reset key can be created.
      *
-     * Returns the setting for the definition whan no user is passed, otherwise
+     * Returns the setting for the definition when no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems\User\User $user Optional, the user whose password might change
-     * @return boolean
+     * @param User|null $user Optional, the user whose password might change
+     * @return bool
      */
-    public function canResetPassword(\Gems\User\User $user = null)
+    public function canResetPassword(User|null $user = null): bool
     {
         if ($user) {
             // Depends on the user.
             if ($user->hasEmailAddress() && $user->canSetPassword()) {
                 $email = $user->getEmailAddress();
-                if (empty($email)) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return !empty($email);
             }
         }
         return true;
     }
 
     /**
-     *
-     * @return boolean When there is space to save the new hash
-     */
-    public function canSaveNewHash()
-    {
-        $model = new \MUtil\Model\TableModel('gems__user_passwords');
-
-        // Can save if storage is long enough
-        return $model->get('gup_password', 'maxlength') >= 255;
-    }
-
-    /**
      * Return true if the two factor can be set.
      *
-     * @return boolean
+     * @return bool
      */
-    public function canSaveTwoFactorKey()
+    public function canSaveTwoFactorKey(): bool
     {
         return true;
     }
@@ -122,13 +93,13 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
    /**
      * Return true if the password can be set.
      *
-     * Returns the setting for the definition whan no user is passed, otherwise
+     * Returns the setting for the definition when no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems\User\User $user Optional, the user whose password might change
-     * @return boolean
+     * @param User|null $user Optional, the user whose password might change
+     * @return bool
      */
-    public function canSetPassword(\Gems\User\User $user = null)
+    public function canSetPassword(User|null $user = null): bool
     {
         return true;
     }
@@ -136,26 +107,20 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
     /**
      * Checks if the current users hashed password uses the current hash algorithm.
      * If not it rehashes and saves the current password
-     * @param  \Gems\User\User  $user     Current logged in user
-     * @param  integer          $password Raw password
-     * @return boolean          password has been rehashed
+     * @param  User  $user     Current logged in user
+     * @param  string          $password Raw password
+     * @return bool          password has been rehashed
      */
-    public function checkRehash(\Gems\User\User $user, $password)
+    public function checkRehash(User $user, string $password): bool
     {
-        if (! $this->canSaveNewHash()) {
-            return false;
-        }
-
-        $model = new \MUtil\Model\TableModel('gems__user_passwords');
+        $model = $this->metaModelLoader->createTableModel('gems__user_passwords');
         $row   = $model->loadFirst(['gup_id_user' => $user->getUserLoginId()]);
 
         if ($row && password_needs_rehash($row['gup_password'], $this->getHashAlgorithm(), $this->getHashOptions())) {
             $data['gup_id_user']  = $user->getUserLoginId();
             $data['gup_password'] = $this->hashPassword($password);
 
-            $model = new \MUtil\Model\TableModel('gems__user_passwords');
-            \Gems\Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
-
+            $this->metaModelLoader->setChangeFields($model->getMetaModel(), 'gup');
             $model->save($data);
 
             return true;
@@ -164,25 +129,23 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
         return false;
     }
 
-    public function createResetKey()
+    public function createResetKey(): string
     {
-        return $this->project->getValueHash(random_bytes(64), 'sha256');
+        return $this->projectSettings->getValueHash(random_bytes(64), 'sha256');
     }
 
     /**
      * Returns an initialized \Laminas\Authentication\Adapter\AdapterInterface
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @param string $password
-     * @return \Laminas\Authentication\Adapter\AdapterInterface
+     * @return AdapterInterface
      */
-    public function getAuthAdapter(\Gems\User\User $user, $password)
+    public function getAuthAdapter(User $user, string $password): AdapterInterface
     {
-        $db2 = $this->getDb2();
-
         $credentialValidationCallback = $this->getCredentialValidationCallback();
 
-        $adapter = new CallbackCheckAdapter($db2, 'gems__user_passwords', 'gul_login', 'gup_password', $credentialValidationCallback);
+        $adapter = new CallbackCheckAdapter($this->resultFetcher->getAdapter(), 'gems__user_passwords', 'gul_login', 'gup_password', $credentialValidationCallback);
 
         $select = $adapter->getDbSelect();
         $select->join('gems__user_logins', 'gup_id_user = gul_id_user', array())
@@ -199,65 +162,24 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
      * get the credential validation callback function for the callback check adapter
      * @return callable Function
      */
-    public function getCredentialValidationCallback()
+    public function getCredentialValidationCallback(): callable
     {
-        if ($this->checkOldHashes) {
-            $credentialValidationCallback = function($dbCredential, $requestCredential) {
-                if (password_verify($requestCredential, $dbCredential)) {
-                    return true;
-                } elseif ($dbCredential == $this->hashOldPassword($requestCredential)) {
-                    return true;
-                }
-
-                return false;
-            };
-        } else {
-            $credentialValidationCallback = function($dbCredential, $requestCredential) {
-                if (password_verify($requestCredential, $dbCredential)) {
-                    return true;
-                }
-
-                return false;
-            };
-        }
-
-        return $credentialValidationCallback;
-    }
-
-    /**
-     * Create a Zend DB 2 Adapter needed for the \Laminas\Authentication library
-     * @return \Laminas\Db\Adapter\Adapter Zend Db Adapter
-     */
-    protected function getDb2()
-    {
-        if (!$this->db2 instanceof Adapter) {
-            $config = \Zend_Controller_Front::getInstance()->getParam('bootstrap');
-            $resources = $config->getOption('resources');
-            $dbConfig = array(
-                'driver'   => $resources['db']['adapter'],
-                'hostname' => $resources['db']['params']['host'],
-                'database' => $resources['db']['params']['dbname'],
-                'username' => $resources['db']['params']['username'],
-                'password' => $resources['db']['params']['password'],
-                'charset'  => $resources['db']['params']['charset'],
-            );
-            if (isset($resources['db']['params']['port'])) {
-                $dbConfig['port'] = $resources['db']['params']['port'];
+        return function($dbCredential, $requestCredential) {
+            if (password_verify($requestCredential, $dbCredential)) {
+                return true;
             }
 
-            $this->db2 = new Adapter($dbConfig);
-        }
-
-        return $this->db2;
+            return false;
+        };
     }
 
     /**
      * Get the current password hash algorithm
-     * Currently defaults to BCRYPT in PHP 5.5-7.2
+     * Currently defaults to BCRYPT
      *
      * @return string
      */
-    public function getHashAlgorithm()
+    public function getHashAlgorithm(): string
     {
         return $this->hashAlgorithm;
     }
@@ -269,7 +191,7 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
      *
      * @return array Current password hash options
      */
-    public function getHashOptions()
+    public function getHashOptions(): array
     {
         return [];
     }
@@ -277,18 +199,18 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
     /**
      * Return a password reset key
      *
-     * @param \Gems\User\User $user The user to create a key for.
+     * @param User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(\Gems\User\User $user)
+    public function getPasswordResetKey(User $user): string
     {
-        $model = new \MUtil\Model\TableModel('gems__user_passwords');
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
+        $model = $this->metaModelLoader->createTableModel('gems__user_passwords');
+        $this->metaModelLoader->setChangeFields($model->getMetaModel(), 'gup');
 
         $data['gup_id_user'] = $user->getUserLoginId();
         $filter = $data;
 
-        if ((0 == ($this->hoursResetKeyIsValid % 24)) || \Zend_Session::$_unitTestEnabled) {
+        if ((0 == ($this->hoursResetKeyIsValid % 24))) {
             $filter[] = 'ADDDATE(gup_reset_requested, ' . intval($this->hoursResetKeyIsValid / 24) . ') >= CURRENT_TIMESTAMP';
         } else {
             $filter[] = 'DATE_ADD(gup_reset_requested, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP';
@@ -309,7 +231,7 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
 
                 return $data['gup_reset_key'];
 
-            } catch (\Zend_Db_Exception $zde) {
+            } catch (RuntimeException $zde) {
                 $data['gup_reset_key'] = $this->createResetKey();
             }
         }
@@ -318,52 +240,27 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
     /**
      * Returns a user object, that may be empty if the user is unknown.
      *
-     * @param string $login_name
-     * @param int $organization
+     * @param string $loginName
+     * @param int $organizationId
      * @return array Of data to fill the user with.
      */
-    public function getUserData($login_name, $organization)
+    public function getUserData(string $loginName, int $organizationId): array
     {
-        $select = $this->getUserSelect($login_name, $organization);
-
+        $select = $this->getUserSelect($loginName, $organizationId);
+        $result = null;
         try {
-            $result = $this->db->fetchRow($select, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
+            $result = $this->resultFetcher->fetchRow($select);
 
-        } catch (\Zend_Db_Statement_Exception $e) {
-            // \MUtil\EchoOut\EchoOut::track($e->getMessage());
-            // \MUtil\EchoOut\EchoOut::track($select->__toString());
+        } catch (RuntimeException $e) {
 
-            // Yeah ugly. Can be removed when all projects have been patched to 1.8.4
-            $sql = $select->__toString();
-            $sql = str_replace([
-                '`gems__user_logins`.`gul_two_factor_key`',
-                '`gems__staff`.`gsf_is_embedded`',
-                ], 'NULL', $sql);
-            // \MUtil\EchoOut\EchoOut::track($sql);
-            try {
-                // Next try
-                $result = $this->db->fetchRow($sql, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
-
-            } catch (\Zend_Db_Statement_Exception $e) {
-                // Can be removed when all projects have been patched to 1.6.2
-                $sql = str_replace('gup_last_pwd_change', 'gup_changed', $sql);
-
-                // New user login fields in 1.9.1
-                $sql = str_replace(['gul_otp_count', 'gul_otp_requested'], 'gul_changed', $sql);
-
-
-                // Last try
-                $result = $this->db->fetchRow($sql, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
-            }
         }
-
 
         /*
          * Handle the case that we have a login record, but no matching userdata (ie. user is inactive)
          * if you want some kind of auto-register you should change this
          */
         if ($result == false) {
-            $result = \Gems\User\NoLoginDefinition::getNoLoginDataFor($login_name, $organization);
+            $result = NoLoginDefinition::getNoLoginDataFor($loginName, $organization);
         }
 
         return $result;
@@ -372,11 +269,11 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
     /**
      * A select used by subclasses to add fields to the select.
      *
-     * @param string $login_name
-     * @param int $organization
-     * @return \Zend_Db_Select
+     * @param string $loginName
+     * @param int $organizationId
+     * @return Select
      */
-    abstract protected function getUserSelect($login_name, $organization);
+    abstract protected function getUserSelect(string $loginName, int $organizationId): Select;
 
     /**
      * Allow overruling of password hashing.
@@ -384,52 +281,32 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
      * @param string $password
      * @return string
      */
-    public function hashPassword($password)
+    public function hashPassword(string $password): string
     {
         return password_hash($password, $this->getHashAlgorithm(), $this->getHashOptions());
     }
 
     /**
-     * Allow overruling of password hashing.
-     *
-     * @param string $password
-     * @return string
-     */
-    public function hashOldPassword($password)
-    {
-        return $this->project->getValueHash($password);
-    }
-
-    /**
      * Return true if the user has a password.
      *
-     * @param \Gems\User\User $user The user to check
-     * @return boolean
+     * @param User $user The user to check
+     * @return bool
      */
-    public function hasPassword(\Gems\User\User $user)
+    public function hasPassword(User $user): bool
     {
         $sql = "SELECT CASE WHEN gup_password IS NULL THEN 0 ELSE 1 END FROM gems__user_passwords WHERE gup_id_user = ?";
 
-        return (boolean) $this->db->fetchOne($sql, $user->getUserLoginId());
-    }
-
-    /**
-     * Set the \Laminas\Db\Adapter\Adapter manually
-     * @param \Laminas\Db\Adapter\Adapter $adapter [description]
-     */
-    public function setDb2(Adapter $adapter)
-    {
-        $this->db2 = $adapter;
+        return (bool) $this->resultFetcher->fetchOne($sql, [$user->getUserLoginId()]);
     }
 
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param \Gems\User\User $user The user whose password to change
-     * @param string $password
-     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     * @param User $user The user whose password to change
+     * @param string|null $password
+     * @return self (continuation pattern)
      */
-    public function setPassword(\Gems\User\User $user, $password)
+    public function setPassword(User $user, string|null $password): self
     {
         $data['gup_id_user']         = $user->getUserLoginId();
         $data['gup_reset_key']       = null;
@@ -438,15 +315,13 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
         if (null === $password) {
             // Passwords may be emptied.
             $data['gup_password'] = null;
-        } elseif ($this->canSaveNewHash()) {
-            $data['gup_password'] = $this->hashPassword($password);
         } else {
-            $data['gup_password'] = $this->hashOldPassword($password);
+            $data['gup_password'] = $this->hashPassword($password);
         }
-        $data['gup_last_pwd_change'] = new \Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $data['gup_last_pwd_change'] = new Expression('CURRENT_TIMESTAMP');
 
-        $model = new \MUtil\Model\TableModel('gems__user_passwords');
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
+        $model = $this->metaModelLoader->createTableModel('gems__user_passwords');
+        $this->metaModelLoader->setChangeFields($model->getMetaModel(), 'gup');
 
         $model->save($data);
 
@@ -458,9 +333,9 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
      *
      * @param \Gems\User\User $user The user whose password history to change
      * @param string $password
-     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     * @return self (continuation pattern)
      */
-    public function updatePasswordHistory(\Gems\User\User $user, string $password)
+    public function updatePasswordHistory(User $user, string $password): self
     {
         $historyLength = $user->getPasswordHistoryLength();
         if (is_null($historyLength)) {
@@ -469,18 +344,17 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
 
         // First we clean up.
         $cleanupOffset = $historyLength > 0 ? $historyLength -1 : 0;
-        $resultFetcher = new ResultFetcher($this->getDb2());
-        $select = $resultFetcher->getSelect('gems__user_password_history');
+        $select = $this->resultFetcher->getSelect('gems__user_password_history');
         $select->columns(['guph_id'])
             ->where(['guph_id_user' => $user->getUserLoginId()])
             ->order('guph_set_time DESC')
             ->limit(10)
             ->offset($cleanupOffset);
-        $removeIds = $resultFetcher->fetchCol($select);
+        $removeIds = $this->resultFetcher->fetchCol($select);
         if ($removeIds) {
-            $where = new Where;
+            $where = new Where();
             $where->in('guph_id', $removeIds);
-            $resultFetcher->deleteFromTable('gems__user_password_history', $where);
+            $this->resultFetcher->deleteFromTable('gems__user_password_history', $where);
         }
 
         // Nothing to add if we don't need to keep track of the password history.
@@ -489,30 +363,29 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
         }
 
         // Add the password to the history.
-        $data['guph_id_user']  = $user->getUserLoginId();
-        $data['guph_password'] = $this->hashPassword($password);
-        $data['guph_set_time'] = new \Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $data = [
+            'guph_id_user' => $user->getUserLoginId(),
+            'guph_password' => $this->hashPassword($password),
+        ];
 
-        $model = new \MUtil\Model\TableModel('gems__user_password_history');
-
-        $model->save($data);
+        $this->resultFetcher->insertIntoTable('gems__user_password_history', $data);
 
         return $this;
     }
 
     /**
      *
-     * @param \Gems\User\User $user The user whose key to set
+     * @param User $user The user whose key to set
      * @param string $newKey
-     * @return $this
+     * @return self
      */
-    public function setTwoFactorKey(\Gems\User\User $user, $newKey)
+    public function setTwoFactorKey(User $user, string $newKey): self
     {
         $data['gul_id_user']        = $user->getUserLoginId();
         $data['gul_two_factor_key'] = $newKey;
 
-        $model = new \MUtil\Model\TableModel('gems__user_logins');
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gul', $user->getUserId());
+        $model = $this->metaModelLoader->createTableModel('gems__user_logins');
+        $this->metaModelLoader->setChangeFields($model->getMetaModel(), 'gul');
 
         $model->save($data);
 
@@ -521,17 +394,18 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
 
     /**
      *
-     * @param \Gems\User\User $user The user whose session key to set
+     * @param User $user The user whose session key to set
      * @param string $newKey
      * @return $this
      */
-    public function setSessionKey(\Gems\User\User $user, string $newKey): static
+    public function setSessionKey(User $user, string $newKey): static
     {
         $data['gul_id_user'] = $user->getUserLoginId();
         $data['gul_session_key'] = $newKey;
+        $data['gul_changed_by'] = $user->getUserId();
 
-        $model = new \MUtil\Model\TableModel('gems__user_logins');
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gul', $user->getUserId());
+        $model = $this->metaModelLoader->createTableModel('gems__user_logins');
+        $this->metaModelLoader->setChangeFields($model->getMetaModel(), 'gul');
 
         $model->save($data);
 

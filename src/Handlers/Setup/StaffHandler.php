@@ -10,11 +10,13 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model;
+use Gems\Repository\AccessRepository;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelConfirmDeleteSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
@@ -208,6 +210,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         CurrentUserRepository $currentUserRepository,
         private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly RouteHelper $routeHelper,
+        protected readonly AccessRepository $accessRepository,
     )
     {
         parent::__construct($responder, $translate, $cache);
@@ -249,7 +252,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
                         break;
 
                     default:
-                        if (! $user->inAllowedGroup()) {
+                        if (! $this->isUserInAllowedGroup($user)) {
                             throw new \Gems\Exception($this->_('No access to page'), 403, null, sprintf(
                                 $this->_('In the %s group you have no right to change users in the %s group.'),
                                 $this->currentUser->getGroup()->getName(),
@@ -405,6 +408,28 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
     public function getTopic(int $count = 1): string
     {
         return $this->plural('staff member', 'staff members', $count);
+    }
+
+    public function isUserInAllowedGroup(User $user): bool
+    {
+        if ($user->getUserId() === $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE) || $user->isStaff()) {
+            // Always allow editing of non-staff user for the time being
+            return true;
+        }
+
+        $group  = $user->getGroupId();
+        $groups = $this->accessRepository->getActiveStaffGroups();
+        if (! isset($groups[$group])) {
+            // Allow editing when the group does not exist or is no longer active.
+            return true;
+        }
+
+        $allowedGroups = $this->currentUser->getAllowedStaffGroups();
+        if ($allowedGroups) {
+            return isset($allowedGroups[$group]);
+        } else {
+            return false;
+        }
     }
 
     /**

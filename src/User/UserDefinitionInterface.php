@@ -11,7 +11,7 @@
 
 namespace Gems\User;
 
-use Gems\User\Group;
+use Laminas\Authentication\Adapter\AdapterInterface;
 
 /**
  *
@@ -27,20 +27,20 @@ interface UserDefinitionInterface
     /**
      * Return true if a password reset key can be created.
      *
-     * Returns the setting for the definition whan no user is passed, otherwise
+     * Returns the setting for the definition when no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems\User\User $user Optional, the user whose password might change
-     * @return boolean
+     * @param User|null $user Optional, the user whose password might change
+     * @return bool
      */
-    public function canResetPassword(\Gems\User\User $user = null);
+    public function canResetPassword(User|null $user = null): bool;
 
     /**
      * Return true if the two factor can be set.
      *
-     * @return boolean
+     * @return bool
      */
-    public function canSaveTwoFactorKey();
+    public function canSaveTwoFactorKey(): bool;
 
     /**
      * Return true if the password can be set.
@@ -48,101 +48,101 @@ interface UserDefinitionInterface
      * Returns the setting for the definition when no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems\User\User $user Optional, the user whose password might change
-     * @return boolean
+     * @param User|null $user Optional, the user whose password might change
+     * @return bool
      */
-    public function canSetPassword(\Gems\User\User $user = null);
+    public function canSetPassword(User|null $user = null): bool;
 
     /**
      * Returns an initialized \Laminas\Authentication\Adapter\AdapterInterface
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @param string $password
-     * @return \Laminas\Authentication\Adapter\AdapterInterface
+     * @return AdapterInterface
      */
-    public function getAuthAdapter(\Gems\User\User $user, $password);
+    public function getAuthAdapter(User $user, string $password): AdapterInterface;
 
     /**
      * Return a password reset key
      *
-     * @param \Gems\User\User $user The user to create a key for.
+     * @param User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(\Gems\User\User $user);
+    public function getPasswordResetKey(User $user): string;
 
     /**
-     * Returns the number of hours a reset key remains valud
+     * Returns the number of hours a reset key remains value
      *
      * @return int
      */
-    public function getResetKeyDurationInHours();
+    public function getResetKeyDurationInHours(): int;
 
     /**
      * Returns the data for a user object. It may be empty if the user is unknown.
      *
-     * @param string $login_name
-     * @param int $organization
+     * @param string $loginName
+     * @param int $organizationId
      * @return array Of data to fill the user with.
      */
-    public function getUserData($login_name, $organization);
+    public function getUserData(string $loginName, int $organizationId): array;
 
     /**
      * Return true if the user has a password.
      *
-     * @param \Gems\User\User $user The user to check
-     * @return boolean
+     * @param User $user The user to check
+     * @return bool
      */
-    public function hasPassword(\Gems\User\User $user);
+    public function hasPassword(User $user): bool;
 
     /**
      * Returns true when users using this definition are staff members.
      *
      * Used only when the definition does not return a user_staff field.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isStaff();
+    public function isStaff(): bool;
 
     /**
-     * Should this user be authorized using two factor authentication?
+     * Should this user be authorized using multi-factor authentication?
      *
      * @param string $ipAddress
-     * @param boolean $hasKey
-     * @param Group $group
-     * @return boolean
+     * @param bool $hasKey
+     * @param Group|null $group
+     * @return bool
      */
-    public function isTwoFactorRequired($ipAddress, $hasKey, Group $group = null);
+    public function isTwoFactorRequired(string $ipAddress, bool $hasKey, Group|null $group = null): bool;
 
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param \Gems\User\User $user The user whose password to change
+     * @param User $user The user whose password to change
      * @param string $password
-     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     * @return UserDefinitionInterface (continuation pattern)
      */
-    public function setPassword(\Gems\User\User $user, $password);
+    public function setPassword(User $user, string $password): self;
 
     /**
      * Update the password history, if allowed for this user type.
      *
-     * @param \Gems\User\User $user The user whose password history to change
+     * @param User $user The user whose password history to change
      * @param string $password
-     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     * @return UserDefinitionInterface (continuation pattern)
      */
-    public function updatePasswordHistory(\Gems\User\User $user, string $password);
+    public function updatePasswordHistory(User $user, string $password): self;
 
     /**
      *
-     * @param \Gems\User\User $user The user whose password to change
+     * @param User $user The user whose password to change
      * @param string $newKey
      * @return $this
      */
-    public function setTwoFactorKey(\Gems\User\User $user, $newKey);
+    public function setTwoFactorKey(User $user, string $newKey): self;
 
     /**
      * @param User $user The user whose session key to set
      * @param string $newKey
      * @return $this
      */
-    public function setSessionKey(\Gems\User\User $user, string $newKey): static;
+    public function setSessionKey(User $user, string $newKey): self;
 }

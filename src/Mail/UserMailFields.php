@@ -23,7 +23,7 @@ class UserMailFields extends OrganizationMailFields
             'dear'           => $this->user->getDearGreeting($language),
             'email'          => $this->user->getEmailAddress(),
             'first_name'     => $this->user->getFirstName(),
-            'from'           => $this->user->getFrom(),
+            'from'           => $this->getUserFrom($this->user),
             'full_name'      => trim($this->user->getGenderHello($language) . ' ' . $this->user->getFullName()),
             'greeting'       => $this->user->getGreeting($language),
             'last_name'      => $this->user->getLastName(),
@@ -40,5 +40,25 @@ class UserMailFields extends OrganizationMailFields
         $mailFields['login_url']      = $mailFields['organization_login_url'];
 
         return $mailFields;
+    }
+
+    protected function getUserFrom(User $user): string
+    {
+        $sources = $user->getBaseOrganization();
+        if ($user->getBaseOrganizationId() !== $user->getCurrentOrganizationId()) {
+            $sources[] = $user->getCurrentOrganization();
+        }
+
+        foreach($sources as $source) {
+            if ($from = $source->getFrom()) {
+                return $from;
+            }
+        }
+
+        if (isset($this->config['email']['site'])) {
+            return $this->config['email']['site'];
+        }
+
+        return $user->getEmailAddress();
     }
 }

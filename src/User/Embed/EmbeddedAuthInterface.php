@@ -30,12 +30,12 @@ interface EmbeddedAuthInterface extends HelperInterface
      * @param $secretKey
      * @return bool
      */
-    public function authenticate(User $user, string $secretKey): bool;
+    public function authenticate(User $user, EmbeddedUserData $embeddedUserData, string $secretKey): bool;
 
     /**
      *
      * @param User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(User $user): string;
+    public function getExampleKey(User $user, EmbeddedUserData $embeddedUserData): string;
 }

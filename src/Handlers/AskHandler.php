@@ -199,7 +199,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $tokenLang = strtolower($this->token->getRespondentLanguage());
         if (($this->currentUser instanceof User && $this->currentUser->isActive())) {
             if ($tokenOrganizationId !== $this->currentUser->getCurrentOrganizationId()) {
-                $this->currentUser->setCurrentOrganization($this->token->getOrganization());
+                $this->currentUser->setCurrentOrganizationId($this->token->getOrganizationId());
                 $this->currentUserRepository->setCurrentOrganizationId($tokenOrganizationId);
             }
             if ($tokenLang != $this->locale->getLanguage()) {

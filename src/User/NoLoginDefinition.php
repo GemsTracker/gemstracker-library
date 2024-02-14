@@ -12,6 +12,8 @@
 namespace Gems\User;
 
 use Gems\Exception\AuthenticationException;
+use Laminas\Authentication\Adapter\AdapterInterface;
+use Laminas\Authentication\Adapter\Callback;
 
 /**
  *
@@ -22,7 +24,7 @@ use Gems\Exception\AuthenticationException;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class NoLoginDefinition extends \Gems\User\UserDefinitionAbstract
+class NoLoginDefinition extends UserDefinitionAbstract
 {
     /**
      * Returns an initialized \Laminas\Authentication\Adapter\AdapterInterface
@@ -31,9 +33,9 @@ class NoLoginDefinition extends \Gems\User\UserDefinitionAbstract
      * @param string $password
      * @return \Laminas\Authentication\Adapter\AdapterInterface
      */
-    public function getAuthAdapter(\Gems\User\User $user, $password)
+    public function getAuthAdapter(User $user, string $password): AdapterInterface
     {
-        return false;
+        return new Callback(function() { return false; });
     }
 
     /**
@@ -43,7 +45,7 @@ class NoLoginDefinition extends \Gems\User\UserDefinitionAbstract
      * @param int $organization
      * @return array Of data to fill the user with.
      */
-    public static function getNoLoginDataFor($loginName, $organization)
+    public static function getNoLoginDataFor(string $loginName, int $organization): array
     {
         throw new AuthenticationException('no login data');
         /*return array(
@@ -60,13 +62,13 @@ class NoLoginDefinition extends \Gems\User\UserDefinitionAbstract
     /**
      * Returns the data for a user object. It may be empty if the user is unknown.
      *
-     * @param string $login_name
+     * @param string $loginName
      * @param int $organization
      * @return array Of data to fill the user with.
      */
-    public function getUserData($login_name, $organization): array
+    public function getUserData(string $loginName, int $organizationId): array
     {
-        return self::getNoLoginDataFor($login_name, $organization);
+        return self::getNoLoginDataFor($loginName, $organizationId);
     }
 
     /**
@@ -76,7 +78,7 @@ class NoLoginDefinition extends \Gems\User\UserDefinitionAbstract
      *
      * @return boolean
      */
-    public function isStaff()
+    public function isStaff(): bool
     {
         return false;
     }

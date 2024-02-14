@@ -4,7 +4,7 @@ namespace Gems\Mail;
 
 class ProjectMailFields implements MailFieldsInterface
 {
-    private array $config;
+    protected array $config;
 
     public function __construct(array $config)
     {

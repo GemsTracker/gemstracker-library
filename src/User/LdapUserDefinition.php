@@ -11,8 +11,11 @@
 
 namespace Gems\User;
 
+use Gems\Exception;
+use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Authentication\Adapter\Ldap as LdapAdapter;
+use Laminas\Db\Sql\Select;
 
 /**
  *
@@ -22,7 +25,7 @@ use Laminas\Authentication\Adapter\Ldap as LdapAdapter;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 03-Jul-2018 18:13:38
  */
-class LdapUserDefinition extends \Gems\User\StaffUserDefinition
+class LdapUserDefinition extends StaffUserDefinition
 {
     /**
      * Return true if a password reset key can be created.
@@ -33,7 +36,7 @@ class LdapUserDefinition extends \Gems\User\StaffUserDefinition
      * @param \Gems\User\User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canResetPassword(\Gems\User\User $user = null)
+    public function canResetPassword(User|null $user = null): bool
     {
         return false;
     }
@@ -47,7 +50,7 @@ class LdapUserDefinition extends \Gems\User\StaffUserDefinition
      * @param \Gems\User\User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(\Gems\User\User $user = null)
+    public function canSetPassword(User $user = null): bool
     {
         return false;
     }
@@ -59,7 +62,7 @@ class LdapUserDefinition extends \Gems\User\StaffUserDefinition
      * @param string $password
      * @return boolean
      */
-    public function checkRehash(\Gems\User\User $user, $password)
+    public function checkRehash(User $user, string $password): bool
     {
         return false;
     }
@@ -71,7 +74,7 @@ class LdapUserDefinition extends \Gems\User\StaffUserDefinition
      * @param string $password
      * @return \Laminas\Authentication\Adapter\AdapterInterface
      */
-    public function getAuthAdapter(\Gems\User\User $user, $password)
+    public function getAuthAdapter(User $user, string $password): AdapterInterface
     {
         $config = [];
         if (isset($this->config['ldap'])) {
@@ -103,30 +106,30 @@ class LdapUserDefinition extends \Gems\User\StaffUserDefinition
      * @param \Gems\User\User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(\Gems\User\User $user)
+    public function getPasswordResetKey(\Gems\User\User $user): string
     {
-        return null;
+        throw new Exception('Ldap adapter cannot create reset key');
     }
 
     /**
      * Copied from \Gems\User\StaffUserDefinition but left out the password link
      *
-     * @param string $login_name
-     * @param string|int $organization
-     * @return \Zend_Db_Select
+     * @param string $loginName
+     * @param int $organizationId
+     * @return Select
      */
-    protected function getUserSelect($login_name, $organization)
+    protected function getUserSelect(string $loginName, int $organizationId): Select
     {
         /**
          * Read the needed parameters from the different tables, lots of renames
          * for compatibility across implementations.
          */
-        $select = new \Zend_Db_Select($this->db);
-        $select->from('gems__user_logins', array(
+        $select = $this->resultFetcher->getSelect('gems__user_logins');
+        $select->columns([
                     'user_login_id'       => 'gul_id_user',
                     'user_two_factor_key' => 'gul_two_factor_key',
-                    ))
-                ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array(
+        ])
+                ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', [
                     'user_id'             => 'gsf_id_user',
                     'user_login'          => 'gsf_login',
                     'user_email'          => 'gsf_email',
@@ -139,19 +142,21 @@ class LdapUserDefinition extends \Gems\User\StaffUserDefinition
                     'user_logout'         => 'gsf_logout_on_survey',
                     'user_base_org_id'    => 'gsf_id_organization',
                     'user_embedded'       => 'gsf_is_embedded',
-                    ))
-               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array(
+                ])
+               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', [
                    'user_role'=>'ggp_role',
                    'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges',
-                   ))
+               ])
                //->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
                //    'user_password_reset' => 'gup_reset_required',
                //    ))
-               ->where('ggp_group_active = 1')
-               ->where('gsf_active = 1')
-               ->where('gul_can_login = 1')
-               ->where('gul_login = ?')
-               ->where('gul_id_organization = ?')
+               ->where([
+                   'ggp_group_active' => 1,
+                   'gsf_active' => 1,
+                   'gul_can_login' => 1,
+                   'gul_login' => $loginName,
+                   'gul_id_organization' => $organizationId,
+               ])
                ->limit(1);
 
         return $select;
@@ -162,10 +167,10 @@ class LdapUserDefinition extends \Gems\User\StaffUserDefinition
      *
      * Seems to be only used on changing a password, so will probably never be reached
      *
-     * @param \Gems\User\User $user The user to check
-     * @return boolean
+     * @param User $user The user to check
+     * @return bool
      */
-    public function hasPassword(\Gems\User\User $user)
+    public function hasPassword(User $user): bool
     {
        return true;
     }
@@ -173,24 +178,23 @@ class LdapUserDefinition extends \Gems\User\StaffUserDefinition
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param \Gems\User\User $user The user whose password to change
+     * @param User $user The user whose password to change
      * @param string $password
-     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     * @return self (continuation pattern)
      */
-    public function setPassword(\Gems\User\User $user, $password)
+    public function setPassword(User $user, string|null $password): self
     {
         throw new \Gems\Exception\Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
-        return $this;
     }
 
     /**
      * Update the password history, if allowed for this user type.
      *
-     * @param \Gems\User\User $user The user whose password history to change
+     * @param User $user The user whose password history to change
      * @param string $password
-     * @return never
+     * @return self
      */
-    public function updatePasswordHistory(\Gems\User\User $user, string $password)
+    public function updatePasswordHistory(User $user, string $password): self
     {
         throw new \Gems\Exception\Coding(sprintf('The password history cannot be updated for %s users.', get_class($this)));
     }

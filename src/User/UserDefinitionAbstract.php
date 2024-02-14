@@ -11,7 +11,7 @@
 
 namespace Gems\User;
 
-use Gems\User\Group;
+use Gems\Exception\Coding;
 
 /**
  * Base class for all user definitions.
@@ -24,14 +24,14 @@ use Gems\User\Group;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract implements \Gems\User\UserDefinitionInterface
+abstract class UserDefinitionAbstract implements UserDefinitionInterface
 {
     /**
      * The time period in hours a reset key is valid for this definition.
      *
      * @var int
      */
-    protected $hoursResetKeyIsValid = 0;
+    protected int $hoursResetKeyIsValid = 0;
 
     /**
      * Return true if a password reset key can be created.
@@ -39,10 +39,10 @@ abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract imp
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems\User\User $user Optional, the user whose password might change
-     * @return boolean
+     * @param User|null $user Optional, the user whose password might change
+     * @return bool
      */
-    public function canResetPassword(\Gems\User\User $user = null)
+    public function canResetPassword(User|null $user = null): bool
     {
         return false;
     }
@@ -50,9 +50,9 @@ abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract imp
     /**
      * Return true if the two factor can be set.
      *
-     * @return boolean
+     * @return bool
      */
-    public function canSaveTwoFactorKey()
+    public function canSaveTwoFactorKey(): bool
     {
         return false;
     }
@@ -63,10 +63,10 @@ abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract imp
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems\User\User $user Optional, the user whose password might change
-     * @return boolean
+     * @param User|null $user Optional, the user whose password might change
+     * @return bool
      */
-    public function canSetPassword(\Gems\User\User $user = null)
+    public function canSetPassword(User|null $user = null): bool
     {
         return false;
     }
@@ -74,12 +74,12 @@ abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract imp
     /**
      * Return a password reset key
      *
-     * @param \Gems\User\User $user The user to create a key for.
+     * @param User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(\Gems\User\User $user)
+    public function getPasswordResetKey(User $user): string
     {
-        throw new \Gems\Exception\Coding(sprintf('A password reset key cannot be issued for %s users.', get_class($this)));
+        throw new Coding(sprintf('A password reset key cannot be issued for %s users.', get_class($this)));
     }
 
     /**
@@ -87,7 +87,7 @@ abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract imp
      *
      * @return int
      */
-    public function getResetKeyDurationInHours()
+    public function getResetKeyDurationInHours(): int
     {
         return $this->hoursResetKeyIsValid;
     }
@@ -95,10 +95,10 @@ abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract imp
     /**
      * Return true if the user has a password.
      *
-     * @param \Gems\User\User $user The user to check
-     * @return boolean
+     * @param User $user The user to check
+     * @return bool
      */
-    public function hasPassword(\Gems\User\User $user)
+    public function hasPassword(User $user): bool
     {
         return false;
     }
@@ -108,22 +108,22 @@ abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract imp
      *
      * Used only when the definition does not return a user_staff field.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isStaff()
+    public function isStaff(): bool
     {
         return true;
     }
 
     /**
-     * Should this user be authorized using two factor authentication?
+     * Should this user be authorized using multi-factor authentication?
      *
      * @param string $ipAddress
-     * @param boolean $hasKey
-     * @param Group $group
-     * @return boolean
+     * @param bool $hasKey
+     * @param Group|null $group
+     * @return bool
      */
-    public function isTwoFactorRequired($ipAddress, $hasKey, Group $group = null)
+    public function isTwoFactorRequired(string $ipAddress, bool $hasKey, Group $group = null): bool
     {
         if ($group) {
             return $group->isTwoFactorRequired($ipAddress, $hasKey);
@@ -134,47 +134,45 @@ abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract imp
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param \Gems\User\User $user The user whose password to change
+     * @param User $user The user whose password to change
      * @param string $password
-     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     * @return self (continuation pattern)
      */
-    public function setPassword(\Gems\User\User $user, $password)
+    public function setPassword(User $user, string $password): self
     {
-        throw new \Gems\Exception\Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
-        return $this;
+        throw new Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
     }
 
     /**
      * Update the password history, if allowed for this user type.
      *
-     * @param \Gems\User\User $user The user whose password history to change
+     * @param User $user The user whose password history to change
      * @param string $password
-     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     * @return self (continuation pattern)
      */
-    public function updatePasswordHistory(\Gems\User\User $user, string $password)
+    public function updatePasswordHistory(User $user, string $password): self
     {
-        throw new \Gems\Exception\Coding(sprintf('The password history cannot be updated for %s users.', get_class($this)));
+        throw new Coding(sprintf('The password history cannot be updated for %s users.', get_class($this)));
     }
 
     /**
      *
-     * @param \Gems\User\User $user The user whose password to change
+     * @param User $user The user whose password to change
      * @param string $newKey
-     * @return $this
+     * @return self
      */
-    public function setTwoFactorKey(\Gems\User\User $user, $newKey)
+    public function setTwoFactorKey(User $user, string $newKey): self
     {
-        throw new \Gems\Exception\Coding(sprintf('A Two Factor key cannot be set for %s users.', get_class($this)));
-        return $this;
+        throw new Coding(sprintf('A Two Factor key cannot be set for %s users.', get_class($this)));
     }
 
     /**
      * @param User $user The user whose session key to set
      * @param string $newKey
-     * @return $this
+     * @return self
      */
-    public function setSessionKey(\Gems\User\User $user, string $newKey): static
+    public function setSessionKey(User $user, string $newKey): self
     {
-        throw new \Gems\Exception\Coding(sprintf('A Session key cannot be set for %s users.', get_class($this)));
+        throw new Coding(sprintf('A Session key cannot be set for %s users.', get_class($this)));
     }
 }

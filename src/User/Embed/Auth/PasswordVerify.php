@@ -11,9 +11,14 @@
 
 namespace Gems\User\Embed\Auth;
 
+use Gems\AuthNew\Adapter\AuthenticationResult;
+use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
 use Gems\User\Embed\EmbeddedAuthAbstract;
+use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\User;
 use Laminas\Authentication\Result;
+use Laminas\Db\Adapter\Adapter;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -25,6 +30,14 @@ use Laminas\Authentication\Result;
  */
 class PasswordVerify extends EmbeddedAuthAbstract
 {
+    public function __construct(
+        TranslatorInterface $translator,
+        protected readonly Adapter $db,
+    )
+    {
+        parent::__construct($translator);
+    }
+
     /**
      * Authenticate embedded user
      *
@@ -32,23 +45,19 @@ class PasswordVerify extends EmbeddedAuthAbstract
      * @param $secretKey
      * @return bool
      */
-    public function authenticate(User $user, string $secretKey): bool
+    public function authenticate(User $user, EmbeddedUserData $embeddedUserData, string $secretKey): bool
     {
-        $embeddedUserData = $user->getEmbedderData();
-        if ($embeddedUserData) {
-            $deferredUser = $embeddedUserData->getDeferredUser($user, $this->deferredLogin);
-        } else {
-            $deferredUser = null;
-        }
+        $deferredUser = $embeddedUserData->getDeferredUser($user, $this->deferredLogin);
 
         if ($deferredUser) {
-            $result = $deferredUser->authenticate($secretKey);
+            $authentication = GemsTrackerAuthentication::fromUser($this->db, $deferredUser, $secretKey);
+            $result = $authentication->authenticate();
 
-            if ($result instanceof Result) {
+            if ($result instanceof AuthenticationResult) {
                 return $result->isValid();
             }
 
-            return (boolean) $result;
+            return (bool) $result;
         }
 
         return false;
@@ -59,7 +68,7 @@ class PasswordVerify extends EmbeddedAuthAbstract
      * @param User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(User $user): string
+    public function getExampleKey(User $user, EmbeddedUserData $embeddedUserData): string
     {
         return '{user_password}';
     }

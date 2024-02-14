@@ -12,7 +12,6 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
 {
     public function __construct(
         private readonly UserLoader $userLoader,
-        //private readonly RespondentRepository $respondentRepository,
         private readonly string $systemUserLoginName,
         private readonly string $systemUserSecretKey,
         private readonly string $deferredLoginName,
@@ -33,7 +32,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
             return $this->makeFailResult(AuthenticationResult::FAILURE, ['Nonexistent or inactive']);
         }
 
-        $systemUserData = $systemUser->getEmbedderData();
+        $systemUserData = $this->userLoader->getEmbedderData($systemUser);
         if (! $systemUserData instanceof EmbeddedUserData) {
             return $this->makeFailResult(AuthenticationResult::FAILURE, ['No user data']);
         }
@@ -46,7 +45,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
         $authClass->setDeferredLogin($this->deferredLoginName);
         $authClass->setPatientNumber($this->patientId);
         $authClass->setOrganizations([$this->organizationId]);
-        $result = $authClass->authenticate($systemUser, $this->systemUserSecretKey);
+        $result = $authClass->authenticate($systemUser, $systemUserData, $this->systemUserSecretKey);
 
         if (!$result) {
             return $this->makeFailResult(AuthenticationResult::FAILURE, ['Invalid credentials']);

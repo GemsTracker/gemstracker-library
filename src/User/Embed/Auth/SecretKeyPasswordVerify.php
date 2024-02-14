@@ -12,6 +12,7 @@
 namespace Gems\User\Embed\Auth;
 
 use Gems\User\Embed\EmbeddedAuthAbstract;
+use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\User;
 
 /**
@@ -31,9 +32,9 @@ class SecretKeyPasswordVerify extends EmbeddedAuthAbstract
      * @param $secretKey
      * @return bool
      */
-    public function authenticate(User $user, string $secretKey): bool
+    public function authenticate(User $user, EmbeddedUserData $embeddedUserData, string $secretKey): bool
     {
-        $savedKey = $user->getSecretKey();
+        $savedKey = $embeddedUserData->getSecretKey();
 
         return password_verify($secretKey, $savedKey);
     }
@@ -43,7 +44,7 @@ class SecretKeyPasswordVerify extends EmbeddedAuthAbstract
      * @param User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(User $user): string
+    public function getExampleKey(User $user, EmbeddedUserData $embeddedUserData): string
     {
         return '{system_user_key}';
     }

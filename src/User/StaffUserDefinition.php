@@ -11,6 +11,9 @@
 
 namespace Gems\User;
 
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Select;
+
 /**
  * A standard, database stored and authenticate staff user as of version 1.5.
  *
@@ -20,18 +23,18 @@ namespace Gems\User;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class StaffUserDefinition extends \Gems\User\DbUserDefinitionAbstract
+class StaffUserDefinition extends DbUserDefinitionAbstract
 {
     /**
      * A select used by subclasses to add fields to the select.
      *
-     * @param string $login_name
-     * @param int $organization
-     * @return \Zend_Db_Select
+     * @param string $loginName
+     * @param int $organizationId
+     * @return Select
      */
-    protected function getUserSelect($login_name, $organization)
+    protected function getUserSelect(string $loginName, int $organizationId): Select
     {
-        if ((0 == ($this->hoursResetKeyIsValid % 24)) || \Zend_Session::$_unitTestEnabled) {
+        if ((0 == ($this->hoursResetKeyIsValid % 24))) {
             $resetExpr = 'CASE WHEN ADDDATE(gup_reset_requested, ' .
                     intval($this->hoursResetKeyIsValid / 24) .
                     ') >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END';
@@ -45,15 +48,15 @@ class StaffUserDefinition extends \Gems\User\DbUserDefinitionAbstract
          * Read the needed parameters from the different tables, lots of renames
          * for compatibility across implementations.
          */
-        $select = new \Zend_Db_Select($this->db);
-        $select->from('gems__user_logins', array(
+        $select = $this->resultFetcher->getSelect('gems__user_logins');
+        $select->columns([
                     'user_login_id' => 'gul_id_user',
                     'user_two_factor_key' => 'gul_two_factor_key',
                     'user_otp_count'      =>'gul_otp_count',
                     'user_otp_requested'  =>'gul_otp_requested',
                     'user_session_key'    => 'gul_session_key',
-                    ))
-                ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array(
+        ])
+                ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', [
                     'user_id'             => 'gsf_id_user',
                     'user_login'          => 'gsf_login',
                     'user_email'          => 'gsf_email',
@@ -67,22 +70,24 @@ class StaffUserDefinition extends \Gems\User\DbUserDefinitionAbstract
                     'user_base_org_id'    => 'gsf_id_organization',
                     'user_embedded'       => 'gsf_is_embedded',
                     'user_phonenumber'    => $this->getMobilePhoneField(),
-                    ))
-               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array(
+                ])
+               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', [
                    'user_role'=>'ggp_role',
                    'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges',
-                   ))
-               ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
+               ])
+               ->join('gems__user_passwords', 'gul_id_user = gup_id_user', [
                    'user_password_reset' => 'gup_reset_required',
-                   'user_resetkey_valid' => new \Zend_Db_Expr($resetExpr),
+                   'user_resetkey_valid' => new Expression($resetExpr),
                    'user_password_last_changed' => 'gup_last_pwd_change',
-                   ))
-               ->where('ggp_group_active = 1')
-               ->where('gsf_active = 1')
-               ->where('gul_can_login = 1')
-               ->where('gul_user_class = ?', 'StaffUser')
-               ->where('gul_login = ?')
-               ->where('gul_id_organization = ?')
+               ], Select::JOIN_LEFT)
+               ->where([
+                   'ggp_group_active' => 1,
+                   'gsf_active' => 1,
+                   'gul_can_login' => 1,
+                   'gul_user_class' => 'StaffUser',
+                   'gul_login' => $loginName,
+                   'gul_id_organization' => $organizationId,
+               ])
                ->limit(1);
 
         // \MUtil\EchoOut\EchoOut::track($select->__toString());
