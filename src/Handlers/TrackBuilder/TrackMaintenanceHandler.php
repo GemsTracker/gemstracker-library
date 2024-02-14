@@ -15,6 +15,8 @@ use Gems\Batch\BatchRunnerLoader;
 use Gems\Menu\RouteHelper;
 use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelTableSnippet;
+use Gems\Snippets\Tracker\TrackMaintenance\TrackMaintenanceSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
@@ -40,6 +42,15 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
      * @var \Gems\Audit\AuditLog
      */
     public $accesslog;
+
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var array snippets name
+     */
+    protected array $autofilterSnippets = [
+        TrackMaintenanceSnippet::class,
+    ];
 
     /**
      * The parameters used for the autofilter action.
