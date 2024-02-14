@@ -137,7 +137,7 @@ class SeedRepository extends MigrationRepositoryAbstract
 
         foreach($seedClasses as $seedClassInfo) {
             $seedClassName = $seedClassInfo['class'];
-            $id = Str::kebab($seedClassName);
+            $id = $this->getIdFromName($seedClassName);
             $seedClass = $this->overloader->create($seedClassName);
             $description = null;
             if (!$seedClass instanceof SeedInterface) {
@@ -181,7 +181,7 @@ class SeedRepository extends MigrationRepositoryAbstract
             foreach ($files as $file) {
                 $filenameParts = explode('.', $file->getBaseName());
                 $name = $filenameParts[0];
-                $id = Str::kebab($name);
+                $id = $this->getIdFromName($name);
                 $data = $this->getSeedDataFromFile($file);
                 $description = $data['description'] ?? null;
                 $seed = [

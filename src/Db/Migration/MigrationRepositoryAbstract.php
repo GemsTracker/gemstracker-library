@@ -11,6 +11,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
+use Zalt\String\Str;
 
 abstract class MigrationRepositoryAbstract
 {
@@ -26,13 +27,17 @@ abstract class MigrationRepositoryAbstract
         protected readonly TranslatorInterface $translator,
         protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly MetaModelLoader $metaModelLoader,
-    )
-    {
+    ) {
     }
 
     public function getDbNamesFromConfigs(array $configs): array
     {
         return array_column($configs, 'db');
+    }
+
+    public function getIdFromName(string $name): string
+    {
+        return Str::kebab(Str::alphaNum($name, true));
     }
 
     abstract public function getInfo(): array;

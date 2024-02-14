@@ -103,7 +103,7 @@ class TableRepository extends MigrationRepositoryAbstract
                     'VIEW' => 'view',
                     default => 'table',
                 };
-                $id = Str::kebab($tableName);
+                $id = $this->getIdFromName($tableName);
                 $table = [
                     'id' => $id,
                     'name' => $tableName,
@@ -167,7 +167,7 @@ class TableRepository extends MigrationRepositoryAbstract
             foreach ($files as $file) {
                 $filenameParts = explode('.', $file->getFilenameWithoutExtension());
                 $name = $filenameParts[0];
-                $id = Str::kebab($name);
+                $id = $this->getIdFromName($name);
                 $fileContent = $file->getContents();
                 $firstRow = substr($fileContent, 0, strpos($fileContent, "\n"));
                 $description = null;

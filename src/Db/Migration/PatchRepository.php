@@ -47,7 +47,7 @@ class PatchRepository extends MigrationRepositoryAbstract
             $order = $patchClass->getOrder() ?? $this->defaultOrder;
             $reflectionClass = new \ReflectionClass($patchClassName);
 
-            $id = Str::kebab($patchClassName);
+            $id = $this->getIdFromName($patchClassName);
 
             $patch = [
                 'id' => $id,
@@ -99,7 +99,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                 }
 
                 $sql = WordsParser::splitStatements($fileContent, false);
-                $id = Str::kebab($name);
+                $id = $this->getIdFromName($name);
 
                 $patch = [
                     'id' => $id,
