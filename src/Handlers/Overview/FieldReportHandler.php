@@ -113,7 +113,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected PeriodSelectRepository $periodSelectRepository,
         protected ResultFetcher $resultFetcher,
         protected TrackDataRepository $trackDataRepository,
@@ -156,7 +156,9 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
 
         $orgs         = $this->currentUser->getRespondentOrgFilter();
         if (isset($filter['gr2t_id_organization'])) {
-            $orgs = array_intersect($orgs, (array) $filter['gr2t_id_organization']);
+            foreach ($filter['gr2t_id_organization'] as $organizationId) {
+                $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            }
         }
         $this->orgWhere = " AND gr2t_id_organization IN (" . implode(", ", $orgs) . ")";
 
