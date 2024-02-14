@@ -12,6 +12,7 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Batch\BatchRunnerLoader;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
@@ -206,6 +207,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         Tracker $tracker,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly BatchRunnerLoader $batchRunnerLoader,
         protected readonly RouteHelper $routeHelper,
         protected readonly TrackModel $trackModel,
@@ -386,6 +388,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         }
 
         if (isset($filter['org']) && strlen($filter['org'])) {
+            $this->currentUserRepository->assertAccessToOrganizationId($filter['org']);
             $filter[] = 'gtr_organizations LIKE "%|' . $filter['org'] . '|%"';
             unset($filter['org']);
         }
