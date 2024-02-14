@@ -26,6 +26,7 @@ use MUtil\JQuery\Form\Element\DatePicker;
 use MUtil\Model;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Gems\Legacy\CurrentUserRepository;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
@@ -69,6 +70,7 @@ class RespondentTrackModel extends GemsMaskedModel
         protected readonly GemsModel $gemsModel,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly Translated $translatedUtil,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly MailRepository $mailRepository,
     ) {
         parent::__construct(
@@ -349,6 +351,7 @@ class RespondentTrackModel extends GemsMaskedModel
                 $values['gr2t_id_user'] = $filter['gr2t_id_user'];
             }
             if (isset($filter['gr2t_id_organization'])) {
+                $this->currentUserRepository->assertAccessToOrganizationId($filter['gr2t_id_organization']);
                 $values['gr2t_id_organization'] = $filter['gr2t_id_organization'];
             }
         }
