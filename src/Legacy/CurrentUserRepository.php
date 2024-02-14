@@ -199,4 +199,23 @@ class CurrentUserRepository
 
         throw new \Gems\Exception('Inaccessible or unknown organization', 403);
     }
+
+    /**
+     * Throw an exception if the track ID is not accessible, or if there is
+     * no user logged in.
+     *
+     * @param int|string $trackId
+     * @return void If the user has access to the track
+     * @throws \Gems\Exception If no user is logged in
+     */
+    public function assertAccessToTrack(string|int $trackId): void
+    {
+        $currentUser = $this->getCurrentUser();
+        if ($currentUser) {
+            $currentUser->assertAccessToTrackId($trackId);
+            return;
+        }
+
+        throw new \Gems\Exception('Inaccessible or unknown track', 403);
+    }
 }

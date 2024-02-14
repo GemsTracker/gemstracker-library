@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Snippets\ModelTableSnippetAbstract;
@@ -112,6 +113,7 @@ class TrackUsageOverviewSnippet extends ModelTableSnippetAbstract
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         protected Tracker $tracker,
+        protected readonly CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
     }
@@ -179,6 +181,7 @@ class TrackUsageOverviewSnippet extends ModelTableSnippetAbstract
         }
 
         if (! $this->trackId && isset($matchedParams[Model::TRACK_ID])) {
+            $this->currentUserRepository->assertAccessToTrack($matchedParams[Model::TRACK_ID]);
             $this->trackId = $matchedParams[Model::TRACK_ID];
         }
 
