@@ -94,7 +94,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected Adapter $laminasDb,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected MaskRepository $maskRepository,
         protected MetaModelLoader $metaModelLoader,
         protected PeriodSelectRepository $periodSelectRepository,
@@ -147,6 +147,10 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
             $this->autofilterParameters['extraFilter']['gr2t_id_organization'] = $this->currentUser->getRespondentOrgFilter();
+        } else {
+            foreach ($filter['gr2t_id_organization'] as $organizationId) {
+                $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            }
         }
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
             $this->autofilterParameters['extraFilter'][1] = 0;
