@@ -160,7 +160,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
         protected OrganizationRepository $organizationRepository,
         protected BatchRunnerLoader $batchRunnerLoader,
     ) {
-        parent::__construct($responder, $translate, $cache, $metaModelLoader, $periodSelectRepository, $tracker);
+        parent::__construct($responder, $translate, $cache, $metaModelLoader, $currentUserRepository, $periodSelectRepository, $tracker);
 
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

@@ -11,6 +11,7 @@
 
 namespace Gems\Handlers\Overview;
 
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\PeriodSelectRepository;
@@ -76,11 +77,12 @@ class OverviewPlanHandler extends TokenSearchHandlerAbstract
         CacheItemPoolInterface $cache,
         MetaModelLoader $metaModelLoader,
         Tracker $tracker,
+        CurrentUserRepository $currentUserRepository,
         PeriodSelectRepository $periodSelectRepository,
         protected RouteHelper $routeHelper,
         protected TokenDateSelector $dateSelector,
     ) {
-        parent::__construct($responder, $translate, $cache, $metaModelLoader, $periodSelectRepository, $tracker);
+        parent::__construct($responder, $translate, $cache, $metaModelLoader, $currentUserRepository, $periodSelectRepository, $tracker);
     }
 
     public function createModel(bool $detailed, string $action): DataReaderInterface
