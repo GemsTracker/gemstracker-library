@@ -37,7 +37,7 @@ abstract class MigrationRepositoryAbstract
 
     public function getIdFromName(string $name): string
     {
-        return Str::kebab(Str::alphaNum($name, true));
+        return Str::kebab(str_replace('\\', ' ',$name));
     }
 
     abstract public function getInfo(): array;
