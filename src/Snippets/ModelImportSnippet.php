@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets;
 
+use MUtil\Task\TaskBatch;
+use Zalt\Html\HtmlElement;
+use Zalt\Snippets\Zend\ZendFormSnippetTrait;
+
 /**
  *
  *
@@ -20,8 +24,10 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Mar 21, 2016 3:52:53 PM
  */
-class ModelImportSnippet extends \MUtil\Snippets\Standard\ModelImportSnippet
+class ModelImportSnippet extends \Zalt\Snippets\Standard\ModelImportSnippet
 {
+    use ZendFormSnippetTrait;
+
     /**
      *
      * @var \Gems\Audit\AuditLog
@@ -29,24 +35,20 @@ class ModelImportSnippet extends \MUtil\Snippets\Standard\ModelImportSnippet
     protected $accesslog;
 
     /**
-     * Hook for after save
-     *
-     * @param \MUtil\Task\TaskBatch $batch that was just executed
-     * @param \MUtil\Form\Element\Html $element Tetx element for display of messages
-     * @return string a message about what has changed (and used in the form)
+     * @inheritdoc
      */
-    public function afterImport(\MUtil\Task\TaskBatch $batch, \MUtil\Form\Element\Html $element)
+    public function afterImport(TaskBatch $batch, HtmlElement $element)
     {
         $text = parent::afterImport($batch, $element);
 
         $data = $this->formData;
 
         // Remove unuseful data
-        unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId]);
+        unset($data['button_spacer'], $data['current_step'], $data[$this->csrfName]);
 
         // Add useful data
-        $data['localfile']        = basename($this->_session->localfile);
-        $data['extension']        = $this->_session->extension;
+        $data['localfile']        = basename($this->session->get('localfile'));
+        $data['extension']        = $this->session->get('extension');
 
         $data['failureDirectory'] = '...' . substr($this->importer->getFailureDirectory(), -30);
         $data['longtermFilename'] = basename($this->importer->getLongtermFilename());
@@ -59,6 +61,6 @@ class ModelImportSnippet extends \MUtil\Snippets\Standard\ModelImportSnippet
 
         ksort($data);
 
-        $this->accesslog->logChange($this->request, null, array_filter($data));
+        // $this->accesslog->logChange($this->request, null, array_filter($data));
     }
 }

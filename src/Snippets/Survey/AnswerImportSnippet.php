@@ -11,11 +11,21 @@
 
 namespace Gems\Snippets\Survey;
 
+use Gems\Locale\Locale;
 use Gems\Snippets\ModelImportSnippet;
+use Gems\Tracker;
+use Gems\Util;
 use Gems\Util\Translated;
-use MUtil\Model;
-use Zalt\Model\Data\DataReaderInterface;
+use Mezzio\Session\SessionInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Message\MessengerInterface;
+use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\MetaModelLoader;
+use Zalt\Model\Translator\ModelTranslatorInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -42,37 +52,25 @@ class AnswerImportSnippet extends ModelImportSnippet
 
     /**
      *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Zend_Locale
-     */
-    protected $locale;
-
-    /**
-     *
      * @var \Gems\Menu
      */
     protected $menu;
 
-    /**
-     * @var DataReaderInterface
-     */
-    protected $targetModel;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MetaModelLoader $metaModelLoader,
+        SessionInterface $session,
+        protected readonly Locale $locale,
+        protected readonly Tracker $tracker,
+        protected readonly Translated $translatedUtil,
+        protected readonly Util $util,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $metaModelLoader, $session);
+    }
 
     /**
      * Add the next button
@@ -89,12 +87,12 @@ class AnswerImportSnippet extends ModelImportSnippet
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
+     * @param \Zalt\Model\Data\FullDataInterface $model
      */
-    protected function addStep1(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addStep1(FormBridgeInterface $bridge, FullDataInterface $model)
     {
-        $this->addItems($bridge, 'survey', 'trans', 'mode', 'track', 'skipUnknownPatients', 'tokenCompleted', 'noToken');
+        $this->addItems($bridge, ['survey', 'trans', 'mode', 'track', 'skipUnknownPatients', 'tokenCompleted', 'noToken']);
     }
 
     /**
@@ -111,20 +109,20 @@ class AnswerImportSnippet extends ModelImportSnippet
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
-        if (! $this->importModel instanceof \MUtil\Model\ModelAbstract) {
+        if (! $this->importModel instanceof FullDataInterface) {
             $surveyId = null;
             $queryParams = $this->requestInfo->getRequestQueryParams();
-            if (isset($queryParams[Model::REQUEST_ID])) {
-                $surveyId = $queryParams[Model::REQUEST_ID];
+            if (isset($queryParams[MetaModelInterface::REQUEST_ID])) {
+                $surveyId = $queryParams[MetaModelInterface::REQUEST_ID];
             }
 
             if ($surveyId) {
                 $this->formData['survey'] = $surveyId;
-                $this->_survey            = $this->loader->getTracker()->getSurvey($surveyId);
+                $this->_survey            = $this->tracker->getSurvey($surveyId);
                 $surveys[$surveyId]       = $this->_survey->getName();
                 $elementClass             = 'Exhibitor';
                 $tracks                   = $this->translatedUtil->getEmptyDropdownArray() +
@@ -225,10 +223,13 @@ class AnswerImportSnippet extends ModelImportSnippet
         }
         $baseform->setAttrib('class', $this->class);
 
+        /**
+         * @var FormBridgeInterface $bridge
+         */
         $bridge = $model->getBridgeFor('form', $baseform);
 
         $this->_items = null;
-        $this->initItems();
+        $this->initItems($model->getMetaModel());
 
         $this->addFormElementsFor($bridge, $model, $step);
 
@@ -238,7 +239,7 @@ class AnswerImportSnippet extends ModelImportSnippet
     /**
      * Try to get the current translator
      *
-     * @return \MUtil\Model\ModelTranslatorInterface or false if none is current
+     * @return ModelTranslatorInterface|bool or false if none is current
      */
     protected function getImportTranslator()
     {
@@ -277,13 +278,13 @@ class AnswerImportSnippet extends ModelImportSnippet
     {
         parent::loadFormData();
 
-        $surveyId = $this->request->getParam(\MUtil\Model::REQUEST_ID);
+        $surveyId = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID);
 
         if (isset($this->formData['survey']) &&
                 $this->formData['survey'] &&
                 (! $this->_survey instanceof \Gems\Tracker\Survey)) {
 
-            $this->_survey = $this->loader->getTracker()->getSurvey($this->formData['survey']);
+            $this->_survey = $this->tracker->getSurvey($this->formData['survey']);
         }
 
         if ($this->_survey instanceof \Gems\Tracker\Survey) {
@@ -294,12 +295,12 @@ class AnswerImportSnippet extends ModelImportSnippet
 
                 $this->_translatorDescriptions = false;
 
-                $this->importModel->set('trans', 'multiOptions', $this->getTranslatorDescriptions());
+                $this->importModel->getMetaModel()->set('trans', 'multiOptions', $this->getTranslatorDescriptions());
             }
         }
 
         if ($this->_survey instanceof \Gems\Tracker\Survey) {
-            $this->targetModel = $this->_survey->getAnswerModel($this->locale->toString());
+            $this->targetModel = $this->_survey->getAnswerModel($this->locale->getCurrentLanguage());
             $this->importer->setTargetModel($this->targetModel);
 
             $source = $this->menu->getParameterSource();

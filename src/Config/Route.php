@@ -627,6 +627,7 @@ class Route
                     'autofilter',
                     'create',
                     'check',
+                    'check-all',
                     'show',
                     'edit',
                     'delete'

@@ -20,8 +20,7 @@ use Gems\Db\ResultFetcher;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Adapter\Adapter;
 use Gems\Encryption\ValueEncryptor;
-use Laminas\Db\Adapter\Driver\AbstractConnection;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  * Abstract implementation of SourceInterface containing basic utilities and logical
@@ -63,7 +62,7 @@ abstract class SourceAbstract implements SourceInterface
     public function __construct(
         private array $_sourceData,
         private readonly ResultFetcher $_gemsResultFetcher,
-        protected readonly Translator $translate,
+        protected readonly TranslatorInterface $translate,
         protected readonly TokenLibrary $tokenLibrary,
         protected readonly Tracker $tracker,
         private readonly ValueEncryptor $valueEncryptor,

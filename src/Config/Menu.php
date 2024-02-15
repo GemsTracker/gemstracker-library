@@ -199,6 +199,11 @@ class Menu
                                         ],
                                     ],
                                 ],
+                                [
+                                    'name' => 'respondent.appointments.check-all',
+                                    'label' => $this->translator->trans('Check all'),
+                                    'type' => 'route-link-item',
+                                ],
                             ],
                         ],
                         [
