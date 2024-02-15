@@ -666,7 +666,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             return true;
         }
 
-        $remoteIp = $request->getServer('REMOTE_ADDR');
+        $remoteIp = $request->getClientIp();
         if ($this->util->isAllowedIP($remoteIp, $this->getAllowedIPRanges())) {
             return true;
         }
@@ -698,7 +698,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             return true;
         }
 
-        $remoteIp = $request->getServer('REMOTE_ADDR');
+        $remoteIp = $request->getClientIp();
         if ($this->util->isAllowedIP($remoteIp, $this->getBaseOrganization()->getAllowedIpRanges())) {
             return true;
         }
