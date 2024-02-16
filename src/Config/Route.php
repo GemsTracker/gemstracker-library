@@ -586,6 +586,7 @@ class Route
                     'change-organization',
                     'export-archive',
                     'undelete',
+                    'overview'
                 ],
                 parameters: [
                     'id1' => '[a-zA-Z0-9-_]+',

@@ -11,9 +11,26 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Menu\SubMenuItem;
-use MUtil\Model;
+use Gems\Model;
+use Gems\Model\MetaModelLoader;
+use Gems\Model\Type\GemsDateTimeType;
+use Gems\Model\Type\GemsDateType;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\ReceptionCodeRepository;
+use Gems\Repository\TokenRepository;
+use Gems\Tracker;
+use Gems\User\Mask\MaskRepository;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Html\HtmlElement;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Sql\JoinModel;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Show the track in a different way, ordered by round and group showing
@@ -34,10 +51,10 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
      * Leading _ means not overwritten by sources.
      *
      * @var array
-     */
+     * /
     protected $_fixedFilter     = array(
         //'gto_valid_from <= NOW()'
-    );
+    ); // */
 
     /**
      * Set a fixed model sort.
@@ -55,96 +72,76 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         'forgroup'                => SORT_ASC,
     );
 
-    protected $_completed       = 0;
-    protected $_open            = 0;
-    protected $_missed          = 0;
-    protected $_future          = 0;
-    protected $_completedTrack  = 0;
-    protected $_openTrack       = 0;
-    protected $_missedTrack     = 0;
-    protected $_futureTrack     = 0;
+    protected int $_completed       = 0;
+    protected int $_open            = 0;
+    protected int $_missed          = 0;
+    protected int $_future          = 0;
+    protected int $_completedTrack  = 0;
+    protected int $_openTrack       = 0;
+    protected int $_missedTrack     = 0;
+    protected int $_futureTrack     = 0;
 
     /**
      * The display format for the date
      *
      * @var string
      */
-    protected $_dateFormat;
+    protected string $_dateFormat;
 
     /**
      * The display format for the date/time fields
      *
      * @var string
      */
-    protected $_dateTimeFormat;
+    protected string $_dateTimeFormat;
 
     /**
-     *
-     * @var \Gems\Menu\SubMenuItem
+     * @var string
      */
-    protected $_overview;
+    protected string $_overviewRoute = 'respondent.overview';
 
     /**
-     *
-     * @var \Gems\Menu\SubMenuItem
+     * @var string
      */
-    protected $_surveyAnswer;
+    protected string $_takeSurveyRoute = 'ask.take';
 
     /**
-     *
-     * @var \Gems\Menu\SubMenuItem
+     * @var string
      */
-    protected $_takeSurvey;
+    protected string $_tokenEditRoute = 'respondent.tracks.token.edit';
 
     /**
-     *
-     * @var \Gems\Menu\SubMenuItem
+     * @var string
      */
-    protected $_tokenEdit;
+    protected string $_tokenCorrectRoute = 'respondent.tracks.token.correct';
 
     /**
-     *
-     * @var \Gems\Menu\SubMenuItem
+     * @var string
      */
-    protected $_tokenCorrect;
+    protected string $_tokenPreviewRoute = 'respondent.tracks.token.questions';
 
     /**
-     *
-     * @var \Gems\Menu\SubMenuItem
+     * @var string
      */
-    protected $_tokenPreview;
+    protected string $_tokenShowRoute = 'respondent.tracks.token.show';
 
     /**
-     *
-     * @var \Gems\Menu\SubMenuItem
+     * @var string
      */
-    protected $_tokenShow;
+    protected string $_trackAnswerRoute = 'respondent.tracks.token.answer';
 
     /**
-     *
-     * @var \Gems\Menu\SubMenuItem
+     * @var string
      */
-    protected $_trackAnswer;
+    protected string $_trackDeleteRoute = 'respondent.tracks.delete';
 
     /**
-     *
-     * @var \Gems\Menu\SubMenuItem
+     * @var string
      */
-    protected $_trackDelete;
+    protected string $_trackEditRoute = 'respondent.tracks.edit';
 
-    /**
-     *
-     * @var \Gems\Menu\SubMenuItem
-     */
-    protected $_trackEdit;
+    public array $allowedOrgs;
 
-    public $allowedOrgs;
-
-    /**
-     * @var \Gems\Util\BasePath
-     */
-    protected $basepath;
-    
     /**
      * Sets pagination on or off.
      *
@@ -152,28 +149,60 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
      */
     public $browse = false;
 
-    /**
-     * @var \MUtil\Html\Creator
-     */
-    public $creator             = null;
-
-    public $currentOrgId;
+    public int $currentOrgId;
 
     /**
      * Display text for track that can NOT be mailed, set in afterRegistry
      */
-    protected $textMailable;
+    protected ?string $textMailable;
+
     /**
      * Display text for track that can be mailed, set in afterRegistry
      */
-    protected $textNotMailable;
+    protected ?string $textNotMailable;
 
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
+    protected array $tokenParameters = [
+        MetaModelInterface::REQUEST_ID => 'gto_id_token',
+    ];
 
-    protected function _addTooltip($element, $text, $placement = "auto")
+    protected array $trackParameters = [
+        Model::RESPONDENT_TRACK         => 'gto_id_respondent_track',
+        MetaModelInterface::REQUEST_ID1 => 'gr2o_patient_nr',
+        MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization',
+    ];
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        MaskRepository $maskRepository,
+        MetaModelLoader $metaModelLoader,
+        Tracker $tracker,
+        TokenRepository $tokenRepository,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly ReceptionCodeRepository $receptionCodeRepository,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $currentUserRepository, $maskRepository, $metaModelLoader, $tracker, $tokenRepository);
+
+        // Load the display dateformat
+        $dateType     = new GemsDateType($this->translate);
+        $dateTimeType = new GemsDateTimeType($this->translate);
+        $this->_dateFormat     = $dateType->dateFormat;
+        $this->_dateTimeFormat = $dateTimeType->dateFormat;
+
+        // Initialize the tooltips
+        $this->textNotMailable = $this->_("May not be mailed");
+        $this->textMailable    = $this->_("May be mailed");
+
+        // Initialize lookup for allowed and current organization
+        $this->allowedOrgs  = $this->currentUser->getAllowedOrganizations();
+        $this->currentOrgId = $this->currentUser->getCurrentOrganizationId();
+    }
+
+    protected function _addTooltip(HtmlElement $element, $text, $placement = "auto")
     {
         $element->setAttrib('data-toggle', 'tooltip')
                 ->setAttrib('data-placement', $placement)
@@ -181,27 +210,42 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
                 ->setAttrib('title', $text);
     }
 
+    public function _extractParameters(array $data, array $keys)
+    {
+        $output = [];
+
+        foreach ($keys as $param => $input) {
+            if (isset($data[$input])) {
+                $output[$param] = $data[$input];
+            } elseif (isset($data[$param])) {
+                $output[$param] = $data[$param];
+            }
+        }
+
+        return $output;
+    }
+
     protected function _getDeleteIcon($row, $trackParameterSource, $isSuccess = true)
     {
-        $deleteTrackContainer = \MUtil\Html::create('div', array('class' => 'otherOrg pull-right', 'renderClosingTag' => true));
+        $deleteTrackContainer = Html::create('div', array('class' => 'otherOrg pull-right', 'renderClosingTag' => true));
         if ($row['gr2o_id_organization'] != $this->currentOrgId) {
-            $deleteTrackContainer[] = $this->loader->getOrganization($row['gr2o_id_organization'])->getName() . ' ';
+            $deleteTrackContainer[] = $this->organizationRepository->getOrganization($row['gr2o_id_organization'])->getName() . ' ';
         }
-        if (array_key_exists($row['gr2o_id_organization'], $this->allowedOrgs) && $this->_trackDelete) {
+        if (array_key_exists($row['gr2o_id_organization'], $this->allowedOrgs)) {
             if ($isSuccess) {
-                $caption = $this->_("Delete %s!");
+                $caption = $this->_("Delete track!");
                 $icon    = 'trash';
             } else {
-                $caption = $this->_("Undelete %s!");
+                $caption = $this->_("Undelete track!");
                 $icon    = 'recycle';
             }
-            $deleteLink = \MUtil\Html::create('i', array(
+            $deleteLabel = Html::create('i', array(
                 'class'            => 'fa fa-' . $icon . ' deleteIcon',
                 'renderClosingTag' => true
             ));
-            $this->_addTooltip($deleteLink, sprintf($caption, $this->_(array('track','', 1))), 'left');
+            $this->_addTooltip($deleteLabel, $caption, 'left');
 
-            $link = $this->createMenuLink($trackParameterSource, 'track', 'delete-track', $deleteLink, $this->_trackDelete);
+            $link = $this->createTrackLink($this->_trackDeleteRoute, $trackParameterSource, $deleteLabel);
             $deleteTrackContainer[] = $link;
         }
 
@@ -210,17 +254,17 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
 
     protected function _getEditIcon($row, $trackParameterSource)
     {
-        if (array_key_exists($row['gr2o_id_organization'], $this->allowedOrgs) && $this->_trackEdit) {
-            $editLink = \MUtil\Html::create('i', array(
+        if (array_key_exists($row['gr2o_id_organization'], $this->allowedOrgs)) {
+            $editLabel = Html::create('i', array(
                 'class'            => 'fa fa-pencil',
                 'renderClosingTag' => true
             ));
-            $this->_addTooltip($editLink, $this->_("Edit track"), 'right');
+            $this->_addTooltip($editLabel, $this->_("Edit track"), 'right');
 
-            $link = $this->createMenuLink($trackParameterSource, 'track', 'edit-track', $editLink, $this->_trackEdit);
+            $link = $this->createTrackLink($this->_trackEditRoute, $trackParameterSource, $editLabel);
         } else {
             // When org not allowed, dont add the link, so the track will just open
-            $link = \MUtil\Html::create('span', array('class' => 'fa fa-pencil', 'renderClosingTag' => true));
+            $link = Html::create('span', array('class' => 'fa fa-pencil', 'renderClosingTag' => true));
         }
         return $link;
     }
@@ -232,12 +276,12 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         }
 
         $tooltipText    = $row['gr2t_mailable'] == 0 ? $this->textNotMailable : $this->textMailable;
-        $icon           = \MUtil\Html::create('i', array('class' => 'fa fa-envelope-o fa-fw', 'renderClosingTag' => true));
+        $icon           = Html::create('i', array('class' => 'fa fa-envelope-o fa-fw', 'renderClosingTag' => true));
         $mailableIcon   = array();
         $mailableIcon[] = $icon;
 
         if ($row['gr2t_mailable'] == 0) {
-            $icon           = \MUtil\Html::create('i', array('class' => 'fa fa-close fa-fw icon-danger', 'renderClosingTag' => true));
+            $icon           = Html::create('i', array('class' => 'fa fa-close fa-fw icon-danger', 'renderClosingTag' => true));
             $mailableIcon[] = $icon;
         }
         $this->_addTooltip($icon, $tooltipText, 'right');
@@ -251,7 +295,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
      * Make sure the needed javascript is loaded
      *
      * @param \Zend_View $view
-     */
+     * /
     protected function _initView($view)
     {
         $baseUrl = $this->basepath->getBasePath();
@@ -267,11 +311,11 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
          * And add some initialization:
          *  - Hide all tokens initially (accessability, when no javascript they should be visible)
          *  - If there is a day labeled today, scroll to it (prevents errors when not visible)
-         */
+         * /
         $view->headScript()->appendFile($baseUrl . '/gems/js/gems.trafficlight.js');
         $view->headScript()->appendFile($baseUrl . '/gems/js/gems.verticalExpand.js');
         $view->headScript()->appendFile($baseUrl . '/gems/js/gems.respondentAnswersModal.js');
-    }
+    } // */
 
     /**
      * Copied from \Gems_Token, to save overhead of loading a token just for this check
@@ -309,7 +353,8 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
     protected function _loadData()
     {
         $model = $this->getModel();
-        $model->trackUsage();
+        $metaModel = $model->getMetaModel();
+        $metaModel->trackUsage();
 
         $items = array(
             'gto_id_respondent_track',
@@ -335,34 +380,35 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         );
         foreach ($items as $item)
         {
-            $model->get($item);
+            $metaModel->get($item);
         }
 
-        return $model->load(true, $this->_fixedSort);
+        return $model->load($this->getFilter($metaModel), $this->_fixedSort);
     }
 
-    public function addToken($tokenData)
+    public function addToken(array $tokenData)
     {
         // We add all data we need so no database calls needed to load the token
-        $tokenDiv = $this->creator->div(array('class' => 'zpitem', 'renderClosingTag' => true));
+        $tokenDiv = Html::create('div', ['class' => 'zpitem', 'renderClosingTag' => true]);
         $innerDiv = $tokenDiv->div(array('class' => 'tokenwrapper', 'renderClosingTag' => true));
 
-        $toolsDiv = $this->creator->div(array('class' => 'tools', 'renderClosingTag' => true));
+        $toolsDiv = Html::create('div', ['class' => 'tools', 'renderClosingTag' => true]);
         $innerDiv[] = $toolsDiv;
 
         $this->getToolIcons($toolsDiv, $tokenData);
         $this->addTokenIcon($toolsDiv, $tokenData);
 
-        $tokenClass = $this->util->getTokenData()->getStatusClass($tokenData['token_status']);
+        $tokenClass = $this->tokenRepository->getStatusClass($tokenData['token_status']);
 
         $tokenLink = null;
+        $tooltip   = [];
 
         switch ($tokenData['token_status']) {
             case 'A': // Answered
-                $tokenLink = $this->createMenuLink($tokenData + array('gto_in_source' => 1), 'track', 'answer', '', $this->_trackAnswer);
-                $tooltip = array(sprintf($this->_('Completed') . ': %s', $tokenData['gto_completion_time']->get($this->_dateTimeFormat)));
+                $tokenLink = $this->createTokenLink($this->_trackAnswerRoute, $tokenData);
+                $tooltip = array(sprintf($this->_('Completed') . ': %s', $tokenData['gto_completion_time']->format($this->_dateTimeFormat)));
                 if (!empty($tokenData['gto_result'])) {
-                    $tooltip[] = \MUtil\Html::raw('<br/>');
+                    $tooltip[] = Html::raw('<br/>');
                     $tooltip[] = sprintf($this->_('Result') .': %s', $tokenData['gto_result']);
                 }
                 $this->_completed++;
@@ -373,28 +419,28 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
 
             case 'O': // Open
             case 'P': // Partial
-                $tokenLink = $this->createMenuLink($tokenData, 'ask', 'take', '', $this->_takeSurvey);
+                $tokenLink = $this->createTokenLink($this->_takeSurveyRoute, $tokenData);
                 if ($tokenData['ggp_member_type'] == 'respondent') {
-                    $tokenLink = $this->createMenuLink($tokenData, 'track', 'show', '', $this->_tokenShow);
+                    $tokenLink = $this->createTokenLink($this->_tokenShowRoute, $tokenData);
                 }
                 if (is_null($tokenData['gto_valid_until'])) {
                     $tooltip = $this->_('Does not expire');
                 } else {
-                    $tooltip = sprintf($this->_('Open until %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
+                    $tooltip = sprintf($this->_('Open until %s'), $tokenData['gto_valid_until']->format($this->_dateTimeFormat));
                 }
                 $this->_open++;
                 break;
 
             case 'M': // Missed
             case 'I': // Incomplete
-                $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
-                $tooltip = sprintf($this->_('Missed since %s'), $tokenData['gto_valid_until']->get($this->_dateTimeFormat));
+                $tokenLink = $this->createTokenLink($this->_tokenEditRoute, $tokenData);
+                $tooltip = sprintf($this->_('Missed since %s'), $tokenData['gto_valid_until']->format($this->_dateTimeFormat));
                 $this->_missed++;
                 break;
 
             case 'W': //Waiting
-                $tokenLink = $this->createMenuLink($tokenData + array('id_type' => 'token', 'grc_success' => 1), 'track', 'edit', '', $this->_tokenEdit);
-                $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_from']->get($this->_dateTimeFormat));
+                $tokenLink = $this->createTokenLink($this->_tokenEditRoute, $tokenData);
+                $tooltip = sprintf($this->_('Valid from %s'), $tokenData['gto_valid_from']->format($this->_dateTimeFormat));
                 $this->_future++;
 
             default:
@@ -403,7 +449,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
 
         if (empty($tokenLink)) {
             $tokenClass .= ' disabled';
-            $tokenLink = $this->creator->div(array('class'=>'disabled'));
+            $tokenLink = Html::create('div', ['class'=>'disabled']);
         }
         $tokenDiv->appendAttrib('class', $tokenClass);
         $innerDiv[] = $tokenLink;
@@ -427,75 +473,47 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         }
     }
 
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        // Load the display dateformat
-        $this->_dateFormat     = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
-        $this->_dateTimeFormat = Model::getTypeDefault(Model::TYPE_DATETIME, 'dateFormat');
-
-        $this->creator = \MUtil\Html::getCreator();
-
-        // find the menu items only once for more efficiency
-        $this->_trackAnswer  = $this->findMenuItem('track', 'answer');
-        $this->_trackEdit    = $this->findMenuItem('track', 'edit-track');
-        $this->_trackDelete  = $this->findMenuItem('track', 'delete-track');
-
-        $this->_surveyAnswer = $this->findMenuItem('survey', 'answer');
-        $this->_takeSurvey   = $this->findMenuItem('ask', 'take');
-
-        $this->_tokenCorrect = $this->findMenuItem('track', 'correct');
-        $this->_tokenDelete  = $this->findMenuItem('track', 'delete');
-        $this->_tokenEdit    = $this->findMenuItem('track', 'edit');
-        $this->_tokenPreview = $this->findMenuItem('track', 'questions');
-        $this->_tokenShow    = $this->findMenuItem('track', 'show');
-        $this->_overview     = $this->findMenuItem('respondent', 'overview');
-
-        // Initialize the tooltips
-        $this->textNotMailable = $this->_("May not be mailed");
-        $this->textMailable    = $this->_("May be mailed");
-
-        // Initialize lookup for allowed and current organization
-        $this->allowedOrgs  = $this->loader->getCurrentUser()->getAllowedOrganizations();
-        $this->currentOrgId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
-    }
-
-
-    /**
-     * @param mixed $parameterSource
-     * @param string $controller
-     * @param string $action
-     * @param string|null $label
-     * @param SubMenuItem|null $menuItem
-     * @return SubMenuItem|null
-     */
-    public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null)
-    {
-        if (!is_null($menuItem) || $menuItem = $this->findMenuItem($controller, $action)) {
-            $item = $menuItem->toActionLinkLower($this->request, $parameterSource, $label);
-            if (is_object($item)) {
-                $item->setAttrib('class', '');
-            }
-            return $item;
-        }
-        return null;
-    }
-
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     public function createModel(): DataReaderInterface
     {
         $model = parent::createModel();
 
-        if (!$model->has('forgroup')) {
+        if ($model instanceof JoinModel && !$model->getMetaModel()->has('forgroup')) {
             $model->addColumn('gems__groups.ggp_name', 'forgroup');
         }
 
         return $model;
+    }
+
+    public function createRouteLink(string $route, array $row = [], mixed $label = null): ?HtmlElement
+    {
+        $menuUrl = $this->menuHelper->getRouteUrlArray($route, $row + $this->requestInfo->getRequestMatchedParams());
+
+        if (is_array($menuUrl)) {
+            if ($label) {
+                if (is_string($label)) {
+                    $label = strtolower($label);
+                }
+            } else {
+                $label = strtolower($menuUrl['label']);
+            }
+            return Html::create('actionLink', $menuUrl['url'], $label);
+        }
+        return null;
+    }
+
+    public function createTokenLink(string $route, array $row = [], mixed $label = null): ?HtmlElement
+    {
+        return $this->createRouteLink($route, $this->_extractParameters($row, $this->tokenParameters + $this->trackParameters), $label);
+    }
+
+    public function createTrackLink(string $route, array $row = [], mixed $label = null): ?HtmlElement
+    {
+        return $this->createRouteLink($route, $this->_extractParameters($row, $this->trackParameters), $label);
     }
 
     protected function finishGroup($progressDiv)
@@ -563,269 +581,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         return;
     }
 
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
-    {
-        $this->_initView($view);
-
-        $main = $this->creator->div(array('class' => 'panel panel-default', 'id' => 'trackwrapper', 'renderClosingTag' => true));
-
-        //$main->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
-
-        $currentTrackId  = null; //\Gems\Cookies::get($this->request, 'track_idx');
-        $data            = $this->_loadData();
-        $doelgroep       = null;
-        $lastDate        = null;
-        $lastDescription = null;
-        $now             = time();
-        $progressDiv     = null;
-        $respTrackId     = 0;
-        $today           = new \DateTimeImmutable('today');
-        $trackProgress   = null;
-        $minIcon         = \MUtil\Html::create('span', array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
-        $summaryIcon     = \MUtil\Html::create('i', array('class' => 'fa fa-list-alt fa-fw', 'renderClosingTag' => true));
-        $trackIds        = array_column($data, 'gto_id_respondent_track', 'gto_id_respondent_track');
-
-        // Check for cookie set for this patient
-        if (! isset($trackIds[$currentTrackId])) {
-            $currentTrackId =  reset($trackIds);
-        }
-        
-        // The normal loop
-        foreach ($data as $row)
-        {
-            if ($respTrackId !== $row['gto_id_respondent_track']) {
-                if (isset($day) && $lastDate instanceof \DateTimeInterface && $lastDate->getTimestamp() <= $now) {
-                    $day->class .= ' today';
-					unset($day);
-                }
-                $progressDiv = $this->finishGroup($progressDiv);
-                $this->finishTrack($trackProgress);
-
-                $doelgroep            = null;
-                $lastDate             = null;
-                $lastDescription      = null;
-                $respTrackId          = $row['gto_id_respondent_track'];
-                $trackParameterSource = array(
-                    'gr2t_id_respondent_track' => $row['gto_id_respondent_track'],
-                    'gr2o_patient_nr'          => $row['gr2o_patient_nr'],
-                    'gr2o_id_organization'     => $row['gr2o_id_organization'],
-                    'can_edit'                 => 1
-                );
-
-                if ($row['gto_id_respondent_track'] == $currentTrackId) {
-                    $caretClass = "fa-chevron-down";
-                    $bodyStyle  = "";  
-                } else {
-                    $caretClass = "fa-chevron-right";
-                    $bodyStyle  = "display: none;";
-                }
-                
-                $track         = $main->div(array('class' => 'panel panel-default traject verticalExpand'));
-
-                $trackHeading  = $track->div(array('class' => 'panel-heading header', 'renderClosingTag' => true));
-
-                $trackTitle    = \MUtil\Html::create('span', array('class' => 'title'));
-                $trackTitle[]  = ' ' . $row['gtr_track_name'];
-                $trackTitle[]  = \MUtil\Html::create('span', array('class' => "header-caret fa fa-fw " . $caretClass, 'renderClosingTag' => true));
-
-                $trackReceptionCode = $this->loader->getUtil()->getReceptionCode($row['gr2t_reception_code']);
-                if (!$trackReceptionCode->isSuccess()) {
-                    $track->class = $track->class . ' deleted';
-                    $description = $trackReceptionCode->getDescription();
-                    if (!empty($row['gr2t_comment'])) {
-                        $description .= sprintf(' (%s)', $row['gr2t_comment']);
-                    }
-                    $trackTitle[] = \MUtil\Html::create('div', $description, array('class'=>'description'));
-                }
-
-                $trackHeader   = $trackHeading->h3(array('class' => "panel-title", 'renderClosingTag' => true));
-                $trackHeader[] = $this->_getEditIcon($row, $trackParameterSource);
-                $trackHeader[] = $this->_getMailIcon($row);
-                $trackHeader[] = $trackTitle;
-                $trackHeader[] = $this->_getDeleteIcon($row, $trackParameterSource, $trackReceptionCode->isSuccess());
-
-                if ($row['gr2t_start_date'] instanceof \DateTimeInterface) {
-                    $trackStartDate = $row['gr2t_start_date']->format($this->_dateFormat);
-                } else {
-                    $trackStartDate = $this->_('n/a');
-                }
-                $trackHeading->div($row['gr2t_track_info'], array('renderClosingTag' => true));
-                $trackHeading->div($this->_('Start date') . ': ' . $trackStartDate);
-                $trackProgress = $trackHeading->div(array('class' => 'progress pull-right', 'renderClosingTag' => true));
-
-                $container    = $track->div(array('class' => 'panel-body', 'style' => $bodyStyle));
-                $subcontainer = $container->div(array('class' => 'objecten', 'renderClosingTag' => true));
-            }
-
-            $date = $row['gto_valid_from'];
-            if (! $date instanceof \DateTimeInterface) {
-                $date = Model::getDateTimeInterface($date);
-                if (! $date instanceof \DateTimeInterface) {
-                    continue;
-                }
-            }
-
-            $description = $row['gto_round_description'];
-            if (is_null($description)) $description = '';
-            if ($lastDescription !== $description || !isset($day)) {
-                if (isset($day) && $lastDate instanceof \DateTimeInterface && $lastDate->getTimestamp() < $now && $row['gto_valid_from']->getTimestamp() > $now) {
-                    $day->class .= ' today';
-                }
-                $lastDescription = $description;
-                $progressDiv     = $this->finishGroup($progressDiv);
-                $lastDate        = $date;
-                $class           = 'object';
-                if ($date->getTimestamp() == $today) {
-                    $class .= ' today';
-                }
-                $day = $subcontainer->div(array('class' => $class, 'renderClosingTag' => true));
-                $this->_addTooltip($summaryIcon, $this->_('Summary'), 'auto top');
-                $params = [
-                    'gto_id_respondent_track' => $row['gto_id_respondent_track'],
-                    'gto_round_description'   => urlencode(str_replace('/', '&#47;', $description))
-                ];
-                if ($this->_overview) {
-                    $summaryLink = $this->createMenuLink(
-                        [
-                            'gr2o_patient_nr' => $row['gr2o_patient_nr'],
-                            'gr2o_id_organization' => $row['gr2o_id_organization'],
-                            'RouteReset' => true,
-                            ],  
-                        'respondent', 
-                        'overview', 
-                        $summaryIcon, 
-                        $this->_overview);
-                    $summaryLink->href->add($params);
-                    // $summaryLink->target = 'inline';
-                } else {
-                    $summaryLink = \MUtil\Html::create('div', $summaryIcon, array('renderClosingTag' => true));
-                }
-                $summaryLink->class='pull-right inline-answers';
-                $day->h5(array($summaryLink, ucfirst($description)));
-                $day->h6($date);
-
-                $doelgroep = null;
-            } elseif (isset($day) && $lastDate !== $date) {
-                // When we have a new start date, add the date and start a new group
-                $day->h6($date);
-                $lastDate = $date;
-                $doelgroep = null;
-            }
-
-            if ($doelgroep !== $row['forgroup']) {
-                $this->finishGroup($progressDiv);
-                $doelgroep    = $row['forgroup'];
-                $doelgroepDiv = $day->div(array('class' => 'actor', 'renderClosingTag' => true));
-                $doelgroepDiv->h6(array($minIcon, $doelgroep));
-                $progressDiv  = $doelgroepDiv->div(array('class' => 'zplegenda', 'renderClosingTag' => true));
-                $tokenDiv     = $doelgroepDiv->div(array('class' => 'zpitems', 'renderClosingTag' => true));
-            }
-
-            $tokenDiv[] = $this->addToken($row);
-        }
-        if (isset($day) && $lastDate->getTimestamp() < $now) {
-            $day->class .= ' today';
-        }
-        $progressDiv = $this->finishGroup($progressDiv);
-        $this->finishTrack($trackProgress);
-
-        return $main;
-    }
-
-    /**
-     *
-     * @param \MUtil\Html $toolsDiv
-     * @param array $token
-     */
-    public function getToolIcons($toolsDiv, $token)
-    {
-        static $correctIcon;
-        static $showIcon;
-        static $clipboardIcon;
-
-        if (!isset($correctIcon)) {
-            $correctIcon = \MUtil\Html::create('i', array(
-                    'class'            => 'fa fa-fw fa-pencil dropdown-toggle',
-                    'renderClosingTag' => true
-                ));
-        }
-
-        if (!isset($showIcon)) {
-            $plusIcon = \MUtil\Html::create('i', array(
-                    'class'            => 'fa fa-fw fa-ellipsis-h dropdown-toggle',
-                    'renderClosingTag' => true
-                ));
-        }
-
-        if (!isset($clipboardIcon)) {
-            $clipboardIcon = \MUtil\Html::create('i', array(
-                'class'            => 'fa fa-fw fa-clipboard dropdown-toggle',
-                'renderClosingTag' => true
-            ));
-        }
-        
-        // When not completed we have no correct
-        if ($this->_isCompleted($token)) {
-            $correctLink = $this->createMenuLink($token + ['is_completed' => 1, 'grc_success' => 1], 'track', 'correct', $correctIcon, $this->_tokenCorrect);
-            if ($correctLink) {
-                $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
-                $this->_addTooltip($dropUp, ucfirst($this->_tokenCorrect->get('label')));
-                $dropUp->append($correctLink);
-            }
-        }
-
-        $showLink = $this->createMenuLink($token, 'track', 'show', $plusIcon, $this->_tokenShow);
-        if ($showLink) {
-            $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
-            $this->_addTooltip($dropUp, $this->_('Details'));
-            $dropUp->append($showLink);
-        }
-        
-        // When not completed and not missed (meaning open or future) we can copy the token
-        if (!$this->_isCompleted($token) && !$this->_isMissed($token)) {
-            // We now use the copy icon to allow copy token to clipboard
-            $dropUp = $toolsDiv->div(array(
-                                         'class' => 'dropdown dropup pull-right clipboard copier-to-clipboard',
-                                         'data-clipboard-text' => $token['gto_id_token'],
-                                         'data-clipboard-after' => sprintf($this->_('Copied: %s'), $token['gto_id_token']),
-                                         'data-toggle' => 'tooltip',
-                                         'title' => $this->_('Copy'),
-                                         'renderClosingTag' => true
-                                     ));
-            $dropUp->append($clipboardIcon);
-        }
-    }
-
-    /**
-     * The place to check if the data set in the snippet is valid
-     * to generate the snippet.
-     *
-     * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
-     * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil\Registry\TargetInterface}.
-     *
-     * @return boolean
-     */
-    public function hasHtmlOutput(): bool
-    {
-        return $this->respondent && $this->request;
-    }
-
-    /**
-     * Copied from parent, adjusted to also show inactive tracks with ok and completed tokens
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
+    public function getFilter(MetaModelInterface $metaModel): array
     {
         $filter['gto_id_respondent']   = $this->respondent->getId();
         if (is_array($this->forOtherOrgs)) {
@@ -845,16 +601,230 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         $filter[] = 'gro_active = 1 OR gro_active IS NULL OR (gto_completion_time IS NOT NULL)';
         $filter['gsu_active']  = 1;
 
-        // NOTE! $this->model does not need to be the token model, but $model is a token model
-        $tabFilter = $this->model->getMeta('tab_filter');
-        if ($tabFilter) {
-            $model->addFilter($tabFilter);
+        return $filter;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getHtmlOutput()
+    {
+        $mainDiv = Html::create('div', ['class' => 'panel panel-default', 'id' => 'trackwrapper', 'renderClosingTag' => true]);
+
+        $currentTrackId  = null; //\Gems\Cookies::get($this->request, 'track_idx');
+        $data            = $this->_loadData();
+        $doelgroep       = null;
+        $lastDate        = null;
+        $lastDescription = null;
+        $now             = time();
+        $progressDiv     = null;
+        $respTrackId     = 0;
+        $today           = time();
+        $trackProgress   = null;
+        $minIcon         = Html::create('span', array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
+        $summaryIcon     = Html::create('i', array('class' => 'fa fa-list-alt fa-fw', 'renderClosingTag' => true));
+        $trackIds        = array_column($data, 'gto_id_respondent_track', 'gto_id_respondent_track');
+
+        // Check for cookie set for this patient
+        if (! isset($trackIds[$currentTrackId])) {
+            $currentTrackId =  reset($trackIds);
+        }
+        
+        // The normal loop
+        foreach ($data as $row)
+        {
+            if ($respTrackId !== $row['gto_id_respondent_track']) {
+                if (isset($dateDiv) && $lastDate instanceof \DateTimeInterface && $lastDate->getTimestamp() <= $now) {
+                    $dateDiv->appendAttrib('class', 'today');
+					unset($dateDiv);
+                }
+                $progressDiv = $this->finishGroup($progressDiv);
+                $this->finishTrack($trackProgress);
+
+                $doelgroep            = null;
+                $lastDate             = null;
+                $lastDescription      = null;
+                $respTrackId          = $row['gto_id_respondent_track'];
+                $trackParameterSource = array(
+                    Model::RESPONDENT_TRACK         => $row['gto_id_respondent_track'],
+                    MetaModelInterface::REQUEST_ID1 => $row['gr2o_patient_nr'],
+                    MetaModelInterface::REQUEST_ID2 => $row['gr2o_id_organization'],
+                );
+
+                if ($row['gto_id_respondent_track'] == $currentTrackId) {
+                    $caretClass = "fa-chevron-down";
+                    $bodyStyle  = "";  
+                } else {
+                    $caretClass = "fa-chevron-right";
+                    $bodyStyle  = "display: none;";
+                }
+                
+                $trackDiv         = $mainDiv->div(array('class' => 'panel panel-default traject verticalExpand'));
+                $trackHeading     = $trackDiv->div(array('class' => 'panel-heading header', 'renderClosingTag' => true));
+
+                $trackTitle    = Html::create('span', array('class' => 'title'));
+                $trackTitle[]  = ' ' . $row['gtr_track_name'];
+                $trackTitle[]  = Html::create('span', array('class' => "header-caret fa fa-fw " . $caretClass, 'renderClosingTag' => true));
+
+                $trackReceptionCode = $this->receptionCodeRepository->getReceptionCode($row['gr2t_reception_code']);
+                if (!$trackReceptionCode->isSuccess()) {
+                    $trackDiv->appendAttrib('class', 'deleted');
+                    $description = $trackReceptionCode->getDescription();
+                    if (!empty($row['gr2t_comment'])) {
+                        $description .= sprintf(' (%s)', $row['gr2t_comment']);
+                    }
+                    $trackTitle[] = Html::create('div', $description, array('class'=>'description'));
+                }
+
+                $trackHeader   = $trackHeading->h3(array('class' => "panel-title", 'renderClosingTag' => true));
+                $trackHeader[] = $this->_getEditIcon($row, $trackParameterSource);
+                $trackHeader[] = $this->_getMailIcon($row);
+                $trackHeader[] = $trackTitle;
+                $trackHeader[] = $this->_getDeleteIcon($row, $trackParameterSource, $trackReceptionCode->isSuccess());
+
+                if ($row['gr2t_start_date'] instanceof \DateTimeInterface) {
+                    $trackStartDate = $row['gr2t_start_date']->format($this->_dateFormat);
+                } else {
+                    $trackStartDate = $this->_('n/a');
+                }
+                $trackHeading->div($row['gr2t_track_info'], array('renderClosingTag' => true));
+                $trackHeading->div($this->_('Start date') . ': ' . $trackStartDate);
+                $trackProgress = $trackHeading->div(array('class' => 'progress pull-right', 'renderClosingTag' => true));
+
+                $container    = $trackDiv->div(array('class' => 'panel-body', 'style' => $bodyStyle));
+                $subcontainer = $container->div(array('class' => 'objecten', 'renderClosingTag' => true));
+            } else {
+                $subcontainer = Html::create('dummy');
+            }
+
+            $date = $row['gto_valid_from'];
+            if (! $date instanceof \DateTimeInterface) {
+                $date = $date ? \DateTimeImmutable::createFromFormat($this->_dateFormat, $date) : null;
+                if (! $date instanceof \DateTimeInterface) {
+                    continue;
+                }
+            }
+
+            $description = $row['gto_round_description'];
+            if (is_null($description)) $description = '';
+            if ($lastDescription !== $description || !isset($dateDiv)) {
+                if (isset($dateDiv) && $lastDate instanceof \DateTimeInterface && $lastDate->getTimestamp() < $now && $row['gto_valid_from']->getTimestamp() > $now) {
+                    $dateDiv->appendAttrib('class', 'today');
+                }
+                $lastDescription = $description;
+                $progressDiv     = $this->finishGroup($progressDiv);
+                $lastDate        = $date;
+                $class           = 'object';
+                if ($date->getTimestamp() == $today) {
+                    $class .= ' today';
+                }
+
+                $dateDiv = $subcontainer->div(array('class' => $class, 'renderClosingTag' => true));
+                $this->_addTooltip($summaryIcon, $this->_('Summary'), 'auto top');
+                $params = [
+                    'gto_id_respondent_track' => $row['gto_id_respondent_track'],
+                    'gto_round_description' => urlencode(str_replace('/', '&#47;', $description)),
+                    'gr2o_patient_nr' => $row['gr2o_patient_nr'],
+                    'gr2o_id_organization' => $row['gr2o_id_organization'],
+                ];
+                $summaryLink = $this->createTrackLink($this->_overviewRoute, $params, $summaryIcon);
+                if (!$summaryLink) {
+                    $summaryLink = Html::create('div', $summaryIcon, array('renderClosingTag' => true));
+                }
+                $summaryLink->appendAttrib('class', 'pull-right inline-answers');
+                $dateDiv->h5(array($summaryLink, ucfirst($description)));
+                $dateDiv->h6($date->format($this->_dateFormat));
+
+                $doelgroep = null;
+
+            } elseif ($lastDate !== $date) {
+                // When we have a new start date, add the date and start a new group
+                $dateDiv->h6($date->format($this->_dateFormat));
+                $lastDate = $date;
+                $doelgroep = null;
+            }
+
+            if ($doelgroep !== $row['forgroup']) {
+                $this->finishGroup($progressDiv);
+                $doelgroep    = $row['forgroup'];
+                $doelgroepDiv = $dateDiv->div(array('class' => 'actor', 'renderClosingTag' => true));
+                $doelgroepDiv->h6(array($minIcon, $doelgroep));
+                $progressDiv  = $doelgroepDiv->div(array('class' => 'zplegenda', 'renderClosingTag' => true));
+                $tokenDiv     = $doelgroepDiv->div(array('class' => 'zpitems', 'renderClosingTag' => true));
+            }
+
+            $tokenDiv[] = $this->addToken($row);
+        }
+        if (isset($dateDiv) && $lastDate->getTimestamp() < $now) {
+            $dateDiv->appendAttrib('class', 'today');
+        }
+        $progressDiv = $this->finishGroup($progressDiv);
+        $this->finishTrack($trackProgress);
+
+        return $mainDiv;
+    }
+
+    /**
+     * @param HtmlElement $toolsDiv
+     * @param array $token
+     * @return void
+     */
+    public function getToolIcons(HtmlElement $toolsDiv, array $token)
+    {
+        static $correctIcon;
+        static $showIcon;
+        static $clipboardIcon;
+
+        if (!isset($correctIcon)) {
+            $correctIcon = Html::create('i', array(
+                    'class'            => 'fa fa-fw fa-pencil dropdown-toggle',
+                    'renderClosingTag' => true
+                ));
         }
 
-        $model->addFilter($filter);
+        if (!isset($showIcon)) {
+            $showIcon = Html::create('i', array(
+                    'class'            => 'fa fa-fw fa-ellipsis-h dropdown-toggle',
+                    'renderClosingTag' => true
+                ));
+        }
 
-        // \MUtil\EchoOut\EchoOut::track($model->getFilter());
+        if (!isset($clipboardIcon)) {
+            $clipboardIcon = Html::create('i', array(
+                'class'            => 'fa fa-fw fa-clipboard dropdown-toggle',
+                'renderClosingTag' => true
+            ));
+        }
+        
+        // When not completed we have no correct
+        if ($this->_isCompleted($token)) {
+            $correctLink = $this->createTokenLink($this->_tokenCorrectRoute, $token, $correctIcon);
+            if ($correctLink) {
+                $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
+                $this->_addTooltip($dropUp, $this->menuHelper->getRouteMenuLabel($this->_tokenCorrectRoute));
+                $dropUp->append($correctLink);
+            }
+        }
 
-        $this->processSortOnly($model);
+        $showLink = $this->createTokenLink($this->_tokenShowRoute, $token, $showIcon);
+        if ($showLink) {
+            $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
+            $this->_addTooltip($dropUp, $this->_('Details'));
+            $dropUp->append($showLink);
+        }
+        
+        // When not completed and not missed (meaning open or future) we can copy the token
+        if (!$this->_isCompleted($token) && !$this->_isMissed($token)) {
+            // We now use the copy icon to allow copy token to clipboard
+            $dropUp = $toolsDiv->div(array(
+                                         'class' => 'dropdown dropup pull-right clipboard copier-to-clipboard',
+                                         'data-clipboard-text' => $token['gto_id_token'],
+                                         'data-clipboard-after' => sprintf($this->_('Copied: %s'), $token['gto_id_token']),
+                                         'data-toggle' => 'tooltip',
+                                         'title' => $this->_('Copy'),
+                                         'renderClosingTag' => true
+                                     ));
+            $dropUp->append($clipboardIcon);
+        }
     }
 }

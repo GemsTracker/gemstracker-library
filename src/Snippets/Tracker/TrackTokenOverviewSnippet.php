@@ -11,22 +11,13 @@
 
 namespace Gems\Snippets\Tracker;
 
-use Gems\Legacy\CurrentUserRepository;
-use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
-use Gems\Model\MetaModelLoader;
-use Gems\Repository\TokenRepository;
 use Gems\Snippets\TokenModelSnippetAbstract;
-use Gems\Tracker;
-use Gems\User\Mask\MaskRepository;
-use Zalt\Base\RequestInfo;
-use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
-use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Snippet for showing the all tokens for a single track for a single patient
@@ -81,21 +72,6 @@ class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
      */
     protected $trackData;
 
-    public function __construct(
-        SnippetOptions $snippetOptions,
-        RequestInfo $requestInfo,
-        MenuSnippetHelper $menuHelper,
-        TranslatorInterface $translate,
-        MaskRepository $maskRepository,
-        MetaModelLoader $metaModelLoader,
-        Tracker $tracker,
-        TokenRepository $tokenRepository,
-        protected CurrentUserRepository $currentUserRepository,
-    ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $maskRepository, $metaModelLoader, $tracker, $tokenRepository);
-        $this->currentUser = $this->currentUserRepository->getCurrentUser();
-    }
-
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
@@ -108,24 +84,22 @@ class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        $bridge->tr()->appendAttrib('class', Late::iif(
-                        $bridge->gro_id_round,
-                        $bridge->row_class,
-                        array($bridge->row_class , ' inserted')
+        $table = $bridge->getTable();
+
+        $table->tr()->appendAttrib('class', Late::iif(
+                        $bridge->getFormatted('gro_id_round'),
+                        $bridge->getFormatted('row_class'),
+                        array($bridge->getFormatted('row_class'), ' inserted')
                         ));
 
         // Add token status
-        $bridge->td(Html::raw($this->tokenRepository->getTokenStatusLinkForBridge($bridge, $this->menuHelper)))->appendAttrib('class', 'text-right');
+        $table->td(Html::raw($this->tokenRepository->getTokenStatusLinkForBridge($bridge, $this->menuHelper)))->appendAttrib('class', 'text-right');
 
         // Columns
-        $bridge->addSortable('gsu_survey_name')
-                ->append(Late::iif(
-                        $bridge->gro_icon_file,
-                        Late::iif($bridge->gto_icon_file, Html::create('img', ['src' => $bridge->gto_icon_file, 'class' => 'icon']
-                        ),
-                            Late::iif($bridge->gro_icon_file, Html::create('img', ['src' => $bridge->gro_icon_file, 'class' => 'icon']
-                            )))
-                        ));
+        $iconFile = $bridge->getFormatted('gto_icon_file');
+        $roundIcon = Late::iif($iconFile, \Gems\Html::create('img', array('src' => $iconFile, 'class' => 'icon')), '');
+
+        $bridge->addSortable('gsu_survey_name')->append($roundIcon);
         $bridge->addSortable('gto_round_description');
         $bridge->addSortable('ggp_name');
         $bridge->addSortable('gto_valid_from',      null, 'date');
@@ -152,12 +126,7 @@ class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
     }
 
     /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @inheritdoc
      */
     public function getHtmlOutput()
     {
@@ -165,7 +134,7 @@ class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
 
         $table->class = $this->class;
         $this->applyHtmlAttributes($table);
-        $this->class = false;
+        $this->class = '';
         $tableContainer = \Zalt\Html\Html::create()->div(['class' => 'table-container'], $table);
 
         return $tableContainer;

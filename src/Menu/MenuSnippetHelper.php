@@ -164,7 +164,7 @@ class MenuSnippetHelper
     /**
      * @param string $route
      * @param array  $paramLateMappings
-     * @return array[] [label, Late::url]
+     * @return array [label, Late::url]
      */
     public function getLateRouteUrl(string $route, array $paramLateMappings = [], BridgeInterface $bridge = null, $ignoreErrors = false): ?array
     {
@@ -177,7 +177,7 @@ class MenuSnippetHelper
         if ($this->routeHelper->hasAccessToRoute($route)) {
             $url = $this->routeHelper->getLateRouteUrl($route, $paramLateMappings, $bridge, $ignoreErrors);
             return [
-                'label' => $menuItem->label,
+                'label' => $menuItem->getLabel(),
                 'url'   => $url,
             ];
         }
@@ -274,12 +274,46 @@ class MenuSnippetHelper
         return $this->getRouteUrl($this->getRelatedRoute($routePart), $this->requestInfo->getParams());
     }
 
+    public function getRouteMenuLabel(string $route): ?string
+    {
+        try {
+            $menuItem = $this->menu->find($route);
+            return $menuItem->getLabel();
+        } catch (MenuItemNotFoundException $minfe) {
+        }
+
+        return null;
+    }
+
     public function getRouteUrl(?string $route, array $params = []): ?string
     {
         if ($route) {
             try {
                 return $this->routeHelper->getRouteUrlOnMatch($route, $params);
             } catch (MenuItemNotFoundException $minfe) { }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $route
+     * @param array  $params
+     * @return array [label, url]
+     */
+    public function getRouteUrlArray(string $route, array $params = []): ?array
+    {
+        try {
+            $menuItem = $this->menu->find($route);
+        } catch (MenuItemNotFoundException $minfe) {
+            return null;
+        }
+
+        if ($this->routeHelper->hasAccessToRoute($route)) {
+            $url = $this->routeHelper->getRouteUrl($route, $params);
+            return [
+                'label' => $menuItem->getLabel(),
+                'url'   => $url,
+            ];
         }
         return null;
     }

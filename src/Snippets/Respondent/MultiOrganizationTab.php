@@ -72,7 +72,7 @@ class MultiOrganizationTab extends TabSnippetAbstract
      */
     protected function getTabs(): array
     {
-        $this->defaultTab = $this->currentUser->getCurrentOrganizationId();
+        $this->defaultTab = (string) $this->currentUser->getCurrentOrganizationId();
 
         $queryParams = $this->requestInfo->getRequestQueryParams();
         if (isset($queryParams[Model::REQUEST_ID2])) {

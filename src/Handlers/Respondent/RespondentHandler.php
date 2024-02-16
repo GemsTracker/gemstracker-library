@@ -23,6 +23,7 @@ use Gems\Screens\ProcessModelInterface;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Respondent\DeleteRespondentSnippet;
 use Gems\Snippets\Respondent\RespondentDetailsSnippet;
+use Gems\Snippets\Respondent\TrafficLightTokenSnippet;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Psr\Cache\CacheItemPoolInterface;
@@ -265,9 +266,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        //'Respondent\\MultiOrganizationTab',
-        //'Respondent\\RespondentDetailsSnippet',
-        //'Tracker\\AddTracksSnippet',
+//        'Respondent\\MultiOrganizationTab',
+//        'Respondent\\RespondentDetailsSnippet',
+//        'Tracker\\AddTracksSnippet',
+//        'Respondent\\RoundsTabsSnippet',
+//        'Token\\RoundTokenSnippet',
+//        'Respondent\\TrafficLightTokenSnippet',
         'Vue\\PatientVueSnippet',
     ];
 
@@ -615,7 +619,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     public function getOtherOrgs(): array
     {
-        return $this->organizationRepository->getAllowedOrganizationsFor($this->getRespondent()->getOrganizationId());
+        return array_keys($this->organizationRepository->getAllowedOrganizationsFor($this->getRespondent()->getOrganizationId()));
     }
 
     /**

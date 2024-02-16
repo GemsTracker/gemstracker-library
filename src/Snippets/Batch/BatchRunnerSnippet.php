@@ -5,9 +5,9 @@ namespace Gems\Snippets\Batch;
 use Laminas\Diactoros\Response\JsonResponse;
 use MUtil\Batch\BatchAbstract;
 use MUtil\Batch\Progress;
-use MUtil\Request\RequestInfo;
 use MUtil\Snippets\SnippetAbstract;
 use Psr\Http\Message\ResponseInterface;
+use Zalt\Base\RequestInfo;
 
 class BatchRunnerSnippet extends SnippetAbstract
 {

@@ -61,7 +61,7 @@ class VueSnippetAbstract extends SnippetAbstract
     protected function getAttributes(): array
     {
         $parameters = [
-            'base-url' => $this->urlHelper->getBasePath(),
+            'base-url' => rtrim($this->urlHelper->getBasePath(), '/')  . '/',
             'api-url' => $this->getApiUrl(),
             'locale' => $this->locale->getLanguage(),
             ...$this->vueOptions,
