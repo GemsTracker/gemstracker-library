@@ -274,6 +274,17 @@ class MenuSnippetHelper
         return $this->getRouteUrl($this->getRelatedRoute($routePart), $this->requestInfo->getParams());
     }
 
+    public function getRouteMenu(string $route): ?MenuItem
+    {
+        try {
+            $menuItem = $this->menu->find($route);
+            return $menuItem;
+        } catch (MenuItemNotFoundException $minfe) {
+        }
+
+        return null;
+    }
+
     public function getRouteMenuLabel(string $route): ?string
     {
         try {

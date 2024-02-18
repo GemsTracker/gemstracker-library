@@ -39,6 +39,7 @@ use Zalt\Filter\RequireOneCapsFilter;
 use Zalt\Late\Late;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\Model\Type\ActivatingMultiType;
 use Zalt\SnippetsActions\Form\EditActionAbstract;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\Validator\Model\ModelUniqueValidator;
@@ -106,6 +107,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         protected readonly Localized $localizedUtil,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly ProjectSettings $project,
+        protected readonly ReceptionCodeRepository $receptionCodeRepository,
         protected readonly RespondentRepository $respondentRepository,
         protected readonly StaffRepository $staffRepository,
         protected readonly Translated $translatedUtil,
@@ -131,7 +133,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $metaModelLoader->setChangeFields($this->metaModel, 'grs');
         $metaModelLoader->setChangeFields($this->metaModel, 'gr2o');
 
-        $this->addColumn("CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END", 'row_class');
         $this->addColumn("CASE WHEN grc_success = 1 THEN 0 ELSE 1 END", 'resp_deleted');
         $this->addColumn('CASE WHEN gr2o_email IS NULL OR LENGTH(TRIM(gr2o_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
 
@@ -370,6 +371,13 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $this->addColumn($consent, 'old_' . $consent);
             $this->metaModel->set('old_' . $consent, ['elementClass' => 'hidden']);
         }
+        $this->metaModel->set('gr2o_reception_code', [
+            'type' => new ActivatingMultiType(
+                $this->receptionCodeRepository->getRespondentRestoreCodes(),
+                $this->receptionCodeRepository->getRespondentDeletionCodes(),
+                'row_class'),
+        ]);
+
 
         $changers = Late::method($this->staffRepository, 'getStaff');
         $this->setIfExists('gr2o_opened', [

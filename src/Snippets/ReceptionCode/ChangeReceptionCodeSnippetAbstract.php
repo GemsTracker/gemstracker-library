@@ -128,9 +128,9 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
         if ($this->formTitle) {
             return $this->formTitle;
         } elseif ($this->unDelete) {
-            return sprintf($this->_('Undelete %s!'), $this->getTopic());
+            return sprintf($this->_('Reactivate %s!'), $this->getTopic());
         } else {
-            return sprintf($this->_('Delete %s!'), $this->getTopic());
+            return sprintf($this->_('Deactivate %s!'), $this->getTopic());
         }
     }
 

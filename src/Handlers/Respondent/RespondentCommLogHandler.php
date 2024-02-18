@@ -4,6 +4,7 @@ namespace Gems\Handlers\Respondent;
 
 use Gems\Exception;
 use Gems\Handlers\Setup\CommLogHandler;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
@@ -17,7 +18,16 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class RespondentCommLogHandler extends CommLogHandler
 {
+    use GetRespondentTrait;
+
     protected array $autofilterParameters = ['extraFilter' => 'getRespondentFilter'];
+
+    /**
+     * @inheritdoc
+     */
+    protected array $defaultParameters = [
+        'respondent' => 'getRespondent'
+    ];
 
     public function __construct(
         SnippetResponderInterface $responder,
@@ -26,9 +36,12 @@ class RespondentCommLogHandler extends CommLogHandler
         MaskRepository $maskRepository,
         ProjectOverloader $overloader,
         PeriodSelectRepository $periodSelectRepository,
+        CurrentUserRepository $currentUserRepository,
         protected RespondentRepository $respondentRepository,
     ) {
         parent::__construct($responder, $translate, $cache, $maskRepository, $overloader, $periodSelectRepository);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     public function createModel(bool $detailed, string $action): ModelAbstract
@@ -46,29 +59,6 @@ class RespondentCommLogHandler extends CommLogHandler
     }
 
     /**
-     * Get the respondent object
-     *
-     * @return Respondent
-     */
-    public function getRespondent(): Respondent
-    {
-        static $respondent;
-
-        if (! $respondent) {
-            $patientNumber  = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
-            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
-
-            $respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
-
-            if ((! $respondent->exists) && $patientNumber && $organizationId) {
-                throw new Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
-            }
-        }
-
-        return $respondent;
-    }
-
-    /**
      * Get filter for current respondent
      *
      * @return array
@@ -76,16 +66,5 @@ class RespondentCommLogHandler extends CommLogHandler
     public function getRespondentFilter(): array
     {
         return ['grco_id_to' => $this->getRespondentId()];
-    }
-
-    /**
-     * Retrieve the respondent id
-     * (So we don't need to repeat that for every snippet.)
-     *
-     * @return int
-     */
-    public function getRespondentId(): int
-    {
-        return $this->getRespondent()->getId();
     }
 }

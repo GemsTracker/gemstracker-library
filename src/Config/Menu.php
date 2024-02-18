@@ -128,16 +128,9 @@ class Menu
                         ],
                         [
                             'name' => 'respondent.delete',
-                            'type' => 'alias',
-                            'alias' => 'respondent.show',
+                            'label' => $this->translator->trans('Delete'),
+                            'type' => 'route-link-item',
                         ],
-                        [
-                            'name' => 'respondent.undelete',
-                            'type' => 'alias',
-                            'alias' => 'respondent.show',
-                        ],
-
-
                         [
                             'name' => 'respondent.episodes-of-care.index',
                             'label' => $this->translator->trans('Episodes'),

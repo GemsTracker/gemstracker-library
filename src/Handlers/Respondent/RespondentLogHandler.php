@@ -13,6 +13,7 @@ namespace Gems\Handlers\Respondent;
 
 use Gems\Exception;
 use Gems\Handlers\LogHandler;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\LogModel;
 use Gems\Repository\PeriodSelectRepository;
@@ -34,27 +35,32 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class RespondentLogHandler extends LogHandler
 {
+    use GetRespondentTrait;
+
     /**
-     * The parameters used for the autofilter action.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
+     * @inheritdoc
      */
     protected array $autofilterParameters = ['extraFilter' => 'getRespondentFilter'];
+
+    /**
+     * @inheritdoc
+     */
+    protected array $defaultParameters = [
+        'respondent' => 'getRespondent'
+    ];
 
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         PeriodSelectRepository $periodSelectRepository,
-        protected RespondentRepository $respondentRepository,
         LogModel $logModel,
+        CurrentUserRepository $currentUserRepository,
+        protected RespondentRepository $respondentRepository,
     ) {
         parent::__construct($responder, $translate, $cache, $periodSelectRepository, $logModel);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     protected function createModel(bool $detailed, string $action): FullDataInterface
@@ -71,27 +77,6 @@ class RespondentLogHandler extends LogHandler
     }
 
     /**
-     * Get the respondent object
-     */
-    public function getRespondent(): Respondent
-    {
-        static $respondent;
-
-        if (! $respondent) {
-            $patientNumber  = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
-            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
-
-            $respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
-
-            if ((! $respondent->exists) && $patientNumber && $organizationId) {
-                throw new Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
-            }
-        }
-
-        return $respondent;
-    }
-
-    /**
      * Get filter for current respondent
      *
      * @return array
@@ -99,16 +84,5 @@ class RespondentLogHandler extends LogHandler
     public function getRespondentFilter(): array
     {
         return ['gla_respondent_id' => $this->getRespondentId()];
-    }
-
-    /**
-     * Retrieve the respondent id
-     * (So we don't need to repeat that for every snippet.)
-     *
-     * @return int
-     */
-    public function getRespondentId(): int
-    {
-        return $this->getRespondent()->getId();
     }
 }

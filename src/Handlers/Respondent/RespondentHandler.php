@@ -14,6 +14,7 @@ namespace Gems\Handlers\Respondent;
 use Gems\Db\ResultFetcher;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\Dependency\ActivationDependency;
 use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
@@ -24,8 +25,8 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Respondent\DeleteRespondentSnippet;
 use Gems\Snippets\Respondent\RespondentDetailsSnippet;
 use Gems\Snippets\Respondent\TrafficLightTokenSnippet;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\User\Mask\MaskRepository;
-use Gems\User\User;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
@@ -158,17 +159,15 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $createParameters = ['respondent' => null];
 
-    protected User $currentUser;
-
     /**
-     * The default search data to use.
-     *
+     * The default search data to use.6
      * @var array()
      */
     protected array $defaultSearchData = ['grc_success' => 1];
 
     /**
      * The parameters used for the delete action.
+     *
      *
      * When the value is a function name of that object, then that functions is executed
      * with the array key as single parameter and the return value is set as the used value
@@ -179,6 +178,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $deleteParameters = [
         'baseUrl' => 'getItemUrlArray',
+        'formTitle' => null,
         'forOtherOrgs' => 'getOtherOrgs',
         // 'respondentData' => 'getRespondentData',
         'showButtons' => false,
@@ -251,6 +251,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     protected array $showParameters = [
         'addCurrentParent' => true,
         'forOtherOrgs' => 'getOtherOrgs',
+        'respondent'   => 'getRespondent',  // Sets menu
         // 'respondentData'   => 'getRespondentData',
         '-run-once' => 'openedRespondent',
         'tag' => 'show-respondent',
@@ -449,18 +450,20 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     protected function createModel(bool $detailed, string $action): RespondentModel
     {
         $this->respondentModel->applyStringAction($action, $detailed);
+        if ($detailed) {
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $menuHelper = $this->responder->getMenuSnippetHelper();
+            } else {
+                $menuHelper = null;
+            }
+            $metaModel = $this->respondentModel->getMetaModel();
+            $metaModel->addDependency(new ActivationDependency(
+                $this->translate,
+                $metaModel,
+                $menuHelper,
+            ));
+        }
         return $this->respondentModel;
-    }
-
-    /**
-     * Action for showing a delete-item page
-     */
-    public function deleteAction(): void
-    {
-        $this->deleteParameters['formTitle'] = $this->_('Delete or stop respondent');
-        $this->deleteParameters['requestUndelete'] = false;
-
-        parent::deleteAction();
     }
 
     /**
@@ -631,22 +634,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     public function getRespondentData(): array
     {
         return $this->getRespondent()->getArrayCopy();
-    }
-
-    /**
-     * Retrieve the respondent id
-     * (So we don't need to repeat that for every snippet.)
-     *
-     * @return int
-     */
-    public function getRespondentId()
-    {
-        // The actions do not set an respondent id
-        if (in_array($this->requestInfo->getCurrentAction(), $this->summarizedActions)) {
-            return null;
-        }
-
-        return parent::getRespondentId();
     }
 
     /**
@@ -954,19 +941,5 @@ class RespondentHandler extends RespondentChildHandlerAbstract
 
             return;
         }*/
-    }
-
-    /**
-     * Action for showing a delete-item page
-     */
-    public function undeleteAction(): void
-    {
-        if ($this->deleteSnippets) {
-            $this->deleteParameters['requestUndelete'] = true;
-
-            $params = $this->_processParameters($this->deleteParameters);
-
-            $this->addSnippets($this->deleteSnippets, $params);
-        }
     }
 }

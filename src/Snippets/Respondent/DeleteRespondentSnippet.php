@@ -15,7 +15,7 @@ use Gems\Audit\AuditLog;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
-use Gems\Model\RespondentModel;
+use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
 use Gems\Snippets\Token\DeleteTrackTokenSnippet;
@@ -42,7 +42,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @var array
      */
-    protected array $editItems = [];
+    protected array $editItems = ['gr2o_comments'];
 
     /**
      * Array of items that should be shown to the user
@@ -81,7 +81,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @var string
      */
-    protected ?string $unDeleteRight = 'pr.respondent.undelete';
+    protected ?string $unDeleteRight = 'pr.respondent.delete';
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -95,24 +95,14 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
         protected ReceptionCodeRepository $receptionCodeRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper, $currentUserRepository);
-    }
 
-    /**
-     * Hook that allows actions when data was saved
-     *
-     * When not rerouted, the form will be populated afterwards
-     *
-     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
-     */
-    protected function afterSave($changed)
-    {
-        // Do nothing, performed in setReceptionCode()
+        $this->requestUndelete = $this->unDelete = $this->isUndeleting();
     }
 
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
@@ -127,7 +117,11 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
     public function getReceptionCodes()
     {
         if ($this->unDelete) {
-            return $this->receptionCodeRepository->getRespondentRestoreCodes();
+            $output = $this->receptionCodeRepository->getRespondentRestoreCodes();
+            if (array_key_exists(ReceptionCodeRepository::RECEPTION_OK, $output) && (! $output[ReceptionCodeRepository::RECEPTION_OK])) {
+                $output[ReceptionCodeRepository::RECEPTION_OK] = $this->_('OK');
+            }
+            return $output;
         }
         return $this->receptionCodeRepository->getRespondentDeletionCodes();
     }
@@ -181,13 +175,11 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
 
     /**
      * Set what to do when the form is 'finished'.
-     *
-     * @return DeleteTrackTokenSnippet (continuation pattern)
      */
-    protected function setAfterSaveRoute()
+    protected function setAfterSaveRoute(): void
     {
         // Default is just go to the index
-        if ($this->respondent && ! $this->afterSaveRouteUrl) {
+        if (! $this->afterSaveRouteUrl) {
             $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.show', $this->requestInfo->getRequestMatchedParams());
         }
 
@@ -199,9 +191,9 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @param string $newCode
      * @param int $userId
-     * @return $changed
+     * @return int
      */
-    public function setReceptionCode($newCode, $userId)
+    public function setReceptionCode($newCode, $userId): int
     {
         $oldCode = $this->respondent->getReceptionCode();
         $code    = $this->respondent->setReceptionCode($newCode);
@@ -220,8 +212,6 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
             // Perform actual save, but not simple stop codes.
             if ($code->isForRespondents()) {
                 $this->addMessage($this->_('Respondent deleted.'));
-                $this->afterSaveRouteKeys = false;
-                $this->resetRoute         = true;
                 $this->routeAction        = 'index';
             } else {
                 // Just a stop code

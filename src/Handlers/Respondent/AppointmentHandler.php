@@ -139,12 +139,6 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     ];
 
     /**
-     *
-     * @var \Gems\User\User
-     */
-    public User $currentUser;
-
-    /**
      * The parameters used for the index action minus those in autofilter.
      *
      * When the value is a function name of that object, then that functions is executed

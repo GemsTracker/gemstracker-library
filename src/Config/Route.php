@@ -584,9 +584,8 @@ class Route
                     ...$this->defaultPages,
                     'change-consent',
                     'change-organization',
+                    'overview',
                     'export-archive',
-                    'undelete',
-                    'overview'
                 ],
                 parameters: [
                     'id1' => '[a-zA-Z0-9-_]+',
@@ -597,13 +596,12 @@ class Route
                     'change-consent',
                     'change-organization',
                     'export-archive',
-                    'undelete',
                 ],
                 postRoutes: [
                     ...$this->defaultPostRoutes,
                     'change-consent',
                     'change-organization',
-                    'undelete',
+                    'export-archive',
                 ],
                 genericExport: true,
             ),

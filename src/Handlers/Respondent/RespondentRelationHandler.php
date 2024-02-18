@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Respondent;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\RespondentRelationModel;
 use Gems\Model\Transform\RespondentIdTransformer;
@@ -33,8 +34,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
 {
-
-    public Respondent|null $_respondent = null;
+    use GetRespondentTrait;
 
     /**
      * The snippets used for the autofilter action.
@@ -46,11 +46,14 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
+        CurrentUserRepository $currentUserRepository,
         protected Model $modelLoader,
         protected RespondentRepository $respondentRepository,
     )
     {
         parent::__construct($responder, $translate, $cache);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     protected function createModel(bool $detailed, string $action): ModelAbstract
@@ -71,18 +74,6 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
         }
 
         return $relationModel;
-    }
-
-    public function getRespondent()
-    {
-        if (is_null($this->_respondent)) {
-            $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
-            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
-            $respondent = $this->respondentRepository->getRespondent($patientNr, $organizationId);
-
-            $this->_respondent = $respondent;
-        }
-        return $this->_respondent;
     }
 
     public function getTopic(int $count = 1): string

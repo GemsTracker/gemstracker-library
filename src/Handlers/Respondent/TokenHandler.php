@@ -15,6 +15,7 @@ use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Exception;
 use Gems\Handlers\Overview\TokenSearchHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\PeriodSelectRepository;
@@ -22,7 +23,6 @@ use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Respondent\TokenEmailSnippet;
 use Gems\Tracker;
-use Gems\Tracker\Respondent;
 use Gems\Tracker\Token;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Cache\CacheItemPoolInterface;
@@ -42,6 +42,8 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class TokenHandler extends TokenSearchHandlerAbstract
 {
+    use GetRespondentTrait;
+
     protected array $answerParameters = [];
 
     /**
@@ -150,14 +152,17 @@ class TokenHandler extends TokenSearchHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        Tracker $tracker,
         MetaModelLoader $metaModelLoader,
         PeriodSelectRepository $periodSelectRepository,
+        Tracker $tracker,
+        CurrentUserRepository $currentUserRepository,
         protected RespondentRepository $respondentRepository,
         protected OrganizationRepository $organizationRepository,
         protected BatchRunnerLoader $batchRunnerLoader,
     ) {
         parent::__construct($responder, $translate, $cache, $metaModelLoader, $periodSelectRepository, $tracker);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     public function answerAction()
@@ -315,40 +320,6 @@ class TokenHandler extends TokenSearchHandlerAbstract
     public function getIndexTitle(): string
     {
         return sprintf($this->_('Surveys assigned to respondent %s'), $this->request->getAttribute(MetaModelInterface::REQUEST_ID1));
-    }
-
-    /**
-     * Get the respondent object
-     *
-     * @return Respondent
-     */
-    public function getRespondent(): Respondent
-    {
-        static $respondent;
-
-        if (! $respondent) {
-            $patientNumber  = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
-            $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
-
-            $respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
-            
-            if ((! $respondent->exists) && $patientNumber && $organizationId) {
-                throw new Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
-            }
-        }
-
-        return $respondent;
-    }
-
-    /**
-     * Retrieve the respondent id
-     * (So we don't need to repeat that for every snippet.)
-     *
-     * @return int
-     */
-    public function getRespondentId()
-    {
-        return $this->getRespondent()->getId();
     }
 
     /**

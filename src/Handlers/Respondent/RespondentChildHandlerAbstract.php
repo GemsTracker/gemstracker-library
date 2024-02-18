@@ -11,13 +11,9 @@
 
 namespace Gems\Handlers\Respondent;
 
-use Gems\Exception;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\RespondentRepository;
-use Gems\Tracker\Respondent;
-use Gems\User\User;
-use MUtil\Model;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -33,12 +29,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerAbstract
 {
-    protected User $currentUser;
-
-    /**
-     * @var Respondent
-     */
-    protected ?Respondent $_respondent = null;
+    use GetRespondentTrait;
 
     /**
      * Model level parameters used for all actions, overruled by any values set in any other
@@ -83,60 +74,7 @@ abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerA
         protected CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($responder, $translate, $cache);
+
         $this->currentUser = $currentUserRepository->getCurrentUser();
-    }
-
-    /**
-     * Retrieve the error message when a respondent does not exist
-     *
-     * @return string Use %s to place respondentnumber
-     */
-    public function getMissingRespondentMessage(): string
-    {
-        return $this->_('Respondent %s is not participating at the moment.');
-    }
-
-    /**
-     * Get the respondent object
-     *
-     * @return Respondent
-     */
-    public function getRespondent(): Respondent
-    {
-        if (! $this->_respondent) {
-            $patientNumber  = $this->request->getAttribute(Model::REQUEST_ID1);
-            $organizationId = $this->request->getAttribute(Model::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId());
-
-            $this->_respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
-
-            if ((! $this->_respondent->exists) && $patientNumber && $organizationId) {
-                throw new Exception(sprintf($this->getMissingRespondentMessage(), $patientNumber));
-            }
-
-            if ($this->_respondent->exists && (! array_key_exists($this->_respondent->getOrganizationId(), $this->currentUser->getAllowedOrganizations()))) {
-                throw new Exception(
-                    $this->_('Inaccessible or unknown organization'),
-                    403, null,
-                    sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->currentUser->getRole()));
-            }
-            //$this->_respondent->applyToMenuSource($this->menu->getParameterSource());
-        }
-
-        return $this->_respondent;
-    }
-
-    /**
-     * Retrieve the respondent id
-     * (So we don't need to repeat that for every snippet.)
-     *
-     * @return int
-     */
-    public function getRespondentId()
-    {
-        if ($this->request->getAttribute(Model::REQUEST_ID1) !== null) {
-            return $this->getRespondent()->getId();
-        }
-
-        return null;
     }
 }
