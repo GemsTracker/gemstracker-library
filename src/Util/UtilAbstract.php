@@ -400,15 +400,4 @@ class UtilAbstract extends TargetAbstract
                 $sort($result);
         }
     }
-
-    /**
-     * Cleans up everything to a save cacheId
-     *
-     * @param string $cacheId
-     * @return string
-     */
-    public static function cleanupForCacheId($cacheId)
-    {
-        return preg_replace('([^a-zA-Z0-9_])', '_', $cacheId);
-    }
 }
