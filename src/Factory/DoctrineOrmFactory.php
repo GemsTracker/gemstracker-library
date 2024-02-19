@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use Doctrine\ORM\ORMSetup;
+use Doctrine\ORM\Proxy\ProxyFactory;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Cache\CacheItemPoolInterface;
@@ -37,6 +38,12 @@ class DoctrineOrmFactory implements FactoryInterface
         $cache = $container->get(CacheItemPoolInterface::class);
 
         $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode, null, $cache);
+        if (!$isDevMode) {
+            $config->setAutoGenerateProxyClasses(ProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
+        }
+        if (isset($config['doctrine'], $config['doctrine']['proxydir'])) {
+            $config->setProxyDir($config['doctrine']['proxydir']);
+        }
 
         $namingStrategy = new UnderscoreNamingStrategy(CASE_LOWER, true);
         $config->setNamingStrategy($namingStrategy);
