@@ -56,8 +56,9 @@ class GetUserPasswordValidator extends \Gems\User\Validate\PasswordValidatorAbst
      */
     public function isValid($value, $context = array())
     {
+        $user = $this->_userSource->getUser();
         return $this->setAuthResult(new Result(Result::FAILURE_UNCATEGORIZED, null));
-        /*$user = $this->_userSource->getUser();
+        /*
         if ($user instanceof \Gems\User\User) {
             $result = $user->authenticate($value);
         } else {
