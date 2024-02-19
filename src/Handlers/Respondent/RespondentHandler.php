@@ -609,9 +609,13 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     public function getItemUrlArray(): array
     {
         $queryParams = $this->request->getQueryParams();
+        $patientNr = isset($queryParams[Model::REQUEST_ID1]) ? $queryParams[Model::REQUEST_ID1] : null;
+        $organizationId = isset($queryParams[Model::REQUEST_ID2]) ? $queryParams[Model::REQUEST_ID2] : null;
+        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+
         return [
-            Model::REQUEST_ID1 => isset($queryParams[Model::REQUEST_ID1]) ? $queryParams[Model::REQUEST_ID1] : null,
-            Model::REQUEST_ID2 => isset($queryParams[Model::REQUEST_ID2]) ? $queryParams[Model::REQUEST_ID2] : null,
+            Model::REQUEST_ID1 => $patientNr,
+            Model::REQUEST_ID2 => $organizationId,
         ];
     }
 
