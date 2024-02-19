@@ -14,7 +14,7 @@ class CachedResultFetcher
 
     protected function fetchCached(string $functionName, string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null, $default = null): mixed
     {
-        $cacheKey = HelperAdapter::cleanupForCacheId($cacheKey);
+        $cacheKey = HelperAdapter::createCacheKey([get_called_class(), $functionName, $cacheKey], $select, $params);
 
         if ($this->cache->hasItem($cacheKey)) {
             return $this->cache->getCacheItem($cacheKey);
