@@ -11,6 +11,8 @@
 
 namespace Gems\Handlers;
 
+use Gems\AuthTfa\TfaService;
+use Gems\CookieResponse;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\Menu\RouteHelper;
@@ -32,6 +34,7 @@ use Gems\Tracker\Token\TokenHelpers;
 use Gems\User\User;
 use Gems\Util\Lock\MaintenanceLock;
 use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -56,6 +59,8 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     use CsrfHandlerTrait;
 
     protected User|null $currentUser = null;
+
+    protected string|null $changeLocaleTo = null;
 
     /**
      * Usually a child of \Gems\Tracker\Snippets\ShowTokenLoopAbstract,
@@ -203,7 +208,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
                 $this->currentUserRepository->setCurrentOrganizationId($tokenOrganizationId);
             }
             if ($tokenLang != $this->locale->getLanguage()) {
-                $this->currentUser->setLocale($tokenLang);
+                $this->changeLocaleTo = $tokenLang;
                 $this->locale->setCurrentLanguage($tokenLang);
             }
         } else {
@@ -288,7 +293,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
 
     protected function forward(string $action)
     {
-        return new RedirectResponse($this->getActionUrl($action));
+        return $this->getRedirectResponse($this->getActionUrl($action));
     }
 
     /**
@@ -366,7 +371,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $url = $this->routeHelper->getRouteUrl('ask.index');
 
         // Do not enter a loop!! Reroute!
-        return new RedirectResponse($url);
+        return $this->getRedirectResponse($url);
     }
 
     protected function getActionUrl(string $action): string
@@ -386,6 +391,18 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     public function getRequestInfo(): RequestInfo
     {
         return RequestInfoFactory::getMezzioRequestInfo($this->request);
+    }
+
+    protected function getRedirectResponse(string $url): RedirectResponse
+    {
+        $response = $this->getRedirectResponse($url);
+        if ($this->changeLocaleTo) {
+            /**
+             * @var RedirectResponse $response
+             */
+            $response = CookieResponse::addCookieToResponse($this->request, $response, LocaleMiddleware::LOCALE_ATTRIBUTE, $this->changeLocaleTo);
+        }
+        return $response;
     }
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
@@ -423,12 +440,20 @@ class AskHandler extends SnippetLegacyHandlerAbstract
                 $routeUrl = $this->routeHelper->getRouteUrl($route['name'], [
                     MetaModelInterface::REQUEST_ID => $params['id'],
                 ]);
-                return new RedirectResponse($routeUrl);
+                return $this->getRedirectResponse($routeUrl);
             }
         }
 
         $form->populate($this->request->getParsedBody());
         $this->displayTokenForm($form);
+    }
+
+    public function logout(): void
+    {
+        /** @var SessionInterface $session */
+        $session = $this->request->getAttribute(SessionInterface::class);
+        $session->regenerate();
+        $session->clear();
     }
 
     /**
@@ -491,14 +516,14 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $url = $this->tokenHelpers->getReturnUrl($this->request, $this->token);
         if ($url) {
             // Default fallback for the fallback
-            return new RedirectResponse($url);
+            return $this->getRedirectResponse($url);
         }
 
         $url = $this->routeHelper->getRouteUrl('respondent.show', [
             MetaModelInterface::REQUEST_ID1 => $this->token->getPatientNumber(),
             MetaModelInterface::REQUEST_ID2 => $this->token->getOrganizationId(),
         ]);
-        return new RedirectResponse($url);
+        return $this->getRedirectResponse($url);
     }
 
     /**
@@ -559,11 +584,11 @@ class AskHandler extends SnippetLegacyHandlerAbstract
              * Optional user logout *
              ************************/
             if ($this->currentUser instanceof User && $this->currentUser->isLogoutOnSurvey()) {
-                $this->currentUser->unsetAsCurrentUser();
+                $this->logout();
             }
 
             // Redirect at once
-            return new RedirectResponse($url);
+            return $this->getRedirectResponse($url);
 
         } catch (SurveyNotFoundException $e) {
             $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
