@@ -107,7 +107,7 @@ class ConditionLoader
      */
     protected function _listConditions(string $conditionType): array
     {
-        $key = HelperAdapter::cleanupForCacheId(static::class . 'listConditions_' . $conditionType);
+        $key = HelperAdapter::createCacheKey([get_called_class(), __FUNCTION__, $conditionType]);
         if ($this->cache->hasItem($key)) {
             return $this->translatedUtil->getEmptyDropdownArray() + $this->cache->getCacheItem($key);
         }

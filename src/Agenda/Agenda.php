@@ -626,7 +626,7 @@ class Agenda
      */
     public function getFilterList(): array
     {
-        $cacheId = HelperAdapter::cleanupForCacheId(__CLASS__ . '_' . __FUNCTION__);
+        $cacheId = HelperAdapter::createCacheKey([get_called_class(), __FUNCTION__]);
 
         $output = $this->cache->getCacheItem($cacheId);
         if ($output) {
