@@ -103,12 +103,12 @@ class TrackData extends UtilAbstract
             $orgWhere = $orgs ? $orgs : '1=1';
         }
 
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__tracks',
             'gtr_id_track',
             'gtr_track_name',
             ['tracks'],
-            "gtr_active=1 AND $orgWhere",
+            ["gtr_active=1 AND $orgWhere"],
             'asort'
         );
     }
@@ -150,12 +150,12 @@ class TrackData extends UtilAbstract
      */
     public function getAllSurveys($active = false)
     {
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__surveys',
             'gsu_id_survey',
             'gsu_survey_name',
             ['surveys'],
-            $active ? "gsu_active = 1" : null,
+            $active ? ["gsu_active = 1"] : [],
             'asort'
         );
     }
@@ -195,12 +195,12 @@ class TrackData extends UtilAbstract
      */
     public function getAllTracks()
     {
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__tracks',
             'gtr_id_track',
             'gtr_track_name',
             ['tracks'],
-            "gtr_track_class != 'SingleSurveyEngine'",
+            ["gtr_track_class != 'SingleSurveyEngine'"],
             'asort'
             );
     }

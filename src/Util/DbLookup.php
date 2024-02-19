@@ -64,12 +64,12 @@ class DbLookup extends UtilAbstract
         $where = $this->db->quoteInto('(gor_active = 1 AND gor_id_organization IN (SELECT gr2o_id_organization FROM gems__respondent2org)) OR
                         gor_id_organization = ?', $currentOrganizationId);
 
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__organizations',
             'gor_id_organization',
             'gor_name',
-            'organizations',
-            $where,
+            ['organizations'],
+            [$where],
             'natsort'
         );
     }
@@ -88,12 +88,12 @@ class DbLookup extends UtilAbstract
                     gor_accessible_by LIKE '%:$dbOrgId:%'
                   )";
 
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__organizations',
             'gor_id_organization',
             'gor_name',
-            'organizations',
-            $where,
+            ['organizations'],
+            [$where],
             'natsort'
         );
     }
@@ -127,12 +127,12 @@ class DbLookup extends UtilAbstract
     public function getActiveStaffGroups()
     {
         try {
-            $staffGroups = $this->_getTranslatedPairsCached(
+            $staffGroups = $this->utilDbHelper->getTranslatedPairsCached(
                 'gems__groups',
                 'ggp_id_group',
                 'ggp_name',
-                'groups',
-                'ggp_group_active = 1 AND ggp_member_type = \'staff\'',
+                ['groups'],
+                ['ggp_group_active = 1 AND ggp_member_type = \'staff\''],
                 'natsort');
         } catch (\Exception $exc) {
             // Intentional fallthrough when no db present
@@ -167,12 +167,12 @@ class DbLookup extends UtilAbstract
     {
 
         return $this->translatedUtil->getEmptyDropdownArray() +
-            $this->_getTranslatedPairsCached(
+            $this->utilDbHelper->getTranslatedPairsCached(
                 'gems__groups',
                 'ggp_id_group',
                 'ggp_name',
-                'groups',
-                'ggp_group_active = 1 AND ggp_member_type = \'respondent\'',
+                ['groups'],
+                ['ggp_group_active = 1 AND ggp_member_type = \'respondent\''],
                 'natsort');
     }
 
@@ -246,12 +246,12 @@ class DbLookup extends UtilAbstract
     public function getGroups()
     {
         return $this->translatedUtil->getEmptyDropdownArray() +
-            $this->_getTranslatedPairsCached(
+            $this->utilDbHelper->getTranslatedPairsCached(
                 'gems__groups',
                 'ggp_id_group',
                 'ggp_name',
-                'groups',
-                'ggp_group_active = 1',
+                ['groups'],
+                ['ggp_group_active = 1'],
                 'natsort');
     }
 
@@ -262,12 +262,12 @@ class DbLookup extends UtilAbstract
      */
     public function getOrganizations()
     {
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__organizations',
             'gor_id_organization',
             'gor_name',
-            'organizations',
-            'gor_active = 1',
+            ['organizations'],
+            ['gor_active = 1'],
             'natsort'
             );
     }
@@ -286,12 +286,12 @@ class DbLookup extends UtilAbstract
             return $this->getOrganizations();
         }
 
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__organizations',
             'gor_id_organization',
             'gor_name',
-            'organizations',
-            $this->db->quoteInto('gor_active = 1 AND gor_has_respondents = 1 AND gor_code = ?', $code),
+            ['organizations'],
+            [$this->db->quoteInto('gor_active = 1 AND gor_has_respondents = 1 AND gor_code = ?', $code)],
             'natsort'
         );
     }
@@ -303,12 +303,12 @@ class DbLookup extends UtilAbstract
      */
     public function getOrganizationsForLogin()
     {
-        $output = $this->_getTranslatedPairsCached(
+        $output = $this->utilDbHelper->getTranslatedPairsCached(
                 'gems__organizations',
                 'gor_id_organization',
                 'gor_name',
-                'organizations',
-                'gor_active = 1 AND gor_has_login = 1',
+                ['organizations'],
+                ['gor_active = 1 AND gor_has_login = 1'],
                 'natsort'
                 );
         if ($output) {
@@ -324,12 +324,12 @@ class DbLookup extends UtilAbstract
      */
     public function getOrganizationsWithRespondents()
     {
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__organizations',
             'gor_id_organization',
             'gor_name',
-            'organizations',
-            'gor_active = 1 AND (gor_has_respondents = 1 OR gor_add_respondents = 1)',
+            ['organizations'],
+            ['gor_active = 1 AND (gor_has_respondents = 1 OR gor_add_respondents = 1)'],
             'natsort'
             );
     }
@@ -427,12 +427,12 @@ class DbLookup extends UtilAbstract
      */
     public function getRespondentMailCodes()
     {
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__mail_codes',
             'gmc_id',
             'gmc_mail_to_target',
-            'mailcodes',
-            'gmc_for_respondents = 1 AND gmc_active = 1',
+            ['mailcodes'],
+            ['gmc_for_respondents = 1 AND gmc_active = 1'],
             'ksort'
             );
     }
@@ -452,12 +452,12 @@ class DbLookup extends UtilAbstract
      */
     public function getRespondentTrackMailCodes()
     {
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__mail_codes',
             'gmc_id',
             'gmc_mail_to_target',
-            'mailcodes',
-            'gmc_for_tracks = 1 AND gmc_active = 1',
+            ['mailcodes'],
+            ['gmc_for_tracks = 1 AND gmc_active = 1'],
             'ksort'
         );
     }
@@ -563,12 +563,12 @@ class DbLookup extends UtilAbstract
      */
     public function getSurveyMailCodes()
     {
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__mail_codes',
             'gmc_id',
             'gmc_mail_cause_target',
-            'mailcodes',
-            'gmc_for_surveys = 1 AND gmc_active = 1',
+            ['mailcodes'],
+            ['gmc_for_surveys = 1 AND gmc_active = 1'],
             'ksort'
         );
     }
@@ -603,12 +603,12 @@ class DbLookup extends UtilAbstract
      */
     public function getStaffGroups()
     {
-        return $this->_getTranslatedPairsCached(
+        return $this->utilDbHelper->getTranslatedPairsCached(
             'gems__groups',
             'ggp_id_group',
             'ggp_name',
-            'groups',
-            'ggp_member_type = \'staff\'',
+            ['groups'],
+            ['ggp_member_type = \'staff\''],
             'natsort');
     }
 

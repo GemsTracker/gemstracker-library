@@ -12,6 +12,7 @@
 namespace Gems\Util;
 
 use Gems\Cache\HelperAdapter;
+use Gems\Util\UtilDbHelper;
 use MUtil\Registry\TargetAbstract;
 use Zalt\Base\TranslateableTrait;
 
@@ -56,6 +57,10 @@ class UtilAbstract extends TargetAbstract
      * @var \MUtil\Registry\Source
      */
     protected $source;
+
+    public function __construct(
+        protected UtilDbHelper $utilDbHelper,
+    ) {}
 
     /**
      * Returns a callable if a method is called as a variable
