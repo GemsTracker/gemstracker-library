@@ -21,7 +21,7 @@ class UtilDbHelper
 
     protected function fetchSortedCached(string $functionName, string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null, ?callable $resultFunction = null): mixed
     {
-        $cacheKey = HelperAdapter::cleanupForCacheId($cacheKey);
+        $cacheKey = HelperAdapter::createCacheKey([get_called_class(), $functionName, $cacheKey], $select, $params, $resultFunction);
 
         if ($this->cache->hasItem($cacheKey)) {
             return $this->cache->getCacheItem($cacheKey);
@@ -57,10 +57,8 @@ class UtilDbHelper
         return $result;
     }
 
-    public function getSelectAllCached(string $cacheId, string|Select $select, ?array $params = null, ?array $tags = null, bool $natSort = false): array
+    public function getSelectAllCached(string $cacheKey, string|Select $select, ?array $params = null, ?array $tags = null, bool $natSort = false): array
     {
-        $cacheKey = static::class . '_a_' . $cacheId;
-
         $sort = null;
         if ($natSort) {
             $sort = 'natsort';
@@ -75,10 +73,8 @@ class UtilDbHelper
         return $result;
     }
 
-    public function getSelectColCached(string $cacheId, string|Select $select, ?array $params = null, ?array $tags = null, bool $natSort = false): array
+    public function getSelectColCached(string $cacheKey, string|Select $select, ?array $params = null, ?array $tags = null, bool $natSort = false): array
     {
-        $cacheKey = static::class . '_c_' . $cacheId;
-
         $sort = null;
         if ($natSort) {
             $sort = 'natsort';
@@ -93,10 +89,8 @@ class UtilDbHelper
         return $result;
     }
 
-    public function getSelectPairsCached(string $cacheId, string|Select $select, ?array $params = null, ?array $tags = null, ?callable $sort = null): array
+    public function getSelectPairsCached(string $cacheKey, string|Select $select, ?array $params = null, ?array $tags = null, ?callable $sort = null): array
     {
-        $cacheKey = static::class . '_p_' . $cacheId;
-
         $result = $this->fetchSortedCached('fetchPairs', $cacheKey, $select, $params, $tags, $sort);
 
         if ($result === null) {
@@ -106,34 +100,26 @@ class UtilDbHelper
         return $result;
     }
 
-    public function getSelectPairsProcessedCached(string $cacheId, string|Select $select, callable $function, ?array $params = null, ?array $tags = null, ?callable $sort = null): array
+    public function getSelectPairsProcessedCached(string $cacheKey, string|Select $select, callable $function, ?array $params = null, ?array $tags = null, ?callable $sort = null): array
     {
-        $cacheKey = static::class . '_' . $cacheId;
-
         return $this->getProcessedCached('fetchPairs', $cacheKey, $select, $function, $params, $tags, $sort);
     }
 
-    public function getSelectProcessedCached(string $cacheId, string|Select $select, callable $function, ?array $params = null, ?array $tags = null, ?callable $sort = null): array
+    public function getSelectProcessedCached(string $cacheKey, string|Select $select, callable $function, ?array $params = null, ?array $tags = null, ?callable $sort = null): array
     {
-        $cacheKey = static::class . '_' . $cacheId;
-
         return $this->getProcessedCached('fetchAll', $cacheKey, $select, $function, $params, $tags, $sort);
     }
 
     public function getTranslatedPairsCached(string $table, string $keyColumnName, string $valueColumnName, ?array $tags = [], ?array $where = null, ?callable $sort = null): array
     {
         $currentLanguage = $this->locale->getLanguage();
-        $rawCacheId = "__trans $table $keyColumnName $valueColumnName";
-        if ($where) {
-            $rawCacheId .= md5(serialize($where));
-        }
-        $cacheKey   = HelperAdapter::cleanupForCacheId($rawCacheId);
-        $cacheLangKey = HelperAdapter::cleanupForCacheId($cacheKey . '_' . $currentLanguage);
+        $cacheLangKey = HelperAdapter::createCacheKey([get_called_class(), $table, $keyColumnName, $valueColumnName, $currentLanguage], $where, $sort);
 
         if ($this->cache->hasItem($cacheLangKey)) {
             return $this->cache->getCacheItem($cacheLangKey);
         }
 
+        $cacheKey = HelperAdapter::createCacheKey([get_called_class(), $table, $keyColumnName, $valueColumnName], $where, $sort);
         $result = $this->cache->getCacheItem($cacheKey);
         if (! $result) {
             $select = $this->resultFetcher->getSelect($table);
@@ -142,7 +128,6 @@ class UtilDbHelper
             if ($where) {
                 $select->where($where);
             }
-//            dump($select->getSqlString($this->resultFetcher->getPlatform()));
             $result = $this->fetchSortedCached('fetchPairs', $cacheKey, $select, null, $tags, $sort);
         }
 
