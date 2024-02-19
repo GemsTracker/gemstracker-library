@@ -150,7 +150,7 @@ class HourKeySha256 extends EmbeddedAuthAbstract
     /**
      * Return the authentication string for the user
      *
-     * @param User $embeddedUser
+     * @param EmbeddedUserData $embeddedUserData
      * @return string Preferably containing %s
      */
     protected function getKeysStart(EmbeddedUserData $embeddedUserData)

@@ -9,8 +9,10 @@ use Gems\AuthTfa\Method\SmsHotp;
 use Gems\Cache\HelperAdapter;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\User\User;
+use Gems\User\UserMailer;
 use Psr\Container\ContainerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Loader\ProjectOverloader;
 
 class OtpMethodBuilder
 {
@@ -28,7 +30,7 @@ class OtpMethodBuilder
 
         return match($className) {
             'AuthenticatorTotp' => new AuthenticatorTotp($settings, $this->translator, $user, $this->throttleCache, $this->config),
-            'MailHotp' => new MailHotp($settings, $this->translator, $user, $this->throttleCache),
+            'MailHotp' => new MailHotp($settings, $this->translator, $user, $this->throttleCache, $this->container->get(UserMailer::class)),
             'SmsHotp' => new SmsHotp(
                 $settings,
                 $this->translator,

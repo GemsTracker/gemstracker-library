@@ -53,9 +53,4 @@ class User extends \Gems\User\User
     {
         return hash('sha256', random_bytes(64));
     }
-
-    public function setRole(?string $role): void
-    {
-        $this->_setVar('user_role', $role);
-    }
 }

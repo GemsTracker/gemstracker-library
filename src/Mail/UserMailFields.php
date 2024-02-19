@@ -44,7 +44,7 @@ class UserMailFields extends OrganizationMailFields
 
     protected function getUserFrom(User $user): string
     {
-        $sources = $user->getBaseOrganization();
+        $sources = [$user->getBaseOrganization()];
         if ($user->getBaseOrganizationId() !== $user->getCurrentOrganizationId()) {
             $sources[] = $user->getCurrentOrganization();
         }

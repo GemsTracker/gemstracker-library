@@ -260,7 +260,7 @@ abstract class DbUserDefinitionAbstract extends UserDefinitionAbstract
          * if you want some kind of auto-register you should change this
          */
         if ($result == false) {
-            $result = NoLoginDefinition::getNoLoginDataFor($loginName, $organization);
+            $result = NoLoginDefinition::getNoLoginDataFor($loginName, $organizationId);
         }
 
         return $result;

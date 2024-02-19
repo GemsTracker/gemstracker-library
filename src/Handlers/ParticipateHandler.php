@@ -282,7 +282,7 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
         if ($orgId) {
             $this->currentUserRepository->setCurrentOrganizationId($orgId);
             if ($this->currentUser && ($orgId != $this->currentUser->getCurrentOrganizationId())) {
-                $this->currentUser->setCurrentOrganization($orgId);
+                $this->currentUser->setCurrentOrganizationId($orgId);
             }
         }
     }

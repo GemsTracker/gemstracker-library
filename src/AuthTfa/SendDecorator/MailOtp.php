@@ -4,7 +4,9 @@ namespace Gems\AuthTfa\SendDecorator;
 
 use Gems\AuthTfa\Adapter\OtpAdapterInterface;
 use Gems\Cache\HelperAdapter;
+use Gems\Communication\Exception;
 use Gems\User\User;
+use Gems\User\UserMailer;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MailOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
@@ -17,6 +19,7 @@ class MailOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
         OtpAdapterInterface $otp,
         private readonly HelperAdapter $throttleCache,
         private readonly User $user,
+        private readonly UserMailer $userMailer,
     ) {
         parent::__construct($translator, $otp);
 
@@ -40,11 +43,10 @@ class MailOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
 
             $body = 'Your code is ' . $code;
 
-            $result = $this->user->sendMail($subject, $body);
-            if ($result === null) {
-                $this->hitSendOtp($this->user);
-                return true;
-            }
+            $this->userMailer->sendMail($this->user, $subject, $body);
+
+            $this->hitSendOtp($this->user);
+            return true;
         }
 
         throw new \Gems\Exception($this->translator->trans('OTP could not be sent, maximum number of OTP send attempts reached'));

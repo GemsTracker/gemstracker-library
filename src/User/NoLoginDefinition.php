@@ -63,7 +63,7 @@ class NoLoginDefinition extends UserDefinitionAbstract
      * Returns the data for a user object. It may be empty if the user is unknown.
      *
      * @param string $loginName
-     * @param int $organization
+     * @param int $organizationId
      * @return array Of data to fill the user with.
      */
     public function getUserData(string $loginName, int $organizationId): array

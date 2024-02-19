@@ -7,10 +7,13 @@ namespace Gems\Handlers\Auth;
 use Gems\Audit\AuditLog;
 use Gems\AuthNew\PasswordResetThrottleBuilder;
 use Gems\Communication\CommunicationRepository;
+use Gems\Communication\Exception;
 use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Site\SiteUtil;
+use Gems\User\User;
 use Gems\User\UserLoader;
+use Gems\User\UserMailer;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;
@@ -38,6 +41,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
         private readonly UserLoader $userLoader,
         private readonly AuditLog $auditLog,
         private readonly CommunicationRepository $communicationRepository,
+        private readonly UserMailer $userMailer,
     ) {
     }
 
@@ -99,21 +103,15 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
             && $user->isAllowedOrganization((int)$input['organization'])
             && $user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)
         ) {
-            $errors = $this->sendUserResetEMail($user);
-
-            if ($errors) {
-                $this->auditLog->logChange(
+            try {
+                $this->sendUserResetEMail($user);
+            } catch (Exception $e) {
+                $this->auditLog->registerUserRequest(
                     $request,
-                    sprintf(
-                        "User %s requested reset password but got %d error(s). %s",
-                        $input['username'],
-                        count($errors),
-                        implode(' ', $errors)
-                    )
+                    $user,
+                    [$e->getMessage()],
                 );
             }
-
-            $this->auditLog->logChange($request);
         }
 
         $this->statusMessenger->addInfo($this->translator->trans(
@@ -148,10 +146,11 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
     /**
      * Send the user an e-mail with a link for password reset
      *
-     * @param \Gems\User\User $user
-     * @return mixed string or array of Errors or null when successful.
+     * @param User $user
+     * @return void
+     * @throws Exception
      */
-    public function sendUserResetEMail(\Gems\User\User $user)
+    public function sendUserResetEMail(User $user): void
     {
         $templateId = $this->communicationRepository->getResetPasswordTemplate($user->getBaseOrganization());
         if ($templateId) {
@@ -166,6 +165,6 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
             $bodyTemplate = $this->translator->trans("Dear {{greeting}},<br><br><br>A new password was requested for your <strong>{{organization}}</strong> account on the <strong>{{project}}</strong> site, please click within {{reset_in_hours}} hours on <a href=\"{{reset_url}}\">this link</a> to enter the password of your choice.<br><br><br>{{organization_signature}}<br><br><a href=\"{{reset_url}}\">{{reset_url}}</a><br>");
         }
 
-        return $user->sendMail($subjectTemplate, $bodyTemplate, true);
+        $this->userMailer->sendMail($user, $subjectTemplate, $bodyTemplate, true);
     }
 }

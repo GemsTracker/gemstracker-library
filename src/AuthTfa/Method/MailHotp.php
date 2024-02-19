@@ -6,6 +6,7 @@ use Gems\AuthTfa\Adapter\HotpAdapter;
 use Gems\AuthTfa\SendDecorator\MailOtp;
 use Gems\Cache\HelperAdapter;
 use Gems\User\User;
+use Gems\User\UserMailer;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MailHotp extends MailOtp implements OtpMethodInterface
@@ -15,6 +16,7 @@ class MailHotp extends MailOtp implements OtpMethodInterface
         TranslatorInterface $translator,
         User $user,
         HelperAdapter $throttleCache,
+        UserMailer $userMailer,
     ) {
         parent::__construct(
             $settings,
@@ -22,6 +24,7 @@ class MailHotp extends MailOtp implements OtpMethodInterface
             new HotpAdapter($settings, $throttleCache),
             $throttleCache,
             $user,
+            $userMailer,
         );
     }
 
