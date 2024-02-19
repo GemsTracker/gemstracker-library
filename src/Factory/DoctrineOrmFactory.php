@@ -41,6 +41,9 @@ class DoctrineOrmFactory implements FactoryInterface
         if (!$isDevMode) {
             $config->setAutoGenerateProxyClasses(ProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
         }
+        if (isset($config['doctrine'], $config['doctrine']['proxydir'])) {
+            $config->setProxyDir($config['doctrine']['proxydir']);
+        }
 
         $namingStrategy = new UnderscoreNamingStrategy(CASE_LOWER, true);
         $config->setNamingStrategy($namingStrategy);
