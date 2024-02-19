@@ -156,9 +156,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
 
         $orgs         = $this->currentUser->getRespondentOrgFilter();
         if (isset($filter['gr2t_id_organization'])) {
-            foreach ($filter['gr2t_id_organization'] as $organizationId) {
-                $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
-            }
+            $this->currentUserRepository->assertAccessToOrganizationId($filter['gr2t_id_organization']);
         }
         $this->orgWhere = " AND gr2t_id_organization IN (" . implode(", ", $orgs) . ")";
 

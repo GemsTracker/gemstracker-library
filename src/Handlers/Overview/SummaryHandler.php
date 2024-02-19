@@ -154,9 +154,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
             $this->autofilterParameters['extraFilter']['gto_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         } else {
-            foreach ($filter['gto_id_organization'] as $organizationId) {
-                $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
-            }
+            $this->currentUserRepository->assertAccessToOrganizationId($filter['gto_id_organization']);
         }
 
         if (isset($filter['gto_id_track']) && $filter['gto_id_track']) {

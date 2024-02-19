@@ -148,9 +148,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
             $this->autofilterParameters['extraFilter']['gr2t_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         } else {
-            foreach ($filter['gr2t_id_organization'] as $organizationId) {
-                $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
-            }
+            $this->currentUserRepository->assertAccessToOrganizationId($filter['gr2t_id_organization']);
         }
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
             $this->autofilterParameters['extraFilter'][1] = 0;
