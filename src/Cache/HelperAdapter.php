@@ -25,6 +25,19 @@ class HelperAdapter extends TagAwareAdapter
     }
 
     /**
+     * Create a unique cache key, based on the provided arguments.
+     *
+     * @param array<int, string> $plainKeyParts Array of strings to include in the cache
+     *                                          key as is, so we still know what's what.
+     * @param ...$args All other arguments provided to the original caching function.
+     * @return string A unique string that can be used as a cache key.
+     */
+    public static function createCacheKey(array $plainKeyParts, ...$args): string
+    {
+        return self::cleanupForCacheId(implode('_', $plainKeyParts) . '_' . md5(serialize($args)));
+    }
+
+    /**
      * Cleans up everything to a save cacheId
      */
     public static function cleanupForCacheId(string $cacheId): string
