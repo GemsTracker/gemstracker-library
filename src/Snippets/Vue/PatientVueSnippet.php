@@ -36,6 +36,7 @@ class PatientVueSnippet extends VueSnippetAbstract
         }
         $this->patientNr = (string) $attributes[Model::REQUEST_ID1];
         $this->organizationId = (int) $attributes[Model::REQUEST_ID2];
+        $this->currentUserRepository->assertAccessToOrganizationId($this->organizationId);
         return parent::hasHtmlOutput();
     }
 }

@@ -4,6 +4,7 @@ namespace Gems\Snippets\Vue;
 
 use Gems\Html;
 use Gems\Layout\LayoutSettings;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;
@@ -24,10 +25,11 @@ class VueSnippetAbstract extends SnippetAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        protected readonly  LayoutSettings $layoutSettings,
+        protected readonly LayoutSettings $layoutSettings,
         protected readonly TemplateRendererInterface $templateRenderer,
         protected readonly Locale $locale,
         protected readonly UrlHelper $urlHelper,
+        protected readonly CurrentUserRepository $currentUserRepository,
         array $config,
     )
     {
