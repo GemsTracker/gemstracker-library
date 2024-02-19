@@ -37,17 +37,17 @@ class DoctrineOrmFactory implements FactoryInterface
 
         $cache = $container->get(CacheItemPoolInterface::class);
 
-        $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode, null, $cache);
+        $attributeMetadataConfig = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode, null, $cache);
         if (!$isDevMode) {
-            $config->setAutoGenerateProxyClasses(ProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
+            $attributeMetadataConfig->setAutoGenerateProxyClasses(ProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
         }
         if (isset($config['doctrine'], $config['doctrine']['proxydir'])) {
-            $config->setProxyDir($config['doctrine']['proxydir']);
+            $attributeMetadataConfig->setProxyDir($config['doctrine']['proxydir']);
         }
 
         $namingStrategy = new UnderscoreNamingStrategy(CASE_LOWER, true);
-        $config->setNamingStrategy($namingStrategy);
-        $entityManager = new EntityManager($connection, $config);
+        $attributeMetadataConfig->setNamingStrategy($namingStrategy);
+        $entityManager = new EntityManager($connection, $attributeMetadataConfig);
 
         return $entityManager;
     }
