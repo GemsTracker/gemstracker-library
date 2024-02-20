@@ -63,6 +63,16 @@ class RespondentRepository
 
         $accessibleById = $userOrganizationId ?? $organizationId;
 
+        $wherePredicates = [
+            $currentOrganizationPredicate,
+        ];
+
+        if ($userOrganizationId !== null && $userOrganizationId !== $organizationId) {
+            $userOrganizationPredicate = new Predicate();
+            $wherePredicates[] = $userOrganizationPredicate->equalTo('gr2o_id_organization', $userOrganizationId);
+            $wherePredicates[] = new Like('gor_accessible_by', '%'.$userOrganizationId.'%');
+        }
+
         $select = $this->resultFetcher->getSelect('gems__respondent2org')
             ->join('gems__organizations', 'gor_id_organization = gr2o_id_organization', $organizationColumns)
             ->join('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', [])
@@ -70,11 +80,12 @@ class RespondentRepository
             ->where([
                 'grc_success' => 1,
                 'gr2o_id_user' => $subSelect,
-                new PredicateSet([
-                    $currentOrganizationPredicate,
-                    new Like('gor_accessible_by', '%'.$accessibleById.'%'),
-                ], PredicateSet::COMBINED_BY_OR),
+                new PredicateSet($wherePredicates, PredicateSet::COMBINED_BY_OR),
             ]);
+
+        $test = $select->getSqlString($this->resultFetcher->getPlatform());
+        echo $test;
+        die;
 
         $patients = $this->resultFetcher->fetchAll($select);
 
