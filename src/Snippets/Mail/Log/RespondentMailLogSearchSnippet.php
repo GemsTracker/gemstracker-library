@@ -48,7 +48,6 @@ class RespondentMailLogSearchSnippet extends MailLogSearchSnippet
         PeriodSelectRepository $periodSelectRepository,
         CurrentUserRepository $currentUserRepository,
         TrackDataRepository $trackDataRepository,
-        DatabaseTranslations $databaseTranslations,
         protected readonly RespondentRepository $respondentRepository,
     ) {
         parent::__construct(
@@ -62,7 +61,6 @@ class RespondentMailLogSearchSnippet extends MailLogSearchSnippet
             $periodSelectRepository,
             $currentUserRepository,
             $trackDataRepository,
-            $databaseTranslations
         );
     }
 
