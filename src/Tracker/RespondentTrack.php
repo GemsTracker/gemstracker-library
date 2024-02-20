@@ -391,6 +391,9 @@ class RespondentTrack
             $this->getTokens(true);
 
             $this->checkTrackTokens($userId, $this->_tokens[$tokenId]);
+
+            // Refetch tokens as checkTrackTokens could have done a refresh and deleted them
+            $this->getTokens();
             // Update the track counter
             //$this->_checkTrackCount($userId);
             return $this->_tokens[$tokenId];
