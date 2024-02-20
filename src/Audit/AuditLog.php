@@ -24,6 +24,8 @@ class AuditLog
 {
     protected string $actionsCacheKey = 'logActions';
 
+    protected array $actionsCacheTags = ['accesslog_actions', 'logActions'];
+
     protected ?int $lastLogId = null;
 
     /**
@@ -108,6 +110,8 @@ class AuditLog
         $table = new TableGateway('gems__log_setup', $this->cachedResultFetcher->getAdapter());
         $table->insert($logAction);
 
+        $this->cachedResultFetcher->invalidateTags($this->actionsCacheTags);
+
         $actions = $this->getDbActions(true);
         return $actions[$routeName];
     }
@@ -174,7 +178,7 @@ class AuditLog
         $select = $this->cachedResultFetcher->getSelect('gems__log_setup');
         $select->order(['gls_name']);
 
-        $actions = $this->cachedResultFetcher->fetchAll($this->actionsCacheKey, $select);
+        $actions = $this->cachedResultFetcher->fetchAll($this->actionsCacheKey, $select, null, $this->actionsCacheTags);
         if ($actions) {
             return array_combine(array_column($actions, 'gls_name'), $actions);
         }

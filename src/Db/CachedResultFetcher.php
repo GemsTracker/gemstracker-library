@@ -83,6 +83,11 @@ class CachedResultFetcher
         return $this->resultFetcher->getSelect($table);
     }
 
+    public function invalidateTags(array $tags): void
+    {
+        $this->cache->invalidateTags($tags);
+    }
+
     public function query(string $cacheKey, Select|string $select, ?array $params = null, ?array $tags = null)
     {
         return $this->fetchCached(__FUNCTION__, $cacheKey, $select, $params, $tags);
