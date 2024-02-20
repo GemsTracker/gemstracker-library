@@ -181,7 +181,7 @@ class CommJobsUtil extends UtilAbstract
 
         $cacheId .= '_' . \MUtil\StringUtil\StringUtil::toCacheId($roundDescription);
 
-        return $this->_getSelectColCached($cacheId, $sql, $binds, ['round', 'rounds', 'track', 'tracks'], false);
+        return $this->utilDbHelper->getSelectColCached($cacheId, $sql, $binds, ['round', 'rounds', 'track', 'tracks'], false);
     }
 
     /**
