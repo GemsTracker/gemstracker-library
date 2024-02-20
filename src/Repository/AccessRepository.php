@@ -2,8 +2,10 @@
 
 namespace Gems\Repository;
 
+use Gems\User\Group;
 use Gems\Util\Translated;
 use Gems\Util\UtilDbHelper;
+use Zalt\Loader\ProjectOverloader;
 
 class AccessRepository
 {
@@ -12,7 +14,13 @@ class AccessRepository
         'groups',
     ];
 
-    public function __construct(protected Translated $translatedUtil, protected UtilDbHelper $utilDbHelper)
+    protected array $groups = [];
+
+    public function __construct(
+        protected Translated $translatedUtil,
+        protected UtilDbHelper $utilDbHelper,
+        protected ProjectOverloader $projectOverloader,
+    )
     {}
 
     /**
@@ -34,6 +42,14 @@ class AccessRepository
                 'natsort');
 
         return $staffGroups;
+    }
+
+    public function getGroup(int $groupId): Group
+    {
+        if (!isset($this->groups[$groupId])) {
+            $this->groups[$groupId] = $this->projectOverloader->create('User\\Group', $groupId);
+        }
+        return $this->groups[$groupId];
     }
 
     /**

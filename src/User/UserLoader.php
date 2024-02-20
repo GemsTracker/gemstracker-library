@@ -11,9 +11,22 @@
 
 namespace Gems\User;
 
+use Gems\Cache\HelperAdapter;
+use Gems\Db\ResultFetcher;
 use Gems\Exception\AuthenticationException;
-use Gems\User\Group;
-use Laminas\ServiceManager\ServiceManager;
+use Gems\Hydrator\NamingStrategy\PrefixedUnderscoreNamingStrategy;
+use Gems\User\Embed\EmbeddedUserData;
+use Laminas\Db\Exception\RuntimeException;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Predicate\Predicate;
+use Laminas\Db\Sql\Select;
+use Laminas\Hydrator\HydratorInterface;
+use Laminas\Hydrator\ReflectionHydrator;
+use Laminas\Hydrator\Strategy\BooleanStrategy;
+use Laminas\Hydrator\Strategy\DateTimeFormatterStrategy;
+use Laminas\Hydrator\Strategy\DateTimeImmutableFormatterStrategy;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  * Loads users.
@@ -24,32 +37,32 @@ use Laminas\ServiceManager\ServiceManager;
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class UserLoader extends \Gems\Loader\TargetLoaderAbstract
+class UserLoader
 {
     /**
      * The org ID for no organization
      */
-    const SYSTEM_NO_ORG  = -1;
+    public const SYSTEM_NO_ORG  = -1;
 
-    const CONSOLE_USER_ID = 2;
+    public const CONSOLE_USER_ID = 2;
 
     /**
      * The user id used for the project user
      */
-    const SYSTEM_USER_ID = 1;
+    public const SYSTEM_USER_ID = 1;
 
-    const UNKNOWN_USER_ID = 0;
+    public const UNKNOWN_USER_ID = 0;
 
     /**
      * User class constants
      */
-    const USER_CONSOLE    = 'ConsoleUser';
-    const USER_NOLOGIN    = 'NoLogin';
-    const USER_LDAP       = 'LdapUser';
-    const USER_PROJECT    = 'ProjectUser';
-    const USER_RADIUS     = 'RadiusUser';
-    const USER_RESPONDENT = 'RespondentUser';
-    const USER_STAFF      = 'StaffUser';
+    public const USER_CONSOLE    = 'ConsoleUser';
+    public const USER_NOLOGIN    = 'NoLogin';
+    public const USER_LDAP       = 'LdapUser';
+    public const USER_PROJECT    = 'ProjectUser';
+    public const USER_RADIUS     = 'RadiusUser';
+    public const USER_RESPONDENT = 'RespondentUser';
+    public const USER_STAFF      = 'StaffUser';
 
     /**
      * When true a user is allowed to login to a different organization than the
@@ -59,7 +72,7 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var boolean
      */
-    public $allowLoginOnOtherOrganization = false;
+    public bool $allowLoginOnOtherOrganization = false;
 
     /**
      * When true a user is allowed to login without specifying an organization
@@ -69,80 +82,39 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var boolean
      */
-    public $allowLoginOnWithoutOrganization = false;
+    public bool $allowLoginOnWithoutOrganization = false;
 
     /**
      * When true Respondent members can use their e-mail address as login name
      * @var boolean
      */
-    public $allowRespondentEmailLogin = false;
+    public bool $allowRespondentEmailLogin = false;
 
     /**
      * When true Staff members can use their e-mail address as login name
      * @var boolean
      */
-    public $allowStaffEmailLogin = false;
+    public bool $allowStaffEmailLogin = false;
+
+    protected User|null $currentUser;
+
+    protected array $_embedderData = [];
 
     /**
-     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
-     *
-     * @var string $cascade An optional subdirectory where this subclass always loads from.
+     * @var UserDefinitionInterface[]
      */
-    protected ?string $cascade = 'User';
+    protected array $userDefinitions = [];
 
-    /**
-     * @var array
-     */
-    protected $config;
+    protected HydratorInterface|null $userHydrator = null;
 
-    /**
-     * @var User
-     */
-    protected $_currentLegacyUser;
-    
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
-
-    /**
-     *
-     * @var \Zend_Session_Namespace
-     */
-    protected $session;
-
-    /**
-     * @var \Zend_Translate_Adapter
-     */
-    protected $translate;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
+    public function __construct(
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly TranslatorInterface $translator,
+        protected readonly ProjectOverloader $projectOverloader,
+        protected readonly PasswordChecker $passwordChecker,
+        protected readonly HelperAdapter $cache,
+    )
     {
-        // Make sure \Gems\User\User gets userLoader variable.
-        $extras['userLoader'] = $this;
-
-        $this->addRegistryContainer($extras);
-
-        return true;
     }
 
     /**
@@ -154,33 +126,38 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      * @param int $userId The person creating the user.
      * @return \Gems\User\User Newly created
      */
-    public function createUser($login_name, $organization, $userClassName, $userId)
+    public function createUser(string $login_name, int $organization, string $userClassName, int $userId): User
     {
-        $now = new \MUtil\Db\Expr\CurrentTimestamp();;
+        $now = new Expression('CURRENT_TIMESTAMP');
 
         $values['gul_user_class'] = $userClassName;
         $values['gul_can_login']  = 1;
         $values['gul_changed']    = $now;
         $values['gul_changed_by'] = $userId;
 
-        $select = $this->db->select();
-        $select->from('gems__user_logins', array('gul_id_user'))
-                ->where('gul_login = ?', $login_name)
-                ->where('gul_id_organization = ?', $organization)
-                ->limit(1);
+        $select = $this->resultFetcher->getSelect('gems__user_logins');
+        $select->columns(['gul_id_user'])
+            ->where([
+                'gul_login' => $login_name,
+                'gul_id_organization' => $organization,
+            ])
+            ->limit(1);
 
         // Update class definition if it already exists
-        if ($login_id = $this->db->fetchOne($select)) {
-            $where = implode(' ', $select->getPart(\Zend_Db_Select::WHERE));
-            $this->db->update('gems__user_logins', $values, $where);
+        if ($login_id = $this->resultFetcher->fetchOne($select)) {
+            $where = [
+                'gul_login' => $login_name,
+                'gul_id_organization' => $organization,
+            ];
 
+            $this->resultFetcher->updateTable('gems__user_logins', $values, $where);
         } else {
             $values['gul_login']           = $login_name;
             $values['gul_id_organization'] = $organization;
             $values['gul_created']         = $now;
             $values['gul_created_by']      = $userId;
 
-            $this->db->insert('gems__user_logins', $values);
+            $this->resultFetcher->insertIntoTable('gems__user_logins', $values);
         }
 
         return $this->getUser($login_name, $organization);
@@ -194,7 +171,7 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      * @param string $defName Optional
      * @return array
      */
-    public function ensureDefaultUserValues(array $values, \Gems\User\UserDefinitionInterface $definition, $defName = null)
+    public function ensureDefaultUserValues(array $values, UserDefinitionInterface $definition, string|null $defName = null): array
     {
         if (! isset($values['user_active'])) {
             $values['user_active'] = true;
@@ -211,7 +188,7 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
 
 
         if ($defName) {
-            $values['__user_definition'] = $defName;
+            $values['user_definition'] = $defName;
         }
 
         return $values;
@@ -222,11 +199,11 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @return array
      */
-    public function getAvailableRespondentDefinitions()
+    public function getAvailableRespondentDefinitions(): array
     {
-        $definitions = array(
-            self::USER_RESPONDENT => $this->translate->_('Db storage')
-        );
+        $definitions = [
+            self::USER_RESPONDENT => $this->translator->_('Db storage')
+        ];
 
         return $definitions;
     }
@@ -236,15 +213,15 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @return array
      */
-    public function getAvailableStaffDefinitions()
+    public function getAvailableStaffDefinitions(): array
     {
-        $output = array(
-            self::USER_STAFF  => $this->translate->_('Db storage'),
-            self::USER_RADIUS => $this->translate->_('Radius storage'),
-        );
+        $output = [
+            self::USER_STAFF  => $this->translator->_('Db storage'),
+            self::USER_RADIUS => $this->translator->_('Radius storage'),
+        ];
 
         if (isset($this->config['ldap'])) {
-            $output[self::USER_LDAP] = $this->translate->_('LDAP');
+            $output[self::USER_LDAP] = $this->translator->_('LDAP');
         }
         asort($output);
 
@@ -256,16 +233,30 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         return $this->loadUser(self::USER_CONSOLE, 70, 'console');
     }
     
-    public function getCurrentUser() : User
+    public function getCurrentUser() : User|null
     {
-        if (! $this->_currentLegacyUser) {
-            $container = \MUtil\Model::getSource()->getContainer();
-            if ($container instanceof ServiceManager) {
-                $this->_currentLegacyUser = $container->get('LegacyCurrentUser');
-            }
+        return $this->currentUser;
+    }
+
+    /**
+     * If user is an embedder, return the EmbedderUserData object
+     *
+     * @return EmbeddedUserData|null
+     */
+    public function getEmbedderData(User $user): EmbeddedUserData|null
+    {
+        if (! $user->isEmbedded()) {
+            return null;
         }
-        
-        return $this->_currentLegacyUser;
+        $userId = $user->getUserId();
+
+        if (isset($this->_embedderData[$userId])) {
+            return $this->_embedderData[$userId];
+        }
+
+        $this->_embedderData[$userId] = $this->projectOverloader->create('User\\Embed\\EmbeddedUserData', $userId);
+
+        return $this->_embedderData[$userId];
     }
 
     /**
@@ -275,12 +266,12 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      * @param int $groupId Group id
      * @return \Gems\User\Group
      */
-    public function getGroup($groupId)
+    public function getGroup(int $groupId): Group
     {
-        static $groups = array();
+        static $groups = [];
 
         if (! isset($groups[$groupId])) {
-            $groups[$groupId] = $this->_loadClass('Group', true, array($groupId));
+            $groups[$groupId] = $this->projectOverloader->create('User\\Group', $groupId);
         }
 
         return $groups[$groupId];
@@ -290,13 +281,13 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @return array  id => label
      */
-    public function getGroupTwoFactorNotSetOptions()
+    public function getGroupTwoFactorNotSetOptions(): array
     {
         return [
-            Group::NO_TWO_FACTOR_INSIDE_ONLY   => $this->translate->_('Allowed only in optional IP Range'),
-            // Group::NO_TWO_FACTOR_SETUP_INSIDE  => $this->translate->_('Only in optional, setup required'),
-            // Group::NO_TWO_FACTOR_SETUP_OUTSIDE => $this->translate->_('Allowed in allowed, setup required'),
-            Group::NO_TWO_FACTOR_ALLOWED       => $this->translate->_('Allowed in "allowed from" IP Range'),
+            Group::NO_TWO_FACTOR_INSIDE_ONLY   => $this->translator->_('Allowed only in optional IP Range'),
+            // Group::NO_TWO_FACTOR_SETUP_INSIDE  => $this->translator->_('Only in optional, setup required'),
+            // Group::NO_TWO_FACTOR_SETUP_OUTSIDE => $this->translator->_('Allowed in allowed, setup required'),
+            Group::NO_TWO_FACTOR_ALLOWED       => $this->translator->_('Allowed in "allowed from" IP Range'),
         ];
     }
 
@@ -304,19 +295,19 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @return array  id => label
      */
-    public function getGroupTwoFactorSetOptions()
+    public function getGroupTwoFactorSetOptions(): array
     {
         return [
-            Group::TWO_FACTOR_SET_REQUIRED      => $this->translate->_('Always required - even in optional IP Range'),
-            Group::TWO_FACTOR_SET_OUTSIDE_ONLY  => $this->translate->_('Required - except in optional IP Range'),
-            Group::TWO_FACTOR_SET_DISABLED      => $this->translate->_('Disabled - never ask'),
+            Group::TWO_FACTOR_SET_REQUIRED      => $this->translator->_('Always required - even in optional IP Range'),
+            Group::TWO_FACTOR_SET_OUTSIDE_ONLY  => $this->translator->_('Required - except in optional IP Range'),
+            Group::TWO_FACTOR_SET_DISABLED      => $this->translator->_('Disabled - never ask'),
         ];
     }
 
     /**
      * @return string[] default array for when no organizations have been created
      */
-    public static function getNotOrganizationArray()
+    public static function getNotOrganizationArray(): array
     {
         return [self::SYSTEM_NO_ORG => 'create db first'];
     }
@@ -328,22 +319,18 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      * @param int $organizationId Optional, uses current user or url when empty
      * @return \Gems\User\Organization
      */
-    public function getOrganization($organizationId = null)
+    public function getOrganization(int|null $organizationId = null): Organization
     {
         static $organizations = array();
 
         if (null === $organizationId) {
             $user = $this->getCurrentUser();
 
-            $organizationId = intval($user->getCurrentOrganizationId());
+            $organizationId = $user->getCurrentOrganizationId();
         }
 
         if (! isset($organizations[$organizationId])) {
-            $organizations[$organizationId] = $this->_loadClass(
-                    'Organization',
-                    true,
-                    array($organizationId, $this->getAvailableStaffDefinitions())
-                    );
+            $organizations[$organizationId] = $this->projectOverloader->create('User\\Organization', $organizationId, $this->getAvailableStaffDefinitions());
         }
 
         return $organizations[$organizationId];
@@ -361,103 +348,38 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
     }
 
     /**
-     * Returns the current organization according to the current site url.
-     *
-     * @static array $urls An array of url => orgId values
-     * @return array url => orgId
-     * @deprecated since version 1.9.1
-     */
-    public function getOrganizationUrls()
-    {
-        return [];
-//        static $urls;
-//
-//        if (! is_array($urls)) {
-//            if ($this->cache) {
-//                $cacheId = GEMS_PROJECT_NAME . '__' . strtr(get_class($this), '\\/', '__') . '__organizations_url';
-//                $urls = $this->cache->load($cacheId);
-//            } else {
-//                $cacheId = false;
-//            }
-//
-//            // When we don't use cache or cache reports 'false' for a miss or expiration
-//            // then try to reload the data
-//            if ($cacheId === false || $urls === false) {
-//                $urls = array();
-//                try {
-//                    $data = $this->db->fetchPairs(
-//                            "SELECT gor_id_organization, gor_url_base
-//                                FROM gems__organizations
-//                                WHERE gor_active=1 AND gor_url_base IS NOT NULL"
-//                            );
-//                } catch (\Zend_Db_Exception $zde) {
-//                    // Table might not be filled
-//                    $data = array();
-//                }
-//                foreach ($data as $orgId => $urlsBase) {
-//                    foreach (explode(' ', $urlsBase) as $url) {
-//                        if ($url) {
-//                            $urls[$url] = $orgId;
-//                        }
-//                    }
-//                }
-//
-//                if ($cacheId) {
-//                    $this->cache->save($urls, $cacheId, array('organization', 'organizations'));
-//                }
-//            }
-//            // \MUtil\EchoOut\EchoOut::track($urls);
-//        }
-//
-//        return $urls;
-    }
-
-    /**
      * Get password weakness checker.
      *
      * @return \Gems\User\PasswordChecker
      */
-    public function getPasswordChecker()
+    public function getPasswordChecker(): PasswordChecker
     {
-        return $this->_getClass('passwordChecker');
-    }
-
-    /**
-     * Returns a reset form for handling both the incoming request and the outgoing reset request
-     *
-     * @param mixed $args_array \MUtil\Ra::args array for LoginForm initiation.
-     * @return \Gems\User\Form\ResetRequestForm
-     */
-    public function getResetRequestForm($args_array = null)
-    {
-        $args = \MUtil\Ra::args(func_get_args());
-
-        return $this->_loadClass('Form\\ResetRequestForm', true, array($args));
+        return $this->passwordChecker;
     }
 
     /**
      * Returns a user object, that may be empty if no user exist.
      *
-     * @param string $login_name
-     * @param int $currentOrganization
+     * @param string $loginName
+     * @param int $currentOrganizationId
      * @return \Gems\User\User But ! ->isActive when the user does not exist
      */
-    public function getUser($login_name, $currentOrganization)
+    public function getUser(string $loginName, int $currentOrganizationId): User
     {
-        $user = $this->getUserClass($login_name, $currentOrganization);
+        $user = $this->getUserClass($loginName, $currentOrganizationId);
 
-        if ($this->allowLoginOnWithoutOrganization && (! $currentOrganization)) {
-            $user->setCurrentOrganization($user->getBaseOrganizationId());
+        if ($this->allowLoginOnWithoutOrganization && (! $currentOrganizationId)) {
+            $user->setCurrentOrganizationId($user->getBaseOrganizationId());
         } else {
-            if (! $currentOrganization) {
-                $currentOrganization = self::SYSTEM_NO_ORG;
+            if (! $currentOrganizationId) {
+                $currentOrganizationId = self::SYSTEM_NO_ORG;
             }
             // Check: can the user log in as this organization, if not load non-existing user
-            if (! $user->isAllowedOrganization($currentOrganization)) {
+            if (! $user->isAllowedOrganization($currentOrganizationId)) {
                 throw new AuthenticationException('disallowed organization');
             }
 
-            $user->setCurrentOrganization($currentOrganization);
+            $user->setCurrentOrganizationId($currentOrganizationId);
         }
 
         return $user;
@@ -483,20 +405,21 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      * @param string $resetKey
      * @return \Gems\User\User|null
      */
-    public function getUserByResetKey($resetKey)
+    public function getUserByResetKey(string $resetKey): User|null
     {
         if ((null == $resetKey) || (0 == strlen(trim($resetKey)))) {
             return null;
         }
 
-        $select = $this->db->select();
-        $select->from('gems__user_passwords', array())
-                ->joinLeft('gems__user_logins', 'gup_id_user = gul_id_user', array("gul_user_class", 'gul_id_organization', 'gul_login'))
-                ->where('gup_reset_key = ?', $resetKey);
+        $select = $this->resultFetcher->getSelect('gems__user_passwords')
+            ->join('gems__user_logins', 'gup_id_user = gul_id_user', ['gul_user_class', 'gul_id_organization', 'gul_login'], Select::JOIN_LEFT)
+            ->where([
+                'gup_reset_key' => $resetKey,
+            ]);
 
-        if ($row = $this->db->fetchRow($select, null, \Zend_Db::FETCH_NUM)) {
+        if ($row = $this->resultFetcher->fetchRow($select)) {
             // \MUtil\EchoOut\EchoOut::track($row);
-            return $this->loadUser($row[0], $row[1], $row[2]);
+            return $this->loadUser($row['gul_user_class'], $row['gul_id_organization'], $row['gul_login']);
         }
 
         return null;
@@ -505,12 +428,12 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Get a staff user using the $staff_id
      *
-     * @param int $staff_id
+     * @param int $staffId
      * @return \Gems\User\User But ! ->isActive when the user does not exist
      */
-    public function getUserByStaffId($staff_id)
+    public function getUserByStaffId(int $staffId): User|null
     {
-        $data = $this->db->fetchRow("SELECT gsf_login, gsf_id_organization FROM gems__staff WHERE gsf_id_user = ?", $staff_id);
+        $data = $this->resultFetcher->fetchRow("SELECT gsf_login, gsf_id_organization FROM gems__staff WHERE gsf_id_user = ?", [$staffId]);
 
         // \MUtil\EchoOut\EchoOut::track($data);
         if (false == $data) {
@@ -538,39 +461,39 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Returns the name of the user definition class of this user.
      *
-     * @param string $login_name
-     * @param int $organization
+     * @param string $loginName
+     * @param int $organizationId
      * @return \Gems\User\User But ! ->isActive when the user does not exist
      */
-    protected function getUserClass($login_name, $organization)
+    protected function getUserClass(string $loginName, int $organizationId): User
     {
         //First check for project user, as this one can run without a db
-        if ((null !== $login_name) && $this->isProjectUser($login_name)) {
-            return $this->loadUser(self::USER_PROJECT, $organization, $login_name);
+        if ((null !== $loginName) && $this->isProjectUser($loginName)) {
+            return $this->loadUser(self::USER_PROJECT, $organizationId, $loginName);
         }
 
 
-        if (null == $login_name) {
+        if (null == $loginName) {
             throw new AuthenticationException('empty login name');
         }
 
         if (!$this->allowLoginOnWithoutOrganization) {
-            if ((null == $organization) || (! intval($organization))) {
+            if ((null == $organizationId) || (! intval($organizationId))) {
                 throw new AuthenticationException('invalid organization');
             }
         }
 
         try {
-            $select = $this->getUserClassSelect($login_name, $organization);
+            $select = $this->getUserClassSelect($loginName, $organizationId);
 
-            if ($row = $this->db->fetchRow($select, null, \Zend_Db::FETCH_NUM)) {
-                if ($row[3] == 1 || $this->allowLoginOnOtherOrganization === true) {
+            if ($row = $this->resultFetcher->fetchRow($select)) {
+                if ($row['tolerance'] == 1 || $this->allowLoginOnOtherOrganization === true) {
                     // \MUtil\EchoOut\EchoOut::track($row);
-                    return $this->loadUser($row[0], $row[1], $row[2]);
+                    return $this->loadUser($row['gul_user_class'], $row['gul_id_organization'], $row['gul_login']);
                 }
             }
 
-        } catch (\Zend_Db_Exception $e) {
+        } catch (RuntimeException $e) {
             // Intentional fall through
             // \MUtil\EchoOut\EchoOut::track($e->getMessage());
         }
@@ -581,14 +504,12 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Returns a select statement to find a corresponding user.
      *
-     * @param string $login_name
-     * @param int $organization
-     * @return \Zend_Db_Select
+     * @param string $loginName
+     * @param int $organizationId
+     * @return Select
      */
-    protected function getUserClassSelect($login_name, $organization)
+    protected function getUserClassSelect(string $loginName, int $organizationId): Select
     {
-        $select = $this->db->select();
-
         /**
          * tolerance field:
          * 1 - login and organization match
@@ -596,54 +517,74 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
          * 3 - login found in another organization without rights to the requested organiation
          *     (could be allowed due to privilege with rights to ALL organizations)
          */
-        $select->from('gems__user_logins', array("gul_user_class", 'gul_id_organization', 'gul_login'))
-                ->where('gul_can_login = 1');
+        $select = $this->resultFetcher->getSelect('gems__user_logins');
+        $columns = [
+            'gul_user_class',
+            'gul_id_organization',
+            'gul_login',
+        ];
+        $select->where([
+            'gul_can_login' => 1,
+        ]);
 
-        if ($this->allowLoginOnWithoutOrganization && !$organization) {
-            $select->columns(new \Zend_Db_Expr('1 AS tolerance'));
+        if ($this->allowLoginOnWithoutOrganization && !$organizationId) {
+            //$select->columns(new \Zend_Db_Expr('1 AS tolerance'));
+            $columns['tolerance'] = new Expression('1');
+            $select->columns($columns);
         } else {
-            $select->from('gems__organizations', array())
-                ->columns(new \Zend_Db_Expr(
-                        "CASE
+            $columns['tolerance'] = new Expression("CASE
                             WHEN gor_id_organization = gul_id_organization THEN 1
                             WHEN gor_accessible_by LIKE CONCAT('%:', gul_id_organization, ':%') THEN 2
                             ELSE 3
-                        END AS tolerance"))
-                ->where('gor_active = 1')
-                ->where('gor_id_organization = ?', $organization)
+                        END");
+            $select->join('gems__organizations', 'gul_id_organization = gor_id_organization', [])
+                ->columns($columns)
+                ->where([
+                    'gor_active' => 1,
+                    'gor_id_organization' => $organizationId,
+                ])
                 ->order('tolerance');
         }
-        $wheres[] = $this->db->quoteInto('gul_login = ?', $login_name);
-        $isEmail  = str_contains($login_name, '@');
+        //$wheres[] = 'gul_login = ?', $login_name);
+        $isEmail  = str_contains($loginName, '@');
+
+        $where = new Predicate();
+        $where->nest()
+            ->equalTo('gul_login', $loginName);
 
         if ($isEmail && $this->allowStaffEmailLogin) {
-            $rows = $this->db->fetchAll(
+            $rows = $this->resultFetcher->fetchAll(
                     "SELECT gsf_login, gsf_id_organization FROM gems__staff WHERE gsf_email = ?",
-                    $login_name
+                    [$loginName]
                     );
             if ($rows) {
                 foreach ($rows as $row) {
-                    $wheres[] = $this->db->quoteInto('gul_login = ? AND ', $row['gsf_login'])
-                            . $this->db->quoteInto('gul_id_organization = ?', $row['gsf_id_organization']);
+                    $where->nest()
+                        ->equalTo('gul_login', $row['gsf_login'])
+                        ->and
+                        ->equalTo('gul_id_organization', $row['gsf_id_organization'])
+                        ->unnest();
                 }
             }
         }
         if ($isEmail && $this->allowRespondentEmailLogin) {
-            $rows = $this->db->fetchAll(
+            $rows = $this->resultFetcher->fetchAll(
                     "SELECT gr2o_patient_nr, gr2o_id_organization FROM gems__respondent2org  "
                     . "INNER JOIN gems__respondents WHERE gr2o_id_user = grs_id_user AND gr2o_email = ?",
-                    $login_name
+                    [$loginName]
                     );
             if ($rows) {
                 foreach ($rows as $row) {
-                    $wheres[] = $this->db->quoteInto('gul_login = ? AND ', $row['gr2o_patient_nr'])
-                            . $this->db->quoteInto('gul_id_organization = ?', $row['gr2o_id_organization']);
+                    $where->nest()
+                        ->equalTo('gul_login', $row['gr2o_patient_nr'])
+                        ->and
+                        ->equalTo('gul_id_organization', $row['gr2o_id_organization'])
+                        ->unnest();
                 }
             }
         }
         // Add search fields
-        $select->where(new \Zend_Db_Expr('(' . implode(') OR (', $wheres) . ')'));
-        // \MUtil\EchoOut\EchoOut::track($select->__toString());
+        $select->where($where);
 
         return $select;
     }
@@ -657,21 +598,67 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      */
     public function getUserDefinition($userClassName)
     {
-        $definition = $this->_getClass($userClassName . 'Definition');
+        if (!isset($this->userDefinitions[$userClassName])) {
+            $this->userDefinitions[$userClassName] = $this->projectOverloader->create('User\\' . $userClassName . 'Definition');
+        }
 
-        return $definition;
+        return $this->userDefinitions[$userClassName];
+    }
+
+    protected function getUserHydrator(User $user): HydratorInterface
+    {
+        if ($this->userHydrator !== null) {
+            return $this->userHydrator;
+        }
+
+        $cacheKey = HelperAdapter::cleanupForCacheId($user::class . 'Hydrator');
+        if ($this->cache->hasItem($cacheKey)) {
+            $this->userHydrator = $this->cache->getCacheItem($cacheKey);
+            return $this->userHydrator;
+        }
+
+        $hydrator = new ReflectionHydrator();
+        $hydrator->setNamingStrategy(new PrefixedUnderscoreNamingStrategy('user_'));
+
+        $reflection = new \ReflectionClass($user);
+        $properties = $reflection->getProperties();
+        foreach ($properties as $property) {
+            $type = $property->getType();
+            if ($type instanceof \ReflectionNamedType) {
+                $name = $type->getName();
+                switch ($name) {
+                    case 'bool':
+                        $hydrator->addStrategy($property->getName(), new BooleanStrategy(1, 0));
+                        break;
+                    case 'DateTimeInterface':
+                    case 'DateTimeImmutable':
+                        $hydrator->addStrategy(
+                            $property->getName(),
+                            new DateTimeImmutableFormatterStrategy(
+                                new DateTimeFormatterStrategy('Y-m-d H:i:s')
+                            )
+                        );
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        $this->cache->setCacheItem($cacheKey, $hydrator);
+        $this->userHydrator = $hydrator;
+        return $this->userHydrator;
     }
 
     /**
      * Check: is this user the super user defined
      * in project.ini?
      *
-     * @param string $login_name
-     * @return boolean
+     * @param string $loginName
+     * @return bool
      */
-    protected function isProjectUser($login_name)
+    protected function isProjectUser(string $loginName): bool
     {
-        return $this->project->getSuperAdminName() == $login_name;
+        return false;//$this->project->getSuperAdminName() == $login_name;
     }
 
     /**
@@ -690,25 +677,28 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         // \MUtil\EchoOut\EchoOut::track($defName, $userName, $userOrganization, $values);
 
         $values = $this->ensureDefaultUserValues($values, $definition, $defName);
-        // \MUtil\EchoOut\EchoOut::track($values, $userName, $userOrganization, $defName);
 
-        return $this->_loadClass('User', true, array($values, $definition));
+        $user = $this->projectOverloader->create('User\\User', $definition);
+        $hydrator = $this->getUserHydrator($user);
+        $hydrator->hydrate($values, $user);
+
+        return $user;
     }
 
-    public function setLegacyCurrentUser(User $_currentLegacyUser)
+    public function setLegacyCurrentUser(User $currentUser): void
     {
-        $this->_currentLegacyUser = $_currentLegacyUser;
+        $this->currentUser = $currentUser;
     }
     
     /**
      * Check for password weakness.
      *
-     * @param \Gems\User\User $user The user for e.g. name checks
+     * @param User $user The user for e.g. name checks
      * @param string $password Or null when you want a report on all the rules for this password.
-     * @return mixed String or array of strings containing warning messages
+     * @return string[] String or array of strings containing warning messages
      */
-    public function reportPasswordWeakness(\Gems\User\User $user, $password = null)
+    public function reportPasswordWeakness(User $user, string|null$password = null): array
     {
-        return $user->reportPasswordWeakness($password);
+        return [];
     }
 }

@@ -17,6 +17,7 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\FormSnippetAbstract;
 use Gems\User\Embed\EmbeddedUserData;
+use Gems\User\UserLoader;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\UrlArrayAttribute;
@@ -63,6 +64,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         MenuSnippetHelper $menuHelper,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly ResultFetcher $resultFetcher,
+        protected readonly UserLoader $userLoader,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
@@ -138,7 +140,8 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $url['usr'] = $this->formData['login_id'];
         $url['pid'] = $this->formData['pid'];
         if ($auth) {
-            $url['key'] = $auth->getExampleKey($this->selectedUser);
+            $embeddedUserData = $this->userLoader->getEmbedderData($this->selectedUser);
+            $url['key'] = $auth->getExampleKey($this->selectedUser, $embeddedUserData);
         }
 
         $url_string = '';
@@ -224,7 +227,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
     public function hasHtmlOutput(): bool
     {
         if ($this->selectedUser instanceof \Gems\User\User) {
-            $this->_embedderData = $this->selectedUser->getEmbedderData();
+            $this->_embedderData = $this->userLoader->getEmbedderData($this->selectedUser);
             if ($this->selectedUser->isActive() && $this->_embedderData instanceof EmbeddedUserData) {
                 return parent::hasHtmlOutput();
             }

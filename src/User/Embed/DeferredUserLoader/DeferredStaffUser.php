@@ -48,7 +48,7 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
      */
     public function getDeferredUser(User $embeddedUser, string $deferredLogin): ?User
     {
-        $embeddedUserData = $embeddedUser->getEmbedderData();
+        $embeddedUserData = $this->userLoader->getEmbedderData($embeddedUser);
         if (! ($embeddedUserData instanceof EmbeddedUserData && $embeddedUser->isActive())) {
             return null;
         }

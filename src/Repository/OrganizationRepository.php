@@ -18,6 +18,10 @@ class OrganizationRepository
      */
     const SYSTEM_NO_ORG  = -1;
 
+    protected Organization|null $noOrgOrganization = null;
+
+    protected array $organizations = [];
+
     /**
      * @return string[] default array for when no organizations have been created
      */
@@ -34,9 +38,23 @@ class OrganizationRepository
     )
     {}
 
+    public function getNoOrganizationOrganization(): Organization
+    {
+        if (!$this->noOrgOrganization) {
+            $this->noOrgOrganization = $this->projectOverloader->create('User\\Organization', static::SYSTEM_NO_ORG, $this->userLoader->getAvailableStaffDefinitions());
+        }
+        return $this->noOrgOrganization;
+    }
+
     public function getOrganization(int $organizationId): Organization
     {
-        return $this->projectOverloader->create('User\\Organization', $organizationId, $this->userLoader->getAvailableStaffDefinitions());
+        if ($organizationId === static::SYSTEM_NO_ORG) {
+            return $this->getNoOrganizationOrganization();
+        }
+        if (!isset($this->organizations[$organizationId])) {
+            $this->organizations[$organizationId] = $this->projectOverloader->create('User\\Organization', $organizationId, $this->userLoader->getAvailableStaffDefinitions());
+        }
+        return $this->organizations[$organizationId];
     }
 
     /**

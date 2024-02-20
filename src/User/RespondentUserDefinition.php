@@ -11,6 +11,8 @@
 
 namespace Gems\User;
 
+use Laminas\Db\Sql\Select;
+
 /**
  * A standard, database stored and authenticate respondent user as of version 1.5.
  *
@@ -20,43 +22,43 @@ namespace Gems\User;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class RespondentUserDefinition extends \Gems\User\DbUserDefinitionAbstract
+class RespondentUserDefinition extends DbUserDefinitionAbstract
 {
     /**
      * A select used by subclasses to add fields to the select.
      *
-     * @param string $login_name
-     * @param int $organization
-     * @return \Zend_Db_Select
+     * @param string $loginName
+     * @param int $organizationId
+     * @return Select
      */
-    protected function getUserSelect($login_name, $organization)
+    protected function getUserSelect(string $loginName, int $organizationId): Select
     {
-        if ((0 == ($this->hoursResetKeyIsValid % 24)) || \Zend_Session::$_unitTestEnabled) {
+        if ((0 == ($this->hoursResetKeyIsValid % 24))) {
             $resetExpr = 'CASE WHEN ADDDATE(gup_reset_requested, ' .
-                    intval($this->hoursResetKeyIsValid / 24) .
-                    ') >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END';
+                intval($this->hoursResetKeyIsValid / 24) .
+                ') >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END';
         } else {
             $resetExpr = 'CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' .
-                    $this->hoursResetKeyIsValid .
-                    ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END';
+                $this->hoursResetKeyIsValid .
+                ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END';
         }
 
         // 'user_group'       => 'gsf_id_primary_group', 'user_logout'      => 'gsf_logout_on_survey',
-        $select = new \Zend_Db_Select($this->db);
-        $select->from('gems__user_logins', array(
+        $select = $this->resultFetcher->getSelect('gems__user_logins');
+        $select->columns([
                     'user_login_id'       => 'gul_id_user',
                     'user_two_factor_key' => 'gul_two_factor_key',
                     'user_otp_count'      =>'gul_otp_count',
                     'user_otp_requested'  =>'gul_otp_requested',
                     'user_active'         => 'gul_can_login',
                     'user_session_key'    => 'gul_session_key',
-                    ))
-                ->join('gems__respondent2org', 'gul_login = gr2o_patient_nr AND gul_id_organization = gr2o_id_organization', array(
+        ])
+                ->join('gems__respondent2org', 'gul_login = gr2o_patient_nr AND gul_id_organization = gr2o_id_organization', [
                     'user_login'       => 'gr2o_patient_nr',
                     'user_base_org_id' => 'gr2o_id_organization',
                     'user_email'       => 'gr2o_email',
-                    ))
-               ->join('gems__respondents', 'gr2o_id_user = grs_id_user', array(
+                ])
+               ->join('gems__respondents', 'gr2o_id_user = grs_id_user', [
                     'user_id'             => 'grs_id_user',
                     'user_first_name'     => 'grs_first_name',
                     'user_surname_prefix' => 'grs_surname_prefix',
@@ -66,25 +68,28 @@ class RespondentUserDefinition extends \Gems\User\DbUserDefinitionAbstract
                     'user_birthday'       => 'grs_birthday',
                     'user_zip'            => 'grs_zipcode',
                     'user_phonenumber'    => $this->getMobilePhoneField(),
-                    ))
-               ->join('gems__organizations', 'gr2o_id_organization = gor_id_organization', array(
+               ])
+               ->join('gems__organizations', 'gr2o_id_organization = gor_id_organization', [
                     'user_group' => 'gor_respondent_group',
-                    ))
-                ->join('gems__groups', 'gor_respondent_group = ggp_id_group', array(
+               ])
+                ->join('gems__groups', 'gor_respondent_group = ggp_id_group', [
                     'user_role'              => 'ggp_role',
                     'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges',
-                    ))
-               ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
+                ])
+               ->join('gems__user_passwords', 'gul_id_user = gup_id_user', [
                    'user_password_reset' => 'gup_reset_required',
                    'user_resetkey_valid' => new \Zend_Db_Expr($resetExpr),
                     'user_password_last_changed' => 'gup_last_pwd_change',
-                  ))
-               ->joinLeft('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', array())
-               ->where('ggp_group_active = 1')
-               ->where('grc_success = 1')
-               ->where('gul_can_login = 1')
-               ->where('gul_login = ?')
-               ->where('gul_id_organization = ?')
+               ], Select::JOIN_LEFT)
+               ->join('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', [], Select::JOIN_LEFT)
+                ->where([
+                    'ggp_group_active' => 1,
+                    'grc_success' => 1,
+                    'gul_can_login' => 1,
+                    'gul_user_class' => 'RespondentUser',
+                    'gul_login' => $loginName,
+                    'gul_id_organization' => $organizationId,
+                ])
                ->limit(1);
 
         return $select;
@@ -102,7 +107,7 @@ class RespondentUserDefinition extends \Gems\User\DbUserDefinitionAbstract
      *
      * @return boolean
      */
-    public function isStaff()
+    public function isStaff(): bool
     {
         return false;
     }

@@ -2,19 +2,35 @@
 
 namespace Gems\Fake;
 
+use Gems\Db\ResultFetcher;
+use Gems\Repository\AccessRepository;
+use Gems\Repository\OrganizationRepository;
 use Gems\User\StaffUserDefinition;
+use Gems\Fake\Organization;
+use Gems\Util\Translated;
+use Laminas\Permissions\Acl\Acl;
 
 class User extends \Gems\User\User
 {
-    public function __construct()
-    {
-        $data = $this->getUserData();
-
-        $userDefinition = new StaffUserDefinition();
-        parent::__construct($data, $userDefinition);
+    public function __construct(
+        StaffUserDefinition $userDefinition,
+        OrganizationRepository $organizationRepository,
+        AccessRepository $accessRepository,
+        Acl $acl,
+        Translated $translatedUtil,
+        ResultFetcher $resultFetcher,
+    ) {
+        parent::__construct(
+            $userDefinition,
+            $organizationRepository,
+            $accessRepository,
+            $acl,
+            $translatedUtil,
+            $resultFetcher,
+        );
     }
 
-    public function getBaseOrganization()
+    public function getBaseOrganization(): Organization
     {
         return new Organization();
     }
@@ -33,13 +49,8 @@ class User extends \Gems\User\User
         ];
     }
 
-    public function getPasswordResetKey()
+    public function getPasswordResetKey(): string
     {
         return hash('sha256', random_bytes(64));
-    }
-
-    public function setRole(?string $role)
-    {
-        $this->_setVar('user_role', $role);
     }
 }

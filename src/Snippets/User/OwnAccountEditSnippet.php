@@ -89,11 +89,9 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
 
             // Reload the current user data
             $user       = $this->currentUser;
-            $currentOrg = $user->getCurrentOrganizationId();
 
             $user = $this->userLoader->getUser($user->getLoginName(), $user->getBaseOrganizationId());
             $this->currentUserRepository->setCurrentUser($user);
-            $user->setCurrentOrganization($currentOrg);
 
             // In case locale has changed, set it in a cookie
             $this->response = (new LocaleCookie())->addLocaleCookieToResponse(

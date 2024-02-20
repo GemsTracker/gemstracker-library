@@ -101,7 +101,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
             /** @var EmbedIdentity $identity */
             $identity = $result->getIdentity();
 
-            $embeddedUserData = $result->systemUser->getEmbedderData();
+            $embeddedUserData = $this->userLoader->getEmbedderData($result->systemUser);
             $redirector = $embeddedUserData->getRedirector();
 
             //if ($redirector instanceof RedirectAbstract) {

@@ -43,7 +43,7 @@ class CurrentOrganizationMiddleware implements MiddlewareInterface
          */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
         if ($user instanceof User) {
-            $user->setCurrentOrganization($currentOrganizationId);
+            $user->setCurrentOrganizationId($currentOrganizationId);
         }
 
         $this->currentUserRepository->setCurrentOrganizationId($currentOrganizationId);

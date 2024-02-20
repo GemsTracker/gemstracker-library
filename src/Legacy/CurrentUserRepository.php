@@ -101,8 +101,9 @@ class CurrentUserRepository
 
     protected function getUserLoader(): UserLoader
     {
-        if (!$this->userLoader instanceof \Gems\User\UserLoader) {
-            $this->userLoader = $this->loader->create('User\\UserLoader', $this->loader, ['User']);
+        if (!$this->userLoader instanceof UserLoader) {
+            $container =$this->loader->getContainer();
+            $this->userLoader = $container->get(UserLoader::class);
         }
 
         return $this->userLoader;

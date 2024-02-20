@@ -2,6 +2,7 @@
 
 namespace Gems\AuthTfa\Adapter;
 
+use DateTimeImmutable;
 use DateInterval;
 use Gems\Cache\HelperAdapter;
 use Gems\User\User;
@@ -61,6 +62,10 @@ class HotpAdapter implements OtpAdapterInterface
     public function verify(User $user, string $code): bool
     {
         $currentOtpRequested = $user->getOtpRequested();
+
+        if (!$currentOtpRequested instanceof DateTimeImmutable) {
+            return false;
+        }
 
         $otpValidUntil = $currentOtpRequested->add(new DateInterval('PT' . $this->codeValidSeconds . 'S'));
 

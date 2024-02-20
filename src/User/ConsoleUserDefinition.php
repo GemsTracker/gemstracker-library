@@ -11,7 +11,11 @@
 
 namespace Gems\User;
 
+use Gems\Project\ProjectSettings;
 use Gems\Repository\OrganizationRepository;
+use Laminas\Authentication\Adapter\AdapterInterface;
+use Laminas\Authentication\Adapter\Callback;
+use Laminas\Db\Exception\RuntimeException;
 
 /**
  * The user used when GemsTracker is called form the console
@@ -22,71 +26,69 @@ use Gems\Repository\OrganizationRepository;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ConsoleUserDefinition extends \Gems\User\UserDefinitionAbstract
+class ConsoleUserDefinition extends UserDefinitionAbstract
 {
-
-    /**
-     * @var OrganizationRepository
-     */
-    protected $organizationRepository;
-
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
+    public function __construct(
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly ProjectSettings $project,
+    )
+    {
+    }
 
     /**
      * Returns an initialized \Zend_Auth_Adapter_Interface
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @param string $password
-     * @return \Zend_Auth_Adapter_Interface
+     * @return AdapterInterface
      */
-    public function getAuthAdapter(\Gems\User\User $user, $password)
+    public function getAuthAdapter(User $user, string $password): AdapterInterface
     {
-        return (boolean) $this->project->getConsoleRole();
+        $project = $this->project;
+        return new Callback(function() use ($project) {
+            return (bool)$project->getConsoleRole();
+        });
     }
 
     /**
      * Returns the data for a user object. It may be empty if the user is unknown.
      *
-     * @param string $login_name
-     * @param int $organization
+     * @param string $loginName
+     * @param int $organizationId
      * @return array Of data to fill the user with.
      */
-    public function getUserData($login_name, $organization)
+    public function getUserData(string $loginName, int $organizationId): array
     {
         $orgs = null;
 
         try {
             $orgs = $this->organizationRepository->getOrganizations();
-        } catch (\Zend_Db_Exception $zde) {
+        } catch (RuntimeException $zde) {
         }
-        if (! $organization) {
+        if (! $organizationId) {
             if ($orgs) {
                 // Set to first made active organization
-                $organization = min(array_keys($orgs));
+                $organizationId = min(array_keys($orgs));
             } else {
-                $organization = 0;
+                $organizationId = 0;
             }
         }
         if (! $orgs) {
             // Table might not exist or be empty, so do something failsafe
-            $orgs = array($organization => 'create db first');
+            $orgs = [$organizationId => 'create db first'];
         }
 
-        return array(
-            'user_id'                => \Gems\User\UserLoader::CONSOLE_USER_ID,
-            'user_login'             => $login_name,
-            'user_name'              => $login_name,
+        return [
+            'user_id'                => UserLoader::CONSOLE_USER_ID,
+            'user_login'             => $loginName,
+            'user_name'              => $loginName,
             'user_group'             => 800,
             'user_role'              => $this->project->getConsoleRole(),
             'user_style'             => 'gems',
-            'user_base_org_id'       => $organization,
+            'user_base_org_id'       => $organizationId,
             'user_allowed_ip_ranges' => null,
             'user_blockable'         => false,
             '__allowedOrgs'          => $orgs
-            );
+        ];
     }
 }

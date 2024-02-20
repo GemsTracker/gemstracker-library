@@ -9,6 +9,10 @@
 
 namespace Gems\User;
 
+use Gems\Exception;
+use Laminas\Authentication\Adapter\AdapterInterface;
+use Laminas\Db\Sql\Select;
+
 /**
  * Delegates authentication to the Radius server
  *
@@ -24,7 +28,7 @@ namespace Gems\User;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Gems\User\UserDefinitionConfigurableInterface
+class RadiusUserDefinition extends StaffUserDefinition implements UserDefinitionConfigurableInterface
 {
     /**
      * @var \Gems\Model\JoinModel
@@ -72,7 +76,7 @@ class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Ge
      * @param \Gems\User\User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canResetPassword(\Gems\User\User $user = null)
+    public function canResetPassword(User|null $user = null): bool
     {
         return false;
     }
@@ -86,7 +90,7 @@ class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Ge
      * @param \Gems\User\User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(\Gems\User\User $user = null)
+    public function canSetPassword(User|null $user = null): bool
     {
         return false;
     }
@@ -98,7 +102,7 @@ class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Ge
      * @param string $password
      * @return boolean
      */
-    public function checkRehash(\Gems\User\User $user, $password)
+    public function checkRehash(User $user, string $password): bool
     {
         return false;
     }
@@ -110,7 +114,7 @@ class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Ge
      * @param string $password
      * @return \Laminas\Authentication\Adapter\AdapterInterface
      */
-    public function getAuthAdapter(\Gems\User\User $user, $password)
+    public function getAuthAdapter(User $user, string $password): AdapterInterface
     {
         //Ok hardcoded for now this needs to be read from the userdefinition
         $configData = $this->loadConfig(array('gor_id_organization' => $user->getBaseOrganizationId()));
@@ -178,30 +182,30 @@ class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Ge
      * @param \Gems\User\User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(\Gems\User\User $user)
+    public function getPasswordResetKey(\Gems\User\User $user): string
     {
-        return null;
+        throw new Exception('Radius cannot reset password');
     }
 
     /**
-     * Copied from \Gems\User\StaffUserDefinition but left out the password link
+     * A select used by subclasses to add fields to the select.
      *
-     * @param string $login_name
-     * @param string|int $organization
-     * @return \Zend_Db_Select
+     * @param string $loginName
+     * @param int $organizationId
+     * @return Select
      */
-    protected function getUserSelect($login_name, $organization)
+    protected function getUserSelect(string $loginName, int $organizationId): Select
     {
         /**
          * Read the needed parameters from the different tables, lots of renames
          * for compatibility across implementations.
          */
-        $select = new \Zend_Db_Select($this->db);
-        $select->from('gems__user_logins', array(
+        $select = $this->resultFetcher->getSelect('gems__user_logins');
+        $select->columns([
                     'user_login_id'       => 'gul_id_user',
                     'user_two_factor_key' => 'gul_two_factor_key',
-                    ))
-                ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array(
+                    ])
+                ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', [
                     'user_id'             => 'gsf_id_user',
                     'user_login'          => 'gsf_login',
                     'user_email'          => 'gsf_email',
@@ -214,19 +218,21 @@ class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Ge
                     'user_logout'         => 'gsf_logout_on_survey',
                     'user_base_org_id'    => 'gsf_id_organization',
                     'user_embedded'       => 'gsf_is_embedded',
-                    ))
-               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array(
+                ])
+               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', [
                    'user_role'=>'ggp_role',
                    'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges',
-                   ))
+               ])
                //->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
                //    'user_password_reset' => 'gup_reset_required',
                //    ))
-               ->where('ggp_group_active = 1')
-               ->where('gsf_active = 1')
-               ->where('gul_can_login = 1')
-               ->where('gul_login = ?')
-               ->where('gul_id_organization = ?')
+               ->where([
+                   'ggp_group_active' => 1,
+                   'gsf_active' => 1,
+                   'gul_can_login' => 1,
+                   'gul_login' => $loginName,
+                   'gul_id_organization' => $organizationId,
+               ])
                ->limit(1);
 
         return $select;
@@ -254,7 +260,7 @@ class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Ge
      * @param \Gems\User\User $user The user to check
      * @return boolean
      */
-    public function hasPassword(\Gems\User\User $user)
+    public function hasPassword(User $user): bool
     {
        return true;
     }
@@ -297,14 +303,13 @@ class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Ge
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param \Gems\User\User $user The user whose password to change
+     * @param User $user The user whose password to change
      * @param string $password
-     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     * @return self (continuation pattern)
      */
-    public function setPassword(\Gems\User\User $user, $password)
+    public function setPassword(User $user, string|null $password): self
     {
         throw new \Gems\Exception\Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
-        return $this;
     }
 
     /**
@@ -312,9 +317,9 @@ class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Ge
      *
      * @param \Gems\User\User $user The user whose password history to change
      * @param string $password
-     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
+     * @return self (continuation pattern)
      */
-    public function updatePasswordHistory(\Gems\User\User $user, string $password)
+    public function updatePasswordHistory(User $user, string $password): self
     {
         throw new \Gems\Exception\Coding(sprintf('The password history cannot be updated for %s users.', get_class($this)));
     }

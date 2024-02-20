@@ -49,7 +49,7 @@ abstract class DeferredUserLoaderAbstract
     protected function checkCurrentSettings(User $embeddedUser, EmbeddedUserData $embeddedUserData, User $user)
     {
         if ($user->getCurrentOrganizationId() !== $embeddedUser->getCurrentOrganizationId()) {
-            $user->setCurrentOrganization($embeddedUser->getCurrentOrganizationId());
+            $user->setCurrentOrganizationId($embeddedUser->getCurrentOrganizationId());
         }
 
         $groupId = $embeddedUserData->getUserGroupId();
@@ -57,10 +57,10 @@ abstract class DeferredUserLoaderAbstract
             $user->setGroupSession($groupId);
         }
 
-        $user->setSessionCrumbs($embeddedUserData->getCrumbOption());
+        /*$user->setSessionCrumbs($embeddedUserData->getCrumbOption());
         $user->setSessionFramed(true);
         $user->setSessionMvcLayout($embeddedUserData->getMvcLayout());
-        $user->setSessionStyle($embeddedUserData->getUserStyle());
+        $user->setSessionStyle($embeddedUserData->getUserStyle());*/
     }
 
     /**

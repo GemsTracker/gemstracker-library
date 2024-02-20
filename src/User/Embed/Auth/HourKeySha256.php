@@ -13,6 +13,7 @@ namespace Gems\User\Embed\Auth;
 
 use Gems\Exception\Coding;
 use Gems\User\Embed\EmbeddedAuthAbstract;
+use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\User;
 use MUtil\EchoOut\EchoOut;
 use DateInterval;
@@ -81,14 +82,15 @@ class HourKeySha256 extends EmbeddedAuthAbstract
      * Authenticate embedded user
      *
      * @param User $user
+     * @param EmbeddedUserData $embeddedUserData
      * @param string $secretKey
      * @return bool
      */
-    public function authenticate(User $user, string $secretKey): bool
+    public function authenticate(User $user, EmbeddedUserData $embeddedUserData, string $secretKey): bool
     {
         return in_array(
             $this->checkKey($secretKey), 
-            $this->getValidKeys($user)
+            $this->getValidKeys($user, $embeddedUserData)
         );
     }
 
@@ -135,9 +137,9 @@ class HourKeySha256 extends EmbeddedAuthAbstract
      * @param User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(User $user): string
+    public function getExampleKey(User $user, EmbeddedUserData $embeddedUserData): string
     {
-        $keys = $this->getValidKeys($user);
+        $keys = $this->getValidKeys($user, $embeddedUserData);
 
         if (isset($keys[0])) {
             return $keys[0];
@@ -148,12 +150,12 @@ class HourKeySha256 extends EmbeddedAuthAbstract
     /**
      * Return the authentication string for the user
      *
-     * @param User $embeddedUser
+     * @param EmbeddedUserData $embeddedUserData
      * @return string Preferably containing %s
      */
-    protected function getKeysStart(User $embeddedUser)
+    protected function getKeysStart(EmbeddedUserData $embeddedUserData)
     {
-        $key = $embeddedUser->getSecretKey() ?: $this->defaultKey;
+        $key = $embeddedUserData->getSecretKey() ?: $this->defaultKey;
 
         if (!str_contains($key, '%s')) {
             $key .= '%s';
@@ -214,9 +216,9 @@ class HourKeySha256 extends EmbeddedAuthAbstract
      * @param User $embeddedUser
      * @return array
      */
-    public function getValidKeys(User $embeddedUser)
+    public function getValidKeys(User $embeddedUser, EmbeddedUserData $embeddedUserData)
     {
-        $keyStart = $this->getKeysStart($embeddedUser);
+        $keyStart = $this->getKeysStart($embeddedUserData);
         // EchoOut::track($keyStart);
 
         if (! str_contains($keyStart, '%s')) {

@@ -139,7 +139,7 @@ class StaffLogHandler extends LogHandler
 
         $staffId = $this->_getIdParam();
         if ($staffId) {
-            $user   = $this->userLoader->getUserByStaffId($staffId);
+            $user   = $this->userLoader->getUserByStaffId((int)$staffId);
             return $user;
         }
         return false;
