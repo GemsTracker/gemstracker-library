@@ -94,7 +94,7 @@ class ScreenLoader
      */
     protected function _listScreens(string $screenType): array
     {
-        $key = HelperAdapter::cleanupForCacheId(static::class . 'listScreens_' . $screenType);
+        $key = HelperAdapter::createCacheKey([get_called_class(), __FUNCTION__, $screenType]);
         if ($this->cache->hasItem($key)) {
             return $this->translatedUtil->getEmptyDropdownArray() + $this->cache->getCacheItem($key);
         }

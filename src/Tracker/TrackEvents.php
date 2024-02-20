@@ -68,7 +68,7 @@ class TrackEvents
      */
     protected function _listEvents(string $eventType): array
     {
-        $key = HelperAdapter::cleanupForCacheId(static::class . 'listEvents_' . $eventType);
+        $key = HelperAdapter::createCacheKey([get_called_class(), __FUNCTION__, $eventType]);
         if ($this->cache->hasItem($key)) {
             return $this->translatedUtil->getEmptyDropdownArray() + $this->cache->getCacheItem($key);
         }

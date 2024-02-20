@@ -113,7 +113,7 @@ class UtilAbstract extends TargetAbstract
      */
     protected function _getSelectAllCached($cacheId, $sql, $binds = array(), $tags = array(), $natSort = false)
     {
-        $cacheId = strtr(get_class($this) . '_a_' . $cacheId, '\\/', '__');
+        $cacheId = HelperAdapter::createCacheKey([get_called_class(), $cacheId], $sql, $binds, $natSort);
 
         $result = $this->cache->getCacheItem($cacheId);
 
@@ -149,7 +149,7 @@ class UtilAbstract extends TargetAbstract
      */
     protected function _getSelectColCached($cacheId, $sql, $binds = array(), $tags = array(), $natSort = false): array
     {
-        $cacheId = strtr(get_class($this) . '_a_' . $cacheId, '\\/', '__');
+        $cacheId = HelperAdapter::createCacheKey([get_called_class(), $cacheId], $sql, $binds, $natSort);
 
         $result = $this->cache->getCacheItem($cacheId);
 
@@ -185,7 +185,7 @@ class UtilAbstract extends TargetAbstract
      */
     protected function _getSelectPairsCached($cacheId, $sql, $binds = array(), $tags = array(), $sort = null)
     {
-        $cacheId = strtr(get_class($this) . '_p_' . $cacheId, '\\/', '__');
+        $cacheId = HelperAdapter::createCacheKey([get_called_class(), $cacheId], $sql, $binds, $sort);
 
         $result = $this->cache->getCacheItem($cacheId);
 
@@ -222,7 +222,7 @@ class UtilAbstract extends TargetAbstract
      */
     protected function _getSelectPairsProcessedCached($cacheId, $sql, $function, $binds = array(), $tags = array(), $sort = null)
     {
-        $cacheId = HelperAdapter::cleanupForCacheId(get_class($this) . '_' . $cacheId);
+        $cacheId = HelperAdapter::createCacheKey([get_called_class(), $cacheId], $sql, $binds, $sort);
 
         $result = $this->cache->getCacheItem($cacheId);
 
@@ -265,7 +265,7 @@ class UtilAbstract extends TargetAbstract
      */
     protected function _getSelectProcessedCached($cacheId, $sql, $function, $keyField, $tags = array(), $sort = null)
     {
-        $cacheId = get_class($this) . '_' . $cacheId;
+        $cacheId = HelperAdapter::createCacheKey([get_called_class(), $cacheId], $sql, $function, $keyField, $sort);
 
         $result = $this->cache->getCacheItem($cacheId);
 
@@ -311,15 +311,16 @@ class UtilAbstract extends TargetAbstract
     protected function _getTranslatedPairsCached($table, $key, $label, $tags = array(), $where = null, $sort = null)
     {
         $lang      = $this->locale->getLanguage();
-        $cacheId   = $this->cleanupForCacheId("__trans $table $key $label $where ");
-        $cacheLang = $cacheId . $this->cleanupForCacheId($lang . "_");
+        $cacheLangId = HelperAdapter::createCacheKey([get_called_class(), $table, $key, $label], $where, $sort, $lang);
 
         // \MUtil\EchoOut\EchoOut::track($cacheId, $cacheLang);
 
-        $result = $this->cache->getCacheItem($cacheLang);
+        $result = $this->cache->getCacheItem($cacheLangId);
         if ($result) {
             return $result;
         }
+
+        $cacheId = HelperAdapter::createCacheKey([get_called_class(), $table, $key, $label], $where, $sort);
 
         $result = $this->cache->getCacheItem($cacheId);
         if (! $result) {
@@ -368,7 +369,7 @@ class UtilAbstract extends TargetAbstract
         // \MUtil\EchoOut\EchoOut::track($result);
 
         // Save the translated version
-        $this->cache->setCacheItem($cacheLang, $result, (array) $tags);
+        $this->cache->setCacheItem($cacheLangId, $result, (array) $tags);
 
         return $result ?: [];
     }
