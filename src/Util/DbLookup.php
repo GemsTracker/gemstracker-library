@@ -741,6 +741,6 @@ class DbLookup extends UtilAbstract
     {
         $sql = "SELECT gco_description, gco_description FROM gems__consents ORDER BY gco_order";
 
-        return $this->_getSelectPairsProcessedCached(__FUNCTION__, $sql, array($this, '_'), null, 'consents');
+        return $this->utilDbHelper->getSelectPairsProcessedCached(__FUNCTION__, $sql, [$this, '_'], null, ['consents']);
     }
 }
