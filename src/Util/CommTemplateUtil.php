@@ -75,7 +75,7 @@ class CommTemplateUtil extends UtilAbstract
         }
         $sql .= " ORDER BY gct_name";
 
-        $result = $this->_getSelectPairsCached($cacheId, $sql, $binds, ['commTemplates']);
+        $result = $this->utilDbHelper->getSelectPairsCached($cacheId, $sql, $binds, ['commTemplates']);
 
         if ($addEmpty) {
             return $this->translatedUtil->getEmptyDropdownArray() + $result;
