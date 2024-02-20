@@ -336,17 +336,12 @@ class TokenHandler extends TokenSearchHandlerAbstract
     public function getSearchData(bool $useRequest = true): array
     {
         $data = parent::getSearchData($useRequest);
-
         // Survey action data
         $data['gto_id_respondent']   = $this->getRespondentId();
-
-        $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
-        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
-        $orgsFor = $this->organizationRepository->getAllowedOrganizationsFor($organizationId);
-        if (!empty($orgsFor)) {
-            $data['gto_id_organization'] = array_keys($orgsFor);
+        if (isset($data['gto_id_organization'])) {
+            $this->currentUserRepository->assertAccessToOrganizationId($data['gto_id_organization']);
         } else {
-            $data['gto_id_organization'] = $organizationId;
+            $data['gto_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
         }
 
         return $data;
