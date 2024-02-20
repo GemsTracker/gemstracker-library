@@ -55,7 +55,7 @@ class RespondentLogHandler extends LogHandler
         CacheItemPoolInterface $cache,
         PeriodSelectRepository $periodSelectRepository,
         LogModel $logModel,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected RespondentRepository $respondentRepository,
     ) {
         parent::__construct($responder, $translate, $cache, $periodSelectRepository, $logModel);
@@ -70,8 +70,8 @@ class RespondentLogHandler extends LogHandler
         $this->logModel->addTable('gems__respondent2org', ['gla_respondent_id' => 'gr2o_id_user', 'gla_organization' => 'gr2o_id_organization']);
         $this->logModel->getMetaModel()->setKeys([Model::LOG_ITEM_ID => 'gla_id']);
 
-        $this->logModel->getMetaModel()->addMap(\MUtil\Model::REQUEST_ID1, 'gr2o_patient_nr');
-        $this->logModel->getMetaModel()->addMap(\MUtil\Model::REQUEST_ID2, 'gr2o_id_organization');
+        $this->logModel->getMetaModel()->addMap(Model::REQUEST_ID1, 'gr2o_patient_nr');
+        $this->logModel->getMetaModel()->addMap(Model::REQUEST_ID2, 'gr2o_id_organization');
 
         return $this->logModel;
     }

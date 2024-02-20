@@ -12,12 +12,12 @@ declare(strict_types=1);
 namespace Gems\Handlers\Respondent;
 
 use Gems\Exception;
+use Gems\Model;
 use Gems\Repository\RespondentRepository;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Tracker\Respondent;
 use Gems\User\User;
 use Zalt\Base\TranslateableTrait;
-use Zalt\Model\MetaModelInterface;
 
 /**
  * @package    Gems
@@ -55,8 +55,9 @@ trait GetRespondentTrait
     public function getRespondent(): Respondent
     {
         if (! $this->_respondent) {
-            $patientNumber  = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
-            $organizationId = intval($this->request->getAttribute(MetaModelInterface::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId()));
+            $patientNumber  = $this->request->getAttribute(Model::REQUEST_ID1);
+            $organizationId = intval($this->request->getAttribute(Model::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId()));
+            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
 
             $this->_respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
 
@@ -87,7 +88,7 @@ trait GetRespondentTrait
      */
     public function getRespondentId(): ?int
     {
-        if ($this->request->getAttribute(MetaModelInterface::REQUEST_ID1) !== null) {
+        if ($this->request->getAttribute(Model::REQUEST_ID1) !== null) {
             return $this->getRespondent()->getId();
         }
 

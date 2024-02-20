@@ -97,7 +97,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder, 
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected Adapter $laminasDb,
         protected MetaModelLoader $metaModelLoader,
         protected PeriodSelectRepository $periodSelectRepository,
@@ -153,6 +153,8 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
             $this->autofilterParameters['extraFilter']['gto_id_organization'] = $this->currentUser->getRespondentOrgFilter();
+        } else {
+            $this->currentUserRepository->assertAccessToOrganizationId($filter['gto_id_organization']);
         }
 
         if (isset($filter['gto_id_track']) && $filter['gto_id_track']) {

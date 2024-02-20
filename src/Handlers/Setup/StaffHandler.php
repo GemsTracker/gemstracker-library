@@ -207,7 +207,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         CacheItemPoolInterface $cache,
         protected UserLoader $userLoader,
         protected Model $modelLoader,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly RouteHelper $routeHelper,
         protected readonly AccessRepository $accessRepository,
@@ -353,7 +353,9 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         $filter = parent::getSearchFilter($useRequest);
 
         if (! (isset($filter['gsf_id_organization']) && $filter['gsf_id_organization'])) {
-            $filter['gsf_id_organization'] = array_keys($this->currentUser->getAllowedOrganizations());
+            $filter['gsf_id_organization'] = $this->currentUserRepository->getAllowedOrganizationIds();
+        } else {
+            $this->currentUserRepository->assertAccessToOrganizationId($filter['gsf_id_organization']);
         }
 
         return $filter;

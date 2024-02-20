@@ -6,14 +6,15 @@ use Gems\Exception;
 use Gems\Handlers\Setup\CommLogHandler;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
+use Gems\Model\CommLogModel;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class RespondentCommLogHandler extends CommLogHandler
@@ -36,7 +37,7 @@ class RespondentCommLogHandler extends CommLogHandler
         MaskRepository $maskRepository,
         ProjectOverloader $overloader,
         PeriodSelectRepository $periodSelectRepository,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected RespondentRepository $respondentRepository,
     ) {
         parent::__construct($responder, $translate, $cache, $maskRepository, $overloader, $periodSelectRepository);
@@ -44,16 +45,16 @@ class RespondentCommLogHandler extends CommLogHandler
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
-    public function createModel(bool $detailed, string $action): ModelAbstract
+    public function createModel(bool $detailed, string $action): DataReaderInterface
     {
         /**
-         * @var Model\JoinModel $model
+         * @var CommLogModel $model
          */
         $model = parent::createModel($detailed, $action);
         $model->setKeys([Model::LOG_ITEM_ID => 'grco_id_action']);
 
-        $model->addMap(\MUtil\Model::REQUEST_ID1, 'gr2o_patient_nr');
-        $model->addMap(\MUtil\Model::REQUEST_ID2, 'gr2o_id_organization');
+        $model->addMap(Model::REQUEST_ID1, 'gr2o_patient_nr');
+        $model->addMap(Model::REQUEST_ID2, 'gr2o_id_organization');
 
         return $model;
     }

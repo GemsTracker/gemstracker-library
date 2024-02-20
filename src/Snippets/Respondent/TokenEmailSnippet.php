@@ -3,6 +3,7 @@
 namespace Gems\Snippets\Respondent;
 
 use Gems\Layout\LayoutSettings;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Vue\CreateEditSnippet;
@@ -26,13 +27,14 @@ class TokenEmailSnippet extends CreateEditSnippet
         TemplateRendererInterface $templateRenderer,
         Locale $locale,
         UrlHelper $urlHelper,
+        CurrentUserRepository $currentUserRepository,
         array $config,
         protected Tracker $tracker,
         protected TranslatorInterface $translator,
         protected StatusMessengerInterface $messenger,
         protected MenuSnippetHelper $menuSnippetHelper,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $templateRenderer, $locale, $urlHelper, $config);
+        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $templateRenderer, $locale, $urlHelper, $currentUserRepository, $config);
     }
 
     public function getRedirectRoute(): ?string

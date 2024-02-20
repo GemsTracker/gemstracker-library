@@ -3,10 +3,11 @@
 namespace Gems\Fake;
 
 use Gems\Db\ResultFetcher;
+use Gems\Fake\Organization;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
+use Gems\Repository\TrackDataRepository;
 use Gems\User\StaffUserDefinition;
-use Gems\Fake\Organization;
 use Gems\Util\Translated;
 use Laminas\Permissions\Acl\Acl;
 
@@ -16,6 +17,7 @@ class User extends \Gems\User\User
         StaffUserDefinition $userDefinition,
         OrganizationRepository $organizationRepository,
         AccessRepository $accessRepository,
+        TrackDataRepository $trackDataRepository,
         Acl $acl,
         Translated $translatedUtil,
         ResultFetcher $resultFetcher,
@@ -24,6 +26,7 @@ class User extends \Gems\User\User
             $userDefinition,
             $organizationRepository,
             $accessRepository,
+            $trackDataRepository,
             $acl,
             $translatedUtil,
             $resultFetcher,

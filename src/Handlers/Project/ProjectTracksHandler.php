@@ -11,6 +11,7 @@
 namespace Gems\Handlers\Project;
 
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
@@ -18,7 +19,6 @@ use Gems\Snippets\Tracker\TrackSurveyOverviewSnippet;
 use Gems\Tracker\Model\TrackModel;
 use Gems\User\User;
 use Gems\Util\Translated;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -88,7 +88,7 @@ class ProjectTracksHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected Translated $translatedUtil,
         protected TrackModel $trackModel,
     )
@@ -149,6 +149,8 @@ class ProjectTracksHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
      */
     public function getTrackData()
     {
-        return $this->getModel()->loadFirst(['gtr_id_track' => $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID)]);
+        $trackId = $this->requestInfo->getParam(Model::REQUEST_ID);
+        $this->currentUserRepository->assertAccessToTrack($trackId);
+        return $this->getModel()->loadFirst(['gtr_id_track' => $trackId]);
     }
 }

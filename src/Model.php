@@ -60,6 +60,31 @@ class Model
     const ID_TYPE = 'id_type';
 
     /**
+     * @see MetaModelInterface::REQUEST_ID
+     */
+    const REQUEST_ID = MetaModelInterface::REQUEST_ID;
+
+    /**
+     * @see MetaModelInterface::REQUEST_ID1
+     */
+    const REQUEST_ID1 = MetaModelInterface::REQUEST_ID1;
+
+    /**
+     * @see MetaModelInterface::REQUEST_ID2
+     */
+    const REQUEST_ID2 = MetaModelInterface::REQUEST_ID2;
+
+    /**
+     * @see MetaModelInterface::REQUEST_ID3
+     */
+    const REQUEST_ID3 = MetaModelInterface::REQUEST_ID3;
+
+    /**
+     * @see MetaModelInterface::REQUEST_ID4
+     */
+    const REQUEST_ID4 = MetaModelInterface::REQUEST_ID4;
+
+    /**
      * Request key for appointments
      */
     const APPOINTMENT_ID = 'aid';

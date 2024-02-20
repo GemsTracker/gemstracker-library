@@ -12,9 +12,12 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Batch\BatchRunnerLoader;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelTableSnippet;
+use Gems\Snippets\Tracker\TrackMaintenance\TrackMaintenanceSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
@@ -40,6 +43,15 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
      * @var \Gems\Audit\AuditLog
      */
     public $accesslog;
+
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var array snippets name
+     */
+    protected array $autofilterSnippets = [
+        TrackMaintenanceSnippet::class,
+    ];
 
     /**
      * The parameters used for the autofilter action.
@@ -195,6 +207,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         Tracker $tracker,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly BatchRunnerLoader $batchRunnerLoader,
         protected readonly RouteHelper $routeHelper,
         protected readonly TrackModel $trackModel,
@@ -375,6 +388,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         }
 
         if (isset($filter['org']) && strlen($filter['org'])) {
+            $this->currentUserRepository->assertAccessToOrganizationId($filter['org']);
             $filter[] = 'gtr_organizations LIKE "%|' . $filter['org'] . '|%"';
             unset($filter['org']);
         }

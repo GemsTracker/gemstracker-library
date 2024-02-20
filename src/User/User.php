@@ -18,6 +18,7 @@ use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\Db\ResultFetcher;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
+use Gems\Repository\TrackDataRepository;
 use Gems\Util\IpAddress;
 use Gems\Util\Translated;
 use Laminas\Db\Exception\RuntimeException;
@@ -79,6 +80,7 @@ class User
         protected readonly UserDefinitionInterface $userDefinition,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly AccessRepository $accessRepository,
+        protected readonly TrackDataRepository $trackDataRepository,
         protected readonly Acl $acl,
         protected readonly Translated $translatedUtil,
         protected readonly ResultFetcher $resultFetcher,
@@ -133,6 +135,17 @@ class User
             $this->refreshAllowedOrganizations();
         }
         return $this->allowedOrganizations;
+    }
+
+    /**
+     * Return an array of organizationIds for all allowed organizations for
+     * the current logged in user.
+     *
+     * @return array<int, int>
+     */
+    public function getAllowedOrganizationIds(): array
+    {
+        return array_keys($this->getAllowedOrganizations());
     }
 
     /**
@@ -375,6 +388,40 @@ class User
             return abs($this->passwordLastChanged->diff(new DateTimeImmutable())->days);
         }
         return 0;
+    }
+
+    /**
+     * Throw an exception if the organization ID is not an allowed organization.
+     *
+     * @param int|string $organizationId
+     * @return void If the user has access to the organization
+     * @throws \Gems\Exception If the user does not have access to the organization
+     */
+    public function assertAccessToOrganizationId(int|string $organizationId): void
+    {
+        $orgs = $this->getAllowedOrganizations();
+        if (isset($orgs[$organizationId])) {
+            return;
+        }
+        throw new \Gems\Exception('Inaccessible or unknown organization', 403);
+    }
+
+    /**
+     * Throw an exception if the user doesn't have access to the track.
+     *
+     * @param int|string $trackId
+     * @return void If the user has access to the track
+     * @throws \Gems\Exception If the user does not have access to the track
+     */
+    public function assertAccessToTrackId(int|string $trackId): void
+    {
+        $organizationIds = $this->getAllowedOrganizationIds();
+        // This is cached in the TrackDataRepository.
+        $tracks = $this->trackDataRepository->getActiveTracksForOrgs($organizationIds);
+        if (isset($tracks[$trackId])) {
+            return;
+        }
+        throw new \Gems\Exception('Inaccessible or unknown track', 403);
     }
 
     /**

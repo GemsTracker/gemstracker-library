@@ -14,6 +14,7 @@ namespace Gems\Handlers\Overview;
 use DateTimeImmutable;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\PeriodSelectRepository;
@@ -98,6 +99,7 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected MetaModelLoader $metaModelLoader,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected PeriodSelectRepository $periodSelectRepository,
         protected Tracker $tracker,
     ) {
@@ -234,6 +236,8 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
         if (! isset($filter['gto_id_organization'])) {
             $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
             $filter['gto_id_organization'] = $currentUser->getRespondentOrgFilter();
+        } else {
+            $this->currentUserRepository->assertAccessToOrganizationId($filter['gto_id_organization']);
         }
         $filter['gsu_active']  = 1;
 
