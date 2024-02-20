@@ -77,31 +77,4 @@ class UtilAbstract extends TargetAbstract
 
         throw new \Gems\Exception\Coding("Unknown method '$name' requested as callable.");
     }
-
-    /**
-     * Sort the array using the specified sort function
-     *
-     * @param array $result
-     * @param string|callable $sort Sort function
-     */
-    protected function _sortResult(array &$result, $sort = 'asort')
-    {
-        // Sorting
-        switch ($sort) {
-            case 'asort':
-                asort($result);
-                break;
-
-            case 'ksort':
-                ksort($result);
-                break;
-
-            case 'natsort':
-                natsort($result);
-                break;
-
-            default:
-                $sort($result);
-        }
-    }
 }
