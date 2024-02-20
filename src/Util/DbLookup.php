@@ -116,7 +116,7 @@ class DbLookup extends UtilAbstract
                 WHERE gsf_active = 1
                 ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'staff');
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__, $sql, null, ['staff']);
     }
 
     /**
@@ -154,7 +154,7 @@ class DbLookup extends UtilAbstract
             WHERE ggp_group_active = 1 AND ggp_member_type = 'staff'
             ORDER BY ggp_role";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__, $sql, null, ['groups']);
     }
 
     /**
@@ -555,7 +555,7 @@ class DbLookup extends UtilAbstract
                     FROM gems__sources
                     ORDER BY gso_source_name";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'sources');
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__, $sql, null, ['sources']);
     }
 
     /**
@@ -590,7 +590,7 @@ class DbLookup extends UtilAbstract
                     FROM gems__staff
                     ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'staff') +
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__, $sql, null, ['staff']) +
                 array(
                     \Gems\User\UserLoader::SYSTEM_USER_ID => \MUtil\Html::raw($this->_('&laquo;system&raquo;')),
                 );

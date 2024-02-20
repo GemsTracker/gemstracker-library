@@ -125,7 +125,7 @@ class TrackData extends UtilAbstract
                     FROM gems__rounds INNER JOIN gems__surveys ON gro_id_survey = gsu_id_survey
                     ORDER BY gro_id_order";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'tracks');
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__, $sql, array(), ['tracks']);
     }
 
     /**
@@ -140,7 +140,7 @@ class TrackData extends UtilAbstract
             WHERE gro_round_description IS NOT NULL AND gro_round_description != '' AND gro_id_round != 0
             GROUP BY gro_round_description";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'tracks');
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__, $sql, array(), ['tracks']);
     }
 
     /**
@@ -344,7 +344,7 @@ class TrackData extends UtilAbstract
             WHERE gro.gro_id_track = gtr.gtr_id_track AND gro.gro_id_survey = ?
             ORDER BY gtr.gtr_track_name, gro.gro_id_order";
 
-        return $this->_getSelectPairsCached(__FUNCTION__. '_' . $surveyId, $sql, $surveyId, 'surveys');
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__. '_' . $surveyId, $sql, [$surveyId], ['surveys']);
     }
 
     /**
@@ -392,7 +392,7 @@ class TrackData extends UtilAbstract
         $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 " .
             $where . " ORDER BY gsu_survey_name ASC";
 
-        return $this->_getSelectPairsCached(__FUNCTION__. '_' . $organizationId, $sql, array(), 'surveys');
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__. '_' . $organizationId, $sql, null, ['surveys']);
     }
 
     /**
@@ -407,7 +407,7 @@ class TrackData extends UtilAbstract
             WHERE gsu_export_code IS NULL OR gsu_export_code = ''
             ORDER BY gsu_survey_name";
 
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, array(), 'surveys');
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__, $sql, null, ['surveys']);
     }
 
     /**

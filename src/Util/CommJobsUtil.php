@@ -269,7 +269,7 @@ class CommJobsUtil extends UtilAbstract
 
         $sql = $sql . " ORDER BY ggp_name";
 
-        return $this->_getSelectPairsCached($cacheId, $sql, array(), 'tracks');
+        return $this->utilDbHelper->getSelectPairsCached($cacheId, $sql, array(), ['tracks']);
     }
 
     /**
@@ -495,7 +495,6 @@ class CommJobsUtil extends UtilAbstract
                 );
 
         return $this->db->fetchPairs($sql);
-        // return $this->_getSelectPairsCached(__FUNCTION__, $sql);
     }
 
     /**
