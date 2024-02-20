@@ -116,7 +116,7 @@ class AuditLog
     {
         $this->getCurrentUser();
         $organizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
-        if ($this->user) {
+        if ($this->user && $organizationId !== null) {
             $this->user->assertAccessToOrganizationId($organizationId);
         }
         if ($organizationId !== null) {
@@ -269,7 +269,7 @@ class AuditLog
         $this->getCurrentUser();
         $patientNr = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
         $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
-        if ($this->user) {
+        if ($this->user && $organizationId !== null) {
             $this->user->assertAccessToOrganizationId($organizationId);
         }
 
