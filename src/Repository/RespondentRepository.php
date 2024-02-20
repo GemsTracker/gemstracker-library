@@ -61,8 +61,6 @@ class RespondentRepository
             $organizationColumns['organizationName'] = 'gor_name';
         }
 
-        $accessibleById = $userOrganizationId ?? $organizationId;
-
         $wherePredicates = [
             $currentOrganizationPredicate,
         ];
@@ -82,10 +80,6 @@ class RespondentRepository
                 'gr2o_id_user' => $subSelect,
                 new PredicateSet($wherePredicates, PredicateSet::COMBINED_BY_OR),
             ]);
-
-        $test = $select->getSqlString($this->resultFetcher->getPlatform());
-        echo $test;
-        die;
 
         $patients = $this->resultFetcher->fetchAll($select);
 
@@ -126,6 +120,23 @@ class RespondentRepository
         $patient = $this->getPatientByRespondentId($respondentId, $organizationId);
 
         return $patient['gr2o_patient_nr'] ?? null;
+    }
+
+    public function getPatientOrganizations(string $patientNr, int $organizationId): array
+    {
+        $subSelect = $this->resultFetcher->getSelect('gems__respondent2org')
+            ->columns(['gr2o_id_user'])
+            ->where([
+                'gr2o_patient_nr' => $patientNr,
+                'gr2o_id_organization' => $organizationId,
+            ]);
+        $select = $this->resultFetcher->getSelect('gems__organizations');
+        $select->columns(['gor_id_organization', 'gor_name'])
+            ->join('gems__respondent2org', 'gr2o_id_organization = gor_id_organization', [])
+            ->where(['gr2o_id_user' => $subSelect])
+            ->group('gr2o_id_organization');
+
+        return $this->resultFetcher->fetchPairs($select);
     }
 
     /**

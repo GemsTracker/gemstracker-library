@@ -210,7 +210,7 @@ class TrackDataRepository
                     FROM gems__surveys
                     ORDER BY gsu_survey_languages";
 
-        $result = $this->resultFetcher->fetchCol($sql);
+        $result = array_filter($this->resultFetcher->fetchCol($sql));
 
         foreach ($result as $value) {
             if (strpos($value, ', ') !== false) {

@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Mail\Log;
 
+use Gems\Db\DatabaseTranslations;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
@@ -48,6 +49,7 @@ class MailLogSearchSnippet extends AutosearchInRespondentSnippet
         PeriodSelectRepository $periodSelectRepository,
         CurrentUserRepository $currentUserRepository,
         protected TrackDataRepository $trackDataRepository,
+        protected readonly DatabaseTranslations $databaseTranslations,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger, $periodSelectRepository);
         $this->currentUser = $currentUserRepository->getCurrentUser();
@@ -67,30 +69,56 @@ class MailLogSearchSnippet extends AutosearchInRespondentSnippet
         // Search text
         $elements = parent::getAutoSearchElements($data);
 
-        $this->_addPeriodSelectors($elements, [
+        $this->addPeriodSelectors($elements, [
             'grco_created' => $this->_('Date sent'),
         ]);
 
         $elements[] = null;
 
+        $tracks = $this->getTracks();
+        $surveys = $this->getSurveys($tracks);
+        $organizations = $this->getOrganizations();
+
         $elements[] = $this->_createSelectElement(
                 'gto_id_track',
-                $this->trackDataRepository->getAllTracks(),
+                $tracks,
                 $this->_('(select a track)')
                 );
 
         $elements[] = $this->_createSelectElement(
                 'gto_id_survey',
-                $this->trackDataRepository->getAllSurveys(),
+                $surveys,
                 $this->_('(all surveys)')
                 );
 
         $elements[] = $this->_createSelectElement(
                 'grco_organization',
-                $this->currentUser->getRespondentOrganizations(),
+                $organizations,
                 $this->_('(all organizations)')
                 );
 
         return $elements;
     }
+
+    protected function getOrganizations(): array
+    {
+        return $this->currentUser->getRespondentOrganizations();
+    }
+
+    protected function getSurveys(array $tracks): array
+    {
+        $select = $this->resultFetcher->getSelect('gems__surveys');
+        $select->columns(['gsu_id_survey', 'gsu_survey_name'])
+            ->join('gems__rounds', 'gsu_id_survey = gro_id_survey', [])
+            ->where(['gro_id_track' => array_keys($tracks)])
+            ->group('gsu_id_survey')
+            ->order('gsu_survey_name');
+        return $this->resultFetcher->fetchPairs($select);
+    }
+
+    protected function getTracks(): array
+    {
+        return $this->trackDataRepository->getTracksForOrgs($this->currentUser->getRespondentOrganizations());
+    }
 }
+;

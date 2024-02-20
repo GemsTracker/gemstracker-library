@@ -11,7 +11,20 @@
 
 namespace Gems\Snippets\Mail\Log;
 
+use Gems\Db\DatabaseTranslations;
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\MetaModelLoader;
+use Gems\Repository\PeriodSelectRepository;
+use Gems\Repository\RespondentRepository;
+use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\AutosearchInRespondentSnippet;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -22,92 +35,55 @@ use Gems\Snippets\AutosearchInRespondentSnippet;
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
+class RespondentMailLogSearchSnippet extends MailLogSearchSnippet
 {
-    /**
-     * Creates the form itself
-     *
-     * @param array $options
-     * @return \Gems\Form
-     */
-    protected function createForm($options = null)
-    {
-        $form = parent::createForm($options);
-
-        $form->activateJQuery();
-
-        return $form;
-    }
-
-    /**
-     * Returns a text element for autosearch. Can be overruled.
-     *
-     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
-     * That creates a distinct group of elements
-     *
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
-     */
-    protected function getAutoSearchElements(array $data)
-    {
-        // Search text
-        $elements = parent::getAutoSearchElements($data);
-
-        $this->_addPeriodSelectors($elements, array('grco_created' => $this->_('Date sent')));
-
-        $br  = \MUtil\Html::create()->br();
-
-        $elements[] = null;
-
-        $dbLookup = $this->util->getDbLookup();
-
-        $elements[] = $this->_createSelectElement(
-                'gto_id_track',
-                $this->getRespondentTrackNames(),
-                $this->_('(select a track)')
-                );
-
-        $elements[] = $this->_createSelectElement('gto_id_survey',
-                $this->getRespondentSurveyNames(),
-                $this->_('(select a survey)'));
-
-        $elements[] = $this->_createSelectElement('status',
-                $this->util->getTokenData()->getEveryStatus(),
-                $this->_('(select a status)'));
-
-        return $elements;
-    }
-
-    protected function getRespondentSurveyNames(): array
-    {
-        $surveysSql = 'SELECT gsu_id_survey, gsu_survey_name FROM gems__respondent2track
-                        JOIN gems__respondent2org ON gr2t_id_user = gr2o_id_user AND gr2o_patient_nr = ? AND gr2o_id_organization = ?
-                        LEFT JOIN gems__rounds ON gro_id_track = gr2t_id_track
-                        LEFT JOIN gems__surveys ON gro_id_survey = gsu_id_survey';
-
-        $surveyNames = $this->db->fetchPairs($surveysSql,
-                array(
-                    $this->request->getParam(\MUtil\Model::REQUEST_ID1),
-                    $this->request->getParam(\MUtil\Model::REQUEST_ID2)
-                )
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MenuSnippetHelper $menuSnippetHelper,
+        MetaModelLoader $metaModelLoader,
+        ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
+        PeriodSelectRepository $periodSelectRepository,
+        CurrentUserRepository $currentUserRepository,
+        TrackDataRepository $trackDataRepository,
+        DatabaseTranslations $databaseTranslations,
+        protected readonly RespondentRepository $respondentRepository,
+    ) {
+        parent::__construct(
+            $snippetOptions,
+            $requestInfo,
+            $translate,
+            $menuSnippetHelper,
+            $metaModelLoader,
+            $resultFetcher,
+            $messenger,
+            $periodSelectRepository,
+            $currentUserRepository,
+            $trackDataRepository,
+            $databaseTranslations
         );
-        // \MUtil\EchoOut\EchoOut::track($surveyNames);
-        return $surveyNames;
     }
 
-    protected function getRespondentTrackNames(): array
+    protected function getOrganizations(): array
     {
-        $tracksSql = 'SELECT gtr_id_track, gtr_track_name FROM gems__respondent2track
-                        JOIN gems__respondent2org ON gr2t_id_user = gr2o_id_user AND gr2o_patient_nr = ? AND gr2o_id_organization = ?
-                        LEFT JOIN gems__tracks ON gtr_id_track = gr2t_id_track';
-
-        $trackNames = $this->db->fetchPairs($tracksSql,
-                array(
-                    $this->request->getParam(\MUtil\Model::REQUEST_ID1),
-                    $this->request->getParam(\MUtil\Model::REQUEST_ID2)
-                )
+        return $this->respondentRepository->getPatientOrganizations(
+            $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID1),
+            $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2)
         );
-        // \MUtil\EchoOut\EchoOut::track($trackNames);
-        return $trackNames;
+    }
+
+    protected function getTracks(): array
+    {
+        $select = $this->resultFetcher->getSelect('gems__tracks');
+        $select->columns(['gtr_id_track', 'gtr_track_name'])
+            ->join('gems__respondent2track', 'gtr_id_track = gr2t_id_track', [])
+            ->join('gems__respondent2org', 'gr2t_id_user = gr2o_id_user AND gr2t_id_organization = gr2o_id_organization', [])
+            ->where([
+                'gr2o_patient_nr' => $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID1),
+                'gr2o_id_organization' => $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2),
+            ]);
+        return $this->resultFetcher->fetchPairs($select);
     }
 }
