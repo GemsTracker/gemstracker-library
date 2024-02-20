@@ -115,10 +115,10 @@ class AuditLog
     protected function getCurrentOrganizationId(): int
     {
         $this->getCurrentUser();
-        $organizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
-        if ($this->user && $organizationId !== null) {
-            $this->user->assertAccessToOrganizationId($organizationId);
+        if ($this->user) {
+            return $this->user->getCurrentOrganizationId();
         }
+        $organizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
         if ($organizationId !== null) {
             return $organizationId;
         }
