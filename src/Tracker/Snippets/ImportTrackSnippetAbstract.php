@@ -12,9 +12,9 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Cache\HelperAdapter;
+use Gems\Model;
 use Gems\Tracker\Field\FieldInterface;
 use Gems\Tracker\Round;
-
 use MUtil\Validator\NotEqualExcept;
 
 /**
@@ -1156,7 +1156,7 @@ class ImportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
             $this->afterSaveRouteUrl = array(
                 $this->request->getControllerKey() => $this->request->getControllerName(),
                 $this->request->getActionKey()     => $this->routeAction,
-                \MUtil\Model::REQUEST_ID           => $trackId,
+                Model::REQUEST_ID                  => $trackId,
                 );
         }
 

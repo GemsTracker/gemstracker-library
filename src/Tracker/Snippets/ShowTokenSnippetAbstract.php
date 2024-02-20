@@ -12,11 +12,12 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Html;
+use Gems\Model;
 use Gems\Model\Bridge\ThreeColumnTableBridge;
 use Gems\Model\MetaModelLoader;
 use Gems\Tracker;
-use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Model\TokenModel;
 use Gems\User\Mask\MaskRepository;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -165,7 +166,7 @@ abstract class ShowTokenSnippetAbstract extends ModelDetailTableSnippetAbstract
             if ($this->token) {
                 $this->tokenId = $this->token->getTokenId();
             } else {
-                $this->tokenId = $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID);
+                $this->tokenId = $this->requestInfo->getParam(Model::REQUEST_ID);
             }
         }
 

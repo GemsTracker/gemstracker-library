@@ -14,6 +14,7 @@ namespace Gems\Tracker\Model;
 use Gems\Event\Application\TrackFieldDependencyListEvent;
 use Gems\Event\Application\TrackFieldsListEvent;
 use Gems\Html;
+use Gems\Model;
 use Gems\Util\Translated;
 use Laminas\Validator\GreaterThan;
 use MUtil\Model\UnionModel;
@@ -130,24 +131,24 @@ class FieldMaintenanceModel extends UnionModel
 
         $model = new \MUtil\Model\TableModel('gems__track_fields');
         $model->addColumn(new \Zend_Db_Expr('gtf_field_values'), 'gtf_field_value_keys');
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gtf');
+        Model::setChangeFieldsByPrefix($model, 'gtf');
         $this->addUnionModel($model, null, self::FIELDS_NAME);
 
         $this->addAppointmentsToModel();
 
         $this->setKeys([
-            \Gems\Model::FIELD_ID => 'gtf_id_field',
-            \MUtil\Model::REQUEST_ID => 'gtf_id_track',
+            Model::FIELD_ID => 'gtf_id_field',
+            Model::REQUEST_ID => 'gtf_id_track',
         ]);
-        $this->setClearableKeys([\Gems\Model::FIELD_ID => 'gtf_id_field']);
+        $this->setClearableKeys([Model::FIELD_ID => 'gtf_id_field']);
         $this->setSort(['gtf_id_order' => SORT_ASC]);
     }
 
     public function getMaps(): array
     {
         return [
-            \Gems\Model::FIELD_ID => 'gtf_id_field',
-            \MUtil\Model::REQUEST_ID => 'gtf_id_track',
+            Model::FIELD_ID => 'gtf_id_field',
+            Model::REQUEST_ID => 'gtf_id_track',
         ];
     }
 
@@ -210,7 +211,7 @@ class FieldMaintenanceModel extends UnionModel
     protected function addAppointmentsToModel()
     {
         $model = new \MUtil\Model\TableModel('gems__track_appointments');
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gtap');
+        Model::setChangeFieldsByPrefix($model, 'gtap');
 
         $map = $model->getItemsOrdered();
         $map = array_combine($map, str_replace('gtap_', 'gtf_', $map));
@@ -480,13 +481,13 @@ class FieldMaintenanceModel extends UnionModel
         }
 
         if (isset($row['gtf_id_field']) && $row['gtf_id_field']) {
-            $row[\Gems\Model::FIELD_ID] = $row['gtf_id_field'];
+            $row[Model::FIELD_ID] = $row['gtf_id_field'];
         }
 
-        if (isset($row[\Gems\Model::FIELD_ID])) {
+        if (isset($row[Model::FIELD_ID])) {
             return $this->db->fetchOne(
                     "SELECT gtf_field_type FROM gems__track_fields WHERE gtf_id_field = ?",
-                    $row[\Gems\Model::FIELD_ID]
+                    $row[Model::FIELD_ID]
                     );
         }
 

@@ -846,9 +846,9 @@ class Token
      */
     public function getMenuUrlParameters(): array
     {
-        $params[\MUtil\Model::REQUEST_ID] = $this->getTokenId();
-        $params[\MUtil\Model::REQUEST_ID1] = $this->getPatientNumber();
-        $params[\MUtil\Model::REQUEST_ID2] = $this->getOrganizationId();
+        $params[\Gems\Model::REQUEST_ID] = $this->getTokenId();
+        $params[\Gems\Model::REQUEST_ID1] = $this->getPatientNumber();
+        $params[\Gems\Model::REQUEST_ID2] = $this->getOrganizationId();
         $params[\Gems\Model::RESPONDENT_TRACK] = $this->getRespondentTrackId();
 
         return $params;

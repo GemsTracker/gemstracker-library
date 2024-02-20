@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Form;
 
+use Gems\Model;
 use MUtil\Bootstrap\Form\Element\Text;
 
 /**
@@ -29,7 +30,7 @@ class AskTokenForm extends \Gems\Form\AutoLoadFormAbstract
      *
      * @var string
      */
-    protected $_tokenFieldName = \MUtil\Model::REQUEST_ID;
+    protected $_tokenFieldName = Model::REQUEST_ID;
 
     protected $clientIp;
 
