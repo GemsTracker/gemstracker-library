@@ -79,42 +79,6 @@ class UtilAbstract extends TargetAbstract
     }
 
     /**
-     * Utility function for loading a single column from cache
-     *
-     * @param string $cacheId The class is prepended to this id
-     * @param mixed $sql string or \Zend_Db_Select
-     * @param array $binds sql paramters
-     * @param mixed $tags atring or array of strings
-     * @param boolean $natSort Perform a natsort over the output
-     * @return array With a column ofr values
-     */
-    protected function _getSelectColCached($cacheId, $sql, $binds = array(), $tags = array(), $natSort = false): array
-    {
-        $cacheId = HelperAdapter::createCacheKey([get_called_class(), $cacheId], $sql, $binds, $natSort);
-
-        $result = $this->cache->getCacheItem($cacheId);
-
-        if ($result) {
-            return $result;
-        }
-
-        try {
-            $result = $this->db->fetchCol($sql, (array) $binds);
-
-            if ($natSort) {
-                natsort($result);
-            }
-
-            $this->cache->setCacheItem($cacheId, $result, (array) $tags);
-        } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
-            error_log($e->getMessage());
-            $result = [];
-        }
-
-        return $result;
-    }
-
-    /**
      * Sort the array using the specified sort function
      *
      * @param array $result
