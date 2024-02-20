@@ -47,7 +47,7 @@ class MultiOrganizationTab extends TabSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected ResultFetcher $resultFetcher,
         protected RouteHelper $routeHelper,
     ) {
@@ -76,7 +76,9 @@ class MultiOrganizationTab extends TabSnippetAbstract
 
         $queryParams = $this->requestInfo->getRequestQueryParams();
         if (isset($queryParams[Model::REQUEST_ID2])) {
-            $this->currentTab = $queryParams[Model::REQUEST_ID2];
+            $organizationId = $queryParams[Model::REQUEST_ID2];
+            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $this->currentTab = $organizationId;
         }
 
         $select = $this->resultFetcher->getSelect('gems__respondent2org');

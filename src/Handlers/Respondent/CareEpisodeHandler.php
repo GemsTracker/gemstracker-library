@@ -175,9 +175,13 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
     public function getPatientFilter()
     {
         $params = $this->requestInfo->getRequestMatchedParams();
+        $patientNr = $params[Model::REQUEST_ID1];
+        $organizationId = $params[Model::REQUEST_ID2];
+        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+
         return [
-            'gr2o_patient_nr' => $params[\MUtil\Model::REQUEST_ID1],
-            'gr2o_id_organization' => $params[\MUtil\Model::REQUEST_ID2],
+            'gr2o_patient_nr' => $patientNr,
+            'gr2o_id_organization' => $organizationId,
         ];
     }
 
@@ -190,9 +194,10 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
     {
         if (! $this->_respondent) {
             $id = $this->requestInfo->getParam(Model::EPISODE_ID);
-            $patientNr = $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID1);
-            $orgId = $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID2);
-            if ($id && ! ($patientNr || $orgId)) {
+            $patientNr = $this->requestInfo->getParam(Model::REQUEST_ID1);
+            $organizationId = $this->requestInfo->getParam(Model::REQUEST_ID2);
+            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            if ($id && ! ($patientNr || $organizationId)) {
                 $episode = $this->agenda->getEpisodeOfCare($id);
                 $this->_respondent = $episode->getRespondent();
 

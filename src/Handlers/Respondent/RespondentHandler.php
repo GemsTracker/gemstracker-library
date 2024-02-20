@@ -657,7 +657,9 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         $data = parent::getSearchData($useRequest);
 
         if (isset($data[Model::REQUEST_ID2])) {
-            $organizationIds = [intval($data[Model::REQUEST_ID2])];
+            $organizationId = $data[Model::REQUEST_ID2];
+            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $organizationIds = [intval($organizationId)];
         } else {
             $organizationIds = $this->currentUser->getRespondentOrgFilter();
         }
@@ -810,17 +812,18 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     protected function openedRespondent(): self
     {
         $routeParams = $this->requestInfo->getRequestMatchedParams();
-        $orgId = null;
+        $organizationId = null;
         if (isset($routeParams[Model::REQUEST_ID2])) {
-            $orgId = $routeParams[Model::REQUEST_ID2];
+            $organizationId = $routeParams[Model::REQUEST_ID2];
+            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
         }
         $patientNr = null;
         if (isset($routeParams[Model::REQUEST_ID1])) {
             $patientNr = $routeParams[Model::REQUEST_ID1];
         }
 
-        if ($patientNr && $orgId) {
-            $this->respondentRepository->setOpened($patientNr, $orgId, $this->currentUserId);
+        if ($patientNr && $organizationId) {
+            $this->respondentRepository->setOpened($patientNr, $organizationId, $this->currentUserId);
         }
 
         return $this;

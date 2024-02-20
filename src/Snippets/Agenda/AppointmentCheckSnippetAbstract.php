@@ -14,6 +14,7 @@ use Gems\Agenda\Agenda;
 use Gems\Agenda\Appointment;
 use Gems\Agenda\FilterTracer;
 use Gems\Audit\AuditLog;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Tracker;
@@ -52,6 +53,7 @@ abstract class AppointmentCheckSnippetAbstract extends \Gems\Snippets\FormSnippe
         protected readonly Agenda $agenda,
         protected readonly Tracker $tracker,
         protected readonly Translated $translatedUtil,
+        protected readonly CurrentUserRepository $currentUserRepository,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
