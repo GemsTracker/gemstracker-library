@@ -151,49 +151,6 @@ class UtilAbstract extends TargetAbstract
     }
 
     /**
-     * Utility function for loading a query from cache
-     *
-     * @param string $cacheId The class is prepended to this id
-     * @param mixed $sql string or \Zend_Db_Select
-     * @param callable $function The function called with each row to form the result
-     * @param array $binds sql paramters
-     * @param mixed $tags string or array of strings
-     * @param string $sort Optional function to sort on, only known functions will do
-     * @return array
-     */
-    protected function _getSelectPairsProcessedCached($cacheId, $sql, $function, $binds = array(), $tags = array(), $sort = null)
-    {
-        $cacheId = HelperAdapter::createCacheKey([get_called_class(), $cacheId], $sql, $binds, $sort);
-
-        $result = $this->cache->getCacheItem($cacheId);
-
-        if ($result) {
-            return $result;
-        }
-
-        try {
-            $result = $this->db->fetchPairs($sql, (array) $binds);
-
-            if ($result) {
-                foreach ($result as $id => & $value) {
-                    $value = call_user_func($function, $value);
-                }
-
-                if ($sort) {
-                    $this->_sortResult($result, $sort);
-                }
-            }
-
-            $this->cache->setCacheItem($cacheId, $result, (array) $tags);
-        } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
-            error_log($e->getMessage());
-            $result = array();
-        }
-
-        return $result;
-    }
-
-    /**
      * Sort the array using the specified sort function
      *
      * @param array $result
