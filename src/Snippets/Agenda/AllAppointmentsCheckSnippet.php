@@ -37,10 +37,13 @@ class AllAppointmentsCheckSnippet extends AppointmentCheckSnippetAbstract
     {
         $seq = $this->getHtmlSequence();
 
+        $patientNr = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID1);
+        $organizationId = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2);
+        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
         $apps = array_reverse($this->agenda->getActiveAppointments(
             null,
-            intval($this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2)),
-            $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID1)), true);
+            intval($organizationId),
+            $patientNr), true);
 
         if ($apps) {
             $table = $seq->table();

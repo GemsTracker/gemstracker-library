@@ -4,6 +4,7 @@ namespace Gems\Site;
 
 use Gems\Cache\HelperAdapter;
 use Gems\Repository\OrganizationRepository;
+use Gems\Util\RequestUtil;
 use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\TableModel;
@@ -119,12 +120,8 @@ class SiteUtil
 
     public function getProtocol(ServerRequestInterface $request):string
     {
-        $serverParams = $request->getServerParams();
-        if (isset($serverParams['HTTP_X_FORWARDED_SCHEME'])) {
-            return $serverParams['HTTP_X_FORWARDED_SCHEME'];
-        }
-        if (isset($serverParams['REQUEST_SCHEME'])) {
-            return $serverParams['REQUEST_SCHEME'];
+        if (!RequestUtil::isSecure($request)) {
+            return 'http';
         }
 
         return 'https';

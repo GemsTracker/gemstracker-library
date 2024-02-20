@@ -14,6 +14,7 @@ namespace Gems\Handlers;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\Modifier\SameSite;
 use Dflydev\FigCookies\SetCookie;
+use Gems\Util\RequestUtil;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -44,10 +45,11 @@ trait CookieHandlerTrait
     protected function _addCookie(string $name, ?string $value, int $days, string $path): void
     {
         $cookie = SetCookie::create($name, $value);
-        $cookie = $cookie->withHttpOnly();
-        $cookie = $cookie->withSameSite(SameSite::strict());
-        $cookie = $cookie->withPath($path);
-        $cookie = $cookie->withMaxAge($days * 86400000);
+        $cookie = $cookie->withHttpOnly()
+                ->withSameSite(SameSite::strict())
+                ->withPath($path)
+                ->withMaxAge($days * 86400)
+                ->withSecure(RequestUtil::isSecure($this->request));
 
         $this->_cookiesSet[] = $cookie;
     }
