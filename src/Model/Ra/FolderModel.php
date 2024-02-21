@@ -14,16 +14,15 @@ class FolderModel extends ArrayModelAbstract
     protected Finder $finder;
 
     public function __construct(
+        MetamodelInterface $metaModel,
         protected readonly string|Finder $dir,
-        protected readonly MetaModelLoader $metaModelLoader,
         readonly bool $recursive = false,
         readonly bool $followSymlinks = false,
     )
     {
-        $this->finder = $this->getFinder($dir, $recursive, $followSymlinks);
+        parent::__construct($metaModel);
 
-        $this->metaModel = new MetaModel($dir, $this->metaModelLoader);
-        parent::__construct($this->metaModel);
+        $this->finder = $this->getFinder($dir, $recursive, $followSymlinks);
 
         $this->metaModel->set('fullpath', [
             'type' => MetaModelInterface::TYPE_STRING,
@@ -54,7 +53,7 @@ class FolderModel extends ArrayModelAbstract
         ]);
 
         $this->metaModel->setKeys(['urlpath']);
-        $this->metaModel->addTransformer(new FileInfoTransformer( (is_string($dir) ? $dir : null) ));
+        $this->metaModel->addTransformer(new FileInfoTransformer( (is_string($dir) ? $dir : '') ));
     }
 
     protected function getFinder(string|Finder $dir, $recursive, $followSymlinks): Finder

@@ -1195,6 +1195,25 @@ class Route
                     'show',
                 ],
             ),
+            ...$this->createSnippetRoutes(baseName: 'setup.logfiles',
+                controllerClass: \Gems\Handlers\Setup\LogfileHandler::class,
+                pages: [
+                    'index',
+                    'download',
+                    'show',
+                ],
+                parameterRoutes: [
+                    'download',
+                    'show',
+                ],
+                parameters: [
+                    'filename' => '[a-z0-9A-Z\.-]+',
+                ],
+                postRoutes: [
+                    'index',
+                    'download',
+                ]
+            ),
             ...$this->createRoute(
                 name: 'setup.queue',
                 path: '/setup/queue',
