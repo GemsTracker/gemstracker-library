@@ -20,7 +20,6 @@ use Gems\Exception\Coding;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\Log\Loggers;
-use Gems\Log\LogHelper;
 use Gems\Messenger\Message\TokenResponse;
 use Gems\Model\RespondentRelationInstance;
 use Gems\Model\RespondentRelationModel;
@@ -49,7 +48,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
-use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Data\FullDataInterface;
 
 
 /**
@@ -1375,9 +1374,9 @@ class Token
     /**
      *
      * @param string $language (ISO) language string
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
-    public function getSurveyAnswerModel(string $language): MetaModelInterface
+    public function getSurveyAnswerModel(string $language): FullDataInterface
     {
         $survey = $this->getSurvey();
         return $survey->getAnswerModel($language);
@@ -1848,6 +1847,8 @@ class Token
                     ->addStatus()
                     ->addShowAnswers($groupId)
                     ->forTokenId($this->_tokenId);
+
+            $test = $tokenSelect->getSelect()->getSqlString($this->resultFetcher->getPlatform());
 
             $row = $tokenSelect->fetchRow();
             if ($row) {

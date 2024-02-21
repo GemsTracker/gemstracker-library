@@ -22,9 +22,10 @@ use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\Metadata\Source\Factory;
 use Laminas\Db\ResultSet\ResultSet;
 use MUtil\Model;
-use MUtil\Model\ModelAbstract;
 use MUtil\StringUtil\StringUtil;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
 
 /**
  * A fieldmap object adds LS source code knowledge and interpretation to the database data
@@ -69,16 +70,16 @@ class LimeSurvey3m00FieldMap
      * @param int $sourceSurveyId            The LimeSurvey survey ID
      * @param string $language               (ISO) Language of this fieldmap
      * @param Adapter $lsAdapter             The Lime Survey database connection
-     * @param Translator $translate           A translate object
-     * @param string $tablePrefix              The prefix to use for all LS tables (in this installation)
+     * @param TranslatorInterface $translate A translate object
+     * @param string $tablePrefix            The prefix to use for all LS tables (in this installation)
      * @param HelperAdapter $cache
-     * @param int $sourceId                   The GemsTracker source id
+     * @param int $sourceId                  The GemsTracker source id
      */
     public function __construct(
         protected int $sourceSurveyId,
         protected string $language,
         protected Adapter $lsAdapter,
-        protected Translator $translate,
+        protected TranslatorInterface $translate,
         protected string $tablePrefix,
         protected HelperAdapter $cache,
         protected int $sourceId
@@ -708,9 +709,9 @@ class LimeSurvey3m00FieldMap
     /**
      * Applies the fieldmap data to the model
      *
-     * @param ModelAbstract $model
+     * @param MetaModelInterface $model
      */
-    public function applyToModel(ModelAbstract $model): void
+    public function applyToModel(MetaModelInterface $model): void
     {
         $map    = $this->_getMap();
         $oldfld = null;
@@ -718,7 +719,7 @@ class LimeSurvey3m00FieldMap
 
         foreach ($map as $name => $field) {
 
-            $tmpres = array();
+            $tmpres = [];
             $tmpres['thClass']         = SurveyModel::CLASS_MAIN_QUESTION;
             if (isset($field['hidden']) && $field['hidden']) {
                 $tmpres['thClass']      .= ' hideAlwaysQuestion';
@@ -734,6 +735,7 @@ class LimeSurvey3m00FieldMap
             $tmpres['type']            = $this->_getType($field);
             $tmpres['survey_question'] = true;
             $tmpres['sourceId']        = $name;
+            $tmpres[SqlRunnerInterface::NO_SQL] = true;
 
             if ($tmpres['type'] === Model::TYPE_DATETIME || $tmpres['type'] === Model::TYPE_DATE || $tmpres['type'] === Model::TYPE_TIME) {
                 if ($dateFormats = $this->getDateFormats($name, $tmpres['type'])) {

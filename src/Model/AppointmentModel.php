@@ -24,7 +24,6 @@ use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\ActivatingMultiType;
-use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\Model\Type\JsonType;
 
 /**

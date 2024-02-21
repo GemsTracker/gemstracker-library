@@ -121,6 +121,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
         $localized   = $this->util->getLocalized();
         $projectName = null;
         $yesNo       = $this->translatedUtil->getYesNo();
+        $empty       = $this->translatedUtil->getEmptyDropdownArray();
 
         if (isset($this->config['app']['name'])) {
             $projectName = $this->config['app']['name'];
@@ -242,7 +243,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
                 'multiOptions', $localized->getLanguages()
                 );
         if ($this->_styles) {
-            $this->setIfExists('gor_style',     'label', $this->_('Style'), 'multiOptions', $this->_styles);
+            $this->setIfExists('gor_style',     'label', $this->_('Style'), 'multiOptions', $this->_styles, 'default', 'gems');
         }
 
         if ($this->notEditing && $this->project->translateDatabaseFields()) {
@@ -348,7 +349,8 @@ class OrganizationModel extends \Gems\Model\JoinModel
                 );
         $this->set('gor_contact_email',
                 'size', 50,
-                'validator', 'SimpleEmail'
+                'validator', 'SimpleEmail',
+                'required', true
                 );
         $this->set('gor_contact_sms_from',
                 'size', 50,

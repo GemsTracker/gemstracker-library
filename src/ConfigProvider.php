@@ -25,6 +25,8 @@ use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Db\Migration\PatchAbstract;
 use Gems\Csrf\GemsCsrfGuardFactory;
+use Gems\Db\ResponseDbAdapter;
+use Gems\Db\ResponseDbAdapterFactory;
 use Gems\Error\ErrorLogEventListenerDelegatorFactory;
 use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\DoctrineOrmFactory;
@@ -58,6 +60,8 @@ use Gems\Screens\ShowScreenInterface;
 use Gems\Screens\SubscribeScreenInterface;
 use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Session\PhpSessionPersistenceFactory;
+use Gems\Session\SessionCacheAdapter;
+use Gems\Session\SessionCacheAdapterFactory;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\SnippetsLoader\GemsSnippetResponderFactory;
 use Gems\Tracker\TrackEvent\RespondentChangedEventInterface;
@@ -164,6 +168,7 @@ class ConfigProvider
             'supplementary_privileges'   => $this->getSupplementaryPrivileges(),
             'routes'        => $routeSettings(),
             'ratelimit'     => $this->getRatelimitSettings(),
+            'responseData'  => $this->getResponseDataSettings(),
             'security'      => $this->getSecuritySettings(),
             'session'       => $this->getSession(),
             'sites'         => $this->getSitesSettings(),
@@ -330,6 +335,7 @@ class ConfigProvider
                 \PDO::class => PdoFactory::class,
                 Adapter::class => LaminasDbAdapterFactory::class,
                 'databaseAdapterGemsData' => LaminasDbAdapterFactory::class,
+                ResponseDbAdapter::class => ResponseDbAdapterFactory::class,
 
                 // Doctrine
                 Connection::class => DoctrineDbalFactory::class,
@@ -338,6 +344,7 @@ class ConfigProvider
                 // Session
                 SessionMiddleware::class => SessionMiddlewareFactory::class,
                 CacheSessionPersistence::class => CacheSessionPersistenceFactory::class,
+                SessionCacheAdapter::class => SessionCacheAdapterFactory::class,
                 PhpSessionPersistence::class => PhpSessionPersistenceFactory::class,
                 FlashMessageMiddleware::class => fn () => new FlashMessageMiddleware(DecoratedFlashMessages::class),
                 CsrfMiddleware::class => CsrfMiddlewareFactory::class,
@@ -633,6 +640,19 @@ class ConfigProvider
                 'notAlphaCount' => 1,
                 'notAlphaNumCount' => 0,
                 'maxAge' => 365,
+            ],
+        ];
+    }
+
+    protected function getResponseDataSettings(): array
+    {
+        return [
+            'enabled' => false,
+            // 'database' => 'gems_data',
+            'migrations' => [
+                'tables' => [
+                    __DIR__ . '/../configs/db_response_data/tables',
+                ],
             ],
         ];
     }

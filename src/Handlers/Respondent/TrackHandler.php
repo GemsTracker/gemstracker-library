@@ -241,7 +241,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     public function getTopic(int $count = 1): string
     {
-        return $this->plural('track', 'tracks', $count);;
+        return $this->plural('track', 'tracks', $count);
     }
 
     /**
@@ -305,6 +305,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
 
     /**
      * Insert a single survey into a track
+     * @return void
      */
     public function insertAction()
     {

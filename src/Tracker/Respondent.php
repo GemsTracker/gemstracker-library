@@ -16,6 +16,7 @@ use DateTimeInterface;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\ConsentRepository;
 use Gems\Repository\MailRepository;
@@ -40,7 +41,7 @@ use Zalt\Base\TranslatorInterface;
  */
 class Respondent
 {
-    use GenderTranslation;
+    // use GenderTranslation;
 
     /**
      *
@@ -411,7 +412,7 @@ class Respondent
 
     /**
      *
-     * @return \Gems\Model\RespondentModel
+     * @return \Gems\Model\Respondent\RespondentModel
      */
     public function getRespondentModel(): RespondentModel
     {
@@ -601,6 +602,19 @@ class Respondent
     public function setLocale(string $locale): void
     {
         $this->respondentLanguage = $locale;
+    }
+
+    public function setMenu(MenuSnippetHelper $menuSnippetHelper, TranslatorInterface $translator): void
+    {
+        $menu = $menuSnippetHelper->getRouteMenu('respondent.delete');
+
+        if ($menu) {
+            if ($this->getReceptionCode()->isSuccess()) {
+                $menu->setLabel($translator->_('Deactivate'));
+            } else {
+                $menu->setLabel($translator->_('Reactivate'));
+            }
+        }
     }
 
     /**

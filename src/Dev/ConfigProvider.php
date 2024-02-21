@@ -10,6 +10,11 @@ use Gems\Dev\Clockwork\Handlers\ClockworkApiHandler;
 use Gems\Dev\Clockwork\Middleware\ClockworkMiddleware;
 use Gems\Dev\Middleware\DebugDumperMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
+use Laminas\ConfigAggregator\ConfigAggregator;
+use Mezzio\Container\WhoopsErrorResponseGeneratorFactory;
+use Mezzio\Container\WhoopsFactory;
+use Mezzio\Container\WhoopsPageHandlerFactory;
+use Mezzio\Middleware\ErrorResponseGenerator;
 
 class ConfigProvider
 {
@@ -18,8 +23,9 @@ class ConfigProvider
         if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'development') {
             return [
                 'dev' => $this->getDevSettings(),
+                ConfigAggregator::ENABLE_CACHE => false,
                 'temp_config' => [
-                     'disable_privileges' => true,
+                     'disable_privileges' => false,
                 ],
                 'migrations'   => $this->getMigrations(),
                 'sites' => $this->getSitesSettings(),
@@ -30,6 +36,10 @@ class ConfigProvider
                 'password' => null,
                 'dependencies' => [
                     'factories' => [
+                        ErrorResponseGenerator::class => WhoopsErrorResponseGeneratorFactory::class,
+                        'Mezzio\Whoops'               => WhoopsFactory::class,
+                        'Mezzio\WhoopsPageHandler'    => WhoopsPageHandlerFactory::class,
+
                         Clockwork::class => ClockworkFactory::class,
                     ],
                     'aliases' => [
@@ -49,6 +59,13 @@ class ConfigProvider
                             SecurityHeadersMiddleware::class,
                             ClockworkApiHandler::class,
                         ],
+                    ],
+                ],
+                'whoops' => [
+                    'json_exceptions' => [
+                        'display'    => true,
+                        'show_trace' => true,
+                        'ajax_only'  => true,
                     ],
                 ],
             ];

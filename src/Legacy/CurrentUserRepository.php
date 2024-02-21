@@ -79,8 +79,8 @@ class CurrentUserRepository
             return $this->role;
         }
         if ($this->currentUser !== null) {
-            $this->loginName = $this->currentUser->getRole();
-            return $this->loginName;
+            $this->role = $this->currentUser->getRole();
+            return $this->role;
         }
 
         return null;

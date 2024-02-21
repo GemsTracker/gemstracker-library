@@ -661,11 +661,6 @@ parameters:
 			path: src/Agenda/Agenda.php
 
 		-
-			message: "#^PHPDoc tag @param for parameter \\$appointmentData with type mixed is not subtype of native type array\\|int\\.$#"
-			count: 1
-			path: src/Agenda/Agenda.php
-
-		-
 			message: "#^PHPDoc tag @param for parameter \\$episodeData with type mixed is not subtype of native type array\\|int\\.$#"
 			count: 1
 			path: src/Agenda/Agenda.php
@@ -1801,11 +1796,6 @@ parameters:
 			path: src/Handlers/AskHandler.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\AuthNew\\\\Adapter\\\\AuthenticationResult\\:\\:\\$user\\.$#"
-			count: 1
-			path: src/Handlers/Auth/LoginHandler.php
-
-		-
 			message: "#^Access to an undefined property Zalt\\\\SnippetsActions\\\\ModelActionInterface&Zalt\\\\SnippetsActions\\\\SnippetActionInterface\\:\\:\\$model\\.$#"
 			count: 1
 			path: src/Handlers/GemsHandler.php
@@ -1944,16 +1934,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\ComplianceHandler\\:\\:\\$indexStopSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Overview/ComplianceHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\ConsentPlanHandler\\:\\:\\$indexStartSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Overview/ConsentPlanHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\ConsentPlanHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Overview/ConsentPlanHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Overview\\\\FieldOverviewHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
@@ -2396,16 +2376,6 @@ parameters:
 			path: src/Handlers/Setup/AgendaStaffHandler.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with int will always evaluate to false\\.$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\CommJobHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Setup/CommJobHandler.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\CommLogHandler\\:\\:\\$autofilterSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Setup/CommLogHandler.php
@@ -2651,27 +2621,12 @@ parameters:
 			path: src/Handlers/SnippetLegacyHandlerAbstract.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:getMeta\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:hasMeta\\(\\)\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
 			message: "#^Method Psr\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/ConditionHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\ConditionHandler\\:\\:\\$autofilterParameters with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\ConditionHandler\\:\\:\\$deleteSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/ConditionHandler.php
 
@@ -2687,16 +2642,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\ConditionHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
-			message: "#^Parameter \\#2 \\$action of class Gems\\\\Event\\\\Application\\\\ModelCreateEvent constructor expects string, bool given\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/ConditionHandler.php
-
-		-
-			message: "#^Parameter \\#3 \\$detailed of class Gems\\\\Event\\\\Application\\\\ModelCreateEvent constructor expects bool, string given\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/ConditionHandler.php
 
@@ -2744,11 +2689,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\TrackFieldsHandler\\:\\:\\$showSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/TrackBuilder/TrackFieldsHandler.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\TrackMaintenanceHandler\\:\\:\\$deleteSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/TrackBuilder/TrackMaintenanceHandler.php
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\TrackBuilder\\\\TrackMaintenanceHandler\\:\\:\\$exportSnippets with type mixed is not subtype of native type array\\.$#"
@@ -5201,26 +5141,6 @@ parameters:
 			path: src/Snippets/Group/GroupFormSnippet.php
 
 		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\HtmlElement\\:\\:div\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/HorizontalScrollMenuSnippetAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zend_View_Abstract\\:\\:headScript\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/HorizontalScrollMenuSnippetAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zend_View_Abstract\\:\\:inlineScript\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/HorizontalScrollMenuSnippetAbstract.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\HorizontalScrollMenuSnippetAbstract\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns null\\.$#"
-			count: 1
-			path: src/Snippets/HorizontalScrollMenuSnippetAbstract.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Import\\\\FileImportSnippet\\:\\:\\$request\\.$#"
 			count: 1
 			path: src/Snippets/Import/FileImportSnippet.php
@@ -5741,31 +5661,6 @@ parameters:
 			path: src/Snippets/Respondent/Consent/RespondentConsentLogSnippet.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Respondent\\\\DeleteRespondentSnippet\\:\\:\\$afterSaveRouteKeys\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/DeleteRespondentSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Respondent\\\\DeleteRespondentSnippet\\:\\:\\$resetRoute\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/DeleteRespondentSnippet.php
-
-		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/DeleteRespondentSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Respondent\\\\DeleteRespondentSnippet\\:\\:setAfterSaveRoute\\(\\) should return Gems\\\\Snippets\\\\Token\\\\DeleteTrackTokenSnippet but return statement is missing\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/DeleteRespondentSnippet.php
-
-		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\$changed\\)\\: Unexpected token \"\\$changed\", expected type at offset 117$#"
-			count: 1
-			path: src/Snippets/Respondent/DeleteRespondentSnippet.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Util\\\\Translated\\:\\:\\$formatDate\\.$#"
 			count: 1
 			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
@@ -5839,11 +5734,6 @@ parameters:
 			message: "#^If condition is always true\\.$#"
 			count: 2
 			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
-
-		-
-			message: "#^Property Zalt\\\\Snippets\\\\TabSnippetAbstract\\:\\:\\$defaultTab \\(string\\|null\\) does not accept int\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/MultiOrganizationTab.php
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
@@ -6014,226 +5904,6 @@ parameters:
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$model$#"
 			count: 3
 			path: src/Snippets/Respondent/RespondentTableSnippetAbstract.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Respondent\\\\RoundsTabsSnippet\\:\\:\\$request\\.$#"
-			count: 3
-			path: src/Snippets/Respondent/RoundsTabsSnippet.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 2
-			path: src/Snippets/Respondent/RoundsTabsSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\RoundsTabsSnippet\\:\\:\\$organizationId \\(array\\) does not accept int\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/RoundsTabsSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\RoundsTabsSnippet\\:\\:\\$respondentId \\(array\\) does not accept int\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/RoundsTabsSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\RoundsTabsSnippet\\:\\:\\$respondentId \\(array\\) does not accept int\\|null\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/RoundsTabsSnippet.php
-
-		-
-			message: "#^Right side of && is always true\\.$#"
-			count: 2
-			path: src/Snippets/Respondent/RoundsTabsSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_tokenDelete\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$loader\\.$#"
-			count: 4
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Access to property \\$class on an unknown class Gems\\\\Menu\\\\SubMenuItem\\.$#"
-			count: 2
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Access to property \\$href on an unknown class Gems\\\\Menu\\\\SubMenuItem\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:findMenuItem\\(\\)\\.$#"
-			count: 12
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:processSortOnly\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Creator\\:\\:div\\(\\)\\.$#"
-			count: 4
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:addColumn\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:has\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:trackUsage\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined static method Gems\\\\Snippets\\\\Token\\\\RespondentTokenSnippet\\:\\:afterRegistry\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Call to method appendAttrib\\(\\) on an unknown class Gems\\\\Menu\\\\SubMenuItem\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Call to method get\\(\\) on an unknown class Gems\\\\Menu\\\\SubMenuItem\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Cannot assign new offset to MUtil\\\\Html\\\\HtmlElement\\.$#"
-			count: 5
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Comparison operation \"\\=\\=\" between int and DateTimeImmutable results in an error\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:createMenuLink\\(\\) has invalid return type Gems\\\\Menu\\\\SubMenuItem\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:createModel\\(\\) should return MUtil\\\\Model\\\\ModelAbstract but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method Zalt\\\\Snippets\\\\TranslatableSnippetAbstract\\:\\:_\\(\\) expects string\\|null, array\\<int, int\\|string\\> given\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Parameter \\#1 \\$view of method Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:_initView\\(\\) expects Zend_View, Zend_View_Abstract\\|null given\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Parameter \\$menuItem of method Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:createMenuLink\\(\\) has invalid type Gems\\\\Menu\\\\SubMenuItem\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_overview has unknown class Gems\\\\Menu\\\\SubMenuItem as its type\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_surveyAnswer has unknown class Gems\\\\Menu\\\\SubMenuItem as its type\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_takeSurvey has unknown class Gems\\\\Menu\\\\SubMenuItem as its type\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_tokenCorrect has unknown class Gems\\\\Menu\\\\SubMenuItem as its type\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_tokenEdit has unknown class Gems\\\\Menu\\\\SubMenuItem as its type\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_tokenPreview has unknown class Gems\\\\Menu\\\\SubMenuItem as its type\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_tokenShow has unknown class Gems\\\\Menu\\\\SubMenuItem as its type\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_trackAnswer has unknown class Gems\\\\Menu\\\\SubMenuItem as its type\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_trackDelete has unknown class Gems\\\\Menu\\\\SubMenuItem as its type\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Respondent\\\\TrafficLightTokenSnippet\\:\\:\\$_trackEdit has unknown class Gems\\\\Menu\\\\SubMenuItem as its type\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Right side of && is always true\\.$#"
-			count: 3
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Variable \\$day in isset\\(\\) always exists and is not nullable\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Variable \\$plusIcon might not be defined\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Variable \\$subcontainer might not be defined\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
-
-		-
-			message: "#^Variable \\$tooltip might not be defined\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/TrafficLightTokenSnippet.php
 
 		-
 			message: "#^Call to an undefined method Gems\\\\Snippets\\\\RespondentDetailSnippetAbstract\\:\\:addMessage\\(\\)\\.$#"
@@ -6936,101 +6606,6 @@ parameters:
 			path: src/Snippets/Token/RespondentTokenSnippet.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Token\\\\RoundTokenSnippet\\:\\:\\$currentUser\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Token\\\\RoundTokenSnippet\\:\\:\\$loader\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Token\\\\RoundTokenSnippet\\:\\:\\$menu\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Util\\\\Translated\\:\\:\\$formatDateNever\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2o_id_organization\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2o_patient_nr\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2t_id_respondent_track\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gro_icon_file\\.$#"
-			count: 2
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gto_icon_file\\.$#"
-			count: 2
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$is_completed\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$useRowHref\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Snippets\\\\Token\\\\RoundTokenSnippet\\:\\:createMenuLink\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\HtmlElement\\:\\:if\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:set\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Expression \"\\$bridge\\-\\>gr2o_id_organization\" on a separate line does not do anything\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Expression \"\\$bridge\\-\\>gr2o_patient_nr\" on a separate line does not do anything\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Expression \"\\$bridge\\-\\>gr2t_id_respondent_track\" on a separate line does not do anything\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Token\\\\RoundTokenSnippet\\:\\:createModel\\(\\) should return MUtil\\\\Model\\\\ModelAbstract but returns Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
-			message: "#^Parameter \\#1 \\$link of method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:addItemLink\\(\\) expects Zalt\\\\Html\\\\AElement, array\\<int, mixed\\> given\\.$#"
-			count: 1
-			path: src/Snippets/Token/RoundTokenSnippet.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Model\\\\Bridge\\\\ThreeColumnTableBridge\\:\\:\\$row_class\\.$#"
 			count: 1
 			path: src/Snippets/Token/ShowTrackTokenSnippet.php
@@ -7067,12 +6642,12 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$links$#"
-			count: 3
+			count: 2
 			path: src/Snippets/Token/ShowTrackTokenSnippet.php
 
 		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$model$#"
-			count: 4
+			count: 3
 			path: src/Snippets/Token/ShowTrackTokenSnippet.php
 
 		-
@@ -7104,11 +6679,6 @@ parameters:
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$orgWhere$#"
 			count: 4
 			path: src/Snippets/Token/TokenSearchSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\|Zalt\\\\Model\\\\Data\\\\DataWriterInterface\\:\\:addColumn\\(\\)\\.$#"
-			count: 4
-			path: src/Snippets/TokenModelSnippetAbstract.php
 
 		-
 			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
@@ -7361,17 +6931,7 @@ parameters:
 			path: src/Snippets/Tracker/Fields/FieldShowSnippet.php
 
 		-
-			message: "#^Instanceof between Gems\\\\Tracker\\\\Model\\\\RoundModel and Gems\\\\Tracker\\\\Model\\\\FieldMaintenanceModel will always evaluate to false\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Fields/FieldsTableSnippet.php
-
-		-
 			message: "#^Property Gems\\\\Snippets\\\\Tracker\\\\Fields\\\\FieldsTableSnippet\\:\\:\\$menuActionController \\(array\\) does not accept default value of type string\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Fields/FieldsTableSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Tracker\\\\Fields\\\\FieldsTableSnippet\\:\\:\\$model \\(Gems\\\\Tracker\\\\Model\\\\RoundModel\\) does not accept Gems\\\\Tracker\\\\Model\\\\FieldMaintenanceModel\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/Fields/FieldsTableSnippet.php
 
@@ -7524,56 +7084,6 @@ parameters:
 			message: "#^PHPDoc tag @var for property Gems\\\\Snippets\\\\Tracker\\\\TrackSurveyOverviewSnippet\\:\\:\\$trackName with type int is incompatible with native type string\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/TrackSurveyOverviewSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Tracker\\\\TrackTokenOverviewSnippet\\:\\:\\$currentUser\\.$#"
-			count: 2
-			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gro_icon_file\\.$#"
-			count: 3
-			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gro_id_round\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gto_icon_file\\.$#"
-			count: 2
-			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 2
-			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:td\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:tr\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Tracker\\\\TrackTokenOverviewSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$view$#"
-			count: 1
-			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\TokenModelSnippetAbstract\\:\\:\\$class \\(string\\) does not accept false\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/TrackTokenOverviewSnippet.php
 
 		-
 			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
@@ -8101,16 +7611,6 @@ parameters:
 			path: src/Tracker/Mock/TokenReadonly.php
 
 		-
-			message: "#^Call to an undefined method Gems\\\\Tracker\\\\Source\\\\SourceInterface\\:\\:getToken\\(\\)\\.$#"
-			count: 1
-			path: src/Tracker/Model/AddAnswersTransformer.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Tracker/Model/AddAnswersTransformer.php
-
-		-
 			message: "#^Parameter \\#1 \\$options of class Laminas\\\\Validator\\\\GreaterThan constructor expects array\\|Traversable\\|null, int given\\.$#"
 			count: 1
 			path: src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php
@@ -8294,41 +7794,6 @@ parameters:
 			message: "#^Method Gems\\\\Tracker\\\\ReceptionCode\\:\\:isForTracks\\(\\) should return bool but returns int\\<0, 4\\>\\.$#"
 			count: 1
 			path: src/Tracker/ReceptionCode.php
-
-		-
-			message: "#^Instanceof between Zend_Translate and Symfony\\\\Component\\\\Translation\\\\Translator will always evaluate to false\\.$#"
-			count: 1
-			path: src/Tracker/Respondent.php
-
-		-
-			message: "#^Instanceof between Zend_Translate and Zend_Translate_Adapter will always evaluate to false\\.$#"
-			count: 1
-			path: src/Tracker/Respondent.php
-
-		-
-			message: "#^Method Psr\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: src/Tracker/Respondent.php
-
-		-
-			message: "#^PHPDoc tag @return with type Gems\\\\Model\\\\RespondentModel is incompatible with native type Gems\\\\Model\\\\Respondent\\\\RespondentModel\\.$#"
-			count: 1
-			path: src/Tracker/Respondent.php
-
-		-
-			message: "#^Parameter \\#1 \\$translator of class MUtil\\\\Translate\\\\Translator constructor expects Zalt\\\\Base\\\\TranslatorInterface, string given\\.$#"
-			count: 1
-			path: src/Tracker/Respondent.php
-
-		-
-			message: "#^Result of && is always false\\.$#"
-			count: 1
-			path: src/Tracker/Respondent.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: src/Tracker/Respondent.php
 
 		-
 			message: "#^Access to an undefined property Gems\\\\Tracker\\\\RespondentTrack\\:\\:\\$logger\\.$#"
@@ -8633,11 +8098,6 @@ parameters:
 		-
 			message: "#^Access to an undefined property Gems\\\\Util\\\\Translated\\:\\:\\$formatDateUnknown\\.$#"
 			count: 1
-			path: src/Tracker/Snippets/EditTrackSnippetAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:set\\(\\)\\.$#"
-			count: 2
 			path: src/Tracker/Snippets/EditTrackSnippetAbstract.php
 
 		-
@@ -9286,44 +8746,9 @@ parameters:
 			path: src/User/DbUserDefinitionAbstract.php
 
 		-
-			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/DayKeySha256.php
-
-		-
-			message: "#^Call to method DateTimeImmutable\\:\\:add\\(\\) on a separate line has no effect\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/HourKeySha256.php
-
-		-
-			message: "#^Call to method DateTimeImmutable\\:\\:sub\\(\\) on a separate line has no effect\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/HourKeySha256.php
-
-		-
-			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/HourKeySha256.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/PasswordVerify.php
-
-		-
-			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/PasswordVerify.php
-
-		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: src/User/Embed/Auth/PasswordVerify.php
-
-		-
-			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
-			count: 1
-			path: src/User/Embed/Auth/SecretKey.php
 
 		-
 			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\.$#"
@@ -9336,22 +8761,7 @@ parameters:
 			path: src/User/Embed/EmbedLoader.php
 
 		-
-			message: "#^PHPDoc tag @param for parameter \\$value with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/User/Embed/EmbeddedAuthAbstract.php
-
-		-
-			message: "#^PHPDoc tag @var for property Gems\\\\User\\\\Embed\\\\EmbeddedAuthAbstract\\:\\:\\$organizations with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/User/Embed/EmbeddedAuthAbstract.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Embed\\\\EmbeddedUserData\\:\\:getAuthenticator\\(\\) should return Gems\\\\User\\\\Embed\\\\EmbeddedAuthInterface\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/User/Embed/EmbeddedUserData.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Embed\\\\EmbeddedUserData\\:\\:getRedirector\\(\\) should return Gems\\\\User\\\\Embed\\\\RedirectInterface\\|null but return statement is missing\\.$#"
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: src/User/Embed/EmbeddedUserData.php
 
@@ -9484,11 +8894,6 @@ parameters:
 			message: "#^Method Gems\\\\User\\\\Form\\\\ResetRequestForm\\:\\:loadDefaultElements\\(\\) should return Gems\\\\User\\\\Form\\\\LoginForm but returns \\$this\\(Gems\\\\User\\\\Form\\\\ResetRequestForm\\)\\.$#"
 			count: 1
 			path: src/User/Form/ResetRequestForm.php
-
-		-
-			message: "#^Call to an undefined static method Gems\\\\Roles\\:\\:getInstance\\(\\)\\.$#"
-			count: 1
-			path: src/User/Group.php
 
 		-
 			message: "#^Left side of \\|\\| is always true\\.$#"
@@ -9692,11 +9097,6 @@ parameters:
 
 		-
 			message: "#^Method Gems\\\\User\\\\User\\:\\:getChangePasswordForm\\(\\) should return Gems\\\\Form but empty return statement found\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\User\\:\\:getEmbedderData\\(\\) should return Gems\\\\User\\\\Embed\\\\EmbeddedUserData but returns null\\.$#"
 			count: 1
 			path: src/User/User.php
 

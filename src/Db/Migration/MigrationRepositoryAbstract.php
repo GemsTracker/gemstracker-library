@@ -11,6 +11,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
+use Zalt\String\Str;
 
 abstract class MigrationRepositoryAbstract
 {
@@ -26,13 +27,17 @@ abstract class MigrationRepositoryAbstract
         protected readonly TranslatorInterface $translator,
         protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly MetaModelLoader $metaModelLoader,
-    )
-    {
+    ) {
     }
 
     public function getDbNamesFromConfigs(array $configs): array
     {
         return array_column($configs, 'db');
+    }
+
+    public function getIdFromName(string $name): string
+    {
+        return Str::kebab(str_replace('\\', ' ',$name));
     }
 
     abstract public function getInfo(): array;
@@ -71,8 +76,13 @@ abstract class MigrationRepositoryAbstract
             'maxlength' => 40,
             'type' => MetaModelInterface::TYPE_STRING,
         ]);
-        $metaModel->set('name', [
+
+        $metaModel->set('id', [
             'key' => true,
+            'maxlength' => 40,
+            'type' => MetaModelInterface::TYPE_STRING
+        ]);
+        $metaModel->set('name', [
             'maxlength' => 40,
             'type' => MetaModelInterface::TYPE_STRING
         ]);
@@ -146,6 +156,9 @@ abstract class MigrationRepositoryAbstract
     protected function getResourceDirectories(string $resource): array
     {
         $resourceDirectories = $this->config['migrations'][$resource] ?? [];
+        if (isset($this->config['responseData']['enabled'], $this->config['responseData']['migrations'][$resource]) && $this->config['responseData']['enabled'] === true) {
+            $resourceDirectories = array_merge($resourceDirectories, $this->config['responseData']['migrations'][$resource]);
+        }
 
         foreach($resourceDirectories as $key=>$resourceDirectory) {
             if (is_string($resourceDirectory)) {

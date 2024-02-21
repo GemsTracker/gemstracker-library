@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Tracker\Answers;
 
 use Gems\Tracker\Snippets\AnswerModelSnippetGeneric;
+use Zalt\Model\MetaModelInterface;
 
 /**
  * Show all answers for one survey within a track
@@ -28,20 +29,20 @@ class TrackAnswersModelSnippet extends AnswerModelSnippetGeneric
      * Use compact view and show all tokens of the same surveyId in
      * one view. Property used by respondent export
      *
-     * @var boolean
+     * @var bool
      */
-    public $grouped = true;
+    public bool $grouped = true;
 
-    public function hasHtmlOutput(): bool
+    public function getFilter(MetaModelInterface $metaModel): array
     {
-        $result = parent::hasHtmlOutput();
+        $filter =  parent::getFilter($metaModel);
         if ($this->grouped) {
-            $this->extraFilter['gto_id_respondent_track'] = $this->token->getRespondentTrackId();
-            $this->extraFilter['gto_id_survey']           = $this->token->getSurveyId();
-        } else {
-            $this->extraFilter['gto_id_token']            = $this->token->getTokenId();
+            $filter['gto_id_respondent_track'] = $this->token->getRespondentTrackId();
+            $filter['gto_id_survey'] = $this->token->getSurveyId();
+            if (isset($filter['gto_id_token'])) {
+                unset($filter['gto_id_token']);
+            }
         }
-
-        return $result;
+        return $filter;
     }
 }

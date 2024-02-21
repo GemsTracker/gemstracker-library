@@ -53,14 +53,33 @@ class Route
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
         LocaleMiddleware::class,
+        SiteGateMiddleware::class,
         AuthenticationMiddleware::class,
         CsrfMiddleware::class,
-        MenuMiddleware::class,
-        AclMiddleware::class,
         MaintenanceModeMiddleware::class,
         RateLimitMiddleware::class,
+        AclMiddleware::class,
         CurrentOrganizationMiddleware::class,
         AuditLogMiddleware::class,
+        MenuMiddleware::class,
+    ];
+
+    public static array $maybeLoggedInMiddleware = [
+        SecurityHeadersMiddleware::class,
+        ClientIpMiddleware::class,
+        SessionMiddleware::class,
+        FlashMessageMiddleware::class,
+        LocaleMiddleware::class,
+        SiteGateMiddleware::class,
+        MaybeAuthenticatedMiddleware::class,
+        CsrfMiddleware::class,
+        //HandlerCsrfMiddleware::class,
+        MaintenanceModeMiddleware::class,
+        RateLimitMiddleware::class,
+        AclMiddleware::class,
+        CurrentOrganizationMiddleware::class,
+        AuditLogMiddleware::class,
+        MenuMiddleware::class,
     ];
 
     public static array $loggedOutMiddleware = [
@@ -69,8 +88,10 @@ class Route
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
         LocaleMiddleware::class,
-        MaybeAuthenticatedMiddleware::class,
+        SiteGateMiddleware::class,
+        NotAuthenticatedMiddleware::class,
         CsrfMiddleware::class,
+        HandlerCsrfMiddleware::class,
         MaintenanceModeMiddleware::class,
         RateLimitMiddleware::class,
         AclMiddleware::class,
@@ -79,10 +100,33 @@ class Route
         MenuMiddleware::class,
     ];
 
+    public static array $idlePollMiddleware = [
+        SecurityHeadersMiddleware::class,
+        ClientIpMiddleware::class,
+        SessionMiddleware::class,
+        FlashMessageMiddleware::class,
+        LocaleMiddleware::class,
+        SiteGateMiddleware::class,
+        CsrfMiddleware::class,
+        //HandlerCsrfMiddleware::class,
+        // MaintenanceModeMiddleware::class,
+        RateLimitMiddleware::class,
+        AclMiddleware::class,
+        CurrentOrganizationMiddleware::class,
+        // AuditLogMiddleware::class,
+        // MenuMiddleware::class,
+    ];
+
     public function __invoke(): array
     {
         return [
-            ...$this->getLoggedOutRoutes(),
+            ...$this->getCustomMiddlewareRoutes(),
+
+            ...$this->routeGroup([
+                'middleware' => static::$loggedOutMiddleware,
+            ], [
+                ...$this->getLoggedOutRoutes(),
+            ]),
 
             ...$this->routeGroup([
                 'middleware' => static::$loggedInMiddleware,
@@ -101,12 +145,41 @@ class Route
 
 
             ...$this->routeGroup([
-                'middleware' => static::$loggedOutMiddleware,
+                'middleware' => static::$maybeLoggedInMiddleware,
             ], [
                 ...$this->getAskRoutes(),
                 ...$this->getContactRoutes(),
                 ...$this->getParticipateRoutes(),
+                ...$this->getAlwaysAvailableRoutes(),
             ]),
+
+            ...$this->routeGroup([
+                'middleware' => static::$idlePollMiddleware,
+            ], [
+                ...$this->getIdlePollRoutes(),
+            ]),
+        ];
+    }
+
+    public function getAlwaysAvailableRoutes(): array
+    {
+        return [
+            ...$this->createRoute(
+                name: 'language.change',
+                path: '/change-language/{language:[a-zA-Z0-9]+}',
+                middleware: [
+                    ChangeLanguageHandler::class,
+                ],
+                methods: ['GET'],
+            ),
+            ...$this->createRoute(
+                name: 'info.show',
+                path: '/info',
+                middleware: [
+                    InfoHandler::class,
+                ],
+                methods: ['GET'],
+            ),
         ];
     }
 
@@ -116,203 +189,183 @@ class Route
         return $apiRoutes();
     }
 
+    public function getCustomMiddlewareRoutes(): array
+    {
+        return [
+            ...$this->createRoute(
+                name: 'tfa.login',
+                path: '/tfa',
+                middleware: [
+                    SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LocaleMiddleware::class,
+                    SiteGateMiddleware::class,
+                    AuthenticationWithoutTfaMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
+                    MaintenanceModeMiddleware::class,
+                    RateLimitMiddleware::class,
+                    AclMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
+                    AuditLogMiddleware::class,
+                    // MenuMiddleware::class,
+                    TfaLoginHandler::class,
+                ],
+                methods: ['GET', 'POST']
+            ),
+            ...$this->createRoute(
+                name: 'auth.logout',
+                path: '/logout',
+                middleware: [
+                    SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LocaleMiddleware::class,
+                    SiteGateMiddleware::class,
+                    AuthenticationWithoutTfaMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
+                    // MaintenanceModeMiddleware::class,
+                    RateLimitMiddleware::class,
+                    AclMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
+                    AuditLogMiddleware::class,
+                    // MenuMiddleware::class,
+                    LogoutHandler::class,
+                ],
+                methods: ['GET']
+            ),
+            ...$this->createRoute(
+                name: 'embed.login',
+                path: '/embed/login',
+                middleware: [
+                    SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LocaleMiddleware::class,
+                    SiteGateMiddleware::class,
+                    // CsrfMiddleware::class,
+                    // HandlerCsrfMiddleware::class,
+                    MaintenanceModeMiddleware::class,
+                    RateLimitMiddleware::class,
+                    AclMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
+                    AuditLogMiddleware::class,
+                    // MenuMiddleware::class,
+                    EmbedLoginHandler::class,
+                ],
+                methods: ['GET', 'POST'],
+            ),
+
+            ...$this->createRoute(
+                name: 'auth.change-password',
+                path: '/change-password',
+                middleware: [
+                    SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LocaleMiddleware::class,
+                    SiteGateMiddleware::class,
+                    AuthenticationMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
+                    MaintenanceModeMiddleware::class,
+                    RateLimitMiddleware::class,
+                    AclMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
+                    AuditLogMiddleware::class,
+                    MenuMiddleware::class,
+                    ChangePasswordHandler::class,
+                ],
+                methods: ['GET', 'POST'],
+            ),
+        ];
+    }
+
     public function getLoggedOutRoutes(): array
     {
         return [
-            [
-                'name' => 'auth.login',
-                'path' => '/login',
-                'allowed_methods' => ['GET', 'POST'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    SiteGateMiddleware::class,
-                    NotAuthenticatedMiddleware::class,
-                    MaintenanceModeMiddleware::class,
-                    MenuMiddleware::class,
+            ...$this->createRoute(
+                name: 'auth.login',
+                path: '/login',
+                middleware: [
                     LoginHandler::class,
                 ],
-            ],
-
-            [
-                'name' => 'tfa.login',
-                'path' => '/tfa',
-                'allowed_methods' => ['GET', 'POST'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    AuthenticationWithoutTfaMiddleware::class,
-                    TfaLoginHandler::class,
-                ],
-            ],
-            [
-                'name' => 'auth.logout',
-                'path' => '/logout',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    AuthenticationWithoutTfaMiddleware::class,
-                    AuditLogMiddleware::class,
-                    LogoutHandler::class,
-                ],
-            ],
-            [
-                'name' => 'embed.login',
-                'path' => '/embed/login',
-                'allowed_methods' => ['GET', 'POST'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    EmbedLoginHandler::class,
-                ],
-            ],
-            [
-                'name' => 'auth.idle.poll',
-                'path' => '/auth/idle-poll',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    AuthIdleCheckHandler::class,
-                ],
-            ],
-            [
-                'name' => 'auth.idle.alive',
-                'path' => '/auth/idle-alive',
-                'allowed_methods' => ['POST'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    AuthIdleCheckHandler::class,
-                ],
-            ],
-            [
-                'name' => 'language.change',
-                'path' => '/change-language/{language:[a-zA-Z0-9]+}',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
-                    SessionMiddleware::class,
-                    ChangeLanguageHandler::class,
-                ],
-            ],
-            [
-                'name' => 'info.show',
-                'path' => '/info',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    LocaleMiddleware::class,
-                    MenuMiddleware::class,
-                    InfoHandler::class,
-                ],
-            ],
-            [
-                'name' => 'auth.password-reset.request',
-                'path' => '/password-reset',
-                'allowed_methods' => ['GET', 'POST'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    SiteGateMiddleware::class,
-                    NotAuthenticatedMiddleware::class,
-                    MaintenanceModeMiddleware::class,
-                    MenuMiddleware::class,
+                methods: ['GET', 'POST'],
+            ),
+            ...$this->createRoute(
+                name: 'auth.password-reset.request',
+                path: '/password-reset',
+                middleware: [
                     RequestPasswordResetHandler::class,
-                    ],
-            ],
-            [
-                'name' => 'auth.password-reset.change',
-                'path' => '/index/resetpassword/key/{key:[a-zA-Z0-9]+}',
-                'allowed_methods' => ['GET', 'POST'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    CsrfMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    NotAuthenticatedMiddleware::class,
+                ],
+                methods: ['GET', 'POST'],
+            ),
+            ...$this->createRoute(
+                name: 'auth.password-reset.change',
+                path: '/index/resetpassword/key/{key:[a-zA-Z0-9]+}',
+                middleware: [
                     ResetPasswordChangeHandler::class,
                 ],
-            ],
+                methods: ['GET', 'POST'],
+            ),
+        ];
+    }
+
+    public function getIdlePollRoutes(): array
+    {
+        return [
+            ...$this->createRoute(
+                name: 'auth.idle.poll',
+                path: '/auth/idle-poll',
+                middleware: [
+                    AuthIdleCheckHandler::class,
+                ],
+                methods: ['GET'],
+            ),
+            ...$this->createRoute(
+                name: 'auth.idle.alive',
+                path: '/auth/idle-alive',
+                middleware: [
+                    AuthIdleCheckHandler::class,
+                ],
+                methods: ['POST'],
+            ),
         ];
     }
 
     public function getGeneralRoutes(): array
     {
         return [
-            [
-                'name' => 'auth.change-password',
-                'path' => '/change-password',
-                'allowed_methods' => ['GET', 'POST'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    LocaleMiddleware::class,
-                    HandlerCsrfMiddleware::class,
-                    ChangePasswordHandler::class,
-                ],
-            ],
-            [
-                'name' => 'organization.switch-ui',
-                'path' => '/organization/switch-ui',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+            ...$this->createRoute(
+                name: 'organization.switch-ui',
+                path: '/organization/switch-ui',
+                middleware: [
                     ChangeOrganizationHandler::class,
                 ],
-            ],
-            [
-                'name' => 'group.switch-ui',
-                'path' => '/group/switch-ui',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+                methods: ['GET'],
+            ),
+            ...$this->createRoute(
+                name: 'group.switch-ui',
+                path: '/group/switch-ui',
+                middleware: [
                     ChangeGroupHandler::class,
                 ],
-            ],
+                methods: ['GET'],
+            ),
         ];
     }
 
     public function getAskRoutes(): array
     {
         return [
-            ...$this->createSnippetRoutes(baseName: 'ask',
+            ...$this->createSnippetRoutes(
+                baseName: 'ask',
                 controllerClass: \Gems\Handlers\AskHandler::class,
                 basePrivilege: false,
                 pages: [
@@ -323,14 +376,14 @@ class Route
                     'return',
                     'lost',
                 ],
+                parameters: [
+                    'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}',
+                ],
                 parameterRoutes: [
                     'forward',
                     'take',
                     'to-survey',
                     'return',
-                ],
-                parameters: [
-                    'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}',
                 ],
                 postRoutes: [
                     ...$this->defaultPostRoutes,
@@ -395,14 +448,14 @@ class Route
     public function getOverviewRoutes(): array
     {
         return [
-            [
-                'name' => 'overview',
-                'path' => '/overview',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+            ...$this->createRoute(
+                name: 'overview',
+                path: '/overview',
+                middleware: [
                     EmptyHandler::class,
-                ]
-            ],
+                ],
+                methods: ['GET']
+            ),
             ...$this->createSnippetRoutes(baseName: 'overview.summary',
                 controllerClass:                   \Gems\Handlers\Overview\SummaryHandler::class,
                 pages:                             [
@@ -466,12 +519,19 @@ class Route
                 ],
                 genericExport: true,
             ),
-            ...$this->createSnippetRoutes(baseName: 'overview.consent-plan',
-                controllerClass:                   \Gems\Handlers\Overview\ConsentPlanHandler::class,
-                pages:                             [
+            ...$this->createSnippetRoutes(
+                baseName: 'overview.consent-plan',
+                controllerClass: \Gems\Handlers\Overview\ConsentPlanHandler::class,
+                pages: [
                     'index',
                     'autofilter',
                     'export',
+                    'show',
+                ],
+                parameters: [
+                    'id' => '\d+',
+                ],
+                parameterRoutes: [
                     'show',
                 ],
                 genericExport: true,
@@ -482,14 +542,14 @@ class Route
     public function getProjectRoutes(): array
     {
         return [
-            [
-                'name' => 'project',
-                'path' => '/project',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+            ...$this->createRoute(
+                name: 'project',
+                path: '/project',
+                middleware: [
                     EmptyHandler::class
                 ],
-            ],
+                methods: ['GET'],
+            ),
             ...$this->createSnippetRoutes(baseName: 'project.tracks',
                 controllerClass:                   \Gems\Handlers\Project\ProjectTracksHandler::class,
                 pages:                             [
@@ -518,63 +578,62 @@ class Route
     public function getRespondentRoutes(): array
     {
         return [
-            ...$this->createSnippetRoutes(baseName: 'respondent',
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent',
                 controllerClass: \Gems\Handlers\Respondent\RespondentHandler::class,
                 pages: [
                     ...$this->defaultPages,
                     'change-consent',
                     'change-organization',
+                    'overview',
                     'export-archive',
-                    'undelete',
+                ],
+                parameters: [
+                    'id1' => '[a-zA-Z0-9-_]+',
+                    'id2' => '\d+',
                 ],
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'change-consent',
                     'change-organization',
                     'export-archive',
-                    'undelete',
-                ],
-                parameters: [
-                    'id1' => '[a-zA-Z0-9-_]+',
-                    'id2' => '\d+',
                 ],
                 postRoutes: [
                     ...$this->defaultPostRoutes,
                     'change-consent',
                     'change-organization',
-                    'undelete',
+                    'export-archive',
                 ],
                 genericExport: true,
             ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.episodes-of-care',
-                controllerClass:                   \Gems\Handlers\Respondent\CareEpisodeHandler::class,
-                basePath:                          '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/episodes-of-care',
-                parentParameters:                  [
-                    'id1',
-                    'id2',
-                ],
-                parameters:                        [
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent.episodes-of-care',
+                controllerClass: \Gems\Handlers\Respondent\CareEpisodeHandler::class,
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/episodes-of-care',
+                parameters: [
                     \Gems\Model::EPISODE_ID => '\d+',
                 ],
-            ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.appointments',
-                controllerClass: \Gems\Handlers\Respondent\AppointmentHandler::class,
-                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/appointments',
                 parentParameters: [
                     'id1',
                     'id2',
                 ],
-                parameters:                        [
-                    \Gems\Model::APPOINTMENT_ID => '\d+',
-                ],
+            ),
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent.appointments',
+                controllerClass: \Gems\Handlers\Respondent\AppointmentHandler::class,
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/appointments',
                 pages: [
                     'index',
                     'autofilter',
                     'create',
                     'check',
+                    'check-all',
                     'show',
                     'edit',
                     'delete'
+                ],
+                parameters: [
+                    \Gems\Model::APPOINTMENT_ID => '\d+',
                 ],
                 parameterRoutes: [
                     'show',
@@ -589,15 +648,23 @@ class Route
                     'edit',
                     'index',
                     'delete',
+                ],
+                parentParameters: [
+                    'id1',
+                    'id2',
                 ]
             ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent.tracks',
                 controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [
                     'create',
                     'view',
                 ],
+                parameters: [
+                    \Gems\Model::TRACK_ID => '\d+',
+                ],
                 parameterRoutes: [
                     'create',
                     'view',
@@ -606,11 +673,9 @@ class Route
                     'id1',
                     'id2',
                 ],
-                parameters: [
-                    \Gems\Model::TRACK_ID => '\d+',
-                ],
             ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent.tracks',
                 controllerClass: \Gems\Handlers\Respondent\RespondentTrackHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [
@@ -624,6 +689,9 @@ class Route
                     'recalc-fields',
                     'export',
                 ],
+                parameters: [
+                    \Gems\Model::RESPONDENT_TRACK => '\d+',
+                ],
                 parameterRoutes: [
                     'show',
                     'edit',
@@ -634,21 +702,19 @@ class Route
                     'recalc-fields',
                     'export',
                 ],
-                parentParameters: [
-                    'id1',
-                    'id2',
-                ],
-                parameters: [
-                    \Gems\Model::RESPONDENT_TRACK => '\d+',
-                ],
                 postRoutes: [
                     'delete',
                     'undelete',
                     'edit',
                     'index',
+                ],
+                parentParameters: [
+                    'id1',
+                    'id2',
                 ]
             ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.tracks.token',
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent.tracks.token',
                 controllerClass: \Gems\Handlers\Respondent\TokenHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/track/{rt:\d+}/token',
                 pages: [
@@ -664,6 +730,9 @@ class Route
                     'check-token',
                     'check-token-answers',
                 ],
+                parameters: [
+                    'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
+                ],
                 parameterRoutes: [
                     'answer',
                     'delete',
@@ -677,97 +746,98 @@ class Route
                     'check-token',
                     'check-token-answers',
                 ],
+                postRoutes: array_merge($this->defaultPostRoutes, ['correct', 'undelete']),
                 parentParameters: [
                     'id1',
                     'id2',
                     'rt',
                 ],
-                parameters: [
-                    'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
-                ],
-                postRoutes:
-                    array_merge($this->defaultPostRoutes, ['correct', 'undelete']),
             ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.tracks.survey',
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent.tracks.survey',
                 controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [
                     'insert',
                     'view-survey',
                 ],
-                postRoutes: [
-                    'insert',
+                parameters: [
+                    \Gems\Model::SURVEY_ID => '\d+',
                 ],
                 parameterRoutes: [
                     'insert',
                     'view-survey',
                 ],
+                postRoutes: [
+                    'insert',
+                ],
                 parentParameters: [
                     'id1',
                     'id2',
                 ],
-                parameters: [
-                    \Gems\Model::SURVEY_ID => '\d+',
-                ],
             ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.tokens',
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent.tokens',
                 controllerClass: \Gems\Handlers\Respondent\TokenHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tokens',
-                parentParameters: [
-                    'id1',
-                    'id2',
-                ],
                 parameters: [
                     \Gems\Model::SURVEY_ID => '\d+',
                 ],
+                parentParameters: [
+                    'id1',
+                    'id2',
+                ],
             ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.communication-log',
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent.communication-log',
                 controllerClass: \Gems\Handlers\Respondent\RespondentCommLogHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/comm-log',
-                parentParameters: [
-                    'id1',
-                    'id2',
-                ],
                 pages: [
                     'index',
                     'autofilter',
                     'show'
                 ],
-                parameterRoutes: [
-                    'show',
-                ],
                 parameters: [
                     \Gems\Model::LOG_ITEM_ID => '\d+',
                 ],
+                parameterRoutes: [
+                    'show',
+                ],
+                parentParameters: [
+                    'id1',
+                    'id2',
+                ],
             ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.activity-log',
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent.activity-log',
                 controllerClass: \Gems\Handlers\Respondent\RespondentLogHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/activity-log',
-                parentParameters: [
-                    'id1',
-                    'id2',
-                ],
                 pages: [
                     'index',
                     'autofilter',
                     'show'
                 ],
-                parameterRoutes: [
-                    'show',
-                ],
                 parameters: [
                     \Gems\Model::LOG_ITEM_ID => '\d+',
                 ],
-            ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.relations',
-                controllerClass: \Gems\Handlers\Respondent\RespondentRelationHandler::class,
-                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/relations',
+                parameterRoutes: [
+                    'show',
+                ],
                 parentParameters: [
                     'id1',
                     'id2',
                 ],
+            ),
+            ...$this->createSnippetRoutes(
+                baseName: 'respondent.relations',
+                controllerClass: \Gems\Handlers\Respondent\RespondentRelationHandler::class,
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/relations',
                 parameters: [
                     'rid' => '\d+',
+                ],
+                parentParameters: [
+                    'id1',
+                    'id2',
                 ],
             ),
 
@@ -777,14 +847,14 @@ class Route
     public function getSetupRoutes(): array
     {
         return [
-            [
-                'name' => 'setup',
-                'path' => '/setup',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+            ...$this->createRoute(
+                name: 'setup',
+                path: '/setup',
+                middleware: [
                     EmptyHandler::class,
                 ],
-            ],
+                methods: ['GET'],
+            ),
             ...$this->createSnippetRoutes(baseName: 'setup.project-information',
                 controllerClass: \Gems\Handlers\Setup\ProjectInformationHandler::class,
                 pages: [
@@ -808,14 +878,14 @@ class Route
                 ],
             ),
 
-            [
-                'name' => 'setup.database',
-                'path' => '/setup/database',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+            ...$this->createRoute(
+                name: 'setup.database',
+                path: '/setup/database',
+                middleware: [
                     EmptyHandler::class,
                 ],
-            ],
+                methods: ['GET'],
+            ),
 
             ...$this->createHandlerRoute(baseName: 'setup.database.tables',
                 controllerClass: TableHandler::class,
@@ -842,14 +912,14 @@ class Route
                 ],
             ),*/
 
-            [
-                'name' => 'setup.codes',
-                'path' => '/setup/codes',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+            ...$this->createRoute(
+                name: 'setup.codes',
+                path: '/setup/codes',
+                middleware: [
                     EmptyHandler::class,
                 ],
-            ],
+                methods: ['GET'],
+            ),
 
 
             ...$this->createHandlerRoute(
@@ -864,14 +934,14 @@ class Route
                 controllerClass: \Gems\Handlers\Setup\MailCodeHandler::class,
             ),
 
-            [
-                'name' => 'setup.communication',
-                'path' => '/setup/communication',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+            ...$this->createRoute(
+                name: 'setup.communication',
+                path: '/setup/communication',
+                middleware: [
                     EmptyHandler::class,
                 ],
-            ],
+                methods: ['GET'],
+            ),
             ...$this->createHandlerRoute(baseName: 'setup.communication.job',
                 controllerClass: \Gems\Handlers\Setup\CommJobHandler::class,
             ),
@@ -888,14 +958,14 @@ class Route
                 controllerClass: \Gems\Handlers\Setup\CommLogHandler::class,
             ),
 
-            [
-                'name' => 'setup.access',
-                'path' => '/setup/access',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+            ...$this->createRoute(
+                name: 'setup.access',
+                path: '/setup/access',
+                middleware: [
                     EmptyHandler::class,
                 ],
-            ],
+                methods: ['GET'],
+            ),
             ...$this->createSnippetRoutes(baseName: 'setup.access.roles',
                 controllerClass: \Gems\Handlers\Setup\RoleHandler::class,
                 pages: [
@@ -974,22 +1044,23 @@ class Route
                     'reset',
                 ],
             ),
-            ...$this->createSnippetRoutes(baseName: 'setup.access.staff.log',
+            ...$this->createSnippetRoutes(
+                baseName: 'setup.access.staff.log',
                 controllerClass: \Gems\Handlers\Setup\StaffLogHandler::class,
                 basePath: '/setup/access/staff/{id:\d+}/log',
-                parentParameters:                  [
-                    'id',
-                ],
                 pages: [
                     'index',
                     'autofilter',
                     'show',
                 ],
+                parameters: [
+                    'logId' => '\d+',
+                ],
                 parameterRoutes: [
                     'show',
                 ],
-                parameters: [
-                    'logId' => '\d+',
+                parentParameters: [
+                    'id',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.access.system-user',
@@ -1019,14 +1090,14 @@ class Route
                 baseName: 'setup.access.mask',
                 controllerClass: \Gems\Handlers\Setup\MaskHandler::class,
             ),
-            [
-                'name' => 'setup.agenda',
-                'path' => '/setup/agenda',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+            ...$this->createRoute(
+                name: 'setup.agenda',
+                path: '/setup/agenda',
+                middleware: [
                     EmptyHandler::class,
                 ],
-            ],
+                methods: ['GET'],
+            ),
             ...$this->createSnippetRoutes(baseName: 'setup.agenda.activity',
                 controllerClass:                   \Gems\Handlers\Setup\AgendaActivityHandler::class,
                 pages:                             [
@@ -1144,14 +1215,14 @@ class Route
     public function getTrackBuilderRoutes(): array
     {
         return [
-            [
-                'name' => 'track-builder',
-                'path' => '/track-builder',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
+            ...$this->createRoute(
+                name: 'track-builder',
+                path: '/track-builder',
+                middleware: [
                     EmptyHandler::class,
                 ],
-            ],
+                methods: ['GET'],
+            ),
 
             ...$this->createSnippetRoutes(baseName: 'track-builder.source',
                 controllerClass: \Gems\Handlers\TrackBuilder\SourceHandler::class,
@@ -1276,7 +1347,8 @@ class Route
 
     public function getOptionRoutes(): array
     {
-        return $this->createSnippetRoutes(baseName: 'option',
+        return $this->createSnippetRoutes(
+            baseName: 'option',
             controllerClass: \Gems\Handlers\OptionHandler::class,
             pages: [
                 'edit',
@@ -1285,11 +1357,11 @@ class Route
                 'two-factor',
                 'show-log',
             ],
-            parameterRoutes: [
-                'show-log',
-            ],
             parameters: [
                 \MUtil\Model::REQUEST_ID => '\d+',
+            ],
+            parameterRoutes: [
+                'show-log',
             ],
             postRoutes: [
                 'edit',

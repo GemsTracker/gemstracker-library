@@ -18,47 +18,43 @@ class CacheFactory
 
     public function __invoke(ContainerInterface $container, string $requestedName, array $options = null): AdapterInterface
     {
-        $config = $container->get('config');
+        $config = $this->getCacheConfig($container);
 
-        $namespace = '';
-        if (isset($config['cache']['namespace'])) {
-            $namespace = $config['cache']['namespace'];
-        }
-        $defaultLifetime = 0;
-        if (isset($config['cache']['default_lifetime'])) {
-            $defaultLifetime = $config['cache']['default_lifetime'];
-        }
+        $namespace = $config['namespace'] ?? '';
+        $defaultLifetime = $config['default_lifetime'] ?? 0;
 
-        $cache = new NullAdapter();
-        if (isset($config['cache']) && array_key_exists('adapter', $config['cache'])) {
-            switch($config['cache']['adapter']) {
-                case 'redis':
-                    $dsn = 'redis://localhost';
-                    if (isset($config['cache']['dsn'])) {
-                        $dsn = $config['cache']['dsn'];
-                    }
-                    /**
-                     * @psalm-suppress UndefinedClass
-                     */
-                    $client = RedisAdapter::createConnection($dsn);
-                    $cache = new RedisAdapter($client, $namespace, $defaultLifetime);
-                    break;
+        $adapter = $config['adapter'] ?? null;
 
-                case 'file':
-                    $directory = $this->defaultCacheDirectory;
-                    if (isset($config['cache']['directory'])) {
-                        $directory = $config['cache']['directory'];
-                    }
-                    $cache = new FilesystemAdapter($namespace, $defaultLifetime, $directory);
-                    break;
+        switch($adapter) {
+            case 'redis':
+                $dsn = $config['dsn'] ?? 'redis://localhost';
+                /**
+                 * @psalm-suppress UndefinedClass
+                 */
+                $client = RedisAdapter::createConnection($dsn);
+                $cache = new RedisAdapter($client, $namespace, $defaultLifetime);
+                break;
 
-                case 'null':
-                default:
-                    break;
+            case 'file':
+                $directory = $config['directory'] ?? $this->defaultCacheDirectory;
+                $cache = new FilesystemAdapter($namespace, $defaultLifetime, $directory);
+                break;
 
-            }
+            case 'null':
+            default:
+                $cache = new NullAdapter();
+                break;
         }
 
         return new HelperAdapter($cache);
+    }
+
+    protected function getCacheConfig(ContainerInterface $container): array
+    {
+        $config = $container->get('config');
+        if (isset($config['cache'])) {
+            return $config['cache'];
+        }
+        return [];
     }
 }

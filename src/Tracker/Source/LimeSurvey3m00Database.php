@@ -34,9 +34,8 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Ddl\AlterTable;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
-use MUtil\Model;
-use MUtil\Model\ModelAbstract;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  * LimeSurvey3m00Database is a Source interface that enables the use of LimeSurvey 3.x
@@ -134,7 +133,7 @@ class LimeSurvey3m00Database extends SourceAbstract
     public function __construct(
         array $_sourceData,
         ResultFetcher $_gemsResultFetcher,
-        Translator $translate,
+        TranslatorInterface $translate,
         TokenLibrary $tokenLibrary,
         Tracker $tracker,
         ValueEncryptor $valueEncryptor,
@@ -937,7 +936,17 @@ class LimeSurvey3m00Database extends SourceAbstract
         $answers = $token->getRawAnswers();
 
         if (isset($answers[$fieldName]) && $answers[$fieldName]) {
-            return Model::getDateTimeInterface($answers[$fieldName], [self::LS_DB_DATETIME_FORMAT, self::LS_DB_DATE_FORMAT]);
+            if ($answers[$fieldName] instanceof DateTimeInterface) {
+                return $answers[$fieldName];
+            }
+            $output = DateTimeImmutable::createFromFormat(self::LS_DB_DATETIME_FORMAT, $answers[$fieldName]);
+            if ($output instanceof DateTimeInterface) {
+                return $output;
+            }
+            $output = DateTimeImmutable::createFromFormat(self::LS_DB_DATE_FORMAT, $answers[$fieldName]);
+            if ($output instanceof DateTimeInterface) {
+                return $output;
+            }
         }
 
         return null;
@@ -998,8 +1007,8 @@ class LimeSurvey3m00Database extends SourceAbstract
                     $submitDate = $lsResultFetcher->fetchOne("SELECT submitdate FROM $lsSurvey WHERE token = ? LIMIT 1", [$tokenId]);
 
                     if ($submitDate) {
-                        $submitDate = Model::getDateTimeInterface($submitDate, self::LS_DB_DATETIME_FORMAT);
-                        if (null === $submitDate) {
+                        $submitDate = DateTimeImmutable::createFromFormat(self::LS_DB_DATETIME_FORMAT, $submitDate);
+                        if (! $submitDate) {
                             $submitDate = false; // Null does not trigger cacheHas()
                         }
                     }
@@ -1335,9 +1344,9 @@ class LimeSurvey3m00Database extends SourceAbstract
      * @param Survey $survey
      * @param ?string $language Optional (ISO) language string
      * @param int|string|null $sourceSurveyId Optional Survey ID used by source
-     * @return ModelAbstract
+     * @return FullDataInterface
      */
-    public function getSurveyAnswerModel(Survey $survey, ?string $language = null, int|string|null $sourceSurveyId = null): ModelAbstract
+    public function getSurveyAnswerModel(Survey $survey, ?string $language = null, int|string|null $sourceSurveyId = null): FullDataInterface
     {
         static $cache = array();        // working with 'real' cache produces out of memory error
 
@@ -1349,7 +1358,7 @@ class LimeSurvey3m00Database extends SourceAbstract
 
         if (!array_key_exists($cacheId, $cache)) {
             $model           = $this->tracker->getSurveyModel($survey, $this);
-            $this->_getFieldMap($sourceSurveyId, $language)->applyToModel($model);
+            $this->_getFieldMap($sourceSurveyId, $language)->applyToModel($model->getMetaModel());
             $cache[$cacheId] = $model;
         }
 

@@ -42,5 +42,4 @@ class GemsJoinModel extends \Zalt\Model\Sql\JoinModel
         $this->startJoin($tableName, $savable);
         $this->translate = $translate;
     }
-
 }

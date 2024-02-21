@@ -125,7 +125,7 @@ class UtilDbHelper
         $currentLanguage = $this->locale->getLanguage();
         $rawCacheId = "__trans $table $keyColumnName $valueColumnName";
         if ($where) {
-            $rawCacheId .= http_build_query($where);
+            $rawCacheId .= md5(serialize($where));
         }
         $cacheKey   = HelperAdapter::cleanupForCacheId($rawCacheId);
         $cacheLangKey = HelperAdapter::cleanupForCacheId($cacheKey . '_' . $currentLanguage);

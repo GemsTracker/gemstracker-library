@@ -45,7 +45,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstract
 {
-    use ZendFormSnippetTrait;
+    use ZendFormSnippetTrait { ZendFormSnippetTrait::beforeDisplay as zendBeforeDisplay; }
 
     /**
      *
@@ -195,8 +195,9 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     {
         $this->displayHeader($bridge, $this->_('Set the survey export codes'), 'h3');
 
+        $metaModel   = $model->getMetaModel();
         $rounds      = $this->formData['rounds'];
-        $surveyCodes = array();
+        $surveyCodes = [];
         $surveyModel = $this->getSurveyTableModel();
 
         foreach ($rounds as $roundId) {
@@ -205,9 +206,9 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             $name  = ValidateSurveyExportCode::START_NAME . $sid;
 
             $surveyCodes[$name] = $name;
-            $model->getMetaModel()->set($name, 'validator', new ValidateSurveyExportCode(
-                $sid, $surveyModel
-                ));
+            $metaModel->set($name, [
+                'validator' => new ValidateSurveyExportCode($sid, $surveyModel),
+                ]);
         }
         $this->addItems($bridge, $surveyCodes);
     }
@@ -307,6 +308,13 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     protected function afterSave($changed)
     {
         $this->addMessage($this->_('Track export finished'));
+    }
+
+    public function beforeDisplay()
+    {
+        // $this->layoutAutoWidthFactor = 2;
+        $this->zendBeforeDisplay();
+        $this->beforeDisplayFor($this->currentStep);
     }
 
     /**
@@ -592,6 +600,8 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
                 $this->formData = $model->loadNew();
             }
         }
+
+        $this->formData = $this->loadCsrfData() + $this->formData;
 
         // Step can be defined in get paramter
         $step = $this->requestInfo->getParam($this->stepFieldName);

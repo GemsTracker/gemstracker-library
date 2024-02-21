@@ -1,93 +1,79 @@
 <?php
 
-/**
- *
- * @package    Gems
- * @subpackage Tracker
- * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- */
-
 namespace Gems\Tracker;
 
-use Gems\Model\JoinModel;
+use Gems\Model\GemsJoinModel;
+use Gems\Model\MetaModelLoader;
 use Gems\Tracker;
 use Gems\Tracker\Model\Transform\AddAnswersTransformer;
 use Gems\Tracker\Source\SourceInterface;
+use Laminas\Db\Sql\Expression;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\String\Str;
 
-/**
- * More correctly a Survey ANSWERS Model as it adds answers to token information/
- *
- * @package    Gems
- * @subpackage Tracker
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.4
- */
-class SurveyModel extends JoinModel
+class SurveyModel extends GemsJoinModel
 {
+
     /**
      * Constant containing css classname for main questions
      */
-    const CLASS_MAIN_QUESTION = 'question';
+    public const CLASS_MAIN_QUESTION = 'question';
 
     /**
-     * Constant containing css classname for subquestions
+     * Constant containing css classname for sub-questions
      */
-    const CLASS_SUB_QUESTION  = 'question_sub';
+    public const CLASS_SUB_QUESTION  = 'question_sub';
 
-    /**
-     *
-     * @var SourceInterface
-     */
-    protected $source;
+    public function __construct(
+        protected readonly Survey $survey,
+        protected readonly SourceInterface $source,
+        protected readonly Tracker $tracker,
+        MetaModelLoader $metaModelLoader,
+        SqlRunnerInterface $sqlRunner,
+        TranslatorInterface $translate,
+        bool $savable = true
+    ) {
 
-    /**
-     *
-     * @var Survey
-     */
-    protected $survey;
+        $modelName = Str::camel(Str::alphaNum($this->survey->getName(), true));
+        parent::__construct('gems__tokens', $metaModelLoader, $sqlRunner, $translate, $modelName, $savable);
 
-    /**
-     * @var Tracker
-     */
-    protected $tracker;
-
-    /**
-     *
-     * @param Survey $survey
-     * @param SourceInterface $source
-     */
-    public function __construct(Survey $survey, SourceInterface $source, Tracker $tracker)
-    {
-        parent::__construct($survey->getName(), 'gems__tokens', 'gto');
-
-        $this->addTable('gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
-        $this->addTable('gems__surveys',          array('gto_id_survey' => 'gsu_id_survey'));
-        $this->addTable('gems__groups',           array('gsu_id_primary_group' => 'ggp_id_group'));
+        $this->addTable('gems__reception_codes', [
+            'gto_reception_code' => 'grc_id_reception_code'
+        ]);
+        $this->addTable('gems__surveys', [
+            'gto_id_survey' => 'gsu_id_survey'
+        ]);
+        $this->addTable('gems__groups', [
+            'gsu_id_primary_group' => 'ggp_id_group'
+        ]);
 
         // Add relations
         // Add relation fields
-        $this->addLeftTable('gems__track_fields', ['gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"']);
-        $this->set('forgroup', 'column_expression', new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, ggp_name)'));
+        $this->addLeftTable('gems__track_fields', [
+            'gto_id_relationfield' => 'gtf_id_field',
+            'gtf_field_type = "relation"',
+        ]);
+        $this->metaModel->set('forgroup', [
+            'column_expression' => new Expression('COALESCE(gems__track_fields.gtf_field_name, ggp_name)'),
+        ]);
 
         // Add relation itself
-        $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent'));
+        $this->addLeftTable('gems__respondent_relations', [
+            'gto_id_relation' => 'grr_id',
+            'gto_id_respondent' => 'grr_id_respondent'
+        ]);
 
-        $this->addColumn(new \Zend_Db_Expr(
-                'CONCAT_WS(" ", gems__respondent_relations.grr_first_name, gems__respondent_relations.grr_last_name)'
-                ), 'grr_name');
-        $this->addColumn(new \Zend_Db_Expr(
-                'CASE WHEN grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) THEN 1 ELSE 0 END'
-                ), 'can_be_taken');
-        $this->addColumn(new \Zend_Db_Expr(
-                "CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END"
-                ), 'row_class');
+        $this->addColumn(new Expression(
+            'CONCAT_WS(" ", gems__respondent_relations.grr_first_name, gems__respondent_relations.grr_last_name)'
+        ), 'grr_name');
+        $this->addColumn(new Expression(
+            'CASE WHEN grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) THEN 1 ELSE 0 END'
+        ), 'can_be_taken');
+        $this->addColumn(new Expression(
+            "CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END"
+        ), 'row_class');
 
-        $this->source = $source;
-        $this->survey = $survey;
-        $this->tracker = $tracker;
         $this->addAnswersToModel();
     }
 
@@ -99,23 +85,14 @@ class SurveyModel extends JoinModel
     protected function addAnswersToModel()
     {
         $transformer = new AddAnswersTransformer($this->survey, $this->source, $this->tracker);
-        $this->addTransformer($transformer);
+        $this->metaModel->addTransformer($transformer);
     }
 
-    /**
-     *
-     * @return \Gems\Tracker\Survey
-     */
-    public function getSurvey()
+    public function getSurvey(): Survey
     {
         return $this->survey;
     }
 
-    /**
-     * True if this model allows the creation of new model items.
-     *
-     * @return boolean
-     */
     public function hasNew(): bool
     {
         return false;

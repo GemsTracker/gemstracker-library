@@ -892,7 +892,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
     /**
      * If this is an embedder, return the EmbedderUserData object
      *
-     * @return \Gems\User\Embed\EmbeddedUserData
+     * @return \Gems\User\Embed\EmbeddedUserData|null
      */
     public function getEmbedderData()
     {

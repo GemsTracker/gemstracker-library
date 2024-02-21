@@ -24,9 +24,11 @@ use Gems\Repository\RespondentRepository;
 use Gems\Repository\StaffRepository;
 use Gems\SnippetsActions\ApplyLegacyActionInterface;
 use Gems\SnippetsActions\ApplyLegacyActionTrait;
+use Gems\User\Filter\PhoneNumberFilter;
 use Gems\User\GemsUserIdGenerator;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
+use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
 use Gems\Validator\OneOf;
@@ -37,6 +39,7 @@ use Zalt\Filter\RequireOneCapsFilter;
 use Zalt\Late\Late;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\Model\Type\ActivatingMultiType;
 use Zalt\SnippetsActions\Form\EditActionAbstract;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\Validator\Model\ModelUniqueValidator;
@@ -104,10 +107,12 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         protected readonly Localized $localizedUtil,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly ProjectSettings $project,
+        protected readonly ReceptionCodeRepository $receptionCodeRepository,
         protected readonly RespondentRepository $respondentRepository,
         protected readonly StaffRepository $staffRepository,
         protected readonly Translated $translatedUtil,
         protected readonly GemsUserIdGenerator $gemsUserIdGenerator,
+        protected readonly array $config,
     )
     {
         $this->currentUser    = $currentUserRepository->getCurrentUser();
@@ -128,7 +133,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $metaModelLoader->setChangeFields($this->metaModel, 'grs');
         $metaModelLoader->setChangeFields($this->metaModel, 'gr2o');
 
-        $this->addColumn("CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END", 'row_class');
         $this->addColumn("CASE WHEN grc_success = 1 THEN 0 ELSE 1 END", 'resp_deleted');
         $this->addColumn('CASE WHEN gr2o_email IS NULL OR LENGTH(TRIM(gr2o_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
 
@@ -334,10 +338,22 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $this->localizedUtil->getCountries(),
         ]);
 
-        $this->setIfExists('grs_phone_1');
-        $this->setIfExists('grs_phone_2');
-        $this->setIfExists('grs_phone_3');
-        $this->setIfExists('grs_phone_4');
+        $this->setIfExists('grs_phone_1', [
+            'validator' => new PhoneNumberValidator($this->config),
+        ]);
+        $this->setIfExists('grs_phone_2', [
+            'validator' => new PhoneNumberValidator($this->config),
+        ]);
+        $this->setIfExists('grs_phone_3', [
+            'validator' => new PhoneNumberValidator($this->config),
+        ]);
+        $this->setIfExists('grs_phone_4', [
+            'validator' => new PhoneNumberValidator($this->config),
+        ]);
+        $this->metaModel->setOnSave('grs_phone_1', (new PhoneNumberFilter($this->config))->filter(...));
+        $this->metaModel->setOnSave('grs_phone_2', (new PhoneNumberFilter($this->config))->filter(...));
+        $this->metaModel->setOnSave('grs_phone_3', (new PhoneNumberFilter($this->config))->filter(...));
+        $this->metaModel->setOnSave('grs_phone_4', (new PhoneNumberFilter($this->config))->filter(...));
 
         $this->currentGroup = $this->_('Settings');
         $this->setIfExists('grs_iso_lang', [
@@ -355,6 +371,13 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $this->addColumn($consent, 'old_' . $consent);
             $this->metaModel->set('old_' . $consent, ['elementClass' => 'hidden']);
         }
+        $this->metaModel->set('gr2o_reception_code', [
+            'type' => new ActivatingMultiType(
+                $this->receptionCodeRepository->getRespondentRestoreCodes(),
+                $this->receptionCodeRepository->getRespondentDeletionCodes(),
+                'row_class'),
+        ]);
+
 
         $changers = Late::method($this->staffRepository, 'getStaff');
         $this->setIfExists('gr2o_opened', [

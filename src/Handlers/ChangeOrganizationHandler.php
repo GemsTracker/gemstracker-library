@@ -63,6 +63,6 @@ class ChangeOrganizationHandler implements RequestHandlerInterface
             return $serverParams['HTTP_REFERER'];
         }
 
-        return $this->urlHelper->generate('/');
+        return $this->urlHelper->generate('home');
     }
 }

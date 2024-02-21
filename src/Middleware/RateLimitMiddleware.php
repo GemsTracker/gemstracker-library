@@ -7,9 +7,8 @@ namespace Gems\Middleware;
 use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Cache\RateLimiter;
+use Gems\Db\ResultFetcher;
 use Gems\Log\Loggers;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
@@ -49,6 +48,7 @@ class RateLimitMiddleware implements MiddlewareInterface
 
 
     public function __construct(
+        protected readonly ResultFetcher $resultFetcher,
         protected readonly RateLimiter $limiter,
         protected readonly Loggers $loggers,
         protected readonly array $config,
@@ -240,8 +240,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      */
     private function logToDatabase(): void
     {
-        $adapter = new Adapter($this->config['db']);
-        $sql = new Sql($adapter);
         $values = [
             'glr_ip' => $this->ipAddress,
             'glr_identity' => isset($this->identity) ? $this->identity : null,
@@ -250,7 +248,6 @@ class RateLimitMiddleware implements MiddlewareInterface
             'glr_max_requests' => $this->maxAttempts,
             'glr_time_sec' => $this->decayTimeInSeconds,
         ];
-        $insert = $sql->insert('gems__log_ratelimit')->values($values);
-        $sql->prepareStatementForSqlObject($insert)->execute();
+        $this->resultFetcher->insertIntoTable('gems__log_ratelimit', $values);
     }
 }

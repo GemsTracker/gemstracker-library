@@ -21,7 +21,7 @@ use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
 use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
-use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  * Object representing a specific Survey
@@ -162,8 +162,9 @@ class Survey
     {
         $answerModel = $this->getAnswerModel('en');
         $items       = [];
-        foreach($answerModel->getItemsOrdered() as $item) {
-                $result = $answerModel->get($item, ['label', 'type', 'multiOptions', 'parent_question', 'thClass', 'group', 'description']);
+        $metaModel = $answerModel->getMetaModel();
+        foreach($metaModel->getItemsOrdered() as $item) {
+                $result = $metaModel->get($item, ['label', 'type', 'multiOptions', 'parent_question', 'thClass', 'group', 'description']);
                 if (array_key_exists('label', $result)) {
                     $items[$item] = $result;
                 }
@@ -221,9 +222,9 @@ class Survey
      * Returns a model for displaying the answers to this survey in the requested language.
      *
      * @param string $language (ISO) language string
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
-    public function getAnswerModel(string $language): MetaModelInterface
+    public function getAnswerModel(string $language): FullDataInterface
     {
         $source = $this->getSource();
         return $source->getSurveyAnswerModel($this, $language, $this->getSourceSurveyId());

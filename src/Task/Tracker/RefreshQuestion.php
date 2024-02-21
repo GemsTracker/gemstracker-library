@@ -11,6 +11,8 @@
 
 namespace Gems\Task\Tracker;
 
+use Zalt\Model\MetaModelInterface;
+
 /**
  *
  * @package    Gems
@@ -55,7 +57,8 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
 
         \Gems\Model::setChangeFieldsByPrefix($questionModel, 'gsq');
 
-        $label = $answerModel->get($questionId, 'label');
+        $metaModel = $answerModel->getMetaModel();
+        $label = $metaModel->get($questionId, 'label');
         /*
         if ($label instanceof \MUtil\Html\HtmlInterface) {
             $label = $label->render($this->view);
@@ -64,13 +67,13 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
 
         $question['gsq_id_survey']   = $surveyId;
         $question['gsq_name']        = $questionId;
-        $question['gsq_name_parent'] = $answerModel->get($questionId, 'parent_question');
+        $question['gsq_name_parent'] = $metaModel->get($questionId, 'parent_question');
         $question['gsq_order']       = $order;
-        $question['gsq_type']        = $answerModel->getWithDefault($questionId, 'type', \MUtil\Model::TYPE_STRING);
-        $question['gsq_class']       = $answerModel->get($questionId, 'thClass');
-        $question['gsq_group']       = $answerModel->get($questionId, 'group');
+        $question['gsq_type']        = $metaModel->getWithDefault($questionId, 'type', MetaModelInterface::TYPE_STRING);
+        $question['gsq_class']       = $metaModel->get($questionId, 'thClass');
+        $question['gsq_group']       = $metaModel->get($questionId, 'group');
         $question['gsq_label']       = $label;
-        $question['gsq_description'] = $answerModel->get($questionId, 'description');
+        $question['gsq_description'] = $metaModel->get($questionId, 'description');
 
         // \MUtil\EchoOut\EchoOut::track($question);
         try {
@@ -93,7 +96,7 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
                 $batch->getCounter('changedQuestions'),
                 $batch->getCounter('checkedQuestions')));
 
-        $options = $answerModel->get($questionId, 'multiOptions');
+        $options = $metaModel->get($questionId, 'multiOptions');
         if ($options) {
             $optionModel   = new \MUtil\Model\TableModel('gems__survey_question_options');
             \Gems\Model::setChangeFieldsByPrefix($optionModel, 'gsqo');

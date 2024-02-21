@@ -70,6 +70,7 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
             $breadcrumbs = array_reverse($this->menuHelper->getCurrentParentUrls(10));
             $breadcrumbs[] = ['label' => $this->menuHelper->getCurrentLabel()];
             $data['breadcrumbs'] = $breadcrumbs;
+            $data['title_breadcrumbs'] = ' | ' . implode(' - ', array_column($breadcrumbs, 'label'));
         }
         $statusCode = 200;
         $headers = [];

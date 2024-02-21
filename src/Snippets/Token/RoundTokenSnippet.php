@@ -11,9 +11,22 @@
 
 namespace Gems\Snippets\Token;
 
-use Gems\Util\Translated;
+use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Model;
+use Gems\Model\MetaModelLoader;
+use Gems\Model\Type\GemsDateTimeType;
+use Gems\Model\Type\GemsDateType;
+use Gems\Repository\TokenRepository;
+use Gems\Tracker;
+use Gems\User\Mask\MaskRepository;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -44,15 +57,21 @@ class RoundTokenSnippet extends RespondentTokenSnippet
      */
     public $browse = false;
 
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        MaskRepository $maskRepository,
+        MetaModelLoader $metaModelLoader,
+        Tracker $tracker,
+        TokenRepository $tokenRepository,
+        protected readonly array $config,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $currentUserRepository, $maskRepository, $metaModelLoader, $tracker, $tokenRepository);
+    }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -66,21 +85,19 @@ class RoundTokenSnippet extends RespondentTokenSnippet
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        // \MUtil\Model::$verbose = true;
-        //
         // Initiate data retrieval for stuff needed by links
-        $bridge->gr2o_patient_nr;
-        $bridge->gr2o_id_organization;
-        $bridge->gr2t_id_respondent_track;
+        $bridge->getFormatted('gr2o_patient_nr');
+        $bridge->getFormatted('gr2o_id_organization');
+        $bridge->getFormatted('gr2t_id_respondent_track');
 
-        $HTML = \MUtil\Html::create();
+        $HTML = Html::create();
 
-        $roundIcon[] = \MUtil\Lazy::iif($bridge->gto_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
-                \MUtil\Lazy::iif($bridge->gro_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
+        $iconFile = $bridge->getFormatted('gto_icon_file');
+        $roundIcon[] = Late::iif($iconFile, Html::create('img', array('src' => $iconFile, 'class' => 'icon')), '');
 
         $bridge->addMultiSort('gsu_survey_name', $roundIcon);
         $bridge->addSortable('ggp_name');
-        $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
+        $bridge->addSortable('calc_used_date', null, Late::iif($bridge->getFormatted('is_completed'), 'disabled date', 'enabled date'));
         $bridge->addSortable('gto_changed');
         $bridge->addSortable('assigned_by', $this->_('Assigned by'));
 
@@ -90,92 +107,59 @@ class RoundTokenSnippet extends RespondentTokenSnippet
             $bridge->addSortable('gto_result', $this->_('Score'), 'date');
         }
 
-        $bridge->useRowHref = false;
-
-        $actionLinks[] = $this->createMenuLink($bridge, 'track',  'answer');
-//      TODO
-//        $actionLinks[] = array(
-//            $bridge->ggp_staff_members->if(
-//                    $this->createMenuLink($bridge, 'ask', 'take'),
-//                    $bridge->calc_id_token->strtoupper()
-//                    ),
-//            'class' => $bridge->ggp_staff_members->if(null, $bridge->calc_id_token->if('token')));
-        // calc_id_token is empty when the survey has been completed
-
-        // Remove nulls
-        $actionLinks = array_filter($actionLinks);
-        if ($actionLinks) {
-            $bridge->addItemLink($actionLinks);
-        }
-
+        $this->addActionLinks($bridge);
         $this->addTokenLinks($bridge);
     }
 
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {
         $model = parent::createModel();
+        $metaModel = $model->getMetaModel();
 
-        $model->set('calc_used_date',
-                'formatFunction', $this->translatedUtil->formatDateNever,
-                'tdClass', 'date');
-        $model->set('gto_changed',
-                'dateFormat', 'dd-MM-yyyy HH:mm:ss',
-                'tdClass', 'date');
+        $metaModel->set('calc_used_date', [
+                'tdClass' => 'date',
+                'type' => new GemsDateType($this->translate),
+                ]);
+        $metaModel->set('gto_changed', [
+                'tdClass' => 'date',
+                'type' => new GemsDateTimeType($this->translate),
+                ]);
 
         return $model;
     }
 
     /**
-     * The place to check if the data set in the snippet is valid
-     * to generate the snippet.
-     *
-     * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
-     * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil\Registry\TargetInterface}.
-     *
-     * @return boolean
+     * @inheritdoc
      */
     public function hasHtmlOutput(): bool
     {
-        if ($this->menu) {
+        $url   = null;
+        $label = $this->_('No valid tokens found');
+
+        if ($this->respondent->getReceptionCode()->isSuccess()) {
             if (isset($this->config['survey']['defaultTrackId'])) {
                 $default = $this->config['survey']['defaultTrackId'];
-                if ($this->respondent->getReceptionCode()->isSuccess()) {
-                    $track = $this->loader->getTracker()->getTrackEngine($default);
+                $track = $this->tracker->getTrackEngine($default);
+                if ($track->isUserCreatable()) {
+                    $url   = $this->menuHelper->getRouteUrl('respondent.tracks.create', $this->requestInfo->getRequestMatchedParams() + [Model::TRACK_ID => $default]);
+                    $label = $this->_('Create track');
+                }
+            }
+            if (! $url) {
+                $url   = $this->menuHelper->getRouteUrl('respondent.tracks.index', $this->requestInfo->getRequestMatchedParams());
+                $label = $this->_('Create a track');
+            }
+        }
 
-                    if ($track->isUserCreatable()) {
-                        $list = $this->menu->getMenuList()
-                                ->addByController('track', 'create',
-                                        sprintf($this->_('Add %s track to this respondent'), $track->getTrackName())
-                                        )
-                                ->addParameterSources(
-                                        array(
-                                            \Gems\Model::TRACK_ID  => $default,
-                                            'gtr_id_track'         => $default,
-                                            'track_can_be_created' => 1,
-                                            ),
-                                        $this->request
-                                        );
-                        $this->onEmpty = $list->getActionLink('track', 'create');
-                    }
-                }
-            }
-            if (! $this->onEmpty) {
-                if ($this->respondent->getReceptionCode()->isSuccess()) {
-                    $list = $this->menu->getMenuList()
-                            ->addByController('track', 'show-track', $this->_('Add a track to this respondent'))
-                            ->addParameterSources($this->request);
-                    $this->onEmpty = $list->getActionLink('track', 'show-track');
-                } else {
-                    $this->onEmpty = \MUtil\Html::create('em', $this->_('No valid tokens found'));
-                }
-            }
+        if ($url) {
+            $this->onEmpty = Html::create('actionLink', $url, $label);
+        } else {
+            $this->onEmpty = Html::create('em', $label);
         }
 
         return parent::hasHtmlOutput();

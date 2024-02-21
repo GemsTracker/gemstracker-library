@@ -82,7 +82,8 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
         $seedInfo = $repository->getSeedsFromFiles();
 
         $expected = [
-            'anotherTestSeed' => [
+            'another-test-seed' => [
+                'id' => 'another-test-seed',
                 'name' => 'anotherTestSeed',
                 'type' => 'seed',
                 'description' => null,
@@ -103,7 +104,8 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'db' => 'gems',
                 'module' => 'gems',
             ],
-            'jsonTestSeed' => [
+            'json-test-seed' => [
+                'id' => 'json-test-seed',
                 'name' => 'jsonTestSeed',
                 'type' => 'seed',
                 'description' => null,
@@ -124,7 +126,8 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'db' => 'gems',
                 'module' => 'gems',
             ],
-            'testSeed' => [
+            'test-seed' => [
+                'id' => 'test-seed',
                 'name' => 'testSeed',
                 'type' => 'seed',
                 'description' => null,
@@ -166,7 +169,8 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
         $seedInfo = $repository->getSeedsFromClasses();
 
         $expected = [
-            PhpSeed::class => [
+            'gems-test-data-db-seed-repository-php-seed' => [
+                'id' => 'gems-test-data-db-seed-repository-php-seed',
                 'name' => PhpSeed::class,
                 'type' => 'seed',
                 'description' => null,
@@ -195,7 +199,8 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
         $seedInfo = $repository->getInfo();
 
         $expected = [
-            'anotherTestSeed' => [
+            'another-test-seed' => [
+                'id' => 'another-test-seed',
                 'name' => 'anotherTestSeed',
                 'type' => 'seed',
                 'description' => null,
@@ -221,7 +226,8 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'sql' => null,
                 'comment' => null,
             ],
-            PhpSeed::class => [
+            'gems-test-data-db-seed-repository-php-seed' => [
+                'id' => 'gems-test-data-db-seed-repository-php-seed',
                 'name' => PhpSeed::class,
                 'type' => 'seed',
                 'description' => null,
@@ -243,7 +249,8 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'sql' => null,
                 'comment' => null,
             ],
-            'jsonTestSeed' => [
+            'json-test-seed' => [
+                'id' => 'json-test-seed',
                 'name' => 'jsonTestSeed',
                 'type' => 'seed',
                 'description' => null,
@@ -269,7 +276,8 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                 'sql' => null,
                 'comment' => null,
             ],
-            'testSeed' => [
+            'test-seed' => [
+                'id' => 'test-seed',
                 'name' => 'testSeed',
                 'type' => 'seed',
                 'description' => null,

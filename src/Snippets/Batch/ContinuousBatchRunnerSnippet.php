@@ -4,8 +4,8 @@ namespace Gems\Snippets\Batch;
 
 use MUtil\Batch\BatchAbstract;
 use MUtil\Html;
-use MUtil\Request\RequestInfo;
 use MUtil\Snippets\SnippetAbstract;
+use Zalt\Base\RequestInfo;
 
 class ContinuousBatchRunnerSnippet extends SnippetAbstract
 {

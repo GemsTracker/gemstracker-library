@@ -42,7 +42,7 @@ class VueSnippetAbstract extends SnippetAbstract
 
     protected function getApiUrl(): string
     {
-        return $this->urlHelper->getBasePath() . 'api';
+        return rtrim($this->urlHelper->getBasePath(), '/')  . '/' . 'api';
     }
 
     public function getHtmlOutput()
@@ -61,7 +61,7 @@ class VueSnippetAbstract extends SnippetAbstract
     protected function getAttributes(): array
     {
         $parameters = [
-            'base-url' => $this->urlHelper->getBasePath(),
+            'base-url' => rtrim($this->urlHelper->getBasePath(), '/')  . '/',
             'api-url' => $this->getApiUrl(),
             'locale' => $this->locale->getLanguage(),
             ...$this->vueOptions,

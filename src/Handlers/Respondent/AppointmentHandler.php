@@ -19,6 +19,7 @@ use Gems\Model\AppointmentModel;
 use Gems\Model;
 use Gems\Model\Dependency\ActivationDependency;
 use Gems\Repository\RespondentRepository;
+use Gems\Snippets\Agenda\AllAppointmentsCheckSnippet;
 use Gems\Snippets\Agenda\AppointmentFormSnippet;
 use Gems\Snippets\Agenda\AppointmentShowSnippet;
 use Gems\Snippets\Agenda\AppointmentTokensSnippet;
@@ -73,16 +74,34 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     ];
 
     /**
-     * The snippets used for the create and edit actions.
+     * The parameters used for the check all action
      *
-     * @var mixed String or array of snippets name
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
      */
-    protected array $createEditSnippets = [
-        AppointmentFormSnippet::class,
+    protected array $checkAllParameters = [
+        'contentTitle' => 'getCheckAllTitle',
     ];
 
     /**
-     * The parameters used for the show action
+     * The snippets used for the check all action
+     *
+     * @var array Array of snippets name
+     */
+    protected array $checkAllSnippets = [
+        'Generic\\ContentTitleSnippet',
+        AllAppointmentsCheckSnippet::class,
+        CurrentButtonRowSnippet::class,
+        'Agenda\\ApplyFiltersInformation',
+    ];
+
+
+    /**
+     * The parameters used for the check action
      *
      * When the value is a function name of that object, then that functions is executed
      * with the array key as single parameter and the return value is set as the used value
@@ -98,7 +117,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     ];
 
     /**
-     * The snippets used for the show action
+     * The snippets used for the check action
      *
      * @var mixed String or array of snippets name
      */
@@ -111,10 +130,13 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     ];
 
     /**
+     * The snippets used for the create and edit actions.
      *
-     * @var \Gems\User\User
+     * @var mixed String or array of snippets name
      */
-    public User $currentUser;
+    protected array $createEditSnippets = [
+        AppointmentFormSnippet::class,
+    ];
 
     /**
      * The parameters used for the index action minus those in autofilter.
@@ -192,6 +214,20 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     }
 
     /**
+     * Perform checks on all appointments
+     */
+    public function checkAllAction(): array
+    {
+        if ($this->checkSnippets) {
+            $params = $this->_processParameters($this->checkAllParameters);
+
+            $this->addSnippets($this->checkAllSnippets, $params);
+        }
+
+        return [];
+    }
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -258,6 +294,16 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     public function getCheckTitle(): string
     {
         return $this->_('Track field filter check for this appointment');
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getCheckAllTitle(): string
+    {
+        $respondent = $this->getRespondent();
+        return sprintf($this->_('Track field filter check for all appointments of %s'), $respondent->getPatientNumber());
     }
 
     /**

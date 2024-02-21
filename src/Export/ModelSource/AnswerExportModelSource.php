@@ -11,7 +11,9 @@
 
 namespace Gems\Export\ModelSource;
 
+use Gems\Model\GemsJoinModel;
 use Gems\Tracker;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  *
@@ -60,82 +62,90 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
 
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var FullDataInterface
      */
     protected $model;
 
     /**
      * Add the default fields and optionally joins to the model
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addDefaultFieldsToExportModel(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addDefaultFieldsToExportModel(FullDataInterface $model, array $data, array &$prefixes)
     {
-        if (!$model->checkJoinExists('gems__respondent2org.gr2o_id_user', 'gems__tokens.gto_id_respondent')) {
-            $model->addTable('gems__respondent2org', array(
-                'gems__respondent2org.gr2o_id_user' => 'gems__tokens.gto_id_respondent',
-                'gems__respondent2org.gr2o_id_organization' => 'gems__tokens.gto_id_organization'), 'gr2o'
-            );
+        $metaModel = $model->getMetaModel();
+
+        if ($model instanceof GemsJoinModel) {
+            $joinStore = $model->getJoinStore();
+
+            if (! $joinStore->hasTable('gems__respondent2org')) {
+                $model->addTable('gems__respondent2org', array(
+                    'gems__respondent2org.gr2o_id_user' => 'gems__tokens.gto_id_respondent',
+                    'gems__respondent2org.gr2o_id_organization' => 'gems__tokens.gto_id_organization'), false
+                ); // 'gr2o'
+            }
+
+            if (! $joinStore->hasTable('gems__respondent2track')) {
+                $model->addTable('gems__respondent2track', array('gems__respondent2track.gr2t_id_respondent_track' => 'gems__tokens.gto_id_respondent_track'), false); // 'gr2t'
+            }
+            if (! $joinStore->hasTable('gems__tracks')) {
+                $model->addTable('gems__tracks', array('gems__tracks.gtr_id_track' => 'gems__tokens.gto_id_track'), false); // 'gtr'
+            }
+            if (! $joinStore->hasTable('gems__consents')) {
+                $model->addTable('gems__consents', array('gems__consents.gco_description' => 'gems__respondent2org.gr2o_consent'), false); // 'gco'
+            }
+
+            if (! $joinStore->hasTable('gems__respondents')) {
+                $model->addTable('gems__respondents', array(
+                    'gems__respondents.grs_id_user' => 'gems__tokens.gto_id_respondent',
+                ), false); // 'grs'
+            }
         }
 
-        if (!$model->checkJoinExists('gems__respondent2track.gr2t_id_respondent_track', 'gems__tokens.gto_id_respondent_track')) {
-            $model->addTable('gems__respondent2track', array('gems__respondent2track.gr2t_id_respondent_track' => 'gems__tokens.gto_id_respondent_track'), 'gr2t');
-        }
-        if (!$model->checkJoinExists('gems__tracks.gtr_id_track', 'gems__tokens.gto_id_track')) {
-            $model->addTable('gems__tracks', array('gems__tracks.gtr_id_track' => 'gems__tokens.gto_id_track'), 'gtr');
-        }
-        if (!$model->checkJoinExists('gems__consents.gco_description', 'gems__respondent2org.gr2o_consent')) {
-            $model->addTable('gems__consents', array('gems__consents.gco_description' => 'gems__respondent2org.gr2o_consent'), 'gco');
-        }
-        
-        if (!$model->checkJoinExists('gems__respondents.grs_id_user', 'gems__tokens.gto_id_respondent')) {
-            $model->addTable('gems__respondents', array(
-                'gems__respondents.grs_id_user' => 'gems__tokens.gto_id_respondent',
-                ), 'grs');
-        }
-
-        $model->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil\Model::TYPE_NUMERIC);
-        $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil\Model::TYPE_NUMERIC,
-            'multiOptions', $this->currentUser->getAllowedOrganizations()
-        );
+        $metaModel->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil\Model::TYPE_NUMERIC);
+        $metaModel->set('organizationid', [
+                'label' => $this->_('Organization'),
+                'type' => \MUtil\Model::TYPE_NUMERIC,
+                'multiOptions' => $this->currentUser->getAllowedOrganizations(),
+                ]);
 
         // Add relation fields
-        $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil\Model::TYPE_NUMERIC);
-        $model->set('forgroup', 'label', $this->_('Filler'), 'type', \MUtil\Model::TYPE_STRING);
+        $metaModel->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil\Model::TYPE_NUMERIC);
+        $metaModel->set('forgroup', 'label', $this->_('Filler'), 'type', \MUtil\Model::TYPE_STRING);
 
         // Add Consent
-        $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil\Model::TYPE_STRING);
-        $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil\Model::TYPE_NUMERIC);
-        $model->set('gto_round_order',          'label', $this->_('Round order'));
-        $model->set('gto_round_description',    'label', $this->_('Round description'));
-        $model->set('gtr_track_name',           'label', $this->_('Track name'));
-        $model->set('gr2t_track_info',          'label', $this->_('Track description'));
+        $metaModel->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil\Model::TYPE_STRING);
+        $metaModel->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil\Model::TYPE_NUMERIC);
+        $metaModel->set('gto_round_order',          'label', $this->_('Round order'));
+        $metaModel->set('gto_round_description',    'label', $this->_('Round description'));
+        $metaModel->set('gtr_track_name',           'label', $this->_('Track name'));
+        $metaModel->set('gr2t_track_info',          'label', $this->_('Track description'));
 
         // These are limesurvey fields, replace them with GemsTracker fields
-        //$model->set('submitdate',               'label', $this->_('Submit date'));
-        //$model->set('startdate',                'label', $this->_('Start date'));
-        //$model->set('datestamp',                'label', $this->_('Datestamp'));
-        $model->set('gto_completion_time',      'label', $this->_('Completion date'));
-        $model->set('gto_start_time',           'label', $this->_('Start time'));
+        //$metaModel->set('submitdate',               'label', $this->_('Submit date'));
+        //$metaModel->set('startdate',                'label', $this->_('Start date'));
+        //$metaModel->set('datestamp',                'label', $this->_('Datestamp'));
+        $metaModel->set('gto_completion_time',      'label', $this->_('Completion date'));
+        $metaModel->set('gto_start_time',           'label', $this->_('Start time'));
 
-        $model->set('gto_valid_from',           'label', $this->_('Valid from'));
-        $model->set('gto_valid_until',          'label', $this->_('Valid until'));
-        $model->set('startlanguage',            'label', $this->_('Start language'));
-        $model->set('lastpage',                 'label', $this->_('Last page'));
+        $metaModel->set('gto_valid_from',           'label', $this->_('Valid from'));
+        $metaModel->set('gto_valid_until',          'label', $this->_('Valid until'));
+        $metaModel->set('startlanguage',            'label', $this->_('Start language'));
+        $metaModel->set('lastpage',                 'label', $this->_('Last page'));
 
-        $model->set('gto_id_token',                       'label', $this->_('Token'));
+        $metaModel->set('gto_id_token',                       'label', $this->_('Token'));
     }
 
     /**
      * Extensible function for added project specific data extensions
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraDataToExportModel(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraDataToExportModel(FullDataInterface $model, array $data, array &$prefixes)
     {
         $this->_addExtraTokenReceptionCode($model, $data, $prefixes);
         $this->_addExtraTrackReceptionCode($model, $data, $prefixes);
@@ -149,41 +159,43 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
 
     /**
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraGenderAge(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraGenderAge(FullDataInterface $model, array $data, array &$prefixes)
     {
-        if ($this->currentUser->hasPrivilege('pr.export.gender-age')) {
+        if ($this->currentUser->hasPrivilege('pr.export.gender-age') && ($model instanceof GemsJoinModel)) {
+            $metaModel = $model->getMetaModel();
+
             if (isset($data['export_resp_gender']) && $data['export_resp_gender']) {
-                $model->set('grs_gender', 'label', $this->getRespondentModel()->getMetaModel()->get('grs_gender', 'label'),
+                $metaModel->set('grs_gender', 'label', $this->getRespondentModel()->getMetaModel()->get('grs_gender', 'label'),
                         'type', \MUtil\Model::TYPE_STRING
                         );
 
                 $prefixes['P'][] = 'grs_gender';
             }
             if (isset($data['export_birth_year']) && $data['export_birth_year']) {
-                if (! $model->has('grs_birthyear')) {
+                if (! $metaModel->has('grs_birthyear')) {
                     $model->addColumn('YEAR(grs_birthday)', 'grs_birthyear');
                 }
-                $model->set('grs_birthyear', 'label', $this->_('Birth year'), 'type', \MUtil\Model::TYPE_NUMERIC);
+                $metaModel->set('grs_birthyear', 'label', $this->_('Birth year'), 'type', \MUtil\Model::TYPE_NUMERIC);
 
                 $prefixes['P'][] = 'grs_birthyear';
             }
             if (isset($data['export_birth_month']) && $data['export_birth_month']) {
-                if (! $model->has('grs_birthmonth')) {
+                if (! $metaModel->has('grs_birthmonth')) {
                     $model->addColumn('MONTH(grs_birthday)', 'grs_birthmonth');
                 }
-                $model->set('grs_birthmonth', 'label', $this->_('Birth month'), 'type', \MUtil\Model::TYPE_NUMERIC);
+                $metaModel->set('grs_birthmonth', 'label', $this->_('Birth month'), 'type', \MUtil\Model::TYPE_NUMERIC);
 
                 $prefixes['P'][] = 'grs_birthmonth';
             }
             if (isset($data['export_birth_yearmonth']) && $data['export_birth_yearmonth']) {
-                if (! $model->has('grs_birthyearmonth')) {
+                if (! $metaModel->has('grs_birthyearmonth')) {
                     $model->addColumn("CONCAT(YEAR(grs_birthday), '/', LPAD(MONTH(grs_birthday), 2, '0'))", 'grs_birthyearmonth');
                 }
-                $model->set('grs_birthyearmonth', 'label', $this->_('Birth year/month'), 'type', \MUtil\Model::TYPE_STRING);
+                $metaModel->set('grs_birthyearmonth', 'label', $this->_('Birth year/month'), 'type', \MUtil\Model::TYPE_STRING);
 
                 $prefixes['P'][] = 'grs_birthyearmonth';
             }
@@ -192,15 +204,17 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
 
     /**
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraRespondentNumber(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraRespondentNumber(FullDataInterface $model, array $data, array &$prefixes)
     {
+        $metaModel = $model->getMetaModel();
+
         if ($this->currentUser->hasPrivilege('pr.export.add-resp-nr')) {
             if (isset($data['export_resp_nr']) && $data['export_resp_nr']) {
-                $model->set('gr2o_patient_nr', 'label', $this->getRespondentModel()->getMetaModel()->get('gr2o_patient_nr', 'label'),
+                $metaModel->set('gr2o_patient_nr', 'label', $this->getRespondentModel()->getMetaModel()->get('gr2o_patient_nr', 'label'),
                         'type', \MUtil\Model::TYPE_STRING
                         );
 
@@ -211,50 +225,54 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
 
     /**
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraTokenReceptionCode(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraTokenReceptionCode(FullDataInterface $model, array $data, array &$prefixes)
     {
+        $metaModel = $model->getMetaModel();
+
         if (isset($data['export_token_reception_code']) && $data['export_token_reception_code']) {
-            $model->set('gto_reception_code', 'label', $this->_('Token reception code'));
+            $metaModel->set('gto_reception_code', 'label', $this->_('Token reception code'));
             $prefixes['D'][] = 'gto_reception_code';
         }
     }
 
     /**
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraTrackFields(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraTrackFields(FullDataInterface $model, array $data, array &$prefixes)
     {
         if (isset($data['gto_id_track']) && $data['gto_id_track'] && isset($data['add_track_fields']) && $data['add_track_fields'] == 1) {
             $engine = $this->loader->getTracker()->getTrackEngine($data['gto_id_track']);
             $fieldNames = $engine->getFieldNames();
             if (!empty($fieldNames)) {
-                $engine->addFieldsToModel($model, false, 'resptrackid');
+                $engine->addFieldsToModel($model->getMetaModel(), false, 'resptrackid');
                 $prefixes['TF'] = array_keys($engine->getFieldNames());
             }
         }
     }
 
     /**
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraTrackFieldsByCode(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraTrackFieldsByCode(FullDataInterface $model, array $data, array &$prefixes)
     {
+        $metaModel = $model->getMetaModel();
+        
         if (isset($data['export_trackfield_codes'])) {
             $includeCodes = array_map('trim', explode(',', $data['export_trackfield_codes']));
             $codes = [];
             
             foreach ($includeCodes as $name) {
                 if (!empty($name)) {
-                    $model->set($name, 'label', $name);
+                    $metaModel->set($name, 'label', $name);
                     $prefixes['TF'][] = $name;
                     $codes[] = $name;
                 }                    
@@ -268,7 +286,7 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
                         $codes,
                         'resptrackid'
                     );
-                    $model->addTransformer($transformer);
+                    $metaModel->addTransformer($transformer);
                 }
 
             }
@@ -277,14 +295,15 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
 
     /**
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraTrackReceptionCode(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraTrackReceptionCode(FullDataInterface $model, array $data, array &$prefixes)
     {
         if (isset($data['export_track_reception_code']) && $data['export_track_reception_code']) {
-            $model->set('gr2t_reception_code', 'label', $this->_('Track reception code'));
+            $metaModel = $model->getMetaModel();
+            $metaModel->set('gr2t_reception_code', 'label', $this->_('Track reception code'));
             $prefixes['TF'][] = 'gr2t_reception_code';
         }
     }
@@ -292,24 +311,26 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
     /**
      * Add manual order of fields
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addManualFields(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addManualFields(FullDataInterface $model, array $data, array &$prefixes)
     {
+        $metaModel = $model->getMetaModel();
+        
         if (isset($data['manualFields'])) {
             $manualFields = $data['manualFields'];
             if (!is_array($data['manualFields'])) {
                 $manualFields = explode(',', $manualFields);
             }
 
-            $labels = $model->getCol('label');
+            $labels = $metaModel->getCol('label');
             // Reset labels and order
-            foreach($model->getItemNames() as $itemName) {
-                $model->remove($itemName, 'label');
+            foreach($metaModel->getItemNames() as $itemName) {
+                $metaModel->remove($itemName, 'label');
             }
-            $model->resetOrder();
+            $metaModel->resetOrder();
 
             $addedAnswers = false;
             foreach($manualFields as $field) {
@@ -317,7 +338,7 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
                 if ($field == '{answers}') {
                     foreach($prefixes['A'] as $field) {
                         if ($label = $labels[$field]) {
-                            $model->set($field, 'label', $label);
+                            $metaModel->set($field, 'label', $label);
                         }
                     }
                     $addedAnswers = true;
@@ -327,12 +348,12 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
                 if (isset($labels[$field])) {
                     $label = $labels[$field];
                 }
-                $model->set($field, 'label', $label);
+                $metaModel->set($field, 'label', $label);
             }
             if (!$addedAnswers) {
                 foreach ($prefixes['A'] as $field) {
                     if ($label = $labels[$field]) {
-                        $model->set($field, 'label', $label);
+                        $metaModel->set($field, 'label', $label);
                     }
                 }
             }
@@ -342,23 +363,25 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
     /**
      * Add nested model fields to the export model
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addNestedFieldsToExportModel(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addNestedFieldsToExportModel(FullDataInterface $model, array $data, array &$prefixes)
     {
+        $metaModel = $model->getMetaModel();
+
         // Set labels in the main model for the submodel fields
-        if ($model->getMeta('nested', false)) {
-            $nestedNames = $model->getMeta('nestedNames');
+        if ($metaModel->getMeta('nested', false)) {
+            $nestedNames = $metaModel->getMeta('nestedNames');
             foreach($nestedNames as $nestedName) {
-                $nestedModel = $model->get($nestedName, 'model');
+                $nestedModel = $metaModel->get($nestedName, 'model');
                 $nestedLabels = $nestedModel->getcolNames('label');
                 foreach($nestedLabels as $colName) {
                     $label = $nestedModel->get($colName, 'label');
-                    $model->set($colName, 'label', $label);
+                    $metaModel->set($colName, 'label', $label);
                 }
-                $model->remove($nestedName, 'label');
+                $metaModel->remove($nestedName, 'label');
             }
         }
     }
@@ -366,43 +389,45 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
     /**
      * Add all survey answers to the export model
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param \Gems\Tracker\Survey $survey
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addSurveyAnswersToExportModel(\MUtil\Model\ModelAbstract $model, \Gems\Tracker\Survey $survey, array $data, array &$prefixes)
+    protected function _addSurveyAnswersToExportModel(FullDataInterface $model, \Gems\Tracker\Survey $survey, array $data, array &$prefixes)
     {
+        $metaModel = $model->getMetaModel();
+
         $prefixes['A'] = [];
         $language = $this->locale->getLanguage();
         $questions = $survey->getQuestionList($language);
         $questionInformation = $survey->getQuestionInformation($language);
         foreach($questions as $questionName => $label) {
-            if ($parent = $model->get($questionName, 'parent_question')) {
-                if ($model->get($parent, 'type') === \MUtil\Model::TYPE_NOVALUE) {
+            if ($parent = $metaModel->get($questionName, 'parent_question')) {
+                if ($metaModel->get($parent, 'type') === \MUtil\Model::TYPE_NOVALUE) {
                     if (isset($data['subquestions']) && $data['subquestions'] == 'prefix_child') {
                         $cleanLabel = strip_tags($label);
-                        $model->set($questionName, 'label', $cleanLabel);
+                        $metaModel->set($questionName, 'label', $cleanLabel);
                     }
                     if (isset($data['subquestions']) && $data['subquestions'] == 'show_parent') {
                         if (!in_array($parent, $prefixes['A'])) {
                             $prefixes['A'][] = $parent;
                             if (isset($questionInformation[$parent], $questionInformation[$parent]['question'])) {
                                 $cleanLabel = strip_tags($questionInformation[$parent]['question']);
-                                $model->set($parent, 'label', $cleanLabel);
+                                $metaModel->set($parent, 'label', $cleanLabel);
                             }
                         }
                     } else {
-                        $model->remove($parent, 'label');
+                        $metaModel->remove($parent, 'label');
                     }
                 }
             }
 
-            if ($question = $model->get($questionName, 'survey_question') && $model->get($questionName, 'label') == null) {
-                $model->set($questionName, 'label', $questionName);
+            if ($question = $metaModel->get($questionName, 'survey_question') && $metaModel->get($questionName, 'label') == null) {
+                $metaModel->set($questionName, 'label', $questionName);
                 if (isset($questionInformation[$questionName], $questionInformation[$questionName]['question'])) {
                     $cleanLabel = strip_tags($questionInformation[$questionName]['question']);
-                    $model->set($questionName, 'label', $cleanLabel);
+                    $metaModel->set($questionName, 'label', $cleanLabel);
                 }
             }
             $prefixes['A'][] = $questionName;
@@ -412,21 +437,23 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
     /**
      * Add the survey source attributes to the export model that have not yet been set.
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FullDataInterface $model
      * @param \Gems\Tracker\Survey $survey
      * @param array $data
      * @param array $prefixes
      * @throws \Gems\Exception
      */
-    protected function _addSurveySourceAttributesToExportModel(\MUtil\Model\ModelAbstract $model, \Gems\Tracker\Survey $survey, array $data, array &$prefixes)
+    protected function _addSurveySourceAttributesToExportModel(FullDataInterface $model, \Gems\Tracker\Survey $survey, array $data, array &$prefixes)
     {
+        $metaModel = $model->getMetaModel();
+
         $source = $survey->getSource();
         $attributes = $source->getAttributes();
-        $preExistingFields = $model->getColNames('label');
+        $preExistingFields = $metaModel->getColNames('label');
         $attributes = array_diff($attributes, $preExistingFields);
 
         foreach($attributes as $attribute) {
-            $model->set($attribute, 'label', $attribute);
+            $metaModel->set($attribute, 'label', $attribute);
         }
     }
 
@@ -528,7 +555,7 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
      * Get the model to export
      * @param  array  $filter Filter for the model
      * @param  array  $data   Data from the form options
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
 	public function getModel($filter = array(), $data = array())
 	{
@@ -540,12 +567,13 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
 
             $survey   = $this->loader->getTracker()->getSurvey($surveyId);
             $model = $survey->getAnswerModel($language);
+            $metaModel = $model->getMetaModel();
 
             // Reset labels and order
-            foreach($model->getItemNames() as $itemName) {
-                $model->remove($itemName, 'label');
+            foreach($metaModel->getItemNames() as $itemName) {
+                $metaModel->remove($itemName, 'label');
             }
-            $model->resetOrder();
+            $metaModel->resetOrder();
 
             $prefixes = [];
 
@@ -553,18 +581,16 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
             $this->_addNestedFieldsToExportModel($model, $data, $prefixes);
             $this->_addSurveySourceAttributesToExportModel($model, $survey, $data, $prefixes);
             $this->_addSurveyAnswersToExportModel($model, $survey, $data, $prefixes);
-            
 
-            $prefixes['D'] = array_diff($model->getColNames('label'), $prefixes['A'], $model->getItemsFor('table', 'gems__respondent2org'));
+            $prefixes['D'] = array_diff($metaModel->getColNames('label'), $prefixes['A'], $metaModel->getItemsFor('table', 'gems__respondent2org'));
 
             $this->_addExtraDataToExportModel($model, $data, $prefixes);
             
             if (isset($data['column_identifiers']) && $data['column_identifiers'] == 1) {
-
                 foreach ($prefixes as $prefix => $prefixCategory) {
                     foreach($prefixCategory as $columnName) {
-                        if ($label = $model->get($columnName, 'label')) {
-                            $model->set($columnName, 'label', '(' . $prefix . ') ' . $label);
+                        if ($label = $metaModel->get($columnName, 'label')) {
+                            $metaModel->set($columnName, 'label', '(' . $prefix . ') ' . $label);
                         }
                     }
                 }
@@ -576,9 +602,9 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
             $this->model = $model;
 
             // Exclude external fields from sorting
-            foreach($this->model->getItemsUsed() as $item) {
-                if (!$this->model->get($item, 'table', 'column_expression')) {
-                    $this->model->set($item, 'noSort', true);
+            foreach($metaModel->getItemsUsed() as $item) {
+                if (!$metaModel->get($item, 'table', 'column_expression')) {
+                    $metaModel->set($item, 'noSort', true);
                 }
             }
         }

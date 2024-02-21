@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta charset="utf-8">
-    <title>GemsTracker 2</title>
+    <title>{{ _config.application_title ?? 'GemsTracker 2' }}{{ title_breadcrumbs ?? '' }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="{{ path('home') }}" />
     {{ include('@gems/vite.html.twig') }}
@@ -22,15 +22,12 @@
 >
 <div id="container" class="container-fluid">
     <header>
-        <div class="logo"></div>
+        <div class="logo {{ current_organization_code ?? '' }}"></div>
         <div class="tools">
-
             {{ include('@layout/organization-switcher.html.twig') }}
             {{ include('@layout/group-switcher.html.twig') }}
             {{ include('@layout/auth-info.html.twig') }}
             {% if locale is defined %}{{ include('@layout/languages.html.twig') }}{% endif %}
-
-
         </div>
     </header>
 
@@ -53,5 +50,11 @@
     </footer>
 </div>
 {{ include('@layout/auth-idle-checker.html.twig') }}
+<div id="menu-bar">
+    <button id="menu-toggle">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+</div>
+<div id="backdrop"></div>
 </body>
 </html>

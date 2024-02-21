@@ -16,6 +16,7 @@ use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model;
+use Gems\Repository\TemplateRepository;
 use Gems\Task\TaskRunnerBatch;
 use Gems\User\UserLoader;
 use Laminas\Db\Sql\Select;
@@ -84,6 +85,7 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
         protected BatchRunnerLoader $batchRunnerLoader,
         protected ProjectOverloader $overLoader,
         protected ResultFetcher $resultFetcher,
+        protected TemplateRepository $templateRepository,
     )
     {
         parent::__construct($responder, $translate, $cache);
@@ -194,7 +196,7 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $styles = [];
+        $styles = $this->templateRepository->getNamespaceTemplateOptions('mail');
 
         $model = $this->modelLoader->getOrganizationModel($styles);
 

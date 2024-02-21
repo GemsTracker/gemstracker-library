@@ -28,6 +28,7 @@ use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
 use Zalt\Message\MessageStatus;
 use Zalt\Message\StatusMessengerInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 use Zalt\Validator\Model\ModelUniqueValidator;
 
@@ -134,11 +135,11 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 }
             }
             $model = new NestedArrayModel('gems__roles', $roles);
-            $model->setKeys([\MUtil\Model::REQUEST_ID => 'grl_name']);
+            $model->setKeys([MetaModelInterface::REQUEST_ID => 'grl_name']);
         } else {
             $model = new \MUtil\Model\TableModel('gems__roles');
 
-            $id = $this->request->getAttribute(\MUtil\Model::REQUEST_ID);
+            $id = $this->request->getAttribute(MetaModelInterface::REQUEST_ID);
             if ($id !== null && !ctype_digit((string)$id)) {
                 throw new \Exception();
             }

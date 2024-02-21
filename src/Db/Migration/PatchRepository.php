@@ -13,6 +13,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\String\Str;
 
 class PatchRepository extends MigrationRepositoryAbstract
 {
@@ -46,7 +47,10 @@ class PatchRepository extends MigrationRepositoryAbstract
             $order = $patchClass->getOrder() ?? $this->defaultOrder;
             $reflectionClass = new \ReflectionClass($patchClassName);
 
+            $id = $this->getIdFromName($patchClassName);
+
             $patch = [
+                'id' => $id,
                 'name' => $patchClassName,
                 'module' => $patchInfo['module'] ?? 'gems',
                 'type' => 'patch',
@@ -59,7 +63,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                 'db' => $patchInfo['db'],
             ];
 
-            $patches[$patchClassName] = $patch;
+            $patches[$id] = $patch;
         }
         return $patches;
     }
@@ -95,8 +99,10 @@ class PatchRepository extends MigrationRepositoryAbstract
                 }
 
                 $sql = WordsParser::splitStatements($fileContent, false);
+                $id = $this->getIdFromName($name);
 
                 $patch = [
+                    'id' => $id,
                     'name' => $name,
                     'module' => $patchesDirectory['module'] ?? 'gems',
                     'type' => 'patch',
@@ -110,7 +116,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                     'db' => $patchesDirectory['db'],
                 ];
 
-                $patches[$name] = $patch;
+                $patches[$id] = $patch;
             }
         }
 

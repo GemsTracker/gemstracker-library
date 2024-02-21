@@ -120,12 +120,23 @@ class RelationField extends FieldAbstract
         $select = $this->getSelect();
         $select->where([
             'grr_id_respondent' => $context['gr2t_id_user'],
-        ])
-            ->order(['grr_type']);
+        ])->order([
+            'grr_active DESC',
+            'grr_type',
+        ]);
+        $relations = $this->resultFetcher->fetchAllAssociative($select);
+        $dropdownValues = [];
+        foreach ($relations as $relation) {
+            if ($relation['grr_active']) {
+                $dropdownValues[$relation['grr_id']] = $relation['name'];
+            } else {
+                $dropdownValues[$relation['grr_id']] = sprintf('%s (%s)', $relation['name'], $this->translator->_('Inactive'));
+            }
+        }
 
         $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
-        $output['multiOptions'] = $empty + $this->resultFetcher->fetchPairs($select);
+        $output['multiOptions'] = $empty + $dropdownValues;
 
         return $output;
     }
@@ -135,13 +146,14 @@ class RelationField extends FieldAbstract
         $select = $this->resultFetcher->getSelect('gems__respondent_relations');
         $select->columns([
            'grr_id',
+           'grr_active',
            'name' => new Expression("
                 CASE
                     WHEN gsf_id_user IS NULL THEN CONCAT_WS(' ', grr_type, grr_first_name, grr_last_name)
                     ELSE CONCAT_WS(' ', grr_type, gsf_first_name, gsf_surname_prefix, gsf_last_name)
                 END")
         ])
-            ->join('gems__staff', 'gsf_id_user = grr_id_staff');
+            ->join('gems__staff', 'gsf_id_user = grr_id_staff', [], Select::JOIN_LEFT);
 
         return $select;
     }

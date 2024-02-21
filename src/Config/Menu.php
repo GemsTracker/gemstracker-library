@@ -128,16 +128,9 @@ class Menu
                         ],
                         [
                             'name' => 'respondent.delete',
-                            'type' => 'alias',
-                            'alias' => 'respondent.show',
+                            'label' => $this->translator->trans('Delete'),
+                            'type' => 'route-link-item',
                         ],
-                        [
-                            'name' => 'respondent.undelete',
-                            'type' => 'alias',
-                            'alias' => 'respondent.show',
-                        ],
-
-
                         [
                             'name' => 'respondent.episodes-of-care.index',
                             'label' => $this->translator->trans('Episodes'),
@@ -198,6 +191,11 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                     ],
+                                ],
+                                [
+                                    'name' => 'respondent.appointments.check-all',
+                                    'label' => $this->translator->trans('Check all'),
+                                    'type' => 'route-link-item',
                                 ],
                             ],
                         ],
@@ -445,7 +443,6 @@ class Menu
                         ],
                     ],
                 ],
-                /* Hidden because the page takes too long to load and needs optimization.
                 [
                     'name' => 'overview.overview-plan.index',
                     'label' => $this->translator->trans('By period'),
@@ -457,8 +454,7 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                     ],
-                ],*/
-                /* Hidden because the page takes too long to load and needs optimization.
+                ],
                 [
                     'name' => 'overview.token-plan.index',
                     'label' => $this->translator->trans('By token'),
@@ -470,8 +466,7 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                     ],
-                ],*/
-                /* Hidden because the page takes too long to load and needs optimization.
+                ],
                 [
                     'name' => 'overview.respondent-plan.index',
                     'label' => $this->translator->trans('By patient'),
@@ -483,7 +478,7 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                     ],
-                ],*/
+                ],
                 [
                     'name' => 'overview.consent-plan.index',
                     'label' => $this->translator->trans('Patient status'),

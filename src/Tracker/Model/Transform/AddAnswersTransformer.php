@@ -68,10 +68,10 @@ class AddAnswersTransformer extends ModelTransformerAbstract
     {
         // get tokens
 
-        $tokens = \MUtil\Ra::column($this->tokenField, $data);
+        $tokens = array_column($data, $this->tokenField);
 
-        $answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
-        $resultRows = array();
+        $answerRows = $this->source->getRawTokenAnswerRows(['token' => $tokens], $this->survey->getSurveyId());
+        $resultRows = [];
 
         $emptyRow = array_fill_keys($model->getItemNames(), null);
 
@@ -85,10 +85,6 @@ class AddAnswersTransformer extends ModelTransformerAbstract
             }
         }
 
-        //\MUtil\EchoOut\EchoOut::track($tokens);
-
-        //\MUtil\EchoOut\EchoOut::track($resultRows);
-
         // No changes
         return $resultRows;
     }
@@ -97,7 +93,7 @@ class AddAnswersTransformer extends ModelTransformerAbstract
      * This transform function performs the actual save (if any) of the transformer data and is called after
      * the saving of the data in the source model.
      *
-     * @param \MUtil\Model\ModelAbstract $model The parent model
+     * @param MetaModelInterface $model The parent model
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */

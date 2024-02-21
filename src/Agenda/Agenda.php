@@ -254,13 +254,13 @@ class Agenda
     /**
      * Get all active respondents for this user
      *
-     * @param int $respondentId When null $patientNr is required
+     * @param int|null $respondentId When null $patientNr is required
      * @param int $organizationId
      * @param string $patientNr Optional for when $respondentId is null
      * @param string $where Optional extra where statement
      * @return array appointmentId => appointment description
      */
-    public function getActiveAppointments(int $respondentId, int $organizationId, string|null $patientNr = null, string|null $where = null): array
+    public function getActiveAppointments(int|null $respondentId, int $organizationId, string|null $patientNr = null, string|null $where = null): array
     {
         if ($where) {
             $where = "($where) AND ";
@@ -309,10 +309,10 @@ class Agenda
     /**
      * Get an appointment object
      *
-     * @param mixed $appointmentData Appointment id or array containing appointment data
+     * @param array|string|int $appointmentData Appointment id or array containing appointment data
      * @return \Gems\Agenda\Appointment
      */
-    public function getAppointment(array|int $appointmentData): Appointment
+    public function getAppointment(array|string|int $appointmentData): Appointment
     {
         if (! $appointmentData) {
             throw new Coding('Provide at least the apppointment id when requesting an appointment.');
@@ -326,7 +326,7 @@ class Agenda
              }
             $appointmentId = $appointmentData['gap_id_appointment'];
         } else {
-            $appointmentId = $appointmentData;
+            $appointmentId = (int)$appointmentData;
             $appointmentData = $this->getAppointmentData($appointmentId);
         }
 

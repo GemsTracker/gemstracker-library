@@ -118,7 +118,7 @@ class Menu extends MenuNode
         return array_reduce($children, function (array $carry, MenuItem $child) use ($prefix) {
             $route = $this->routeHelper->getUncheckedRoute($child->name);
 
-            $newPrefix = ($prefix ? $prefix . ' -> ' : '') . $child->getLabel();
+            $newPrefix = ($prefix ? $prefix . ' -> ' : '') . ($child->getLabel() ?: $route['name']);
 
             if (isset($route['options']['privilege'])) {
                 $carry[$route['options']['privilege']][] = $newPrefix;

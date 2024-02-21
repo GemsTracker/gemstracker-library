@@ -18,8 +18,10 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker;
+use Gems\Tracker\SurveyModel;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
+use Laminas\Db\Sql\Expression;
 use MUtil\Model;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\RequestInfo;
@@ -164,7 +166,8 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
         $td->appendAttrib('class', $selectedClass);
 
         $bridge->th($this->_('Question'));
-        if ($dataModel->has('grr_name') && $dataModel->has('gtf_field_name')) {
+        $metaModel = $dataModel->getMetaModel();
+        if ($metaModel->has('grr_name') && $metaModel->has('gtf_field_name')) {
             $td = $bridge->tdh(
                     Late::iif($bridge->grr_name, array($bridge->grr_name, $br)),
                     Late::iif($bridge->gtf_field_name, array($bridge->gtf_field_name, $br)),
@@ -183,7 +186,7 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
         $td->appendAttrib('class', $bridge->row_class);
 
         // Apply filter on the answers displayed
-        $answerNames = $dataModel->getItemsOrdered();
+        $answerNames = $metaModel->getItemsOrdered();
 
         $eventName = 'gems.survey.answers.display-filter';
 
@@ -217,9 +220,9 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
         $visible = Html::create('i', ['class' => 'fa fa-eye', 'renderClosingTag' => true]);
         
         foreach($answerNames as $name) {
-            $label = $dataModel->get($name, 'label');
+            $label = $metaModel->get($name, 'label');
             if (null !== $label) {     // Was strlen($label), but this ruled out empty sub-questions
-                $group = $dataModel->get($name, 'groupName');
+                $group = $metaModel->get($name, 'groupName');
                 if ($oldGroup !== $group) {
                     if ($group) {
                         $bridge->thd(['class' => 'group groupLabel'])->raw($group);
@@ -227,20 +230,20 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
                     }
                     $oldGroup = $group;
                 }
-                $th = $bridge->thd(Html::raw($label), array('class' => $dataModel->get($name, 'thClass')));
+                $th = $bridge->thd(Html::raw($label), array('class' => $metaModel->get($name, 'thClass')));
                 $td = $bridge->td($bridge->$name);
                 $td->appendAttrib('class', 'answer');
                 $td->appendAttrib('class', $selectedClass);
                 $td->appendAttrib('class', $bridge->row_class);
 
                 $col2 = $visible;
-                if ($dataModel->get($name, 'alwaysHidden')) {
+                if ($metaModel->get($name, 'alwaysHidden')) {
                     $td->appendAttrib('class', 'hideAlwaysQuestion');
                     $td->title = $this->_('Hidden question');
                     $th->title = $this->_('Hidden question');
                     $col2 = $hidden;
                 }
-                if ($dataModel->get($name, 'hasConditon')) {
+                if ($metaModel->get($name, 'hasConditon')) {
                     $td->appendAttrib('class', 'conditionQuestion');
                     $td->title = $this->_('Conditional question');
                     $th->title = $this->_('Conditional question');
@@ -314,19 +317,27 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {
+        /**
+         * @var SurveyModel $model
+         */
         $model = $this->token->getSurveyAnswerModel($this->locale->getLanguage());
 
         $rawExpression = $this->tokenRepository->getStatusExpression()->getExpression();
 
-        $model->addColumn(new \Zend_Db_Expr($rawExpression), 'token_status');
-        $model->addColumn(new \Zend_Db_Expr("' '"), 'blank');
+        $model->addColumn(new Expression($rawExpression), 'token_status');
+        $model->addColumn(new Expression("' '"), 'blank');
 
-        $model->set('gto_valid_from', 'dateFormat', $this->dateFormat);
-        $model->set('gto_completion_time', 'dateFormat', $this->dateFormat);
+        $metaModel = $model->getMetaModel();
+        $metaModel->set('gto_valid_from', [
+            'dateFormat' => $this->dateFormat
+        ]);
+        $metaModel->set('gto_completion_time', [
+            'dateFormat' => $this->dateFormat
+        ]);
 
         return $model;
     }

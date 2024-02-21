@@ -11,6 +11,19 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Db\ResultFetcher;
+use Gems\Html;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Snippets\TabSnippetAbstract;
+use Gems\Tracker\Respondent;
+use Gems\Util;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslateableTrait;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -20,20 +33,16 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class RoundsTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
+class RoundsTabsSnippet extends TabSnippetAbstract
 {
+    use TranslateableTrait;
+
     /**
      * The tab values
      *
      * @var array key => label
      */
-    protected $_tabs = array();
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    protected $_tabs = [];
 
     /**
      * Default href parameter values
@@ -42,12 +51,12 @@ class RoundsTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
      *
      * @var array
      */
-    protected $href = array('page' => null);
+    protected array $href = ['page' => null];
 
     /**
      * The RESPONDENT model, not the token model
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var DataReaderInterface
      */
     protected $model;
 
@@ -56,67 +65,64 @@ class RoundsTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
      *
      * @var array
      */
-    protected $neverDefaults = array();
+    protected $neverDefaults = [];
 
     /**
      * Required, can be derived from request or respondent
      *
-     * @var array
+     * @var int|null
      */
-    protected $organizationId;
+    protected ?int $organizationId = null;
 
     /**
      * Required
      *
-     * @var \Gems\Tracker\Respondent
+     * @var null|\Gems\Tracker\Respondent
      */
-    protected $respondent;
+    protected ?Respondent $respondent = null;
 
 
     /**
      * Required, can be derived from request or respondent
      *
-     * @var array
+     * @var int
      */
-    protected $respondentId;
+    protected ?int $respondentId = null;
 
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuSnippetHelper,
+        TranslatorInterface $translate,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly Util $util,
+    )
     {
+        parent::__construct($snippetOptions, $requestInfo, $menuSnippetHelper);
+
+        $this->translate = $translate;
 
         if (! $this->organizationId) {
             if ($this->respondent) {
                 $this->organizationId = $this->respondent->getOrganizationId();
             }
             if (! $this->organizationId) {
-                $this->organizationId = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
+                $this->organizationId = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2);
             }
         }
 
-        if ($this->organizationId && (! $this->respondentId)) {
+        if (isset($this->organizationId) && (! isset($this->respondentId))) {
             if ($this->respondent) {
                 $this->respondentId = $this->respondent->getId();
             }
             if (! $this->respondentId) {
                 $this->respondentId = $this->util->getDbLookup()->getRespondentId(
-                        $this->request->getParam(\MUtil\Model::REQUEST_ID1),
-                        $this->organizationId
-                        );
+                    $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID1),
+                    $this->organizationId
+                );
             }
         }
 
-        return $this->organizationId && $this->respondentId && $this->db && $this->model;
     }
 
     /**
@@ -136,21 +142,13 @@ class RoundsTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
      *
      * @return array tabId => label
      */
-    protected function getTabs()
+    protected function getTabs(): array
     {
         return $this->_tabs;
     }
 
     /**
-     * The place to check if the data set in the snippet is valid
-     * to generate the snippet.
-     *
-     * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
-     * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil\Registry\TargetInterface}.
-     *
-     * @return boolean
+     * @inheritdoc
      */
     public function hasHtmlOutput(): bool
     {
@@ -183,11 +181,10 @@ class RoundsTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
                         gsu_active = 1 AND
                         rcto.grc_success = 1 AND
                         rctr.grc_success = 1
-                    GROUP BY COALESCE(gto_round_description, '')
+                    GROUP BY COALESCE(gto_round_description, ''), gto_round_description
                     ORDER BY MIN(COALESCE(gto_round_order, 100000)), gto_round_description";
 
-        // \MUtil\EchoOut\EchoOut::track($this->respondentId);
-        $tabLabels = $this->db->fetchAll($sql, $this->respondentId);
+        $tabLabels = $this->resultFetcher->fetchAll($sql, [$this->respondentId]);
 
         if ($tabLabels) {
             $default = null;
@@ -204,7 +201,7 @@ class RoundsTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
                     $label = $label;
                 }
                 if (! $row['label']) {
-                    $label = \MUtil\Html::create('em', $label);
+                    $label = Html::create('em', $label);
                 }
 
                 $filters[$name] = $row['label'];
@@ -229,18 +226,18 @@ class RoundsTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
             }
 
             // Set the model
-            $reqFilter = $this->request->getParam($this->getParameterKey());
+            $reqFilter = $this->requestInfo->getParam($this->getParameterKey());
             if (! isset($filters[$reqFilter])) {
                 $reqFilter = $default;
             }
 
             if ('' === $filters[$reqFilter]) {
-                $this->model->setMeta('tab_filter', array("(gto_round_description IS NULL OR gto_round_description = '')"));
+                $this->model->getMetaModel()->setMeta('tab_filter', array("(gto_round_description IS NULL OR gto_round_description = '')"));
             } else {
-                $this->model->setMeta('tab_filter', array('gto_round_description' => $filters[$reqFilter]));
+                $this->model->getMetaModel()->setMeta('tab_filter', array('gto_round_description' => $filters[$reqFilter]));
             }
 
-            // \MUtil\EchoOut\EchoOut::track($tabs, $reqFilter, $default, $tabLabels);
+            // dump($tabs, $reqFilter, $default, $tabLabels);
 
             $this->defaultTab = $default;
             $this->_tabs      = $tabs;

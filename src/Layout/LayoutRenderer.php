@@ -23,6 +23,7 @@ class LayoutRenderer
         AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE,
         AuthenticationMiddleware::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE,
         CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE,
+        CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_CODE_ATTRIBUTE,
         CsrfMiddleware::GUARD_ATTRIBUTE,
     ];
 
@@ -107,6 +108,7 @@ class LayoutRenderer
         $params += $defaultParams;
 
         $params['_config'] = [
+            'application_title' => $this->config['app']['name'] ?? null,
             'max_idle_time' => $this->config['session']['max_idle_time'],
             'auth_poll_interval' => $this->config['session']['auth_poll_interval'],
         ];

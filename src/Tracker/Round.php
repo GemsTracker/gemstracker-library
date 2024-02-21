@@ -35,7 +35,7 @@ class Round
      *
      * @var \Gems\Tracker\Survey
      */
-    protected Survey|null $_survey = null;
+    protected Survey|null|false $_survey = false;
 
     public function __construct(
         protected readonly array $roundData,

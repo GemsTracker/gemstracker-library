@@ -1,5 +1,8 @@
 {% extends '@gems/full-screen-layout.html.twig' %}
 
 {% block content %}
-    {{ content|raw }}
+    <div id="main">
+        {% if statusMessenger is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
+        {{ content|raw }}
+    </div>
 {% endblock %}

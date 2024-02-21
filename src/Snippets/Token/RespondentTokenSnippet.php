@@ -13,6 +13,8 @@ namespace Gems\Snippets\Token;
 
 use Gems\Html;
 use Gems\Snippets\TokenModelSnippetAbstract;
+use Gems\Tracker\Respondent;
+use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -59,23 +61,16 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
     /**
      * The RESPONDENT model, not the token model
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var DataReaderInterface
      */
     protected $model;
 
     /**
      * Required
      *
-     * @var \Gems\Tracker\Respondent
+     * @var null|\Gems\Tracker\Respondent
      */
-    protected $respondent;
-
-    /**
-     * Require
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
+    protected ?Respondent $respondent = null;
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -103,17 +98,17 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
         $metaModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
         $metaModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
 
-        $roundIcon[] = \MUtil\Lazy::iif($bridge->gto_icon_file, Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
-                \MUtil\Lazy::iif($bridge->gro_icon_file, Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
+        $roundIcon[] = Late::iif($bridge->gto_icon_file, Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
+                Late::iif($bridge->gro_icon_file, Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
 
         // $bridge->td($this->util->getTokenData()->getTokenStatusLinkForBridge($bridge, false));
 
-        if (false && $menuItem = $this->findMenuItem('track', 'show-track')) {
-            $href = $menuItem->toHRefAttribute($this->request, $bridge);
-            $track1 = $HTML->if($bridge->gtr_track_name, $HTML->a($href, $bridge->gtr_track_name));
-        } else {
+//        if (false && $menuItem = $this->findMenuItem('track', 'show-track')) {
+//            $href = $menuItem->toHRefAttribute($this->request, $bridge);
+//            $track1 = $HTML->if($bridge->gtr_track_name, $HTML->a($href, $bridge->gtr_track_name));
+//        } else {
             $track1 = $bridge->gtr_track_name;
-        }
+//        }
         $track = array($track1, $bridge->createSortLink('gtr_track_name'));
 
         $bridge->addMultiSort($track, 'gr2t_track_info');
@@ -130,22 +125,12 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
             $bridge->addSortable('gto_result', $this->_('Score'), 'date');
 //        }
 
-        $bridge->useRowHref = false;
-
         $this->addActionLinks($bridge);
         $this->addTokenLinks($bridge);
     }
 
     /**
-     * The place to check if the data set in the snippet is valid
-     * to generate the snippet.
-     *
-     * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
-     * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil\Registry\TargetInterface}.
-     *
-     * @return boolean
+     * @inheritdoc
      */
     public function hasHtmlOutput(): bool
     {
@@ -172,8 +157,9 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
         $filter[] = 'gro_active = 1 OR gro_active IS NULL OR (grc_success=1 AND gto_completion_time IS NOT NULL)';
         $filter['gsu_active']  = 1;
 
-        // NOTE! $this->model does not need to be the token model, but $model is a token model
-        $tabFilter = $metaModel->getMeta('tab_filter');
+        // NOTE! $this->model does not need to be the token model, but $metaModel is of a token model
+        // so we need to access the right metamodel
+        $tabFilter = $this->model->getMetaModel()->getMeta('tab_filter');
         if ($tabFilter) {
             $this->extraFilter = $tabFilter;
         }

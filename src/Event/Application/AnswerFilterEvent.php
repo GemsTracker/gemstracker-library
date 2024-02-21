@@ -5,54 +5,41 @@ namespace Gems\Event\Application;
 
 
 use Symfony\Contracts\EventDispatcher\Event;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
 class AnswerFilterEvent extends Event
 {
     /**
-     * @var \MUtil\Model\Bridge\TableBridge
-     */
-    protected $bridge;
-
-    /**
-     * @var array Current names
-     */
-    protected $currentNames;
-
-    /**
-     * @var \MUtil\Model\ModelAbstract
-     */
-    protected $model;
-
-    /**
      * AnswerFilterEvent constructor.
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $model
      * @param array $currentNames
      */
-    public function __construct(TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames)
+    public function __construct(
+        protected readonly TableBridge $bridge,
+        protected readonly DataReaderInterface $model,
+        protected array $currentNames,
+    )
     {
-        $this->bridge = $bridge;
-        $this->model = $model;
-        $this->currentNames = $currentNames;
     }
 
-    public function getBridge()
+    public function getBridge(): TableBridge
     {
         return $this->bridge;
     }
 
-    public function getModel()
+    public function getModel(): DataReaderInterface
     {
         return $this->model;
     }
 
-    public function getCurrentNames()
+    public function getCurrentNames(): array
     {
         return $this->currentNames;
     }
 
-    public function setCurrentNames($currentNames)
+    public function setCurrentNames(array $currentNames): void
     {
         $this->currentNames = $currentNames;
     }

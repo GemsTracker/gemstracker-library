@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gems\Handlers\Auth;
 
 use Gems\Audit\AuditLog;
+use Gems\AuthNew\Adapter\GemsTrackerAuthenticationResult;
 use Gems\AuthNew\Adapter\GenericRoutedAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
@@ -35,6 +36,8 @@ use Zalt\Message\StatusMessengerInterface;
 class LoginHandler implements RequestHandlerInterface
 {
     private FlashMessagesInterface $flash;
+
+    private string $loginTemplate = 'gems::login';
     private StatusMessengerInterface $statusMessenger;
     private array $organizations;
 
@@ -49,7 +52,11 @@ class LoginHandler implements RequestHandlerInterface
         private readonly UserLoader $userLoader,
         private readonly AuditLog $auditLog,
         private readonly PasswordChecker $passwordChecker,
+        readonly array $config,
     ) {
+        if (isset($config['auth']['loginTemplate'])) {
+            $this->loginTemplate = $config['auth']['loginTemplate'];
+        }
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -77,7 +84,7 @@ class LoginHandler implements RequestHandlerInterface
             'input' => $this->flash->getFlash('login_input'),
         ];
 
-        return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::login', $request, $data));
+        return new HtmlResponse($this->layoutRenderer->renderTemplate($this->loginTemplate, $request, $data));
     }
 
     private function handlePost(ServerRequestInterface $request): ResponseInterface
@@ -115,6 +122,7 @@ class LoginHandler implements RequestHandlerInterface
             return $this->redirectBack($request, [$this->blockMessage($blockMinutes)]);
         }
 
+        /** @var GemsTrackerAuthenticationResult $result */
         $result = $authenticationService->authenticate(new GenericRoutedAuthentication(
             $this->userLoader,
             $this->translator,
