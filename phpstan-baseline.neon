@@ -4086,66 +4086,6 @@ parameters:
 			path: src/Snippets/Agenda/AppointmentShowSnippet.php
 
 		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$date_only\\.$#"
-			count: 2
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gaa_name\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gap_admission_time\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gap_id_episode\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gap_subject\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gapr_name\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gas_name\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$glo_name\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gor_name\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2o_id_organization\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2o_patient_nr\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
 			count: 8
 			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
@@ -4179,21 +4119,6 @@ parameters:
 			message: "#^Property Gems\\\\Snippets\\\\Agenda\\\\AppointmentsTableSnippet\\:\\:\\$menuActionController \\(array\\) does not accept default value of type string\\.$#"
 			count: 1
 			path: src/Snippets/Agenda/AppointmentsTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$date_only\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/CalendarTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2o_id_organization\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/CalendarTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 2
-			path: src/Snippets/Agenda/CalendarTableSnippet.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:addColumn\\(\\)\\.$#"
@@ -4966,11 +4891,6 @@ parameters:
 			path: src/Snippets/Log/LogShowSnippet.php
 
 		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 1
-			path: src/Snippets/Mail/Log/MailLogBrowseSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:has\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Mail/Log/MailLogBrowseSnippet.php
@@ -5286,11 +5206,6 @@ parameters:
 			path: src/Snippets/ModelTableSnippetAbstract.php
 
 		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 1
-			path: src/Snippets/ModelTableSnippetAbstract.php
-
-		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$model$#"
 			count: 1
 			path: src/Snippets/ModelTableSnippetAbstract.php
@@ -5359,31 +5274,6 @@ parameters:
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:set\\(\\)\\.$#"
 			count: 2
 			path: src/Snippets/Organization/OrganizationEditSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gor_contact_email\\.$#"
-			count: 3
-			path: src/Snippets/Organization/OrganizationTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gor_contact_name\\.$#"
-			count: 2
-			path: src/Snippets/Organization/OrganizationTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gor_name\\.$#"
-			count: 2
-			path: src/Snippets/Organization/OrganizationTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gor_url\\.$#"
-			count: 2
-			path: src/Snippets/Organization/OrganizationTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 1
-			path: src/Snippets/Organization/OrganizationTableSnippet.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:has\\(\\)\\.$#"
@@ -5509,11 +5399,6 @@ parameters:
 			message: "#^If condition is always true\\.$#"
 			count: 2
 			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/Relation/TableSnippet.php
 
 		-
 			message: "#^PHPDoc tag @param for parameter \\$bridge with type MUtil\\\\Model\\\\Bridge\\\\TableBridge is incompatible with native type Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\.$#"
@@ -5664,11 +5549,6 @@ parameters:
 			message: "#^Variable \\$phonesep might not be defined\\.$#"
 			count: 1
 			path: src/Snippets/Respondent/RespondentTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 1
-			path: src/Snippets/Respondent/RespondentTableSnippetAbstract.php
 
 		-
 			message: "#^Method Gems\\\\Snippets\\\\Respondent\\\\RespondentTableSnippetAbstract\\:\\:createModel\\(\\) should return MUtil\\\\Model\\\\ModelAbstract but returns Gems\\\\Model\\\\Respondent\\\\RespondentModel\\.$#"
@@ -6181,26 +6061,6 @@ parameters:
 			path: src/Snippets/Token/EditTrackTokenSnippet.php
 
 		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2o_id_organization\\.$#"
-			count: 1
-			path: src/Snippets/Token/PlanRespondentSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2t_id_respondent_track\\.$#"
-			count: 1
-			path: src/Snippets/Token/PlanRespondentSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gto_comment\\.$#"
-			count: 2
-			path: src/Snippets/Token/PlanRespondentSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 2
-			path: src/Snippets/Token/PlanRespondentSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:addColumn\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Token/PlanRespondentSnippet.php
@@ -6223,21 +6083,6 @@ parameters:
 		-
 			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Token\\\\PlanTokenSnippet\\:\\:\\$tokenDataRepository\\.$#"
 			count: 1
-			path: src/Snippets/Token/PlanTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gto_comment\\.$#"
-			count: 2
-			path: src/Snippets/Token/PlanTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gtr_track_name\\.$#"
-			count: 1
-			path: src/Snippets/Token/PlanTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 2
 			path: src/Snippets/Token/PlanTokenSnippet.php
 
 		-
@@ -6266,16 +6111,6 @@ parameters:
 			path: src/Snippets/Token/PlanTokenSnippet.php
 
 		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gto_comment\\.$#"
-			count: 2
-			path: src/Snippets/Token/RespondentPlanTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 2
-			path: src/Snippets/Token/RespondentPlanTokenSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:addColumn\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Token/RespondentPlanTokenSnippet.php
@@ -6289,41 +6124,6 @@ parameters:
 			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:tr\\(\\)\\.$#"
 			count: 2
 			path: src/Snippets/Token/RespondentPlanTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2o_id_organization\\.$#"
-			count: 1
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2o_patient_nr\\.$#"
-			count: 1
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2t_id_respondent_track\\.$#"
-			count: 1
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gro_icon_file\\.$#"
-			count: 2
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gto_icon_file\\.$#"
-			count: 2
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gtr_track_name\\.$#"
-			count: 1
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$is_completed\\.$#"
-			count: 1
-			path: src/Snippets/Token/RespondentTokenSnippet.php
 
 		-
 			message: "#^Expression \"\\$bridge\\-\\>gr2o_id_organization\" on a separate line does not do anything\\.$#"
@@ -6551,11 +6351,6 @@ parameters:
 			path: src/Snippets/Tracker/AvailableTracksSnippet.php
 
 		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gtr_id_track\\.$#"
-			count: 2
-			path: src/Snippets/Tracker/AvailableTracksSnippet.php
-
-		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$menuList$#"
 			count: 1
 			path: src/Snippets/Tracker/Buttons/NewRoundButtonRow.php
@@ -6696,21 +6491,6 @@ parameters:
 			path: src/Snippets/Tracker/ShowTrackUsageSnippet.php
 
 		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$can_edit\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/ShowTrackUsageSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2o_patient_nr\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/ShowTrackUsageSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gr2t_id_respondent_track\\.$#"
-			count: 3
-			path: src/Snippets/Tracker/ShowTrackUsageSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:setOnEmpty\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/ShowTrackUsageSnippet.php
@@ -6734,26 +6514,6 @@ parameters:
 			message: "#^Expression \"\\$bridge\\-\\>gr2t_id_respondent_track\" on a separate line does not do anything\\.$#"
 			count: 2
 			path: src/Snippets/Tracker/ShowTrackUsageSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$answered\\.$#"
-			count: 2
-			path: src/Snippets/Tracker/Summary/SummaryTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$missed\\.$#"
-			count: 2
-			path: src/Snippets/Tracker/Summary/SummaryTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$open\\.$#"
-			count: 2
-			path: src/Snippets/Tracker/Summary/SummaryTableSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$total\\.$#"
-			count: 3
-			path: src/Snippets/Tracker/Summary/SummaryTableSnippet.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:addColumn\\(\\)\\.$#"
@@ -7589,56 +7349,6 @@ parameters:
 			message: "#^Property Gems\\\\Tracker\\\\Round\\:\\:\\$_description \\(string\\|null\\) does not accept int\\<min, \\-1\\>\\|int\\<1, max\\>\\.$#"
 			count: 1
 			path: src/Tracker/Round.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$blank\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$can_be_taken\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$grc_description\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$grr_name\\.$#"
-			count: 2
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gtf_field_name\\.$#"
-			count: 2
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gto_completion_time\\.$#"
-			count: 4
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gto_id_token\\.$#"
-			count: 2
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gto_round_description\\.$#"
-			count: 4
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gto_valid_from\\.$#"
-			count: 2
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$row_class\\.$#"
-			count: 3
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
 
 		-
 			message: "#^Call to an undefined method Psr\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:addListener\\(\\)\\.$#"
