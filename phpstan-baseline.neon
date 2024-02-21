@@ -1,26 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Access to an undefined property Gems\\\\Actions\\\\CronAction\\:\\:\\$_helper\\.$#"
-			count: 1
-			path: src/Actions/CronAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Actions\\\\CronAction\\:\\:getRequest\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/CronAction.php
-
-		-
-			message: "#^Call to method getCurrentParent\\(\\) on an unknown class Gems\\\\Menu\\.$#"
-			count: 1
-			path: src/Actions/CronAction.php
-
-		-
-			message: "#^Property Gems\\\\Actions\\\\CronAction\\:\\:\\$menu has unknown class Gems\\\\Menu as its type\\.$#"
-			count: 1
-			path: src/Actions/CronAction.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Actions\\\\DatabaseAction\\:\\:\\$_helper\\.$#"
 			count: 2
 			path: src/Actions/DatabaseAction.php
@@ -231,61 +211,6 @@ parameters:
 			path: src/Actions/DatabaseBackupAction.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Actions\\\\EmbedAction\\:\\:\\$_helper\\.$#"
-			count: 1
-			path: src/Actions/EmbedAction.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Actions\\\\EmbedAction\\:\\:\\$loader\\.$#"
-			count: 1
-			path: src/Actions/EmbedAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Actions\\\\EmbedAction\\:\\:getRequest\\(\\)\\.$#"
-			count: 2
-			path: src/Actions/EmbedAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\User\\\\Embed\\\\RedirectAbstract\\:\\:answerRegistryRequest\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/EmbedAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\User\\\\Embed\\\\RedirectInterface\\:\\:getRedirectRoute\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/EmbedAction.php
-
-		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: src/Actions/EmbedAction.php
-
-		-
-			message: "#^Method Gems\\\\Actions\\\\EmbedAction\\:\\:getUser\\(\\) should return Gems\\\\User\\\\User but returns null\\.$#"
-			count: 1
-			path: src/Actions/EmbedAction.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$organisations$#"
-			count: 1
-			path: src/Actions/EmbedAction.php
-
-		-
-			message: "#^Parameter \\#2 \\$message of method Psr\\\\Log\\\\LoggerInterface\\:\\:log\\(\\) expects string\\|Stringable, int given\\.$#"
-			count: 1
-			path: src/Actions/EmbedAction.php
-
-		-
-			message: "#^Parameter \\#2 \\$priority of method Gems\\\\Actions\\\\EmbedAction\\:\\:logActivity\\(\\) expects int, string given\\.$#"
-			count: 3
-			path: src/Actions/EmbedAction.php
-
-		-
-			message: "#^Property Gems\\\\Actions\\\\EmbedAction\\:\\:\\$menu has unknown class Gems\\\\Menu as its type\\.$#"
-			count: 1
-			path: src/Actions/EmbedAction.php
-
-		-
 			message: "#^Access to an undefined property Zend_Controller_Action_HelperBroker\\:\\:\\$viewRenderer\\.$#"
 			count: 1
 			path: src/Actions/ErrorAction.php
@@ -429,31 +354,6 @@ parameters:
 			message: "#^Access to an undefined property Gems\\\\Actions\\\\ImportedFilesAction\\:\\:\\$loader\\.$#"
 			count: 1
 			path: src/Actions/ImportedFilesAction.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Actions\\\\LanguageAction\\:\\:\\$view\\.$#"
-			count: 1
-			path: src/Actions/LanguageAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Actions\\\\LanguageAction\\:\\:getRequest\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/LanguageAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Actions\\\\LanguageAction\\:\\:getResponse\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/LanguageAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\User\\\\User\\:\\:switchLocale\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/LanguageAction.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Actions/LanguageAction.php
 
 		-
 			message: "#^Constant GEMS_ROOT_DIR not found\\.$#"
@@ -996,16 +896,6 @@ parameters:
 			path: src/Error/ErrorLogEventListener.php
 
 		-
-			message: "#^PHPDoc tag @param for parameter \\$bridge with type MUtil\\\\Model\\\\Bridge\\\\TableBridge is incompatible with native type Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\.$#"
-			count: 1
-			path: src/Event/Application/AnswerFilterEvent.php
-
-		-
-			message: "#^Property Gems\\\\Event\\\\Application\\\\AnswerFilterEvent\\:\\:\\$bridge \\(MUtil\\\\Model\\\\Bridge\\\\TableBridge\\) does not accept Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\.$#"
-			count: 1
-			path: src/Event/Application/AnswerFilterEvent.php
-
-		-
 			message: "#^Method Gems\\\\Event\\\\Application\\\\MenuAdd\\:\\:getMenu\\(\\) has invalid return type Gems\\\\Menu\\.$#"
 			count: 1
 			path: src/Event/Application/MenuAdd.php
@@ -1149,21 +1039,6 @@ parameters:
 			message: "#^Variable \\$result might not be defined\\.$#"
 			count: 1
 			path: src/Export/ExportAbstract.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Model\\\\ModelAbstract\\:\\:addColumn\\(\\)\\.$#"
-			count: 3
-			path: src/Export/ModelSource/AnswerExportModelSource.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Model\\\\ModelAbstract\\:\\:addTable\\(\\)\\.$#"
-			count: 5
-			path: src/Export/ModelSource/AnswerExportModelSource.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Model\\\\ModelAbstract\\:\\:checkJoinExists\\(\\)\\.$#"
-			count: 5
-			path: src/Export/ModelSource/AnswerExportModelSource.php
 
 		-
 			message: "#^Method Gems\\\\Export\\\\ModelSource\\\\AnswerExportModelSource\\:\\:_createCheckboxElement\\(\\) should return Zend_Form_Element_Checkbox\\|null but returns Zend_Form_Element\\.$#"
@@ -2116,11 +1991,6 @@ parameters:
 			path: src/Handlers/Respondent/CareEpisodeHandler.php
 
 		-
-			message: "#^Method Gems\\\\Handlers\\\\Respondent\\\\RespondentChildHandlerAbstract\\:\\:getRespondentId\\(\\) should return int but returns null\\.$#"
-			count: 1
-			path: src/Handlers/Respondent/RespondentChildHandlerAbstract.php
-
-		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Respondent\\\\RespondentChildHandlerAbstract\\:\\:\\$indexStartSnippets with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Handlers/Respondent/RespondentChildHandlerAbstract.php
@@ -2137,11 +2007,6 @@ parameters:
 
 		-
 			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: src/Handlers/Respondent/RespondentHandler.php
-
-		-
-			message: "#^Method Gems\\\\Handlers\\\\Respondent\\\\RespondentHandler\\:\\:getRespondentId\\(\\) should return int but returns null\\.$#"
 			count: 1
 			path: src/Handlers/Respondent/RespondentHandler.php
 
@@ -2587,11 +2452,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @var for property Gems\\\\Handlers\\\\Setup\\\\StaffLogHandler\\:\\:\\$indexStartSnippets with type mixed is not subtype of native type array\\.$#"
-			count: 1
-			path: src/Handlers/Setup/StaffLogHandler.php
-
-		-
-			message: "#^Parameter \\#1 \\$staff_id of method Gems\\\\User\\\\UserLoader\\:\\:getUserByStaffId\\(\\) expects int, string given\\.$#"
 			count: 1
 			path: src/Handlers/Setup/StaffLogHandler.php
 
@@ -3212,7 +3072,7 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Gems\\\\Menu\\\\MenuItem\\:\\:\\$label\\.$#"
-			count: 2
+			count: 1
 			path: src/Menu/MenuSnippetHelper.php
 
 		-
@@ -4196,36 +4056,6 @@ parameters:
 			path: src/Snippets/ActiveToggleSnippet.php
 
 		-
-			message: "#^Access to an undefined property Zend_Form\\:\\:\\$focusTrackerElementId\\.$#"
-			count: 2
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Agenda\\\\AppointmentCheckSnippet\\:\\:getMenuList\\(\\) has invalid return type Gems\\\\Menu\\\\MenuList\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Agenda\\\\AppointmentCheckSnippet\\:\\:getMenuList\\(\\) should return Gems\\\\Menu\\\\MenuList but returns null\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Agenda\\\\AppointmentCheckSnippet\\:\\:getRedirectRoute\\(\\) should return string\\|null but returns false\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Agenda\\\\AppointmentCheckSnippet\\:\\:getTitle\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
-			message: "#^PHPDoc tag @return with type mixed is not subtype of native type string\\|null\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/AppointmentCheckSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Snippets\\\\ModelBridge\\\\DetailTableBridge\\:\\:tfrow\\(\\)\\.$#"
 			count: 3
 			path: src/Snippets/Agenda/AppointmentCleanupSnippet.php
@@ -4491,11 +4321,6 @@ parameters:
 			path: src/Snippets/AutosearchFormSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:label\\(\\)\\.$#"
-			count: 2
-			path: src/Snippets/AutosearchFormSnippet.php
-
-		-
 			message: "#^If condition is always true\\.$#"
 			count: 4
 			path: src/Snippets/AutosearchFormSnippet.php
@@ -4606,11 +4431,6 @@ parameters:
 			path: src/Snippets/Contact/AboutSnippet.php
 
 		-
-			message: "#^Cannot call method a\\(\\) on string\\.$#"
-			count: 1
-			path: src/Snippets/Contact/BugsSnippet.php
-
-		-
 			message: "#^Method Gems\\\\Snippets\\\\Contact\\\\BugsSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\Sequence\\.$#"
 			count: 1
 			path: src/Snippets/Contact/BugsSnippet.php
@@ -4619,11 +4439,6 @@ parameters:
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$view$#"
 			count: 1
 			path: src/Snippets/Contact/BugsSnippet.php
-
-		-
-			message: "#^Cannot call method a\\(\\) on string\\.$#"
-			count: 2
-			path: src/Snippets/Contact/GemsSnippet.php
 
 		-
 			message: "#^Method Gems\\\\Snippets\\\\Contact\\\\GemsSnippet\\:\\:getHtmlOutput\\(\\) should return MUtil\\\\Html\\\\HtmlInterface but returns Zalt\\\\Html\\\\Sequence\\.$#"
@@ -4678,11 +4493,6 @@ parameters:
 		-
 			message: "#^Access to an undefined property MUtil\\\\Lazy\\\\RepeatableInterface\\:\\:\\$gor_url\\.$#"
 			count: 1
-			path: src/Snippets/Contact/SupportSnippet.php
-
-		-
-			message: "#^Cannot call method a\\(\\) on string\\.$#"
-			count: 4
 			path: src/Snippets/Contact/SupportSnippet.php
 
 		-
@@ -5176,26 +4986,6 @@ parameters:
 			path: src/Snippets/Mail/Log/MailLogBrowseSnippet.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Mail\\\\Log\\\\RespondentMailLogSearchSnippet\\:\\:\\$db\\.$#"
-			count: 2
-			path: src/Snippets/Mail/Log/RespondentMailLogSearchSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Mail\\\\Log\\\\RespondentMailLogSearchSnippet\\:\\:\\$request\\.$#"
-			count: 4
-			path: src/Snippets/Mail/Log/RespondentMailLogSearchSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Mail\\\\Log\\\\RespondentMailLogSearchSnippet\\:\\:\\$util\\.$#"
-			count: 2
-			path: src/Snippets/Mail/Log/RespondentMailLogSearchSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\HtmlElement\\:\\:br\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Mail/Log/RespondentMailLogSearchSnippet.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Project\\\\ProjectSettings\\:\\:\\$name\\.$#"
 			count: 1
 			path: src/Snippets/Mail/MailFormSnippet.php
@@ -5484,21 +5274,6 @@ parameters:
 			message: "#^Variable \\$groupName might not be defined\\.$#"
 			count: 1
 			path: src/Snippets/ModelFormSnippetAbstract.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\ModelImportSnippet\\:\\:\\$request\\.$#"
-			count: 1
-			path: src/Snippets/ModelImportSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zend_Session_Namespace\\:\\:\\$extension\\.$#"
-			count: 1
-			path: src/Snippets/ModelImportSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zend_Session_Namespace\\:\\:\\$localfile\\.$#"
-			count: 1
-			path: src/Snippets/ModelImportSnippet.php
 
 		-
 			message: "#^Method Gems\\\\Snippets\\\\ModelImportSnippet\\:\\:afterImport\\(\\) should return string but return statement is missing\\.$#"
@@ -6056,32 +5831,12 @@ parameters:
 			path: src/Snippets/Subscribe/ThankYouForSubscribingSnippet.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Survey\\\\AnswerImportSnippet\\:\\:\\$request\\.$#"
-			count: 1
-			path: src/Snippets/Survey/AnswerImportSnippet.php
-
-		-
 			message: "#^Call to method getParameterSource\\(\\) on an unknown class Gems\\\\Menu\\.$#"
 			count: 1
 			path: src/Snippets/Survey/AnswerImportSnippet.php
 
 		-
-			message: "#^Parameter \\#1 \\$bridge of method MUtil\\\\Snippets\\\\WizardFormSnippetAbstract\\:\\:addFormElementsFor\\(\\) expects MUtil\\\\Model\\\\Bridge\\\\FormBridgeInterface, MUtil\\\\Model\\\\Bridge\\\\BridgeInterface given\\.$#"
-			count: 1
-			path: src/Snippets/Survey/AnswerImportSnippet.php
-
-		-
 			message: "#^Property Gems\\\\Snippets\\\\Survey\\\\AnswerImportSnippet\\:\\:\\$menu has unknown class Gems\\\\Menu as its type\\.$#"
-			count: 1
-			path: src/Snippets/Survey/AnswerImportSnippet.php
-
-		-
-			message: "#^Property MUtil\\\\Snippets\\\\ModelFormSnippetAbstract\\:\\:\\$_items \\(array\\) does not accept null\\.$#"
-			count: 1
-			path: src/Snippets/Survey/AnswerImportSnippet.php
-
-		-
-			message: "#^Property MUtil\\\\Snippets\\\\Standard\\\\ModelImportSnippet\\:\\:\\$_translatorDescriptions \\(array\\) does not accept false\\.$#"
 			count: 1
 			path: src/Snippets/Survey/AnswerImportSnippet.php
 
@@ -6562,21 +6317,11 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$gtr_track_name\\.$#"
-			count: 3
+			count: 1
 			path: src/Snippets/Token/RespondentTokenSnippet.php
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$is_completed\\.$#"
-			count: 1
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$useRowHref\\.$#"
-			count: 1
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Snippets\\\\Token\\\\RespondentTokenSnippet\\:\\:findMenuItem\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Token/RespondentTokenSnippet.php
 
@@ -6592,16 +6337,6 @@ parameters:
 
 		-
 			message: "#^Expression \"\\$bridge\\-\\>gr2t_id_respondent_track\" on a separate line does not do anything\\.$#"
-			count: 1
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Left side of && is always false\\.$#"
-			count: 1
-			path: src/Snippets/Token/RespondentTokenSnippet.php
-
-		-
-			message: "#^Left side of && is always true\\.$#"
 			count: 1
 			path: src/Snippets/Token/RespondentTokenSnippet.php
 
@@ -6804,16 +6539,6 @@ parameters:
 			message: "#^Call to an undefined method Gems\\\\Snippets\\\\Tracker\\\\Answers\\\\SurveyAnswersModelSnippet\\:\\:processSortOnly\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Tracker/Answers/SurveyAnswersModelSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Tracker\\\\Answers\\\\TrackAllAnswersModelSnippet\\:\\:\\$request\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Answers/TrackAllAnswersModelSnippet.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Snippets\\\\Tracker\\\\Answers\\\\TrackAllAnswersModelSnippet\\:\\:processSortOnly\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Tracker/Answers/TrackAllAnswersModelSnippet.php
 
 		-
 			message: "#^Access to an undefined property Gems\\\\Util\\\\Translated\\:\\:\\$formatDate\\.$#"
@@ -7386,11 +7111,6 @@ parameters:
 			path: src/Task/Tracker/AddRefreshQuestions.php
 
 		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$viewName$#"
-			count: 1
-			path: src/Task/Tracker/AddRefreshQuestions.php
-
-		-
 			message: "#^Parameter \\#4 \\$batch of method Gems\\\\Tracker\\\\Engine\\\\TrackEngineInterface\\:\\:checkRoundsFor\\(\\) expects Gems\\\\Task\\\\TaskRunnerBatch\\|null, MUtil\\\\Task\\\\TaskBatch given\\.$#"
 			count: 1
 			path: src/Task/Tracker/CheckTrackRounds.php
@@ -7871,11 +7591,6 @@ parameters:
 			path: src/Tracker/Round.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: src/Tracker/Round.php
-
-		-
 			message: "#^Access to an undefined property Zalt\\\\Snippets\\\\ModelBridge\\\\TableBridge\\:\\:\\$blank\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
@@ -7926,11 +7641,6 @@ parameters:
 			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
 
 		-
-			message: "#^Call to an undefined method MUtil\\\\Model\\\\ModelAbstract\\:\\:addColumn\\(\\)\\.$#"
-			count: 2
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
 			message: "#^Call to an undefined method Psr\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:addListener\\(\\)\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
@@ -7943,21 +7653,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\HtmlElement\\:\\:buttonDiv\\(\\)\\.$#"
 			count: 1
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
-			count: 5
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:getItemsOrdered\\(\\)\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:has\\(\\)\\.$#"
-			count: 2
 			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
 
 		-
@@ -7997,11 +7692,6 @@ parameters:
 
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
-			count: 1
-			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
-
-		-
-			message: "#^Parameter \\#2 \\$model of class Gems\\\\Event\\\\Application\\\\AnswerFilterEvent constructor expects MUtil\\\\Model\\\\ModelAbstract, Zalt\\\\Model\\\\Data\\\\DataReaderInterface given\\.$#"
 			count: 1
 			path: src/Tracker/Snippets/AnswerModelSnippetGeneric.php
 
@@ -8721,31 +8411,6 @@ parameters:
 			path: src/User/Adapter/Radius/radius.class.php
 
 		-
-			message: "#^Method Gems\\\\User\\\\ConsoleUserDefinition\\:\\:getAuthAdapter\\(\\) should return Zend_Auth_Adapter_Interface but returns bool\\.$#"
-			count: 1
-			path: src/User/ConsoleUserDefinition.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\DbUserDefinitionAbstract\\:\\:getHashAlgorithm\\(\\) should return string but returns int\\.$#"
-			count: 1
-			path: src/User/DbUserDefinitionAbstract.php
-
-		-
-			message: "#^Parameter \\#1 \\$password of method Gems\\\\User\\\\DbUserDefinitionAbstract\\:\\:hashPassword\\(\\) expects string, int given\\.$#"
-			count: 1
-			path: src/User/DbUserDefinitionAbstract.php
-
-		-
-			message: "#^Property Gems\\\\User\\\\DbUserDefinitionAbstract\\:\\:\\$hashAlgorithm \\(int\\) does not accept default value of type string\\.$#"
-			count: 1
-			path: src/User/DbUserDefinitionAbstract.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between null and string will always evaluate to false\\.$#"
-			count: 1
-			path: src/User/DbUserDefinitionAbstract.php
-
-		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: src/User/Embed/Auth/PasswordVerify.php
@@ -8906,21 +8571,6 @@ parameters:
 			path: src/User/Group.php
 
 		-
-			message: "#^Method Gems\\\\User\\\\LdapUserDefinition\\:\\:getPasswordResetKey\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/User/LdapUserDefinition.php
-
-		-
-			message: "#^Parameter \\#2 \\$password \\(string\\) of method Gems\\\\User\\\\LdapUserDefinition\\:\\:checkRehash\\(\\) should be compatible with parameter \\$password \\(int\\) of method Gems\\\\User\\\\DbUserDefinitionAbstract\\:\\:checkRehash\\(\\)$#"
-			count: 1
-			path: src/User/LdapUserDefinition.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: src/User/LdapUserDefinition.php
-
-		-
 			message: "#^Call to an undefined method MUtil\\\\Html\\\\HtmlElement\\:\\:h4\\(\\)\\.$#"
 			count: 1
 			path: src/User/Mask/MaskStore.php
@@ -8939,11 +8589,6 @@ parameters:
 			message: "#^Property Gems\\\\User\\\\Mask\\\\MaskStore\\:\\:\\$translate \\(MUtil\\\\Translate\\\\Translator\\) does not accept Zalt\\\\Base\\\\TranslatorInterface\\.$#"
 			count: 1
 			path: src/User/Mask/MaskStore.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\NoLoginDefinition\\:\\:getAuthAdapter\\(\\) should return Laminas\\\\Authentication\\\\Adapter\\\\AdapterInterface but returns false\\.$#"
-			count: 1
-			path: src/User/NoLoginDefinition.php
 
 		-
 			message: "#^Binary operation \"\\.\" between array and '/participate…' results in an error\\.$#"
@@ -8996,11 +8641,6 @@ parameters:
 			path: src/User/ProjectUserDefinition.php
 
 		-
-			message: "#^Method Gems\\\\User\\\\RadiusUserDefinition\\:\\:getPasswordResetKey\\(\\) should return string but returns null\\.$#"
-			count: 1
-			path: src/User/RadiusUserDefinition.php
-
-		-
 			message: "#^Negated boolean expression is always false\\.$#"
 			count: 1
 			path: src/User/RadiusUserDefinition.php
@@ -9011,122 +8651,17 @@ parameters:
 			path: src/User/RadiusUserDefinition.php
 
 		-
-			message: "#^Parameter \\#2 \\$password \\(string\\) of method Gems\\\\User\\\\RadiusUserDefinition\\:\\:checkRehash\\(\\) should be compatible with parameter \\$password \\(int\\) of method Gems\\\\User\\\\DbUserDefinitionAbstract\\:\\:checkRehash\\(\\)$#"
-			count: 1
-			path: src/User/RadiusUserDefinition.php
-
-		-
 			message: "#^Property Gems\\\\User\\\\RadiusUserDefinition\\:\\:\\$_configModel \\(Gems\\\\Model\\\\JoinModel\\) does not accept MUtil\\\\Model\\\\TableModel\\.$#"
 			count: 1
 			path: src/User/RadiusUserDefinition.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: src/User/RadiusUserDefinition.php
-
-		-
-			message: "#^Access to an undefined property Zend_Session_Namespace\\:\\:\\$requestCache\\.$#"
-			count: 2
-			path: src/User/User.php
-
-		-
-			message: "#^Binary operation \"/\" between non\\-falsy\\-string and 60 results in an error\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Call to an undefined method ArrayObject\\:\\:unsetAll\\(\\)\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\User\\\\UserLoader\\:\\:getChangePasswordForm\\(\\)\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\User\\\\UserLoader\\:\\:setCurrentUser\\(\\)\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\User\\\\UserLoader\\:\\:unsetCurrentUser\\(\\)\\.$#"
-			count: 2
-			path: src/User/User.php
-
-		-
-			message: "#^Call to an undefined method Zend_Form_Element\\:\\:setStorageFormat\\(\\)\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Call to function is_array\\(\\) with string\\|false\\|null will always evaluate to false\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
-			count: 2
-			path: src/User/User.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 2
-			path: src/User/User.php
-
-		-
-			message: "#^Instanceof between ArrayObject and Zend_Session_Namespace will always evaluate to false\\.$#"
-			count: 6
-			path: src/User/User.php
-
-		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Method Gems\\\\Communication\\\\CommunicationRepository\\:\\:getMailer\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\User\\:\\:_getVar\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 5
-			path: src/User/User.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\User\\:\\:getChangePasswordForm\\(\\) should return Gems\\\\Form but empty return statement found\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\User\\:\\:getGenderHello\\(\\) should return string but returns null\\.$#"
 			count: 1
 			path: src/User/User.php
 
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
-			count: 2
-			path: src/User/User.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$askOld$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$bbBodyTemplate$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Parameter \\#1 \\$validator of method MUtil\\\\Bootstrap\\\\Form\\\\Element\\\\Text\\:\\:addValidator\\(\\) expects Laminas\\\\Validator\\\\ValidatorInterface\\|string, Zend_Validate_Identical given\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Parameter \\#1 \\$validator of method MUtil\\\\JQuery\\\\Form\\\\Element\\\\DatePicker\\:\\:addValidator\\(\\) expects Laminas\\\\Validator\\\\ValidatorInterface\\|string, Zend_Validate_Identical given\\.$#"
 			count: 1
 			path: src/User/User.php
 
@@ -9136,64 +8671,14 @@ parameters:
 			path: src/User/User.php
 
 		-
-			message: "#^Parameter \\#2 \\$password of method Gems\\\\User\\\\DbUserDefinitionAbstract\\:\\:checkRehash\\(\\) expects int, string given\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Property Gems\\\\User\\\\User\\:\\:\\$_group \\(Gems\\\\User\\\\Group\\) does not accept null\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Property Gems\\\\User\\\\User\\:\\:\\$_vars \\(ArrayObject\\) does not accept Zend_Session_Namespace\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Result of && is always true\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Right side of && is always true\\.$#"
-			count: 1
-			path: src/User/User.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 2
-			path: src/User/User.php
-
-		-
-			message: "#^Variable \\$result might not be defined\\.$#"
-			count: 4
-			path: src/User/User.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 2
-			path: src/User/UserDefinitionAbstract.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\User\\\\User\\:\\:reportPasswordWeakness\\(\\)\\.$#"
-			count: 1
-			path: src/User/UserLoader.php
-
-		-
 			message: "#^Method Gems\\\\User\\\\UserLoader\\:\\:getOrganizationIdByUrl\\(\\) should return int but returns null\\.$#"
 			count: 1
 			path: src/User/UserLoader.php
 
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
-			count: 2
-			path: src/User/UserLoader.php
-
-		-
-			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
 			count: 1
-			path: src/User/Validate/GetUserPasswordValidator.php
+			path: src/User/UserLoader.php
 
 		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$content$#"
@@ -9224,11 +8709,6 @@ parameters:
 			message: "#^Property Gems\\\\User\\\\Validate\\\\ResetRequestValidator\\:\\:\\$_message \\(string\\) does not accept null\\.$#"
 			count: 1
 			path: src/User/Validate/ResetRequestValidator.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$content$#"
-			count: 1
-			path: src/User/Validate/UserPasswordValidator.php
 
 		-
 			message: "#^Access to an undefined property Gems\\\\Project\\\\ProjectSettings\\:\\:\\$consentRejected\\.$#"
@@ -9301,29 +8781,9 @@ parameters:
 			path: src/Util/DbLookup.php
 
 		-
-			message: "#^Parameter \\#3 \\$binds of method Gems\\\\Util\\\\UtilAbstract\\:\\:_getSelectPairsCached\\(\\) expects array, null given\\.$#"
-			count: 4
-			path: src/Util/DbLookup.php
-
-		-
-			message: "#^Parameter \\#4 \\$binds of method Gems\\\\Util\\\\UtilAbstract\\:\\:_getSelectPairsProcessedCached\\(\\) expects array, null given\\.$#"
-			count: 1
-			path: src/Util/DbLookup.php
-
-		-
 			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:build\\(\\)\\.$#"
 			count: 1
 			path: src/Util/Lock/LockFactory.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Util\\\\OrganizationUtil\\:\\:\\$db\\.$#"
-			count: 1
-			path: src/Util/OrganizationUtil.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Util\\\\OrganizationUtil\\:\\:_getTranslatedPairsCached\\(\\)\\.$#"
-			count: 4
-			path: src/Util/OrganizationUtil.php
 
 		-
 			message: "#^Call to an undefined method Zend_Controller_Request_Abstract\\:\\:getServer\\(\\)\\.$#"
@@ -9502,11 +8962,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc type Zend_Translate of property Gems\\\\Util\\\\TrackData\\:\\:\\$translate is not covariant with PHPDoc type MUtil\\\\Translate\\\\Translator of overridden property Gems\\\\Util\\\\UtilAbstract\\:\\:\\$translate\\.$#"
-			count: 1
-			path: src/Util/TrackData.php
-
-		-
-			message: "#^Parameter \\#3 \\$binds of method Gems\\\\Util\\\\UtilAbstract\\:\\:_getSelectPairsCached\\(\\) expects array, int given\\.$#"
 			count: 1
 			path: src/Util/TrackData.php
 
