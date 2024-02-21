@@ -31,10 +31,8 @@ class MaintenanceModeMiddleware implements MiddlewareInterface
         if (!$this->maintenanceLock->isLocked()) {
             return $handler->handle($request);
         }
+        $this->monitor->checkMonitors();
 
-        $maintenance = $this->monitor->getMaintenanceMonitor();
-        $maintenance->sendOverdueMail();
-        
         /**
          * @var StatusMessengerInterface|null $messenger
          */

@@ -599,8 +599,11 @@ class ConfigProvider
          * Add a default setting to fall back to those
          */
         return [
-            'cron' => [
-                'period' => '1h',
+            'default' => [
+                'from' => 'noreply@gemstracker.org',
+            ],
+            'cronmail' => [
+                'period' => '25h',
                 'from' => null,
                 'to' => null,
             ],

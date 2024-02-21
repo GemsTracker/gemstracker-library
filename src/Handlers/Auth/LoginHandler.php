@@ -17,6 +17,7 @@ use Gems\Site\SiteUtil;
 use Gems\User\PasswordChecker;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Gems\Util\Monitor\Monitor;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -42,16 +43,17 @@ class LoginHandler implements RequestHandlerInterface
     private array $organizations;
 
     public function __construct(
-        private readonly LayoutRenderer $layoutRenderer,
-        private readonly TranslatorInterface $translator,
-        private readonly SiteUtil $siteUtil,
-        private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
-        private readonly LoginThrottleBuilder $loginThrottleBuilder,
-        private readonly UrlHelper $urlHelper,
         private readonly Adapter $db,
-        private readonly UserLoader $userLoader,
         private readonly AuditLog $auditLog,
+        private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
+        private readonly LayoutRenderer $layoutRenderer,
+        private readonly LoginThrottleBuilder $loginThrottleBuilder,
+        private readonly Monitor $monitor,
         private readonly PasswordChecker $passwordChecker,
+        private readonly SiteUtil $siteUtil,
+        private readonly TranslatorInterface $translator,
+        private readonly UrlHelper $urlHelper,
+        private readonly UserLoader $userLoader,
         readonly array $config,
     ) {
         if (isset($config['auth']['loginTemplate'])) {
@@ -62,6 +64,7 @@ class LoginHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $this->auditLog->registerRequest($request);
+        $this->monitor->checkMonitors();
 
         $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
         $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);

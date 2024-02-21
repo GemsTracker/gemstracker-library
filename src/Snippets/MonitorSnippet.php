@@ -67,11 +67,12 @@ class MonitorSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 
         switch ($this->currentMonitor) {
             case self::CRON_MAIl:
-                $this->monitorJob = $monitor->getCronMailMonitor();
+                $this->monitor->startCronMailMonitor();
+                $this->monitorJob = $this->monitor->getCronMailMonitor();
                 break;
 
             case self::MAINTENANCE:
-                $this->monitorJob = $monitor->getMaintenanceMonitor();
+                $this->monitorJob = $this->monitor->getMaintenanceMonitor();
                 break;
 
             // Intentional no default, assume montorJob has been assigned

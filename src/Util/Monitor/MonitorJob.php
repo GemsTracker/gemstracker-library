@@ -323,6 +323,8 @@ This messages was send automatically.";
 
         return [
             '{firstCheck}'  => date(self::$monitorDateFormat, $this->firstCheck),
+            '{fromMail}'    => $this->from ?? self::$siteFrom,
+            '{fromSite}'    => self::$siteUrl,
             '{mailCount}'   => $this->mailCount + 1,
             '{name}'        => $this->name,
             '{periodHours}' => intval(($time - $this->setTime) / 3600),
