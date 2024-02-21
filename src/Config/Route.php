@@ -1194,6 +1194,19 @@ class Route
                     'show',
                 ],
             ),
+            ...$this->createSnippetRoutes(baseName: 'setup.logfiles',
+                controllerClass: \Gems\Handlers\Setup\LogfileHandler::class,
+                pages: [
+                    'index',
+                    'show',
+                ],
+                parameterRoutes: [
+                    'show',
+                ],
+                parameters: [
+                    'filename' => '.*',
+                ],
+            ),
 
         ];
     }

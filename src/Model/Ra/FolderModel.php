@@ -54,7 +54,7 @@ class FolderModel extends ArrayModelAbstract
         ]);
 
         $this->metaModel->setKeys(['urlpath']);
-        $this->metaModel->addTransformer(new FileInfoTransformer( (is_string($dir) ? $dir : null) ));
+        $this->metaModel->addTransformer(new FileInfoTransformer( (is_string($dir) ? $dir : '') ));
     }
 
     protected function getFinder(string|Finder $dir, $recursive, $followSymlinks): Finder
