@@ -12,6 +12,7 @@
 namespace Gems\Util\Monitor;
 
 use Gems\Db\ResultFetcher;
+use Gems\Helper\Env;
 use Gems\Util\Lock\MaintenanceLock;
 use Laminas\Permissions\Acl\Acl;
 
@@ -33,8 +34,7 @@ class Monitor
         protected readonly MaintenanceLock $maintenanceLock,
     )
     {
-        MonitorJob::$monitorDateFormat  = 'l j F Y H:i';
-        MonitorJob::$monitorDir         = $this->config['rootDir'] . '/data';
+        $this->setMonitorDefaults();
     }
 
     /**
@@ -337,6 +337,30 @@ This messages was send automatically.";
         }
 
         return true;
+    }
+
+    public function setMonitorDefaults(): void
+    {
+        $dsn = Env::get('MAILER_DSN');
+        if (!$dsn) {
+            $dsn = $this->config['email']['dsn'] ?? 'native://default';
+        }
+        MonitorJob::$mailerDsn = $dsn;
+
+        MonitorJob::$siteFrom = $this->config['email']['site'] ?? 'noreply@gemstracker.org';
+
+        if (isset($this->config['sites']['allowed']) && is_array($this->config['sites']['allowed'])) {
+            $sites = $this->config['sites']['allowed'];
+            $site  = reset($sites);
+            if (isset($site['url'])) {
+                MonitorJob::$siteUrl = $site['url'];
+            }
+        } else {
+            // This should not be possible for an installation
+        }
+
+        MonitorJob::$monitorDateFormat  = 'l j F Y H:i';
+        MonitorJob::$monitorDir         = $this->config['rootDir'] . '/data';
     }
 
     /**

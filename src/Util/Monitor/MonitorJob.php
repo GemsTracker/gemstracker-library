@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Gems\Util\Monitor;
 
 use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Email;
 use Zalt\File\File;
 
 /**
@@ -51,6 +53,11 @@ class MonitorJob
      * @var int
      */
     protected int $mailCount = 0;
+
+    /**
+     * @var string The dsn used to initiate the mailer
+     */
+    public static string $mailerDsn = '';
 
     /**
      * Content of the message, you can use the variables returned by getMailVariables()
@@ -104,6 +111,16 @@ This messages was send automatically.";
      * @var int
      */
     protected int $setTime;
+
+    /**
+     * @var string
+     */
+    public static string $siteFrom = 'noreply@gemstracker.org';
+
+    /**
+     * @var string This should not be set in Monitor::setMonitorDefaults()
+     */
+    public static string $siteUrl = 'unknown.site.url';
 
     /**
      * Subject of the message, you can use the variables returned by getMailVariables()
@@ -162,22 +179,24 @@ This messages was send automatically.";
      */
     private function _sendMail($subject, $message): void
     {
+        $mailer = new Mailer(Transport::fromDsn(self::$mailerDsn));
+
         // Send a seperate mail to each recipient, otherwise they might do nothing
         foreach ($this->to as $to) {
-            $mail = new \MUtil\Mail();
-            $mail->addTo($to);
+            $mail = new Email();
+            $mail->to($to);
 
             if ($this->from) {
-                $mail->setFrom($this->from);
+                $mail->from($this->from);
             } else {
-                $mail->setFromToDefaultFrom();
+                $mail->from(self::$siteFrom);
             }
 
             $replacements = $this->getMailVariables();
 
-            $mail->setSubject(strtr($subject, $replacements));
-            $mail->setBodyHtml(strtr($message, $replacements));
-            $mail->send();
+            $mail->subject(strtr($subject, $replacements));
+            $mail->html(strtr($message, $replacements));
+            $mailer->send($mail);
         }
     }
 

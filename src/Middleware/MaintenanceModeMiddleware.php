@@ -5,6 +5,7 @@ namespace Gems\Middleware;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\User\User;
 use Gems\Util\Lock\MaintenanceLock;
+use Gems\Util\Monitor\Monitor;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\RouteResult;
@@ -20,6 +21,7 @@ class MaintenanceModeMiddleware implements MiddlewareInterface
     public function __construct(
         protected readonly MaintenanceLock $maintenanceLock,
         protected readonly TranslatorInterface $translator,
+        protected readonly Monitor $monitor,
         protected readonly UrlHelper $urlHelper,
     )
     {}
@@ -30,6 +32,9 @@ class MaintenanceModeMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
+        $maintenance = $this->monitor->getMaintenanceMonitor();
+        $maintenance->sendOverdueMail();
+        
         /**
          * @var StatusMessengerInterface|null $messenger
          */
