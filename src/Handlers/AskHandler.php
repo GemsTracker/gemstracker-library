@@ -395,7 +395,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
 
     protected function getRedirectResponse(string $url): RedirectResponse
     {
-        $response = $this->getRedirectResponse($url);
+        $response = new RedirectResponse($url);
         if ($this->changeLocaleTo) {
             /**
              * @var RedirectResponse $response
