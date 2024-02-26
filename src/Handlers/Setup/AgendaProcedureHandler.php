@@ -14,7 +14,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Model\AgendaProcedureModel;
 use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\AutosearchFormSnippet;
-use Gems\Snippets\Agenda\CalendarTableSnippet;
+use Gems\Snippets\Agenda\CalendarExampleTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
@@ -86,7 +86,7 @@ class AgendaProcedureHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
         ContentTitleSnippet::class,
         ModelDetailTableSnippet::class,
         CurrentButtonRowSnippet::class,
-        CalendarTableSnippet::class,
+        CalendarExampleTableSnippet::class,
     ];
 
     public function __construct(
@@ -114,7 +114,7 @@ class AgendaProcedureHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
             'Generic\\ContentTitleSnippet',
             'Agenda\\AppointmentCleanupSnippet',
             CurrentSiblingsButtonRowSnippet::class,
-            'Agenda\\CalendarTableSnippet',
+            'Agenda\\CalendarExampleTableSnippet',
             );
 
         $this->addSnippets($snippets, $params);

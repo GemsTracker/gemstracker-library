@@ -14,7 +14,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Model\AgendaStaffModel;
 use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\AutosearchFormSnippet;
-use Gems\Snippets\Agenda\CalendarTableSnippet;
+use Gems\Snippets\Agenda\CalendarExampleTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
@@ -85,7 +85,7 @@ class AgendaStaffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         ContentTitleSnippet::class,
         ModelDetailTableSnippet::class,
         CurrentButtonRowSnippet::class,
-        CalendarTableSnippet::class,
+        CalendarExampleTableSnippet::class,
         ];
 
     public function __construct(
@@ -112,7 +112,7 @@ class AgendaStaffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         $snippets = [
             'Generic\\ContentTitleSnippet',
             'Agenda\\AppointmentCleanupSnippet',
-            'Agenda\\CalendarTableSnippet',
+            'Agenda\\CalendarExampleTableSnippet',
         ];
 
         $this->addSnippets($snippets, $params);

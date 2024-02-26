@@ -73,14 +73,6 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
     }
 
     /**
-     * Don't add paginator controls, this snippet shows only a set of examples.
-     * The override is required because browse is set to true above.
-     */
-    protected function addPaginator(TableElement $table, int $count, int $page, int $items)
-    {
-    }
-
-    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without

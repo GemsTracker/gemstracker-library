@@ -16,7 +16,7 @@ use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\AppointmentFilterModel;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Snippets\Agenda\ApplyFiltersInformation;
-use Gems\Snippets\Agenda\CalendarTableSnippet;
+use Gems\Snippets\Agenda\CalendarExampleTableSnippet;
 use Gems\Snippets\Agenda\EpisodeTableSnippet;
 use Gems\Snippets\Agenda\FilterSqlSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -115,7 +115,7 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
         ContentTitleSnippet::class,
         ModelDetailTableSnippet::class,
         EpisodeTableSnippet::class,
-        CalendarTableSnippet::class,
+        CalendarExampleTableSnippet::class,
         FilterSqlSnippet::class,
         ApplyFiltersInformation::class,
     ];
