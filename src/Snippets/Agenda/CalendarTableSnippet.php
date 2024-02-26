@@ -38,7 +38,7 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
 {
     /**
      *
-     * @var \Gems\Agenda\AppointmentFilterInterface
+     * @var \Gems\Agenda\Filter\AppointmentFilterInterface|array|false
      */
     protected $calSearchFilter;
 

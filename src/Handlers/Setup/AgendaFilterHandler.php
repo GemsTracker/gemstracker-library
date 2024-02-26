@@ -12,8 +12,8 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Agenda\Agenda;
-use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\AppointmentFilterModel;
+use Gems\Agenda\Filter\AppointmentFilterInterface;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Snippets\Agenda\ApplyFiltersInformation;
 use Gems\Snippets\Agenda\CalendarExampleTableSnippet;
@@ -243,7 +243,7 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
     /**
      * Get an agenda filter for the current shown item
      *
-     * @return AppointmentFilterInterface|bool or false if not found
+     * @return AppointmentFilterInterface|false or false if not found
      */
     public function getShowFilter()
     {

@@ -2186,16 +2186,6 @@ parameters:
 			path: src/Handlers/Setup/AgendaFilterHandler.php
 
 		-
-			message: "#^Method Gems\\\\Handlers\\\\Setup\\\\AgendaFilterHandler\\:\\:getShowFilter\\(\\) has invalid return type Gems\\\\Agenda\\\\AppointmentFilterInterface\\.$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaFilterHandler.php
-
-		-
-			message: "#^Method Gems\\\\Handlers\\\\Setup\\\\AgendaFilterHandler\\:\\:getShowFilter\\(\\) should return bool\\|Gems\\\\Agenda\\\\AppointmentFilterInterface but returns Gems\\\\Agenda\\\\Filter\\\\AppointmentFilterInterface\\.$#"
-			count: 1
-			path: src/Handlers/Setup/AgendaFilterHandler.php
-
-		-
 			message: "#^Parameter \\#1 \\$filterId of method Gems\\\\Agenda\\\\Agenda\\:\\:getFilter\\(\\) expects int, string\\|null given\\.$#"
 			count: 1
 			path: src/Handlers/Setup/AgendaFilterHandler.php
@@ -4131,27 +4121,7 @@ parameters:
 			path: src/Snippets/Agenda/CalendarTableSnippet.php
 
 		-
-			message: "#^Call to method getSqlAppointmentsWhere\\(\\) on an unknown class Gems\\\\Agenda\\\\AppointmentFilterInterface\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/CalendarTableSnippet.php
-
-		-
-			message: "#^Elseif condition is always false\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/CalendarTableSnippet.php
-
-		-
 			message: "#^Expression \"\\$bridge\\-\\>gr2o_id_organization\" on a separate line does not do anything\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/CalendarTableSnippet.php
-
-		-
-			message: "#^Property Gems\\\\Snippets\\\\Agenda\\\\CalendarTableSnippet\\:\\:\\$calSearchFilter has unknown class Gems\\\\Agenda\\\\AppointmentFilterInterface as its type\\.$#"
-			count: 1
-			path: src/Snippets/Agenda/CalendarTableSnippet.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between false and Gems\\\\Agenda\\\\AppointmentFilterInterface will always evaluate to false\\.$#"
 			count: 1
 			path: src/Snippets/Agenda/CalendarTableSnippet.php
 
