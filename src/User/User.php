@@ -59,8 +59,8 @@ class User
 
     protected array|null $allowedOrganizations = null;
     protected array|null $allowedRespondentOrganizations = null;
-    protected string|null $allowedIpRanges;
-    protected string|null $phoneNumber;
+    protected string|null $allowedIpRanges = null;
+    protected string|null $phoneNumber = null;
     protected string $locale = 'en';
     protected bool $embedded = false;
 
