@@ -769,6 +769,10 @@ class Tracker implements TrackerInterface
                 $trackData = $this->resultFetcher->fetchRow($select);
             }
 
+            if (!$trackData) {
+                throw new Exception('Unknown track');
+            }
+
             if (! isset($trackData['gtr_track_class'])) {
                 $trackData['gtr_track_class'] = 'AnyStepEngine';
             }
