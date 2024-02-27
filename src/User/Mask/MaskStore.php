@@ -303,9 +303,10 @@ class MaskStore extends \Gems\Loader\TargetLoaderAbstract
      *
      * @param \MUtil\Model\ModelAbstract $model
      * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
+     * @param boolean $maskOnLoad
      * @return $this
      */
-    public function applyMaskDataToModel(\MUtil\Model\ModelAbstract $model, $hideWhollyMasked = false)
+    public function applyMaskDataToModel(\MUtil\Model\ModelAbstract $model, $hideWhollyMasked = false, $maskOnLoad = false)
     {
         if ($hideWhollyMasked) {
             $compiled = $this->_compiledHiddenModelSettings;
@@ -320,7 +321,7 @@ class MaskStore extends \Gems\Loader\TargetLoaderAbstract
 
                     if ($model->hasAnyOf($setting['masker']->getMaskFields())) {
 
-                        $dataOptions = $setting['masker']->getDataModelOptions($hideWhollyMasked);
+                        $dataOptions = $setting['masker']->getDataModelOptions($hideWhollyMasked, $maskOnLoad);
 
                         // \MUtil\EchoOut\EchoOut::track($name, count($dataOptions));
                         if ($dataOptions) {
