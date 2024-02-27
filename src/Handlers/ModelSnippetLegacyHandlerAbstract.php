@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers;
 
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Html;
 use Gems\Snippets\ActiveToggleSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -21,11 +22,13 @@ use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Export\ExportAction;
+use Gems\User\User;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsActions\Browse\BrowseTableAction;
 use Zalt\SnippetsActions\ModelActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -50,6 +53,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     private array $_autofilterExtraParameters = [
         'browse'          => true,
         'dynamicSort'     => 'getDynamicSort',
+        'extraFilter'     => 'getAttributeFilters',
         'onEmpty'         => 'getOnEmptyText',
         'pageItems'       => 'getPageItems',
         'pageNumber'      => 'getPageNumber',
@@ -153,6 +157,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     private array $_showExtraParameters = array(
         'topicCallable' => 'getTopicCallable',
+        'extraFilter' => 'getAttributeFilters',
     );
 
     protected array $activeToggleParameters = [
@@ -240,6 +245,8 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     protected array $indexStopSnippets = [
         CurrentButtonRowSnippet::class,
         ];
+
+    protected static array $parameterMaps = [];
 
     /**
      * The snippets used for the show action
@@ -642,6 +649,24 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         if (! $this->html) {
             \Gems\Html::init();
         }
+    }
+
+    protected function getAttributeFilters(): array
+    {
+        $maps = static::$parameterMaps + $this->getModel()->getMetaModel()->getMaps();
+        $filters = [];
+        foreach($maps as $attributeName => $fieldName) {
+            if ($this->request->getAttribute($attributeName) !== null) {
+                $filters[$fieldName] = $this->request->getAttribute($attributeName);
+                if ($attributeName === MetaModelInterface::REQUEST_ID2) {
+                    $user = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+                    if ($user instanceof User) {
+                        $user->assertAccessToOrganizationId($this->request->getAttribute($attributeName));
+                    }
+                }
+            }
+        }
+        return $filters;
     }
 
     /**

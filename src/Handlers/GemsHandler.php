@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gems\Handlers;
 
 use DateTimeInterface;
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Html;
 use Gems\Model\Dependency\UsageDependency;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
@@ -22,11 +23,14 @@ use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Gems\SnippetsLoader\GemsSnippetResponder;
+use Gems\User\User;
 use Mezzio\Session\SessionInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\SnippetsActions\Browse\BrowseTableAction;
 use Zalt\SnippetsActions\ModelActionInterface;
@@ -69,6 +73,8 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
      * @var array()
      */
     protected array $defaultSearchData = [];
+
+    protected static array $parameterMaps = [];
 
     /**
      * Optional search field renames
@@ -258,6 +264,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
 
         if ($action instanceof ModelActionInterface) {
             $action->model = $this->getModel($action);
+            $action->addToFilter($this->processAttributes($action->model));
         }
 
         if ($action instanceof BrowseTableAction) {
@@ -333,5 +340,23 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                 $menuHelper,
             ));
         }
+    }
+
+    protected function processAttributes(MetaModellerInterface $model): array
+    {
+        $maps = static::$parameterMaps + $model->getMetaModel()->getMaps();
+        $filters = [];
+        foreach($maps as $attributeName => $fieldName) {
+            if ($this->request->getAttribute($attributeName) !== null) {
+                $filters[$fieldName] = $this->request->getAttribute($attributeName);
+                if ($attributeName === MetaModelInterface::REQUEST_ID2) {
+                    $user = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+                    if ($user instanceof User) {
+                        $user->assertAccessToOrganizationId($this->request->getAttribute($attributeName));
+                    }
+                }
+            }
+        }
+        return $filters;
     }
 }
