@@ -11,6 +11,11 @@
 
 namespace Gems\Snippets\Unsubscribe;
 
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Snippets\SnippetAbstract;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  * @package    Gems
@@ -19,20 +24,29 @@ namespace Gems\Snippets\Unsubscribe;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 14:07:32
  */
-class UnsubscribedSnippet extends \MUtil\Snippets\SnippetAbstract
+class UnsubscribedSnippet extends SnippetAbstract
 {
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        protected readonly TranslatorInterface $translator,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo);
+    }
+
     /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @return mixed Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         $html = $this->getHtmlSequence();
-        $html->h2($this->_('You have been unsubscribed!'));
+        $html->h2($this->translator->_('You have been unsubscribed!'));
 
         return $html;
     }
