@@ -26,23 +26,23 @@ class AddressMasker extends AnyMasker
      * @param string $type Current field data type
      * @return callable|null Function to perform masking
      */
-    public function getMaskFunction($type)
+    public function getMaskFunction(string $type): callable|null
     {
         switch ($type) {
             case 'zip':
-                if (($this->_choice == 'ZC') || ($this->_choice == 'ZI')) {
+                if (($this->choice == 'ZC') || ($this->choice == 'ZI')) {
                     return [$this, 'maskZip'];
                 }
                 break;
 
             case 'city':
-                if (($this->_choice == 'ZC') || ($this->_choice == 'CI')) {
+                if (($this->choice == 'ZC') || ($this->choice == 'CI')) {
                     // No mask
                     return null;
                 }
                 break;
             case 'country':
-                if ($this->_choice != '*') {
+                if ($this->choice != '*') {
                     // No mask
                     return null;
                 }
@@ -55,7 +55,7 @@ class AddressMasker extends AnyMasker
      *
      * @return string default value
      */
-    public function getSettingsDefault()
+    public function getSettingsDefault(): string
     {
         return '+';
     }
@@ -64,15 +64,15 @@ class AddressMasker extends AnyMasker
      *
      * @return array of multi option values for setting model
      */
-    public function getSettingsMultiOptions()
+    public function getSettingsMultiOptions(): array
     {
         return [
-            '+' => $this->_('Show'),
-            'CI' => $this->_('Show only city and country'),
-            'ZC' => $this->_('Show only city, 4-digit of zipcode and country'),
-            'ZI' => $this->_('Show only 4-digit of zipcode and country'),
-            'CO' => $this->_('Show only country'),
-            '*' => $this->_('Mask everything'),
+            '+' => $this->translator->_('Show'),
+            'CI' => $this->translator->_('Show only city and country'),
+            'ZC' => $this->translator->_('Show only city, 4-digit of zipcode and country'),
+            'ZI' => $this->translator->_('Show only 4-digit of zipcode and country'),
+            'CO' => $this->translator->_('Show only country'),
+            '*' => $this->translator->_('Mask everything'),
         ];
     }
 
@@ -82,7 +82,7 @@ class AddressMasker extends AnyMasker
      * @param string $choice
      * @return bool True if this field is partially masked
      */
-    public function isTypeInvisible($type, $choice)
+    public function isTypeInvisible(string $type, string $choice): bool
     {
         return ('+' != $choice) && ('hide' == $type);
     }
@@ -93,7 +93,7 @@ class AddressMasker extends AnyMasker
      * @param string $choice
      * @return bool True if this field is partially (or wholly) masked (or invisible)
      */
-    public function isTypeMaskedPartial($type, $choice)
+    public function isTypeMaskedPartial(string $type, string $choice): bool
     {
         switch ($choice) {
             case 'CI':
@@ -118,7 +118,7 @@ class AddressMasker extends AnyMasker
      * @param string $choice
      * @return bool True if this field is masked (or invisible)
      */
-    public function isTypeMaskedWhole($type, $choice)
+    public function isTypeMaskedWhole(string $type, string $choice): bool
     {
         switch ($choice) {
             case 'CI':
@@ -147,7 +147,7 @@ class AddressMasker extends AnyMasker
      * @param string $choice
      * @return bool True if this field is masked
      */
-    public function isTypeMasked($type, $choice)
+    public function isTypeMasked(string $type, string $choice): bool
     {
         return '*' == $choice;
     }
@@ -158,7 +158,7 @@ class AddressMasker extends AnyMasker
      * @param string $value The original value
      * @return string|null
      */
-    public function maskZip($value)
+    public function maskZip(string $value): string|null
     {
         if ($value) {
             return substr($value, 0 , 4) . '**';

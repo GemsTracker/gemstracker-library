@@ -8,6 +8,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Predicate\Operator;
 use Laminas\Db\Sql\Predicate\Predicate;
+use Laminas\Db\Sql\Predicate\PredicateSet;
 use Zalt\Base\TranslateableTrait;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
@@ -21,7 +22,7 @@ class MaskRepository
     /**
      * Loaded in _ensureFields, derived wholly from $_settings
      *
-     * @var array of [fieldname => groupname]
+     * @var array of [fieldName => groupName]
      */
     protected array $_fieldList = [];
 
@@ -29,18 +30,18 @@ class MaskRepository
 
     /**
      * Loaded in _ensureSettings in the constructor     *
-     * @var array of [groupname => [label, description, class, maskFields, masker]
+     * @var array of [groupName => [label, description, class, maskFields, masker]
      */
     protected array $_settings;
 
     /**
-     * @var array Array containing default data, filled in adddMaskSettings
+     * @var array Array containing default data, filled in addMaskSettings
      */
     protected array $defaultData = [];
 
     /**
      *
-     * @var boolean When true mask settings are used
+     * @var bool When true mask settings are used
      */
     protected bool $enableMasks = true;
 
@@ -48,9 +49,9 @@ class MaskRepository
      *
      * @var string Name separator for creating unique field names
      */
-    protected $keySeparator = '___';
+    protected string $keySeparator = '___';
 
-    protected $overloader;
+    protected ProjectOverloader $overloader;
 
     public function __construct(
         protected CurrentUserRepository $currentUserRepository,
@@ -65,7 +66,7 @@ class MaskRepository
         $this->_ensureSettings();
     }
 
-    protected function _ensureFieldList()
+    protected function _ensureFieldList(): void
     {
         if (! $this->_fieldList) {
             // Load the masker classes
@@ -90,11 +91,11 @@ class MaskRepository
     }
 
     /**
-     * Set $this->_settings to array of [groupname => [label, description, class, maskFields]
+     * Set $this->_settings to array of [groupName => [label, description, class, maskFields]
      *
      * @return void
      */
-    protected function _ensureSettings()
+    protected function _ensureSettings(): void
     {
         $this->_settings = [
             'name' => [
@@ -129,7 +130,7 @@ class MaskRepository
             ],
             'healthdata' => [
                 'label'       => $this->_('Mask health data'),
-                'description' => $this->_('Mask healt data, e.g. scores and health comments'),
+                'description' => $this->_('Mask health data, e.g. scores and health comments'),
                 'class'       => 'AnyMasker',
                 'maskFields'  => $this->_getHealthDataFields(),
             ],
@@ -139,9 +140,9 @@ class MaskRepository
     /**
      * Get the possible address fields
      *
-     * @return array of [fieldname => masker class specific setting]
+     * @return array of [fieldName => masker class specific setting]
      */
-    protected function _getAddressFields()
+    protected function _getAddressFields(): array
     {
         return [
             'grs_address_1'   => 'mask',
@@ -156,9 +157,9 @@ class MaskRepository
     /**
      * Get the possible birthday fields
      *
-     * @return array of [fieldname => masker class specific setting]
+     * @return array of [fieldName => masker class specific setting]
      */
-    protected function _getBirthdayFields()
+    protected function _getBirthdayFields(): array
     {
         return [
             'birthday'      => 'mask',
@@ -170,9 +171,9 @@ class MaskRepository
     /**
      * Get the possible gender fields
      *
-     * @return array of [fieldname => masker class specific setting]
+     * @return array of [fieldName => masker class specific setting]
      */
-    protected function _getGenderFields()
+    protected function _getGenderFields(): array
     {
         return [
             'gender'     => 'mask',
@@ -182,11 +183,11 @@ class MaskRepository
     }
 
     /**
-     * Get the possible healt data fields
+     * Get the possible health data fields
      *
-     * @return array of [fieldname => masker class specific setting]
+     * @return array of [fieldName => masker class specific setting]
      */
-    protected function _getHealthDataFields()
+    protected function _getHealthDataFields(): array
     {
         return [
             'gr2o_comments' => 'mask',
@@ -202,9 +203,9 @@ class MaskRepository
     /**
      * Get the possible name fields
      *
-     * @return array of [fieldname => masker class specific setting]
+     * @return array of [fieldName => masker class specific setting]
      */
-    protected function _getNameFields()
+    protected function _getNameFields(): array
     {
         return [
             'grs_initials_name'          => 'short',
@@ -230,9 +231,9 @@ class MaskRepository
     /**
      * Get the possible phone fields
      *
-     * @return array of [fieldname => masker class specific setting]
+     * @return array of [fieldName => masker class specific setting]
      */
-    protected function _getPhoneFields()
+    protected function _getPhoneFields(): array
     {
         return [
             'grs_phone_1' => 'hide',
@@ -249,7 +250,7 @@ class MaskRepository
      * @param bool $detailed
      * @return $this
      */
-    public function addMaskStorageTo(MetaModelInterface $model, string $storageField, bool $detailed = true)
+    public function addMaskStorageTo(MetaModelInterface $model, string $storageField, bool $detailed = true): self
     {
         $this->_ensureFieldList();
 
@@ -307,10 +308,11 @@ class MaskRepository
     /**
      *
      * @param MetaModelInterface $model
-     * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
+     * @param bool $hideWhollyMasked When true the labels of wholly masked items are removed
+     * @param bool $maskOnLoad When true the mask is performed as load transformer instead of a format function
      * @return $this
      */
-    public function applyMaskToDataModel(MetaModelInterface $model, $hideWhollyMasked = false)
+    public function applyMaskToDataModel(MetaModelInterface $model, bool $hideWhollyMasked = false, bool $maskOnLoad = false): self
     {
         if (! $this->enableMasks) {
             return $this;
@@ -318,12 +320,12 @@ class MaskRepository
 
         $this->loadUserMaskData();
 
-        // \MUtil\EchoOut\EchoOut::track($hideWhollyMasked, (boolean) $compiled);
+        // \MUtil\EchoOut\EchoOut::track($hideWhollyMasked, (bool) $compiled);
         $compiled = [];
         foreach ($this->_settings as $name => $setting) {
             if (isset($setting['masker']) && $setting['masker'] instanceof MaskerInterface) {
                 if ($model->hasAnyOf($setting['masker']->getMaskFields())) {
-                    $dataOptions = $setting['masker']->getDataModelOptions($hideWhollyMasked);
+                    $dataOptions = $setting['masker']->getDataModelOptions($hideWhollyMasked, $maskOnLoad);
 
                     // dump($name, count($dataOptions));
                     if ($dataOptions) {
@@ -373,13 +375,13 @@ class MaskRepository
      * @param mixed $value
      * @return array|null
      */
-    public function decodeSettings($value)
+    public function decodeSettings(mixed $value): array|null
     {
         if (is_array($value)) {
             return $value;
         }
         if ($value) {
-            return \json_decode($value, true);
+            return json_decode($value, true);
         }
         return $this->defaultData;
     }
@@ -398,7 +400,7 @@ class MaskRepository
     }
 
     /**
-     * Enable mask usag
+     * Enable mask usage
      * calls: doesn't work retroactively
      *
      * @return $this
@@ -416,7 +418,7 @@ class MaskRepository
      * @param string $key
      * @return string|null The settings name or null when not a key name
      */
-    public function getSettingsField($key)
+    public function getSettingsField(string $key): string|null
     {
         $pos = strpos($key, $this->keySeparator);
 
@@ -433,7 +435,7 @@ class MaskRepository
      * @param string $key
      * @return string|null The storage name or null when not a key name
      */
-    public function getStorageField($key)
+    public function getStorageField(string $key): string|null
     {
         $pos = strpos($key, $this->keySeparator);
 
@@ -453,9 +455,9 @@ class MaskRepository
      * NOT IN USE!
      *
      * @param string $fieldName
-     * @return boolean True if this field is invisible
+     * @return bool True if this field is invisible
      */
-    public function isFieldInvisible($fieldName)
+    public function isFieldInvisible(string $fieldName): bool
     {
         if (! $this->enableMasks) {
             return false;
@@ -466,7 +468,7 @@ class MaskRepository
         if (isset($this->_fieldList[$fieldName])) {
             $group = $this->_fieldList[$fieldName];
 
-            if (isset($this->_settings[$group], $this->_settings[$group]['masker']) &&
+            if (isset($this->_settings[$group]['masker']) &&
                 $this->_settings[$group]['masker'] instanceof MaskerInterface) {
                 return $this->_settings[$group]['masker']->isFieldInvisible($fieldName);
             }
@@ -478,9 +480,9 @@ class MaskRepository
     /**
      *
      * @param string $fieldName
-     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     * @return bool True if this field is partially (or wholly) masked (or invisible)
      */
-    public function isFieldMaskedPartial($fieldName)
+    public function isFieldMaskedPartial(string $fieldName): bool
     {
         if (! $this->enableMasks) {
             return false;
@@ -491,7 +493,7 @@ class MaskRepository
         if (isset($this->_fieldList[$fieldName])) {
             $group = $this->_fieldList[$fieldName];
 
-            if (isset($this->_settings[$group], $this->_settings[$group]['masker']) &&
+            if (isset($this->_settings[$group]['masker']) &&
                 $this->_settings[$group]['masker'] instanceof MaskerInterface) {
                 return $this->_settings[$group]['masker']->isFieldMaskedPartial($fieldName);
             }
@@ -503,9 +505,9 @@ class MaskRepository
     /**
      *
      * @param string $fieldName
-     * @return boolean True if this field is wholly masked (or invisible)
+     * @return bool True if this field is wholly masked (or invisible)
      */
-    public function isFieldMaskedWhole($fieldName)
+    public function isFieldMaskedWhole(string $fieldName): bool
     {
         if (! $this->enableMasks) {
             return false;
@@ -516,7 +518,7 @@ class MaskRepository
         if (isset($this->_fieldList[$fieldName])) {
             $group = $this->_fieldList[$fieldName];
 
-            if (isset($this->_settings[$group], $this->_settings[$group]['masker']) &&
+            if (isset($this->_settings[$group]['masker']) &&
                 $this->_settings[$group]['masker'] instanceof MaskerInterface) {
                 return $this->_settings[$group]['masker']->isFieldMaskedWhole($fieldName);
             }
@@ -550,11 +552,11 @@ class MaskRepository
 
         $whereOr = new Predicate(
             [
-                new Predicate([$groupLike, $orgNull], Predicate::COMBINED_BY_AND),
-                new Predicate([$groupLike, $orgLike], Predicate::COMBINED_BY_AND),
-                new Predicate([$groupNull, $orgLike], Predicate::COMBINED_BY_AND),
+                new Predicate([$groupLike, $orgNull], PredicateSet::COMBINED_BY_AND),
+                new Predicate([$groupLike, $orgLike], PredicateSet::COMBINED_BY_AND),
+                new Predicate([$groupNull, $orgLike], PredicateSet::COMBINED_BY_AND),
             ],
-            Predicate::COMBINED_BY_OR);
+            PredicateSet::COMBINED_BY_OR);
 
         $baseGroup        = $user->getGroupId(false);
         $baseOrganization = $user->getBaseOrganizationId();
@@ -566,13 +568,13 @@ class MaskRepository
             $sticky        = new Operator('gm_mask_sticky', Operator::OPERATOR_EQUAL_TO, 1);
 
             $whereOr->addPredicate(
-                new Predicate([$baseGroupLike, $baseOrgNull, $sticky], Predicate::COMBINED_BY_AND)
+                new Predicate([$baseGroupLike, $baseOrgNull, $sticky], PredicateSet::COMBINED_BY_AND)
             );
             $whereOr->addPredicate(
-                new Predicate([$baseGroupLike, $baseOrgLike, $sticky], Predicate::COMBINED_BY_AND)
+                new Predicate([$baseGroupLike, $baseOrgLike, $sticky], PredicateSet::COMBINED_BY_AND)
             );
             $whereOr->addPredicate(
-                new Predicate([$baseGroupNull, $baseOrgLike, $sticky], Predicate::COMBINED_BY_AND)
+                new Predicate([$baseGroupNull, $baseOrgLike, $sticky], PredicateSet::COMBINED_BY_AND)
             );
         }
 
@@ -602,13 +604,13 @@ class MaskRepository
 
     /**
      * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
+     * @param bool $isNew True when a new item is being saved
+     * @param string|null $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @param boolean $isPost True when passing on post data
+     * @param bool $isPost True when passing on post data
      * @return string|null
      */
-    public function loadSettings($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    public function loadSettings(mixed $value, bool $isNew = false, string|null $name = null, array $context = [], bool $isPost = false): string|null
     {
         if ($value) {
             return $value;
@@ -637,19 +639,19 @@ class MaskRepository
      * @param string $settingsField
      * @return string
      */
-    public function makeKey($storageField, $settingsField)
+    public function makeKey(string $storageField, string $settingsField): string
     {
         return $storageField . $this->keySeparator . $settingsField;
     }
 
     /**
      * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
+     * @param bool $isNew True when a new item is being saved
+     * @param string|null $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function saveSettings($value, $isNew = false, $name = null, array $context = array())
+    public function saveSettings(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): string
     {
         $output = [];
 

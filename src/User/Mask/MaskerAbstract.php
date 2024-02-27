@@ -11,6 +11,8 @@
 
 namespace Gems\User\Mask;
 
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModel;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
 /**
@@ -21,45 +23,42 @@ use Zalt\Model\Sql\SqlRunnerInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Dec 25, 2016 5:44:30 PM
  */
-abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract implements MaskerInterface
+abstract class MaskerAbstract implements MaskerInterface
 {
     /**
      *
      * @var string The current choice
      */
-    protected $_choice;
+    protected string $choice;
 
     /**
      *
-     * @var array of [fieldname => class dependent setting]
+     * @param array $maskFields of [fieldName => class dependent setting]
      */
-    protected array $_maskFields;
-
-    /**
-     *
-     * @param array $maskFields of [fieldname => class dependent setting]
-     */
-    public function __construct(array $maskFields)
+    public function __construct(
+        protected readonly array $maskFields,
+        protected readonly TranslatorInterface $translator,
+    )
     {
-        $this->_choice     = $this->getSettingsDefault();
-        $this->_maskFields = $maskFields;
+        $this->choice     = $this->getSettingsDefault();
     }
 
     /**
      *
      * @return string current choice
      */
-    public function getChoice()
+    public function getChoice(): string
     {
-        return $this->_choice;
+        return $this->choice;
     }
 
     /**
      *
      * @param string $type Current field data type
+     * @param bool $maskOnLoad When true the mask is performed as load transformer instead of a format function
      * @return array of values to set in using model or false when nothing needs to be set
      */
-    public function getDataModelMask($type)
+    public function getDataModelMask(string $type, bool $maskOnLoad): array
     {
         $output['elementClass']   = 'Exhibitor';
         $output['readonly']       = 'readonly';
@@ -69,7 +68,11 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
         $function = $this->getMaskFunction($type);
         if ($function) {
             // $output['itemDisplay']    = $function;
-            $output['formatFunction'] = $function;
+            if ($maskOnLoad) {
+                $output[MetaModel::LOAD_TRANSFORMER] = $function;
+            } else {
+                $output['formatFunction'] = $function;
+            }
         }
 
         return $output;
@@ -77,19 +80,20 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
 
     /**
      *
-     * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
-     * @return array of fieldname => settings to set in using model or null when nothing needs to be set
+     * @param bool $hideWhollyMasked When true the labels of wholly masked items are removed
+     * @param bool $maskOnLoad When true the mask is performed as load transformer instead of a format function
+     * @return array of fieldName => settings to set in using model or null when nothing needs to be set
      */
-    public function getDataModelOptions($hideWhollyMasked)
+    public function getDataModelOptions(bool $hideWhollyMasked, bool $maskOnLoad): array
     {
         $output = [];
         $types  = [];
 
-        foreach ($this->_maskFields as $field => $type) {
+        foreach ($this->maskFields as $field => $type) {
             if (! isset($types[$type])) {
-                if ($this->isTypeMaskedPartial($type, $this->_choice)) {
-                    $types[$type] = $this->getDataModelMask($type);
-                    if ($hideWhollyMasked && $this->isTypeMaskedWhole($type, $this->_choice)) {
+                if ($this->isTypeMaskedPartial($type, $this->choice)) {
+                    $types[$type] = $this->getDataModelMask($type, $maskOnLoad);
+                    if ($hideWhollyMasked && $this->isTypeMaskedWhole($type, $this->choice)) {
                         $types[$type]['label']        = null;
                         $types[$type]['elementClass'] = 'None';
                     }
@@ -107,11 +111,11 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
 
     /**
      *
-     * @return array of fieldnames of mask fields
+     * @return array of fieldNames of mask fields
      */
-    public function getMaskFields()
+    public function getMaskFields(): array
     {
-        return array_keys($this->_maskFields);
+        return array_keys($this->maskFields);
     }
 
     /**
@@ -119,13 +123,13 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
      * @param string $type Current field data type
      * @return callable|null Function to perform masking
      */
-    abstract public function getMaskFunction($type);
+    abstract public function getMaskFunction(string $type): callable|null;
 
     /**
      *
      * @return array of values of setting model
      */
-    public function getSettingOptions()
+    public function getSettingOptions(): array
     {
         return [
             'default'      => $this->getSettingsDefault(),
@@ -138,23 +142,23 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
      *
      * @return mixed default value
      */
-    abstract public function getSettingsDefault();
+    abstract public function getSettingsDefault(): mixed;
 
     /**
      *
      * @return array of multi option values for setting model
      */
-    abstract public function getSettingsMultiOptions();
+    abstract public function getSettingsMultiOptions(): array;
 
     /**
      *
      * @param string $fieldName
-     * @return boolean True if this field is invisible
+     * @return bool True if this field is invisible
      */
-    public function isFieldInvisible($fieldName)
+    public function isFieldInvisible(string $fieldName): bool
     {
-        if (isset($this->_maskFields[$fieldName])) {
-            return $this->isTypeInvisible($this->_maskFields[$fieldName], $this->_choice);
+        if (isset($this->maskFields[$fieldName])) {
+            return $this->isTypeInvisible($this->maskFields[$fieldName], $this->choice);
         }
 
         return false;
@@ -163,12 +167,12 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
     /**
      *
      * @param string $fieldName
-     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     * @return bool True if this field is partially (or wholly) masked (or invisible)
      */
-    public function isFieldMaskedPartial($fieldName)
+    public function isFieldMaskedPartial(string $fieldName): bool
     {
-        if (isset($this->_maskFields[$fieldName])) {
-            return $this->isTypeMaskedPartial($this->_maskFields[$fieldName], $this->_choice);
+        if (isset($this->maskFields[$fieldName])) {
+            return $this->isTypeMaskedPartial($this->maskFields[$fieldName], $this->choice);
         }
 
         return false;
@@ -177,12 +181,12 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
     /**
      *
      * @param string $fieldName
-     * @return boolean True if this field is wholly masked (or invisible)
+     * @return bool True if this field is wholly masked (or invisible)
      */
-    public function isFieldMaskedWhole($fieldName)
+    public function isFieldMaskedWhole(string $fieldName): bool
     {
-        if (isset($this->_maskFields[$fieldName])) {
-            return $this->isTypeMaskedWhole($this->_maskFields[$fieldName], $this->_choice);
+        if (isset($this->maskFields[$fieldName])) {
+            return $this->isTypeMaskedWhole($this->maskFields[$fieldName], $this->choice);
         }
 
         return false;
@@ -192,25 +196,25 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is partially masked
+     * @return bool True if this field is partially masked
      */
-    abstract public function isTypeInvisible($type, $choice);
+    abstract public function isTypeInvisible(string $type, string $choice): bool;
 
     /**
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     * @return bool True if this field is partially (or wholly) masked (or invisible)
      */
-    abstract public function isTypeMaskedPartial($type, $choice);
+    abstract public function isTypeMaskedPartial(string $type, string $choice): bool;
 
     /**
      *
      * @param string $type Current field data type
      * @param string $choice
-     * @return boolean True if this field is masked (or invisible)
+     * @return bool True if this field is masked (or invisible)
      */
-    abstract public function isTypeMaskedWhole($type, $choice);
+    abstract public function isTypeMaskedWhole(string $type, string $choice): bool;
 
     /**
      *
@@ -218,7 +222,7 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
      * @param mixed $value
      * @return mixed
      */
-    public function mask($type, $value)
+    public function mask(string $type, mixed $value): mixed
     {
         $function = $this->getMaskFunction($type);
 
@@ -234,10 +238,10 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
      * @param array $row A row of data to mask
      * @return array A row with all data masked
      */
-    public function maskRow(array &$row)
+    public function maskRow(array &$row): array
     {
-        foreach ($this->_maskFields as $field => $type) {
-            if (array_key_exists($field, $row) && $this->isTypeMaskedPartial($type, $this->_choice)) {
+        foreach ($this->maskFields as $field => $type) {
+            if (array_key_exists($field, $row) && $this->isTypeMaskedPartial($type, $this->choice)) {
                 $row[$field] = $this->mask($type, $row[$field]);
             }
         }
@@ -249,9 +253,9 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
      * @param string $choice
      * @return self
      */
-    public function setChoice($choice)
+    public function setChoice(string $choice): self
     {
-        $this->_choice = $choice;
+        $this->choice = $choice;
 
         return $this;
     }

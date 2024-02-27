@@ -23,73 +23,67 @@ interface MaskerInterface
 {
     /**
      *
-     * @param array $maskFields of [fieldname => class dependent setting]
-     */
-    public function __construct(array $maskFields);
-
-    /**
-     *
      * @return string current choice
      */
-    public function getChoice();
+    public function getChoice(): string;
+
+    /**
+     * @param bool $hideWhollyMasked When true the labels of wholly masked items are removed
+     * @param bool $maskOnLoad When true the mask is performed as load transformer instead of a format function
+     * @return array of fieldName => settings to set in using model or null when nothing needs to be set
+     */
+    public function getDataModelOptions(bool $hideWhollyMasked, bool $maskOnLoad): array;
 
     /**
      *
-     * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
-     * @return array of fieldname => settings to set in using model or null when nothing needs to be set
+     * @return array of fieldNames of mask fields
      */
-    public function getDataModelOptions($hideWhollyMasked);
-
-    /**
-     *
-     * @return array of fieldnames of mask fields
-     */
-    public function getMaskFields();
+    public function getMaskFields(): array;
 
     /**
      *
      * @return array of values of setting model
      */
-    public function getSettingOptions();
+    public function getSettingOptions(): array;
 
     /**
      *
      * @return mixed default value
      */
-    public function getSettingsDefault();
+    public function getSettingsDefault(): mixed;
 
     /**
      *
      * @param string $fieldName
-     * @return boolean True if this field is invisible
+     * @return bool True if this field is invisible
      */
-    public function isFieldInvisible($fieldName);
+    public function isFieldInvisible(string $fieldName): bool;
 
     /**
      *
      * @param string $fieldName
-     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     * @return bool True if this field is partially (or wholly) masked (or invisible)
      */
-    public function isFieldMaskedPartial($fieldName);
+    public function isFieldMaskedPartial(string $fieldName): bool;
 
     /**
      *
      * @param string $fieldName
-     * @return boolean True if this field is wholly masked (or invisible)
+     * @return bool True if this field is wholly masked (or invisible)
      */
-    public function isFieldMaskedWhole($fieldName);
+    public function isFieldMaskedWhole(string $fieldName): bool;
 
     /**
      *
      * @param array $row A row of data to mask
-     * @return void
+     * @return array
      */
-    public function maskRow(array &$row);
+    public function maskRow(array &$row): array;
 
     /**
      *
      * @param string $choice
-     * @return $this
+     * @return self
      */
-    public function setChoice($choice);
+    public function setChoice(string $choice): self;
 }

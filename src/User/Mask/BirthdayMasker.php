@@ -11,6 +11,9 @@
 
 namespace Gems\User\Mask;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 /**
  *
  * @package    Gems
@@ -21,16 +24,21 @@ namespace Gems\User\Mask;
  */
 class BirthdayMasker extends MaskerAbstract
 {
+    protected array $possibleStorageFormats = [
+        'Y-m-d',
+        'Y-m-d H:i:s',
+    ];
+
     /**
      *
      * @param string $type Current field data type
      * @return array of values to set in using model or false when nothing needs to be set
      */
-    public function getDataModelMask($type)
+    public function getDataModelMask(string $type, bool $maskOnLoad): array
     {
-        $output = parent::getDataModelMask($type);
+        $output = parent::getDataModelMask($type, $maskOnLoad);
 
-        $output['dateFormat'] = $this->getDateMask($this->_choice);
+        $output['dateFormat'] = $this->getDateMask($this->choice);
 
         return $output;
     }
@@ -40,7 +48,7 @@ class BirthdayMasker extends MaskerAbstract
      * @param string $choice Current choice
      * @return string|null Function to perform masking
      */
-    public function getDateMask($choice)
+    public function getDateMask(string $choice): string|null
     {
         switch ($choice) {
             case 'D':
@@ -61,23 +69,31 @@ class BirthdayMasker extends MaskerAbstract
     /**
      *
      * @param string $type Current field data type
-     * @return callable Function to perform masking
+     * @return callable|null Function to perform masking
      */
-    public function getMaskFunction($type)
+    public function getMaskFunction(string $type): callable|null
     {
         if ('hide' == $type) {
             return function () {
                 return null;
             };
         }
-        $dateMask = $this->getDateMask($this->_choice);
+        $dateMask = $this->getDateMask($this->choice);
 
         return function ($value) use ($dateMask) {
-            if ($value instanceof \DateTimeInterface) {
+            if ($value instanceof DateTimeInterface) {
                 return $value->format($dateMask);
-            } else {
-                return $value;
             }
+            if ($value === null) {
+                return null;
+            }
+            foreach($this->possibleStorageFormats as $storageFormat) {
+                $dateTimeValue = DateTimeImmutable::createFromFormat($storageFormat, $value);
+                if ($dateTimeValue) {
+                    return $dateTimeValue->format($dateMask);
+                }
+            }
+            return $value;
         };
     }
 
@@ -85,7 +101,7 @@ class BirthdayMasker extends MaskerAbstract
      *
      * @return string default value
      */
-    public function getSettingsDefault()
+    public function getSettingsDefault(): string
     {
         return '+';
     }
@@ -94,14 +110,14 @@ class BirthdayMasker extends MaskerAbstract
      *
      * @return array of multi option values for setting model
      */
-    public function getSettingsMultiOptions()
+    public function getSettingsMultiOptions(): array
     {
         return [
-            '+' => $this->_('Show completely'),
-            'D' => $this->_('Mask day of month'),
-            'M' => $this->_('Mask day and month'),
-            'Y' => $this->_('Mask year only'),
-            '*' => $this->_('Mask completely'),
+            '+' => $this->translator->_('Show completely'),
+            'D' => $this->translator->_('Mask day of month'),
+            'M' => $this->translator->_('Mask day and month'),
+            'Y' => $this->translator->_('Mask year only'),
+            '*' => $this->translator->_('Mask completely'),
         ];
     }    
 
@@ -111,7 +127,7 @@ class BirthdayMasker extends MaskerAbstract
      * @param string $choice
      * @return bool True if this field is partially masked
      */
-    public function isTypeInvisible($type, $choice)
+    public function isTypeInvisible(string $type, string $choice): bool
     {
         return ('+' != $choice) && ('hide' == $type);
     }
@@ -122,7 +138,7 @@ class BirthdayMasker extends MaskerAbstract
      * @param string $choice
      * @return bool True if this field is partially (or wholly) masked (or invisible)
      */
-    public function isTypeMaskedPartial($type, $choice)
+    public function isTypeMaskedPartial(string $type, string $choice): bool
     {
         return '+' != $choice;
     }
@@ -133,7 +149,7 @@ class BirthdayMasker extends MaskerAbstract
      * @param string $choice
      * @return bool True if this field is masked (or invisible)
      */
-    public function isTypeMaskedWhole($type, $choice)
+    public function isTypeMaskedWhole(string $type, string $choice): bool
     {
         return '*' == $choice;
     }

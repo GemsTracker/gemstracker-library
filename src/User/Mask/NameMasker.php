@@ -24,9 +24,9 @@ class NameMasker extends AnyMasker
     /**
      *
      * @param string $type Current field data type
-     * @return callable Function to perform masking
+     * @return callable|null Function to perform masking
      */
-    public function getMaskFunction($type)
+    public function getMaskFunction(string $type): callable|null
     {
         switch ($type) {
             case 'double':
@@ -43,7 +43,7 @@ class NameMasker extends AnyMasker
      *
      * @return string
      */
-    public function doubleMaskValue()
+    public function doubleMaskValue(): string
     {
         return '**** ******';
     }

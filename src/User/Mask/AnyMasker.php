@@ -24,9 +24,9 @@ class AnyMasker extends MaskerAbstract
     /**
      *
      * @param string $type Current field data type
-     * @return callable Function to perform masking
+     * @return callable|null Function to perform masking
      */
-    public function getMaskFunction($type)
+    public function getMaskFunction(string $type): callable|null
     {
         switch ($type) {
             case 'mask':
@@ -47,7 +47,7 @@ class AnyMasker extends MaskerAbstract
      *
      * @return string default value
      */
-    public function getSettingsDefault()
+    public function getSettingsDefault(): string
     {
         return '+';
     }
@@ -56,11 +56,11 @@ class AnyMasker extends MaskerAbstract
      *
      * @return array of multi option values for setting model
      */
-    public function getSettingsMultiOptions()
+    public function getSettingsMultiOptions(): array
     {
         return [
-            '+' => $this->_('Show'),
-            '*' => $this->_('Mask'),
+            '+' => $this->translator->_('Show'),
+            '*' => $this->translator->_('Mask'),
         ];
     }
 
@@ -80,7 +80,7 @@ class AnyMasker extends MaskerAbstract
      * @param string $choice
      * @return bool True if this field is partially masked
      */
-    public function isTypeInvisible($type, $choice)
+    public function isTypeInvisible(string $type, string $choice): bool
     {
         return ('*' == $choice) && ('hide' == $type);
     }
@@ -91,7 +91,7 @@ class AnyMasker extends MaskerAbstract
      * @param string $choice
      * @return bool True if this field is partially (or wholly) masked (or invisible)
      */
-    public function isTypeMaskedPartial($type, $choice)
+    public function isTypeMaskedPartial(string $type, string $choice): bool
     {
         return '*' == $choice;
     }
@@ -102,7 +102,7 @@ class AnyMasker extends MaskerAbstract
      * @param string $choice
      * @return bool True if this field is masked (or invisible)
      */
-    public function isTypeMaskedWhole($type, $choice)
+    public function isTypeMaskedWhole(string $type, string $choice): bool
     {
         return '*' == $choice;
     }
@@ -113,7 +113,7 @@ class AnyMasker extends MaskerAbstract
      * @param string $choice
      * @return bool True if this field is masked
      */
-    public function isTypeMasked($type, $choice)
+    public function isTypeMasked(string $type, string $choice): bool
     {
         return '*' == $choice;
     }
@@ -123,7 +123,7 @@ class AnyMasker extends MaskerAbstract
      *
      * @return string
      */
-    public function maskValue()
+    public function maskValue(): string
     {
         return '******';
     }
@@ -133,7 +133,7 @@ class AnyMasker extends MaskerAbstract
      *
      * @return string
      */
-    public function shortMaskValue()
+    public function shortMaskValue(): string
     {
         return '**';
     }
