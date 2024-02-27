@@ -111,6 +111,12 @@ class StaffRepository
 
     }
 
+    public function getStaffNameById(int $staffId): string|null
+    {
+        $staff = $this->getStaff();
+        return $staff[$staffId] ?? null;
+    }
+
     public function getStaticStaff()
     {
         return [
