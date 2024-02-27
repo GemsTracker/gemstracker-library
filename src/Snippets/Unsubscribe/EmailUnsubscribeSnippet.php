@@ -16,6 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\FormSnippetAbstract;
+use Gems\User\Organization;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Literal;
 use Laminas\Db\Sql\Sql;
@@ -39,7 +40,7 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
      *
      * @var \Gems\User\Organization
      */
-    protected $currentOrganization;
+    protected Organization $currentOrganization;
 
     /**
      * Since this forms acts as if it was successful when a valid e-mail address was
@@ -47,24 +48,24 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
      *
      * @var boolean
      */
-    protected $realChange = false;
+    protected bool $realChange = false;
 
     /**
      *
      * @var string Optional project specific after unsubscribe message.
      */
-    protected $unsubscribedMessage;
+    protected string $unsubscribedMessage;
 
     /**
      * @var int The value to assign while unsubscribing
      */
-    protected $unsubscribedValue = 0;
+    protected int $unsubscribedValue = 0;
 
     /**
      *
      * @var array of arrays, either null or respondent id and org id
      */
-    protected $userData = [0 => []];
+    protected array $userData = [0 => []];
 
     public function __construct(
         SnippetOptions $snippetOptions,
