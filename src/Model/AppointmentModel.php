@@ -69,11 +69,6 @@ class AppointmentModel extends GemsMaskedModel
     protected $db;
 
     /**
-     * @var RouteHelper
-     */
-    protected $routeHelper;
-
-    /**
      * Self constructor
      */
     public function __construct(
@@ -86,6 +81,7 @@ class AppointmentModel extends GemsMaskedModel
         protected readonly ResultFetcher $resultFetcher,
         protected readonly Util $util,
         protected readonly Translated $translatedUtil,
+        protected readonly RouteHelper $routeHelper,
     ) {
         // gems__respondents MUST be first table for INSERTS!!
         parent::__construct('gems__appointments', $this->metaModelLoader, $sqlRunner, $translate, $maskRepository);
