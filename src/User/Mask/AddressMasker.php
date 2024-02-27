@@ -155,10 +155,10 @@ class AddressMasker extends AnyMasker
     /**
      * Mask the value
      *
-     * @param string $value The original value
+     * @param string|null $value The original value
      * @return string|null
      */
-    public function maskZip(string $value): string|null
+    public function maskZip(string|null $value): string|null
     {
         if ($value) {
             return substr($value, 0 , 4) . '**';
