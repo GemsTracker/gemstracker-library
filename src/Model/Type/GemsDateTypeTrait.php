@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\Model\Type;
 
+use Laminas\Db\Sql\Expression;
 use Zalt\Base\TranslateableTrait;
 use Zalt\Model\Type\AbstractDateType;
 use Zalt\Validator\Model\Date\IsDateModelValidator;
@@ -26,6 +27,9 @@ trait GemsDateTypeTrait
 
     public function checkValue(mixed $value)
     {
+        if ($value instanceof Expression) {
+            return $value->getExpression();
+        }
         if ($value instanceof \Zend_Db_Expr) {
             return (string) $value;
         }
