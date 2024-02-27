@@ -67,7 +67,7 @@ class RespondentUserDefinition extends DbUserDefinitionAbstract
                     'user_locale'         => 'grs_iso_lang',
                     'user_birthday'       => 'grs_birthday',
                     'user_zip'            => 'grs_zipcode',
-                    'user_phonenumber'    => $this->getMobilePhoneField(),
+                    'user_phone_number'    => $this->getMobilePhoneField(),
                ])
                ->join('gems__organizations', 'gr2o_id_organization = gor_id_organization', [
                     'user_group' => 'gor_respondent_group',

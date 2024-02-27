@@ -69,7 +69,7 @@ class StaffUserDefinition extends DbUserDefinitionAbstract
                     'user_logout'         => 'gsf_logout_on_survey',
                     'user_base_org_id'    => 'gsf_id_organization',
                     'user_embedded'       => 'gsf_is_embedded',
-                    'user_phonenumber'    => $this->getMobilePhoneField(),
+                    'user_phone_number'    => $this->getMobilePhoneField(),
                 ])
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', [
                    'user_role'=>'ggp_role',
