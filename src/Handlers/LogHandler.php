@@ -19,7 +19,10 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Log\LogSearchSnippet;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Model\Data\FullDataInterface;
+use Zalt\Model\MetaModellerInterface;
+use Zalt\Model\MetaModelLoader;
+use Zalt\SnippetsActions\Browse\BrowseTableAction;
+use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -31,7 +34,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class LogHandler extends ModelSnippetLegacyHandlerAbstract
+class LogHandler extends BrowseChangeHandler
 {
     /**
      * The snippets used for the autofilter action.
@@ -48,7 +51,7 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $indexStartSnippets = [
         ContentTitleSnippet::class,
         LogSearchSnippet::class,
-        ];
+    ];
 
     /**
      * The snippets used for the show action
@@ -59,18 +62,18 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
 
     public function __construct(
         SnippetResponderInterface $responder,
+        MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
+        protected LogModel $logModel,
         protected PeriodSelectRepository $periodSelectRepository,
-        protected LogModel $logModel
-    )
-    {
-        parent::__construct($responder, $translate, $cache);
+    ) {
+        parent::__construct($responder, $metaModelLoader, $translate, $cache);
     }
 
-    protected function createModel(bool $detailed, string $action): FullDataInterface
+    protected function getModel(SnippetActionInterface $action): MetaModellerInterface
     {
-        if ($detailed) {
+        if ($action->isDetailed()) {
             $this->logModel->applyDetailSettings();
         } else {
             $this->logModel->applyBrowseSettings();
@@ -118,9 +121,9 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter(bool $useRequest = true): array
+    public function getSearchFilter(bool $useSession = false): array
     {
-        $filter = parent::getSearchFilter($useRequest);
+        $filter = parent::getSearchFilter($useSession);
 
         $type  = new GemsDateTimeType($this->translate);
         $where = $this->periodSelectRepository->createPeriodFilter($filter, $type->dateFormat, $type->storageFormat, $this->getSearchDefaults());
@@ -140,5 +143,13 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
     public function getTopic(int $count = 1): string
     {
         return $this->plural('log', 'log', $count);
+    }
+
+    public function prepareAction(SnippetActionInterface $action): void
+    {
+        parent::prepareAction($action);
+        if ($action instanceof BrowseTableAction) {
+            $action->setSnippets($this->autofilterSnippets);
+        }
     }
 }
