@@ -75,6 +75,78 @@ class FolderModel extends ArrayModelAbstract
         return $finder;
     }
 
+    /**
+     * Filtering in the Finder object, not in the results.
+     *
+     * @param array $filter
+     * @return void
+     */
+    protected function finderFilter(array $filter): void
+    {
+        foreach ($filter as $name => $value) {
+            if ($name == 'filename') {
+                if (is_string($value)) {
+                    $this->finder->name($value);
+                } elseif (is_array($value) && !empty($value['like'])) {
+                    $this->finder->name('*'.$value['like'].'*');
+                }
+            }
+            if (is_array($value)) {
+                $this->finderFilter($value);
+            }
+        }
+    }
+
+    /**
+     * Sorting in the Finder object, not in the results.
+     *
+     * @param array $sort
+     * @return void
+     */
+    protected function finderSort(array $sort): void
+    {
+        foreach ($sort as $name => $direction) {
+            switch ($name) {
+                case 'filename':
+                    if ($direction == SORT_ASC) {
+                        $this->finder->sortByName();
+                    } else {
+                        $this->finder->sortByName()->reverseSorting();
+                    }
+                    break;
+                case 'size':
+                    if ($direction == SORT_ASC) {
+                        $this->finder->sortBySize();
+                    } else {
+                        $this->finder->sortBySize()->reverseSorting();
+                    }
+                    break;
+                case 'changed':
+                    if ($direction == SORT_ASC) {
+                        $this->finder->sortByChangedTime();
+                    } else {
+                        $this->finder->sortByChangedTime()->reverseSorting();
+                    }
+                    break;
+            }
+            // We only support one column to sort on.
+            break;
+        }
+    }
+
+    public function load($filter = null, $sort = null, $columns = null): array
+    {
+        $filter = $this->checkFilter($filter);
+        $sort   = $this->checkSort($sort);
+
+        $this->finderFilter($filter);
+        $this->finderSort($sort);
+
+        $data = $this->_loadAll();
+
+        return $this->metaModel->processAfterLoad($data);
+    }
+
     protected function _loadAll(): array
     {
         return iterator_to_array($this->finder);
