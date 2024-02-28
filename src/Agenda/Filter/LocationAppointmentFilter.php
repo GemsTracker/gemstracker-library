@@ -30,7 +30,7 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      *
      * @var array glo_id_location => glo_id_location
      */
-    protected array $_locations;
+    protected array|bool $_locations;
 
     public function __construct(
         int $id,
@@ -85,10 +85,9 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
      */
     public function getSqlAppointmentsWhere(): string
     {
-        if (isset($this->_locations) && ($this->_locations !== true)) {
+        $where = '';
+        if (isset($this->_locations) && ($this->_locations !== true) && !empty($this->_locations)) {
             $where = 'gap_id_location IN (' . implode(', ', $this->_locations) . ')';
-        } else {
-            $where = '';
         }
         if ($where) {
             return "($where)";
