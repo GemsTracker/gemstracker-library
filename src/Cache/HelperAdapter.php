@@ -6,24 +6,12 @@ declare(strict_types=1);
 namespace Gems\Cache;
 
 use DateInterval;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Cache\Exception\LogicException;
 
 class HelperAdapter extends TagAwareAdapter
 {
-    private AdapterInterface $pool;
-
-    public function __construct(
-        AdapterInterface $itemsPool,
-        AdapterInterface $tagsPool = null,
-        float $knownTagVersionsTtl = 0.15
-    ) {
-        $this->pool = $itemsPool;
-        parent::__construct($itemsPool, $tagsPool, $knownTagVersionsTtl);
-    }
-
     /**
      * Create a unique cache key, based on the provided arguments.
      *
@@ -47,8 +35,8 @@ class HelperAdapter extends TagAwareAdapter
 
     public function getCacheItem(string $key): mixed
     {
-        if ($this->pool->hasItem($key)) {
-            $item = $this->pool->getItem($key);
+        $item = $this->getItem($key);
+        if ($item->isHit()) {
             return $item->get();
         }
 
@@ -56,7 +44,7 @@ class HelperAdapter extends TagAwareAdapter
     }
 
     public function setCacheItem(string $key, mixed $value, array|string $tag=null,
-        DateInterval|int|null$expiresAfter=null)
+        DateInterval|int|null $expiresAfter=null)
     {
         $item = $this->getItem($key);
         if ($tag !== null && $item instanceof CacheItem) {
