@@ -118,7 +118,7 @@ class LogHandler extends BrowseChangeHandler
     /**
      * Get the filter to use with the model for searching
      *
-     * @param boolean $useRequest Use the request as source (when false, the session is used)
+     * @param bool $useSession Use the request as source (when false, the session is used)
      * @return array or false
      */
     public function getSearchFilter(bool $useSession = false): array
