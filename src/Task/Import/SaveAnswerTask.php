@@ -11,6 +11,9 @@
 
 namespace Gems\Task\Import;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Tracker;
+
 /**
  *
  * @package    Gems
@@ -20,18 +23,18 @@ namespace Gems\Task\Import;
  * @since      Class available since version 1.6.3
  */
 class SaveAnswerTask extends \MUtil\Task\TaskAbstract
-{    
+{
+
+    /**
+     * @var CurrentUserRepository
+     */
+    protected $currentUserRepository;
+
     /**
      *
      * @var \Iterator
      */
     protected $iterator;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
 
     /**
      *
@@ -50,6 +53,11 @@ class SaveAnswerTask extends \MUtil\Task\TaskAbstract
      * @var \MUtil\Model\ModelAbstract
      */
     protected $targetModel;
+
+    /**
+     * @var Tracker
+     */
+    protected $tracker;
 
     /**
      *
@@ -100,8 +108,7 @@ class SaveAnswerTask extends \MUtil\Task\TaskAbstract
             $answers     = $row;
             $prevAnswers = false;
             $token       = null;
-            $tracker     = $this->loader->getTracker();
-            $userId      = $this->loader->getCurrentUser()->getUserId();
+            $userId      = $this->currentUserRepository->getCurrentUserId();
 
             // \Gems\Tracker::$verbose = true;
 
@@ -122,7 +129,7 @@ class SaveAnswerTask extends \MUtil\Task\TaskAbstract
             }
 
             if (isset($row['token']) && $row['token']) {
-                $token = $tracker->getToken($row['token']);
+                $token = $this->tracker->getToken($row['token']);
 
                 if ($token->exists && $token->isCompleted() && $token->getReceptionCode()->isSuccess()) {
                     $prevAnswers = true;
@@ -159,7 +166,7 @@ class SaveAnswerTask extends \MUtil\Task\TaskAbstract
                                 $count));
 
                         $oldToken = $token;
-                        $token    = $tracker->getToken($replacementTokenId);
+                        $token    = $this->tracker->getToken($replacementTokenId);
 
                         // Make sure the Next token is set right
                         $oldToken->setNextToken($token);
@@ -189,7 +196,7 @@ class SaveAnswerTask extends \MUtil\Task\TaskAbstract
                                 $count));
 
                         $oldToken = $token;
-                        $token    = $tracker->getToken($replacementTokenId);
+                        $token    = $this->tracker->getToken($replacementTokenId);
 
                         // Make sure the Next token is set right
                         $oldToken->setNextToken($token);

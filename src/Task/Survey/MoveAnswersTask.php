@@ -12,6 +12,8 @@
 
 namespace Gems\Task\Survey;
 
+use Gems\Tracker;
+
 /**
  *
  * @package    Gems
@@ -27,11 +29,6 @@ class MoveAnswersTask extends \MUtil\Task\TaskAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
-
-    /**
-     * @var \Gems\Loader
-     */
-    public $loader;
 
     protected $_finished = false;
 
@@ -49,6 +46,11 @@ class MoveAnswersTask extends \MUtil\Task\TaskAbstract
     public $targetFields;
 
     /**
+     * @var Tracker
+     */
+    public $tracker;
+
+    /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
      * The parameters should be optional and failing to provide them should be handled by
@@ -59,7 +61,7 @@ class MoveAnswersTask extends \MUtil\Task\TaskAbstract
         $batch = $this->getBatch();
         if ($batch->getCounter('movestarted') === 0) {
             $batch->addToCounter('movestarted');
-            $select = $this->loader->getTracker()->getTokenSelect(['total' => new \Zend_Db_Expr('count(*)')])->andReceptionCodes([])->onlyCompleted()->onlySucces()->forSurveyId($this->sourceSurveyId)->getSelect();
+            $select = $this->tracker->getTokenSelect(['total' => new \Zend_Db_Expr('count(*)')])->andReceptionCodes([])->onlyCompleted()->onlySucces()->forSurveyId($this->sourceSurveyId)->getSelect();
             $count = $this->db->fetchOne($select);
             $batch->addStepCount($count - 1);   // For progressbar
             $batch->resetCounter('movesteps');
@@ -75,8 +77,7 @@ class MoveAnswersTask extends \MUtil\Task\TaskAbstract
      */
     public function executeIteration($userId = 0)
     {
-        $tracker = $this->loader->getTracker();
-        $select  = $tracker->getTokenSelect()->andReceptionCodes([])->onlyCompleted()->onlySucces()->forSurveyId($this->sourceSurveyId)->getSelect()->limit(1);
+        $select  = $this->tracker->getTokenSelect()->andReceptionCodes([])->onlyCompleted()->onlySucces()->forSurveyId($this->sourceSurveyId)->getSelect()->limit(1);
 
         $results = $this->db->fetchAll($select);
         $batch   = $this->getBatch();
@@ -96,7 +97,7 @@ class MoveAnswersTask extends \MUtil\Task\TaskAbstract
          */
         // Load token and retrieve current answers
         $tokenData        = reset($results);
-        $token            = $tracker->getToken($tokenData);
+        $token            = $this->tracker->getToken($tokenData);
         $answers          = $token->getRawAnswers();
 
         // Change answer codes
@@ -116,7 +117,7 @@ class MoveAnswersTask extends \MUtil\Task\TaskAbstract
             unset($values['token_status']);
 
             $newTokenId = $token->createReplacement(sprintf($this->_('Copied from old survey: %s'), $this->sourceSurveyName), $userId, $values);
-            $newToken = $tracker->getToken($newTokenId);
+            $newToken = $this->tracker->getToken($newTokenId);
             $newToken->getSurvey()->copyTokenToSource($newToken, ''); // Take no language, so we get the default
             $newToken->setRawAnswers($convertedAnswers);
             

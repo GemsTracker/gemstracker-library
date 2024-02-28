@@ -8,6 +8,8 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Tracker;
+
 /**
  * Executes any command in a source for a given $sourceId
  *
@@ -21,9 +23,9 @@ namespace Gems\Task\Tracker;
 class SourceCommand extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems\Loader
+     * @var Tracker
      */
-    public $loader;
+    public $tracker;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -35,7 +37,7 @@ class SourceCommand extends \MUtil\Task\TaskAbstract
     {
         $batch  = $this->getBatch();
         $params = array_slice(func_get_args(), 2);
-        $source = $this->loader->getTracker()->getSource($sourceId);
+        $source = $this->tracker->getSource($sourceId);
 
         if ($messages = call_user_func_array(array($source, $command), $params)) {
             foreach ($messages as $message) {

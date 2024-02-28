@@ -11,6 +11,7 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Tracker\TrackerInterface;
 use Exception;
 use MUtil\Html\HtmlInterface;
@@ -27,16 +28,16 @@ use Zalt\Model\Data\DataReaderInterface;
 class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
 {
     /**
+     * @var CurrentUserRepository
+     */
+    protected $currentUserRepository;
+
+    /**
      * The \Gems DB
      *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
-
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
 
     /**
      * @var \Gems\Project\ProjectSettings
@@ -77,7 +78,7 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
             return;
         }
 
-        $survey->setHash($hash, $this->loader->getCurrentUser()->getUserId());
+        $survey->setHash($hash, $this->currentUserRepository->getCurrentUserId());
         $metaModel = $answerModel->getMetaModel();
 
         foreach ($metaModel->getItemsOrdered() as $order => $name) {

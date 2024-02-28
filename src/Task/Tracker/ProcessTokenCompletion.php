@@ -9,6 +9,9 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Tracker;
+
 /**
  * Handles completion of a token, mostly started by \Gems_Task_CheckTokenCompletion
  *
@@ -21,9 +24,14 @@ namespace Gems\Task\Tracker;
 class ProcessTokenCompletion extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems\Loader
+     * @var CurrentUserRepository
      */
-    public $loader;
+    protected $currentUserRepository;
+
+    /**
+     * @var Tracker
+     */
+    protected $tracker;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -34,12 +42,11 @@ class ProcessTokenCompletion extends \MUtil\Task\TaskAbstract
     public function execute($tokenData = null, $userId = null)
     {
         $batch   = $this->getBatch();
-        $tracker = $this->loader->getTracker();
-        $token   = $tracker->getToken($tokenData);
+        $token   = $this->tracker->getToken($tokenData);
 
         if ($token->isCompleted()) {
             $respTrack = $token->getRespondentTrack();
-            $userId    = $userId ? $userId : $this->loader->getCurrentUser()->getUserId();
+            $userId    = $userId ? $userId : $this->currentUserRepository->getCurrentUserId();
 
             if ($result = $respTrack->handleRoundCompletion($token, $userId)) {
                 $a = $batch->addToCounter('roundCompletionCauses');
@@ -54,6 +61,6 @@ class ProcessTokenCompletion extends \MUtil\Task\TaskAbstract
         }
 
         // Free memory
-        $tracker->removeToken($token);
+        $this->tracker->removeToken($token);
     }
 }
