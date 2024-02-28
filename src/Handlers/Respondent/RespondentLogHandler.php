@@ -38,7 +38,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class RespondentLogHandler extends LogHandler
 {
-    protected static array $parameterMaps = [
+    public static array $parameterMaps = [
         MetaModelInterface::REQUEST_ID1 => 'gr2o_patient_nr',
         MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization',
     ];

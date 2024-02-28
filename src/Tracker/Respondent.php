@@ -26,6 +26,7 @@ use Gems\Tracker;
 use Gems\Translate\GenderTranslation;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\Organization;
+use Gems\User\User;
 use Gems\Util\Translated;
 use Laminas\Db\Sql\Expression;
 use Zalt\Base\TranslatorInterface;
@@ -97,6 +98,11 @@ class Respondent
         $this->respondentModel->applyStringAction('edit', true);
 
         $this->refresh();
+    }
+
+    public function assertAccessFromOrganizationId(User $currentUser, int $organizationId): void
+    {
+        $currentUser->assertAccessToOrganizationId($organizationId);
     }
 
     /**

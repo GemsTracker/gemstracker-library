@@ -121,6 +121,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         'csrfToken'          => 'getCsrfToken',
         'formTitle'          => 'getEditTitle',
         'topicCallable'      => 'getTopicCallable',
+        'extraFilter'        => 'getAttributeFilters',
     ];
 
     /**
@@ -288,6 +289,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         $params = $this->_processParameters($this->activeToggleParameters);
 
         $this->addSnippets($this->activeToggleSnippets, $params);
+    }
+
+    protected function assertAccessFromOrganization(User $currentUser, int $organizationId): void
+    {
+        $currentUser->assertAccessToOrganizationId($organizationId);
     }
 
     /**
@@ -651,18 +657,25 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         }
     }
 
+    protected function getParameterMaps(): array
+    {
+        return static::$parameterMaps + $this->getModel()->getMetaModel()->getMaps();
+    }
+
     protected function getAttributeFilters(): array
     {
-        $maps = static::$parameterMaps + $this->getModel()->getMetaModel()->getMaps();
+        $maps = $this->getParameterMaps();
         $filters = [];
         foreach($maps as $attributeName => $fieldName) {
             if ($this->request->getAttribute($attributeName) !== null) {
                 $filters[$fieldName] = $this->request->getAttribute($attributeName);
                 if ($attributeName === MetaModelInterface::REQUEST_ID2) {
-                    $user = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-                    if ($user instanceof User) {
-                        $user->assertAccessToOrganizationId($this->request->getAttribute($attributeName));
-                    }
+                    $organizationId = (int)$this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
+                    /**
+                     * @var User $currentUser
+                     */
+                    $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+                    $this->assertAccessFromOrganization($currentUser, $organizationId);
                 }
             }
         }

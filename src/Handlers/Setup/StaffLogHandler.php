@@ -11,15 +11,20 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\Exception;
 use Gems\Handlers\LogHandler;
-use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\LogModel;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
-use Gems\Model;
 use Gems\Model\StaffLogModel;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\MetaModellerInterface;
+use Zalt\Model\MetaModelLoader;
+use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -46,12 +51,6 @@ class StaffLogHandler extends LogHandler
     protected array $autofilterParameters = ['extraFilter' => 'getStaffFilter'];
 
     /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
-
-    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -60,43 +59,32 @@ class StaffLogHandler extends LogHandler
 
     public function __construct(
         SnippetResponderInterface $responder,
+        MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
+        LogModel $logModel,
         PeriodSelectRepository $periodSelectRepository,
-        protected UserLoader $userLoader,
-        CurrentUserRepository $currentUserRepository,
         protected StaffLogModel $staffLogModel,
+        protected UserLoader $userLoader,
     ) {
-        parent::__construct($responder, $translate, $cache, $periodSelectRepository, $this->staffLogModel);
-        $this->currentUser = $currentUserRepository->getCurrentUser();
+        parent::__construct($responder, $metaModelLoader, $translate, $cache, $logModel, $periodSelectRepository);
     }
 
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     */
-    protected function createModel(bool $detailed, string $action): Model\StaffLogModel
+    protected function getModel(SnippetActionInterface $action): MetaModellerInterface
     {
-        // Make sure the user is loaded
-        $user = $this->getSelectedUser();
-
-        if ($user) {
-            if (! ($this->currentUser->hasPrivilege('pr.staff.see.all') ||
-                    $this->currentUser->isAllowedOrganization($user->getBaseOrganizationId()))) {
-                throw new \Gems\Exception($this->_('No access to page'), 403, null, sprintf(
-                        $this->_('You have no right to access users from the organization %s.'),
-                        $user->getBaseOrganization()->getName()
-                        ));
+        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE);
+        $selectedUser = $this->getSelectedUser();
+        if ($selectedUser) {
+            if (! ($currentUser->hasPrivilege('pr.staff.see.all') ||
+                $currentUser->isAllowedOrganization($selectedUser->getBaseOrganizationId()))) {
+                throw new Exception($this->_('No access to page'), 403, null, sprintf(
+                    $this->_('You have no right to access users from the organization %s.'),
+                    $selectedUser->getBaseOrganization()->getName()
+                ));
             }
         }
 
-        if ($detailed) {
+        if ($action->isDetailed()) {
             $this->staffLogModel->applyDetailSettings();
         } else {
             $this->staffLogModel->applyBrowseSettings();
@@ -116,8 +104,8 @@ class StaffLogHandler extends LogHandler
     {
         $data = parent::getSearchDefaults();
 
-        if (! isset($data[\MUtil\Model::REQUEST_ID])) {
-            $data[\MUtil\Model::REQUEST_ID] = intval($this->_getIdParam());
+        if (! isset($data[MetaModelInterface::REQUEST_ID])) {
+            $data[MetaModelInterface::REQUEST_ID] = $this->request->getAttribute(MetaModelInterface::REQUEST_ID);
         }
 
         return $data;
@@ -126,8 +114,8 @@ class StaffLogHandler extends LogHandler
     /**
      * Load the user selected by the request - if any
      *
-     * @staticvar \Gems\User\User $user
-     * @return User or false when not available
+     * @staticvar User $user
+     * @return User|bool or false when not available
      */
     public function getSelectedUser(): User|bool
     {
@@ -137,7 +125,7 @@ class StaffLogHandler extends LogHandler
             return $user;
         }
 
-        $staffId = $this->_getIdParam();
+        $staffId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID);
         if ($staffId) {
             $user   = $this->userLoader->getUserByStaffId((int)$staffId);
             return $user;
@@ -152,6 +140,12 @@ class StaffLogHandler extends LogHandler
      */
     public function getStaffFilter(): array
     {
-        return ['gla_by' => intval($this->_getIdParam())];
+        $staffId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID);
+        return ['gla_by' => (int)$staffId];
+    }
+
+    public function prepareAction(SnippetActionInterface $action): void
+    {
+        parent::prepareAction($action); // TODO: Change the autogenerated stub
     }
 }

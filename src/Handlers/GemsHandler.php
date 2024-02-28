@@ -106,6 +106,31 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
         Html::init();
     }
 
+    protected function assertAccessFromOrganization(User $currentUser, int $organizationId): void
+    {
+        $currentUser->assertAccessToOrganizationId($organizationId);
+    }
+
+    protected function getAttributeFilters(MetaModellerInterface $model): array
+    {
+        $maps = $this->getParameterMaps($model);
+        $filters = [];
+        foreach($maps as $attributeName => $fieldName) {
+            if ($this->request->getAttribute($attributeName) !== null) {
+                $filters[$fieldName] = $this->request->getAttribute($attributeName);
+                if ($attributeName === MetaModelInterface::REQUEST_ID2) {
+                    $organizationId = (int)$this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
+                    /**
+                     * @var User $currentUser
+                     */
+                    $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+                    $this->assertAccessFromOrganization($currentUser, $organizationId);
+                }
+            }
+        }
+        return $filters;
+    }
+
     /**
      * Helper function to get the title for the index action.
      *
@@ -114,6 +139,11 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
     public function getIndexTitle(): string
     {
         return ucfirst($this->getTopic(2));
+    }
+
+    protected function getParameterMaps(MetaModellerInterface $model): array
+    {
+        return static::$parameterMaps + $model->getMetaModel()->getMaps();
     }
 
     /**
@@ -264,7 +294,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
 
         if ($action instanceof ModelActionInterface) {
             $action->model = $this->getModel($action);
-            $action->addToFilter($this->processAttributes($action->model));
+            $action->addToFilter($this->getAttributeFilters($action->model));
         }
 
         if ($action instanceof BrowseTableAction) {
@@ -340,23 +370,5 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                 $menuHelper,
             ));
         }
-    }
-
-    protected function processAttributes(MetaModellerInterface $model): array
-    {
-        $maps = static::$parameterMaps + $model->getMetaModel()->getMaps();
-        $filters = [];
-        foreach($maps as $attributeName => $fieldName) {
-            if ($this->request->getAttribute($attributeName) !== null) {
-                $filters[$fieldName] = $this->request->getAttribute($attributeName);
-                if ($attributeName === MetaModelInterface::REQUEST_ID2) {
-                    $user = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-                    if ($user instanceof User) {
-                        $user->assertAccessToOrganizationId($this->request->getAttribute($attributeName));
-                    }
-                }
-            }
-        }
-        return $filters;
     }
 }

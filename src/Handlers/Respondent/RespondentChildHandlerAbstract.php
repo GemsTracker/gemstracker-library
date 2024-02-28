@@ -11,6 +11,7 @@
 
 namespace Gems\Handlers\Respondent;
 
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
@@ -19,6 +20,7 @@ use Gems\Tracker\Respondent;
 use Gems\User\User;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -79,5 +81,10 @@ abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerA
         parent::__construct($responder, $translate, $cache);
 
         $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+
+    protected function assertAccessFromOrganization(User $currentUser, int $organizationId): void
+    {
+        $this->getRespondent()->assertAccessFromOrganizationId($currentUser, $organizationId);
     }
 }

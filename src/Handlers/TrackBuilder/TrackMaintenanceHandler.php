@@ -350,6 +350,11 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         }
     }
 
+    protected function getParameterMaps(): array
+    {
+        return [];
+    }
+
     /**
      * Get the filter to use with the model for searching including model sorts, etc..
      *
