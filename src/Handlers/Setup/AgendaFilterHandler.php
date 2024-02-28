@@ -157,6 +157,11 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
         return $this->_('Appointment filters');
     }
 
+    protected function getParameterMaps(): array
+    {
+        return [];
+    }
+
     /**
      * Helper function to allow generalized statements about the items in the model.
      *
