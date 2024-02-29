@@ -16,8 +16,8 @@ class CachedResultFetcher
     {
         $cacheKey = HelperAdapter::createCacheKey([get_called_class(), $functionName, $cacheKey], $select, $params);
 
-        if ($this->cache->hasItem($cacheKey)) {
-            return $this->cache->getCacheItem($cacheKey);
+        if ($results = $this->cache->getCacheItem($cacheKey)) {
+            return $results;
         }
 
         $results = $this->resultFetcher->$functionName($select, $params);
