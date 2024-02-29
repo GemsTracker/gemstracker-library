@@ -371,12 +371,13 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $this->addColumn($consent, 'old_' . $consent);
             $this->metaModel->set('old_' . $consent, ['elementClass' => 'hidden']);
         }
-        $this->metaModel->set('gr2o_reception_code', [
-            'type' => new ActivatingMultiType(
-                $this->receptionCodeRepository->getRespondentRestoreCodes(),
-                $this->receptionCodeRepository->getRespondentDeletionCodes(),
-                'row_class'),
-        ]);
+
+        $activatingMultiType = new ActivatingMultiType(
+            $this->receptionCodeRepository->getRespondentRestoreCodes(),
+            $this->receptionCodeRepository->getRespondentDeletionCodes(),
+            'row_class');
+
+        $activatingMultiType->applyClass($this->metaModel, 'gr2o_reception_code');
 
 
         $changers = Late::method($this->staffRepository, 'getStaff');
