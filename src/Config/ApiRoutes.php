@@ -155,6 +155,7 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                     'subject',
                     'body',
                 ],
+                organizationIdField: 'gto_id_organization',
             ),
             ...$this->createRoute(
                 name: 'comm-fields',
