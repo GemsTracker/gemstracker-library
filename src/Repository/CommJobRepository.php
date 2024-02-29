@@ -47,6 +47,11 @@ class CommJobRepository
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
+    public function clearTokenQueue(): void
+    {
+        $this->cache->clear($this->tokensInMessengerQueueKey);
+    }
+
     public function getActiveJobs(): array
     {
         $select = $this->cachedResultFetcher->getSelect('gems__comm_jobs');

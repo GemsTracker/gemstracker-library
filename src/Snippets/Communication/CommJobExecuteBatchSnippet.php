@@ -73,6 +73,7 @@ class CommJobExecuteBatchSnippet extends MessageableSnippetAbstract
                 $jobs = $this->commJobRepository->getActiveJobs();
             }
             if ($jobs) {
+                $this->commJobRepository->clearTokenQueue();
                 $preview = (bool) $this->requestInfo->getParam('preview', false);
                 $ol = $html->ul();
                 foreach($jobs as $jobData) {

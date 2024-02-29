@@ -43,6 +43,7 @@ class RunCommJob extends Command
         $this->consoleSettings->setConsoleUser();
 
         $jobs = $this->commJobRepository->getActiveJobs();
+        $this->commJobRepository->clearTokenQueue();
         foreach($jobs as $jobData) {
             $commJobMessage = new CommJob($jobData);
             $envelope = $this->messageBus->dispatch($commJobMessage);
