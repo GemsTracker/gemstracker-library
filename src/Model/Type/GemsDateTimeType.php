@@ -11,13 +11,14 @@ declare(strict_types=1);
 namespace Gems\Model\Type;
 
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Type\DateTimeType;
 
 /**
  * @package    Gems
  * @subpackage Model\Type
  * @since      Class available since version 1.0
  */
-class GemsDateTimeType extends \Zalt\Model\Type\DateTimeType
+class GemsDateTimeType extends DateTimeType
 {
     use GemsDateTypeTrait;
 

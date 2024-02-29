@@ -31,7 +31,7 @@ class MaskedJsonData extends JsonData
      * @param string $separator Separator in table display
      * @param string $more There is more in table display
      */
-    public function __construct(protected MaskRepository $maskRepository, $maxTable = 3, $separator = '<br />', $more = '...')
+    public function __construct(protected MaskRepository $maskRepository, $maxTable = 3, string $separator = '<br />', string $more = '...')
     {
         parent::__construct($maxTable, $separator, $more);
     }
@@ -40,7 +40,7 @@ class MaskedJsonData extends JsonData
      * Displays the content
      *
      * @param mixed $value
-     * @return string
+     * @return ElementInterface|string
      */
     public function formatDetailed(mixed $value): ElementInterface|string
     {
@@ -56,7 +56,7 @@ class MaskedJsonData extends JsonData
      * Displays the content
      *
      * @param string $value
-     * @return string
+     * @return ElementInterface|string
      */
     public function formatTable(mixed $value): ElementInterface|string
     {

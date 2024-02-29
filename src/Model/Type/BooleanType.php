@@ -7,7 +7,7 @@ use Zalt\Model\Type\AbstractModelType;
 
 class BooleanType extends AbstractModelType
 {
-    public function apply(MetaModelInterface $metaModel, string $name)
+    public function apply(MetaModelInterface $metaModel, string $name): void
     {
         $metaModel->setOnLoad($name, [$this, 'castToBoolean']);
     }

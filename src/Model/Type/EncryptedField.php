@@ -17,7 +17,8 @@
 
 namespace Gems\Model\Type;
 
-use MUtil\Model\ModelAbstract;
+use Gems\Encryption\ValueEncryptor;
+use MUtil\Model\DatabaseModelAbstract;
 use Zalt\Model\MetaModelInterface;
 
 /**
@@ -33,23 +34,18 @@ class EncryptedField
     /**
      * @var string
      */
-    protected $maskedValue = '********';
+    protected string $maskedValue = '********';
 
     /**
      * Should the value be masked?
      *
-     * @var boolean
+     * @var bool
      */
-    protected $valueMask;
+    protected bool $valueMask;
 
-    protected  \Gems\Encryption\ValueEncryptor $valueEncryptor;
+    protected  ValueEncryptor $valueEncryptor;
 
-    /**
-     *
-     * @param \Gems\Project\ProjectSettings $project
-     * @param boolean $valueMask
-     */
-    public function __construct(\Gems\Encryption\ValueEncryptor $valueEncryptor, $valueMask = true)
+    public function __construct(ValueEncryptor $valueEncryptor, bool $valueMask = true)
     {
         $this->valueMask = $valueMask;
         $this->valueEncryptor = $valueEncryptor;
@@ -61,13 +57,13 @@ class EncryptedField
      * @param string $valueField The field containing the value to be encrypted
      * @return EncryptedField (continuation pattern)
      */
-    public function apply(ModelAbstract|MetaModelInterface $model, $valueField): self
+    public function apply(MetaModelInterface $model, string $valueField): self
     {
         $model->setSaveWhen($valueField, array($this, 'saveWhen'));
         $model->setOnLoad($valueField, array($this, 'loadValue'));
         $model->setOnSave($valueField, array($this, 'saveValue'));
 
-        if ($model instanceof \MUtil\Model\DatabaseModelAbstract) {
+        if ($model instanceof DatabaseModelAbstract) {
             $model->setOnTextFilter($valueField, false);
         }
         if ($model->get($valueField, 'repeatLabel')) {
@@ -86,18 +82,18 @@ class EncryptedField
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see \MUtil\Model\ModelAbstract
+     * @see MetaModelInterface
      *
      * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
+     * @param bool $isNew True when a new item is being saved
+     * @param string|null $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @param boolean $isPost True when passing on post data
-     * @return \Zend_Db_Expr|string
+     * @param bool $isPost True when passing on post data
+     * @return mixed
      */
-    public function loadValue($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    public function loadValue(mixed $value, bool $isNew = false, string|null $name = null, array $context = [], bool $isPost = false): mixed
     {
-        if (\MUtil\StringUtil\StringUtil::endsWith($name, '__repeat')) {
+        if (str_ends_with($name, '__repeat')) {
             // Fill value for repeat element
             $origName = substr($name, 0, - 8);
             if (isset($context[$origName])) {
@@ -121,27 +117,28 @@ class EncryptedField
      * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
+     * @param bool $isNew True when a new item is being saved
+     * @param string|null $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return mixed
+     * @return string|null
      */
-    public function saveValue($value, $isNew = false, $name = null, array $context = array())
+    public function saveValue(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): string|null
     {
         if ($value) {
             // \MUtil\EchoOut\EchoOut::track($value);
             return $this->valueEncryptor->encrypt($value);
         }
+        return null;
     }
 
     /**
      * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
+     * @param bool $isNew True when a new item is being saved
+     * @param string|null $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return boolean
+     * @return bool
      */
-    public function saveWhen($value, $isNew = false, $name = null, array $context = array())
+    public function saveWhen(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): bool
     {
         return $value && $this->maskedValue != $value;
     }

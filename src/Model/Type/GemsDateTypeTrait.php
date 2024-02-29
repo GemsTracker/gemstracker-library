@@ -15,6 +15,7 @@ use Laminas\Db\Sql\Expression;
 use Zalt\Base\TranslateableTrait;
 use Zalt\Model\Type\AbstractDateType;
 use Zalt\Validator\Model\Date\IsDateModelValidator;
+use Zend_Db_Expr;
 
 /**
  * @package    Gems
@@ -30,7 +31,7 @@ trait GemsDateTypeTrait
         if ($value instanceof Expression) {
             return $value->getExpression();
         }
-        if ($value instanceof \Zend_Db_Expr) {
+        if ($value instanceof Zend_Db_Expr) {
             return (string) $value;
         }
         return parent::checkValue($value);
