@@ -911,6 +911,14 @@ class RespondentTrack
         return end($this->_tokens);
     }
 
+    public function getMailCode(): int
+    {
+        if (!array_key_exists('gr2t_mailable', $this->_respTrackData)) {
+            $this->refresh();
+        }
+        return $this->_respTrackData['gr2t_mailable'] ?? 0;
+    }
+
     /**
      *
      * @return string The respondents patient number

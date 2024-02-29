@@ -1766,9 +1766,11 @@ class Token
         } else {
             $filler = $this->getRespondent();
         }
-        $mailable = !empty($email) && $this->getRespondentTrack()->isMailable() && $filler->isMailable();
-
-        return $mailable;
+        $hasEmail = !empty($email);
+        $trackIsMailable = $filler->getMailCode() >= $this->getRespondentTrack()->getMailCode();
+        $tokenIsMailable = $filler->getMailCode() >= $this->getSurvey()->getMailCode();
+        
+        return $hasEmail && $trackIsMailable && $tokenIsMailable;
     }
 
     /**

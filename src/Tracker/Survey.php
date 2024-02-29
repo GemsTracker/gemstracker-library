@@ -370,7 +370,7 @@ class Survey
     /**
      * @return int
      */
-    public function getMailCode(): string|null
+    public function getMailCode(): int|null
     {
         return $this->data['gsu_mail_code'] ?? null;
     }

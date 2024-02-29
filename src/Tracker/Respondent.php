@@ -342,6 +342,15 @@ class Respondent
         return $lastname;
     }
 
+    public function getMailCode(): int
+    {
+        if (!array_key_exists('gr2o_mailable', $this->_gemsData)) {
+            $this->refresh();
+        }
+
+        return $this->_gemsData['gr2o_mailable'];
+    }
+
     /**
      * Get the full name (firstname, prefix and last name)
      * @return string

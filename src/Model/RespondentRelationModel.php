@@ -134,7 +134,7 @@ class RespondentRelationModel extends JoinModel
             $data = [];
         }
 
-        $relationObject = $this->loader->getInstance('Model\\RespondentRelationInstance', $this, $data);
+        $relationObject = new RespondentRelationInstance($data, $this->translatedUtil);
 
         return $relationObject;
     }

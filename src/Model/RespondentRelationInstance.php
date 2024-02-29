@@ -15,6 +15,7 @@ namespace Gems\Model;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Registry\TargetAbstract;
+use Gems\Tracker\Token;
 use Gems\Util\Translated;
 
 /**
@@ -25,85 +26,46 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class RespondentRelationInstance extends TargetAbstract
+class RespondentRelationInstance
 {
-    /**
-     * The model this instance is designed for
-     *
-     * @var \Gems\Model\RespondentRelationModel
-     */
-    protected $_model;
+    protected DateTimeInterface|null $birthdate = null;
+    protected string|null $email = null;
+    protected string|null $firstName = null;
+    protected string $gender = 'U';
+    protected int|null $id = null;
+    protected string|null $lastName = null;
+    protected int $mailable = 100;
+    protected string|null $phone = null;
 
-    /**
-     * Holds the data for the current instance
-     *
-     * @var array
-     */
-    protected $_data;
 
-    /**
-     * Default data, loaded by _getDefaults
-     *
-     * @var array
-     */
-    protected $_defaults = array();
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    public function __construct($model, $data) 
+    public function __construct(
+        array $data,
+        protected readonly Translated $translatedUtil,
+    )
     {
-        // Sanity check:
-        if (!($model instanceof \Gems\Model\RespondentRelationModel)) {
-            throw new \Gems\Exception\Coding('Please provide the correct type of model');
+        // Todo Hydrate
+        $this->id = $data['grr_id'] ?? null;
+        $this->firstName = $data['grr_first_name'] ?? null;
+        $this->lastName = $data['grr_last_name'] ?? null;
+        $this->birthdate = $data['grr_birthdate'] ?? null;
+        $this->email = $data['grr_email'] ?? null;
+        $this->gender = $data['grr_gender'] ?? 'U';
+        $this->phone = $data['grr_phone'] ?? null;
+        if (array_key_exists('grr_mailable', $data)) {
+            $this->mailable = $data['grr_mailable'];
         }
-
-        $this->_model = $model;
-        $this->_data  = $data;
     }
 
     public function __toString(): string
     {
-        return serialize($this->_data);
-    }
-
-    protected function _getDefaults()
-    {
-        if (empty($this->_defaults)) {
-            $this->_defaults = [
-                'grr_first_name' => '',
-                'grr_last_name'  => '',
-                'grr_email'      => '',
-                'grr_phone'      => '',
-                'grr_mailable'   => 0
-            ];
-        }
-
-        return $this->_defaults;
-    }
-
-    public function afterRegistry() 
-    {
-        parent::afterRegistry();
-
-        // Make sure we have at least some default data
-        if (empty($this->_data)) {
-            $this->_data = $this->_getDefaults();
-        }
+        return serialize([
+            'grr_first_name' => $this->firstName,
+            'grr_last_name'  => $this->lastName,
+            'grr_email'      => $this->email,
+            'grr_phone'      => $this->phone,
+            'grr_mailable'   => (int)$this->mailable,
+        ]);
     }
 
     /**
@@ -112,16 +74,16 @@ class RespondentRelationInstance extends TargetAbstract
      * @param ?DateTimeInterface $date To comare with
      * @return int
      */
-    public function getAge($date = NULL): ?DateTimeImmutable
+    public function getAge(DateTimeInterface|null $date = null): ?DateTimeImmutable
     {
         $birthDate = $this->getBirthDate();
         if (! $birthDate instanceof DateTimeInterface) {
             return null;
         }
 
-        if (is_null($date)) {
+        if ($date === null) {
             $date = new DateTimeImmutable();
-        } elseif (! $date instanceof \DateTimeInterface) {
+        } elseif (! $date instanceof DateTimeInterface) {
             return null;
         }
         
@@ -131,9 +93,9 @@ class RespondentRelationInstance extends TargetAbstract
         return $diff->y;
     }
 
-    public function getBirthDate()
+    public function getBirthDate(): DateTimeInterface|null
     {
-        return array_key_exists('grr_birthdate', $this->_data) ? $this->_data['grr_birthdate'] : null;
+        return $this->getBirthDate();
     }
 
     /**
@@ -141,7 +103,7 @@ class RespondentRelationInstance extends TargetAbstract
      * 
      * @return string
      */
-    public function getDearGreeting($language)
+    public function getDearGreeting(string $language): string
     {
         $genderDears = $this->translatedUtil->getGenderDear($language);
 
@@ -155,14 +117,14 @@ class RespondentRelationInstance extends TargetAbstract
         return $greeting . $this->getLastName();
     }
 
-    public function getEmail()
+    public function getEmail(): string|null
     {
-        return $this->_data['grr_email'];
+        return $this->getEmail();
     }
 
-    public function getFirstName()
+    public function getFirstName(): string|null
     {
-        return $this->_data['grr_first_name'];
+        return $this->getFirstName();
     }
 
     /**
@@ -170,17 +132,12 @@ class RespondentRelationInstance extends TargetAbstract
      *
      * @return string
      */
-    public function getGender()
+    public function getGender(): string
     {
-        $gender = 'U';
-        if (isset($this->_data['grr_gender'])) {
-            $gender = $this->_data['grr_gender'];
-        }
-
-        return $gender;
+        return $this->gender;
     }
 
-    public function getGreeting($language)
+    public function getGreeting(string $language): string
     {
         $genderGreetings = $this->translatedUtil->getGenderGreeting($language);
         $greeting = $genderGreetings[$this->getGender()] . ' ' . ucfirst($this->getLastName());
@@ -188,7 +145,7 @@ class RespondentRelationInstance extends TargetAbstract
         return $greeting;
     }
 
-    public function getHello($language)
+    public function getHello(string $language): string
     {
         $genderHello = $this->translatedUtil->getGenderHello($language);
         $hello = $genderHello[$this->getGender()] . ' ' . ucfirst($this->getLastName());
@@ -196,14 +153,19 @@ class RespondentRelationInstance extends TargetAbstract
         return $hello;
     }
 
-    public function getLastName()
+    public function getLastName(): string
     {
-        return $this->_data['grr_last_name'];
+        return $this->getLastName();
     }
 
-    public function getRelationId()
+    public function getMailCode(): int
     {
-        return array_key_exists('grr_id', $this->_data) ? $this->_data['grr_id'] : null;
+        return $this->getMailCode();
+    }
+
+    public function getRelationId(): int|null
+    {
+        return $this->id;
     }
 
     /**
@@ -211,14 +173,14 @@ class RespondentRelationInstance extends TargetAbstract
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
-    public function getPhoneNumber()
+    public function getPhoneNumber(): string|null
     {
-        return $this->_data['grr_phone'];
+        return $this->phone;
     }
 
     /**
@@ -228,13 +190,9 @@ class RespondentRelationInstance extends TargetAbstract
      *
      * @return boolean
      */
-    public function isMailable()
+    public function isMailable(): bool
     {
-        /*if (!array_key_exists('grr_mailable', $this->_data)) {
-            $this->refresh();
-        }*/
-
-        return $this->_data['grr_mailable'] == 1;
+        return (bool)$this->mailable;
     }
 
 
