@@ -11,7 +11,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class OtherPatientNumbersHandler implements RequestHandlerInterface
 {
-    public function __construct(protected RespondentRepository $respondentRepository)
+    public function __construct(
+        protected RespondentRepository $respondentRepository
+    )
     {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -25,10 +27,7 @@ class OtherPatientNumbersHandler implements RequestHandlerInterface
             $pairs = false;
         }
 
-        $userOrganizationId = null;
-        if (isset($queryParams['user-org']) && $queryParams['user-org'] == 1) {
-            $userOrganizationId = $request->getAttribute(ApiAuthenticationMiddleware::CURRENT_USER_ORGANIZATION);
-        }
+        $userOrganizationId = $request->getAttribute(ApiAuthenticationMiddleware::CURRENT_USER_ORGANIZATION);
 
         // TEMP FOR PENTEST
         //if ($request->getAttribute(\Gems\Api\Middleware\ApiAuthenticationMiddleware::AUTH_TYPE) === 'session') {
