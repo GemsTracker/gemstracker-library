@@ -67,6 +67,8 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
 
     public array $cacheTags = [];
 
+    protected bool $checkParameterMaps = true;
+
     /**
      * The default search data to use.
      *
@@ -113,8 +115,11 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
 
     protected function getAttributeFilters(MetaModellerInterface $model): array
     {
-        $maps = $this->getParameterMaps($model);
         $filters = [];
+        if (!$this->checkParameterMaps) {
+            return $filters;
+        }
+        $maps = $this->getParameterMaps($model);
         foreach($maps as $attributeName => $fieldName) {
             if ($this->request->getAttribute($attributeName) !== null) {
                 $filters[$fieldName] = $this->request->getAttribute($attributeName);

@@ -42,6 +42,7 @@ use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelInterface;
+use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsHandler\ConstructorModelHandlerTrait;
@@ -83,6 +84,8 @@ class CommJobHandler extends BrowseChangeUsageHandler
      * @var array
      */
     public array $cacheTags = ['comm-jobs',];
+
+    protected bool $checkParameterMaps = false;
 
     /**
      * @var array

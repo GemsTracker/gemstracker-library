@@ -191,6 +191,8 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         ModelTableSnippet::class,
         ];
 
+    protected bool $checkParameterMaps = true;
+
     /**
      * The snippets used for the create and edit actions.
      *
@@ -664,8 +666,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
 
     protected function getAttributeFilters(): array
     {
-        $maps = $this->getParameterMaps();
         $filters = [];
+        if (!$this->checkParameterMaps) {
+            return $filters;
+        }
+        $maps = $this->getParameterMaps();
         foreach($maps as $attributeName => $fieldName) {
             if ($this->request->getAttribute($attributeName) !== null) {
                 $filters[$fieldName] = $this->request->getAttribute($attributeName);
