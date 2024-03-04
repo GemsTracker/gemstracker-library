@@ -52,9 +52,9 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @var string Optional project specific after unsubscribe message.
+     * @var string|null Optional project specific after unsubscribe message.
      */
-    protected string $unsubscribedMessage;
+    protected string|null $unsubscribedMessage = null;
 
     /**
      * @var int The value to assign while unsubscribing
