@@ -100,7 +100,7 @@ class TokenRepository
      * @param string $value Character
      * @return string
      */
-    public function getStatusDescription(string $value): string
+    public function getStatusDescription(string|null $value): string
     {
         $status = $this->getEveryStatus();
 
@@ -167,7 +167,7 @@ class TokenRepository
      * @param string $value Character
      * @return HtmlElement
      */
-    public function getStatusIcon(string $value): HtmlElement
+    public function getStatusIcon(string|null $value): HtmlElement
     {
         $status = $this->getStatusIcons();
 
