@@ -163,7 +163,7 @@ class PatchRepository extends MigrationRepositoryAbstract
         }
         $adapter = $this->databases->getDatabase($patchInfo['db']);
         if (!$adapter instanceof Adapter) {
-            throw new \Exception('Not enough info to run seed');
+            throw new \Exception('Not enough info to run patch');
         }
 
         $resultFetcher = new ResultFetcher($adapter);
