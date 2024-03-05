@@ -148,6 +148,12 @@ class TokenHandler extends TokenSearchHandlerAbstract
         'Tracker\\Buttons\\TokenActionButtonRow',
     ];
 
+    protected static array $parameterMaps = [
+        Model::REQUEST_ID1 => 'gr2o_patient_nr',
+        Model::REQUEST_ID2 => 'gto_id_organization',
+        Model::RESPONDENT_TRACK => 'gto_id_respondent_track',
+    ];
+
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,

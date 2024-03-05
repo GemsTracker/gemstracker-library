@@ -11,21 +11,11 @@
 
 namespace Gems\Handlers\Respondent;
 
-use Gems\Exception;
 use Gems\Handlers\LogHandler;
-use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
-use Gems\Model\LogModel;
-use Gems\Repository\PeriodSelectRepository;
-use Gems\Repository\RespondentRepository;
-use Gems\Tracker\Respondent;
-use Psr\Cache\CacheItemPoolInterface;
-use Zalt\Base\TranslatorInterface;
-use Zalt\Model\Data\FullDataInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\SnippetsActions\SnippetActionInterface;
-use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
