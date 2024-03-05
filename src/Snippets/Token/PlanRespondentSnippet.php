@@ -42,7 +42,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         'gtr_track_info'        => SORT_ASC,
         'gr2t_track_info'       => SORT_ASC,
         'gto_round_description' => SORT_ASC,
-        );
+    );
 
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
@@ -91,7 +91,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         $bridge->addSortable('grs_birthday');
         $bridge->addMultiSort('grs_city', array($respondentButton));
 
-        $metaModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gr2t_track_info', ['tableDisplay' => 'small']);
 
         // Row with track info
         $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
@@ -110,7 +110,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
 
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
-        $metaModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gto_round_description', ['tableDisplay' => 'small']);
         $bridge->addMultiSort('gsu_survey_name', 'gto_round_description')->colspan = 2;
 
         $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));
