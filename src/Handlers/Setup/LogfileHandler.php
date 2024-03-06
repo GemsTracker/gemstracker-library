@@ -10,26 +10,13 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Setup;
 
-use ArrayObject;
 use Gems\Handlers\GemsHandler;
 use Gems\Model\Ra\FolderModel;
-use Gems\Model\SqlTableModel;
-use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
-use Gems\SnippetsActions\Delete\DeleteAction;
-use Gems\SnippetsActions\Export\ExportAction;
-use Gems\SnippetsActions\Form\CreateAction;
-use Gems\SnippetsActions\Form\EditAction;
 use Gems\SnippetsActions\Show\ShowAction;
-use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Finder\Finder;
-use Zalt\Base\TranslatorInterface;
-use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModellerInterface;
-use Zalt\Model\MetaModelLoader;
-use Zalt\Model\Ra\PhpArrayModel;
 use Zalt\SnippetsActions\SnippetActionInterface;
-use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -49,26 +36,14 @@ class LogfileHandler extends GemsHandler
         'show'       => ShowAction::class,
     ];
 
-    public function __construct(
-        SnippetResponderInterface $responder,
-        MetaModelLoader $metaModelLoader,
-        TranslatorInterface $translate,
-        CacheItemPoolInterface $cache,
-        protected readonly ProjectOverloader $projectOverloader,
-    )
-    {
-        parent::__construct($responder, $metaModelLoader, $translate, $cache);
-    }
-
     /**
      * @inheritDoc
      */
     protected function createModel(SnippetActionInterface $action): MetaModellerInterface
     {
-        $finder = new Finder('/app/data/logs'); // FIXME
-        $dir = '/';
-        $model = $this->projectOverloader->create(FolderModel::class, '/app/data/logs');
-        //$model = $this->metaModelLoader->createModel(FolderModel::class, 'logfiles', $finder);
+        $finder = new Finder();
+        $finder->files()->in('/app/data/logs'); // FIXME
+        $model = $this->metaModelLoader->createModel(FolderModel::class, $finder);
 
         $metaModel = $model->getMetaModel();
         $metaModel->getKeys();
@@ -84,6 +59,13 @@ class LogfileHandler extends GemsHandler
         $metaModel->set('changed', [
             'label' => $this->_('Changed'),
         ]);
+
+        if ($action->isDetailed()) {
+            $metaModel->set('content', [
+                'label' => $this->_('Content'),
+                'itemDisplay' => 'pre',
+            ]);
+        }
 
         return $model;
     }

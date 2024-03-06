@@ -1204,7 +1204,7 @@ class Route
                     'show',
                 ],
                 parameters: [
-                    'filename' => '.*',
+                    'filename' => '[a-z0-9A-Z\.-]+',
                 ],
             ),
 
