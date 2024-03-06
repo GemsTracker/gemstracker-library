@@ -1364,6 +1364,13 @@ class Menu
                             'name' => 'setup.logfiles.show',
                             'label' => $this->translator->trans('Show'),
                             'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.logfiles.download',
+                                    'label' => $this->translator->trans('Download'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
                         ],
                     ],
                 ],

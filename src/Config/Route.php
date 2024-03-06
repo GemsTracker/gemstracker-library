@@ -1198,14 +1198,19 @@ class Route
                 controllerClass: \Gems\Handlers\Setup\LogfileHandler::class,
                 pages: [
                     'index',
+                    'download',
                     'show',
                 ],
                 parameterRoutes: [
+                    'download',
                     'show',
                 ],
                 parameters: [
                     'filename' => '[a-z0-9A-Z\.-]+',
                 ],
+                postRoutes: [
+                    'download',
+                ]
             ),
 
         ];

@@ -13,6 +13,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Handlers\GemsHandler;
 use Gems\Model\Ra\FolderModel;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Download\DownloadFileAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Symfony\Component\Finder\Finder;
 use Zalt\Model\MetaModellerInterface;
@@ -32,6 +33,7 @@ class LogfileHandler extends GemsHandler
      * @inheritdoc
      */
     public static $actions = [
+        'download'   => DownloadFileAction::class,
         'index'      => BrowseSearchAction::class,
         'show'       => ShowAction::class,
     ];
