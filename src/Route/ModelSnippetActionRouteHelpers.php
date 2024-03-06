@@ -175,10 +175,13 @@ trait ModelSnippetActionRouteHelpers
     public function createHandlerRoute(
         string $baseName,
         string $controllerClass,
-        array $parentParameters = []): array
+        ?string $basePath = null): array
     {
         // Set basic variables for all routes
-        $basePath = '/' . str_replace('.', '/', $baseName);
+        if ($basePath === null) {
+            $basePath = '/' . str_replace('.', '/', $baseName);
+        }
+
         $basePrivilege = 'pr.' . $baseName;
 
         $middleware = [
@@ -192,6 +195,11 @@ trait ModelSnippetActionRouteHelpers
         $combinedParameters = [];
         foreach ($parameters as $parameterName => $parameterRegex) {
             $combinedParameters[] = '{' . $parameterName . ':'. $parameterRegex . '}';
+        }
+
+        $parentParameters = [];
+        if (property_exists($controllerClass, 'parentParameters')) {
+            $parentParameters = $controllerClass::$parentParameters;
         }
 
         $parameterString = join('/', $combinedParameters);

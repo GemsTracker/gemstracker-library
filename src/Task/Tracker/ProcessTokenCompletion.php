@@ -39,12 +39,12 @@ class ProcessTokenCompletion extends \MUtil\Task\TaskAbstract
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($tokenData = null, $userId = null)
+    public function execute($tokenData = null, $userId = null, $lowMemoryUse = true)
     {
         $batch   = $this->getBatch();
         $token   = $this->tracker->getToken($tokenData);
 
-        if ($token->isCompleted()) {
+//        if ($token->isCompleted()) {
             $respTrack = $token->getRespondentTrack();
             $userId    = $userId ? $userId : $this->currentUserRepository->getCurrentUserId();
 
@@ -58,9 +58,11 @@ class ProcessTokenCompletion extends \MUtil\Task\TaskAbstract
 
             $trackId = $respTrack->getRespondentTrackId();
             $batch->setTask('Tracker\\CheckTrackTokens', 'chktrck-' . $trackId, $trackId, $userId);
-        }
+//        }
 
-        // Free memory
-        $this->tracker->removeToken($token);
+        if ($lowMemoryUse) {
+            // Free memory
+            $this->tracker->removeToken($token);
+        }
     }
 }

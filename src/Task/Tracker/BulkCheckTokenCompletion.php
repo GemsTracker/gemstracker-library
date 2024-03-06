@@ -33,7 +33,7 @@ class BulkCheckTokenCompletion extends \MUtil\Task\TaskAbstract
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($tokenData = null, $userId = null)
+    public function execute($tokenData = null, $userId = null, $lowMemoryUse = true)
     {
         $tracker = $this->loader->getTracker();
 
@@ -50,7 +50,7 @@ class BulkCheckTokenCompletion extends \MUtil\Task\TaskAbstract
         if ($completed) {
             $batch   = $this->getBatch();
             foreach($completed as $tokenId) {
-                $batch->setTask('Tracker\\CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
+                $batch->setTask('Tracker\\CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId, $lowMemoryUse);
             }
         }
     }

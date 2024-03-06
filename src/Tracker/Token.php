@@ -299,7 +299,7 @@ class Token
         $this->_gemsData = $values + $defaults + (array) $this->_gemsData;
 
         $table = new TableGateway('gems__tokens', $this->resultFetcher->getAdapter());
-        return $table->update($values, ['gto_id_token' => $this->_tokenId]);
+        return $table->update($values + $defaults, ['gto_id_token' => $this->_tokenId]);
     }
 
     /**
@@ -647,6 +647,18 @@ class Token
     }
 
     /**
+     *
+     * @return ?int Answered by
+     */
+    public function getBy(): int|null
+    {
+        if (isset($this->_gemsData['gto_by']) && $this->_gemsData['gto_by']) {
+            return intval($this->_gemsData['gto_by']);
+        }
+        return null;
+    }
+
+    /**
      * Returns the staff or respondent id of the person
      * who last changed this token.
      *
@@ -789,6 +801,18 @@ class Token
         } else {
             return ['Token\\TokenNotFoundSnippet'];
         }
+    }
+
+    /**
+     *
+     * @return ?int Duration
+     */
+    public function getDuration(): int|null
+    {
+        if (isset($this->_gemsData['gto_duration_in_sec']) && $this->_gemsData['gto_duration_in_sec']) {
+            return intval($this->_gemsData['gto_duration_in_sec']);
+        }
+        return null;
     }
 
     /**
@@ -1337,6 +1361,21 @@ class Token
     public function getStatus(): string
     {
         return $this->tokenRepository->getStatusDescription($this->getStatusCode());
+    }
+
+    /**
+     *
+     * @return ?DateTimeInterface Start time as a date or null
+     */
+    public function getStartTime(): DateTimeInterface|null
+    {
+        if (isset($this->_gemsData['gto_start_time']) && $this->_gemsData['gto_start_time']) {
+            if ($this->_gemsData['gto_start_time'] instanceof DateTimeInterface) {
+                return $this->_gemsData['gto_start_time'];
+            }
+            return Model::getDateTimeInterface($this->_gemsData['gto_start_time'], Tracker::DB_DATETIME_FORMAT);
+        }
+        return null;
     }
 
     /**
