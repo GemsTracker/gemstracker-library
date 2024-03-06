@@ -944,7 +944,7 @@ class Tracker implements TrackerInterface
                     if ($activeId <> $surveyorId || count($tokens) > $maxCount) {
                         // Flush
                         if (count($tokens) > 0) {
-                            $batch->addTask('Tracker\\BulkCheckTokenCompletion', $tokens, $userId);
+                            $batch->addTask('Tracker\\BulkCheckTokenCompletion', $tokens, $userId, null === $userId);
                         }
 
                         $activeId = $surveyorId;

@@ -8,6 +8,9 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Tracker;
+use Gems\Tracker\Token;
+
 /**
  * Check token completion in a batch job
  *
@@ -51,7 +54,7 @@ class CheckTokenCompletion extends \MUtil\Task\TaskAbstract
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($tokenData = null, $userId = null)
+    public function execute($tokenData = null, $userId = null, $lowMemoryUse = true)
     {
         $batch   = $this->getBatch();
         $tracker = $this->loader->getTracker();
@@ -61,6 +64,7 @@ class CheckTokenCompletion extends \MUtil\Task\TaskAbstract
 
         $wasAnswered = $token->isCompleted();
 
+        $oldValues = $this->getTokenValues($token);
         if ($result = $token->checkTokenCompletion($userId)) {
             if ($result & \Gems\Tracker\Token::COMPLETION_DATACHANGE) {
                 $i = $batch->addToCounter('resultDataChanges');
@@ -77,15 +81,12 @@ class CheckTokenCompletion extends \MUtil\Task\TaskAbstract
                     $message = sprintf($this->_("Token '%s' was answered."), $token->getTokenId());
                 }
 
-                /*$this->accesslog->logEntry(
-                        $this->request,
-                        $action,
-                        true,
-                        $message,
-                        $token->getArrayCopy(),
-                        $token->getRespondentId()
-                        );*/
-
+                $this->accesslog->registerChanges(
+                    $this->getTokenValues($token),
+                    $oldValues,
+                    [sprintf("%s was answered", $token->getTokenId())],
+                    $token->getRespondentId()
+                );
             }
             if ($result & \Gems\Tracker\Token::COMPLETION_EVENTCHANGE) {
                 $i = $batch->addToCounter('surveyCompletionChanges');
@@ -97,7 +98,7 @@ class CheckTokenCompletion extends \MUtil\Task\TaskAbstract
         }
 
         if ($token->isCompleted()) {
-            $batch->setTask('Tracker\\ProcessTokenCompletion', 'tokproc-' . $token->getTokenId(), $tokenData, $userId);
+            $batch->setTask('Tracker\\ProcessTokenCompletion', 'tokproc-' . $token->getTokenId(), $tokenData, $userId, $lowMemoryUse);
         }
 
         $batch->setMessage('checkedTokens', sprintf(
@@ -106,6 +107,21 @@ class CheckTokenCompletion extends \MUtil\Task\TaskAbstract
                 ));
 
         // Free memory
-        $tracker->removeToken($token);
+        if ($lowMemoryUse) {
+            $tracker->removeToken($token);
+        }
+    }
+
+    protected function getTokenValues(Token $token)
+    {
+        return [
+            'gto_id_token' => $token->getTokenId(),
+            'gto_start_time' => $token->getStartTime()?->format(Tracker::DB_DATETIME_FORMAT),
+            'gto_in_source' => $token->inSource() ? 1 : 0,
+            'gto_by' => $token->getBy(),
+            'gto_completion_time' => $token->getCompletionTime()?->format(Tracker::DB_DATETIME_FORMAT),
+            'gto_duration_in_sec' => $token->getDuration(),
+            'gto_result' => $token->getResult(),
+        ];
     }
 }
