@@ -20,6 +20,7 @@ class GemsTemplateVariablesPatch extends PatchAbstract
     {
         return [
             "ALTER TABLE gems__comm_templates MODIFY COLUMN gct_name varchar(120) NOT NULL",
+            "ALTER TABLE gems__comm_template_translations MODIFY COLUMN gctt_subject varchar(120) NULL",
             "UPDATE gems__comm_templates SET gct_name = REPLACE(REPLACE(REPLACE(REPLACE(gct_name, '{', '{{'), '}', '}}'), '{{{{', '{{'), '}}}}', '}}')",
             "UPDATE gems__comm_template_translations SET gctt_body = REPLACE(REPLACE(REPLACE(REPLACE(gctt_body, '{', '{{'), '}', '}}'), '{{{{', '{{'), '}}}}', '}}')",
             "UPDATE gems__comm_template_translations SET gctt_subject = REPLACE(REPLACE(REPLACE(REPLACE(gctt_subject, '{', '{{'), '}', '}}'), '{{{{', '{{'), '}}}}', '}}')",
