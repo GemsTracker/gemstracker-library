@@ -36,6 +36,10 @@ class GemsOrganizationsPatch extends PatchAbstract
             $statements[] = 'ALTER TABLE gems__organizations ADD COLUMN gor_sites VARCHAR(255) NULL AFTER gor_url';
         }
 
+        if (!$this->databaseInfo->tableHasColumn('gems__organizations', 'gor_reset_tfa_template')) {
+            $statements[] = 'ALTER TABLE gems__organizations ADD gor_reset_tfa_template bigint unsigned NULL AFTER gor_reset_pass_template';
+        }
+
         return $statements;
     }
 }
