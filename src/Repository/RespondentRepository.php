@@ -65,7 +65,7 @@ class RespondentRepository
             $currentOrganizationPredicate,
         ];
 
-        if ($userOrganizationId !== null && $userOrganizationId !== $organizationId) {
+        if ($userOrganizationId !== null) {
             $userOrganizationPredicate = new Predicate();
             $wherePredicates[] = $userOrganizationPredicate->equalTo('gr2o_id_organization', $userOrganizationId);
             $wherePredicates[] = new Like('gor_accessible_by', '%'.$userOrganizationId.'%');
