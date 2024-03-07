@@ -161,13 +161,10 @@ class ShowTokenLoopAbstract extends TranslatableSnippetAbstract
             $email->htmlTemplate($template, $mailTexts['body'], $mailFields);
 
             $mailSentDate = $token->getMailSentDate();
-            if ($mailSentDate) {
-                $lastMailedDate = new \DateTimeImmutable($mailSentDate);
-            }
 
             // Do not send multiple mails a day
 
-            if ($lastMailedDate instanceof DateTimeInterface && CarbonImmutable::create($lastMailedDate)->isToday()) {
+            if ($mailSentDate instanceof DateTimeInterface && CarbonImmutable::create($mailSentDate)->isToday()) {
                 $html->p($this->_('An email with information to continue later was already sent to your registered email address today.'), ['class' => 'info']);
             } else {
                 $mailer->send($email);

@@ -21,6 +21,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\Log\Loggers;
 use Gems\Messenger\Message\TokenResponse;
+use Gems\Model;
 use Gems\Model\RespondentRelationInstance;
 use Gems\Model\RespondentRelationModel;
 use Gems\Project\ProjectSettings;
@@ -41,14 +42,14 @@ use Gems\User\Organization;
 use Gems\User\User;
 use Gems\Util\Translated;
 use Laminas\Db\Sql\Expression;
-use Laminas\Db\TableGateway\TableGateway;
-use MUtil\Model;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Type\DateTimeType;
 
 
 /**
@@ -61,7 +62,8 @@ use Zalt\Model\Data\FullDataInterface;
  * @since      Class available since version 1.4
  */
 class Token
-{    const COMPLETION_NOCHANGE = 0;
+{
+    const COMPLETION_NOCHANGE = 0;
     const COMPLETION_DATACHANGE = 1;
     const COMPLETION_EVENTCHANGE = 2;
 
@@ -262,8 +264,8 @@ class Token
             return $this->resultFieldLength;
         }
 
-        $model = new \MUtil\Model\TableModel('gems__tokens');
-        self::$staticResultFieldLength = $model->get('gto_result', 'maxlength');
+        $metaModel = $this->getModel()->getMetaModel();
+        self::$staticResultFieldLength = $metaModel->get('gto_result', 'maxlength');
         $this->resultFieldLength = self::$staticResultFieldLength;
 
         return $this->resultFieldLength;
@@ -287,7 +289,7 @@ class Token
             foreach ($values as $key => $val) {
                 $echo .= $key . ': ' . $this->_gemsData[$key] . ' => ' . $val . "\n";
             }
-            \MUtil\EchoOut\EchoOut::r($echo, 'Updated values for ' . $this->_tokenId);
+            dump('Updated values for ' . $this->_tokenId, $echo);
         }
 
         $defaults = [
@@ -298,8 +300,7 @@ class Token
         // Update values in this object
         $this->_gemsData = $values + $defaults + (array) $this->_gemsData;
 
-        $table = new TableGateway('gems__tokens', $this->resultFetcher->getAdapter());
-        return $table->update($values + $defaults, ['gto_id_token' => $this->_tokenId]);
+        return $this->resultFetcher->updateTable('gems__tokens', $values + $defaults, ['gto_id_token' => $this->_tokenId]);
     }
 
     /**
@@ -413,7 +414,7 @@ class Token
             $startTime               = $survey->getStartTime($this);
             if ($startTime instanceof DateTimeInterface) {
                 // Value from source overrules any set date time
-                $values['gto_start_time'] = $startTime->format(\Gems\Tracker::DB_DATETIME_FORMAT);
+                $values['gto_start_time'] = $startTime->format(Tracker::DB_DATETIME_FORMAT);
 
             } else {
                 // Otherwise use the time kept by \Gems.
@@ -451,7 +452,7 @@ class Token
                 $oldCompletionTime = $this->_gemsData['gto_completion_time'];
                 //Set completion time for completion event
                 if ($setCompletionTime) {
-                    $values['gto_completion_time']          = $complTime->format(\Gems\Tracker::DB_DATETIME_FORMAT);
+                    $values['gto_completion_time']          = $complTime->format(Tracker::DB_DATETIME_FORMAT);
                     $this->_gemsData['gto_completion_time'] = $values['gto_completion_time'];
                 }
 
@@ -460,8 +461,8 @@ class Token
                     // Communicate change
                     $result += self::COMPLETION_EVENTCHANGE;
 
-                    if (\Gems\Tracker::$verbose) {
-                        \MUtil\EchoOut\EchoOut::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
+                    if (Tracker::$verbose) {
+                        dump('Source values for ' . $this->_tokenId . ' changed by event.', $changed);
                     }
                 }
 
@@ -546,8 +547,7 @@ class Token
         $replacementLog['gtrp_created']      = new Expression('CURRENT_TIMESTAMP');
         $replacementLog['gtrp_created_by']   = $userId;
 
-        $table = new TableGateway('gems__token_replacements', $this->resultFetcher->getAdapter());
-        $table->insert($replacementLog);
+        $this->resultFetcher->insertIntoTable('gems__token_replacements', $replacementLog);
 
         return $tokenId;
     }
@@ -685,13 +685,7 @@ class Token
      */
     public function getCompletionTime(): DateTimeInterface|null
     {
-        if (isset($this->_gemsData['gto_completion_time']) && $this->_gemsData['gto_completion_time']) {
-            if ($this->_gemsData['gto_completion_time'] instanceof DateTimeInterface) {
-                return $this->_gemsData['gto_completion_time'];
-            }
-            return Model::getDateTimeInterface($this->_gemsData['gto_completion_time'], Tracker::DB_DATETIME_FORMAT);
-        }
-        return null;
+        return $this->getDateTime('gto_completion_time');
     }
 
     /**
@@ -780,11 +774,28 @@ class Token
     public function getDateTime($fieldName): ?DateTimeInterface
     {
         if (isset($this->_gemsData[$fieldName])) {
-            if ($this->_gemsData[$fieldName] instanceof DateTimeInterface) {
-                return $this->_gemsData[$fieldName];
+            if (! $this->_gemsData[$fieldName] instanceof DateTimeInterface) {
+                $this->_gemsData[$fieldName] = $this->getDateTimeValue($this->_gemsData[$fieldName]);
             }
+            return $this->_gemsData[$fieldName];
+        }
+        return null;
+    }
 
-            return Model::getDateTimeInterface($this->_gemsData[$fieldName]);
+    /**
+     *
+     * @param mixed $value
+     * @return ?DateTimeInterface
+     */
+    protected function getDateTimeValue(mixed $value): ?DateTimeInterface
+    {
+        if ($value) {
+            if (! $value instanceof DateTimeInterface) {
+                $value = DateTimeType::toDate($value, Tracker::DB_DATETIME_FORMAT, 'd-m-Y H:i', false);
+            }
+            if ($value instanceof DateTimeInterface) {
+                return $value;
+            }
         }
         return null;
     }
@@ -858,11 +869,11 @@ class Token
 
     /**
      *
-     * @return string Last mail sent date
+     * @return DateTimeInterface Last mail sent date
      */
-    public function getMailSentDate(): string|null
+    public function getMailSentDate(): ?DateTimeInterface
     {
-        return $this->_gemsData['gto_mail_sent_date'];
+        return $this->getDateTime('gto_mail_sent_date');
     }
 
     /**
@@ -870,10 +881,10 @@ class Token
      */
     public function getMenuUrlParameters(): array
     {
-        $params[\Gems\Model::REQUEST_ID] = $this->getTokenId();
-        $params[\Gems\Model::REQUEST_ID1] = $this->getPatientNumber();
-        $params[\Gems\Model::REQUEST_ID2] = $this->getOrganizationId();
-        $params[\Gems\Model::RESPONDENT_TRACK] = $this->getRespondentTrackId();
+        $params[MetaModelInterface::REQUEST_ID] = $this->getTokenId();
+        $params[MetaModelInterface::REQUEST_ID1] = $this->getPatientNumber();
+        $params[MetaModelInterface::REQUEST_ID2] = $this->getOrganizationId();
+        $params[Model::RESPONDENT_TRACK] = $this->getRespondentTrackId();
 
         return $params;
     }
@@ -1369,13 +1380,7 @@ class Token
      */
     public function getStartTime(): DateTimeInterface|null
     {
-        if (isset($this->_gemsData['gto_start_time']) && $this->_gemsData['gto_start_time']) {
-            if ($this->_gemsData['gto_start_time'] instanceof DateTimeInterface) {
-                return $this->_gemsData['gto_start_time'];
-            }
-            return Model::getDateTimeInterface($this->_gemsData['gto_start_time'], Tracker::DB_DATETIME_FORMAT);
-        }
-        return null;
+        return $this->getDateTime('gto_start_time');
     }
 
     /**
@@ -1655,7 +1660,7 @@ class Token
             $this->setRawAnswers($changed);
 
             if (Tracker::$verbose) {
-                \MUtil\EchoOut\EchoOut::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
+                dump('Source values for ' . $this->_tokenId . ' changed by event.', $changed);
             }
         }
 
@@ -1951,15 +1956,7 @@ class Token
      */
     public function setCompletionTime(string|DateTimeInterface|null $completionTime, int $userId): self
     {
-        $values['gto_completion_time'] = null;
-        if (!is_null($completionTime)) {
-            if (! $completionTime instanceof DateTimeInterface) {
-                $completionTime = Model::getDateTimeInterface($completionTime);
-            }
-            if ($completionTime instanceof DateTimeInterface) {
-                $values['gto_completion_time'] = $completionTime->format(Tracker::DB_DATETIME_FORMAT);
-            }
-        }
+        $values['gto_completion_time'] = $this->getDateTimeValue($completionTime);
         $this->_updateToken($values, $userId);
 
         $survey = $this->getSurvey();
@@ -2041,7 +2038,7 @@ class Token
         if ($comment) {
             $values['gto_comment'] = $comment;
         }
-        // \MUtil\EchoOut\EchoOut::track($values);
+        // dump($values);
 
         $changed = $this->_updateToken($values, $userId);
 
@@ -2128,23 +2125,16 @@ class Token
     public function setValidFrom(DateTimeInterface|string|null $validFrom, DateTimeInterface|string|null $validUntil, int $userId): int
     {
         $mailSentDate = $this->getMailSentDate();
-        if (! $mailSentDate instanceof DateTimeInterface) {
-            $mailSentDate = Model::getDateTimeInterface($mailSentDate, [Tracker::DB_DATE_FORMAT, Tracker::DB_DATETIME_FORMAT]);
-        }
         if ($validFrom && $mailSentDate) {
             // Check for newerness
 
-            if ($validFrom instanceof DateTimeInterface) {
-                $start = $validFrom;
-            } else {
-                $start = DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $validFrom);
-            }
+            $start = $this->getDateTimeValue($validFrom);
 
-            if ($start < $mailSentDate) {
+            if ($start->getTimestamp() < $mailSentDate->getTimestamp()) {
                 $values['gto_mail_sent_date'] = null;
                 $values['gto_mail_sent_num']  = 0;
 
-                $format = Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat');
+                $format = Tracker::DB_DATETIME_FORMAT;
 
                 $now = new DateTimeImmutable();
                 $newComment = sprintf(
@@ -2237,7 +2227,7 @@ class Token
         if (! $currentResponses) {
             $currentResponses = array();
         }
-        // \MUtil\EchoOut\EchoOut::track($currentResponses, $responses);
+        // dump($currentResponses, $responses);
 
         // Prepare sql
         $sql = "UPDATE gemsdata__responses
@@ -2257,7 +2247,7 @@ class Token
                 // But only if value changed
                 if ($currentResponses[$fieldName] != $response) {
                     try {
-                        // \MUtil\EchoOut\EchoOut::track($sql, $rValues['gdr_id_token'], $fieldName, $response);
+                        // dump($sql, $rValues['gdr_id_token'], $fieldName, $response);
                         $statement->execute(array(
                             $response,
                             $rValues['gdr_changed'],
@@ -2278,7 +2268,7 @@ class Token
         }
 
         if (count($inserts)>0) {
-            // \MUtil\EchoOut\EchoOut::track($inserts);
+            // dump($inserts);
             try {
                 $fields = array_keys(reset($inserts));
                 $fields = array_map(array($responseDb, 'quoteIdentifier'), $fields);
@@ -2286,11 +2276,11 @@ class Token
                         implode(', ', $fields) . ') VALUES (' .
                         implode(', ', array_fill(1, count($fields), '?')) . ')';
 
-                // \MUtil\EchoOut\EchoOut::track($sql);
+                // dump($sql);
                 $statement = $responseDb->prepare($sql);
 
                 foreach($inserts as $insert) {
-                    // \MUtil\EchoOut\EchoOut::track($insert);
+                    // dump($insert);
                     $statement->execute($insert);
                 }
 
