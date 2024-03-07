@@ -3,18 +3,26 @@
 namespace Gems\User\Validate;
 
 use Gems\Validator\AbstractTranslatingValidator;
+use Laminas\Validator\AbstractValidator;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberUtil;
+use Zalt\Base\TranslateableTrait;
+use Zalt\Base\TranslatorInterface;
 
-class PhoneNumberValidator extends AbstractTranslatingValidator
+class PhoneNumberValidator extends AbstractValidator
 {
+    use TranslateableTrait;
+
     private ?bool $valid = null;
 
     public function __construct(
         private readonly array $config,
+        TranslatorInterface $translator,
         $options = null,
     ) {
         parent::__construct($options);
+
+        $this->translate = $translator;
     }
 
     /**
@@ -23,6 +31,10 @@ class PhoneNumberValidator extends AbstractTranslatingValidator
      */
     public function isValid($value)
     {
+        if (! $value) {
+            // Use different validator for required values
+            return true;
+        }
         $phoneUtil = PhoneNumberUtil::getInstance();
         try {
             $parsedPhone = $phoneUtil->parse($value, $this->config['account']['edit-auth']['defaultRegion']);

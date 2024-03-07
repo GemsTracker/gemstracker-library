@@ -32,7 +32,6 @@ use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
 use Gems\Validator\OneOf;
-use Laminas\Filter\Callback;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Filter\RequireOneCapsFilter;
@@ -338,22 +337,16 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $this->localizedUtil->getCountries(),
         ]);
 
-        $this->setIfExists('grs_phone_1', [
-            'validator' => new PhoneNumberValidator($this->config),
-        ]);
-        $this->setIfExists('grs_phone_2', [
-            'validator' => new PhoneNumberValidator($this->config),
-        ]);
-        $this->setIfExists('grs_phone_3', [
-            'validator' => new PhoneNumberValidator($this->config),
-        ]);
-        $this->setIfExists('grs_phone_4', [
-            'validator' => new PhoneNumberValidator($this->config),
-        ]);
-        $this->metaModel->setOnSave('grs_phone_1', (new PhoneNumberFilter($this->config))->filter(...));
-        $this->metaModel->setOnSave('grs_phone_2', (new PhoneNumberFilter($this->config))->filter(...));
-        $this->metaModel->setOnSave('grs_phone_3', (new PhoneNumberFilter($this->config))->filter(...));
-        $this->metaModel->setOnSave('grs_phone_4', (new PhoneNumberFilter($this->config))->filter(...));
+        $phoneFilter    = (new PhoneNumberFilter($this->config))->filter(...);
+        $phoneValidator = new PhoneNumberValidator($this->config, $this->translate);
+        $this->setIfExists('grs_phone_1', ['validator' => $phoneValidator,]);
+        $this->setIfExists('grs_phone_2', ['validator' => $phoneValidator,]);
+        $this->setIfExists('grs_phone_3', ['validator' => $phoneValidator,]);
+        $this->setIfExists('grs_phone_4', ['validator' => $phoneValidator,]);
+        $this->metaModel->setOnSave('grs_phone_1', $phoneFilter);
+        $this->metaModel->setOnSave('grs_phone_2', $phoneFilter);
+        $this->metaModel->setOnSave('grs_phone_3', $phoneFilter);
+        $this->metaModel->setOnSave('grs_phone_4', $phoneFilter);
 
         $this->currentGroup = $this->_('Settings');
         $this->setIfExists('grs_iso_lang', [

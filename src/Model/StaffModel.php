@@ -13,7 +13,6 @@
 namespace Gems\Model;
 
 use Gems\Encryption\ValueEncryptor;
-use Gems\Model\Dependency\ActivationDependency;
 use Gems\Model\Type\EncryptedField;
 use Gems\User\Embed\EmbedLoader;
 use Gems\User\Filter\PhoneNumberFilter;
@@ -308,7 +307,7 @@ class StaffModel extends JoinModel
         ]);
         $this->set('gsf_phone_1', [
             'label' => $this->_('Mobile phone'),
-            'validator' => new PhoneNumberValidator($this->config),
+            'validator' => new PhoneNumberValidator($this->config, $this->translate),
         ]);
         $this->setOnSave('gsf_phone_1', (new PhoneNumberFilter($this->config))->filter(...));
 
