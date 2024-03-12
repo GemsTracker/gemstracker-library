@@ -7,6 +7,7 @@ namespace Gems\Handlers\Auth;
 use Gems\Audit\AuditLog;
 use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\AuthNew\IpFinder;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\FlashMessageMiddleware;
@@ -50,7 +51,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
         if (
             !$user->isActive()
             || !$user->canResetPassword()
-            || !$user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)
+            || !$user->isAllowedIpForLogin(IpFinder::getClientIp($request))
         ) {
             $this->statusMessenger->addError($this->translator->trans('You cannot reset your password.'), true);
             if ($request->getMethod() === 'POST') {

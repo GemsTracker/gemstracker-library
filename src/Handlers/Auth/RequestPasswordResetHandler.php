@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gems\Handlers\Auth;
 
 use Gems\Audit\AuditLog;
+use Gems\AuthNew\IpFinder;
 use Gems\AuthNew\PasswordResetThrottleBuilder;
 use Gems\Communication\CommunicationRepository;
 use Gems\Communication\Exception;
@@ -85,7 +86,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
         }
 
         $passwordResetThrottle = $this->passwordResetThrottleBuilder->buildPasswordResetThrottle(
-            $request->getServerParams()['REMOTE_ADDR'] ?? '',
+            IpFinder::getClientIp($request),
             (int)$input['organization'],
         );
 
@@ -101,7 +102,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
             && $user->isActive()
             && $user->canResetPassword()
             && $user->isAllowedOrganization((int)$input['organization'])
-            && $user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)
+            && $user->isAllowedIpForLogin(IpFinder::getClientIp($request))
         ) {
             try {
                 $this->sendUserResetEMail($user);

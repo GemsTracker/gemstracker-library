@@ -23,16 +23,6 @@ class RequestWrapper
         $this->request = $request;
     }
 
-    /*public function getClientIp(): ?string
-    {
-        $server = $this->request->getServerParams();
-        if (isset($server['REMOTE_ADDR'])) {
-            return $server['REMOTE_ADDR'];
-        }
-
-        return null;
-    }*/
-
     /**
      * @return string[]
      */

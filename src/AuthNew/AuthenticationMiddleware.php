@@ -79,7 +79,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 ->withAttribute(self::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE, $authenticationService->getIdentity());
         }
 
-        if (!$user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)) {
+        if (!$user->isAllowedIpForLogin(IpFinder::getClientIp($request))) {
             $authenticationService->logout();
             if (isset($tfaService)) {
                 $tfaService->logout();
