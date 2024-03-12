@@ -144,7 +144,9 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
             $model = new \Gems\Model\JoinModel('trackfields' , 'gems__track_fields');
             $model->set('gtf_field_name', 'label', $this->_('Name'));
-            $this->autofilterParameters['extraFilter'][] = DatabaseModelAbstract::WHERE_NONE;
+            $this->autofilterParameters['extraFilter'] = [
+                DatabaseModelAbstract::WHERE_NONE,
+            ];
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
 
             return $model;
