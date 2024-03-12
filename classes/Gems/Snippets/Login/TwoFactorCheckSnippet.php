@@ -69,7 +69,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
             return false;
         }
 
-        return $this->request->getServer('REMOTE_ADDR');
+        return $this->request->getClientIp();
     }
 
     /**

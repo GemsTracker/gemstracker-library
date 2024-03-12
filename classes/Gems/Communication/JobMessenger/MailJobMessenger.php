@@ -66,8 +66,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
             } catch (\Zend_Mail_Exception $exception) {
                 $fields = $mailer->getMailFields(false);
 
-                $info = sprintf("Error mailing to %s respondent %s with email address %s.", $fields['organization'], $fields['full_name'], $fields['email']
-                );
+                $info = sprintf("Error mailing token %s to %s respondent %s with email address %s.", $token->getTokenId(), $token->getOrganization()->getName(), $token->getRespondentName(), $email);
 
                 // Use a gems exception to pass extra information to the log
                 $gemsException = new \Gems_Exception($info, 0, $exception);

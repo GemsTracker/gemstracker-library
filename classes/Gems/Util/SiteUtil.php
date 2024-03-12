@@ -284,6 +284,9 @@ class SiteUtil extends UtilAbstract
                 if (!empty($basePath) && !\MUtil_String::contains($referrer, $basePath)) {
                     $referrer = rtrim($referrer, '/') . $basePath;
                 }
+                if (! (\MUtil_String::startsWith($referrer, 'https://') || \MUtil_String::startsWith($referrer, 'http://'))) {
+                    $referrer = (\MUtil_Https::on() ? 'https' : 'http') . '://' . $referrer;
+                }
                 $site = $this->getSiteByFullUrl($referrer, $isPost);
                 if ($site) {
                     if ($site->isNew()) {
