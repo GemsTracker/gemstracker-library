@@ -2,6 +2,7 @@
 
 namespace Gems\Middleware;
 
+use Gems\AuthNew\IpFinder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -13,9 +14,9 @@ class ClientIpMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $serverParams = $request->getServerParams();
-        if (isset($serverParams['REMOTE_ADDR'])) {
-            $request = $request->withAttribute(static::CLIENT_IP_ATTRIBUTE, $serverParams['REMOTE_ADDR']);
+        $ipAddress = IpFinder::getClientIp($request);
+        if ($ipAddress) {
+            $request = $request->withAttribute(static::CLIENT_IP_ATTRIBUTE, $ipAddress);
         }
 
         return $handler->handle($request);

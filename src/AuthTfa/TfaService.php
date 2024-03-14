@@ -4,6 +4,7 @@ namespace Gems\AuthTfa;
 
 use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\AuthNew\AuthenticationService;
+use Gems\AuthNew\IpFinder;
 use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\User\User;
 use Mezzio\Session\SessionInterface;
@@ -62,7 +63,7 @@ class TfaService
 
         // todo: check if organization has TFA enabled at all?
 
-        if (!$user->isTwoFactorRequired($request->getServerParams()['REMOTE_ADDR'])) {
+        if (!$user->isTwoFactorRequired(IpFinder::getClientIp($request))) {
             return false;
         }
 

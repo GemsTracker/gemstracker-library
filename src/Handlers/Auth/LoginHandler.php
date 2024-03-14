@@ -9,6 +9,7 @@ use Gems\AuthNew\Adapter\GemsTrackerAuthenticationResult;
 use Gems\AuthNew\Adapter\GenericRoutedAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
+use Gems\AuthNew\IpFinder;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\Layout\LayoutRenderer;
@@ -133,7 +134,7 @@ class LoginHandler implements RequestHandlerInterface
             (int)$input['organization'],
             $input['username'],
             $input['password'],
-            $request->getServerParams()['REMOTE_ADDR'] ?? null,
+            IpFinder::getClientIp($request),
         ));
 
         $blockMinutes = $loginThrottle->processAuthenticationResult($result);

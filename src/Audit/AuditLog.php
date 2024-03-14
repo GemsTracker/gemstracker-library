@@ -4,6 +4,7 @@ namespace Gems\Audit;
 
 use Exception;
 use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\AuthNew\IpFinder;
 use Gems\Db\CachedResultFetcher;
 use Gems\Exception\Coding;
 use Gems\Middleware\CurrentOrganizationMiddleware;
@@ -183,20 +184,6 @@ class AuditLog
             return array_combine(array_column($actions, 'gls_name'), $actions);
         }
         return [];
-    }
-
-    /**
-     * Get the user IP address
-     *
-     * @return string|null
-     */
-    public function getIp(): string|null
-    {
-        $params = $this->request->getServerParams();
-        if (isset($params['REMOTE_ADDR'])) {
-            return $params['REMOTE_ADDR'];
-        }
-        return null;
     }
 
     /**
@@ -464,7 +451,7 @@ class AuditLog
             'gla_changed'       => (int) ($changed || $this->isChanged($this->request)),
             'gla_message'       => json_encode($message),
             'gla_data'          => json_encode($data),
-            'gla_remote_ip'     => $this->getIp(),
+            'gla_remote_ip'     => IpFinder::getClientIp($this->request),
             'gla_respondent_id' => $respondentId,
             'gla_organization'  => $this->getCurrentOrganizationId(),
             'gla_role'          => $this->getCurrentRole(),
