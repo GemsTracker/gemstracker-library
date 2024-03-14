@@ -5,6 +5,7 @@ namespace Gems\User;
 use DateTimeImmutable;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\ResultInterface;
+use Laminas\Db\Adapter\Exception\InvalidQueryException;
 use Laminas\Db\Sql\Sql;
 
 class GemsUserIdGenerator
@@ -52,10 +53,15 @@ class GemsUserIdGenerator
                 'gui_created' => $now->format('Y-m-d H:i:s'),
             ];
             $insert = $sql->insert('gems__user_ids')->values($values);
-            $result = $sql->prepareStatementForSqlObject($insert)->execute();
-            if ((!$result instanceof ResultInterface) || 0 === $result->getAffectedRows()) {
+            try {
+                $result = $sql->prepareStatementForSqlObject($insert)->execute();
+                if ((!$result instanceof ResultInterface) || 0 === $result->getAffectedRows()) {
+                    $out = null;
+                }
+            } catch(InvalidQueryException $e) {
                 $out = null;
             }
+
         } while (null === $out);
 
         return $out;
