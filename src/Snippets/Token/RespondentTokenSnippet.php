@@ -95,8 +95,8 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
 
         $HTML = Html::create();
 
-        $metaModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
-        $metaModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gto_round_description', 'table', 'small');
+        $metaModel->set('gr2t_track_info', 'table', 'small');
 
         $roundIcon[] = Late::iif($bridge->gto_icon_file, Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
                 Late::iif($bridge->gro_icon_file, Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
