@@ -357,7 +357,7 @@ class ConfigProvider
                 // messenger.bus.other => [MessengerFactory::class, 'message.bus.other'],
 
                 'messenger.transport.default' => TransportFactory::class,
-                // messenger.transport.name => TransportFactory::class,
+                'messenger.transport.doctrine' => TransportFactory::class,
 
                 \Symfony\Component\Mailer\Transport\TransportInterface::class => MailTransportFactory::class,
 

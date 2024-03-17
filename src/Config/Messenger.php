@@ -2,6 +2,7 @@
 
 namespace Gems\Config;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Gems\Messenger\Message\CommJob;
 use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SetCommJobTokenAsSent;
@@ -34,11 +35,11 @@ class Messenger
                     'dsn' => 'sync://',
                     'messengerBus' => 'messenger.bus.default',
                 ],
-                /* 'messenger.transport.doctrine' => [
+                'messenger.transport.doctrine' => [
                     'dsn' => 'doctrine://default',
-                    'entityManager' => EntityManagerInterface:: class,
+                    'entityManager' => EntityManagerInterface::class,
                 ],
-                'messenger.transport.redis' => [
+                /*'messenger.transport.redis' => [
                     'dsn' => 'redis://localhost:6379/messages',
                 ],
                 'messenger.transport.test' => [
