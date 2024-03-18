@@ -34,7 +34,7 @@ class CommJobHandler
             $allTokenCount += count($allTokens);
 
             if (!$this->commJobRepository->isTokenInQueue($firstToken)) {
-                $message = new SendTokenMessage($commJob, $firstToken, $allTokens);
+                $message = new SendTokenMessage($commJob->getId(), $firstToken, $allTokens, $commJob->isPreview(), $commJob->isForced());
 
                 $this->commJobRepository->setTokenIsInQueue($firstToken);
                 foreach ($allTokens as $token) {

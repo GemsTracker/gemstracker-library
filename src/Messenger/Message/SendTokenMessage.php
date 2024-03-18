@@ -18,18 +18,20 @@ namespace Gems\Messenger\Message;
 class SendTokenMessage
 {
     public function __construct(
-        private readonly CommJob $job,
+        private readonly int $jobId,
         private readonly string $tokenId,
         private readonly array $markedTokens,
+        private readonly bool $preview,
+        private readonly bool $force,
     )
     {}
 
     /**
-     * @return CommJob
+     * @return int
      */
-    public function getJob(): CommJob
+    public function getJobId(): int
     {
-        return $this->job;
+        return $this->jobId;
     }
 
     /**
@@ -46,5 +48,21 @@ class SendTokenMessage
     public function getMarkedTokens(): array
     {
         return $this->markedTokens;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPreview(): bool
+    {
+        return $this->preview;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForced(): bool
+    {
+        return $this->force;
     }
 }

@@ -34,16 +34,15 @@ class SendTokenMessageHandler
 
     public function __invoke(SendTokenMessage $message)
     {
-        $job     = $message->getJob();
-        $jobId   = $job->getId();
-        $jobData = $job->getJobData();
+        $jobId = $message->getJobId();
+        $jobData = $this->commJobRepository->getJob($jobId);
 
         $token = $this->tracker->getToken($message->getTokenId());
 
         $messenger = $this->commJobRepository->getJobMessenger($jobData['gcm_type']);
-        $messenger->sendCommunication($jobData, $token, $job->isPreview());
+        $messenger->sendCommunication($jobData, $token, $message->isPreview());
 
-        if (! $job->isPreview()) {
+        if (! $message->isPreview()) {
             foreach ($message->getMarkedTokens() as $tokenId) {
                 $token = $this->tracker->getToken($tokenId);
                 $event = new TokenMarkedAsSent($token, $jobData);
