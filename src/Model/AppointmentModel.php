@@ -158,6 +158,13 @@ class AppointmentModel extends GemsMaskedModel
                 false
             );
         }
+        if ($this->metaModel->has('gap_id_episode') && ! $this->joinStore->hasTable('gems__episodes_of_care')) {
+            $this->addLeftTable(
+                'gems__episodes_of_care',
+                ['gap_id_episode' => 'gec_episode_of_care_id'],
+                false
+            );
+        }
     }
 
     /**
