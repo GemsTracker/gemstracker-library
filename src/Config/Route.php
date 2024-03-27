@@ -23,6 +23,7 @@ use Gems\Handlers\Respondent\CalendarHandler;
 use Gems\Handlers\Setup\Database\PatchHandler;
 use Gems\Handlers\Setup\Database\SeedHandler;
 use Gems\Handlers\Setup\Database\TableHandler;
+use Gems\Handlers\Setup\QueueMessageCountHandler;
 use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\AuditLogMiddleware;
 use Gems\Middleware\ClientIpMiddleware;
@@ -1193,6 +1194,17 @@ class Route
                 parameterRoutes: [
                     'show',
                 ],
+            ),
+            ...$this->createRoute(
+                name: 'setup.queue',
+                path: '/setup/queue',
+                middleware: [
+                    EmptyHandler::class,
+                ],
+                methods: ['GET'],
+            ),
+            ...$this->createHandlerRoute(baseName: 'setup.queue.messageCount',
+                controllerClass: QueueMessageCountHandler::class,
             ),
 
         ];

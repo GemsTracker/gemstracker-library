@@ -5,6 +5,7 @@ namespace Gems\Config;
 use Gems\Handlers\Setup\CommJobHandler;
 use Gems\Handlers\Setup\ConsentHandler;
 use Gems\Handlers\Setup\MailCodeHandler;
+use Gems\Handlers\Setup\QueueMessageCountHandler;
 use Gems\Handlers\Setup\ReceptionCodeHandler;
 use Gems\Menu\HandlerMenuTrait;
 use Zalt\Base\TranslatorInterface;
@@ -704,6 +705,14 @@ class Menu
                             ],
                         ],
                     ],
+                ],
+                [
+                    'name' => 'setup.queue',
+                    'label' => $this->translator->trans('Queues'),
+                    'type' => 'container',
+                    'children' => [
+                        $this->createMenuForHandler(QueueMessageCountHandler::class, 'setup.queue.messageCount', $this->translator->_('Message count')),
+                    ]
                 ],
                 [
                     'name' => 'setup.codes',
