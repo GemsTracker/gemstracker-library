@@ -38,6 +38,8 @@ class DoctrineDbalFactory implements FactoryInterface
             $connectionConfig->setResultCache($cache);
         }
 
+        $connection->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+
         return $connection;
     }
 }
