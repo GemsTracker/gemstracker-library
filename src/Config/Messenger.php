@@ -16,6 +16,7 @@ class Messenger
     public function __invoke()
     {
         return [
+            'failure_transport' => 'messenger.transport.failed',
             'buses' => [
                 'messenger.bus.default' => [
                     'middleware' => [],
@@ -41,6 +42,10 @@ class Messenger
                 ],
                 'messenger.transport.doctrine' => [
                     'dsn' => 'doctrine://default',
+                    'entityManager' => EntityManagerInterface::class,
+                ],
+                'messenger.transport.failed' => [
+                    'dsn' => 'doctrine://default?queue_name=failed',
                     'entityManager' => EntityManagerInterface::class,
                 ],
                 /*'messenger.transport.redis' => [
