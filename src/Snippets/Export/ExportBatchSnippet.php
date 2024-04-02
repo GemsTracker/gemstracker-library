@@ -15,6 +15,7 @@ use Gems\Batch\BatchRunnerLoader;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\SnippetsActions\Export\ExportAction;
+use Gems\Task\Export\InitDbExport;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -94,8 +95,13 @@ class ExportBatchSnippet extends SnippetAbstract
 
                 $batch->setSessionVariable('files', []);
 
-                $batch->addTask('Export\\ExportCommand', $type, 'addExport', $post);
-                $batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);
+                $modelFilter = [];
+                if ($this->exportAction->batch->hasSessionVariable('modelFilter')) {
+                    $modelFilter = $this->exportAction->batch->getSessionVariable('modelFilter');
+                }
+
+                $batch->addTask(InitDbExport::class, $this->model::class, $post, $modelFilter);
+                //$batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);
 
                 $batch->autoStart = true;
             }
