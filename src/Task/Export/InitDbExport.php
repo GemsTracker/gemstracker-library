@@ -2,6 +2,7 @@
 
 namespace Gems\Task\Export;
 
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Export\Db\ModelContainer;
 use Gems\Messenger\Message\Export\ModelExportPart;
 use MUtil\Task\TaskAbstract;
@@ -14,7 +15,14 @@ class InitDbExport extends TaskAbstract
 
     protected ProjectOverloader|null $overLoader = null;
 
-    public function execute(string $modelName = null, array $exportOptions = [], array $modelFilter = [], int $rowsPerBatch = 500)
+    public function execute(
+        string $modelName = null,
+        array $exportOptions = [],
+        array $modelFilter = [],
+        array $modelApplyFunctions = [],
+        string $exportType = null,
+        int $rowsPerBatch = 500
+    )
     {
         $batch = $this->getBatch();
         $modelFilter = $batch->getSessionVariable('modelFilter');
@@ -28,14 +36,32 @@ class InitDbExport extends TaskAbstract
 
         for ($i = 0; $i < $totalTasks; $i++) {
             $modelExportPart = new ModelExportPart(
-                $batch->getId(),
-                $modelName,
-                $modelFilter,
-                $rowsPerBatch,
-                $i+1,
+                exportId: $batch->getId(),
+                filename: $this->getExportFileName($model),
+                exportType: $exportType,
+                userId: $batch->getVariable(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE),
+                modelClassName: $modelName,
+                applyFunctions: $modelApplyFunctions,
+                filter: $modelFilter,
+                itemCount: $rowsPerBatch,
+                part: $i+1,
+                totalRows: $totalRows,
             );
             $batch->addTask(DbExportPart::class, $modelExportPart);
         }
+    }
+
+    protected function getExportFileName(DataReaderInterface $model)
+    {
+        $now = new \DateTimeImmutable();
+        $extension = '';
+        $nameParts = [
+            $model->getName(),
+            $now->format('Ymdhis'),
+            $extension,
+        ];
+
+        return join('.', $nameParts);
     }
 
 
@@ -46,10 +72,5 @@ class InitDbExport extends TaskAbstract
         }
 
         return $this->modelContainer->get($modelName);
-    }
-
-    public function getRegistryRequests()
-    {
-        return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
     }
 }

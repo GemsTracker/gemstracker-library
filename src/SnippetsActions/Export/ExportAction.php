@@ -61,5 +61,7 @@ class ExportAction extends BrowseFilteredAction
 
     public string $formTitle = '';
 
+    public $modelApplyFunctions = [];
+
     public string $step = self::STEP_FORM;
 }

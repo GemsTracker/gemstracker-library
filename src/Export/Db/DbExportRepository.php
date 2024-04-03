@@ -26,23 +26,32 @@ class DbExportRepository
     {
         $i = (($part->part - 1) * $part->itemCount) + 1;
         foreach($data as $row) {
-            $this->addRowToExportData($part->exportId, $i, $row);
+            $this->addRowToExportData($part, $i, $row);
             $i++;
         }
     }
 
-    protected function addHeaderToExportData(ModelExportPart $part)
+    protected function addHeaderToExportData(ModelExportPart $part): void
     {
         $header = $this->exportRepository->getHeaders($part);
-        $this->addRowToExportData($part->exportId, 0, $header);
+        $this->addRowToExportData($part, 0, $header);
     }
 
-    protected function addRowToExportData(string $exportId, int $order, array $row): void
+    protected function addRowToExportData(ModelExportPart $part, int $order, array $row): void
     {
         $this->resultFetcher->insertIntoTable(static::EXPORT_DB, [
-            'gfex_export_id' => $exportId,
+            'gfex_export_id' => $part->exportId,
+            'gfex_id_user' => $part->userId,
             'gfex_order' => $order,
             'gfex_data' => json_encode($row),
+            'gfex_row_count' => $part->totalRows,
+            'gfex_file_name' => $part->filename,
+            'gfex_export_type' => $part->exportType,
         ]);
+    }
+
+    protected function getFilename(ModelExportPart $part)
+    {
+
     }
 }

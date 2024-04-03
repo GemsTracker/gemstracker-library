@@ -18,15 +18,7 @@ class DbExportPart extends TaskAbstract
          */
         $dbExportRepository = $this->overLoader->getContainer()->get(DbExportRepository::class);
         if (is_array($exportPart)) {
-            $exportPart = new ModelExportPart(
-                $exportPart['exportId'],
-                $exportPart['modelClassName'],
-                $exportPart['filter'],
-                $exportPart['itemCount'],
-                $exportPart['part'],
-                $exportPart['translateHeaders'],
-                $exportPart['translateValues'],
-            );
+            $exportPart = new ModelExportPart(...$exportPart);
         }
         $dbExportRepository->insertDbPart($exportPart);
     }

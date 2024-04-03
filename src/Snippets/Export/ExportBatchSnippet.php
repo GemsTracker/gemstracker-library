@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
@@ -44,6 +45,8 @@ class ExportBatchSnippet extends SnippetAbstract
      */
     protected DataReaderInterface $model;
 
+    public $modelApplyFunctions = [];
+
     protected string $formTitle = '';
 
     public function __construct(
@@ -75,6 +78,9 @@ class ExportBatchSnippet extends SnippetAbstract
         $post = $this->requestInfo->getRequestPostParams();
         $jobInfo = [];
 
+        $currentUserId = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE);
+        $batch->setVariable(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE, $currentUserId);
+
         if ($batch->isFinished()) {
             $this->exportAction->step = ExportAction::STEP_DOWNLOAD;
             return new RedirectResponse($batch->getDownloadUrl());
@@ -100,7 +106,7 @@ class ExportBatchSnippet extends SnippetAbstract
                     $modelFilter = $this->exportAction->batch->getSessionVariable('modelFilter');
                 }
 
-                $batch->addTask(InitDbExport::class, $this->model::class, $post, $modelFilter);
+                $batch->addTask(InitDbExport::class, $this->model::class, $post, $modelFilter, $this->modelApplyFunctions, $type);
                 //$batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);
 
                 $batch->autoStart = true;

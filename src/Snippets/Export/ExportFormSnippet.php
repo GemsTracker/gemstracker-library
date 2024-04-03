@@ -68,7 +68,7 @@ class ExportFormSnippet extends FormSnippetAbstract
             throw new SnippetException(sprintf("Incorrect form type %s, expected a \gems\Form form!"), get_class($form));
         }
 
-        $form->setAutoSubmit(\MUtil\Html::attrib('href', array('action' => $this->requestInfo->getCurrentAction())), 'export-form', true);
+        $form->setAutoSubmit(Html::attrib('href', array('action' => $this->requestInfo->getCurrentAction())), 'export-form', true);
 
         $element = $form->createElement('select', 'type', [
             'label' => $this->_('Export to'),
@@ -155,6 +155,7 @@ class ExportFormSnippet extends FormSnippetAbstract
 
     public function hasHtmlOutput(): bool
     {
+        $batchId = 'export_data_' . $this->model->getName() . (new \DateTimeImmutable())->format('YmdHis');
         $this->exportAction->batch = new ExportRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
         $model = $this->getModel();
 
