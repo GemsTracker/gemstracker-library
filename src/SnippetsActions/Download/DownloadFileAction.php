@@ -13,8 +13,9 @@ namespace Gems\SnippetsActions\Download;
 
 use Gems\Snippets\File\DownloadFileSnippet;
 use Gems\SnippetsActions\Show\ShowAction;
+use Zalt\SnippetsActions\PostActionInterface;
 
-class DownloadFileAction extends ShowAction
+class DownloadFileAction extends ShowAction implements PostActionInterface
 {
     /**
      * @inheritDoc

@@ -34,6 +34,8 @@ use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\SnippetsActions\Browse\BrowseTableAction;
 use Zalt\SnippetsActions\ModelActionInterface;
+use Zalt\SnippetsActions\NoCsrfInterface;
+use Zalt\SnippetsActions\PostActionInterface;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -336,8 +338,6 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                 $action->cacheTags = $this->cacheTags;
             }
             $action->class = "formTable";
-            $action->csrfName = $this->getCsrfTokenName();
-            $action->csrfToken = $this->getCsrfToken($action->csrfName);
             $action->addCurrentParent = true;
             $action->addCurrentChildren = false;
             $action->subjects = [$this->getTopic(1), $this->getTopic(2)];
@@ -354,9 +354,12 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
 
         } elseif ($action instanceof DeleteAction) {
             $action->contentTitle = sprintf($this->_('Delete %s'), $this->getTopic(1));
+            $action->subjects = [$this->getTopic(1), $this->getTopic(2)];
+        }
+
+        if ($action instanceof PostActionInterface && !($action instanceof NoCsrfInterface)) {
             $action->csrfName = $this->getCsrfTokenName();
             $action->csrfToken = $this->getCsrfToken($action->csrfName);
-            $action->subjects = [$this->getTopic(1), $this->getTopic(2)];
         }
 
         if (property_exists($this, 'usageCounter') && property_exists($action, 'usageCounter')) {
