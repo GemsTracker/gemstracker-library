@@ -3,6 +3,7 @@
 namespace Gems\Export\Type;
 
 use DateTimeInterface;
+use Gems\Export\ExportSettings\ExportSettingsInterface;
 use Gems\Html;
 use Zalt\Html\AElement;
 use Zalt\Html\ElementInterface;
@@ -16,7 +17,30 @@ abstract class ExportAbstract implements ExportInterface
 {
     protected array $modelFilterAttributes = ['multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay'];
 
-    protected function filterDateFormat($value, string|null $dateFormat, string|null $storageFormat): string|null
+    /**
+     * Single point for mitigating csv injection vulnerabilities
+     *
+     * https://www.owasp.org/index.php/CSV_Injection
+     *
+     * @param string $input
+     * @return string
+     */
+    protected function filterCsvInjection(string $input): string
+    {
+        // Try to prevent csv injection
+        $dangers = ['=', '+', '-', '@'];
+
+        // Trim leading spaces for our test
+        $trimmed = trim($input ?? '');
+
+        if (strlen($trimmed)>1 && in_array($trimmed[0], $dangers)) {
+            return "'" . $input;
+        }  else {
+            return $input;
+        }
+    }
+
+    protected function filterDateFormat(mixed $value, string|null $dateFormat, string|null $storageFormat, ExportSettingsInterface|null $exportSettings): string|null
     {
         if ($value instanceof DateTimeInterface) {
             return $value->format($dateFormat);
@@ -105,10 +129,10 @@ abstract class ExportAbstract implements ExportInterface
      * Filter the data in a row so that correct values are being used
      * @param MetaModelInterface $metaModel
      * @param  array $row a row in the model
-     * @param bool $translateValues should the multiOption values be translated to their display value?
+     * @param ExportSettingsInterface|null $exportSettings
      * @return array The filtered row
      */
-    protected function filterRow(MetaModelInterface $metaModel, array $row, bool $translateValues = false): array
+    public function filterRow(MetaModelInterface $metaModel, array $row, ExportSettingsInterface|null $exportSettings): array
     {
         $exportRow = [];
         foreach ($row as $columnName => $result) {
@@ -124,7 +148,7 @@ abstract class ExportAbstract implements ExportInterface
                                 continue 2;
                             }
 
-                            $result = $this->filterDateFormat($result, $optionValue, $metaModel->get($columnName, 'storageFormat'));
+                            $result = $this->filterDateFormat($result, $optionValue, $metaModel->get($columnName, 'storageFormat'), $exportSettings);
 
                             break;
                         case 'formatFunction':
@@ -136,10 +160,7 @@ abstract class ExportAbstract implements ExportInterface
 
                             break;
                         case 'multiOptions':
-                            if (!$translateValues) {
-                                break;
-                            }
-                            $result = $this->filterMultiOptions($result, $optionValue);
+                            $result = $this->filterMultiOptions($result, $optionValue, $exportSettings);
 
                             break;
                         default:

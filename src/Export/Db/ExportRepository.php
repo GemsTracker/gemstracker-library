@@ -4,6 +4,9 @@ namespace Gems\Export\Db;
 
 use DateTimeInterface;
 use Gems\Db\ResultFetcher;
+use Gems\Export\ExportSettings\CsvExportSettings;
+use Gems\Export\ExportSettings\ExcelExportSettings;
+use Gems\Export\Type\ExportInterface;
 use Gems\Html;
 use Gems\Messenger\Message\Export\ModelExportPart;
 use Zalt\Html\AElement;
@@ -12,6 +15,7 @@ use Zalt\Html\HtmlInterface;
 use Zalt\Html\Sequence;
 use Zalt\Late\Late;
 use Zalt\Late\LateInterface;
+use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 
@@ -20,6 +24,7 @@ class ExportRepository
     protected array $modelFilterAttributes = ['multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay'];
     public function __construct(
         protected readonly ModelContainer $modelContainer,
+        protected ProjectOverloader $projectOverloader,
     )
     {}
 
@@ -32,7 +37,9 @@ class ExportRepository
         $metaModel = $model->getMetaModel();
         $labeledColumns = $this->getLabeledColumns($metaModel);
 
-        if (!$part->translateHeaders) {
+
+
+        if (!($part->exportSettings instanceof ExcelExportSettings || $part->exportSettings instanceof CsvExportSettings) || !$part->exportSettings->translateHeaders) {
             return $labeledColumns;
         }
 
@@ -69,8 +76,15 @@ class ExportRepository
         $model = $this->modelContainer->get($part->modelClassName);
         $data = $model->loadPage($part->part, $part->itemCount, $part->filter);
 
+
+        $exportClass = $this->projectOverloader->create('Export\\Type\\' . $part->exportType);
+
+        if (!$exportClass instanceof ExportInterface) {
+            throw new \RuntimeException('No valid export class could be loaded.');
+        }
+
         foreach($data as $key => $row) {
-            $data[$key] = $this->filterRow($model->getMetaModel(), $row, $part->translateValues);
+            $data[$key] = $exportClass->filterRow($model->getMetaModel(), $row, $part->exportSettings);
         }
 
         return $data;
