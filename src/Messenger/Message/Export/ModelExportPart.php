@@ -2,6 +2,8 @@
 
 namespace Gems\Messenger\Message\Export;
 
+use Gems\Export\ExportSettings\ExportSettingsInterface;
+
 class ModelExportPart
 {
     public function __construct(
@@ -15,8 +17,7 @@ class ModelExportPart
         public readonly int $itemCount = 500,
         public readonly int $part = 1,
         public readonly int $totalRows = 0,
-        public readonly bool $translateHeaders = false,
-        public readonly bool $translateValues = false,
+        public readonly ExportSettingsInterface|null $exportSettings = null,
     )
     {
     }
