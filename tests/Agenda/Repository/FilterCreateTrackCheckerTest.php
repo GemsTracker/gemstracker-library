@@ -13,14 +13,12 @@ use Gems\Agenda\Repository\ActivityRepository;
 use Gems\Agenda\Repository\FilterCreateTrackChecker;
 use Gems\Agenda\Repository\LocationRepository;
 use Gems\Agenda\Repository\ProcedureRepository;
-use Gems\Db\ResultFetcher;
 use Gems\Repository\RespondentRepository;
-use Gems\Tracker;
 use Gems\Tracker\RespondentTrack;
-use MUtil\Translate\Translator;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Zalt\Mock\MockTranslator;
 
 /**
  * Description of AppointmentTest
@@ -137,9 +135,6 @@ class FilterCreateTrackCheckerTest extends TestCase
 
     protected function getAppointment(array $appointmentData)
     {
-        $translatorProphecy = $this->prophesize(Translator::class);
-        $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
-
         $agendaPropecy = $this->prophesize(Agenda::class);
 
         $activityRepositoryProphecy = $this->prophesize(ActivityRepository::class);
@@ -149,7 +144,7 @@ class FilterCreateTrackCheckerTest extends TestCase
 
         return new Appointment(
             $appointmentData,
-            $translatorProphecy->reveal(),
+            new MockTranslator(),
             $agendaPropecy->reveal(),
             $activityRepositoryProphecy->reveal(),
             $locationRepositoryProphecy->reveal(),
@@ -160,9 +155,7 @@ class FilterCreateTrackCheckerTest extends TestCase
 
     protected function getChecker(): FilterCreateTrackChecker
     {
-        $translatorProphecy = $this->prophesize(Translator::class);
-        $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
-        return new FilterCreateTrackChecker($translatorProphecy->reveal());
+        return new FilterCreateTrackChecker(new MockTranslator());
     }
 
     /**

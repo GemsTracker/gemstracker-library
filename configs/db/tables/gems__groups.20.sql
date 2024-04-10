@@ -32,7 +32,7 @@ CREATE TABLE if not exists gems__groups (
         ggp_created_by            bigint unsigned not null,
 
         PRIMARY KEY(ggp_id_group),
-        UNIQUE KEY ggp_code (ggp_code),
+        UNIQUE KEY ggp_code (ggp_code)
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 900

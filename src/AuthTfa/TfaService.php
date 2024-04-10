@@ -4,11 +4,11 @@ namespace Gems\AuthTfa;
 
 use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\AuthNew\AuthenticationService;
-use Gems\AuthNew\IpFinder;
 use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\User\User;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zalt\Base\RequestUtil;
 
 class TfaService
 {
@@ -63,7 +63,7 @@ class TfaService
 
         // todo: check if organization has TFA enabled at all?
 
-        if (!$user->isTwoFactorRequired(IpFinder::getClientIp($request))) {
+        if (!$user->isTwoFactorRequired(RequestUtil::getClientIp($request))) {
             return false;
         }
 

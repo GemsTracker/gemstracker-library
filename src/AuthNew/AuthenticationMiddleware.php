@@ -17,6 +17,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestUtil;
 use Zalt\Message\StatusMessengerInterface;
 
 class AuthenticationMiddleware implements MiddlewareInterface
@@ -79,7 +80,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 ->withAttribute(self::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE, $authenticationService->getIdentity());
         }
 
-        if (!$user->isAllowedIpForLogin(IpFinder::getClientIp($request))) {
+        if (!$user->isAllowedIpForLogin(RequestUtil::getClientIp($request))) {
             $authenticationService->logout();
             if (isset($tfaService)) {
                 $tfaService->logout();

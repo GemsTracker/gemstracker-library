@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Gems\Handlers\Auth;
 
 use Gems\Audit\AuditLog;
-use Gems\AuthNew\IpFinder;
 use Gems\AuthNew\PasswordResetThrottleBuilder;
 use Gems\Communication\CommunicationRepository;
 use Gems\Communication\Exception;
@@ -25,6 +24,7 @@ use Mezzio\Helper\UrlHelper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zalt\Base\RequestUtil;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 
@@ -86,7 +86,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
         }
 
         $passwordResetThrottle = $this->passwordResetThrottleBuilder->buildPasswordResetThrottle(
-            IpFinder::getClientIp($request),
+            RequestUtil::getClientIp($request),
             (int)$input['organization'],
         );
 
@@ -102,7 +102,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
             && $user->isActive()
             && $user->canResetPassword()
             && $user->isAllowedOrganization((int)$input['organization'])
-            && $user->isAllowedIpForLogin(IpFinder::getClientIp($request))
+            && $user->isAllowedIpForLogin(RequestUtil::getClientIp($request))
         ) {
             try {
                 $this->sendUserResetEMail($user);

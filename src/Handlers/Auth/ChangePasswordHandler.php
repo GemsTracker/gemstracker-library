@@ -7,7 +7,6 @@ namespace Gems\Handlers\Auth;
 use Gems\Audit\AuditLog;
 use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
-use Gems\AuthNew\IpFinder;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\FlashMessageMiddleware;
@@ -22,6 +21,7 @@ use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zalt\Base\RequestUtil;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 
@@ -51,7 +51,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
         if (
             !$user->isActive()
             || !$user->canResetPassword()
-            || !$user->isAllowedIpForLogin(IpFinder::getClientIp($request))
+            || !$user->isAllowedIpForLogin(RequestUtil::getClientIp($request))
         ) {
             $this->statusMessenger->addError($this->translator->trans('You cannot reset your password.'), true);
             if ($request->getMethod() === 'POST') {

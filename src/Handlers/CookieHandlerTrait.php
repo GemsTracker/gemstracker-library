@@ -14,10 +14,10 @@ namespace Gems\Handlers;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\Modifier\SameSite;
 use Dflydev\FigCookies\SetCookie;
-use Gems\Util\RequestUtil;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zalt\Base\RequestUtil;
 use Zalt\Base\RequestInfo;
 
 /**

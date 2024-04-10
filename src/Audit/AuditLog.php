@@ -4,7 +4,6 @@ namespace Gems\Audit;
 
 use Exception;
 use Gems\AuthNew\AuthenticationMiddleware;
-use Gems\AuthNew\IpFinder;
 use Gems\Db\CachedResultFetcher;
 use Gems\Exception\Coding;
 use Gems\Middleware\CurrentOrganizationMiddleware;
@@ -17,6 +16,7 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Db\TableGateway\TableGateway;
 use Mezzio\Router\RouteResult;
 use Psr\Http\Message\ServerRequestInterface;
+use Zalt\Base\RequestUtil;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
@@ -451,7 +451,7 @@ class AuditLog
             'gla_changed'       => (int) ($changed || $this->isChanged($this->request)),
             'gla_message'       => json_encode($message),
             'gla_data'          => json_encode($data),
-            'gla_remote_ip'     => IpFinder::getClientIp($this->request),
+            'gla_remote_ip'     => RequestUtil::getClientIp($this->request),
             'gla_respondent_id' => $respondentId,
             'gla_organization'  => $this->getCurrentOrganizationId(),
             'gla_role'          => $this->getCurrentRole(),
