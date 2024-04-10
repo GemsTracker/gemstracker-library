@@ -13,6 +13,7 @@ namespace Gems\Snippets\Export;
 
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Batch\BatchRunnerLoader;
+use Gems\Export\Db\ModelExportRepository;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\SnippetsActions\Export\ExportAction;
@@ -60,6 +61,7 @@ class ExportBatchSnippet extends SnippetAbstract
         protected MenuSnippetHelper $menuHelper,
         protected SessionInterface $session,
         protected ServerRequestInterface $request,
+        protected readonly ModelExportRepository $exportRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
@@ -93,7 +95,7 @@ class ExportBatchSnippet extends SnippetAbstract
                 return new RedirectResponse($batch->restartRedirectUrl);
             }
 
-            $type = $post['type'];
+            $type = $this->exportRepository->getExportTypeClassName($post['type']);
             $batch->setSessionVariable('export_type', $type);
 
             if (!$batch->count()) {

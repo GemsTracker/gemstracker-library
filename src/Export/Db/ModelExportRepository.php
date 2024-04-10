@@ -15,13 +15,13 @@ use Zalt\Html\HtmlInterface;
 use Zalt\Html\Sequence;
 use Zalt\Late\Late;
 use Zalt\Late\LateInterface;
+use Zalt\Loader\Exception\LoadException;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 
-class ExportRepository
+class ModelExportRepository
 {
-    protected array $modelFilterAttributes = ['multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay'];
     public function __construct(
         protected readonly ModelContainer $modelContainer,
         protected ProjectOverloader $projectOverloader,
@@ -37,9 +37,7 @@ class ExportRepository
         $metaModel = $model->getMetaModel();
         $labeledColumns = $this->getLabeledColumns($metaModel);
 
-
-
-        if (!($part->exportSettings instanceof ExcelExportSettings || $part->exportSettings instanceof CsvExportSettings) || !$part->exportSettings->translateHeaders) {
+        if ($part->exportSettings && isset($part->exportSettings['translateHeaders']) && !$part->exportSettings['translateHeaders']) {
             return $labeledColumns;
         }
 
@@ -51,12 +49,12 @@ class ExportRepository
         return $columnHeaders;
     }
 
-    protected function getLabeledColumns(MetaModelInterface $metaModel): array
+    public function getLabeledColumns(MetaModelInterface $metaModel): array
     {
         if (!$metaModel->hasMeta('labeledColumns')) {
             $orderedCols = $metaModel->getItemsOrdered();
 
-            $results = array();
+            $results = [];
             foreach ($orderedCols as $name) {
                 if ($metaModel->has($name, 'label')) {
                     $results[] = $name;
@@ -73,11 +71,10 @@ class ExportRepository
         /**
          * @var DataReaderInterface $model
          */
-        $model = $this->modelContainer->get($part->modelClassName);
+        $model = $this->modelContainer->get($part->modelClassName, $part->applyFunctions);
         $data = $model->loadPage($part->part, $part->itemCount, $part->filter);
 
-
-        $exportClass = $this->projectOverloader->create('Export\\Type\\' . $part->exportType);
+        $exportClass = $this->projectOverloader->getContainer()->get($part->exportType);
 
         if (!$exportClass instanceof ExportInterface) {
             throw new \RuntimeException('No valid export class could be loaded.');
@@ -86,9 +83,16 @@ class ExportRepository
         foreach($data as $key => $row) {
             $data[$key] = $exportClass->filterRow($model->getMetaModel(), $row, $part->exportSettings);
         }
-
         return $data;
     }
 
+    public function getExportTypeClassName(string $exportType): string|null
+    {
+        try {
+            return $this->projectOverloader->find('Export\\Type\\' . $exportType);
+        } catch(LoadException) {
+            return null;
+        }
+    }
 
 }

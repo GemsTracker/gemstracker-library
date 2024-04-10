@@ -70,10 +70,10 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
     /**
      * Get the export classes to use
      * 
-     * @param \Gems\Export $export
+     * @param \Gems\Export\Export $export
      * @return array
      */
-    protected function getExportClasses(\Gems\Export $export)
+    protected function getExportClasses(\Gems\Export\Export $export)
     {
         return $export->getExportClasses();
     }

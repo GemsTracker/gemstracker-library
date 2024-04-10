@@ -3,8 +3,8 @@
 namespace Gems\Export\Type;
 
 use DateTimeInterface;
-use Gems\Export\ExportSettings\ExportSettingsInterface;
 use Gems\Html;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\AElement;
 use Zalt\Html\ElementInterface;
 use Zalt\Html\HtmlInterface;
@@ -16,6 +16,18 @@ use Zalt\Model\MetaModelInterface;
 abstract class ExportAbstract implements ExportInterface
 {
     protected array $modelFilterAttributes = ['multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay'];
+
+    private string|null $name = null;
+
+    protected string $tempExportDir;
+
+    public function __construct(
+        protected readonly TranslatorInterface $translator,
+        readonly array $config,
+    )
+    {
+        $this->tempExportDir = $config['export']['tempExportDir'] ?? 'data/export/';
+    }
 
     /**
      * Single point for mitigating csv injection vulnerabilities
@@ -40,7 +52,7 @@ abstract class ExportAbstract implements ExportInterface
         }
     }
 
-    protected function filterDateFormat(mixed $value, string|null $dateFormat, string|null $storageFormat, ExportSettingsInterface|null $exportSettings): string|null
+    protected function filterDateFormat(mixed $value, string|null $dateFormat, string|null $storageFormat, array|null $exportSettings): string|null
     {
         if ($value instanceof DateTimeInterface) {
             return $value->format($dateFormat);
@@ -102,9 +114,12 @@ abstract class ExportAbstract implements ExportInterface
         return $result;
     }
 
-    protected function filterMultiOptions(int|string|array|null $result, array $multiOptions): string|int|null
+    protected function filterMultiOptions(int|string|array|null $result, array $multiOptions, array|null $exportSettings): string|int|null
     {
         if ($multiOptions) {
+            if ($exportSettings !== null && isset($exportSettings['translateValues']) && $exportSettings['translateValues'] === false) {
+                return $result;
+            }
             /*
              *  Sometimes a field is an array and will be formatted later on using the
              *  formatFunction -> handle each element in the array.
@@ -129,10 +144,10 @@ abstract class ExportAbstract implements ExportInterface
      * Filter the data in a row so that correct values are being used
      * @param MetaModelInterface $metaModel
      * @param  array $row a row in the model
-     * @param ExportSettingsInterface|null $exportSettings
+     * @param array|null $exportSettings
      * @return array The filtered row
      */
-    public function filterRow(MetaModelInterface $metaModel, array $row, ExportSettingsInterface|null $exportSettings): array
+    public function filterRow(MetaModelInterface $metaModel, array $row, array|null $exportSettings): array
     {
         $exportRow = [];
         foreach ($row as $columnName => $result) {
@@ -178,5 +193,18 @@ abstract class ExportAbstract implements ExportInterface
             }
         }
         return $exportRow;
+    }
+
+    public function getHelpInfo(): array
+    {
+        return [];
+    }
+
+    public function getName(): string
+    {
+        if (!$this->name) {
+            $this->name = (new \ReflectionClass($this))->getShortName();
+        }
+        return $this->name;
     }
 }

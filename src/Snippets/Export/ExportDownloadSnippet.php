@@ -11,7 +11,11 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\Export\Db\DbExportRepository;
+use Gems\Export\Exception\ExportException;
+use Gems\Export\Export;
 use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\SnippetsActions\Export\ExportAction;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -37,6 +41,8 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
 {
     use MessageTrait;
 
+    protected int $currentUserId;
+
     /**
      *
      * @var \MUtil\Model\ModelAbstract
@@ -44,6 +50,8 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
     protected $model;
 
     protected ?ResponseInterface $response;
+
+    protected bool $sensitiveData = true;
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -53,8 +61,12 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
         protected ExportAction $exportAction,
         protected ProjectOverloader $overLoader,
         protected SessionInterface $session,
+        protected readonly DbExportRepository $dbExportRepository,
+        readonly CurrentUserRepository $currentUserRepository,
+        protected readonly Export $export,
     ) {
         $this->messenger = $messenger;
+        $this->currentUserId = $this->currentUserRepository->getCurrentUserId();
 
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
@@ -87,19 +99,16 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
         }
         // $batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
         $batch = $this->exportAction->batch;
+        $exportId = $batch->getSessionVariable('exportId');
 
-        $file = $batch->getSessionVariable('file');
-        if ($file && is_array($file) && is_array($file['headers']) && file_exists($file['file'])) {
-            $this->response = new \Laminas\Diactoros\Response\TextResponse(
-                file_get_contents($file['file']),
-                200,
-                $file['headers']
-            );
-
-            // Now clean up the file
-            unlink($file['file']);
-
+        try {
+            $this->response = $this->dbExportRepository->exportFile($exportId, $this->currentUserId, $this->export->streamOnly($this->sensitiveData));
+            if ($this->response === null) {
+                die;
+            }
             return false;
+        } catch(ExportException) {
+
         }
 
         return true;

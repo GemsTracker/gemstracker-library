@@ -13,11 +13,12 @@ class ModelExportPart
         public readonly int $userId,
         public readonly string $modelClassName,
         public readonly array $applyFunctions,
+        public readonly array $columnOrder,
         public readonly array $filter = [],
         public readonly int $itemCount = 500,
         public readonly int $part = 1,
         public readonly int $totalRows = 0,
-        public readonly ExportSettingsInterface|null $exportSettings = null,
+        public readonly array|null $exportSettings = null,
     )
     {
     }

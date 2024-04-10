@@ -3,8 +3,8 @@
 namespace Gems\Snippets\Export;
 
 use Gems\Audit\AuditLog;
-use Gems\Export;
-use Gems\Export\ExportInterface;
+use Gems\Export\Export;
+use Gems\Export\Type\ExportInterface;
 use Gems\Form;
 use Gems\Html;
 use Gems\Loader;
@@ -38,11 +38,13 @@ class ExportFormSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems\Export
+     * @var \Gems\Export\Export
      */
     protected Export $export;
 
     protected bool $processed = false;
+
+    protected bool $sensitiveData;
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -72,7 +74,7 @@ class ExportFormSnippet extends FormSnippetAbstract
 
         $element = $form->createElement('select', 'type', [
             'label' => $this->_('Export to'),
-            'multiOptions' => $this->export->getExportClasses(),
+            'multiOptions' => $this->export->getExportClasses($this->sensitiveData),
             'class' => 'auto-submit'
         ]);
         $form->addElement($element);
@@ -106,7 +108,7 @@ class ExportFormSnippet extends FormSnippetAbstract
     protected function getDefaultFormValues(): array
     {
         $defaults[$this->currentExport->getName()] = $this->currentExport->getDefaultFormValues();
-        $defaults['type'] = $this->export->getDefaultExportClass();
+        $defaults['type'] = $this->currentExport->getName();
 
         return $defaults;
     }
@@ -155,9 +157,7 @@ class ExportFormSnippet extends FormSnippetAbstract
 
     public function hasHtmlOutput(): bool
     {
-        $batchId = 'export_data_' . $this->model->getName() . (new \DateTimeImmutable())->format('YmdHis');
         $this->exportAction->batch = new ExportRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
-        $model = $this->getModel();
 
         if (ExportAction::STEP_RESET === $this->requestInfo->getParam('step')) {
             $this->exportAction->batch->reset();
@@ -181,7 +181,7 @@ class ExportFormSnippet extends FormSnippetAbstract
      */
     protected function loadFormData(): array
     {
-        $currentType = $this->requestInfo->getParam('type', $this->export->getDefaultExportClass());
+        $currentType = $this->requestInfo->getParam('type', $this->export->getDefaultExportClass($this->sensitiveData));
 
         $this->currentExport = $this->export->getExport($currentType, null, $this->exportAction->batch);
 

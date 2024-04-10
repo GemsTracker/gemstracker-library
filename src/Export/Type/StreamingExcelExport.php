@@ -4,17 +4,13 @@ namespace Gems\Export\Type;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-use Gems\Export\ExportSettings\ExcelExportSettings;
-use Gems\Export\ExportSettings\ExportSettingsInterface;
 use MUtil\Form;
-use Zalt\Base\TranslatorInterface;
+use OpenSpout\Writer\WriterInterface;
+use OpenSpout\Writer\XLSX\Writer;
 
-class StreamingExcelExport extends ExportAbstract
+class StreamingExcelExport extends CsvExportAbstract implements DownloadableInterface, StreamableInterface, ExportSettingsGeneratorInterface
 {
-    public function __construct(
-        protected readonly TranslatorInterface $translator,
-    )
-    {}
+    public const EXTENSION = 'xlsx';
 
     /**
      * Create Excel date stamp from DateTime
@@ -40,9 +36,9 @@ class StreamingExcelExport extends ExportAbstract
         return (float)$daysBetween + ($seconds / 86400);
     }
 
-    protected function filterDateFormat(mixed $value, string|null $dateFormat, string|null $storageFormat, ExportSettingsInterface|null $exportSettings): string|null
+    protected function filterDateFormat(mixed $value, string|null $dateFormat, string|null $storageFormat, array|null $exportSettings): string|null
     {
-        if ($exportSettings instanceof ExcelExportSettings && $exportSettings->formatDates) {
+        if ($exportSettings && isset($exportSettings['formatDates']) && $exportSettings['formatDates'] === true) {
             if ($value === null) {
                 return null;
             }
@@ -58,21 +54,21 @@ class StreamingExcelExport extends ExportAbstract
         return parent::filterDateFormat($value, $dateFormat, $storageFormat, $exportSettings);
     }
 
-    protected function filterHtml(mixed $result): int|string|null
+    public function getExportSettings(array $postData): array
     {
-        $result = parent::filterHtml($result);
+        return [
+            'translateHeaders' => isset($postData['formatVariable']) ? (bool) $postData['formatVariable'] : true,
+            'translateValues' => isset($postData['formatAnswer']) ? (bool) $postData['formatAnswer'] : true,
+            'formatDates' => isset($postData['formatDate']) ? (bool) $postData['formatDate'] : true,
+        ];
+    }
 
-        if (is_numeric($result)) {
-            if (is_int($result)) {
-                $result = (int) $result;
-            } else {
-                $result = (double) $result;
-            }
-        } else {
-            $result = $this->filterCsvInjection((string) $result);
-        }
-
-        return $result;
+    /**
+     * @return array Default values in form
+     */
+    public function getDefaultFormValues(): array
+    {
+        return ['format'=> ['formatVariable', 'formatAnswer']];
     }
 
     /**
@@ -91,10 +87,15 @@ class StreamingExcelExport extends ExportAbstract
                 'formatDate'    => $this->translator->_('Format dates as Excel numbers easily convertable to date'),
                 'combineFiles'    => $this->translator->_('Combine multiple files to separate sheets in one excel file'),
             ))
-            ->setBelongsTo(static::class)
+            ->setBelongsTo($this->getName())
             ->setSeparator('');
         $elements['format'] = $element;
 
         return $elements;
+    }
+
+    protected function getWriter(array $exportSettings): WriterInterface
+    {
+        return new Writer();
     }
 }

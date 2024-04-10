@@ -8,7 +8,12 @@ use Zalt\Model\MetaModelInterface;
 
 interface ExportInterface
 {
-    function filterRow(MetaModelInterface $metaModel, array $row, ExportSettingsInterface|null $exportSettings): array;
+    public function filterRow(MetaModelInterface $metaModel, array $row, array|null $exportSettings): array;
+
+    /**
+     * @return array Default values in form
+     */
+    public function getDefaultFormValues(): array;
 
     /**
      * form elements for extra options for this particular export option
@@ -17,4 +22,8 @@ interface ExportInterface
      * @return array Form elements
      */
     public function getFormElements(Form &$form, array &$data): array;
+
+    public function getHelpInfo(): array;
+
+    public function getName(): string;
 }
