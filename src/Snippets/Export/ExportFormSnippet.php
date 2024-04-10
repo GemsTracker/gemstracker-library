@@ -47,7 +47,6 @@ class ExportFormSnippet extends FormSnippetAbstract
         MessengerInterface $messenger,
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
-        Loader $loader,
         protected ExportAction $exportAction,
         private readonly SessionInterface $session,
         private readonly ProjectOverloader $overLoader,
