@@ -36,12 +36,6 @@ class ExportFormSnippet extends FormSnippetAbstract
 
     protected ExportInterface $currentExport;
 
-    /**
-     *
-     * @var \Gems\Export\Export
-     */
-    protected Export $export;
-
     protected bool $processed = false;
 
     protected bool $sensitiveData;
@@ -57,10 +51,9 @@ class ExportFormSnippet extends FormSnippetAbstract
         protected ExportAction $exportAction,
         private readonly SessionInterface $session,
         private readonly ProjectOverloader $overLoader,
+        protected readonly Export $export,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
-
-        $this->export    = $loader->getExport();
         $this->saveLabel = $this->_('Export');
     }
 
