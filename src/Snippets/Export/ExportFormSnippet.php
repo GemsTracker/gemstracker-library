@@ -71,6 +71,14 @@ class ExportFormSnippet extends FormSnippetAbstract
         ]);
         $form->addElement($element);
 
+
+        $currentType = $this->requestInfo->getParam('type');
+
+        $element = $form->createElement('hidden', 'previousType', [
+            'value' => $currentType,
+        ]);
+        $form->addElement($element);
+
         $exportFormElements = $this->currentExport->getFormElements($form, $this->formData);
 
         if ($exportFormElements) {
@@ -173,12 +181,17 @@ class ExportFormSnippet extends FormSnippetAbstract
      */
     protected function loadFormData(): array
     {
-        $currentType = $this->requestInfo->getParam('type', $this->export->getDefaultExportClass($this->sensitiveData));
+        $currentType = $this->requestInfo->getParam('type', $this->export->getDefaultExportClass());
+        $previousType = $this->requestInfo->getParam('previousType');
 
         $this->currentExport = $this->export->getExport($currentType, null, $this->exportAction->batch);
 
         if ($this->isPost()) {
-            $this->formData = $this->loadCsrfData() + $this->requestInfo->getRequestPostParams() + $this->getDefaultFormValues();
+            $this->formData = $this->loadCsrfData() + $this->requestInfo->getRequestPostParams();
+            if ($previousType !== $currentType) {
+                $this->formData = $this->loadCsrfData() + $this->requestInfo->getRequestPostParams() + $this->getDefaultFormValues();
+            }
+            $this->formData['previousType'] = $currentType;
             return $this->formData;
         }
 
