@@ -88,16 +88,22 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
         $options = $this->translatedUtil->getEmptyDropdownArray();
 
         if (isset($context['gap_id_user'], $context['gap_id_organization'])) {
+            $where = null;
             if (isset($context['gap_admission_time'])) {
-                if ($context['gap_admission_time'] instanceof \DateTimeInterface) {
-                    $admission = $context['gap_admission_time']->format('Y-m-d');
-                } else {
-                    $admission = $context['gap_admission_time'];
+                $admission = $context['gap_admission_time'];
+                if (is_string($admission)) {
+                    $admission = \DateTimeImmutable::createFromFormat('d-m-Y H:i:s', $admission);
+                    if ($admission === false) {
+                        $admission = \DateTimeImmutable::createFromFormat('d-m-Y', $admission);
+                    }
                 }
-                $where['gec_startdate <= ?'] = $admission;
-                $where['(gec_enddate IS NULL OR gec_enddate > ?)'] = $admission;
-            } else {
-                $where = null;
+                if ($admission instanceof \DateTimeInterface) {
+                    $admission = $context['gap_admission_time']->format('Y-m-d');
+                    $where = [
+                        'gec_startdate <= ?' => $admission,
+                        '(gec_enddate IS NULL OR gec_enddate > ?)' => $admission,
+                    ];
+                }
             }
 
             $options = $options + $this->agenda->getEpisodesAsOptions(
