@@ -6,6 +6,7 @@ namespace Gems\Handlers\Auth;
 
 use Gems\Audit\AuditLog;
 use Gems\Layout\LayoutRenderer;
+use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Session\ValidationMessenger;
 use Gems\User\PasswordChecker;
@@ -19,7 +20,6 @@ use MUtil\Validator\IsConfirmed;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zalt\Base\RequestUtil;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 
@@ -73,7 +73,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
         if (
             !$user->isActive()
             || !$user->canResetPassword()
-            || !$user->isAllowedIpForLogin(RequestUtil::getClientIp($request))
+            || !$user->isAllowedIpForLogin($request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE))
         ) {
             $this->statusMessenger->addError($this->translator->trans('You cannot reset your password.'));
             return new RedirectResponse($this->urlHelper->generate('auth.password-reset.request'));

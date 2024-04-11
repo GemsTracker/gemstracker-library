@@ -9,6 +9,7 @@ use Gems\AuthNew\PasswordResetThrottleBuilder;
 use Gems\Communication\CommunicationRepository;
 use Gems\Communication\Exception;
 use Gems\Layout\LayoutRenderer;
+use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Site\SiteUtil;
 use Gems\User\User;
@@ -24,7 +25,6 @@ use Mezzio\Helper\UrlHelper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zalt\Base\RequestUtil;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 
@@ -86,7 +86,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
         }
 
         $passwordResetThrottle = $this->passwordResetThrottleBuilder->buildPasswordResetThrottle(
-            RequestUtil::getClientIp($request),
+            $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE),
             (int)$input['organization'],
         );
 
@@ -102,7 +102,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
             && $user->isActive()
             && $user->canResetPassword()
             && $user->isAllowedOrganization((int)$input['organization'])
-            && $user->isAllowedIpForLogin(RequestUtil::getClientIp($request))
+            && $user->isAllowedIpForLogin($request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE))
         ) {
             try {
                 $this->sendUserResetEMail($user);

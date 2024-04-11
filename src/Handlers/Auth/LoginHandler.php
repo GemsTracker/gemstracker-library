@@ -12,6 +12,7 @@ use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\Layout\LayoutRenderer;
+use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Site\SiteUtil;
 use Gems\User\PasswordChecker;
@@ -31,7 +32,6 @@ use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zalt\Base\RequestUtil;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 
@@ -134,7 +134,7 @@ class LoginHandler implements RequestHandlerInterface
             (int)$input['organization'],
             $input['username'],
             $input['password'],
-            RequestUtil::getClientIp($request),
+            $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE),
         ));
 
         $blockMinutes = $loginThrottle->processAuthenticationResult($result);

@@ -5,7 +5,7 @@ namespace Gems\AuthNew;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\TfaService;
 use Gems\Handlers\ChangeGroupHandler;
-use Gems\Menu\RouteHelper;
+use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -17,7 +17,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Base\RequestUtil;
 use Zalt\Message\StatusMessengerInterface;
 
 class AuthenticationMiddleware implements MiddlewareInterface
@@ -80,7 +79,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 ->withAttribute(self::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE, $authenticationService->getIdentity());
         }
 
-        if (!$user->isAllowedIpForLogin(RequestUtil::getClientIp($request))) {
+        if (!$user->isAllowedIpForLogin($request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE))) {
             $authenticationService->logout();
             if (isset($tfaService)) {
                 $tfaService->logout();
