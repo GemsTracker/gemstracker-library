@@ -26,7 +26,6 @@ use Gems\Handlers\Setup\Database\TableHandler;
 use Gems\Handlers\Setup\QueueMessageCountHandler;
 use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\AuditLogMiddleware;
-use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
@@ -49,7 +48,6 @@ class Route
 
     public static array $loggedInMiddleware = [
         SecurityHeadersMiddleware::class,
-        ClientIpMiddleware::class,
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
         LocaleMiddleware::class,
@@ -66,7 +64,6 @@ class Route
 
     public static array $maybeLoggedInMiddleware = [
         SecurityHeadersMiddleware::class,
-        ClientIpMiddleware::class,
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
         LocaleMiddleware::class,
@@ -84,7 +81,6 @@ class Route
 
     public static array $loggedOutMiddleware = [
         SecurityHeadersMiddleware::class,
-        ClientIpMiddleware::class,
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
         LocaleMiddleware::class,
@@ -102,7 +98,6 @@ class Route
 
     public static array $idlePollMiddleware = [
         SecurityHeadersMiddleware::class,
-        ClientIpMiddleware::class,
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
         LocaleMiddleware::class,
@@ -197,7 +192,6 @@ class Route
                 path: '/tfa',
                 middleware: [
                     SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     LocaleMiddleware::class,
@@ -220,7 +214,6 @@ class Route
                 path: '/logout',
                 middleware: [
                     SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     LocaleMiddleware::class,
@@ -243,7 +236,6 @@ class Route
                 path: '/embed/login',
                 middleware: [
                     SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     LocaleMiddleware::class,
@@ -266,7 +258,6 @@ class Route
                 path: '/change-password',
                 middleware: [
                     SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     LocaleMiddleware::class,

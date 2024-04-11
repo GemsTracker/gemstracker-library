@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Gems;
 
 use Gems\Handlers\NotFoundHandler;
+use Gems\Middleware\ClientIpMiddleware;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Mezzio\Application;
 use Mezzio\Helper\ServerUrlMiddleware;
@@ -89,6 +90,7 @@ class InitFunctions
         $app->pipe(ImplicitHeadMiddleware::class);
         $app->pipe(ImplicitOptionsMiddleware::class);
         $app->pipe(\Gems\Middleware\MethodNotAllowedMiddleware::class);
+        $app->pipe(ClientIpMiddleware::class);
 
         // Seed the UrlHelper with the routing results:
         $app->pipe(UrlHelperMiddleware::class);
