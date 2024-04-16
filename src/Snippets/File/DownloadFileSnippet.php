@@ -97,7 +97,7 @@ class DownloadFileSnippet extends FormSnippetAbstract
     protected function addFormElements(mixed $form)
     {
         if (! $form instanceof Form) {
-            throw new SnippetException(sprintf("Incorrect form type %s, expected a \gems\Form form!"));
+            throw new SnippetException(sprintf("Incorrect form type %s, expected a \gems\Form form!", get_class($form)));
         }
 
         $this->addCsrf($this->csrfName, $this->csrfToken, $form);
