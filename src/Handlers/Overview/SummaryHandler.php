@@ -166,7 +166,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 $this->autofilterParameters['extraFilter'][] = $where;
             }
         } else {
-            $this->autofilterParameters['extraFilter'][1] = 0;
+            $this->autofilterParameters['extraFilter'] = [1 => 0];
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
         }
 
