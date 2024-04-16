@@ -27,7 +27,7 @@ class ProjectDefaultAsk extends AskScreenAbstract
      *
      * @inheritDoc
      */
-    public function getScreenLabel(): string: string
+    public function getScreenLabel(): string
     {
         return $this->translator->_('(default project specific token ask screen)');
     }
