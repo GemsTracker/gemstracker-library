@@ -13,6 +13,7 @@ use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Predicate\PredicateSet;
 use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Permissions\Acl\Acl;
 use Zalt\Loader\ProjectOverloader;
 
 class RespondentRepository
@@ -25,6 +26,7 @@ class RespondentRepository
         protected readonly MetaModelLoader $modelLoader,
         protected readonly ProjectOverloader $overLoader,
         protected readonly ResultFetcher $resultFetcher,
+        protected readonly Acl $acl,
     )
     { }
 
@@ -35,6 +37,7 @@ class RespondentRepository
         bool $combined = false,
         bool $withOrganizationName = false,
         int|null $userOrganizationId = null,
+        string|null $userRole = null,
     ): array
     {
         $subSelect = $this->resultFetcher->getSelect('gems__respondent2org')
@@ -78,8 +81,13 @@ class RespondentRepository
             ->where([
                 'grc_success' => 1,
                 'gr2o_id_user' => $subSelect,
+            ]);
+
+        if ($userRole === null || !$this->acl->isAllowed($userRole, 'pr.organization-switch')) {
+            $select->where([
                 new PredicateSet($wherePredicates, PredicateSet::COMBINED_BY_OR),
             ]);
+        }
 
         $patients = $this->resultFetcher->fetchAll($select);
 
