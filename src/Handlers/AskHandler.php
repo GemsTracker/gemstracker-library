@@ -11,7 +11,6 @@
 
 namespace Gems\Handlers;
 
-use Gems\AuthTfa\TfaService;
 use Gems\CookieResponse;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
@@ -22,6 +21,7 @@ use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Project\ProjectSettings;
+use Gems\Screens\AskScreenInterface;
 use Gems\Snippets\Ask\MaintenanceModeAskSnippet;
 use Gems\Snippets\Ask\ResumeLaterSnippet;
 use Gems\Snippets\Ask\ShowAllOpenSnippet;
@@ -339,10 +339,13 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         );
 
         $screen = $this->token->getOrganization()->getTokenAskScreen();
-        $params   = $screen->getParameters($this->token);
-        $snippets = $screen->getSnippets($this->token);
-        if (false !== $snippets) {
-            $this->forwardSnippets = $snippets;
+        $params = [];
+        $forwardSnippets = $this->forwardSnippets;
+        if ($screen instanceof AskScreenInterface) {
+            $params = $screen->getParameters($this->token);
+            if (false !== $screen->getSnippets($this->token)) {
+                $forwardSnippets = $screen->getSnippets($this->token);
+            }
         }
 
         $params['token'] = $this->token;
@@ -351,7 +354,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $params['requestInfo'] = $this->getRequestInfo();
 
         // Display token when possible
-        if ($this->html->snippet($this->forwardSnippets, $params)) {
+        if ($this->html->snippet($forwardSnippets, $params)) {
             return;
         }
 
