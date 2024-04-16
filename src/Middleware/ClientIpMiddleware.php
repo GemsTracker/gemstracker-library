@@ -12,6 +12,19 @@ class ClientIpMiddleware implements MiddlewareInterface
 {
     public const CLIENT_IP_ATTRIBUTE = 'clientIp';
 
+    public function __construct(
+        array $config,
+    )
+    {
+        $trustedProxies = $config['trustedProxies'] ?? [];
+        RequestUtil::setTrustedProxies($trustedProxies);
+
+        $trustedProxyIpHeader = $config['trustedProxyIpHeader'] ?? null;
+        if ($trustedProxyIpHeader) {
+            RequestUtil::setTrustedProxyIpHeader($trustedProxyIpHeader);
+        }
+    }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $ipAddress = RequestUtil::getClientIp($request);
