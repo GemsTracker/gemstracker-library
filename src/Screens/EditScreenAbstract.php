@@ -11,6 +11,8 @@
 
 namespace Gems\Screens;
 
+use Zalt\Base\TranslatorInterface;
+
 /**
  *
  * @package    Gems
@@ -19,13 +21,19 @@ namespace Gems\Screens;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 17, 2017 5:07:33 PM
  */
-abstract class EditScreenAbstract extends \MUtil\Translate\TranslateableAbstract implements ConsentInterface
+abstract class EditScreenAbstract implements ConsentInterface
 {
+
+    public function __construct(
+        protected readonly TranslatorInterface $translator,
+    )
+    {}
+
     /**
      *
      * @return array Of snippets or false to use original for consent editing
      */
-    public function getConsentSnippets()
+    public function getConsentSnippets(): array|bool
     {
         return false;
     }
@@ -34,7 +42,7 @@ abstract class EditScreenAbstract extends \MUtil\Translate\TranslateableAbstract
      *
      * @return array Added before all other parameters
      */
-    public function getConsentParameters()
+    public function getConsentParameters(): array
     {
         return $this->getParameters();
     }
@@ -43,7 +51,7 @@ abstract class EditScreenAbstract extends \MUtil\Translate\TranslateableAbstract
      *
      * @return array Added before all other parameters
      */
-    public function getCreateParameters()
+    public function getCreateParameters(): array
     {
         return $this->getParameters();
     }
@@ -52,7 +60,7 @@ abstract class EditScreenAbstract extends \MUtil\Translate\TranslateableAbstract
      *
      * @return array Added before all other parameters
      */
-    public function getEditParameters()
+    public function getEditParameters(): array
     {
         return $this->getParameters();
     }
@@ -61,7 +69,7 @@ abstract class EditScreenAbstract extends \MUtil\Translate\TranslateableAbstract
      *
      * @return array Default added parameters
      */
-    protected function getParameters()
+    protected function getParameters(): array
     {
         return [];
     }
@@ -70,7 +78,7 @@ abstract class EditScreenAbstract extends \MUtil\Translate\TranslateableAbstract
      *
      * @return array Of snippets or false to use original
      */
-    public function getSnippets()
+    public function getSnippets(): array|bool
     {
         return false;
     }

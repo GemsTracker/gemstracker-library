@@ -11,6 +11,9 @@
 
 namespace Gems\Screens\Token\Ask;
 
+use Gems\Screens\AskScreenAbstract;
+use Gems\Tracker\Token;
+
 /**
  *
  * @package    Gems
@@ -18,14 +21,12 @@ namespace Gems\Screens\Token\Ask;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class ShowOpenSequenceAsk extends \Gems\Screens\AskScreenAbstract
+class ShowOpenSequenceAsk extends AskScreenAbstract
 {
     /**
-     *
-     * @param \Gems\Tracker\Token $token
-     * @return array Of snippets or false to use original
+     * @inheritDoc
      */
-    public function getSnippets(\Gems\Tracker\Token $token)
+    public function getSnippets(Token $token): array
     {
         return ['Gems\\Snippets\\Ask\\ShowOpenSequenceSnippet'];
     }
@@ -34,8 +35,8 @@ class ShowOpenSequenceAsk extends \Gems\Screens\AskScreenAbstract
     /**
      * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('Show token by token with open count.');
+        return $this->translator->_('Show token by token with open count.');
     }
 }

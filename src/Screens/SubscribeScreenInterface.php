@@ -25,11 +25,11 @@ interface SubscribeScreenInterface extends ScreenInterface
      *
      * @return array Added before all other parameters
      */
-    public function getSubscribeParameters();
+    public function getSubscribeParameters(): array;
 
     /**
      *
      * @return array Of snippets
      */
-    public function getSubscribeSnippets();
+    public function getSubscribeSnippets(): array|bool;
 }

@@ -25,11 +25,11 @@ interface ShowScreenInterface extends ScreenInterface
      *
      * @return array Added before all other parameters
      */
-    public function getParameters();
+    public function getParameters(): array;
 
     /**
      *
      * @return array Of snippets or false to use original
      */
-    public function getSnippets();
+    public function getSnippets(): array|bool;
 }

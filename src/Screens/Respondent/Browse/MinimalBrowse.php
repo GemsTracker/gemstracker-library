@@ -24,20 +24,19 @@ use Gems\Screens\BrowseScreenAbstract;
 class MinimalBrowse extends BrowseScreenAbstract
 {
     /**
-     *
-     * @return array Of snippets or false to use original
+     * @inheritDoc
      */
-    public function getAutofilterSnippets()
+    public function getAutofilterSnippets(): array
     {
         return ['Respondent\\MinimalTableSnippet'];
     }
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('Browse with minimal information');
+        return $this->translator->_('Browse with minimal information');
     }
 }

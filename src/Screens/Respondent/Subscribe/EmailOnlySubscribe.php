@@ -11,7 +11,10 @@
 
 namespace Gems\Screens\Respondent\Subscribe;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Screens\SubscribeScreenInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -21,29 +24,24 @@ use Gems\Screens\SubscribeScreenInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 11:38:50
  */
-class EmailOnlySubscribe extends \MUtil\Translate\TranslateableAbstract implements SubscribeScreenInterface
+class EmailOnlySubscribe implements SubscribeScreenInterface
 {
-    /**
-     * Use currentUserRepository, we may not have a currentUser.
-     *
-     * @var \Gems\Legacy\CurrentUserRepository
-     */
-    protected $currentUserRepository;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    public const SUBSCRIBED_PATIENT_NR_PREFIX = 'subscr';
+    public function __construct(
+        protected readonly TranslatorInterface $translator,
+        protected readonly CurrentUserRepository $currentUserRepository,
+        protected readonly ResultFetcher $resultFetcher,
+    )
+    {}
 
     /**
      * @return string
      */
-    public function generatePatientNumber()
+    public function generatePatientNumber(): string
     {
         $org    = $this->currentUserRepository->getCurrentOrganization();
         $orgId  = $org->getId();
-        $prefix = 'subscr';
+        $prefix = static::SUBSCRIBED_PATIENT_NR_PREFIX;
 
         if ($org->getCode()) {
             $codes = explode(' ' , $org->getCode());
@@ -54,38 +52,37 @@ class EmailOnlySubscribe extends \MUtil\Translate\TranslateableAbstract implemen
         }
 
         $sql  = "SELECT gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?";
-        $function = function_exists('random_int') ? 'random_int' : 'rand';
         do {
-            $number = $prefix . $function(1000000, 9999999);
+            $number = $prefix . random_int(1000000, 9999999);
             // \MUtil\EchoOut\EchoOut::track($number);
-        } while ($this->db->fetchOne($sql, [$number, $orgId]));
+        } while ($this->resultFetcher->fetchOne($sql, [$number, $orgId]));
 
         return $number;
     }
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('Subscribe using e-mail address only');
+        return $this->translator->_('Subscribe using e-mail address only');
     }
 
     /**
      *
      * @return array Added before all other parameters
      */
-    public function getSubscribeParameters()
+    public function getSubscribeParameters(): array
     {
         return [
             'formTitle' => sprintf(
-                    $this->_('Subscribe to surveys for %s'),
+                    $this->translator->_('Subscribe to surveys for %s'),
                     $this->currentUserRepository->getCurrentOrganization()->getName()
                     ),
             'patientNrGenerator' => [$this, 'generatePatientNumber'],
             'routeAction' => 'participate.subscribe-thanks',
-            'saveLabel' => $this->_('Subscribe'),
+            'saveLabel' => $this->translator->_('Subscribe'),
         ];
     }
 
@@ -93,7 +90,7 @@ class EmailOnlySubscribe extends \MUtil\Translate\TranslateableAbstract implemen
      *
      * @return array Of snippets
      */
-    public function getSubscribeSnippets()
+    public function getSubscribeSnippets(): array
     {
         return ['Subscribe\\EmailSubscribeSnippet'];
     }

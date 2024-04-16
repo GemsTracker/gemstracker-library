@@ -25,17 +25,17 @@ interface EditScreenInterface extends ScreenInterface
      *
      * @return array Added before all other parameters
      */
-    public function getCreateParameters();
+    public function getCreateParameters(): array;
 
     /**
      *
      * @return array Added before all other parameters
      */
-    public function getEditParameters();
+    public function getEditParameters(): array;
 
     /**
      *
-     * @return array Of snippets or false to use original
+     * @return array|bool array Of snippets or false to use original
      */
-    public function getSnippets();
+    public function getSnippets(): array|bool;
 }

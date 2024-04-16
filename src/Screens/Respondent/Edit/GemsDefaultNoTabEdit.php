@@ -27,7 +27,7 @@ class GemsDefaultNoTabEdit extends EditScreenAbstract
      *
      * @return array Added before all other parameters
      */
-    public function getCreateParameters()
+    public function getCreateParameters(): array
     {
         return ['respondent' => null] + $this->getParameters();
     }
@@ -36,7 +36,7 @@ class GemsDefaultNoTabEdit extends EditScreenAbstract
      *
      * @return array Default added parameters
      */
-    protected function getParameters()
+    protected function getParameters(): array
     {
         return [
             'menuShowSiblings' => true,
@@ -48,18 +48,18 @@ class GemsDefaultNoTabEdit extends EditScreenAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('(default \Gems respondent no tab edit)');
+        return $this->translator->_('(default \Gems respondent no tab edit)');
     }
 
     /**
      *
      * @return array Of snippets or false to use original
      */
-    public function getSnippets()
+    public function getSnippets(): array
     {
         return [
             'Gems\\Snippets\\Respondent\\RespondentFormSnippet',

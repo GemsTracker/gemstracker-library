@@ -46,7 +46,7 @@ class ScreenLoader
      *
      * @var array containing screenType => screenClass for all screen classes
      */
-    protected $_screenClasses = [
+    protected array $_screenClasses = [
         self::RESPONDENT_BROWSE_SCREEN      => 'Gems\\Screens\\BrowseScreenInterface',
         self::RESPONDENT_EDIT_SCREEN        => 'Gems\\Screens\\EditScreenInterface',
         self::RESPONDENT_SHOW_SCREEN        => 'Gems\\Screens\\ShowScreenInterface',

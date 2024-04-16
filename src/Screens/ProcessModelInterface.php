@@ -11,6 +11,8 @@
 
 namespace Gems\Screens;
 
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  *
  * @package    Gems
@@ -24,8 +26,8 @@ interface ProcessModelInterface
     /**
      * Allow changes to the model
      *
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return \MUtil\Model\ModelAbstract
+     * @param DataReaderInterface $model
+     * @return DataReaderInterface
      */
-    public function processModel(\MUtil\Model\ModelAbstract $model);
+    public function processModel(DataReaderInterface $model);
 }

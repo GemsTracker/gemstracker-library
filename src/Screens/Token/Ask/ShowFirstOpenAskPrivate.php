@@ -11,6 +11,8 @@
 
 namespace Gems\Screens\Token\Ask;
 
+use Gems\Tracker\Token;
+
 /**
  *
  * @package    Gems
@@ -21,21 +23,18 @@ namespace Gems\Screens\Token\Ask;
 class ShowFirstOpenAskPrivate extends ShowFirstOpenAsk
 {
     /**
-     *
-     * @param \Gems\Tracker\Token $token
-     * @return array Added before all other parameters
+     * @inheritDoc
      */
-    public function getParameters(\Gems\Tracker\Token $token)
+    public function getParameters(Token $token): array
     {
         return ['showLastName' => false];
     }
 
     /**
-     *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('Show first open token only - without lastname');
+        return $this->translator->_('Show first open token only - without lastname');
     }
 }
