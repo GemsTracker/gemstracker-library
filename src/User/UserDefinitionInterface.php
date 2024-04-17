@@ -134,10 +134,10 @@ interface UserDefinitionInterface
     /**
      *
      * @param User $user The user whose password to change
-     * @param string $newKey
+     * @param string|null $newKey
      * @return $this
      */
-    public function setTwoFactorKey(User $user, string $newKey): self;
+    public function setTwoFactorKey(User $user, string|null $newKey): self;
 
     /**
      * @param User $user The user whose session key to set

@@ -376,10 +376,10 @@ abstract class DbUserDefinitionAbstract extends UserDefinitionAbstract
     /**
      *
      * @param User $user The user whose key to set
-     * @param string $newKey
+     * @param string|null $newKey
      * @return self
      */
-    public function setTwoFactorKey(User $user, string $newKey): self
+    public function setTwoFactorKey(User $user, string|null $newKey): self
     {
         $data['gul_id_user']        = $user->getUserLoginId();
         $data['gul_two_factor_key'] = $newKey;
