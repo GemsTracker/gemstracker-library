@@ -384,16 +384,12 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
 
     protected function onInValid()
     {
-        $this->redirectRoute = $this->menuSnippetHelper->getRouteUrl('option.edit-auth');
-
         $this->flash->flash('own_account_edit_auth_input', Ra::filterKeys($this->formData, [
             'gsf_email',
             'gsf_phone_1',
         ]));
 
-        foreach (Ra::flatten($this->_form->getMessages()) as $message) {
-            $this->addMessage($message);
-        }
+        parent::onInValid();
     }
 
     protected function saveData(): int
