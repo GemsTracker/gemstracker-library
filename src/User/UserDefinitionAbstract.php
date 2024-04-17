@@ -158,10 +158,10 @@ abstract class UserDefinitionAbstract implements UserDefinitionInterface
     /**
      *
      * @param User $user The user whose password to change
-     * @param string $newKey
+     * @param string|null $newKey
      * @return self
      */
-    public function setTwoFactorKey(User $user, string $newKey): self
+    public function setTwoFactorKey(User $user, string|null $newKey): self
     {
         throw new Coding(sprintf('A Two Factor key cannot be set for %s users.', get_class($this)));
     }
