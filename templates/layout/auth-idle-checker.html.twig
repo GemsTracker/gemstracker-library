@@ -1,8 +1,16 @@
-<div id="authIdleCheckerWarning" hidden class="hidden">
-    <div class="alert alert-warning clearfix">
-        <p>{{ trans('You have been inactive for a while. You will be logged out shortly.') }}</p>
-
-        <div class="pull-right">
+<div id="authIdleCheckerWarning" class="modal-container hidden" hidden>
+    <div class="modal">
+        <div class="modal-body">
+            <div class="modal-alert">
+                <div class="alert-icon alert-warning">
+                    x
+                </div>
+                <div class="alert-message">
+                    <p>{{ trans('You have been inactive for a while. You will be logged out shortly.') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
             <button class="btn btn-primary" id="authIdleCheckerWarningAlive">{{ trans('Stay logged in') }}</button>
             <button class="btn btn-secondary" id="authIdleCheckerWarningIgnore">{{ trans('Ignore') }}</button>
         </div>
