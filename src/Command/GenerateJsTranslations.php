@@ -27,7 +27,7 @@ class GenerateJsTranslations extends Command
 
         foreach($translationPaths as $translationClassName => $translationPath) {
             /**
-             * @var $translationClass JavascriptTranslations
+             * @var JavascriptTranslations $translationClass
              */
             $translationClass = new $translationClassName($this->translator);
             foreach($availableLanguages as $language) {

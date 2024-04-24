@@ -33,9 +33,7 @@ class CookieResponse
         string|null $domain = null,
     ): ResponseInterface
     {
-        if (empty($options)) {
-            $options = static::$defaultOptions;
-        }
+        $options = static::$defaultOptions;
 
         $cookie = SetCookie::create($key)
             ->withValue($value)

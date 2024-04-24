@@ -8,6 +8,8 @@ use Monolog\Logger;
 
 class ErrorLogger extends Logger
 {
+    protected WeakMap $fiberLogDepth;
+
     public function __construct(
         string $name = 'gems',
         array $handlers = [],

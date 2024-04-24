@@ -94,7 +94,7 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
                 if (is_string($admission)) {
                     $admission = \DateTimeImmutable::createFromFormat('d-m-Y H:i:s', $admission);
                     if ($admission === false) {
-                        $admission = \DateTimeImmutable::createFromFormat('d-m-Y', $admission);
+                        $admission = \DateTimeImmutable::createFromFormat('d-m-Y', $context['gap_admission_time']);
                     }
                 }
                 if ($admission instanceof \DateTimeInterface) {

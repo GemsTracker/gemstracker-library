@@ -393,7 +393,7 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
     /**
      * Exports a single respondent
      *
-     * @param string $respondentId
+     * @param string|array $respondentId
      */
     protected function _exportRespondent($respondentId)
     {
