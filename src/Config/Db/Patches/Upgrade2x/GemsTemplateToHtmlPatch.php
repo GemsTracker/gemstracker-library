@@ -35,10 +35,12 @@ class GemsTemplateToHtmlPatch extends PatchAbstract
             $body = Markup::render($template['gctt_body'], 'Bbcode', 'Html');
             $subject = Markup::render($template['gctt_subject'], 'Bbcode', 'Html');
 
-            $sql = 'UPDATE gems__comm_template_translations SET gctt_body = %s gctt_subject = %s WHERE gctt_id_template = %d AND gctt_lang = %s';
+            $sql = 'UPDATE gems__comm_template_translations SET gctt_body = %s, gctt_subject = %s WHERE gctt_id_template = %d AND gctt_lang = %s';
             $queries[] = sprintf($sql, $platform->quoteValue($body), $platform->quoteValue($subject), $template['gctt_id_template'], $platform->quoteValue($template['gctt_lang']));
         }
 
+        $queries[] = 'UPDATE gems__comm_template_translations SET gctt_body = NULL WHERE gctt_body = \'\'';
+        $queries[] = 'UPDATE gems__comm_template_translations SET gctt_subject = NULL WHERE gctt_subject = \'\'';
 
         return $queries;
     }
