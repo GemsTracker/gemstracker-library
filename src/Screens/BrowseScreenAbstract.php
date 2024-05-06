@@ -75,7 +75,7 @@ abstract class BrowseScreenAbstract implements BrowseScreenInterface
 
     /**
      *
-     * @return array|bool Array Of snippets or false to use original
+     * @return array Array Of snippets or false to use original
      */
     public function getStartStopParameters(): array
     {

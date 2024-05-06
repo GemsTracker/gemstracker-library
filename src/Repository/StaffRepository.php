@@ -55,6 +55,7 @@ class StaffRepository
             'gsf_gender' => $gender,
             'gsf_phone_1' => $phoneNumber,
             'gsf_job_title' => $jobTitle,
+            'gul_user_class' => 'StaffUser',
         ];
 
         $staffModel = $this->getStaffModel();

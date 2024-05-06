@@ -77,6 +77,13 @@ class LoginHandler implements RequestHandlerInterface
             return $this->handlePost($request);
         }
 
+        $cookiesParams = $request->getCookieParams();
+        $previousOrganizationId = $cookiesParams[AuthenticationMiddleware::CURRENT_ORGANIZATION_COOKIE_NAME] ?? null;
+        $input = $this->flash->getFlash('login_input');
+        if ($input === null && $previousOrganizationId !== null) {
+            $input['organization'] = $previousOrganizationId;
+        }
+
         $data = [
             'trans' => [
                 'organization' => $this->translator->trans('Organization'),
@@ -85,7 +92,7 @@ class LoginHandler implements RequestHandlerInterface
                 'login' => $this->translator->trans('Login'),
             ],
             'organizations' => $this->organizations,
-            'input' => $this->flash->getFlash('login_input'),
+            'input' => $input,
         ];
 
         return new HtmlResponse($this->layoutRenderer->renderTemplate($this->loginTemplate, $request, $data));
@@ -158,7 +165,7 @@ class LoginHandler implements RequestHandlerInterface
 
         $this->auditLog->registerUserRequest($request, $user, [sprintf('%s logged in', $user->getLoginName())]);
 
-        return AuthenticationMiddleware::redirectToIntended($authenticationService, $session, $this->urlHelper);
+        return AuthenticationMiddleware::redirectToIntended($authenticationService, $request, $session, $this->urlHelper, true);
     }
 
     private function blockMessage(int $minutes)

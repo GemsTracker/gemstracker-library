@@ -1,11 +1,11 @@
 gems__rounds:
-  - gro_id_track: 0
+  - gro_id_track: "0"
     gro_id_order: 10
     gro_id_survey: 0
     gro_survey_name: 'Dummy for inserted surveys'
     gro_round_description: 'Dummy for inserted surveys'
-    gro_valid_after_id: 0
-    gro_valid_for_id: 0
+    gro_valid_after_id: null
+    gro_valid_for_id: null
     gro_active: 1
     gro_changed_by: 1
     gro_created_by: 1
