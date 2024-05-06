@@ -151,6 +151,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $metaModel->set('filler',  'label', $this->_('Filler'), 'no_text_search', true);
 
         $filter = $this->getSearchFilter($action !== 'export');
+        $this->autofilterParameters['extraFilter'] = [];
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
             $this->autofilterParameters['extraFilter']['gto_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         } else {
@@ -163,7 +164,11 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             $where = $this->periodSelectRepository->createPeriodFilter($filter, $type->dateFormat, $type->storageFormat, $this->getSearchDefaults());
             if ($where) {
                 $select->join('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', [], Select::JOIN_LEFT);
-                $this->autofilterParameters['extraFilter'][] = $where;
+                if (is_array($this->autofilterParameters['extraFilter'])) {
+                    $this->autofilterParameters['extraFilter'][] = $where;
+                } else {
+                    $this->autofilterParameters['extra']
+                }
             }
         } else {
             $this->autofilterParameters['extraFilter'] = [1 => 0];
