@@ -581,11 +581,6 @@ parameters:
 			path: src/Agenda/Filter/FieldLikeAppointmentFilter.php
 
 		-
-			message: "#^Property Gems\\\\Agenda\\\\Filter\\\\LocationAppointmentFilter\\:\\:\\$_locations \\(array\\) does not accept true\\.$#"
-			count: 1
-			path: src/Agenda/Filter/LocationAppointmentFilter.php
-
-		-
 			message: "#^Call to an undefined method Zend_Form_Element\\:\\:img\\(\\)\\.$#"
 			count: 1
 			path: src/AuthTfa/Method/AuthenticatorTotp.php
