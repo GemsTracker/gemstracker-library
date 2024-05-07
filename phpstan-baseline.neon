@@ -566,11 +566,6 @@ parameters:
 			path: src/Agenda/AppointmentSubFilterAbstract.php
 
 		-
-			message: "#^PHPDoc tag @return with type string is incompatible with native type array\\.$#"
-			count: 1
-			path: src/Agenda/Filter/AndModelDependency.php
-
-		-
 			message: "#^PHPDoc tag @return with type mixed is not subtype of native type int\\|string\\|null\\.$#"
 			count: 1
 			path: src/Agenda/Filter/FieldLikeAppointmentFilter.php
