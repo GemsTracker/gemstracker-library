@@ -144,6 +144,10 @@ class SeedRepository extends MigrationRepositoryAbstract
                 throw new MigrationException("$seedClassName is not a valid seed class");
             }
             $data = $seedClass();
+            $order = $seedClass->getOrder();
+            if ($order === 0) {
+                $order = $this->defaultOrder;
+            }
             $reflectionClass = new \ReflectionClass($seedClassName);
 
             $seed = [
@@ -152,9 +156,9 @@ class SeedRepository extends MigrationRepositoryAbstract
                 'module' => $seedClassInfo['module'] ?? 'gems',
                 'type' => 'seed',
                 'description' => $description,
-                'order' => $seedClass->getOrder() ?? $this->defaultOrder,
+                'order' => $order,
                 'data' => $data,
-                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime($reflectionClass->getFileName())),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) filemtime($reflectionClass->getFileName())),
                 'location' => $reflectionClass->getFileName(),
                 'db' => $seedClassInfo['db'],
             ];
@@ -192,7 +196,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                     'description' => $description,
                     'order' => $this->defaultOrder,
                     'data' => $data,
-                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', $file->getMTime()),
+                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) $file->getMTime()),
                     'location' => $file->getRealPath(),
                     'db' => $directory['db'],
                 ];

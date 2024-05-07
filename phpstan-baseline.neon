@@ -721,21 +721,6 @@ parameters:
 			path: src/Db/Migration/SeedRepository.php
 
 		-
-			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
-			count: 1
-			path: src/Db/Migration/SeedRepository.php
-
-		-
-			message: "#^Parameter \\#2 \\$datetime of static method DateTimeImmutable\\:\\:createFromFormat\\(\\) expects string, \\(int\\|false\\) given\\.$#"
-			count: 1
-			path: src/Db/Migration/SeedRepository.php
-
-		-
-			message: "#^Parameter \\#2 \\$datetime of static method DateTimeImmutable\\:\\:createFromFormat\\(\\) expects string, int\\|false given\\.$#"
-			count: 1
-			path: src/Db/Migration/SeedRepository.php
-
-		-
 			message: "#^Parameter \\#2 \\$datetime of static method DateTimeImmutable\\:\\:createFromFormat\\(\\) expects string, \\(int\\|false\\) given\\.$#"
 			count: 1
 			path: src/Db/Migration/TableRepository.php
