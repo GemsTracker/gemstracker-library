@@ -164,11 +164,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             $where = $this->periodSelectRepository->createPeriodFilter($filter, $type->dateFormat, $type->storageFormat, $this->getSearchDefaults());
             if ($where) {
                 $select->join('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', [], Select::JOIN_LEFT);
-                if (is_array($this->autofilterParameters['extraFilter'])) {
-                    $this->autofilterParameters['extraFilter'][] = $where;
-                } else {
-                    $this->autofilterParameters['extra']
-                }
+                $this->autofilterParameters['extraFilter'][] = $where;
             }
         } else {
             $this->autofilterParameters['extraFilter'] = [1 => 0];
