@@ -708,11 +708,6 @@ parameters:
 		-
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
 			count: 1
-			path: src/Config/Route.php
-
-		-
-			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
-			count: 1
 			path: src/ConfigProvider.php
 
 		-

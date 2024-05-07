@@ -216,7 +216,7 @@ trait ModelSnippetActionRouteHelpers
         // Create the sub routes
         $routes = [];
         foreach ($controllerClass::$actions as $pageName => $actionClass) {
-            $interfaces = class_implements($actionClass) ?? [];
+            $interfaces = class_implements($actionClass);
 
             $pagePrivilege = 'autofilter' == $pageName ? 'index' : $pageName;
 
