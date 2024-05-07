@@ -566,11 +566,6 @@ parameters:
 			path: src/Agenda/AppointmentSubFilterAbstract.php
 
 		-
-			message: "#^Strict comparison using \\=\\=\\= between false and array\\|null will always evaluate to false\\.$#"
-			count: 1
-			path: src/Agenda/EpisodeOfCare.php
-
-		-
 			message: "#^PHPDoc tag @return with type string is incompatible with native type array\\.$#"
 			count: 1
 			path: src/Agenda/Filter/AndModelDependency.php

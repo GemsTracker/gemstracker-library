@@ -101,7 +101,7 @@ class EpisodeOfCare
      */
     public function getAppointments(): array
     {
-        if (false === $this->appointments) {
+        if (null === $this->appointments) {
             $this->appointments = $this->agenda->getAppointmentsForEpisode($this);
         }
 
