@@ -185,7 +185,7 @@ class TableRepository extends MigrationRepositoryAbstract
                     'order' => $this->defaultOrder,
                     'data' => $fileContent,
                     'sql' => $fileContent,
-                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', $file->getMTime()),
+                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) $file->getMTime()),
                     'location' => $file->getRealPath(),
                     'db' => $tableDirectory['db'],
                 ];
