@@ -581,11 +581,6 @@ parameters:
 			path: src/Agenda/Filter/FieldLikeAppointmentFilter.php
 
 		-
-			message: "#^Call to function is_string\\(\\) with non\\-empty\\-array will always evaluate to false\\.$#"
-			count: 1
-			path: src/Agenda/Filter/JsonDiagnosisEpisodeFilter.php
-
-		-
 			message: "#^Property Gems\\\\Agenda\\\\Filter\\\\LocationAppointmentFilter\\:\\:\\$_locations \\(array\\) does not accept true\\.$#"
 			count: 1
 			path: src/Agenda/Filter/LocationAppointmentFilter.php
