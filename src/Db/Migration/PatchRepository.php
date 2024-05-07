@@ -44,7 +44,10 @@ class PatchRepository extends MigrationRepositoryAbstract
                 throw new MigrationException("$patchClassName is not a valid patch class");
             }
             $description = $patchClass->getDescription();
-            $order = $patchClass->getOrder() ?? $this->defaultOrder;
+            $order = $patchClass->getOrder();
+            if ($order === 0) {
+                $order = $this->defaultOrder;
+            }
             $reflectionClass = new \ReflectionClass($patchClassName);
 
             $id = $this->getIdFromName($patchClassName);
@@ -58,7 +61,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                 'class' => $patchClass,
                 'description' => $description,
                 'order' => $order,
-                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime($reflectionClass->getFileName())),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) filemtime($reflectionClass->getFileName())),
                 'location' => $reflectionClass->getFileName(),
                 'db' => $patchInfo['db'],
             ];
@@ -111,7 +114,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                     'order' => $order,
                     'data' => $fileContent,
                     'sql' => $sql,
-                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', $file->getMTime()),
+                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) $file->getMTime()),
                     'location' => $file->getRealPath(),
                     'db' => $patchesDirectory['db'],
                 ];
