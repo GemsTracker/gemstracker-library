@@ -60,7 +60,7 @@ class Appointment
     /**
      * Creates the appointments object
      *
-     * @param mixed $appointmentData Appointment Id or array containing appointment record
+     * @param array $appointmentData Appointment Id or array containing appointment record
      */
     public function __construct(
         protected readonly array $appointmentData,
@@ -88,11 +88,6 @@ class Appointment
         }
         if (!array_key_exists('gaa_name', $this->data)) {
             $this->data['gaa_name'] = $this->activityRepository->getActivityName($this->data['gap_id_activity']);
-
-            // Cleanup db result
-            if (false === $this->data['gaa_name']) {
-                $this->data['gaa_name'] = null;
-            }
         }
         return $this->data['gaa_name'];
     }
@@ -227,11 +222,6 @@ class Appointment
         }
         if (!array_key_exists('glo_name', $this->data)) {
             $this->data['glo_name'] = $this->locationRepository->getLocationName($this->data['gap_id_location']);
-
-            // Cleanup db result
-            if (false === $this->data['glo_name']) {
-                $this->data['glo_name'] = null;
-            }
         }
         return $this->data['glo_name'];
     }
@@ -271,20 +261,15 @@ class Appointment
     /**
      * Return the description of the current procedure
      *
-     * @return string or null when not found
+     * @return string|null or null when not found
      */
-    public function getProcedureDescription()
+    public function getProcedureDescription(): string|null
     {
         if (! (isset($this->data['gap_id_procedure']) && $this->data['gap_id_procedure'])) {
             return null;
         }
         if (!array_key_exists('gapr_name', $this->data)) {
             $this->data['gapr_name'] = $this->procedureRepository->getProcedureName($this->data['gap_id_procedure']);
-
-            // Cleanup db result
-            if (false === $this->data['gapr_name']) {
-                $this->data['gapr_name'] = null;
-            }
         }
         return $this->data['gapr_name'];
     }
