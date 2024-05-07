@@ -127,9 +127,10 @@ class Agenda
     /**
      * Check if a track should be created for any of the filters
      *
+     * @param Appointment $appointment
      * @param TrackFieldFilterCalculationInterface[] $filters
      * @param array $existingTracks Of $trackId => [RespondentTrack objects]
-     * @param Tracker $tracker
+     * @param FilterTracer|null $filterTracer
      *
      * @return int Number of tokenchanges
      */
@@ -223,8 +224,8 @@ class Agenda
     /**
      * Create a new track for this appointment and the given filter
      *
+     * @param Appointment $appointment
      * @param TrackFieldFilterCalculationInterface $filter
-     * @param Tracker $tracker
      */
     protected function _createTrack(Appointment $appointment, TrackFieldFilterCalculationInterface $filter): RespondentTrack
     {
@@ -457,7 +458,7 @@ class Agenda
     /**
      * Get an appointment object
      *
-     * @param mixed $episodeData Episode id or array containing episode data
+     * @param array|int $episodeData Episode id or array containing episode data
      * @return EpisodeOfCare
      */
     public function getEpisodeOfCare(array|int $episodeData): EpisodeOfCare
@@ -991,7 +992,7 @@ class Agenda
 
     /**
      *
-     * @param mixed $to \Gems\Agenda\Appointment:EpsiodeOfCare
+     * @param Appointment|EpisodeOfCare $to \Gems\Agenda\Appointment:EpsiodeOfCare
      * @return AppointmentFilterInterface[]
      */
     public function matchFilters(Appointment|EpisodeOfCare $to): array
@@ -1039,7 +1040,7 @@ class Agenda
      * @param string $name The name to match against
      * @param int $organizationId Organization id
      * @param boolean $create Create a match when it does not exist
-     * @return array location
+     * @return int|null location
      */
     public function matchLocation(string $name, int $organizationId, bool $create = true): int|null
     {

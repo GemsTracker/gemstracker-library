@@ -561,26 +561,6 @@ parameters:
 			path: src/Agenda/Agenda.php
 
 		-
-			message: "#^PHPDoc tag @param for parameter \\$episodeData with type mixed is not subtype of native type array\\|int\\.$#"
-			count: 1
-			path: src/Agenda/Agenda.php
-
-		-
-			message: "#^PHPDoc tag @param for parameter \\$to with type mixed is not subtype of native type Gems\\\\Agenda\\\\Appointment\\|Gems\\\\Agenda\\\\EpisodeOfCare\\.$#"
-			count: 1
-			path: src/Agenda/Agenda.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$tracker$#"
-			count: 2
-			path: src/Agenda/Agenda.php
-
-		-
-			message: "#^PHPDoc tag @return with type array is incompatible with native type int\\|null\\.$#"
-			count: 1
-			path: src/Agenda/Agenda.php
-
-		-
 			message: "#^Parameter \\#1 \\$filterId of method Gems\\\\Agenda\\\\Repository\\\\FilterRepository\\:\\:getFilter\\(\\) expects int, string given\\.$#"
 			count: 1
 			path: src/Agenda/AppointmentSubFilterAbstract.php
