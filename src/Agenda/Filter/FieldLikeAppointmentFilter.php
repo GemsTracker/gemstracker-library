@@ -96,7 +96,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      *
      * @param Appointment $appointment
      * @param string $field
-     * @return mixed
+     * @return string|int|null
      */
     public function getAppointmentFieldValue(Appointment $appointment, string $field): string|int|null
     {
@@ -136,6 +136,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      */
     public function getSqlAppointmentsWhere(): string
     {
+        $wheres = [];
         if ($this->text1 && $this->text2) {
             $wheres[] = $this->getSqlWhereSingle($this->text1, $this->text2, $this->_fieldList2);
         }
@@ -220,9 +221,9 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     /**
      * Check a filter for a match
      *
-     * @param $field
-     * @param $searchTxt
-     * @param $fieldList
+     * @param string|null $field
+     * @param string|null $searchTxt
+     * @param array|bool|null $fieldList
      * @param Appointment $appointment
      * @return boolean
      */
@@ -233,11 +234,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
         if ($field && $searchTxt) {
             $value = $this->getAppointmentFieldValue($appointment, $field);
             if (isset($this->_lookupTables[$field])) {
-                if ($fieldList && $fieldList !== true) {
-                    if (! isset($fieldList)) {
-                        $result = false;
-                    }
-                } else {
+                if (is_null($fieldList) || $fieldList === false || empty($fieldList)) {
                     $result = false;
                 }
             } else {

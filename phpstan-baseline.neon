@@ -566,21 +566,6 @@ parameters:
 			path: src/Agenda/AppointmentSubFilterAbstract.php
 
 		-
-			message: "#^PHPDoc tag @return with type mixed is not subtype of native type int\\|string\\|null\\.$#"
-			count: 1
-			path: src/Agenda/Filter/FieldLikeAppointmentFilter.php
-
-		-
-			message: "#^Variable \\$fieldList in isset\\(\\) always exists and is not nullable\\.$#"
-			count: 1
-			path: src/Agenda/Filter/FieldLikeAppointmentFilter.php
-
-		-
-			message: "#^Variable \\$wheres might not be defined\\.$#"
-			count: 2
-			path: src/Agenda/Filter/FieldLikeAppointmentFilter.php
-
-		-
 			message: "#^Call to an undefined method Zend_Form_Element\\:\\:img\\(\\)\\.$#"
 			count: 1
 			path: src/AuthTfa/Method/AuthenticatorTotp.php
