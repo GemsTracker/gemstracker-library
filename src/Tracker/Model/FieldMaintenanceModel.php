@@ -95,8 +95,8 @@ class FieldMaintenanceModel extends UnionModel
         protected readonly TrackDataRepository $trackDataRepository,
         protected readonly Tracker $tracker,
         protected readonly ResultFetcher $resultFetcher,
-        string $modelName = 'fields_maintenance',
-        string $modelField = 'sub',
+        protected string $modelName = 'fields_maintenance',
+        protected string $modelField = 'sub',
     ) {
         $event = new TrackFieldDependencyListEvent($this->dependencies);
         $eventDispatcher->dispatch($event, TrackFieldDependencyListEvent::class);
@@ -222,7 +222,7 @@ class FieldMaintenanceModel extends UnionModel
         ]);
 
         $this->metaModel->set('gtf_calculate_using', [
-            'description', $this->_('Automatically calculate this field using other fields')
+            'description' => $this->_('Automatically calculate this field using other fields')
         ]);
 
         if ($detailed) {
