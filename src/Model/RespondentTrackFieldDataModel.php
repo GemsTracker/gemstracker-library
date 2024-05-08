@@ -18,7 +18,6 @@ class RespondentTrackFieldDataModel extends UnionModel
             [
                 'gr2t_id_track' => 'gtf_id_track'
             ],
-            'gtf',
             false
         );
 
@@ -28,7 +27,6 @@ class RespondentTrackFieldDataModel extends UnionModel
                 'gr2t_id_respondent_track' => 'gr2t2f_id_respondent_track',
                 'gtf_id_field' => 'gr2t2f_id_field',
             ],
-            'gr2t2f',
             false
         );
 
@@ -43,7 +41,6 @@ class RespondentTrackFieldDataModel extends UnionModel
             [
                 'gr2t_id_track' => 'gtap_id_track'
             ],
-            'gtf',
             false
         );
 
@@ -53,7 +50,6 @@ class RespondentTrackFieldDataModel extends UnionModel
                 'gr2t_id_respondent_track' => 'gr2t2a_id_respondent_track',
                 'gtap_id_app_field' => 'gr2t2a_id_app_field',
             ],
-            'gr2t2f',
             false
         );
 
