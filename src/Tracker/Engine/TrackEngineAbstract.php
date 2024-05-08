@@ -42,6 +42,7 @@ use MUtil\EchoOut\EchoOut;
 use MUtil\Model\Type\ConcatenatedRow;
 use MUtil\Registry\TargetAbstract;
 use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\ImgElement;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Dependency\DependencyInterface;
@@ -103,7 +104,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
         protected readonly Tracker $tracker,
         protected readonly DbTranslationRepository $dbTranslationRepository,
         protected readonly ProjectOverloader $overloader,
-        protected readonly Translator $translator,
+        protected readonly TranslatorInterface $translator,
         protected readonly TrackEvents $trackEvents,
         protected readonly ConditionLoader $conditionLoader,
         protected readonly TrackDataRepository $trackDataRepository,
@@ -438,19 +439,16 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
 
         if ($fields) {
             $oldIds = [];
-            $numFields = count($fields);
-            $newFields = $fieldModel->loadNew($numFields);
-            foreach ($newFields as $idx => $newField) {
-                $field = $fields[$idx];
+
+            foreach($fields as $idx => $field) {
+                $newFieldData  = $fieldModel->loadNew();
                 $oldIds[$idx] = $field['gtf_id_field'];
                 unset($field['gtf_id_field'], $field['gtf_changed'], $field['gtf_changed_by'], $field['gtf_created'], $field['gtf_created_by']);
                 $field['gtf_id_track'] = $newTrackId;
-                $newFields[$idx] = $field + $newFields;
-            }
-            // Now save (not done yet)
-            $savedValues = $fieldModel->saveAll($newFields);
-            foreach($savedValues as $idx => $field) {
-                $oldNewFieldMap[$oldIds[$idx]] = $field['gtf_id_field'];
+                $newField = $field + $newFieldData;
+
+                $savedValues = $fieldModel->save($newField);
+                $oldNewFieldMap[$field['gtf_id_field']] = $savedValues['gtf_id_field'];
             }
         } else {
             $numFields = 0;
@@ -460,24 +458,18 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
         $rounds = $roundModel->load(['id' => $oldTrackId]);
 
         if ($rounds) {
-            $numRounds = count($rounds);
-            $newRounds = $roundModel->loadNew($numRounds);
-            foreach ($newRounds as $idx => $newRound) {
-                $round = $rounds[$idx];
+
+            foreach($rounds as $idx => $round) {
                 unset($round['gro_id_round'], $round['gro_changed'], $round['gro_changed_by'], $round['gro_created'], $round['gro_created_by']);
                 $round['gro_id_track'] = $newTrackId;
                 if (array_key_exists('gro_id_relationfield', $round) && $round['gro_id_relationfield']>0) {
                     $round['gro_id_relationfield'] = $oldNewFieldMap[$round['gro_id_relationfield']];
                 }
-                $newRounds[$idx] = $round + $newRound;
+                $savedValues = $roundModel->save($round);
             }
-            // Now save (not done yet)
-            $savedValues = $roundModel->saveAll($newRounds);
         } else {
             $numRounds = 0;
         }
-
-        //\Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->translator->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
 
         return $newTrackId;
     }

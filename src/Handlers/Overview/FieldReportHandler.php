@@ -134,7 +134,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     public function createModel($detailed, $action): DataReaderInterface
     {
@@ -182,17 +182,27 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         // $model->addColumn(new \Zend_Db_Expr($trackCount), 'trackcount');
         // $model->addColumn(new \Zend_Db_Expr("(SELECT COUNT())"), 'fillcount');
 
-        $model->set('trackcount', 'label', $this->_('Tracks'));
-        $model->setOnLoad('trackcount', $this->trackCount);
+        $metaModel = $model->getMetaModel();
 
-        $model->set('fillcount', 'label', $this->_('Filled'));
-        $model->setOnLoad('fillcount', array($this, 'fillCount'));
+        $metaModel->set('trackcount', [
+            'label' => $this->_('Tracks')
+        ]);
+        $metaModel->setOnLoad('trackcount', $this->trackCount);
 
-        $model->set('emptycount', 'label', $this->_('Empty'));
-        $model->setOnLoad('emptycount', array($this, 'emptyCount'));
+        $metaModel->set('fillcount', [
+            'label' => $this->_('Filled')
+        ]);
+        $metaModel->setOnLoad('fillcount', [$this, 'fillCount']);
 
-        $model->set('valuecount', 'label', $this->_('Unique values'));
-        $model->setOnLoad('valuecount', array($this, 'valueCount'));
+        $metaModel->set('emptycount', [
+            'label' => $this->_('Empty')
+        ]);
+        $metaModel->setOnLoad('emptycount', [$this, 'emptyCount']);
+
+        $metaModel->set('valuecount', [
+            'label' => $this->_('Unique values')
+        ]);
+        $metaModel->setOnLoad('valuecount', [$this, 'valueCount']);
 
         return $model;
     }

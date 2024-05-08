@@ -87,7 +87,7 @@ class FieldMaintenanceModel extends UnionModel
     ];
 
     public function __construct(
-        MetaModelLoader $metaModelLoader,
+        protected readonly MetaModelLoader $metaModelLoader,
         TranslatorInterface $translator,
         protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly Translated $translatedUtil,
@@ -135,9 +135,8 @@ class FieldMaintenanceModel extends UnionModel
      */
     protected function addAppointmentsToModel(): void
     {
-        $metaModelLoader = $this->metaModel->getMetaModelLoader();
-        $model = $metaModelLoader->createTableModel('gems__track_appointments');
-        $metaModelLoader->setChangeFields($model->getMetaModel(), 'gtap');
+        $model = $this->metaModelLoader->createTableModel('gems__track_appointments');
+        $this->metaModelLoader->setChangeFields($model->getMetaModel(), 'gtap');
 
         $map = $model->getMetaModel()->getItemsOrdered();
         $map = array_combine($map, str_replace('gtap_', 'gtf_', $map));

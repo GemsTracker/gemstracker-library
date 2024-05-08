@@ -517,7 +517,9 @@ class FieldsDefinition
                 $model->applyEditSettings();
 
                 if ('create' === $action) {
-                    $model->set('gtf_id_track', 'default', $this->trackId);
+                    $model->getMetaModel()->set('gtf_id_track', [
+                        'default' => $this->trackId
+                    ]);
 
                     // Set the default round order
 
@@ -530,7 +532,9 @@ class FieldsDefinition
 
                     if ($row && isset($row['gtf_id_order'])) {
                         $newOrder = $row['gtf_id_order'] + 10;
-                        $model->set('gtf_id_order', 'default', $newOrder);
+                        $model->getMetaModel()->set('gtf_id_order', [
+                            'default' => $newOrder
+                        ]);
                     }
                 }
             } else {
@@ -739,11 +743,16 @@ class FieldsDefinition
         }
 
         $model = $this->getDataStorageModel();
-        $model->saveAll($saves);
+        foreach($saves as $save) {
+            $model->save($save);
+        }
         
         if ($logs) {
             // \MUtil\EchoOut\EchoOut::track($logs);
-            $this->getLogStorageModel()->saveAll($logs);
+            $logStorageModel = $this->getLogStorageModel();
+            foreach($logs as $log) {
+                $logStorageModel->save($log);
+            }
         }
 
         return $model->getChanged();
