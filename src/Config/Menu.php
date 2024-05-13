@@ -385,6 +385,11 @@ class Menu
                     'label' => $this->translator->trans('Export'),
                     'type' => 'route-link-item',
                 ],
+                [
+                    'name' => 'respondent.find-token.index',
+                    'label' => $this->translator->trans('Find token'),
+                    'type' => 'route-link-item',
+                ],
             ],
         ];
     }

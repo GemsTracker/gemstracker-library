@@ -20,6 +20,7 @@ use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
+use Gems\Handlers\Respondent\FindTokenHandler;
 use Gems\Handlers\Setup\Database\PatchHandler;
 use Gems\Handlers\Setup\Database\SeedHandler;
 use Gems\Handlers\Setup\Database\TableHandler;
@@ -832,6 +833,10 @@ class Route
                 ],
             ),
 
+            ...$this->createHandlerRoute(
+                baseName: 'respondent.find-token',
+                controllerClass: FindTokenHandler::class,
+            )
         ];
     }
 

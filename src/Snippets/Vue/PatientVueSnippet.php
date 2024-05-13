@@ -2,15 +2,12 @@
 
 namespace Gems\Snippets\Vue;
 
-use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Mezzio\Helper\UrlHelper;
-use Mezzio\Template\TemplateRendererInterface;
-use MUtil\Model;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\Html;
-use Zalt\Snippets\SnippetAbstract;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 class PatientVueSnippet extends VueSnippetAbstract
@@ -18,6 +15,18 @@ class PatientVueSnippet extends VueSnippetAbstract
     protected int $organizationId;
 
     protected string $patientNr;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        LayoutSettings $layoutSettings,
+        Locale $locale,
+        UrlHelper $urlHelper,
+        array $config,
+        protected readonly CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $locale, $urlHelper, $config);
+    }
 
     protected function getAttributes(): array
     {
@@ -31,11 +40,11 @@ class PatientVueSnippet extends VueSnippetAbstract
     public function hasHtmlOutput(): bool
     {
         $attributes = $this->requestInfo->getRequestMatchedParams();
-        if (!isset($attributes[Model::REQUEST_ID1], $attributes[Model::REQUEST_ID2])) {
+        if (!isset($attributes[MetaModelInterface::REQUEST_ID1], $attributes[MetaModelInterface::REQUEST_ID2])) {
             return false;
         }
-        $this->patientNr = (string) $attributes[Model::REQUEST_ID1];
-        $this->organizationId = (int) $attributes[Model::REQUEST_ID2];
+        $this->patientNr = (string) $attributes[MetaModelInterface::REQUEST_ID1];
+        $this->organizationId = (int) $attributes[MetaModelInterface::REQUEST_ID2];
         $this->currentUserRepository->assertAccessToOrganizationId($this->organizationId);
         return parent::hasHtmlOutput();
     }

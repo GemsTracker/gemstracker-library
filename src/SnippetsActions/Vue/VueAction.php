@@ -2,14 +2,13 @@
 
 namespace Gems\SnippetsActions\Vue;
 
-use Gems\Snippets\Vue\PatientVueSnippet;
+use Gems\Snippets\Vue\VueSnippet;
 use Zalt\SnippetsActions\AbstractAction;
-use Zalt\SnippetsActions\ParameterActionInterface;
 
-class VueAction extends AbstractAction implements ParameterActionInterface
+class VueAction extends AbstractAction
 {
     protected array $_snippets = [
-        PatientVueSnippet::class,
+        VueSnippet::class,
     ];
 
     public string $tag;
