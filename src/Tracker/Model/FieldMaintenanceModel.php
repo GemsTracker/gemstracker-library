@@ -297,7 +297,7 @@ class FieldMaintenanceModel extends UnionModel
         $this->metaModel->set('header_creation', [
             'elementClass' => 'None',
         ]);
-        
+
         // Clean up data always show in browse view, but not always in detail views
         $this->metaModel->set('gtf_create_track', [
             'label' => null
@@ -562,7 +562,7 @@ class FieldMaintenanceModel extends UnionModel
      * @param bool $isPost True when passing on post data
      * @return string Description
      */
-    protected function loadCalculationSources(mixed $value, bool $isNew = false, string|null $name = null, array $context = [], bool $isPost = false): string
+    public function loadCalculationSources(mixed $value, bool $isNew = false, string|null $name = null, array $context = [], bool $isPost = false): string
     {
         if ($isPost) {
             return $value;
