@@ -562,7 +562,7 @@ class FieldMaintenanceModel extends UnionModel
      * @param bool $isPost True when passing on post data
      * @return string Description
      */
-    public function loadCalculationSources(mixed $value, bool $isNew = false, string|null $name = null, array $context = [], bool $isPost = false): string
+    public function loadCalculationSources(mixed $value, bool $isNew = false, string|null $name = null, array $context = [], bool $isPost = false): string|null
     {
         if ($isPost) {
             return $value;
