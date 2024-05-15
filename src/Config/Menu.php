@@ -1387,6 +1387,25 @@ class Menu
                         ],
                     ],
                 ],
+                [
+                    'name' => 'setup.logfiles.index',
+                    'label' => $this->translator->trans('Log files'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'setup.logfiles.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.logfiles.download',
+                                    'label' => $this->translator->trans('Download'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
     }

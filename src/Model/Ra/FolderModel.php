@@ -14,16 +14,15 @@ class FolderModel extends ArrayModelAbstract
     protected Finder $finder;
 
     public function __construct(
+        MetamodelInterface $metaModel,
         protected readonly string|Finder $dir,
-        protected readonly MetaModelLoader $metaModelLoader,
         readonly bool $recursive = false,
         readonly bool $followSymlinks = false,
     )
     {
-        $this->finder = $this->getFinder($dir, $recursive, $followSymlinks);
+        parent::__construct($metaModel);
 
-        $this->metaModel = new MetaModel($dir, $this->metaModelLoader);
-        parent::__construct($this->metaModel);
+        $this->finder = $this->getFinder($dir, $recursive, $followSymlinks);
 
         $this->metaModel->set('fullpath', [
             'type' => MetaModelInterface::TYPE_STRING,
@@ -54,7 +53,7 @@ class FolderModel extends ArrayModelAbstract
         ]);
 
         $this->metaModel->setKeys(['urlpath']);
-        $this->metaModel->addTransformer(new FileInfoTransformer( (is_string($dir) ? $dir : null) ));
+        $this->metaModel->addTransformer(new FileInfoTransformer( (is_string($dir) ? $dir : '') ));
     }
 
     protected function getFinder(string|Finder $dir, $recursive, $followSymlinks): Finder
@@ -73,6 +72,78 @@ class FolderModel extends ArrayModelAbstract
         }
 
         return $finder;
+    }
+
+    /**
+     * Filtering in the Finder object, not in the results.
+     *
+     * @param array $filter
+     * @return void
+     */
+    protected function finderFilter(array $filter): void
+    {
+        foreach ($filter as $name => $value) {
+            if ($name == 'filename') {
+                if (is_string($value)) {
+                    $this->finder->name($value);
+                } elseif (is_array($value) && !empty($value['like'])) {
+                    $this->finder->name('*'.$value['like'].'*');
+                }
+            }
+            if (is_array($value)) {
+                $this->finderFilter($value);
+            }
+        }
+    }
+
+    /**
+     * Sorting in the Finder object, not in the results.
+     *
+     * @param array $sort
+     * @return void
+     */
+    protected function finderSort(array $sort): void
+    {
+        foreach ($sort as $name => $direction) {
+            switch ($name) {
+                case 'filename':
+                    if ($direction == SORT_ASC) {
+                        $this->finder->sortByName();
+                    } else {
+                        $this->finder->sortByName()->reverseSorting();
+                    }
+                    break;
+                case 'size':
+                    if ($direction == SORT_ASC) {
+                        $this->finder->sortBySize();
+                    } else {
+                        $this->finder->sortBySize()->reverseSorting();
+                    }
+                    break;
+                case 'changed':
+                    if ($direction == SORT_ASC) {
+                        $this->finder->sortByChangedTime();
+                    } else {
+                        $this->finder->sortByChangedTime()->reverseSorting();
+                    }
+                    break;
+            }
+            // We only support one column to sort on.
+            break;
+        }
+    }
+
+    public function load($filter = null, $sort = null, $columns = null): array
+    {
+        $filter = $this->checkFilter($filter);
+        $sort   = $this->checkSort($sort);
+
+        $this->finderFilter($filter);
+        $this->finderSort($sort);
+
+        $data = $this->_loadAll();
+
+        return $this->metaModel->processAfterLoad($data);
     }
 
     protected function _loadAll(): array
