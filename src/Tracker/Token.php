@@ -34,7 +34,7 @@ use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Tracker\Model\FieldMaintenanceModel;
-use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\Source\SourceAbstract;
 use Gems\Tracker\Token\LaminasTokenSelect;
 use Gems\User\Mask\MaskRepository;
@@ -892,9 +892,9 @@ class Token
     /**
      * Returns a model that can be used to save, edit, etc. the token
      *
-     * @return StandardTokenModel
+     * @return TokenModel
      */
-    public function getModel(): StandardTokenModel
+    public function getModel(): TokenModel
     {
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenModel();

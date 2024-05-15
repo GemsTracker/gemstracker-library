@@ -24,6 +24,8 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  */
 class TableSnippet extends \Gems\Snippets\ModelTableSnippet
 {
+    protected $class = 'browser table visualtrack';
+
     /**
      * Menu actions to show in Show box.
      *

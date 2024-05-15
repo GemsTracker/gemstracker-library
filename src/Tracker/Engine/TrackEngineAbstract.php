@@ -24,6 +24,7 @@ use Gems\Tracker\Model\FieldDataModel;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Tracker\Model\RoundModel;
 use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\Round;
 use Gems\Tracker\Token;
@@ -959,9 +960,9 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
     /**
      * Returns a model that can be used to save, edit, etc. the token
      *
-     * @return StandardTokenModel
+     * @return StandardTokenModel|TokenModel
      */
-    public function getTokenModel(): StandardTokenModel
+    public function getTokenModel(): StandardTokenModel|TokenModel
     {
         return $this->tracker->getTokenModel();
     }
