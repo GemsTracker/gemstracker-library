@@ -11,7 +11,20 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\Db\ResultFetcher;
+use Gems\Export;
 use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\MetaModelLoader;
+use Gems\Model\Respondent\RespondentModel;
+use Gems\Repository\PeriodSelectRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Tracker;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -24,6 +37,37 @@ use Gems\Html;
 class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstract
 {
     protected bool $forCodeBooks = false;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MenuSnippetHelper $menuSnippetHelper,
+        MetaModelLoader $metaModelLoader,
+        ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
+        PeriodSelectRepository $periodSelectRepository,
+        CurrentUserRepository $currentUserRepository,
+        RespondentModel $respondentModel,
+        TrackDataRepository $trackDataRepository,
+        Tracker $tracker,
+        protected readonly Export $export,
+    ) {
+        parent::__construct(
+            $snippetOptions,
+            $requestInfo,
+            $translate,
+            $menuSnippetHelper,
+            $metaModelLoader,
+            $resultFetcher,
+            $messenger,
+            $periodSelectRepository,
+            $currentUserRepository,
+            $respondentModel,
+            $trackDataRepository,
+            $tracker
+        );
+    }
 
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -76,7 +120,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
      */
     protected function getExportTypeElements(array $data)
     {
-        $exportTypes = $this->getExportClasses($export);
+        $exportTypes = $this->getExportClasses($this->export);
 
         if (isset($data['type'])) {
             $currentType = $data['type'];
@@ -91,7 +135,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
         $elements['type']->setAttrib('class', 'auto-submit');
         // $elements['step'] = $this->form->createElement('hidden', 'step');;
 
-        $exportClass = $export->getExport($currentType);
+        $exportClass = $this->export->getExport($currentType);
         $exportName  = $exportClass->getName();
         $exportFormElements = $exportClass->getFormElements($this->form, $data);
 
