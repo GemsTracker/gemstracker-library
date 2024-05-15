@@ -101,7 +101,7 @@ class SurveyCodeBookModel extends PlaceholderModel
             if (array_key_exists('equation', $information)) {
                 // If there is an equation, we don't have answers
                 $answers     = $information['equation'];
-                $answerCodes = $this->_('Equation');
+                $answerCodes = $this->translator->_('Equation');
             }
 
             $data[$questionTitle] = [

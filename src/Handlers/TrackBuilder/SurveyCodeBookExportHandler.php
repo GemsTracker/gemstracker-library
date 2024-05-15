@@ -25,7 +25,7 @@ class SurveyCodeBookExportHandler extends ModelSnippetLegacyHandlerAbstract
         parent::__construct($responder, $translate, $cache);
     }
 
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): SurveyCodeBookModel
     {
         /**
          * @var SurveyCodeBookModel $model
