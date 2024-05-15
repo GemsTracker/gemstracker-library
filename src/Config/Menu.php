@@ -2,6 +2,7 @@
 
 namespace Gems\Config;
 
+use Gems\Handlers\Export\ExportSurveyHandler;
 use Gems\Handlers\Setup\CommJobHandler;
 use Gems\Handlers\Setup\ConsentHandler;
 use Gems\Handlers\Setup\MailCodeHandler;
@@ -34,6 +35,7 @@ class Menu
             $this->getOverviewMenu(),
             $this->getProjectMenu(),
             $this->getSetupMenu(),
+            $this->getExportMenu(),
             $this->getTrackBuilderMenu(),
             $this->getOptionMenu(),
             $this->getAskMenu(),
@@ -55,7 +57,7 @@ class Menu
             'type' => 'route',
             'children' => [
                 [
-                    'name' => 'ask.lost',
+                'name' => 'ask.lost',
                     'label' => $this->translator->trans('Token lost?'),
                     'type' => 'route-link-item',
                 ],
@@ -75,6 +77,22 @@ class Menu
                     'label' => $this->translator->trans('Export'),
                     'type' => 'route-link-item',
                 ],
+            ],
+        ];
+    }
+
+    public function getExportMenu(): array
+    {
+        return [
+            'name' => 'export',
+            'label' => $this->translator->trans('Export'),
+            'type' => 'container',
+            'children' => [
+                $this->createMenuForHandler(
+                    controllerClass: ExportSurveyHandler::class,
+                    name: 'export.survey',
+                    label: $this->translator->trans('Export survey'),
+                )
             ],
         ];
     }

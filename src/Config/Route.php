@@ -18,6 +18,7 @@ use Gems\Handlers\ChangeGroupHandler;
 use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
+use Gems\Handlers\Export\ExportSurveyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
 use Gems\Handlers\Respondent\FindTokenHandler;
@@ -133,6 +134,7 @@ class Route
                 ...$this->getOverviewRoutes(),
                 ...$this->getProjectRoutes(),
                 ...$this->getSetupRoutes(),
+                ...$this->getExportRoutes(),
                 ...$this->getTrackBuilderRoutes(),
                 ...$this->getOptionRoutes(),
             ]),
@@ -383,6 +385,22 @@ class Route
                 ],
                 noCsrfRoutes: ['index', 'lost']
             ),
+        ];
+    }
+
+    public function getExportRoutes(): array
+    {
+        return [
+            ...$this->createRoute(
+                name: 'export',
+                path: '/export',
+                middleware: [
+                    EmptyHandler::class,
+                ]),
+            ...$this->createHandlerRoute(
+                baseName: 'export.survey',
+                controllerClass: ExportSurveyHandler::class,
+            )
         ];
     }
 

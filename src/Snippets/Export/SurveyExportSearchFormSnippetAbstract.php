@@ -9,6 +9,19 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\MetaModelLoader;
+use Gems\Model\Respondent\RespondentModel;
+use Gems\Repository\PeriodSelectRepository;
+use Gems\Snippets\AutosearchFormSnippet;
+use Gems\Snippets\AutosearchPeriodFormSnippet;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  * @package    Gems
@@ -17,7 +30,7 @@ namespace Gems\Snippets\Export;
  * @license    New BSD License
  * @since      Class available since version 1.8.2
  */
-abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchFormSnippet
+abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFormSnippet
 {
 	/**
      * Defines the value used for 'no round description'
@@ -26,19 +39,31 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\Auto
      */
     const NoRound = '-1';
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MenuSnippetHelper $menuSnippetHelper,
+        MetaModelLoader $metaModelLoader,
+        ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
+        PeriodSelectRepository $periodSelectRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
+        protected readonly RespondentModel $respondentModel,
+    ) {
+        parent::__construct(
+            $snippetOptions,
+            $requestInfo,
+            $translate,
+            $menuSnippetHelper,
+            $metaModelLoader,
+            $resultFetcher,
+            $messenger,
+            $periodSelectRepository
+        );
+    }
 
     /**
-     *
-     * @var \Gems\Export\ModelSource\ExportModelSourceAbstract
-     */
-    protected $exportModelSource;
-
-	/**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
@@ -47,13 +72,13 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\Auto
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(array $data)
+    protected function getAutoSearchElements(array $data): array
     {
         $elements = $this->getSurveySelectElements($data);
 
         $elements[] = null;
 
-        $organizations = $this->currentUser->getRespondentOrganizations();
+        $organizations = $this->currentUserRepository->getCurrentUser()->getRespondentOrganizations();
         if (count($organizations) > 1) {
             $elements['gto_id_organization'] = $this->_createMultiCheckBoxElements('gto_id_organization', $organizations);
 
@@ -69,7 +94,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\Auto
             'gto_completion_time' => $this->_('Completion date'),
             );
         // $dates = 'gto_valid_from';
-        $this->_addPeriodSelectors($elements, $dates, 'gto_valid_from');
+        $this->addPeriodSelectors($elements, $dates, 'gto_valid_from');
 
         $elements[] = null;
 
@@ -139,12 +164,64 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\Auto
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
      * That creates a distinct group of elements
      *
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @param array $data The $form field values (can be useful, but no need to set them)
+     * @return array Of \Zend_Form_Element's or static text to add to the html or null for group breaks.
      */
-    protected function getExtraFieldElements(array $data)
+    protected function getExtraFieldElements(array $data): array
     {
-        return $this->exportModelSource->getExtraDataFormElements($this->form, $data);
+        if (isset($data['gto_id_track']) && $data['gto_id_track']) {
+            $elements['add_track_fields'] = $this->_createCheckboxElement(
+                'add_track_fields',
+                $this->_('Track fields'),
+                $this->_('Add track fields to export')
+            );
+        }
+        if ($this->currentUserRepository->getCurrentUser()->hasPrivilege('pr.export.add-resp-nr')) {
+            $elements['export_resp_nr'] = $this->_createCheckboxElement(
+                'export_resp_nr',
+                $this->respondentModel->getMetaModel()->get('gr2o_patient_nr', 'label'),
+                $this->_('Add respondent nr to export')
+            );
+        }
+        if ($this->currentUserRepository->getCurrentUser()->hasPrivilege('pr.export.gender-age')) {
+            $elements['export_resp_gender'] = $this->_createCheckboxElement(
+                'export_resp_gender',
+                $this->_('Respondent gender'),
+                $this->_('Add respondent gender to export')
+            );
+
+            $elements['export_birth_year'] = $this->_createCheckboxElement(
+                'export_birth_year',
+                $this->_('Respondent birth year'),
+                $this->_('Add respondent birth year to export')
+            );
+
+            $elements['export_birth_month'] = $this->_createCheckboxElement(
+                'export_birth_month',
+                $this->_('Respondent birth month'),
+                $this->_('Add respondent birth month to export')
+            );
+
+            $elements['export_birth_yearmonth'] = $this->_createCheckboxElement(
+                'export_birth_yearmonth',
+                $this->_('Respondent birth year/month'),
+                $this->_('Add respondent birth year and month to export')
+            );
+        }
+
+        $elements['export_track_reception_code'] = $this->_createCheckboxElement(
+            'export_track_reception_code',
+            $this->_('Track reception code'),
+            $this->_('Add reception code of track')
+        );
+
+        $elements['export_token_reception_code'] = $this->_createCheckboxElement(
+            'export_token_reception_code',
+            $this->_('Token reception code'),
+            $this->_('Add reception code of token')
+        );
+
+        return $elements;
     }
 
 	/**

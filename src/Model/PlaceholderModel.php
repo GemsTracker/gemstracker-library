@@ -10,6 +10,10 @@
 
 namespace Gems\Model;
 
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModel;
+use Zalt\Model\Ra\ArrayModelAbstract;
+
 /**
  * A placeholder array model
  *
@@ -19,86 +23,24 @@ namespace Gems\Model;
  * @license    New BSD License
  * @since      Class available since version 1.9,0
  */
-class PlaceholderModel extends \MUtil\Model\ArrayModelAbstract
+class PlaceholderModel extends ArrayModelAbstract
 {
-    /**
-     * @var array The data in the model
-     */
-	protected $data;
-
-    /**
-     * \Gems\Model\PlaceholderModel constructor.
-     *
-     * @param string $modelName
-     * @param array $fieldArray Nested array containing settings
-     * @param array $data
-     */
-	public function __construct($modelName, array $fieldArray, array $data = array())
-	{
-        parent::__construct($modelName);
-        
-		$this->data = $data;
-
-		if ($fieldArray) {
-		    $this->setMulti($fieldArray);
-        }
-	}
-
-    /**
-     * Filters the data array using a model filter
-     *
-     * @param \Traversable $data
-     * @param array $filters
-     * @return \Traversable
-     */
-    protected function _filterData($data, array $filters)
+    public function __construct(
+        \Zalt\Model\MetaModelLoader $metaModelLoader,
+        protected readonly TranslatorInterface $translator,
+        protected readonly string $modelName,
+        readonly array $fieldArray,
+        protected array $data = [],
+    )
     {
-        $limit = false;
-        if (isset($filters['limit'])) {
-            $limit = $filters['limit'];
-            unset($filters['limit']);
-        }
+        $metaModel = new MetaModel($modelName, $metaModelLoader);
+        $metaModel->setMulti($fieldArray);
 
-        $filteredData = parent::_filterData($data, $filters);
-
-        if ($limit) {
-            if (is_array($limit)) {
-                $filteredData = array_slice($filteredData, $limit[1], $limit[0]);
-            } elseif (is_numeric($limit)) {
-                $filteredData = array_slice($filteredData, 0, $limit);
-            }
-        }
-
-        return $filteredData;
+        parent::__construct($metaModel);
     }
 
-    /**
-     * Calculates the total number of items in a model result with certain filters
-     *
-     * @param array|bool $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
-     * @param array|bool $sort Sort array field name => sort type
-     * @return integer number of total items in model result
-     * @throws \Zend_Db_Select_Exception
-     */
-    public function getItemCount($filter = true, $sort = true)
+    protected function _loadAll(): array
     {
-        $data = $this->_loadAllTraversable();
-
-        if ($filter) {
-            $data = $this->_filterData($data, $filter);
-        }
-
-        return count($data);
-    }
-
-	/**
-     * An ArrayModel assumes that (usually) all data needs to be loaded before any load
-     * action, this is done using the iterator returned by this function.
-     *
-     * @return \Traversable Return an iterator over or an array of all the rows in this object
-     */
-    protected function _loadAllTraversable()
-    {
-    	return $this->data;
+        return $this->data;
     }
 }
