@@ -85,7 +85,7 @@ class AgendaStaffRepository
     /**
      * Return an array with staff id => name, sorted by staff name.
      *
-     * @param integer|null|null $organizationId
+     * @param integer|null $organizationId
      * @return array
      */
     public function getAllStaffOptions(int|null $organizationId = null): array
@@ -112,6 +112,12 @@ class AgendaStaffRepository
         }
 
         return $sortedStaff;
+    }
+
+    public function getStaffNameFromId(int $staffId): string|null
+    {
+        $allStaff = array_column($this->getAllStaffData(), 'gas_name', 'gas_id_staff');
+        return $allStaff[$staffId] ?? null;
     }
 
     /**
