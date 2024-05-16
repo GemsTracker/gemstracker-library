@@ -358,8 +358,10 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
         }
 
         if ($action instanceof PostActionInterface && !($action instanceof NoCsrfInterface)) {
-            $action->csrfName = $this->getCsrfTokenName();
-            $action->csrfToken = $this->getCsrfToken($action->csrfName);
+            if (property_exists($action, 'csrfName') && property_exists($action, 'csrfToken')) {
+                $action->csrfName = $this->getCsrfTokenName();
+                $action->csrfToken = $this->getCsrfToken($action->csrfName);
+            }
         }
 
         if (property_exists($this, 'usageCounter') && property_exists($action, 'usageCounter')) {
