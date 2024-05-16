@@ -14,11 +14,12 @@ namespace Gems\Tracker\Source;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Cache\HelperAdapter;
+use Gems\ConfigProvider;
 use Gems\Db\ResultFetcher;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Html;
 use Gems\Locale\Locale;
-use Gems\Log\ErrorLogger;
+use Gems\Log\Loggers;
 use Gems\Log\LogHelper;
 use Gems\Repository\CurrentUrlRepository;
 use Gems\Tracker;
@@ -34,6 +35,7 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Ddl\AlterTable;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
+use Psr\Log\LoggerInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\FullDataInterface;
 
@@ -126,6 +128,8 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected string $fieldMapClass = LimeSurvey3m00FieldMap::class;
 
+    protected readonly LoggerInterface $logger;
+
     protected string|null $siteName = null;
 
     protected array $surveyConfig;
@@ -138,13 +142,15 @@ class LimeSurvey3m00Database extends SourceAbstract
         Tracker $tracker,
         ValueEncryptor $valueEncryptor,
         array $config,
+        Loggers $loggers,
         protected readonly HelperAdapter $cache,
         protected readonly Locale $locale,
-        protected readonly ErrorLogger $logger,
+
         protected readonly CurrentUrlRepository $currentUrlRepository,
     ) {
         parent::__construct($_sourceData, $_gemsResultFetcher, $translate, $tokenLibrary, $tracker, $valueEncryptor, $config);
 
+        $this->logger = $loggers->getLogger(ConfigProvider::ERROR_LOGGER);
         $this->siteName = $config['app']['name'] ?? null;
 
         $this->surveyConfig = $config['survey'] ?? [];

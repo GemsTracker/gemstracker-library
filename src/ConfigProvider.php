@@ -37,7 +37,6 @@ use Gems\Factory\MonologFactory;
 use Gems\Factory\PdoFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Factory\ReflectionAbstractFactory;
-use Gems\Log\ErrorLogger;
 use Gems\Menu\RouteHelper;
 use Gems\Menu\RouteHelperFactory;
 use Gems\Messenger\MessengerFactory;
@@ -130,6 +129,8 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
 class ConfigProvider
 {
     use ModelSnippetActionRouteHelpers;
+
+    public const ERROR_LOGGER = 'error-log';
 
     /**
      * Returns the configuration array
@@ -337,7 +338,6 @@ class ConfigProvider
                 // Logs
                 'LegacyLogger' => MonologFactory::class,
                 'embeddedLoginLog' => MonologFactory::class,
-                ErrorLogger::class => MonologFactory::class,
 
                 // Cache
                 \Symfony\Component\Cache\Adapter\AdapterInterface::class => CacheFactory::class,
@@ -501,7 +501,7 @@ class ConfigProvider
     protected function getLoggers(): array
     {
         return [
-            ErrorLogger::class => [
+            static::ERROR_LOGGER => [
                 'writers' => [
                     'stream' => [
                         'name' => 'stream',
