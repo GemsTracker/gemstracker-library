@@ -74,6 +74,8 @@ class UserLoader
      */
     public bool $allowLoginOnOtherOrganization = false;
 
+    public bool $allowLoginOnAnyOrganization = false;
+
     /**
      * When true a user is allowed to login without specifying an organization
      * See GetUserClassSelect for the possible options
@@ -113,8 +115,14 @@ class UserLoader
         protected readonly ProjectOverloader $projectOverloader,
         protected readonly PasswordChecker $passwordChecker,
         protected readonly HelperAdapter $cache,
+        protected readonly array $config,
     )
     {
+        $this->allowLoginOnOtherOrganization = $config['auth']['allowLoginOnOtherOrganization'] ?? false;
+        $this->allowLoginOnAnyOrganization = $config['auth']['allowLoginOnAnyOrganization'] ?? false;
+        $this->allowLoginOnWithoutOrganization = $config['auth']['allowLoginOnWithoutOrganization'] ?? false;
+        $this->allowRespondentEmailLogin = $config['auth']['allowRespondentEmailLogin'] ?? false;
+        $this->allowStaffEmailLogin = $config['auth']['allowStaffEmailLogin'] ?? false;
     }
 
     /**
@@ -487,8 +495,13 @@ class UserLoader
             $select = $this->getUserClassSelect($loginName, $organizationId);
 
             if ($row = $this->resultFetcher->fetchRow($select)) {
-                if ($row['tolerance'] == 1 || $this->allowLoginOnOtherOrganization === true) {
-                    // \MUtil\EchoOut\EchoOut::track($row);
+                $allowedLoginResult = match($row['tolerance']) {
+                    1 => true,
+                    2 => ($this->allowLoginOnOtherOrganization === true || $this->allowLoginOnAnyOrganization === true),
+                    3 => $this->allowLoginOnAnyOrganization === true,
+                    default => false,
+                };
+                if ($allowedLoginResult) {
                     return $this->loadUser($row['gul_user_class'], $row['gul_id_organization'], $row['gul_login']);
                 }
             }
@@ -537,7 +550,7 @@ class UserLoader
                             WHEN gor_accessible_by LIKE CONCAT('%:', gul_id_organization, ':%') THEN 2
                             ELSE 3
                         END");
-            $select->join('gems__organizations', 'gul_id_organization = gor_id_organization', [])
+            $select->join('gems__organizations', new \Laminas\Db\Sql\Predicate\Expression('1=1'), [])
                 ->columns($columns)
                 ->where([
                     'gor_active' => 1,

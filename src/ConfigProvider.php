@@ -149,6 +149,7 @@ class ConfigProvider
         return [
             'account'       => $this->getAccountSettings(),
             'app'           => $appSettings(),
+            'auth'          => $this->getAuthSettings(),
             'autoconfig'    => $this->getAutoConfigSettings(),
             'cache'         => $this->getCacheSettings(),
             'contact'       => $this->getContactSettings(),
@@ -198,6 +199,17 @@ class ConfigProvider
                 ],
                 'defaultRegion' => 'NL',
             ],
+        ];
+    }
+
+    public function getAuthSettings(): array
+    {
+        return [
+            'allowLoginOnOtherOrganization' => false,
+            'allowLoginOnAnyOrganization' => false,
+            'allowLoginOnWithoutOrganization' => false,
+            'allowRespondentEmailLogin' => false,
+            'allowStaffEmailLogin' => false,
         ];
     }
 
