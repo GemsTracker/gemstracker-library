@@ -20,6 +20,7 @@ use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\Export\ExportSurveyHandler;
 use Gems\Handlers\InfoHandler;
+use Gems\Handlers\LegacyAskRedirectHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
 use Gems\Handlers\Respondent\FindTokenHandler;
 use Gems\Handlers\Setup\Database\PatchHandler;
@@ -358,6 +359,36 @@ class Route
     public function getAskRoutes(): array
     {
         return [
+            ...$this->createRoute(
+                name: 'legacyAskForward',
+                path: '/ask/forward/id/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}',
+                middleware: [
+                    LegacyAskRedirectHandler::class,
+                ],
+                options: [
+                    'action' => 'forward',
+                ],
+            ),
+            ...$this->createRoute(
+                name: 'legacyAskTake',
+                path: '/ask/take/id/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}',
+                middleware: [
+                    LegacyAskRedirectHandler::class,
+                ],
+                options: [
+                    'action' => 'take',
+                ],
+            ),
+            ...$this->createRoute(
+                name: 'legacyAskToSurvey',
+                path: '/ask/to-survey/id/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}',
+                middleware: [
+                    LegacyAskRedirectHandler::class,
+                ],
+                options: [
+                    'action' => 'to-survey',
+                ],
+            ),
             ...$this->createSnippetRoutes(
                 baseName: 'ask',
                 controllerClass: \Gems\Handlers\AskHandler::class,
@@ -371,7 +402,7 @@ class Route
                     'lost',
                 ],
                 parameters: [
-                    'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}',
+                    'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}'
                 ],
                 parameterRoutes: [
                     'forward',
@@ -386,6 +417,7 @@ class Route
                 noCsrfRoutes: ['index', 'lost']
             ),
         ];
+
     }
 
     public function getExportRoutes(): array

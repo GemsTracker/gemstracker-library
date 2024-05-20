@@ -53,6 +53,7 @@ trait ModelSnippetActionRouteHelpers
         string $path,
         array $middleware = [],
         array $methods = ['GET'],
+        array $options = [],
     )
     {
         return [
@@ -61,6 +62,7 @@ trait ModelSnippetActionRouteHelpers
                 'path' => $path,
                 'methods' => $methods,
                 'middleware' => $middleware,
+                'options' => $options,
             ],
         ];
     }
