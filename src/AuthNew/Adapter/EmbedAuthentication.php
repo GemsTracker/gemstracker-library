@@ -66,7 +66,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
             $systemUser->getLoginName(),
             $deferredUser->getLoginName(),
             $this->patientId,
-            $systemUser->getCurrentOrganizationId(),
+            $deferredUser->getCurrentOrganizationId(),
         );
 
         return new EmbedAuthenticationResult(AuthenticationResult::SUCCESS, $identity, [], $systemUser, $deferredUser);
