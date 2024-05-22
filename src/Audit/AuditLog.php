@@ -46,6 +46,11 @@ class AuditLog
         'synchronize', 'tfa', 'two-factor', 'undelete', 'unsubscribe',
         ];
 
+    protected array $organizationIdFields = [
+        'gr2o_id_organization', 'gr2t_id_organization', 'gap_id_organization', 'gec_id_organization', 'gto_id_organization', 'gor_id_organization',
+        'gor_id_organization', 'gul_id_organization'
+    ];
+
     protected ServerRequestInterface $request;
 
     protected array $respondentIdFields = [
@@ -123,13 +128,15 @@ class AuditLog
         if ($this->user) {
             return $this->user->getCurrentOrganizationId();
         }
-        $organizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
-        if ($organizationId !== null) {
-            return $organizationId;
-        }
-        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-        if ($currentUser instanceof User) {
-            return $currentUser->getCurrentOrganizationId();
+        if (isset($this->request)) {
+            $organizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
+            if ($organizationId !== null) {
+                return $organizationId;
+            }
+            $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+            if ($currentUser instanceof User) {
+                return $currentUser->getCurrentOrganizationId();
+            }
         }
 
         return 0;
@@ -167,7 +174,11 @@ class AuditLog
             return $currentUser->getUserId();
         }
 
-        return $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE, UserLoader::UNKNOWN_USER_ID);
+        if (isset($this->request)) {
+            return $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE, UserLoader::UNKNOWN_USER_ID);
+        }
+
+        return UserLoader::UNKNOWN_USER_ID;
     }
 
     public function getDbActions(bool $refresh = false): array
@@ -192,6 +203,19 @@ class AuditLog
     public function getLastLogId(): ?int
     {
         return $this->lastLogId ?? 0;
+    }
+
+    protected function getOrganizationId(array $data = [])
+    {
+        if ($data) {
+            foreach ($this->organizationIdFields as $field) {
+                if (isset($data[$field]) && $data[$field]) {
+                    return $data[$field];
+                }
+            }
+        }
+
+        return $this->getCurrentOrganizationId();
     }
 
     /**
@@ -345,7 +369,7 @@ class AuditLog
 //            $message = $this->getRequestMessage($request);
 //        }
 //
-//        $this->lastLogId = $this->storeLogEntry($actionData['gls_id_action'], $message, $data, $this->getRespondentId($data), false);
+//        $this->lastLogId = $this->storeRequestEntry($actionData['gls_id_action'], $message, $data, $this->getRespondentId($data), false);
 //
 //        return $this->lastLogId;
 //    }
@@ -386,7 +410,45 @@ class AuditLog
             $respondentId = $this->getRespondentId($currentValues + $oldValues);
         }
 
-        $this->lastLogId = $this->storeLogEntry($actionData['gls_id_action'], $messages, $data, true, $respondentId, $logId);
+        $this->lastLogId = $this->storeRequestEntry($actionData['gls_id_action'], $messages, $data, true, $respondentId, $logId);
+
+        return $this->lastLogId;
+    }
+
+    public function registerCliChanges(string $routeName, array $currentValues, array $oldValues = [], array $messages = [], int $respondentId = 0, int $logId = 0):? int
+    {
+        $actionData = $this->getAction($routeName);
+
+        $changed = $currentValues ? 1 : 0;
+        if (!$this->shouldLogAction($actionData, (bool) $changed)) {
+            return null;
+        }
+
+        $data = array_diff_assoc($currentValues, $oldValues);
+        if (! $respondentId) {
+            $respondentId = $this->getRespondentId($currentValues + $oldValues);
+        }
+
+        $logData = [
+            'gla_action'        => $actionData['gls_id_action'],
+            'gla_method'        => 'CLI',
+            'gla_by'            => $this->getCurrentUserId(),
+            'gla_changed'       => $changed,
+            'gla_message'       => json_encode($messages),
+            'gla_data'          => json_encode($data),
+            'gla_remote_ip'     => 'n/a',
+            'gla_respondent_id' => $respondentId,
+            'gla_organization'  => $this->getOrganizationId($currentValues) ?? $this->getOrganizationId($oldValues),
+            'gla_role'          => $this->getCurrentRole(),
+        ];
+        if (isset($this->request)) {
+            $logData['gla_method']    = $this->request->getMethod();
+            $logData['gla_remote_ip'] = $this->request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE);
+//        } else {
+//            print_r($logData);
+        }
+
+        $this->lastLogId = $this->storeLogEntry($logData, $logId);
 
         return $this->lastLogId;
     }
@@ -404,7 +466,7 @@ class AuditLog
         $message      = $messages + $this->getRequestMessages();
         $respondentId = $this->getRespondentId($data);
 
-        $this->lastLogId = $this->storeLogEntry($actionData['gls_id_action'], $message, $data, $changed, $respondentId, 0);
+        $this->lastLogId = $this->storeRequestEntry($actionData['gls_id_action'], $message, $data, $changed, $respondentId, 0);
 
         return $this->lastLogId;
     }
@@ -442,21 +504,9 @@ class AuditLog
         return true;
     }
 
-    protected function storeLogEntry($route, $message, $data, bool $changed, ?int $respondentId, int $logId = 0): ? int
+    protected function storeLogEntry(array $logData, int $logId = 0): ? int
     {
-        $logData = [
-            'gla_action'        => $route,
-            'gla_method'        => $this->request->getMethod(),
-            'gla_by'            => $this->getCurrentUserId(),
-            'gla_changed'       => (int) ($changed || $this->isChanged($this->request)),
-            'gla_message'       => json_encode($message),
-            'gla_data'          => json_encode($data),
-            'gla_remote_ip'     => $this->request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE),
-            'gla_respondent_id' => $respondentId,
-            'gla_organization'  => $this->getCurrentOrganizationId(),
-            'gla_role'          => $this->getCurrentRole(),
-        ];
-
+//        print_r($logData);
         $sql = new Sql($this->cachedResultFetcher->getAdapter());
         if (0 == $logId) {
             $insert = $sql->insert();
@@ -471,6 +521,8 @@ class AuditLog
                     return $id;
                 }
             } catch (Exception $e) {
+//                echo $e->getMessage();
+                error_log($e->getMessage());
             }
             return null;
         }
@@ -484,7 +536,27 @@ class AuditLog
             $statement->execute();
             return $logId;
         } catch (Exception $e) {
+//            echo $e->getMessage();
+            error_log($e->getMessage());
             return $logId;
         }
+    }
+
+    protected function storeRequestEntry($route, $message, $data, bool $changed, ?int $respondentId, int $logId = 0): ? int
+    {
+        $logData = [
+            'gla_action'        => $route,
+            'gla_method'        => $this->request->getMethod(),
+            'gla_by'            => $this->getCurrentUserId(),
+            'gla_changed'       => (int) ($changed || $this->isChanged($this->request)),
+            'gla_message'       => json_encode($message),
+            'gla_data'          => json_encode($data),
+            'gla_remote_ip'     => $this->request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE),
+            'gla_respondent_id' => $respondentId,
+            'gla_organization'  => $this->getCurrentOrganizationId(),
+            'gla_role'          => $this->getCurrentRole(),
+        ];
+
+        return $this->storeLogEntry($logData, $logId);
     }
 }
