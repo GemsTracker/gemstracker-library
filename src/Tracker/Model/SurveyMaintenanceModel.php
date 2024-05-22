@@ -399,6 +399,10 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
      */
     public function calculateDuration($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
+        // Calculation of duration can be disabled in config.
+        if (isset($this->config['survey']['details']['duration']) && $this->config['survey']['details']['duration'] === false) {
+            return $this->_('Calculation disabled');
+        }
         $surveyId = isset($context['gsu_id_survey']) ? $context['gsu_id_survey'] : false;
         if (! $surveyId) {
             return $this->_('incalculable');
@@ -477,6 +481,10 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
      */
     public function calculateTrackCount($value, $isNew = false, $name = null, array $context = [], $isPost = false)
     {
+        // Calculation of usage can be disabled in config.
+        if (isset($this->config['survey']['details']['usage']) && $this->config['survey']['details']['usage'] === false) {
+            return $this->_('Calculation disabled');
+        }
         $surveyId = isset($context['gsu_id_survey']) ? $context['gsu_id_survey'] : false;
         if (! $surveyId) {
             return '';
@@ -508,6 +516,10 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
      */
     public function calculateTrackUsage($value, $isNew = false, $name = null, array $context = [], $isPost = false)
     {
+        // Calculation of usage can be disabled in config.
+        if (isset($this->config['survey']['details']['usage']) && $this->config['survey']['details']['usage'] === false) {
+            return $this->_('Calculation disabled');
+        }
         $surveyId = isset($context['gsu_id_survey']) ? $context['gsu_id_survey'] : false;
         if (! $surveyId) {
             return 0;
