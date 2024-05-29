@@ -282,14 +282,16 @@ class AuditLog
         }
 
         $this->getCurrentUser();
-        $patientNr = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
-        $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
-        if ($this->user && $organizationId !== null) {
-            $this->user->assertAccessToOrganizationId($organizationId);
-        }
+        if (isset($this->request)) {
+            $patientNr = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
+            $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
+            if ($this->user && $organizationId !== null) {
+                $this->user->assertAccessToOrganizationId($organizationId);
+            }
 
-        if ($patientNr !== null && $organizationId !== null) {
-            return $this->respondentRepository->getRespondentId($patientNr, $organizationId);
+            if ($patientNr !== null && $organizationId !== null) {
+                return $this->respondentRepository->getRespondentId($patientNr, $organizationId);
+            }
         }
         return null;
     }
@@ -415,12 +417,11 @@ class AuditLog
         return $this->lastLogId;
     }
 
-    public function registerCliChanges(string $routeName, array $currentValues, array $oldValues = [], array $messages = [], int $respondentId = 0, int $logId = 0):? int
+    public function registerCliChanges(string $routeName, array $currentValues, array $oldValues = [], array $messages = [], bool $changed = false, int $respondentId = 0, int $logId = 0):? int
     {
         $actionData = $this->getAction($routeName);
 
-        $changed = $currentValues ? 1 : 0;
-        if (!$this->shouldLogAction($actionData, (bool) $changed)) {
+        if (!$this->shouldLogAction($actionData, $changed)) {
             return null;
         }
 
@@ -433,7 +434,7 @@ class AuditLog
             'gla_action'        => $actionData['gls_id_action'],
             'gla_method'        => 'CLI',
             'gla_by'            => $this->getCurrentUserId(),
-            'gla_changed'       => $changed,
+            'gla_changed'       => $changed ? 1 : 0,
             'gla_message'       => json_encode($messages),
             'gla_data'          => json_encode($data),
             'gla_remote_ip'     => 'n/a',
@@ -483,18 +484,20 @@ class AuditLog
             $checkField = 'gls_on_change';
         } else {
             $checkField = 'gls_on_action';
-            switch ($this->request->getMethod()) {
-                case 'OPTIONS':
-                    return false;
+            if (isset($this->request)) {
+                switch ($this->request->getMethod()) {
+                    case 'OPTIONS':
+                        return false;
 
-                case 'POST':
-                case 'PATCH':
-                case 'DELETE':
-                    $checkField = 'gls_on_post';
-                    break;
-                case 'GET':
-                default:
-                    break;
+                    case 'POST':
+                    case 'PATCH':
+                    case 'DELETE':
+                        $checkField = 'gls_on_post';
+                        break;
+                    case 'GET':
+                    default:
+                        break;
+                }
             }
         }
 
