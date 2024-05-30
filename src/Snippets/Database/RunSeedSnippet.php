@@ -32,22 +32,22 @@ class RunSeedSnippet extends ModelSnippetAbstract
 
         $params = $this->requestInfo->getRequestMatchedParams();
         if (!isset($params['name'])) {
-            $this->statusMessenger->addError($this->translator->_('No valid name'));
+            $this->statusMessenger->addError($this->translate->_('No valid name'));
             return;
         }
 
         $seedItem = $model->loadFirst(['name' => $params['name']]);
 
         if (!$seedItem) {
-            $this->statusMessenger->addError(sprintf($this->translator->_('Seed %s not found'), $params['name']));
+            $this->statusMessenger->addError(sprintf($this->translate->_('Seed %s not found'), $params['name']));
             return;
         }
 
         try {
             $this->seedRepository->runSeed($seedItem);
-            $this->statusMessenger->addSuccess(sprintf($this->translator->_('Seed %s successfully executed'), $params['name']));
+            $this->statusMessenger->addSuccess(sprintf($this->translate->_('Seed %s successfully executed'), $params['name']));
         } catch(\Exception $e) {
-            $this->statusMessenger->addError(sprintf($this->translator->_('Error executing seed %s. %s'), $params['name'], $e->getMessage()));
+            $this->statusMessenger->addError(sprintf($this->translate->_('Error executing seed %s. %s'), $params['name'], $e->getMessage()));
         }
     }
 

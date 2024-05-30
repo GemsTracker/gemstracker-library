@@ -18,6 +18,9 @@ class MigrationModelFactory
 
     public function createModel(MigrationRepositoryAbstract $migrationRepository): DataReaderInterface
     {
+        /**
+         * @var IteratorModel $model
+         */
         $model = $this->metaModelLoader->createModel(IteratorModel::class, $migrationRepository->getModelName());
         $model->setData($migrationRepository->getInfo());
         $metaModel = $model->getMetaModel();
