@@ -2,6 +2,7 @@
 
 namespace Gems\Command;
 
+use Gems\Db\Migration\MigrationModelFactory;
 use Gems\Db\Migration\PatchRepository;
 use Gems\Db\Migration\SeedRepository;
 use Gems\Db\Migration\TableRepository;
@@ -31,7 +32,8 @@ class RunMigrations extends Command
     public function __construct(
         protected PatchRepository $patchRepository,
         protected SeedRepository $seedRepository,
-        protected TableRepository $tableRepository
+        protected TableRepository $tableRepository,
+        protected readonly MigrationModelFactory $migrationModelFactory,
     )
     {
         parent::__construct();
@@ -185,19 +187,19 @@ class RunMigrations extends Command
 
     protected function getPatches(): array
     {
-        $model = $this->patchRepository->getModel();
+        $model = $this->migrationModelFactory->createModel($this->patchRepository);
         return $model->load(['status' => ['new', 'error']], ['order']);
     }
 
     protected function getSeeds(): array
     {
-        $model = $this->seedRepository->getModel();
+        $model = $this->migrationModelFactory->createModel($this->seedRepository);
         return $model->load(['status' => ['new', 'error']], ['order']);
     }
 
     protected function getTables(): array
     {
-        $model = $this->tableRepository->getModel();
+        $model = $this->migrationModelFactory->createModel($this->tableRepository);
         return $model->load(['status' => ['new', 'error']], ['order']);
     }
 }

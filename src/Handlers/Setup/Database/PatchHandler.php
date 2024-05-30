@@ -2,6 +2,7 @@
 
 namespace Gems\Handlers\Setup\Database;
 
+use Gems\Db\Migration\MigrationModelFactory;
 use Gems\Db\Migration\MigrationRepositoryAbstract;
 use Gems\Db\Migration\PatchRepository;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
@@ -33,11 +34,12 @@ class PatchHandler extends MigrationHandlerAbstract
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
+        MigrationModelFactory $migrationModelFactory,
         protected readonly array $config,
         protected readonly PatchRepository $patchRepository,
     )
     {
-        parent::__construct($responder, $metaModelLoader, $translate, $cache);
+        parent::__construct($responder, $metaModelLoader, $translate, $cache, $migrationModelFactory);
     }
 
     protected function getRepository(): MigrationRepositoryAbstract

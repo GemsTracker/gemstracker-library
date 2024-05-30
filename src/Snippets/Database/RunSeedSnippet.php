@@ -2,32 +2,33 @@
 
 namespace Gems\Snippets\Database;
 
-use Gems\Db\Migration\PatchRepository;
 use Gems\Db\Migration\SeedRepository;
 use Gems\Menu\MenuSnippetHelper;
-use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
-use Zalt\Snippets\SnippetAbstract;
+use Zalt\Snippets\DataReaderGenericModelTrait;
+use Zalt\Snippets\ModelSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
-class RunSeedSnippet extends SnippetAbstract
+class RunSeedSnippet extends ModelSnippetAbstract
 {
+    use DataReaderGenericModelTrait;
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
+        TranslatorInterface $translate,
         protected readonly MenuSnippetHelper $menuSnippetHelper,
         protected readonly SeedRepository $seedRepository,
-        protected readonly Translator $translator,
         protected readonly StatusMessengerInterface $statusMessenger,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo);
+        parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
     protected function createTable(): void
     {
-        $model = $this->seedRepository->getModel();
+        $model = $this->getModel();
 
         $params = $this->requestInfo->getRequestMatchedParams();
         if (!isset($params['name'])) {

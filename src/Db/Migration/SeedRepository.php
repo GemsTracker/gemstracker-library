@@ -24,15 +24,13 @@ class SeedRepository extends MigrationRepositoryAbstract
     public function __construct(
         array $config,
         Databases $databases,
-        TranslatorInterface $translator,
         EventDispatcherInterface $eventDispatcher,
-        MetaModelLoader $metaModelLoader,
         protected readonly ProjectOverloader $overloader,
     ) {
-        parent::__construct($config, $databases, $translator, $eventDispatcher, $metaModelLoader);
+        parent::__construct($config, $databases, $eventDispatcher);
     }
 
-    protected $seedFileTypes = [
+    protected array $seedFileTypes = [
         'yml',
         'yaml',
         'json',
