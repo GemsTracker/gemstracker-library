@@ -3,6 +3,7 @@
 namespace Gems\Db\Migration;
 
 use Gems\Db\ResultFetcher;
+use Gems\Db\SqliteConverter;
 use Gems\Event\Application\CreateTableMigrationEvent;
 use Laminas\Db\Adapter\Adapter;
 use Symfony\Component\Finder\Finder;
@@ -36,17 +37,23 @@ class TableRepository extends MigrationRepositoryAbstract
         if (!$adapter instanceof Adapter) {
             throw new MigrationException('Not enough table info to create table');
         }
+
+        $sql = $tableInfo['sql'];
+        if ($adapter->getPlatform()->getName() === 'SQLite') {
+            $sql = SqliteConverter::fromMysqlSchema($sql);
+        }
+
         $resultFetcher = new ResultFetcher($adapter);
         $start = microtime(true);
         try {
-            $resultFetcher->query($tableInfo['sql']);
+            $resultFetcher->query($sql);
             $event = new CreateTableMigrationEvent(
                 'table',
                 1,
                 $tableInfo['module'],
                 $tableInfo['name'],
                 'success',
-                $tableInfo['sql'],
+                $sql,
                 null,
                 $start,
                 microtime(true),
@@ -59,7 +66,7 @@ class TableRepository extends MigrationRepositoryAbstract
                 $tableInfo['module'],
                 $tableInfo['name'],
                 'error',
-                $tableInfo['sql'],
+                $sql,
                 $e->getMessage(),
                 $start,
                 microtime(true),

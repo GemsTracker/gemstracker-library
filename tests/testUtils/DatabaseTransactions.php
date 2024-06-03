@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace testUtils;
+namespace GemsTest\testUtils;
 
 
 use Laminas\Db\Adapter\Adapter;
