@@ -17,6 +17,7 @@ class DatabaseTestCase extends TestCase
     }
     use DatabaseTransactions;
     use LaminasDb;
+    use SeedTrait;
 
     protected readonly ResultFetcher $resultFetcher;
 

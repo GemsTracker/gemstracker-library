@@ -31,7 +31,7 @@ trait SeedTrait
         $overLoader = new ProjectOverloader($container);
 
         $eventDispatcher = $this->createMock(EventDispatcher::class);
-    
+
         return new SeedRepository($config, $databases, $eventDispatcher, $overLoader);
     }
     public function insertSeeds(array $seeds)
