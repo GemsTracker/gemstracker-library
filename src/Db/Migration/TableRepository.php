@@ -6,8 +6,8 @@ use Gems\Db\ResultFetcher;
 use Gems\Db\SqliteConverter;
 use Gems\Event\Application\CreateTableMigrationEvent;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Metadata\Source\Factory;
 use Symfony\Component\Finder\Finder;
-use Zalt\String\Str;
 
 
 class TableRepository extends MigrationRepositoryAbstract
@@ -76,6 +76,17 @@ class TableRepository extends MigrationRepositoryAbstract
         }
     }
 
+    public function createTables(array $tableNames): void
+    {
+        $allTables = $this->getInfo();
+        foreach($tableNames as $tableName) {
+            if (!isset($allTables[$tableName])) {
+                throw new MigrationException(sprintf('Table %s does not exist', $tableName));
+            }
+            $this->createTable($allTables[$tableName]);
+        }
+    }
+
     protected function getGroupName(string $name): ?string
     {
         if ($pos = strpos($name,  '__')) {
@@ -100,31 +111,30 @@ class TableRepository extends MigrationRepositoryAbstract
             if (!$adapter instanceof Adapter) {
                 continue;
             }
-            $resultFetcher = new ResultFetcher($adapter);
-            $sql = 'SHOW FULL TABLES';
-            $tableNames = $resultFetcher->fetchAll($sql);
+            $metaData = Factory::createSourceFromAdapter($adapter);
+            $tableTypes = [
+                'table' => $metaData->getTableNames(),
+                'view' => $metaData->getViewNames(),
+            ];
 
-            foreach($tableNames as $tableInfo) {
-                list($tableName, $rawTableType) = array_values($tableInfo);
-                $tableType = match($rawTableType) {
-                    'VIEW' => 'view',
-                    default => 'table',
-                };
-                $id = $this->getIdFromName($tableName);
-                $table = [
-                    'id' => $id,
-                    'name' => $tableName,
-                    'module' => $this->getGroupName($tableName),
-                    'type' => $tableType,
-                    'description' => null,
-                    'order' => $this->defaultOrder,
-                    'sql' => '',
-                    'lastChanged' => null,
-                    'location' => null,
-                    'db' => $dbName,
-                ];
+            foreach($tableTypes as $tableType => $tableNames) {
+                foreach ($tableNames as $tableName) {
+                    $id = $this->getIdFromName($tableName);
+                    $table = [
+                        'id' => $id,
+                        'name' => $tableName,
+                        'module' => $this->getGroupName($tableName),
+                        'type' => $tableType,
+                        'description' => null,
+                        'order' => $this->defaultOrder,
+                        'sql' => '',
+                        'lastChanged' => null,
+                        'location' => null,
+                        'db' => $dbName,
+                    ];
 
-                $tables[$id] = $table;
+                    $tables[$id] = $table;
+                }
             }
         }
         return $tables;
