@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Util\Exception;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Zalt\Loader\ProjectOverloader;
 
 trait SeedTrait
 {
@@ -27,10 +28,11 @@ trait SeedTrait
         $databases->expects($this->any())->method('getDefaultDatabase')->willReturn($this->db);
 
         $container = $this->createMock(ContainerInterface::class);
+        $overLoader = new ProjectOverloader($container);
 
         $eventDispatcher = $this->createMock(EventDispatcher::class);
-
-        return new SeedRepository($config, $databases, $eventDispatcher, $container);
+    
+        return new SeedRepository($config, $databases, $eventDispatcher, $overLoader);
     }
     public function insertSeeds(array $seeds)
     {
