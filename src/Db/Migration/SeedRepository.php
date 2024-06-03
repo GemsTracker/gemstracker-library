@@ -5,16 +5,13 @@ namespace Gems\Db\Migration;
 use Gems\Db\Databases;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunSeedMigrationEvent;
-use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
-use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
-use Zalt\String\Str;
 
 class SeedRepository extends MigrationRepositoryAbstract
 {
@@ -62,6 +59,20 @@ class SeedRepository extends MigrationRepositoryAbstract
         }
 
         return null;
+    }
+
+    public function getSeedInfo(string $seedFile): array
+    {
+        if (class_exists($seedFile)) {
+            return $this->getSeedClassInfo($seedFile);
+        }
+
+        if (file_exists($seedFile)) {
+            $file = new SplFileInfo($seedFile, '', '');
+            return $this->getSeedFileInfo($file);
+        }
+
+        return [];
     }
 
     /*protected function getQueriesFromData(Adapter $adapter, array $data): array
@@ -135,35 +146,65 @@ class SeedRepository extends MigrationRepositoryAbstract
 
         foreach($seedClasses as $seedClassInfo) {
             $seedClassName = $seedClassInfo['class'];
-            $id = $this->getIdFromName($seedClassName);
-            $seedClass = $this->overloader->create($seedClassName);
-            $description = null;
-            if (!$seedClass instanceof SeedInterface) {
-                throw new MigrationException("$seedClassName is not a valid seed class");
-            }
-            $data = $seedClass();
-            $order = $seedClass->getOrder();
-            if ($order === 0) {
-                $order = $this->defaultOrder;
-            }
-            $reflectionClass = new \ReflectionClass($seedClassName);
 
-            $seed = [
-                'id' => $id,
-                'name' => $seedClassName,
-                'module' => $seedClassInfo['module'] ?? 'gems',
-                'type' => 'seed',
-                'description' => $description,
-                'order' => $order,
-                'data' => $data,
-                'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) filemtime($reflectionClass->getFileName())),
-                'location' => $reflectionClass->getFileName(),
-                'db' => $seedClassInfo['db'],
-            ];
-
-            $seeds[$id] = $seed;
+            $seed = $this->getSeedClassInfo($seedClassName, $seedClassInfo['module'], $seedClassInfo['db']);
+            $seeds[$seed['id']] = $seed;
         }
         return $seeds;
+    }
+
+    protected function getSeedClassInfo(string $seedClassName, string $module = 'gems', string|null $db = null): array
+    {
+        $id = $this->getIdFromName($seedClassName);
+        $seedClass = $this->overloader->create($seedClassName);
+        $description = null;
+        if (!$seedClass instanceof SeedInterface) {
+            throw new MigrationException("$seedClassName is not a valid seed class");
+        }
+        $data = $seedClass();
+        $order = $seedClass->getOrder();
+        if ($order === 0) {
+            $order = $this->defaultOrder;
+        }
+        $reflectionClass = new \ReflectionClass($seedClassName);
+
+        return [
+            'id' => $id,
+            'name' => $seedClassName,
+            'module' => $module,
+            'type' => 'seed',
+            'description' => $description,
+            'order' => $order,
+            'data' => $data,
+            'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) filemtime($reflectionClass->getFileName())),
+            'location' => $reflectionClass->getFileName(),
+            'db' => $db ?? $this->defaultDatabase,
+        ];
+    }
+
+    public function getSeedFileInfo(SplFileInfo $file): array
+    {
+        $filenameParts = explode('.', $file->getBaseName());
+        $name = $filenameParts[0];
+        $id = $this->getIdFromName($name);
+        $data = $this->getSeedDataFromFile($file);
+        $description = $data['description'] ?? null;
+        $seed = [
+            'id' => $id,
+            'name' => $filenameParts[0],
+            'module' => $directory['module'] ?? 'gems',
+            'type' => 'seed',
+            'description' => $description,
+            'order' => $this->defaultOrder,
+            'data' => $data,
+            'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) $file->getMTime()),
+            'location' => $file->getRealPath(),
+            'db' => $directory['db'],
+        ];
+        if (count($filenameParts) === 3 && is_numeric($filenameParts[1])) {
+            $seed['order'] = (int)$filenameParts[1];
+        }
+        return $seed;
     }
 
     public function getSeedsFromFiles()
@@ -181,27 +222,8 @@ class SeedRepository extends MigrationRepositoryAbstract
             $files = $currentFinder->files()->name($searchNames)->in($directory['path']);
 
             foreach ($files as $file) {
-                $filenameParts = explode('.', $file->getBaseName());
-                $name = $filenameParts[0];
-                $id = $this->getIdFromName($name);
-                $data = $this->getSeedDataFromFile($file);
-                $description = $data['description'] ?? null;
-                $seed = [
-                    'id' => $id,
-                    'name' => $filenameParts[0],
-                    'module' => $directory['module'] ?? 'gems',
-                    'type' => 'seed',
-                    'description' => $description,
-                    'order' => $this->defaultOrder,
-                    'data' => $data,
-                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) $file->getMTime()),
-                    'location' => $file->getRealPath(),
-                    'db' => $directory['db'],
-                ];
-                if (count($filenameParts) === 3 && is_numeric($filenameParts[1])) {
-                    $seed['order'] = (int)$filenameParts[1];
-                }
-                $seeds[$id] = $seed;
+                $seed = $this->getSeedFileInfo($file);
+                $seeds[$seed['id']] = $seed;
             }
         }
 
