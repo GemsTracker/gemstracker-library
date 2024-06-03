@@ -36,7 +36,7 @@ class RespondentRepository
         bool $pairs = true,
         bool $combined = false,
         bool $withOrganizationName = false,
-        int|null $userOrganizationId = null,
+        int|null $forOrganizationId = null,
         string|null $userRole = null,
     ): array
     {
@@ -46,9 +46,6 @@ class RespondentRepository
                 'gr2o_patient_nr' => $patientNr,
                 'gr2o_id_organization' => $organizationId,
             ]);
-
-        $currentOrganizationPredicate = new Predicate();
-        $currentOrganizationPredicate->equalTo('gr2o_id_organization', $organizationId);
 
         $columns = [
             'organizationId' => 'gr2o_id_organization',
@@ -64,15 +61,23 @@ class RespondentRepository
             $organizationColumns['organizationName'] = 'gor_name';
         }
 
+        if ($forOrganizationId) {
+            $forOrganizationId = $organizationId;
+        }
+
+        $currentOrganizationPredicate = new Predicate();
+        $currentOrganizationPredicate->equalTo('gr2o_id_organization', $organizationId);
         $wherePredicates = [
             $currentOrganizationPredicate,
         ];
 
-        if ($userOrganizationId !== null) {
+        if ($forOrganizationId !== $organizationId) {
             $userOrganizationPredicate = new Predicate();
-            $wherePredicates[] = $userOrganizationPredicate->equalTo('gr2o_id_organization', $userOrganizationId);
-            $wherePredicates[] = new Like('gor_accessible_by', '%'.$userOrganizationId.'%');
+            $userOrganizationPredicate->equalTo('gr2o_id_organization', $forOrganizationId);
+            $wherePredicates[] = $userOrganizationPredicate;
         }
+
+        $wherePredicates[] = new Like('gor_accessible_by', '%'.$forOrganizationId.'%');
 
         $select = $this->resultFetcher->getSelect('gems__respondent2org')
             ->join('gems__organizations', 'gor_id_organization = gr2o_id_organization', $organizationColumns)

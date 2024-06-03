@@ -2,7 +2,6 @@
 
 namespace GemsTest\testUtils;
 
-use GemsTest\Test\SqliteFunctions;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 
@@ -18,7 +17,7 @@ trait LaminasDb
      */
     protected $pdo;
 
-    public function initDb(SqliteFunctions $sqliteFunctions): void
+    public function initDb(): void
     {
         if (!defined('DB_CONNECTION')) {
             define('DB_CONNECTION', 'Pdo_Sqlite');
@@ -31,7 +30,7 @@ trait LaminasDb
 
 
         if ($this->getDsnDriverName() === 'sqlite') {
-            $sqliteFunctions->addSqlFunctonsToPdoAdapter($this->pdo);
+            SqliteFunctions::addSqlFunctonsToPdoAdapter($this->pdo);
         }
 
         $this->db = new Adapter(new Pdo($this->pdo));

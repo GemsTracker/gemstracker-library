@@ -3,6 +3,8 @@
 namespace GemsTest\Db\Migration;
 
 use Gems\Db\Databases;
+use Gems\Db\Migration\MigrationModelFactory;
+use Gems\Db\Migration\MigrationRepositoryAbstract;
 use Gems\Db\Migration\PatchRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunPatchMigrationEvent;
@@ -201,7 +203,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
     {
         $repository = $this->getAllPatchesRepository(2);
 
-        $model = $repository->getModel();
+        $model = $this->getModel($repository);
         $patches = $model->load(null, ['order']);
 
         foreach($patches as $patch) {
@@ -267,7 +269,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
             'gml_created' => new Expression('NOW()'),
         ]);
 
-        $model = $repository->getModel();
+        $model = $this->getModel($repository);
         $patches = $model->load(['status' => 'new'], ['order']);
 
         foreach($patches as $patch) {
@@ -352,7 +354,11 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
             $overloaderProphecy = $this->prophesize(ConstructorProjectOverloader::class);
             $overloader = $overloaderProphecy->reveal();
         }
+        return new PatchRepository($config, $databases, $eventDispatcher, $overloader);
+    }
 
+    protected function getModel(MigrationRepositoryAbstract $repository)
+    {
         $translatorProphecy = $this->prophesize(TranslatorInterface::class);
         $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
         $translatorProphecy->_(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
@@ -362,6 +368,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
         $metaModelLoader->createModel(IteratorModel::class, 'databasePatchesModel')->willReturn($model);
         $metaModelLoader->getDefaultTypeInterface(Argument::type('int'))->willReturn(null);
 
-        return new PatchRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $metaModelLoader->reveal(), $overloader);
+        $factory = new MigrationModelFactory($translatorProphecy->reveal(), $metaModelLoader->reveal());
+        return $factory->createModel($repository);
     }
 }

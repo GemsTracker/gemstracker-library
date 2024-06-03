@@ -4,35 +4,36 @@ namespace Gems\Snippets\Database;
 
 use Gems\Db\Migration\TableRepository;
 use Gems\Menu\MenuSnippetHelper;
-use MUtil\Translate\Translator;
-use PHPUnit\TextUI\XmlConfiguration\MigrationException;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
-use Zalt\Snippets\SnippetAbstract;
+use Zalt\Snippets\DataReaderGenericModelTrait;
+use Zalt\Snippets\ModelSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
-class CreateTablesSnippet extends SnippetAbstract
+class CreateTablesSnippet extends ModelSnippetAbstract
 {
+    use DataReaderGenericModelTrait;
+
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
+        TranslatorInterface $translate,
         protected readonly MenuSnippetHelper $menuSnippetHelper,
         protected readonly TableRepository $tableRepository,
-        protected readonly Translator $translator,
         protected readonly StatusMessengerInterface $statusMessenger,
-    )
-    {
-        parent::__construct($snippetOptions, $requestInfo);
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
     protected function createTable(): void
     {
-        $model = $this->tableRepository->getModel();
+        $model = $this->getModel();
 
         $tableItems = $model->load(['status' => ['new', 'error']]);
 
         if (!$tableItems) {
-            $this->statusMessenger->addInfo($this->translator->_('No tables to execute'));
+            $this->statusMessenger->addInfo($this->translate->_('No tables to execute'));
             return;
         }
 
@@ -40,11 +41,11 @@ class CreateTablesSnippet extends SnippetAbstract
             try {
                 $this->tableRepository->createTable($tableItem);
                 $this->statusMessenger->addSuccess(
-                    sprintf($this->translator->_('Table %s has been succesfully created'), $tableItem['name'])
+                    sprintf($this->translate->_('Table %s has been succesfully created'), $tableItem['name'])
                 );
             } catch (\Exception $e) {
                 $this->statusMessenger->addError(
-                    sprintf($this->translator->_('Error creating table %s. %s'), $tableItem['name'], $e->getMessage())
+                    sprintf($this->translate->_('Error creating table %s. %s'), $tableItem['name'], $e->getMessage())
                 );
             }
         }

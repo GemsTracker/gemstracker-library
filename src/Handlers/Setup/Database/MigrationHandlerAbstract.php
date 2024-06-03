@@ -2,22 +2,37 @@
 
 namespace Gems\Handlers\Setup\Database;
 
+use Gems\Db\Migration\MigrationModelFactory;
 use Gems\Db\Migration\MigrationRepositoryAbstract;
 use Gems\Handlers\BrowseChangeHandler;
+use Psr\Cache\CacheItemPoolInterface;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModellerInterface;
+use Zalt\Model\MetaModelLoader;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsHandler\CreateModelHandlerTrait;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 abstract class MigrationHandlerAbstract extends BrowseChangeHandler
 {
     use CreateModelHandlerTrait;
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        MetaModelLoader $metaModelLoader,
+        TranslatorInterface $translate,
+        CacheItemPoolInterface $cache,
+        protected readonly MigrationModelFactory $migrationModelFactory,
+    ) {
+        parent::__construct($responder, $metaModelLoader, $translate, $cache);
+    }
 
     abstract protected function getRepository(): MigrationRepositoryAbstract;
 
     protected function createModel(SnippetActionInterface $action): MetaModellerInterface
     {
         $repository = $this->getRepository();
-        $model = $repository->getModel();
+        $model = $this->migrationModelFactory->createModel($repository);
         $metaModel = $model->getMetaModel();
 
         $order = 0;

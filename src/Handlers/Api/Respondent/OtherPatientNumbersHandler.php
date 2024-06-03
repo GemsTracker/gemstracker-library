@@ -27,11 +27,13 @@ class OtherPatientNumbersHandler implements RequestHandlerInterface
             $pairs = false;
         }
 
-        $userOrganizationId = $request->getAttribute(ApiAuthenticationMiddleware::CURRENT_USER_ORGANIZATION);
-        $userRole = $request->getAttribute(ApiAuthenticationMiddleware::CURRENT_USER_ROLE);
-        if (isset($queryParams['useRole']) && $queryParams['useRole'] == 0) {
-            $userRole = null;
+        $userRole = null;
+        $userOrganizationId = $organizationId;
+        if (isset($queryParams['allowed-organizations']) && $queryParams['allowed-organizations'] == 1) {
+            $userRole = $request->getAttribute(ApiAuthenticationMiddleware::CURRENT_USER_ROLE);
+            $userOrganizationId = $request->getAttribute(ApiAuthenticationMiddleware::CURRENT_USER_ORGANIZATION);
         }
+
         $otherPatientNumbers = $this->respondentRepository->getOtherPatientNumbers(
             $patientNr,
             $organizationId,
