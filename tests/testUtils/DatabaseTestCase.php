@@ -40,7 +40,7 @@ class DatabaseTestCase extends TestCase
         parent::setUp();
         $this->initDb();
         $this->resultFetcher = new ResultFetcher($this->db);
-        $this->beginDatabaseTransaction();
+
         if ($this->dbTables) {
             $tableRepository = $this->getTableRepository();
             if (!$tableRepository->hasMigrationTable()) {
@@ -48,6 +48,9 @@ class DatabaseTestCase extends TestCase
             }
             $tableRepository->createTables($this->dbTables);
         }
+
+        $this->beginDatabaseTransaction();
+
         if ($this->seeds) {
             foreach($this->seeds as $seed) {
                 $this->seed($seed);
@@ -58,6 +61,7 @@ class DatabaseTestCase extends TestCase
     protected function tearDown(): void
     {
         $this->rollbackDatabaseTransaction();
+
         $metaData = Factory::createSourceFromAdapter($this->db);
         foreach($metaData->getTableNames() as $tableName) {
             $this->db->query('DROP TABLE IF EXISTS ' . $tableName, Adapter::QUERY_MODE_EXECUTE);
