@@ -182,7 +182,7 @@ class SeedRepository extends MigrationRepositoryAbstract
         ];
     }
 
-    public function getSeedFileInfo(SplFileInfo $file): array
+    public function getSeedFileInfo(SplFileInfo $file, string $module = 'gems', string|null $db = null): array
     {
         $filenameParts = explode('.', $file->getBaseName());
         $name = $filenameParts[0];
@@ -192,14 +192,14 @@ class SeedRepository extends MigrationRepositoryAbstract
         $seed = [
             'id' => $id,
             'name' => $filenameParts[0],
-            'module' => $directory['module'] ?? 'gems',
+            'module' => $module,
             'type' => 'seed',
             'description' => $description,
             'order' => $this->defaultOrder,
             'data' => $data,
             'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) $file->getMTime()),
             'location' => $file->getRealPath(),
-            'db' => $directory['db'],
+            'db' => $db ?? $this->defaultDatabase,
         ];
         if (count($filenameParts) === 3 && is_numeric($filenameParts[1])) {
             $seed['order'] = (int)$filenameParts[1];
@@ -222,7 +222,7 @@ class SeedRepository extends MigrationRepositoryAbstract
             $files = $currentFinder->files()->name($searchNames)->in($directory['path']);
 
             foreach ($files as $file) {
-                $seed = $this->getSeedFileInfo($file);
+                $seed = $this->getSeedFileInfo($file, $directory['module'], $directory['db']);
                 $seeds[$seed['id']] = $seed;
             }
         }
