@@ -19,7 +19,7 @@ class DatabaseTestCase extends TestCase
     use LaminasDb;
     use SeedTrait;
 
-    protected readonly ResultFetcher $resultFetcher;
+    protected ResultFetcher $resultFetcher;
 
     protected array $dbTables = [];
 
