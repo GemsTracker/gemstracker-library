@@ -2,6 +2,7 @@
 
 namespace GemsTest\testUtils;
 
+use Gems\Helper\Env;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 
@@ -19,11 +20,6 @@ trait LaminasDb
 
     public function initDb(): void
     {
-        if (!defined('DB_CONNECTION')) {
-            define('DB_CONNECTION', 'Pdo_Sqlite');
-            define('DB_DATABASE', ':memory:');
-        }
-
         $dsn = $this->getDsn();
 
         $this->pdo = new \PDO($dsn);
@@ -38,44 +34,43 @@ trait LaminasDb
 
     protected function getDsn(): ?string
     {
-        if (defined('DB_DSN')) {
-            return DB_DSN;
-        } else {
-            $driverName = $this->getDsnDriverName();
-            $dsn = $driverName;
-            if ($driverName !== 'sqlite') {
-                $dsn .= sprintf('host=%s;dbname=%s;user=%s;password=%s;', DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD);
-                if (defined('DB_CHARSET')) {
-                    $dsn .= sprintf('charset=%s', DB_CHARSET);
-                }
-            } else {
-                $dsn .= sprintf(':%s', DB_DATABASE);
+        $dsn = Env::get('DB_DSN');
+        if ($dsn) {
+            return $dsn;
+        }
+
+        $driverName = $this->getDsnDriverName();
+        $databaseName = Env::get('DB_DATABASE');
+        if ($driverName === null) {
+            $driverName = 'sqlite';
+            $databaseName = ':memory:';
+        }
+
+        $dsn = $driverName;
+        if ($driverName !== 'sqlite') {
+            $dsn .= sprintf('host=%s;dbname=%s;user=%s;password=%s;',
+                Env::get('DB_HOST'),
+                Env::get('DB_DATABASE'),
+                Env::get('DB_USERNAME'),
+                Env::get('DB_PASSWORD')
+            );
+            if ($charset = Env::get('DB_CHARSET')) {
+                $dsn .= sprintf('charset=%s', $charset);
             }
             return $dsn;
         }
-        return null;
+        $dsn .= sprintf(':%s', $databaseName);
+        return $dsn;
     }
 
-    protected function getDsnDriverName()
+    protected function getDsnDriverName(): string|null
     {
-        switch (DB_CONNECTION) {
-            case 'Pdo_Mysql':
-            case 'Mysqli':
-            case 'mysql':
-                return 'mysql';
-            case 'Pdo_Sqlite':
-            case 'sqlite':
-                return 'sqlite';
-            case 'Pdo_Pgsql':
-            case 'Pgsql':
-            case 'pgsql':
-                return 'pgsql';
-            case 'Sqlsrv':
-            case 'mssql':
-                return 'mssql';
-            default:
-                break;
-        }
-        return null;
+        return match(Env::get('DB_CONNECTION')) {
+            'Pdo_Mysql', 'Mysqli', 'mysql' => 'mysql',
+            'Pdo_Sqlite', 'sqlite' => 'sqlite',
+            'Pdo_pgsql', 'Pgsql', 'pgsql' => 'pgsql',
+            'Sqlsrv', 'mssql' => 'mssql',
+            default => null,
+        };
     }
 }
