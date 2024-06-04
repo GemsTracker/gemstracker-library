@@ -34,8 +34,11 @@ trait SeedTrait
 
         return new SeedRepository($config, $databases, $eventDispatcher, $overLoader);
     }
-    public function insertSeeds(array $seeds)
+    public function seed(array|string $seeds): void
     {
+        if (!is_array($seeds)) {
+            $seeds = [$seeds];
+        }
         $seedRepository = $this->getSeedRepository();
         foreach ($seeds as $seed) {
             $info = $seedRepository->getSeedInfo($seed);

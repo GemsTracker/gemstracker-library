@@ -23,6 +23,8 @@ class DatabaseTestCase extends TestCase
 
     protected array $dbTables = [];
 
+    protected array $seeds = [];
+
     protected function getTableRepository(): TableRepository
     {
         $databases = $this->createMock(Databases::class);
@@ -45,6 +47,11 @@ class DatabaseTestCase extends TestCase
                 $tableRepository->createMigrationTable();
             }
             $tableRepository->createTables($this->dbTables);
+        }
+        if ($this->seeds) {
+            foreach($this->seeds as $seed) {
+                $this->seed($seed);
+            }
         }
     }
 
