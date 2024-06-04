@@ -8,7 +8,7 @@ namespace GemsTest\testUtils;
 
 use Laminas\Db\Adapter\Adapter;
 
-trait DatabaseTransactions
+trait DatabaseTransactionsTrait
 {
     /**
      * @var Adapter

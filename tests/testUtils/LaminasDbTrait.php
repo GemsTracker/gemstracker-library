@@ -6,7 +6,7 @@ use Gems\Helper\Env;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 
-trait LaminasDb
+trait LaminasDbTrait
 {
     /**
      * @var Adapter

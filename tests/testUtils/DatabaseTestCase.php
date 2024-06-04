@@ -15,8 +15,8 @@ class DatabaseTestCase extends TestCase
     use ConfigTrait, ConfigModulesTrait {
         ConfigModulesTrait::getModules insteadof ConfigTrait;
     }
-    use DatabaseTransactions;
-    use LaminasDb;
+    use DatabaseTransactionsTrait;
+    use LaminasDbTrait;
     use SeedTrait;
 
     protected ResultFetcher $resultFetcher;
