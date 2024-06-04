@@ -2,10 +2,10 @@
 
 namespace GemsTest\testUtils;
 
+use Exception;
 use Gems\Db\Databases;
 use Gems\Db\Migration\SeedRepository;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Util\Exception;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Zalt\Loader\ProjectOverloader;
