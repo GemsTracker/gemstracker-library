@@ -355,11 +355,11 @@ class FieldMaintenanceModel extends UnionModel
         $this->metaModel->set('gtf_field_description', [
             'elementClass' => 'Text',
             'size' => 30,
-            'translate', true
+            'translate' => true
         ]);
         $this->metaModel->set('gtf_field_values', [
             'elementClass' => 'Hidden',
-            'translate', true
+            'translate' => true
         ]);
         $this->metaModel->set('gtf_field_default', [
             'elementClass' => 'Hidden'
