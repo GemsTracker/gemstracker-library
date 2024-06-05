@@ -12,6 +12,8 @@ use Zalt\Loader\ProjectOverloader;
 
 trait SeedTrait
 {
+    protected array $seeds = [];
+
     protected function getSeedRepository(): SeedRepository
     {
         $uses = array_flip(TraitUtil::getClassTraits(static::class));
@@ -43,6 +45,13 @@ trait SeedTrait
         foreach ($seeds as $seed) {
             $info = $seedRepository->getSeedInfo($seed);
             $seedRepository->runSeed($info);
+        }
+    }
+
+    public function runSeeds(): void
+    {
+        if ($this->seeds) {
+            $this->seed($this->seeds);
         }
     }
 }
