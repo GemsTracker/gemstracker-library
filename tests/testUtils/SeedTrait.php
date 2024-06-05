@@ -51,7 +51,7 @@ trait SeedTrait
     public function runSeeds(): void
     {
         if ($this->seeds) {
-            $this->seed();
+            $this->seed($this->seeds);
         }
     }
 }
