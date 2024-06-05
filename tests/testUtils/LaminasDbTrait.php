@@ -2,34 +2,28 @@
 
 namespace GemsTest\testUtils;
 
+use PDO;
 use Gems\Helper\Env;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 
 trait LaminasDbTrait
 {
-    /**
-     * @var Adapter
-     */
-    protected $db;
+    protected Adapter $db;
 
-    /**
-     * @var \PDO
-     */
-    protected $pdo;
+    protected PDO $pdo;
 
     public function initDb(): void
     {
         $dsn = $this->getDsn();
 
-        $this->pdo = new \PDO($dsn);
+        $this->pdo = new PDO($dsn);
 
 
         if ($this->getDsnDriverName() === 'sqlite') {
             SqliteFunctions::addSqlFunctonsToPdoAdapter($this->pdo);
         }
 
-        $this->db = new Adapter(new Pdo($this->pdo));
+        $this->db = new Adapter(new \Laminas\Db\Adapter\Driver\Pdo\Pdo($this->pdo));
     }
 
     protected function getDsn(): ?string
