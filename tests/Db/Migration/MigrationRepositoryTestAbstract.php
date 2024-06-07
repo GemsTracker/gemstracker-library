@@ -3,16 +3,16 @@
 namespace GemsTest\Db\Migration;
 
 use Gems\Db\Databases;
-use Gems\Db\Dsn;
 use Gems\Db\ResultFetcher;
+use GemsTest\testUtils\LaminasDbTrait;
+use GemsTest\testUtils\TestCase;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\Driver\Pdo\Pdo;
-use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 
 class MigrationRepositoryTestAbstract extends TestCase
 {
+    use LaminasDbTrait;
     use ProphecyTrait;
     protected function createLogTable(): void
     {
@@ -59,14 +59,6 @@ class MigrationRepositoryTestAbstract extends TestCase
 
     protected function getTestDatabase(): Adapter
     {
-        $dbConfig = [
-            'driver'    => 'pdo_mysql',
-            'host'      => getenv('DB_HOST'),
-            'username'  => getenv('DB_USER'),
-            'password'  => getenv('DB_PASS'),
-            'database'  => 'gems_test',
-        ];
-
-        return new Adapter(new Pdo(new \Pdo(Dsn::fromConfig($dbConfig))));
+        return $this->db;
     }
 }

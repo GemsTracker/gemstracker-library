@@ -27,6 +27,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
 {
     public function setUp(): void
     {
+        parent::setUp();
         $this->createLogTable();
         $this->createTestTable();
     }
@@ -35,6 +36,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
     {
         $this->deleteLogTable();
         $this->deleteTestTable();
+        parent::tearDown();
     }
 
 

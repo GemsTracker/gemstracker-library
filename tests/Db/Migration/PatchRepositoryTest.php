@@ -29,6 +29,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
 
     public function setUp(): void
     {
+        parent::setUp();
         $this->createLogTable();
         $this->createTestTable();
     }
@@ -37,6 +38,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
     {
         $this->deleteLogTable();
         $this->deleteTestTable();
+        parent::tearDown();
     }
 
     public function testGetPatchesDirectories()
