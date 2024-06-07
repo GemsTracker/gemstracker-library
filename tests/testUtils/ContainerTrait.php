@@ -3,6 +3,7 @@
 namespace GemsTest\testUtils;
 
 use Gems\Config\AutoConfigurator;
+use Laminas\ServiceManager\ServiceManager;
 use Psr\Container\ContainerInterface;
 
 trait ContainerTrait
@@ -12,7 +13,8 @@ trait ContainerTrait
     {
         $config = $this->getConfig();
         $autoConfigurator = new AutoConfigurator($config);
-        $config = $autoConfigurator->autoConfigure();
+        $autoConfig = $autoConfigurator->getAutoConfigure();
+        $config = $this->getConfig($autoConfig);
 
         $dependencies = $config['dependencies'];
         $dependencies['services']['config'] = $config;
