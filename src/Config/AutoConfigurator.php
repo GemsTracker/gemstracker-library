@@ -33,22 +33,7 @@ class AutoConfigurator
             return $this->config;
         }
 
-        $finder = $this->getFinder();
-
-        foreach($finder as $file) {
-            $className = $this->getClassnameFromFile($file);
-            if ($className === null) {
-                continue;
-            }
-
-            try {
-                $fileReflector = new ReflectionClass($className);
-                $this->checkFileForAutoconfiguration($fileReflector);
-            } catch (ReflectionException $e) {
-//                file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $e->getMessage() . "\n", FILE_APPEND);
-                //echo $e->getMessage();
-            }
-        }
+        $this->getAutoConfigure();
 
         if (count($this->autoconfigConfig)) {
             $this->clearConfigCache();
@@ -95,6 +80,28 @@ class AutoConfigurator
         }
     }
 
+    public function getAutoConfigure(): array
+    {
+        $finder = $this->getFinder();
+
+        foreach($finder as $file) {
+            $className = $this->getClassnameFromFile($file);
+            if ($className === null) {
+                continue;
+            }
+
+            try {
+                $fileReflector = new ReflectionClass($className);
+                $this->checkFileForAutoconfiguration($fileReflector);
+            } catch (ReflectionException $e) {
+//                file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $e->getMessage() . "\n", FILE_APPEND);
+                //echo $e->getMessage();
+            }
+        }
+
+        return $this->autoconfigConfig;
+    }
+
     protected function getAutoconfigFilename(): string
     {
         return $this->config['autoconfig']['cache_path'];
@@ -134,7 +141,7 @@ class AutoConfigurator
     {
         if (!$this->filePaths) {
             $rootDir = $this->config['rootDir'] ?? '';
-            $moduleConfigProviders = require($rootDir . '/config/modules.php');
+            $moduleConfigProviders = $this->config['modules'] ?? require($rootDir . '/config/modules.php');
             $filePaths = [];
 
             foreach ($moduleConfigProviders as $configProvider) {
