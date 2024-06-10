@@ -4,6 +4,9 @@ namespace GemsTest\Messenger\Handler;
 
 use Gems\Messenger\Handler\SendTokenMessageHandler;
 use Gems\Messenger\Message\SendTokenMessage;
+use GemsTest\TestData\General\TestCommJobSeed;
+use GemsTest\TestData\General\TestCommMessengersSeed;
+use GemsTest\TestData\General\TestCommTemplatesSeed;
 use GemsTest\TestData\General\TestReceptionCodesSeed;
 use GemsTest\testUtils\ConfigModulesTrait;
 use GemsTest\testUtils\ConfigTrait;
@@ -37,6 +40,11 @@ class SendTokenMessageHandlerTest extends DatabaseTestCase
         'gems__reception_codes',
         'gems__respondent2track',
         'gems__tokens',
+        'gems__comm_jobs',
+        'gems__comm_messengers',
+        'gems__comm_templates',
+        'gems__comm_template_translations',
+
     ];
 
     protected array $seeds = [
@@ -49,6 +57,9 @@ class SendTokenMessageHandlerTest extends DatabaseTestCase
         TestRespondentTrackSeed::class,
         TestReceptionCodesSeed::class,
         TestTokenSeed::class,
+        TestCommJobSeed::class,
+        TestCommMessengersSeed::class,
+        TestCommTemplatesSeed::class,
     ];
 
     protected function getMessageHandler(): SendTokenMessageHandler
