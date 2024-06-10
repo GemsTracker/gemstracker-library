@@ -2,6 +2,8 @@
 
 namespace GemsTest\testUtils;
 
+use Laminas\Db\Adapter\Adapter;
+
 trait TestTraitsInitTrait
 {
     protected array $uses;
@@ -28,8 +30,13 @@ trait TestTraitsInitTrait
 
 
         if (isset($this->uses[LaminasDbTrait::class])) {
-            // @phpstan-ignore method.notFound
-            $this->initDb();
+            if (isset($this->uses[ContainerTrait::class])) {
+                $this->db = $this->container->get(Adapter::class);
+            } else {
+                // @phpstan-ignore method.notFound
+                $this->initDb();
+            }
+
             if (isset($this->uses[ResultFetcherTrait::class])) {
                 // @phpstan-ignore method.notFound
                 $this->getResultFetcher();
