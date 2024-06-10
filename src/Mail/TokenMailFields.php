@@ -111,6 +111,9 @@ class TokenMailFields extends RespondentMailFields
             ->forGroupId($this->token->getSurvey()->getGroupId())
             ->onlyValid();
 
-        return $tSelect->fetchRow();
+        $todoCounts = $tSelect->fetchRow();
+        $todoCounts['track'] = $todoCounts['track'] ?? 0;
+
+        return $todoCounts;
     }
 }
