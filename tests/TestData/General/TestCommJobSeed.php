@@ -14,8 +14,8 @@ class TestCommJobSeed extends SeedAbstract
                 [
                     'gcj_id_job' => 800,
                     'gcj_id_order' => 10,
-                    'gcj_id_communication_messenger' => 1,
-                    'gcj_id_message' => 1,
+                    'gcj_id_communication_messenger' => 1300,
+                    'gcj_id_message' => 20,
                     'gcj_id_user_as' => 1,
                     'gcj_from_method' => 'O',
                     'gcj_process_method' => 'O',

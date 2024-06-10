@@ -2,12 +2,16 @@
 
 namespace GemsTest\Messenger\Handler;
 
+use Gems\Db\ResultFetcher;
 use Gems\Messenger\Handler\SendTokenMessageHandler;
 use Gems\Messenger\Message\SendTokenMessage;
 use GemsTest\TestData\General\TestCommJobSeed;
 use GemsTest\TestData\General\TestCommMessengersSeed;
 use GemsTest\TestData\General\TestCommTemplatesSeed;
+use GemsTest\TestData\General\TestGroupsSeed;
+use GemsTest\TestData\General\TestMailCodesSeed;
 use GemsTest\TestData\General\TestReceptionCodesSeed;
+use GemsTest\TestData\General\TestRolesSeed;
 use GemsTest\testUtils\ConfigModulesTrait;
 use GemsTest\testUtils\ConfigTrait;
 use GemsTest\testUtils\ContainerTrait;
@@ -44,7 +48,13 @@ class SendTokenMessageHandlerTest extends DatabaseTestCase
         'gems__comm_messengers',
         'gems__comm_templates',
         'gems__comm_template_translations',
-
+        'gems__mail_codes',
+        'gems__roles',
+        'gems__groups',
+        'gems__track_fields',
+        'gems__track_appointments',
+        'gems__mail_servers',
+        'gems__log_respondent_communications',
     ];
 
     protected array $seeds = [
@@ -60,6 +70,9 @@ class SendTokenMessageHandlerTest extends DatabaseTestCase
         TestCommJobSeed::class,
         TestCommMessengersSeed::class,
         TestCommTemplatesSeed::class,
+        TestMailCodesSeed::class,
+        TestRolesSeed::class,
+        TestGroupsSeed::class,
     ];
 
     protected function getMessageHandler(): SendTokenMessageHandler
@@ -72,15 +85,20 @@ class SendTokenMessageHandlerTest extends DatabaseTestCase
         $messageHandler = $this->getMessageHandler();
 
         $message = new SendTokenMessage(
-            1,
+            800,
             '1234-abcd',
             [],
-            true,
+            false,
             false,
         );
 
         $messageHandler($message);
 
-        $this->assertTrue(true);
+        $this->assertEquals(1, $this->getTokenSentCount($message->getTokenId()));
+    }
+
+    protected function getTokenSentCount(string $tokenId): int
+    {
+        return $this->resultFetcher->fetchOne('SELECT gto_mail_sent_num FROM gems__tokens WHERE gto_id_token = ?', [$tokenId]);
     }
 }
