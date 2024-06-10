@@ -9,11 +9,13 @@ use Gems\Helper\Env;
 use Gems\Mail\MailBouncer;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\SendmailTransport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class MailerFactory implements FactoryInterface
 {
@@ -25,7 +27,10 @@ class MailerFactory implements FactoryInterface
         // Load the MailBouncer to enable it
         $container->get(MailBouncer::class);
 
-        $mailer = new Mailer($transport);
+        $messenger = $container->get(MessageBusInterface::class);
+        $eventDispatcher = $container->get(EventDispatcherInterface::class);
+
+        $mailer = new Mailer($transport, $messenger, $eventDispatcher);
 
         return $mailer;
     }
