@@ -2,6 +2,7 @@
 
 namespace GemsTest\testUtils;
 
+use GemsTest\TestConfigProvider;
 use Laminas\ConfigAggregator\ArrayProvider;
 use Laminas\ConfigAggregator\ConfigAggregator;
 
@@ -19,6 +20,7 @@ trait ConfigTrait
             new ArrayProvider($autoConfig),
             ...$this->getModules(),
             new ArrayProvider(['modules' => $this->getModules()]),
+            TestConfigProvider::class,
         ]);
         return $aggregator->getMergedConfig();
     }
