@@ -645,12 +645,14 @@ class CommJobRepository
                 case 'A':   // Only first token mailed and marked
                     if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
                         $sendTokenList[] = $token->getTokenId();
+                        $sentContactData[$respondentId][$contactData] = true;
                     }
                     break;
 
                 case 'O':   // Only first token mailed, all marked
                     if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
                         $sendTokenList[] = $token->getTokenId();
+                        $sentContactData[$respondentId][$contactData] = true;
                     } else {
                         $incrementWithoutSendingList[] = $token->getTokenId();
                     }
