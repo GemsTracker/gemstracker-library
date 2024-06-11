@@ -26,6 +26,10 @@ trait TestTraitsInitTrait
                     $this->initRoutes();
                 }
             }
+            if (isset($this->uses[MailTestTrait::class])) {
+                // @phpstan-ignore method.notFound
+                $this->initMailTests();
+            }
         }
 
 
