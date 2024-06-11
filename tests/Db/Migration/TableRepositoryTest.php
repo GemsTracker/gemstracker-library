@@ -26,12 +26,14 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
 
     public function setUp(): void
     {
+        parent::setUp();
         $this->createLogTable();
     }
 
     public function tearDown(): void
     {
         $this->deleteLogTable();
+        parent::tearDown();
     }
     public function testGetDbConnectionNamesFromDirs()
     {

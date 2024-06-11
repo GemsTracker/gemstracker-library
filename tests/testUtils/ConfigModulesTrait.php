@@ -3,6 +3,7 @@
 namespace GemsTest\testUtils;
 
 use Gems\ConfigProvider;
+use Gems\LegacyConfigProvider;
 
 trait ConfigModulesTrait
 {
@@ -10,6 +11,7 @@ trait ConfigModulesTrait
     {
         return [
             ConfigProvider::class,
+            LegacyConfigProvider::class,
         ];
     }
 }

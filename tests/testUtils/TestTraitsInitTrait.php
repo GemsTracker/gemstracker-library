@@ -2,6 +2,8 @@
 
 namespace GemsTest\testUtils;
 
+use Laminas\Db\Adapter\Adapter;
+
 trait TestTraitsInitTrait
 {
     protected array $uses;
@@ -24,12 +26,22 @@ trait TestTraitsInitTrait
                     $this->initRoutes();
                 }
             }
+            if (isset($this->uses[MailTestTrait::class])) {
+                // @phpstan-ignore method.notFound
+                $this->initMailTests();
+            }
         }
 
 
         if (isset($this->uses[LaminasDbTrait::class])) {
-            // @phpstan-ignore method.notFound
-            $this->initDb();
+            if (isset($this->uses[ContainerTrait::class])) {
+                // @phpstan-ignore property.notFound, property.notFound
+                $this->db = $this->container->get(Adapter::class);
+            } else {
+                // @phpstan-ignore method.notFound
+                $this->initDb();
+            }
+
             if (isset($this->uses[ResultFetcherTrait::class])) {
                 // @phpstan-ignore method.notFound
                 $this->getResultFetcher();

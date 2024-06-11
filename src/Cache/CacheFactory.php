@@ -8,6 +8,7 @@ namespace Gems\Cache;
 
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
@@ -38,6 +39,10 @@ class CacheFactory
             case 'file':
                 $directory = $config['directory'] ?? $this->defaultCacheDirectory;
                 $cache = new FilesystemAdapter($namespace, $defaultLifetime, $directory);
+                break;
+
+            case 'array':
+                $cache = new ArrayAdapter($defaultLifetime);
                 break;
 
             case 'null':

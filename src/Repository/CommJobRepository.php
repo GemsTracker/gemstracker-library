@@ -645,12 +645,14 @@ class CommJobRepository
                 case 'A':   // Only first token mailed and marked
                     if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
                         $sendTokenList[] = $token->getTokenId();
+                        $sentContactData[$respondentId][$contactData] = true;
                     }
                     break;
 
                 case 'O':   // Only first token mailed, all marked
                     if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
                         $sendTokenList[] = $token->getTokenId();
+                        $sentContactData[$respondentId][$contactData] = true;
                     } else {
                         $incrementWithoutSendingList[] = $token->getTokenId();
                     }
@@ -714,22 +716,22 @@ class CommJobRepository
 
             switch ($jobData['gcj_process_method']) {
                 case 'M':   // Each token sends an email
-                    $output[$tokenId][$tokenId] = $tokenId;
+                    $output[$tokenId] = [];
                     break;
 
                 case 'A':   // Only first token mailed and marked
                     if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
-                        $output[$tokenId][$tokenId] = $tokenId;
+                        $output[$tokenId] = [];
                         $sentContactData[$respondentId][$contactData] = $tokenId;
                     }
                     break;
 
                 case 'O':   // Only first token mailed, all marked
                     if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
-                        $output[$tokenId][$tokenId] = $tokenId;
+                        $output[$tokenId] = [];
                         $sentContactData[$respondentId][$contactData] = $tokenId;
-                    } else {
-                        $output[$sentContactData[$respondentId][$contactData]][$tokenId] = $tokenId;
+                    } elseif (!in_array($tokenId, $output[$sentContactData[$respondentId][$contactData]])) {
+                        $output[$sentContactData[$respondentId][$contactData]][] = $tokenId;
                     }
                     break;
 

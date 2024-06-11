@@ -34,7 +34,7 @@ trait LaminasDbTrait
         }
 
         $driverName = $this->getDsnDriverName();
-        $databaseName = Env::get('DB_DATABASE');
+        $databaseName = Env::get('DB_NAME');
         if ($driverName === null) {
             $driverName = 'sqlite';
             $databaseName = ':memory:';
@@ -42,11 +42,11 @@ trait LaminasDbTrait
 
         $dsn = $driverName;
         if ($driverName !== 'sqlite') {
-            $dsn .= sprintf('host=%s;dbname=%s;user=%s;password=%s;',
+            $dsn .= sprintf(':host=%s;dbname=%s;user=%s;password=%s;',
                 Env::get('DB_HOST'),
-                Env::get('DB_DATABASE'),
-                Env::get('DB_USERNAME'),
-                Env::get('DB_PASSWORD')
+                Env::get('DB_NAME'),
+                Env::get('DB_USER'),
+                Env::get('DB_PASS')
             );
             if ($charset = Env::get('DB_CHARSET')) {
                 $dsn .= sprintf('charset=%s', $charset);

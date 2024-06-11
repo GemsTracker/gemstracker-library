@@ -6,6 +6,7 @@ use Gems\Communication\Exception;
 use Gems\Event\Application\TokenEventMailFailed;
 use Gems\Event\Application\TokenEventMailSent;
 use Gems\Communication\CommunicationRepository;
+use Gems\Exception\MailException;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Tracker;
 use Gems\Tracker\Token;
@@ -34,7 +35,7 @@ class MailJobMessenger implements JobMessengerInterface
         $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
         $mailTexts = $this->communicationRepository->getCommunicationTexts($job['gcj_id_message'], $language);
         if ($mailTexts === null) {
-            throw new \MailException('No template data found');
+            throw new MailException('No template data found');
         }
 
         $email = $this->communicationRepository->getNewEmail();
