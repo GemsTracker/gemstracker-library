@@ -2,6 +2,8 @@
 
 namespace GemsTest\testUtils;
 
+use Gems\ConfigProvider;
+use Gems\LegacyConfigProvider;
 use GemsTest\TestConfigProvider;
 use Laminas\ConfigAggregator\ArrayProvider;
 use Laminas\ConfigAggregator\ConfigAggregator;
@@ -27,6 +29,9 @@ trait ConfigTrait
 
     protected function getModules(): array
     {
-        return [];
+        return [
+            ConfigProvider::class,
+            LegacyConfigProvider::class,
+        ];
     }
 }
