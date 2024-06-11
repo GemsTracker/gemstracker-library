@@ -5,6 +5,7 @@ namespace Gems\Repository;
 use Gems\Communication\CommunicationRepository;
 use Gems\Event\Application\TokenEventMailFailed;
 use Gems\Event\Application\TokenEventMailSent;
+use Gems\Exception\MailException;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Tracker\Token;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -45,7 +46,7 @@ class CommRepository
         }
 
         if ($mailTexts === null) {
-            throw new \MailException('No template data found');
+            throw new MailException('No template data found');
         }
 
         $mailer = $this->communicationRepository->getMailer();
