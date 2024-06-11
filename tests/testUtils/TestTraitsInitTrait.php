@@ -35,7 +35,7 @@ trait TestTraitsInitTrait
 
         if (isset($this->uses[LaminasDbTrait::class])) {
             if (isset($this->uses[ContainerTrait::class])) {
-                // @phpstan-ignore property.notFound
+                // @phpstan-ignore property.notFound, property.notFound
                 $this->db = $this->container->get(Adapter::class);
             } else {
                 // @phpstan-ignore method.notFound
