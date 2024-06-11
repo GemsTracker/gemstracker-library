@@ -16,6 +16,7 @@ class TestSurveySeed extends SeedAbstract
                     'gsu_survey_name' => 'BMI',
                     'gsu_id_primary_group' => 904,
                     'gsu_id_source' => 20,
+                    'gsu_surveyor_id' => 12345678,
                     'gsu_active' => 1,
                     'gsu_changed_by' => 1,
                     'gsu_created_by' => 1,

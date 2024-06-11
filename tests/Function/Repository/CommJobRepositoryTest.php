@@ -15,6 +15,7 @@ use GemsTest\TestData\General\TestRespondentSeed;
 use GemsTest\TestData\General\TestRespondentTrackSeed;
 use GemsTest\TestData\General\TestRolesSeed;
 use GemsTest\TestData\General\TestRoundSeed;
+use GemsTest\TestData\General\TestSourceSeed;
 use GemsTest\TestData\General\TestSurveySeed;
 use GemsTest\TestData\General\TestTokenSeed;
 use GemsTest\TestData\General\TestTrackSeed;
@@ -36,6 +37,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
         'gems__consents',
         'gems__tracks',
         'gems__surveys',
+        'gems__sources',
         'gems__rounds',
         'gems__reception_codes',
         'gems__respondent2track',
@@ -59,6 +61,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
         TestConsentsSeed::class,
         TestTrackSeed::class,
         TestSurveySeed::class,
+        TestSourceSeed::class,
         TestRoundSeed::class,
         TestRespondentTrackSeed::class,
         TestReceptionCodesSeed::class,
@@ -236,6 +239,50 @@ class CommJobRepositoryTest extends DatabaseTestCase
                 '1234-abcd',
             ],
             'markSent' => [],
+        ];
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    public function testGetSendableTokensNestedSendOneMarkTwo(): void
+    {
+        $repository = $this->getRepository();
+        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
+        $tokens = $repository->getSendableTokensNested(800);
+
+        $expected = [
+            '1234-abcd' => [
+                '4321-dcba',
+            ],
+        ];
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    public function testGetSendableTokensNestedSendTwoMarkTwo(): void
+    {
+        $repository = $this->getRepository();
+        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
+        $this->resultFetcher->query('UPDATE gems__comm_jobs SET gcj_process_method = \'M\' WHERE gcj_id_job = 800');
+        $tokens = $repository->getSendableTokensNested(800);
+
+        $expected = [
+            '1234-abcd' => [],
+            '4321-dcba' => [],
+        ];
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    public function testGetSendableTokensNestedSendOneMarkOne(): void
+    {
+        $repository = $this->getRepository();
+        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
+        $this->resultFetcher->query('UPDATE gems__comm_jobs SET gcj_process_method = \'A\' WHERE gcj_id_job = 800');
+        $tokens = $repository->getSendableTokensNested(800);
+
+        $expected = [
+            '1234-abcd' => [],
         ];
 
         $this->assertEquals($expected, $tokens);
