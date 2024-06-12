@@ -6,6 +6,7 @@ use Gems\AuthNew\Adapter\AuthenticationAdapterInterface;
 use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
 use Gems\AuthNew\Adapter\AuthenticationIdentityType;
 use Gems\AuthNew\Adapter\AuthenticationResult;
+use Gems\AuthNew\Adapter\HasSessionKeyInterface;
 use Gems\Event\Application\AuthenticatedEvent;
 use Gems\Event\Application\AuthenticationFailedLoginEvent;
 use Gems\User\User;
@@ -31,6 +32,9 @@ class AuthenticationService
             $identity = $result->getIdentity();
 
             $sessionKey = bin2hex(random_bytes(16));
+            if ($result instanceof HasSessionKeyInterface) {
+                $sessionKey = $result->getSessionKey($sessionKey);
+            }
 
             $this->session->regenerate();
             $this->session->set('auth_data', [
