@@ -103,7 +103,7 @@ class SendTokenMessageHandlerTest extends DatabaseTestCase
         $message = new SendTokenMessage(
             800,
             '1234-abcd',
-            ['4321-bcda'],
+            ['4321-dcba'],
             false,
             false,
         );
@@ -111,7 +111,7 @@ class SendTokenMessageHandlerTest extends DatabaseTestCase
         $messageHandler($message);
 
         $this->assertEquals(1, $this->getTokenSentCount($message->getTokenId()));
-        $this->assertEquals(0, $this->getTokenSentCount('4321-bcda'));
+        $this->assertEquals(1, $this->getTokenSentCount('4321-dcba'));
         $this->assertNumberOfMailsSent(1);
     }
 

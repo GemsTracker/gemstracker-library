@@ -151,7 +151,7 @@ class SmsJobMessenger implements JobMessengerInterface
             $event->setFrom([$from]);
             $event->setSubject($job['gct_name']);
             $event->setTo([$filteredNumber]);
-            $this->event->dispatch($event, $event::NAME);
+            $this->event->dispatch($event);
 
         } catch (ClientException $exception) {
 
@@ -161,7 +161,7 @@ class SmsJobMessenger implements JobMessengerInterface
             $event->setFrom([$from]);
             $event->setSubject($job['gct_name']);
             $event->setTo([$filteredNumber]);
-            $this->event->dispatch($event, $event::NAME);
+            $this->event->dispatch($event);
 
             return false;
         }

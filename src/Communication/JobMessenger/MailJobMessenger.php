@@ -69,7 +69,7 @@ class MailJobMessenger implements JobMessengerInterface
                 $mailer->send($email);
 
                 $event = new TokenEventMailSent($email, $token, $currentUserId, $job);
-                $this->event->dispatch($event, $event::NAME);
+                $this->event->dispatch($event);
             }
 
         } catch (TransportExceptionInterface  $exception) {

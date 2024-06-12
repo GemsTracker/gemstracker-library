@@ -27,23 +27,23 @@ class EventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            TokenEventCommunicationSent::NAME => [
+            TokenEventCommunicationSent::class => [
                 ['logRespondentCommunication'],
                 ['updateToken'],
                 ['removeFromJobQueueList'],
             ],
-            RespondentCommunicationSent::NAME => [
+            RespondentCommunicationSent::class => [
                 ['logRespondentCommunication']
             ],
-            TokenEventMailSent::NAME => [
+            TokenEventMailSent::class => [
                 ['logRespondentCommunication'],
                 ['updateToken'],
                 ['removeFromJobQueueList'],
             ],
-            RespondentMailSent::NAME => [
+            RespondentMailSent::class => [
                 ['logRespondentCommunication']
             ],
-            TokenMarkedAsSent::NAME => [
+            TokenMarkedAsSent::class => [
                 ['updateToken'],
                 ['removeFromJobQueueList'],
             ]
