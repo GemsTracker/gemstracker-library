@@ -544,7 +544,7 @@ class User
      * Get the current session key for the user. The session key is stored in the session variable
      * auth_session_key and is only used to ensure a user can only log in on one device at the same time.
      */
-    public function getSessionKey(): string
+    public function getSessionKey(): string|null
     {
         return $this->sessionKey;
     }

@@ -82,7 +82,7 @@ class AccessTokenSessionLoginHandler implements RequestHandlerInterface
 
     protected function getForwardUrlFromPost(ServerRequestInterface $request): string|null
     {
-        $rawBody = $request->getParsedBody();
+        $rawBody = $request->getBody()->getContents();
         $body = json_decode($rawBody, true);
         return $body[$this->payloadParamName] ?? null;
     }

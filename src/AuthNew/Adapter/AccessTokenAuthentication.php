@@ -55,6 +55,9 @@ class AccessTokenAuthentication implements AuthenticationAdapterInterface
             return new GemsTrackerAuthenticationResult(AuthenticationResult::FAILURE, null, [$e->getMessage()]);
         }
 
+        /**
+         * @var string|null $sessionKey
+         */
         $sessionKey = $request->getAttribute(UserAccessTokenGenerator::USER_SESSION_KEY_ATTRIBUTE);
         if ($sessionKey === null || $sessionKey !== $user->getSessionKey()) {
             return new GemsTrackerAuthenticationResult(AuthenticationResult::FAILURE, null, [
@@ -67,7 +70,6 @@ class AccessTokenAuthentication implements AuthenticationAdapterInterface
             $identity,
             [],
             $user,
-            $request->getAttribute('user_session_key'),
         );
     }
 }

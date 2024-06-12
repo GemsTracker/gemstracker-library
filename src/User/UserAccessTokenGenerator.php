@@ -19,6 +19,7 @@ use League\OAuth2\Server\Exception\UniqueTokenIdentifierConstraintViolationExcep
 
 class UserAccessTokenGenerator
 {
+    public const USER_SESSION_KEY_ATTRIBUTE = 'user_session_key';
     protected const MAX_RANDOM_TOKEN_GENERATION_ATTEMPTS = 10;
 
     protected readonly array $oauth2Config;
@@ -51,7 +52,7 @@ class UserAccessTokenGenerator
 
         $accessTokenTTL = $this->getAccessTokenTTl();
 
-        $accessToken = $this->accessTokenRepository->getNewToken($client, $scopes, $userIdentifier);
+        $accessToken = $this->accessTokenRepository->getNewToken($client, $scopes, $userIdentifier, true);
         $accessToken->setExpiryDateTime((new DateTimeImmutable())->add($accessTokenTTL));
         $accessToken->setPrivateKey($this->privateKey);
 
