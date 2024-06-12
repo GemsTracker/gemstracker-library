@@ -9,6 +9,7 @@ use Gems\Util\Lock\CommJobLock;
 use Gems\Util\Lock\MaintenanceLock;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -29,6 +30,11 @@ class RunCommJob extends Command
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this->addArgument('id', InputArgument::OPTIONAL, ' comm job ID');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($this->maintenanceLock->isLocked()) {
@@ -43,6 +49,17 @@ class RunCommJob extends Command
         $this->consoleSettings->setConsoleUser();
 
         $jobs = $this->commJobRepository->getActiveJobs();
+
+        $id = $input->getArgument('id');
+        if ($id !== null) {
+            $jobs = array_filter($jobs, function ($job) use ($id) {
+                return $job['gcj_id_job'] == $id;
+            });
+            if (!count($jobs)) {
+                $output->writeln('<error>Job with ID ' . $id .  ' not found.</error>');
+            }
+        }
+
         $this->commJobRepository->clearTokenQueue();
         foreach($jobs as $jobData) {
             $commJobMessage = new CommJob($jobData);
