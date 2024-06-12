@@ -753,6 +753,7 @@ class ConfigProvider
                 'layout' => [__DIR__ . '/../templates/layout'],
                 'mail' => [__DIR__ . '/../templates/mail'],
                 'menu' => [__DIR__ . '/../templates/menu'],
+                'error' => [__DIR__ . '/../templates/error'],
             ],
         ];
     }
