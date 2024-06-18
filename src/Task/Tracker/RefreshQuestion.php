@@ -11,6 +11,9 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Model\SurveyQuestionsModel;
+use Gems\Tracker;
+use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelInterface;
 
 /**
@@ -29,16 +32,10 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
      */
     protected $db;
 
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
 
-    /**
-     *
-     * @var \Zend_View
-     */
-    protected $view;
+    protected Tracker $tracker;
+
+    protected ProjectOverloader $overLoader;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -49,13 +46,15 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
     public function execute($surveyId = null, $questionId = null, $order = null)
     {
         $batch  = $this->getBatch();
-        $survey = $this->loader->getTracker()->getSurvey($surveyId);
+        $survey = $this->tracker->getSurvey($surveyId);
 
         // Now save the questions
         $answerModel   = $survey->getAnswerModel('en');
-        $questionModel = new \MUtil\Model\TableModel('gems__survey_questions');
 
-        \Gems\Model::setChangeFieldsByPrefix($questionModel, 'gsq');
+        /**
+         * @var SurveyQuestionsModel $questionModel
+         */
+        $questionModel = $this->overLoader->create(SurveyQuestionsModel::class);
 
         // MetaModel expects a string name, some can be int
         if (is_int($questionId)) {
