@@ -57,6 +57,11 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
 
         \Gems\Model::setChangeFieldsByPrefix($questionModel, 'gsq');
 
+        // MetaModel expects a string name, some can be int
+        if (is_int($questionId)) {
+            $questionId = (string) $questionId;
+        }
+
         $metaModel = $answerModel->getMetaModel();
         $label = $metaModel->get($questionId, 'label');
         /*
