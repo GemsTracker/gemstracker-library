@@ -184,7 +184,7 @@
             "vendor/bin/phpunit tests"
         ],
         "test-nodb": [
-            "vendor/bin/phpunit  --exclude-group database tests"
+            "vendor/bin/phpunit --exclude-group database tests"
         ],
         "stan": [
             "vendor/bin/phpstan --memory-limit=512M"

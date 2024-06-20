@@ -25,6 +25,9 @@ use GemsTest\testUtils\DatabaseTestCase;
 use GemsTest\testUtils\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+/**
+ * @group database
+ */
 class CommJobRepositoryTest extends DatabaseTestCase
 {
     use ConfigTrait;

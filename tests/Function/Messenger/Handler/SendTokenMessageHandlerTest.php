@@ -24,6 +24,10 @@ use GemsTest\testUtils\ContainerTrait;
 use GemsTest\testUtils\DatabaseTestCase;
 use GemsTest\testUtils\MailTestTrait;
 
+/**
+ * @group database
+ */
+
 class SendTokenMessageHandlerTest extends DatabaseTestCase
 {
     use ConfigTrait;
