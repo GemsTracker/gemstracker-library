@@ -13,6 +13,7 @@ use Gems\Model\MetaModelLoader;
 use GemsTest\Data\Db\SeedRepository\PhpSeed;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
+use PHPUnit\Framework\Attributes\Group;
 use Prophecy\Argument;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
@@ -20,9 +21,7 @@ use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModel;
 
-/**
- * @group database
- */
+#[Group('database')]
 class SeedRepositoryTest extends MigrationRepositoryTestAbstract
 {
     public function setUp(): void

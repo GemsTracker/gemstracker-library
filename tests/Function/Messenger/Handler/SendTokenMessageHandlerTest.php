@@ -23,11 +23,9 @@ use GemsTest\testUtils\ConfigTrait;
 use GemsTest\testUtils\ContainerTrait;
 use GemsTest\testUtils\DatabaseTestCase;
 use GemsTest\testUtils\MailTestTrait;
+use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group database
- */
-
+#[Group('database')]
 class SendTokenMessageHandlerTest extends DatabaseTestCase
 {
     use ConfigTrait;
