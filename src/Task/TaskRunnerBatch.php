@@ -30,6 +30,8 @@ class TaskRunnerBatch extends TaskBatch
 {
     protected array $baseUrl = [];
 
+    protected array $extraParams = [];
+
     /**
      * The number of bytes to pad during push communication in Kilobytes.
      *
@@ -64,16 +66,32 @@ class TaskRunnerBatch extends TaskBatch
     public function getJsAttributes(): array
     {
         $output[':autostart']  = $this->autoStart ? 'true' : 'false';
-        $output['init-url']    = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterInitValue]);
-        $output['run-url']     = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterRunValue]);
-        $output['restart-url'] = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterRestartValue]);
+        $output['init-url']    = $this->getUrl($this->progressParameterInitValue);
+        $output['run-url']     = $this->getUrl($this->progressParameterRunValue);
+        $output['restart-url'] = $this->getUrl($this->progressParameterRestartValue);
 
         return $output;
+    }
+
+    public function getExtraParams(): array
+    {
+        return $this->extraParams;
+    }
+
+    protected function getUrl(string $progress): string
+    {
+        return UrlArrayAttribute::toUrlString($this->baseUrl + $this->getExtraParams() + [$this->progressParameterName => $progress]);
     }
 
     public function setBaseUrl(mixed $url): TaskRunnerBatch
     {
         $this->baseUrl = (array) $url;
+        $this->restartRedirectUrl = $this->getUrl($this->progressParameterRestartValue);
         return $this;
+    }
+
+    public function setExtraParams(array $params): void
+    {
+        $this->extraParams = $params;
     }
 }

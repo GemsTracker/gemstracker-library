@@ -42,4 +42,20 @@ class GemsJoinModel extends \Zalt\Model\Sql\JoinModel
         $this->startJoin($tableName, $savable);
         $this->translate = $translate;
     }
+
+    /**
+     * Helper function to switch from using id column to using a label column
+     *
+     * @param string $from
+     * @param string $to
+     * @return void
+     */
+    protected function switchLabelTo(string $from, string $to)
+    {
+        $this->metaModel->set($to, [
+            'label' => $this->metaModel->get($from, 'label'),
+            'order' => $this->metaModel->getOrder($from) + 1,
+        ]);
+        $this->metaModel->del($from, ['label']);
+    }
 }

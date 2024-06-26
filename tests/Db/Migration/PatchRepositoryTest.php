@@ -13,6 +13,7 @@ use Gems\Model\MetaModelLoader;
 use GemsTest\TestData\Db\PatchRepository\PhpPatch;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
+use PHPUnit\Framework\Attributes\Group;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -20,9 +21,7 @@ use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Model\MetaModel;
 
-/**
- * @group database
- */
+#[Group('database')]
 class PatchRepositoryTest extends MigrationRepositoryTestAbstract
 {
     use ProphecyTrait;

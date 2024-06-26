@@ -14,6 +14,7 @@ use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zalt\Base\BaseDir;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 
@@ -52,7 +53,7 @@ class AuthIdleCheckHandler implements RequestHandlerInterface
             }
 
             return new JsonResponse([
-                'redirect' => $this->router->generateUri('auth.login'),
+                'redirect' => BaseDir::getBaseDir() . $this->router->generateUri('auth.login'),
             ]);
         }
 

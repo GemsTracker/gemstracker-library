@@ -8,7 +8,7 @@ CREATE TABLE if not exists gems__migration_logs (
 
     gml_status          varchar(30) CHARACTER SET 'utf8mb4' COLLATE utf8mb4_unicode_ci not null,
     gml_duration        float null,
-    gml_sql             text CHARACTER SET 'utf8mb4' COLLATE utf8mb4_unicode_ci not null,
+    gml_sql             longtext CHARACTER SET 'utf8mb4' COLLATE utf8mb4_unicode_ci not null,
     gml_comment         text CHARACTER SET 'utf8mb4' COLLATE utf8mb4_unicode_ci null,
     gml_created         timestamp not null default current_timestamp,
     PRIMARY KEY (gml_id_migration)
