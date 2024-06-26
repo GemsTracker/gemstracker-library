@@ -48,7 +48,7 @@ abstract class DeferredUserLoaderAbstract
      */
     protected function checkCurrentSettings(User $embeddedUser, EmbeddedUserData $embeddedUserData, User $user)
     {
-        if ($user->getCurrentOrganizationId() !== $embeddedUser->getCurrentOrganizationId()) {
+        if ($user->getCurrentOrganizationId() !== $embeddedUser->getCurrentOrganizationId() && $user->isAllowedOrganization($embeddedUser->getCurrentOrganizationId())) {
             $user->setCurrentOrganizationId($embeddedUser->getCurrentOrganizationId());
         }
 
