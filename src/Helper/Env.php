@@ -14,11 +14,11 @@ class Env
         return $_ENV[$name] ?? $_SERVER[$name] ?? $default;
     }
 
-    public static function renderConfig(array $config): array
+    public static function processArray(array $config): array
     {
         foreach($config as $configKey => $configValue) {
             if (is_array($configValue)) {
-                $config[$configKey] = static::renderConfig($configValue);
+                $config[$configKey] = static::processArray($configValue);
             }
             if ($configValue instanceof Env) {
                 $config[$configKey] = static::get($configValue->name);
