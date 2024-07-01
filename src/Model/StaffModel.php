@@ -16,6 +16,7 @@ use Gems\Encryption\ValueEncryptor;
 use Gems\Model\Type\EncryptedField;
 use Gems\User\Embed\EmbedLoader;
 use Gems\User\Filter\PhoneNumberFilter;
+use Gems\User\User;
 use Gems\User\UserLoader;
 use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Translated;
@@ -187,7 +188,10 @@ class StaffModel extends JoinModel
     {
         parent::afterRegistry();
 
-        $allowedGroups = $this->currentUser->getAllowedStaffGroups();
+        $allowedGroups = null;
+        if ($this->currentUser instanceof User) {
+            $allowedGroups = $this->currentUser->getAllowedStaffGroups();
+        }
         if ($allowedGroups) {
             $expr = new \Zend_Db_Expr(sprintf(
                 "CASE WHEN gsf_id_primary_group IN (%s) THEN 1 ELSE 0 END",

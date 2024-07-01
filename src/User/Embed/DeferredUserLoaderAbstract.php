@@ -83,9 +83,9 @@ abstract class DeferredUserLoaderAbstract
      *
      * @param string $userLogin
      * @param mixed $organisations (Array of) organization id's or objects
-     * @return User
+     * @return User|null
      */
-    public function getUser($userLogin, $organisations = null)
+    public function getUserOrNull($userLogin, $organisations = null): User|null
     {
         // Set to current organization if not passed and no organization is allowed
         if ((null === $organisations) && (! $this->userLoader->allowLoginOnWithoutOrganization)) {
@@ -93,16 +93,15 @@ abstract class DeferredUserLoaderAbstract
         }
         foreach ((array) $organisations as $currentOrg) {
             if ($currentOrg instanceof Organization) {
-                $user = $this->userLoader->getUser($userLogin, $currentOrg->getId());
+                $user = $this->userLoader->getUserOrNull($userLogin, $currentOrg->getId());
             } else {
-                $user = $this->userLoader->getUser($userLogin, $currentOrg);
+                $user = $this->userLoader->getUserOrNull($userLogin, $currentOrg);
             }
-            if ($user->isActive()) {
+            if ($user instanceof User && $user->isActive()) {
                 return $user;
             }
         }
 
-        throw new Exception(); // TODO: Better name
-        //return $user;
+        return null;
     }
 }
