@@ -287,6 +287,8 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         
         if ($surveyId) {
             $survey = $this->loader->getTracker()->getSurvey($surveyId);
+        } else {
+            $survey = null;
         }
         
         if ($survey instanceof \Gems_Tracker_Survey) {

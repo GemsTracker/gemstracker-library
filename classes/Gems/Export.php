@@ -45,6 +45,7 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
         'SpssExport' => 'SPSS',
         'CsvExport' => 'CSV',
         'StreamingStataExport' => 'Stata (xml)',
+        'TextExport' => 'Text (tabbed)',
     ];
 
     /**

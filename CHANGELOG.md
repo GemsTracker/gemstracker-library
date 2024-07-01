@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.9.2]
 ### Added user functionality
+- Add multi source LS installations (876)
 - Add RTF export to DossierExport (#703)
 - Allow difference between values and labels in select and multiselect track fields (#776)
 - Allow mailability to be set at multiple levels (#603)
@@ -20,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Prefill gtAgeYears, gtAgeMonth and gtGender (#704)
 - Reset sent mail - using checkbox in Token edit screen (#674)
 - Send again button in communication log (#668)
+- Simplify use of LS with test / acceptance / production environments (#30)
 - Survey display option to show all instances, but only answered questions (#689)
 - Trafficlight screen does not remember last clicked token (#719)
 

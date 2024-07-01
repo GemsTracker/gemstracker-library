@@ -488,9 +488,9 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      *
      * @return \Gems\Model\SurveyMaintenanceModel
      */
-    public function getSurveyMaintenanceModel()
+    public function getSurveyMaintenanceModel($name = 'surveymaintenance')
     {
-        return $this->_loadClass('SurveyMaintenanceModel', true);
+        return $this->_loadClass('SurveyMaintenanceModel', true, [$name]);
     }
 
     /**

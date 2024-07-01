@@ -98,6 +98,11 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
     public $loader;
 
     /**
+     * @var string Name used in survey model (for export)
+     */
+    protected $model_name = 'surveymaintenance';
+
+    /**
      *
      * @var \Gems_Project_ProjectSettings
      */
@@ -201,7 +206,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      */
     protected function createModel($detailed, $action)
     {
-        $model = $this->loader->getModels()->getSurveyMaintenanceModel();
+        $model = $this->loader->getModels()->getSurveyMaintenanceModel($this->model_name);
 
         if ($detailed) {
             $surveyId = $this->_getIdParam();
@@ -215,6 +220,138 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         }
 
         return $model;
+    }
+
+    /**
+     * Export model settings data
+     */
+    public function exportSettingsAction()
+    {
+        $step = $this->request->getParam('step');
+        $post['type'] = 'TextExport';
+
+        $this->autofilterParameters = $this->autofilterParameters + array(
+                'browse'        => true,
+                'containingId'  => 'autofilter_target',
+                'keyboard'      => true,
+                'onEmpty'       => 'getOnEmptyText',
+                'sortParamAsc'  => 'asrt',
+                'sortParamDesc' => 'dsrt',
+            );
+
+        $this->model_name = 'survey.settings';
+        $model = $this->getExportModel();
+        foreach (['gsu_survey_languages', 'gso_source_name', 'gsu_surveyor_active', 'gsu_insert_organizations', 'gsu_status_show', 'gsu_survey_warnings', 'track_usage', 'calc_duration'] as $name) {
+            $model->remove($name, 'label');
+        }
+        $model->set('gsu_export_code', 'order', 1);
+
+        if (isset($this->autofilterParameters['sortParamAsc'])) {
+            $model->setSortParamAsc($this->autofilterParameters['sortParamAsc']);
+        }
+        if (isset($this->autofilterParameters['sortParamDesc'])) {
+            $model->setSortParamDesc($this->autofilterParameters['sortParamDesc']);
+        }
+
+        $model->applyParameters($this->getSearchFilter(false), true);
+        $model->addFilter(['gsu_export_code IS NOT NULL']);
+
+        $this->accesslog->logChange($this->request, null, $model->getFilter());
+
+        // Add any defaults.
+        if (isset($this->autofilterParameters['extraFilter'])) {
+            $model->addFilter($this->autofilterParameters['extraFilter']);
+        }
+        if (isset($this->autofilterParameters['extraSort'])) {
+            $model->addSort($this->autofilterParameters['extraSort']);
+        }
+
+        $batch = $this->loader->getTaskRunnerBatch('export_settings');
+        if (! $step) {
+//            $batch->reset();
+//            $step = 'batch';
+//            $post['step'] = $step;
+        }
+
+        if ((!$step) || ($post && $step == 'form')) {
+            $params = $this->_processParameters($this->exportParameters + ['exportClasses' => ['TextExport' => 'Text']]);
+            $this->addSnippet($this->exportFormSnippets, $params);
+            $batch->reset();
+        } elseif ($step == 'batch') {
+        // if ($step == 'batch') {
+            $batch->setVariable('model', $model);
+            if (!$batch->count()) {
+                $batch->reset();
+                $batch->minimalStepDurationMs = 2000;
+                $batch->finishUrl = $this->view->url(array('step' => 'download'));
+
+                $batch->setSessionVariable('files', array());
+
+                $batch->addTask('Export_ExportCommand', $post['type'], 'addExport', $post);
+                $batch->addTask('addTask', 'Export_ExportCommand', $post['type'], 'finalizeFiles', $post);
+
+                $export = $this->loader->getExport()->getExport($post['type']);
+                if ($snippet = $export->getHelpSnippet()) {
+                    $this->addSnippet($snippet);
+                }
+
+                $batch->autoStart = true;
+            }
+
+            if (\MUtil_Console::isConsole()) {
+                // This is for unit tests, if we want to be able to really export from
+                // cli we need to place the exported file somewhere.
+                // This is out of scope for now.
+                $batch->runContinuous();
+            } elseif ($batch->run($this->request)) {
+                exit;
+            } else {
+                $controller = $this;
+
+                if ($batch->isFinished()) {
+                    /*\MUtil_Echo::track('finished');
+                    $file = $batch->getSessionVariable('file');
+                    if ((!empty($file)) && isset($file['file']) && file_exists($file['file'])) {
+                        // Forward to download action
+                        $this->_session->exportFile = $file;
+                    }*/
+                } else {
+                    if ($batch->count()) {
+                        $controller->html->append($batch->getPanel($controller->view, $batch->getProgressPercentage() . '%'));
+                    } else {
+                        $controller->html->pInfo($controller->_('Nothing to do.'));
+                    }
+                    $url = $this->getExportReturnLink();
+                    if ($url) {
+                        $controller->html->pInfo()->a(
+                            $url,
+                            array('class'=>'actionlink'),
+                            $this->_('Back')
+                        );
+                    }
+                }
+            }
+        } elseif ($step == 'download') {
+            $file  = $batch->getSessionVariable('file');
+            if ($file && is_array($file) && is_array($file['headers'])) {
+                $this->view->layout()->disableLayout();
+                $this->_helper->viewRenderer->setNoRender(true);
+
+                foreach($file['headers'] as $header) {
+                    header($header);
+                }
+                while (ob_get_level()) {
+                    ob_end_clean();
+                }
+                readfile($file['file']);
+                // Now clean up the file
+                unlink($file['file']);
+
+                exit;
+            }
+            $this->addMessage($this->_('Download no longer available.'), 'warning');
+            $batch->reset();
+        }
     }
 
     /**
@@ -402,6 +539,17 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
     public function getTopic($count = 1)
     {
         return $this->plural('survey', 'surveys', $count);
+    }
+
+    /**
+     * Import model settings data
+     */
+    public function importSettingsAction()
+    {
+        $params   = $this->_processParameters(['model' => $this->getExportModel()]);
+        $snippets = [\Gems\Snippets\Import\ImportSurveySettingsSnippet::class];
+
+        $this->addSnippets($snippets, $params);
     }
 
     /**

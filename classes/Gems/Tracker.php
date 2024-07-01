@@ -50,11 +50,14 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      * @var array Of classname => description
      */
     protected $_sourceClasses = array(
-        'LimeSurvey1m9Database'  => 'Lime Survey 1.90 DB',
-        'LimeSurvey1m91Database' => 'Lime Survey 1.91+ DB',
-        'LimeSurvey2m00Database' => 'Lime Survey 2.00 DB',
-        'LimeSurvey3m00Database' => 'Lime Survey 3.00 DB',
-        'LimeSurvey4m00Database' => 'Lime Survey 4.00 DB',
+//        'LimeSurvey1m9Database'  => 'Lime Survey 1.90 DB',
+//        'LimeSurvey1m91Database' => 'Lime Survey 1.91+ DB',
+        'LimeSurvey2m00Database' => 'Lime Survey 2.0 Dedicated',
+        'LimeSurvey2m00MultiSource' => 'Lime Survey 2.0 Shared',
+        'LimeSurvey3m00Database' => 'Lime Survey 3.0 Dedicated',
+        'LimeSurvey3m00MultiSource' => 'Lime Survey 3.0 Shared',
+        'LimeSurvey4m00Database' => 'Lime Survey 4.0 Dedicated',
+        'LimeSurvey4m00MultiSource' => 'Lime Survey 4.0 Shared',
         );
 
     /**

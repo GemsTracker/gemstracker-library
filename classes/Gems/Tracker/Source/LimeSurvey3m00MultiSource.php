@@ -1,36 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @package    Gems
- * @subpackage Tracker
- * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
- * @copyright  Copyright (c) 2020 Erasmus MC
- * @license    New BSD License
+ * @subpackage Tracker\Source
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  */
 
 namespace Gems\Tracker\Source;
 
-use Gems_Tracker_Source_LimeSurvey2m00Database as LSSingleSource;
-
 /**
- * This source allows to share one LimeSurvey with multiple satellite GemsTracker installations.
- * 
- * To assure unique tokens, the GemsTracker created tokens will be prefixed with 
- * the GEMS_PROJECT_NAME when inserted into LimeSurvey. When returning to GemsTracker
- * this prefix will be stripped from the return URI again so GemsTracker knows
- * what token returned.
- * 
- * The _getReturnURI allows the remote LimeSurvey to redirect to the correct site. 
- * You can make use of the Expression Manager and available attributes to create
- * the correct URI.
- *
  * @package    Gems
- * @subpackage Tracker
- * @copyright  Copyright (c) 2020 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.8.8
+ * @subpackage Tracker\Source
+ * @since      Class available since version 1.0
  */
-class LimeSurvey2m00MultiSource extends LSSingleSource
+class LimeSurvey3m00MultiSource extends \Gems_Tracker_Source_LimeSurvey3m00Database
 {
     /**
      * A map containing attributename => databasefieldname mappings
@@ -50,7 +35,7 @@ class LimeSurvey2m00MultiSource extends LSSingleSource
 
     /**
      * Returns a list of field names that should be set in a newly inserted token.
-     * 
+     *
      * Adding site (GEMS_PROJECT_NAME) and sitename
      *
      * @param \Gems_Tracker_Token $token
@@ -68,11 +53,11 @@ class LimeSurvey2m00MultiSource extends LSSingleSource
 
     /**
      * Reads the site part from the URL
-     * 
+     *
      * The last part before the / will be the site name to use. Most of the times
      * this equals the lowercase projectname, but as with all rules there are
      * exceptions.
-     * 
+     *
      * @return string
      */
     protected function _getSite() {
@@ -83,7 +68,7 @@ class LimeSurvey2m00MultiSource extends LSSingleSource
 
     /**
      * Adds or removes the site prefix (GEMS_PROJECT_NAME) that makes the tokens unique.
-     * 
+     *
      * @param string $tokenId
      * @param bool $reverse
      * @return string
@@ -101,7 +86,7 @@ class LimeSurvey2m00MultiSource extends LSSingleSource
 
     /**
      * Add the site to the filter so we only get our own site's responses.
-     * 
+     *
      * @param array $filter
      * @param type $surveyId
      * @param type $sourceSurveyId
@@ -116,28 +101,28 @@ class LimeSurvey2m00MultiSource extends LSSingleSource
 
     /**
      * Creates the right URI that LimeSurvey should return the users to after completion.
-     * 
-     * Makes use of the site (GEMS_PROJECT_NAME) to find the correct URL and strip 
+     *
+     * Makes use of the site (GEMS_PROJECT_NAME) to find the correct URL and strip
      * the prefix of the token using Expression Manager.
-     * 
+     *
      * @return string
      */
-    protected function _getReturnURI()
+    protected function _getReturnURI(\Gems_User_Organization $organization = null)
     {
         return substr($this->util->getCurrentURI(), 0, -strlen($this->_getSite())) . '{TOKEN:ATTRIBUTE_5}/ask/return/' . \MUtil_Model::REQUEST_ID . '/{substr(TOKEN,strlen(TOKEN:ATTRIBUTE_5))}';
     }
 
     /**
      * Set the return URI description to include the sitename from the token attribute instead of the hardcoded one in the original source.
-     * 
+     *
      * @return string
      */
     protected function _getReturnURIDescription($language)
     {
         return sprintf(
-                $this->translate->_('Back to %s', $language),
-                //$this->project->getName()
-                '{TOKEN:ATTRIBUTE_6}'
+            $this->translate->_('Back to %s', $language),
+            //$this->project->getName()
+            '{TOKEN:ATTRIBUTE_6}'
         );
     }
 }

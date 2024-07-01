@@ -867,6 +867,13 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
         $page->addAutofilterAction();
         $page->addExportAction();
+        $page->addAction($this->_('Export Settings'), 'pr.survey-maintenance.export-settings', 'export-settings', [
+            'title'  => $this->_('Export the survey settings'),
+        ]);
+        $page->addAction($this->_('Import Settings'), 'pr.survey-maintenance.import-settings', 'import-settings', [
+            'title'  => $this->_('Import survey settings'),
+        ]);
+
         $showPage = $page->addShowAction();
         $showPage->addEditAction();
         $showPage->addAction($this->_('Check is answered'), 'pr.survey-maintenance.check', 'check')
