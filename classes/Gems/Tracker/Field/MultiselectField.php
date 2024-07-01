@@ -82,7 +82,10 @@ class MultiselectField extends FieldAbstract
                 $output = $value;
             }
         }
-        return implode($this->displaySeparator, $output);
+        if ($output) {
+            return implode($this->displaySeparator, $output);
+        }
+        return null;
     }
 
     protected function getMultiOptions()
