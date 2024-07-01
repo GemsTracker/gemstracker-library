@@ -13,6 +13,7 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Audit\AuditLog;
 use Gems\Cache\HelperAdapter;
+use Gems\Db\ResultFetcher;
 use Gems\Handlers\SnippetLegacyHandlerAbstract;
 use Gems\Html;
 use Gems\Log\ErrorLogger;
@@ -91,6 +92,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         protected RouteHelper $routeHelper,
         protected UrlHelper $urlHelper,
         protected Versions $versions,
+        protected readonly ResultFetcher $resultFetcher,
         protected readonly array $config,
     )
     {
@@ -132,6 +134,13 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $data[$this->_('Server Hostname')]         = php_uname('n');
         $data[$this->_('Server OS')]               = php_uname('s');
         $data[$this->_('Time on server')]          = date('r');
+        // Report database connection encryption.
+        $sslQuery = "SHOW STATUS LIKE 'Ssl_version'";
+        $sslOption = $this->resultFetcher->fetchRow($sslQuery);
+        $data[$this->_('Database connection SSL version')] = $sslOption['Value'] ?: '-';
+        $sslQuery = "SHOW STATUS LIKE 'Ssl_cipher'";
+        $sslOption = $this->resultFetcher->fetchRow($sslQuery);
+        $data[$this->_('Database connection SSL cipher')] = $sslOption['Value'] ?: '-';
         foreach ($this->reportPackageVersions as $package) {
             if (! \Composer\InstalledVersions::isInstalled($package)) {
                 continue;
