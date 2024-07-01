@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Simplify use of LS with test / acceptance / production environments (#30)
 - Survey display option to show all instances, but only answered questions (#689)
 - Trafficlight screen does not remember last clicked token (#719)
+- Use labels instead of values for (Multi)Select track fields (#877)
 
 ### Fixed
 - Activity search snippet shows result when non should be there (#736)

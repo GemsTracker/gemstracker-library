@@ -50,14 +50,47 @@ class MultiselectField extends FieldAbstract
     protected function addModelSettings(array &$settings)
     {
         $concatter = new \MUtil_Model_Type_ConcatenatedRow(parent::FIELD_SEP, $this->displaySeparator, $this->padSeperators);
-        $multiKeys = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_value_keys']);
-        $multi     = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
         $settings  = $concatter->getSettings() + $settings;
 
         $settings['elementClass'] = 'MultiCheckbox';
-        $settings['multiOptions'] = ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
+        $settings['multiOptions'] = $this->getMultiOptions();
 
         $concatter->setOptions($settings['multiOptions']);
+    }
+
+    /**
+     * Calculation the field info display for this type
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function calculateFieldInfo($currentValue, array $fieldData)
+    {
+        $options = $this->getMultiOptions();
+
+        if (is_array($currentValue)){
+            $values = $currentValue;
+        } else {
+            $values = explode(parent::FIELD_SEP, trim($currentValue, parent::FIELD_SEP));
+        }
+        $output = [];
+        foreach ($values as $value) {
+            if (isset($options[$value])) {
+                $output = $options[$value];
+            } else {
+                $output = $value;
+            }
+        }
+        return implode($this->displaySeparator, $output);
+    }
+
+    protected function getMultiOptions()
+    {
+        $multiKeys = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_value_keys']);
+        $multi     = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
+
+        return ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
     }
 
     /**

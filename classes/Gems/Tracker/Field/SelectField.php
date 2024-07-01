@@ -45,11 +45,32 @@ class SelectField extends FieldAbstract
             $empty = $this->util->getTranslated()->getEmptyDropdownArray();
         }
 
+        $settings['elementClass'] = 'Select';
+        $settings['multiOptions'] = $empty + $this->getMultiOptions();
+    }
+
+    /**
+     * Calculation the field info display for this type
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function calculateFieldInfo($currentValue, array $fieldData)
+    {
+        $options = $this->getMultiOptions();
+
+        if (isset($options[$currentValue])) {
+            return $options[$currentValue];
+        }
+        return $currentValue;
+    }
+
+    protected function getMultiOptions()
+    {
         $multiKeys = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_value_keys']);
         $multi     = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
 
-
-        $settings['elementClass'] = 'Select';
-        $settings['multiOptions'] = $empty + ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
+        return ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
     }
 }

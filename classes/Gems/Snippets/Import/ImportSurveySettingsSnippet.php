@@ -70,7 +70,7 @@ class ImportSurveySettingsSnippet extends \MUtil_Snippets_WizardFormSnippetAbstr
     protected $model;
 
     /**
-     * @var MUtil_Model_TabbedTextModel
+     * @var \MUtil_Model_TabbedTextModel
      */
     protected $sourceModel;
 
