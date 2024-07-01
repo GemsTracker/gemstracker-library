@@ -77,9 +77,9 @@ class MultiselectField extends FieldAbstract
         $output = [];
         foreach ($values as $value) {
             if (isset($options[$value])) {
-                $output = $options[$value];
+                $output[] = $options[$value];
             } else {
-                $output = $value;
+                $output[] = $value;
             }
         }
         if ($output) {
