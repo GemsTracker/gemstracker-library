@@ -117,7 +117,7 @@ class PasswordChecker
         }
 
         if (empty($passwordList)) {
-            $filename = __DIR__ . '/../../' . ltrim($parameter, '/');;
+            $filename = dirname(__DIR__, 2) . '/' . ltrim($parameter, '/');;
 
             if (! file_exists($filename)) {
                 throw new \Gems\Exception("Unable to load password list '{$filename}'");
