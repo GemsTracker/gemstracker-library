@@ -59,13 +59,6 @@ class FieldMaintenanceModel extends UnionModel
     const FIELD_SEP = '|';
 
     /**
-     * Should a type dependency be added in _processRowAfterLoad?
-     *
-     * @var boolean
-     */
-    protected bool $addLoadDependency = false;
-
-    /**
      * The field types that have a dependency
      *
      * @var array fieldType => dependency class name (without path elements)
@@ -270,7 +263,7 @@ class FieldMaintenanceModel extends UnionModel
     {
         $this->applyBrowseSettings(true);
 
-        $this->addLoadDependency = true;
+        $this->metaModel->addLoadDependency = true;
 
         $this->metaModel->set('gtf_id_track',  [
             'label' => $this->_('Track'),
@@ -548,7 +541,7 @@ class FieldMaintenanceModel extends UnionModel
      */
     public function hasDependencies(): bool
     {
-        return $this->addLoadDependency || $this->metaModel->hasDependencies();
+        return $this->metaModel->addLoadDependency || $this->metaModel->hasDependencies();
     }
 
     /**
@@ -587,7 +580,7 @@ class FieldMaintenanceModel extends UnionModel
     /**
      * Returns an array containing the first requested item.
      *
-     * @param mixed $filter True to use the stored filter, array to specify a different filteloa
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
      * @param mixed $sort True to use the stored sort, array to specify a different sort
      * @param boolean $loadDependencies When true the row dependencies are loaded
      * @return array An array or false
@@ -595,12 +588,12 @@ class FieldMaintenanceModel extends UnionModel
     public function loadFirst($filter = null, $sort = null, $columns = null, bool $loadDependencies = true): array
     {
         // Needed as the default order otherwise triggers the type dependency
-        $oldDep = $this->addLoadDependency;
-        $this->addLoadDependency = $loadDependencies;
+        $oldDep = $this->metaModel->addLoadDependency;
+        $this->metaModel->addLoadDependency = $loadDependencies;
 
         $output = parent::loadFirst($filter, $sort, $columns);
 
-        $this->addLoadDependency = $oldDep;
+        $this->metaModel->addLoadDependency = $oldDep;
 
         return $output;
     }

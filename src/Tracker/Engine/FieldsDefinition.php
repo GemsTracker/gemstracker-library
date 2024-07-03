@@ -527,6 +527,7 @@ class FieldsDefinition
                     $row = $model->loadFirst(
                             ['gtf_id_track' => $this->trackId],
                             ['gtf_id_order' => SORT_DESC],
+                            null,
                             false // Make sure this does not trigger type dependency
                             );
 

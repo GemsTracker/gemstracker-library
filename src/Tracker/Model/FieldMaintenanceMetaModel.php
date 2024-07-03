@@ -8,7 +8,7 @@ use Zalt\Model\MetaModelLoader;
 
 class FieldMaintenanceMetaModel extends MetaModel
 {
-    protected bool $addLoadDependency = false;
+    public bool $addLoadDependency = false;
 
     public function __construct(
         string $modelName,
