@@ -455,6 +455,9 @@ class ImportSurveySettingsSnippet extends \MUtil_Snippets_WizardFormSnippetAbstr
         }
 
         $survey['gsu_id_survey'] = $value;
+
+        // Remove data that should not be copied from import
+        unset($survey['gsu_survey_name'], $survey['gsu_survey_description'], $survey['gsu_surveyor_id']);
         $changed = $this->model->getChanged();
         $this->model->save($survey);
 
