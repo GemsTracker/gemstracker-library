@@ -76,7 +76,7 @@ class UpdateFieldCalculationTask extends \MUtil_Task_TaskAbstract
                 }
             }
         }
-        \MUtil_Echo::track($saveData, $fieldId);
+        // \MUtil_Echo::track($saveData, $fieldId);
         $fieldModel->save($saveData);
     }
 }
