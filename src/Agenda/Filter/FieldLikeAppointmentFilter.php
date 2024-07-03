@@ -234,7 +234,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
         if ($field && $searchTxt) {
             $value = $this->getAppointmentFieldValue($appointment, $field);
             if (isset($this->_lookupTables[$field])) {
-                if (is_null($fieldList) || $fieldList === false || empty($fieldList)) {
+                if (is_null($fieldList) || $fieldList === false || empty($fieldList) || !isset($fieldList[$value])) {
                     $result = false;
                 }
             } else {
