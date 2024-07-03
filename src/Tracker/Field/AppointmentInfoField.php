@@ -25,6 +25,15 @@ class AppointmentInfoField extends FieldAbstract
 
     protected function addModelSettings(array &$settings): void
     {
+        $infoType = $this->fieldDefinition['gtf_field_value_keys'];
+        if ($infoType) {
+            $options = $this->appointmentInfoTypesRepository->getValueOptionsForType($infoType);
+            if ($options) {
+                $empty = $this->translatedUtil->getEmptyDropdownArray();
+                $settings['elementClass'] = 'Select';
+                $settings['multiOptions'] = $empty + $options;
+            }
+        }
     }
 
     public function calculateFieldValue(mixed $currentValue, array $fieldData, array $trackData): mixed

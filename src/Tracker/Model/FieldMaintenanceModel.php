@@ -170,6 +170,7 @@ class FieldMaintenanceModel extends UnionModel
             'multiOptions' => $types
         ]);
         if ($detailed) {
+            $this->metaModel->set('gtf_field_value_keys'); // Set order
             $this->metaModel->set('gtf_field_values'); // Set order
             $this->metaModel->set('gtf_field_default'); // Set order
             $this->metaModel->set('gtf_field_description'); // Set order
