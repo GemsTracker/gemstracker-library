@@ -563,13 +563,13 @@ class ConfigProvider
     {
         return [
             'tables' => [
-                __DIR__ . '/../configs/db/tables',
+                dirname(__DIR__) . '/configs/db/tables',
             ],
             'seeds' => [
-                __DIR__ . '/../configs/db/seeds',
+                dirname(__DIR__) . '/configs/db/seeds',
             ],
             'patches' => [
-                __DIR__ . '/../configs/db/patches',
+                dirname(__DIR__) . '/configs/db/patches',
             ],
 
         ];
@@ -666,7 +666,7 @@ class ConfigProvider
             // 'database' => 'gems_data',
             'migrations' => [
                 'tables' => [
-                    __DIR__ . '/../configs/db_response_data/tables',
+                    dirname(__DIR__) . '/configs/db_response_data/tables',
                 ],
             ],
         ];
@@ -749,11 +749,11 @@ class ConfigProvider
     {
         return [
             'paths' => [
-                'gems' => [__DIR__ . '/../templates/gems'],
-                'layout' => [__DIR__ . '/../templates/layout'],
-                'mail' => [__DIR__ . '/../templates/mail'],
-                'menu' => [__DIR__ . '/../templates/menu'],
-                'error' => [__DIR__ . '/../templates/error'],
+                'gems' => [dirname(__DIR__) . '/templates/gems'],
+                'layout' => [dirname(__DIR__) . '/templates/layout'],
+                'mail' => [dirname(__DIR__) . '/templates/mail'],
+                'menu' => [dirname(__DIR__) . '/templates/menu'],
+                'error' => [dirname(__DIR__) . '/templates/error'],
             ],
         ];
     }
@@ -829,9 +829,9 @@ class ConfigProvider
         return [
             'databaseFields' => false,
             'paths' => [
-                'gems' => [__DIR__ . '/../languages'],
-                'gems-male' => [__DIR__ . '/../languages/gender/male'],
-                'gems-female' => [__DIR__ . '/../languages/gender/female'],
+                'gems' => [dirname(__DIR__) . '/languages'],
+                'gems-male' => [dirname(__DIR__) . '/languages/gender/male'],
+                'gems-female' => [dirname(__DIR__) . '/languages/gender/female'],
             ],
         ];
     }

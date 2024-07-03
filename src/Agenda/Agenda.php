@@ -972,7 +972,7 @@ class Agenda
             return $this->_filters;
         }
 
-        $this->_filters = $this->filterRepository->getAllActivelyUsedFilters();
+        $this->_filters = $this->filterRepository->getAllActiveFilters();
 
         return $this->_filters;
     }
