@@ -12,6 +12,8 @@
 namespace Gems\Snippets\Tracker\Fields;
 
 use Gems\Html;
+use Gems\Tracker\Model\FieldMaintenanceModel;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -37,10 +39,11 @@ class FieldsAutosearchForm extends \Gems\Snippets\AutosearchFormSnippet
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $elements[] = new \Zend_Form_Element_Hidden(\MUtil\Model::REQUEST_ID);
-        $elements[] = $this->_createSelectElement('gtf_field_type', $this->model, $this->_('(all types)'));
-        $elements[] = Html::create('br');
-
+        if ($this->model instanceof FieldMaintenanceModel) {
+            $elements[] = new \Zend_Form_Element_Hidden(MetaModelInterface::REQUEST_ID);
+            $elements[] = $this->_createSelectElement('gtf_field_type', $this->model->getFieldTypes(), $this->_('(all types)'));
+            $elements[] = Html::create('br');
+        }
         return $elements;
     }
     
@@ -55,7 +58,7 @@ class FieldsAutosearchForm extends \Gems\Snippets\AutosearchFormSnippet
     {
         $neededParams = parent::getFixedParams();
         
-        $neededParams[] = \MUtil\Model::REQUEST_ID;
+        $neededParams[] = MetaModelInterface::REQUEST_ID;
         
         return $neededParams;
         

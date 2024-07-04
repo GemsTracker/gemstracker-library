@@ -110,6 +110,7 @@ class FieldMaintenanceModel extends UnionModel
         $this->metaModel->setKeys([
             Model::FIELD_ID => 'gtf_id_field',
             Model::REQUEST_ID => 'gtf_id_track',
+            $this->modelField => 'sub',
         ]);
         $this->setClearableKeys([Model::FIELD_ID => 'gtf_id_field']);
         $this->setSort(['gtf_id_order' => SORT_ASC]);
@@ -264,7 +265,9 @@ class FieldMaintenanceModel extends UnionModel
     {
         $this->applyBrowseSettings(true);
 
-        $this->metaModel->addLoadDependency = true;
+        if ($this->metaModel instanceof FieldMaintenanceMetaModel) {
+            $this->metaModel->addLoadDependency = true;
+        }
 
         $this->metaModel->set('gtf_id_track',  [
             'label' => $this->_('Track'),
@@ -339,7 +342,7 @@ class FieldMaintenanceModel extends UnionModel
             'elementClass' => 'Text',
             'validators[int]' => 'Digits',
             'validators[gt]' => new GreaterThan(0),
-            'validators[unique]' => $this->createUniqueValidator(['gtf_id_order', 'gtf_id_track']),
+            'validators[unique]' => $this->createUniqueValidator('gtf_id_order', 'gtf_id_track'),
         ]);
 
         $this->metaModel->set('gtf_field_code', [
@@ -412,9 +415,9 @@ class FieldMaintenanceModel extends UnionModel
         return $this;
     }
 
-    protected function createUniqueValidator($options): ModelUniqueValidator
+    protected function createUniqueValidator($options, $with = null): ModelUniqueValidator
     {
-        $validator = new ModelUniqueValidator($options);
+        $validator = new ModelUniqueValidator($options, $with);
         $validator->setDataModel($this);
         return $validator;
     }
@@ -542,7 +545,10 @@ class FieldMaintenanceModel extends UnionModel
      */
     public function hasDependencies(): bool
     {
-        return $this->metaModel->addLoadDependency || $this->metaModel->hasDependencies();
+        if ($this->metaModel instanceof FieldMaintenanceMetaModel) {
+            return $this->metaModel->addLoadDependency || $this->metaModel->hasDependencies();
+        }
+        return $this->metaModel->hasDependencies();
     }
 
     /**
@@ -589,12 +595,16 @@ class FieldMaintenanceModel extends UnionModel
     public function loadFirst($filter = null, $sort = null, $columns = null, bool $loadDependencies = true): array
     {
         // Needed as the default order otherwise triggers the type dependency
-        $oldDep = $this->metaModel->addLoadDependency;
-        $this->metaModel->addLoadDependency = $loadDependencies;
+        if ($this->metaModel instanceof FieldMaintenanceMetaModel) {
+            $oldDep = $this->metaModel->addLoadDependency;
+            $this->metaModel->addLoadDependency = $loadDependencies;
 
-        $output = parent::loadFirst($filter, $sort, $columns);
+            $output = parent::loadFirst($filter, $sort, $columns);
 
-        $this->metaModel->addLoadDependency = $oldDep;
+            $this->metaModel->addLoadDependency = $oldDep;
+        } else {
+            $output = parent::loadFirst($filter, $sort, $columns);
+        }
 
         return $output;
     }
