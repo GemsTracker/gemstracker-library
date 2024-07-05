@@ -205,7 +205,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
     public function applyAction(SnippetActionInterface $action): void
     {
         if (! $action->isDetailed()) {
-            if (! $this->joinStore->hasTable('gr2o_id_organization')) {
+            if (! $this->joinStore->hasTable('gems__organizations')) {
                 $this->addTable('gems__organizations', array('gr2o_id_organization' => 'gor_id_organization'));
                 $options = $this->metaModel->get('gr2o_id_organization');
                 $options['order'] = $this->metaModel->getOrder('gr2o_id_organization') + 1;

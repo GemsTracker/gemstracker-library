@@ -161,7 +161,7 @@ class Respondent
      */
     public function getBirthday(): DateTimeInterface|null
     {
-        if ($this->_gemsData['grs_birthday'] instanceof DateTimeInterface) {
+        if (isset($this->_gemsData['grs_birthday']) && $this->_gemsData['grs_birthday'] instanceof DateTimeInterface) {
             return $this->_gemsData['grs_birthday'];
         }
         return null;
@@ -174,7 +174,7 @@ class Respondent
      */
     public function getCity(): string|null
     {
-        return $this->_gemsData['grs_city'];
+        return $this->_gemsData['grs_city'] ?? null;
     }
 
     /**
@@ -247,7 +247,7 @@ class Respondent
      */
     public function getFirstName(): string|null
     {
-        return $this->_gemsData['grs_first_name'];
+        return $this->_gemsData['grs_first_name'] ?? null;
     }
 
     /**
@@ -269,7 +269,7 @@ class Respondent
      */
     public function getGender(): string|null
     {
-        return $this->_gemsData['grs_gender'];
+        return $this->_gemsData['grs_gender'] ?? null;
     }
 
     /**
@@ -302,7 +302,7 @@ class Respondent
     {
         $genderGreetings = $this->translatedUtil->getGenderGreeting($this->getLanguage());
 
-        $greeting = $genderGreetings[$this->_gemsData['grs_gender']];
+        $greeting = $genderGreetings[$this->_gemsData['grs_gender'] ?? 'U'];
 
         return $greeting . ' ' . ucfirst($this->getLastName());
     }
@@ -338,7 +338,7 @@ class Respondent
         if (!empty($this->_gemsData['grs_surname_prefix'])) {
             $lastname .= $this->_gemsData['grs_surname_prefix'] . ' ';
         }
-        $lastname .= $this->_gemsData['grs_last_name'];
+        $lastname .= $this->_gemsData['grs_last_name'] ?? '';
         return $lastname;
     }
 
@@ -359,7 +359,7 @@ class Respondent
     {
         $fullName = $this->getFirstName() . ' ' . $this->getLastName();
 
-        return $fullName;
+        return trim($fullName);
     }
 
     /**
@@ -453,7 +453,7 @@ class Respondent
      */
     public function getStreetAddress(): string
     {
-        return $this->_gemsData['grs_address_1'];
+        return $this->_gemsData['grs_address_1'] ?? '';
     }
 
     /**
@@ -463,7 +463,7 @@ class Respondent
      */
     public function getZip(): string
     {
-        return $this->_gemsData['grs_zipcode'];
+        return $this->_gemsData['grs_zipcode'] ?? '';
     }
 
     /**
