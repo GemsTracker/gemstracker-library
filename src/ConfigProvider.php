@@ -142,46 +142,41 @@ class ConfigProvider
      */
     public function __invoke(): array
     {
-        $appSettings = new App();
-        $messengerSettings = new Messenger();
-        $routeSettings = new Route();
-        $surveySettings = new Survey();
-
         return [
-            'account'       => $this->getAccountSettings(),
-            'app'           => $appSettings(),
-            'auth'          => $this->getAuthSettings(),
-            'autoconfig'    => $this->getAutoConfigSettings(),
-            'cache'         => $this->getCacheSettings(),
-            'contact'       => $this->getContactSettings(),
-            'console'       => $this->getConsoleSettings(),
-            'db'            => $this->getDbSettings(),
-            'dependencies'  => $this->getDependencies(),
-            'email'         => $this->getEmailSettings(),
-            'events'        => $this->getEventSubscribers(),
-            'locale'        => $this->getLocaleSettings(),
-            'log'           => $this->getLoggers(),
-            'messenger'     => $messengerSettings(),
-            'model'         => $this->getModelSettings(),
-            'monitor'       => $this->getMonitorSettings(),
-            'migrations'    => $this->getMigrations(),
-            'overLoaderPaths' => $this->getOverloaderPaths(),
-            'password'      => $this->getPasswordSettings(),
-            'supplementary_privileges'   => $this->getSupplementaryPrivileges(),
-            'routes'        => $routeSettings(),
-            'ratelimit'     => $this->getRatelimitSettings(),
-            'responseData'  => $this->getResponseDataSettings(),
-            'security'      => $this->getSecuritySettings(),
-            'session'       => $this->getSession(),
-            'sites'         => $this->getSitesSettings(),
-            'style'         => 'gems.scss',
-            'survey'        => $surveySettings(),
-            'templates'     => $this->getTemplates(),
-            'twig'          => $this->getTwigSettings(),
-            'twofactor'     => $this->getTwoFactor(),
-            'tokens'        => $this->getTokenSettings(),
-            'translations'  => $this->getTranslationSettings(),
-            'vue'           => $this->getVueSettings(),
+            'account'                  => $this->getAccountSettings(),
+            'app'                      => $this->getAppSettings(),
+            'auth'                     => $this->getAuthSettings(),
+            'autoconfig'               => $this->getAutoConfigSettings(),
+            'cache'                    => $this->getCacheSettings(),
+            'contact'                  => $this->getContactSettings(),
+            'console'                  => $this->getConsoleSettings(),
+            'db'                       => $this->getDbSettings(),
+            'dependencies'             => $this->getDependencies(),
+            'email'                    => $this->getEmailSettings(),
+            'events'                   => $this->getEventSubscribers(),
+            'locale'                   => $this->getLocaleSettings(),
+            'log'                      => $this->getLoggers(),
+            'messenger'                => $this->getMessengerSettings(),
+            'model'                    => $this->getModelSettings(),
+            'monitor'                  => $this->getMonitorSettings(),
+            'migrations'               => $this->getMigrations(),
+            'overLoaderPaths'          => $this->getOverloaderPaths(),
+            'password'                 => $this->getPasswordSettings(),
+            'supplementary_privileges' => $this->getSupplementaryPrivileges(),
+            'routes'                   => $this->getRouteSettings(),
+            'ratelimit'                => $this->getRatelimitSettings(),
+            'responseData'             => $this->getResponseDataSettings(),
+            'security'                 => $this->getSecuritySettings(),
+            'session'                  => $this->getSession(),
+            'sites'                    => $this->getSitesSettings(),
+            'style'                    => $this->getStyleSettings(),
+            'survey'                   => $this->getSurveySettings(),
+            'templates'                => $this->getTemplates(),
+            'twig'                     => $this->getTwigSettings(),
+            'twofactor'                => $this->getTwoFactor(),
+            'tokens'                   => $this->getTokenSettings(),
+            'translations'             => $this->getTranslationSettings(),
+            'vue'                      => $this->getVueSettings(),
         ];
     }
 
@@ -201,6 +196,12 @@ class ConfigProvider
                 'defaultRegion' => 'NL',
             ],
         ];
+    }
+
+    protected function getAppSettings()
+    {
+        $app = new App();
+        return $app();
     }
 
     public function getAuthSettings(): array
@@ -559,17 +560,23 @@ class ConfigProvider
         ];
     }
 
+    protected function getMessengerSettings()
+    {
+        $messenger = new Messenger();
+        return $messenger();
+    }
+
     protected function getMigrations(): array
     {
         return [
             'tables' => [
-                __DIR__ . '/../configs/db/tables',
+                dirname(__DIR__) . '/configs/db/tables',
             ],
             'seeds' => [
-                __DIR__ . '/../configs/db/seeds',
+                dirname(__DIR__) . '/configs/db/seeds',
             ],
             'patches' => [
-                __DIR__ . '/../configs/db/patches',
+                dirname(__DIR__) . '/configs/db/patches',
             ],
 
         ];
@@ -659,19 +666,6 @@ class ConfigProvider
         ];
     }
 
-    protected function getResponseDataSettings(): array
-    {
-        return [
-            'enabled' => false,
-            // 'database' => 'gems_data',
-            'migrations' => [
-                'tables' => [
-                    __DIR__ . '/../configs/db_response_data/tables',
-                ],
-            ],
-        ];
-    }
-
     /**
      * The rate limit settings.
      * This is a one-dimensional array. The keys are route names, with or
@@ -699,6 +693,25 @@ class ConfigProvider
             'participate.subscribe.POST' => '10/60',
             'participate.unsubscribe.POST' => '10/60',
         ];
+    }
+
+    protected function getResponseDataSettings(): array
+    {
+        return [
+            'enabled' => false,
+            // 'database' => 'gems_data',
+            'migrations' => [
+                'tables' => [
+                    dirname(__DIR__) . '/configs/db_response_data/tables',
+                ],
+            ],
+        ];
+    }
+
+    protected function getRouteSettings()
+    {
+        $routeSettings = new Route();
+        return $routeSettings();
     }
 
     protected function getSecuritySettings(): array
@@ -749,11 +762,11 @@ class ConfigProvider
     {
         return [
             'paths' => [
-                'gems' => [__DIR__ . '/../templates/gems'],
-                'layout' => [__DIR__ . '/../templates/layout'],
-                'mail' => [__DIR__ . '/../templates/mail'],
-                'menu' => [__DIR__ . '/../templates/menu'],
-                'error' => [__DIR__ . '/../templates/error'],
+                'gems' => [dirname(__DIR__) . '/templates/gems'],
+                'layout' => [dirname(__DIR__) . '/templates/layout'],
+                'mail' => [dirname(__DIR__) . '/templates/mail'],
+                'menu' => [dirname(__DIR__) . '/templates/menu'],
+                'error' => [dirname(__DIR__) . '/templates/error'],
             ],
         ];
     }
@@ -829,11 +842,16 @@ class ConfigProvider
         return [
             'databaseFields' => false,
             'paths' => [
-                'gems' => [__DIR__ . '/../languages'],
-                'gems-male' => [__DIR__ . '/../languages/gender/male'],
-                'gems-female' => [__DIR__ . '/../languages/gender/female'],
+                'gems' => [dirname(__DIR__) . '/languages'],
+                'gems-male' => [dirname(__DIR__) . '/languages/gender/male'],
+                'gems-female' => [dirname(__DIR__) . '/languages/gender/female'],
             ],
         ];
+    }
+
+    protected function getStyleSettings()
+    {
+        return 'gems.scss';
     }
 
     /**
@@ -863,6 +881,13 @@ class ConfigProvider
             'pr.survey-maintenance.answer-groups' => new UntranslatedString('Grant right to set answer access to surveys.'),
             'pr.maintenance.maintenance-mode' => new UntranslatedString('Enable, disable and stay online during maintenance mode'),
         ];
+    }
+
+    protected function getSurveySettings()
+    {
+        $surveys = new Survey();
+
+        return $surveys();
     }
 
     public function getVueSettings(): array

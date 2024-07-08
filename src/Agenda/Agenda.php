@@ -1087,9 +1087,7 @@ class Agenda
     public function updateAppointmentInfo(Appointment $appointment): void
     {
         $filters = $this->infoFilterRepository->matchFilters($appointment);
-        foreach($filters as $filter) {
-            $this->infoFilterRepository->addInfoToAppointment($appointment, $filter);
-        }
+        $this->infoFilterRepository->updateAppointmentInfo($appointment, $filters);
     }
 
     public function updateTracksForAppointment(Appointment $appointment, FilterTracer|null $filterTracer = null): int

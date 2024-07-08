@@ -2,6 +2,9 @@
 
 namespace Gems\Tracker\Model\Dependency;
 
+use Gems\Db\ResultFetcher;
+use Gems\Repository\AppointmentInfoTypesRepository;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Dependency\DependencyAbstract;
 
 class ValuesAsReferenceDependency extends FromAppointmentsMaintenanceDependency
@@ -31,9 +34,26 @@ class ValuesAsReferenceDependency extends FromAppointmentsMaintenanceDependency
         'gtf_readonly' => ['default', 'disabled'],
     ];
 
+    public function __construct(
+        int $trackId,
+        TranslatorInterface $translate,
+        ResultFetcher $resultFetcher,
+        protected readonly AppointmentInfoTypesRepository $appointmentInfoTypesRepository,
+    )
+    {
+        parent::__construct($trackId, $translate, $resultFetcher);
+    }
+
     public function getChanges(array $context, bool $new = false): array
     {
         return [
+            'gtf_field_value_keys' => [
+                'label'          => $this->_('Type'),
+                'description'    => $this->_('Appointment info type'),
+                'elementClass'   => 'Select',
+                'required'       => true,
+                'multiOptions'   => $this->appointmentInfoTypesRepository->getInfoTypeOptions(),
+            ],
             'gtf_field_values' => [
                 'label'          => $this->_('Info key'),
                 'description'    => $this->_('Appointment info field key'),
