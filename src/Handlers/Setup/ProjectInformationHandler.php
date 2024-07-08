@@ -13,6 +13,7 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Audit\AuditLog;
 use Gems\Cache\HelperAdapter;
+use Gems\ConfigProvider;
 use Gems\Db\ResultFetcher;
 use Gems\Handlers\SnippetLegacyHandlerAbstract;
 use Gems\Html;
@@ -390,7 +391,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 
     public function phpErrorsAction()
     {
-        $logFile = $this->getLogFile(ErrorLogger::class);
+        $logFile = $this->getLogFile(ConfigProvider::ERROR_LOGGER);
 
         if ($logFile !== null) {
             $this->_showText(

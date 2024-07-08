@@ -201,7 +201,7 @@ class Appointment
     {
         if (isset($this->data['gap_info'])) {
             if (is_string($this->data['gap_info'])) {
-                return json_decode($this->data['gap_info'], true);
+                return json_decode($this->data['gap_info'], true) ?? [];
             }
             if (is_array($this->data['gap_info'])) {
                 return $this->data['gap_info'];
