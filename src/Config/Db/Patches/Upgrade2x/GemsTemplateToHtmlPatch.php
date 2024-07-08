@@ -32,8 +32,8 @@ class GemsTemplateToHtmlPatch extends PatchAbstract
         $platform = $this->resultFetcher->getPlatform();
         $queries = [];
         foreach ($templates as $template) {
-            $body = Markup::render($template['gctt_body'], 'Bbcode', 'Html');
-            $subject = Markup::render($template['gctt_subject'], 'Bbcode', 'Html');
+            $body = $this->bbc2html($template['gctt_body']); //Markup::render($template['gctt_body'], 'Bbcode', 'Html');
+            $subject = $this->bbc2html($template['gctt_subject']); //Markup::render($template['gctt_subject'], 'Bbcode', 'Html');
 
             $sql = 'UPDATE gems__comm_template_translations SET gctt_body = %s, gctt_subject = %s WHERE gctt_id_template = %d AND gctt_lang = %s';
             $queries[] = sprintf($sql, $platform->quoteValue($body), $platform->quoteValue($subject), $template['gctt_id_template'], $platform->quoteValue($template['gctt_lang']));
@@ -43,5 +43,33 @@ class GemsTemplateToHtmlPatch extends PatchAbstract
         $queries[] = 'UPDATE gems__comm_template_translations SET gctt_subject = NULL WHERE gctt_subject = \'\'';
 
         return $queries;
+    }
+
+    protected function bbc2html($content) {
+        $content = htmlspecialchars($content);
+
+        $search = array (
+            '/(\[b\])(.*?)(\[\/b\])/',
+            '/(\[i\])(.*?)(\[\/i\])/',
+            '/(\[u\])(.*?)(\[\/u\])/',
+            '/(\[ul\])(.*?)(\[\/ul\])/',
+            '/(\[li\])(.*?)(\[\/li\])/',
+            '/(\[img\])(.*?)(\[\/img\])/',
+            '/(\[url=)(.*?)(\])(.*?)(\[\/url\])/',
+            '/(\[url\])(.*?)(\[\/url\])/'
+        );
+
+        $replace = array (
+            '<strong>$2</strong>',
+            '<em>$2</em>',
+            '<u>$2</u>',
+            '<ul>$2</ul>',
+            '<li>$2</li>',
+            '<img src="$2" />',
+            '<a href="$2">$4</a>',
+            '<a href="$2">$2</a>'
+        );
+
+        return nl2br(preg_replace($search, $replace, $content));
     }
 }
