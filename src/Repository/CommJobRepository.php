@@ -57,7 +57,8 @@ class CommJobRepository
         $select = $this->cachedResultFetcher->getSelect('gems__comm_jobs');
         $select->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
             ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger')
-            ->where('gcj_active > 0');
+            ->where(['gcj_active' => 0])
+            ->order('gcj_id_order');
 
         return $this->cachedResultFetcher->fetchAll('activeCommJobs', $select, null, $this->cacheTags);
     }
