@@ -71,7 +71,7 @@ class RunCommJob extends Command
             $output->writeln($stamp->getResult());
         }
 
-        $output->writeln(sprintf('<info>Added %d jobs</info>', count($jobs)));
+        $output->writeln(sprintf('<info>Executed %d jobs</info>', count($jobs)));
 
         return static::SUCCESS;
     }
