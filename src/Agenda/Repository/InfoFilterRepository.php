@@ -120,7 +120,7 @@ class InfoFilterRepository
 
         $table = new TableGateway('gems__appointments', $this->cachedResultFetcher->getAdapter());
         $table->update([
-            'gap_info' => json_encode($info)
+            'gap_info' => $info,
         ], 'gap_id_appointment = ' . $appointment->getId());
     }
 }
