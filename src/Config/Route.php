@@ -646,6 +646,7 @@ class Route
                     'change-organization',
                     'export-archive',
                 ],
+                genericImport: true,
                 genericExport: true,
             ),
             ...$this->createSnippetRoutes(

@@ -102,7 +102,7 @@ class Agenda
     public function appointmentChanged(Appointment $appointment): AppointmentChangedEvent
     {
         $event = new AppointmentChangedEvent($appointment, $this);
-        $this->eventDispatcher->dispatch($event);
+        // $this->eventDispatcher->dispatch($event);
         return $event;
     }
 
