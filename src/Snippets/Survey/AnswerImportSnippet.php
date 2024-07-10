@@ -237,13 +237,11 @@ class AnswerImportSnippet extends ModelImportSnippet
     }
 
     /**
-     * Try to get the current translator
-     *
-     * @return ModelTranslatorInterface|bool or false if none is current
+     * @inheritdoc
      */
-    protected function getImportTranslator()
+    protected function getCurrentImportTranslator(): ?ModelTranslatorInterface
     {
-        $translator = parent::getImportTranslator();
+        $translator = parent::getCurrentImportTranslator();
 
         if ($translator instanceof \Gems\Model\Translator\AnswerTranslatorAbstract) {
             // Set answer specific options
@@ -291,7 +289,7 @@ class AnswerImportSnippet extends ModelImportSnippet
             // Add (optional) survey specific translators
             $extraTrans  = $this->importLoader->getAnswerImporters($this->_survey);
             if ($extraTrans) {
-                $this->importTranslators = $extraTrans + $this->importTranslators;
+                // $this->importTranslators = $extraTrans + $this->importTranslators;
 
                 $this->_translatorDescriptions = false;
 

@@ -399,6 +399,11 @@ class Menu
                     ],
                 ],
                 [
+                    'name' => 'respondent.import',
+                    'label' => $this->translator->trans('Import'),
+                    'type' => 'route-link-item',
+                ],
+                [
                     'name' => 'respondent.export',
                     'label' => $this->translator->trans('Export'),
                     'type' => 'route-link-item',
