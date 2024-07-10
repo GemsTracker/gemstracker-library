@@ -130,7 +130,7 @@ class EmailTokenModel extends GemsJoinModel
         $subject = $newValues['subject'] ?? null;
         $body = $newValues['body'] ?? null;
 
-        if ($this->commRepository->sendEmail($token, $templateId, $from, $fromName, $to, $subject, $body)) {
+        if ($this->commRepository->sendTokenEmail($token, $templateId, $from, $fromName, $to, $subject, $body)) {
             return $newValues;
         }
 

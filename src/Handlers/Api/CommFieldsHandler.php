@@ -3,16 +3,20 @@
 namespace Gems\Handlers\Api;
 
 use Gems\Communication\CommunicationRepository;
+use Gems\Event\CommFieldGatherEvent;
 use Gems\Fake\Respondent;
 use Gems\Fake\Token;
 use Gems\Fake\User;
+use Gems\Locale\Locale;
 use Gems\Middleware\LocaleMiddleware;
+use Gems\Repository\CommFieldRepository;
 use Gems\Repository\MailRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Laminas\Diactoros\Response\JsonResponse;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -21,13 +25,14 @@ use Zalt\Loader\ProjectOverloader;
 class CommFieldsHandler implements RequestHandlerInterface
 {
     public function __construct(
-        protected CommunicationRepository $communicationRepository,
-        protected RespondentRepository $respondentRepository,
-        protected UserLoader $userLoader,
-        protected MailRepository $mailRepository,
-        protected Tracker $tracker,
-        protected array $config,
-        protected ProjectOverloader $overloader
+        protected readonly CommunicationRepository $communicationRepository,
+        protected readonly RespondentRepository $respondentRepository,
+        protected readonly UserLoader $userLoader,
+        protected readonly CommFieldRepository $commFieldRepository,
+        protected readonly Tracker $tracker,
+        protected readonly array $config,
+        protected readonly ProjectOverloader $overloader,
+        protected readonly EventDispatcherInterface $eventDispatcher,
     )
     {
     }
@@ -39,116 +44,104 @@ class CommFieldsHandler implements RequestHandlerInterface
             return new JsonResponse(['error' => 'Target required']);
         }
 
-        $targets = $this->mailRepository->getMailTargets();
+        $targets = $this->commFieldRepository->getCommFieldTypes();
         if (!isset($targets[$target])) {
             return new JsonResponse(['error' => 'No valid target']);
         }
 
-        return match ($target) {
-            'token' => $this->getTokenFields($request),
-            'respondent' => $this->getRespondentFields($request),
-            'staff' => $this->getStaffFields($request),
-            'staffPassword' => $this->getStaffFields($request, true),
-            default => new EmptyResponse(),
-        };
-    }
-
-    protected function getRespondentFields(ServerRequestInterface $request): ResponseInterface
-    {
+        /**
+         * @var Locale $locale
+         */
+        $locale = $request->getAttribute(LocaleMiddleware::LOCALE_ATTRIBUTE);
         $id = $request->getAttribute('id');
         $queryParams = $request->getQueryParams();
-        if ($id === null && isset($queryParams['id'])) {
-            $id = $queryParams['id'];
-        }
-        $organizationId = $request->getAttribute('organizationId');
-        if ($organizationId === null && isset($queryParams['organizationId'])) {
-            $organizationId = $queryParams['organizationId'];
-        }
+        $organizationId = $request->getAttribute('organizationId') ?? $queryParams['organizationId'] ?? null;
 
-        $locale = $request->getAttribute(LocaleMiddleware::LOCALE_ATTRIBUTE);
-        $language = $locale->getLanguage();
-        if ($id === null || $organizationId === null) {
+        $commFields = match ($target) {
+            'token' => $this->getTokenFields($id, $locale->getLanguage()),
+            'respondent' => $this->getRespondentFields($id, $organizationId, $locale->getLanguage()),
+            'staff' => $this->getStaffFields($id, $organizationId, $locale->getLanguage(), false),
+            'staffPassword' => $this->getStaffFields($id, $organizationId, $locale->getLanguage(), true),
+            default => $this->getOtherMailFields($target, $locale->getLanguage(), $id, $organizationId),
+        };
+
+        if ($commFields) {
+            return new JsonResponse($commFields);
+        }
+        return new EmptyResponse();
+    }
+
+    protected function getOtherMailFields(string $target, string $language, string|int|null $id, int|null $organizationId): array|null
+    {
+        $event = new CommFieldGatherEvent(
+            $target,
+            $language,
+            $id,
+            $organizationId,
+        );
+
+        $this->eventDispatcher->dispatch($event);
+
+        return $event->fields;
+    }
+
+    protected function getRespondentFields(int|null $respondentId, int|null $organizationId, string $language): array|null
+    {
+        if ($respondentId === null || $organizationId === null) {
             /**
              * @var Respondent $fakeRespondent
              */
             $fakeRespondent = $this->overloader->create(Respondent::class);
-            $mailFields = $this->communicationRepository->getRespondentMailFields($fakeRespondent, $language);
-            return new JsonResponse($mailFields);
+            return $this->communicationRepository->getRespondentMailFields($fakeRespondent, $language);
         }
 
-        $respondent = $this->respondentRepository->getRespondent($id, $organizationId);
+        $respondent = $this->respondentRepository->getRespondent($respondentId, $organizationId);
         if ($respondent->exists) {
-            $mailFields = $this->communicationRepository->getRespondentMailFields($respondent, $language);
-            return new JsonResponse($mailFields);
+            return $this->communicationRepository->getRespondentMailFields($respondent, $language);
         }
 
-        return new EmptyResponse();
+        return null;
     }
 
-    protected function getStaffFields(ServerRequestInterface $request, bool $passwordFields = false): ResponseInterface
+    protected function getStaffFields(string|null $loginName , int|null $organizationId, string $language, bool $passwordFields = false): array|null
     {
-        $id = $request->getAttribute('id');
-        $queryParams = $request->getQueryParams();
-        if ($id === null && isset($queryParams['id'])) {
-            $id = $queryParams['id'];
-        }
-        $organizationId = $request->getAttribute('organizationId');
-        if ($organizationId === null && isset($queryParams['organizationId'])) {
-            $organizationId = $queryParams['organizationId'];
-        }
-
-        $locale = $request->getAttribute(LocaleMiddleware::LOCALE_ATTRIBUTE);
-        $language = $locale->getLanguage();
-        if ($id === null || $organizationId === null) {
+        if ($loginName === null || $organizationId === null) {
             /**
              * @var User $fakeUser
              */
             $fakeUser = $this->overloader->create(User::class);
             if ($passwordFields) {
-                $mailFields = $this->communicationRepository->getUserPasswordMailFields($fakeUser, $language);
-            } else {
-                $mailFields = $this->communicationRepository->getUserMailFields($fakeUser, $language);
+                return $this->communicationRepository->getUserPasswordMailFields($fakeUser, $language);
             }
-            return new JsonResponse($mailFields);
+            return $this->communicationRepository->getUserMailFields($fakeUser, $language);
         }
 
-        $user = $this->userLoader->getUser($id, $organizationId);
+        $user = $this->userLoader->getUser($loginName, $organizationId);
         if ($user->isActive()) {
             if ($passwordFields) {
-                $mailFields = $this->communicationRepository->getUserPasswordMailFields($user, $language);
-            } else {
-                $mailFields = $this->communicationRepository->getUserMailFields($user, $language);
+                return $this->communicationRepository->getUserPasswordMailFields($user, $language);
             }
-            return new JsonResponse($mailFields);
+            return $this->communicationRepository->getUserMailFields($user, $language);
         }
 
-        return new EmptyResponse();
+        return null;
     }
 
-    protected function getTokenFields(ServerRequestInterface $request): ResponseInterface
+    protected function getTokenFields(string|null $tokenId, string $language): array|null
     {
-        $queryParams = $request->getQueryParams();
-        $id = $request->getAttribute('id');
-        if ($id === null && isset($queryParams['id'])) {
-            $id = $queryParams['id'];
-        }
-        $locale = $request->getAttribute(LocaleMiddleware::LOCALE_ATTRIBUTE);
-        $language = $locale->getLanguage();
-        if ($id === null) {
+        if ($tokenId === null) {
             /**
              * @var Token $fakeToken
              */
             $fakeToken = $this->overloader->create(Token::class);
-            $mailFields = $this->communicationRepository->getTokenMailFields($fakeToken, $language);
-            return new JsonResponse($mailFields);
+            return $this->communicationRepository->getTokenMailFields($fakeToken, $language);
         }
 
-        $token = $this->tracker->getToken($id);
+        $token = $this->tracker->getToken($tokenId);
         if ($token->exists) {
-            $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
-            return new JsonResponse($mailFields);
+            return $this->communicationRepository->getTokenMailFields($token, $language);
         }
 
-        return new EmptyResponse();
+        return null;
     }
 }
