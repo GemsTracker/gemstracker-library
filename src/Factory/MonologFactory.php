@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Gems\Factory;
 
 
+use Gems\ConfigProvider;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\RedisHandler;
@@ -64,6 +65,9 @@ class MonologFactory implements FactoryInterface
                         $stream = 'data/logs';
                         if (isset($handlerConfig['options'], $handlerConfig['options']['stream'])) {
                             $stream = $handlerConfig['options']['stream'];
+                            if (ConfigProvider::ERROR_LOGGER === $requestedName) {
+                                ini_set('error_log', $stream);
+                            }
                         }
                         $handler = new StreamHandler($stream, $priority);
                         break;

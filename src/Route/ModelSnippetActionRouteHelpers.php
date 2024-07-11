@@ -77,6 +77,7 @@ trait ModelSnippetActionRouteHelpers
                                        ?array $parameterRoutes = null,
                                        ?array $postRoutes = null,
                                        ?array $parentParameters = null,
+                                       bool $genericImport = false,
                                        bool $genericExport = false,
                                        array $noCsrfRoutes = ['index']): array
     {
@@ -117,6 +118,10 @@ trait ModelSnippetActionRouteHelpers
 
         $parameterString = join('/', $combinedParameters);
 
+        if ($genericImport) {
+            array_unshift($pages, 'import');
+            $postRoutes[] = 'import';
+        }
         if ($genericExport) {
             array_unshift($pages, 'export');
             $postRoutes[] = 'export';
@@ -268,6 +273,7 @@ trait ModelSnippetActionRouteHelpers
                                        ?array $parameterRoutes = null,
                                        ?array $postRoutes = null,
                                        ?array $parentParameters = null,
+                                       bool $genericImport = false,
                                        bool $genericExport = false,
                                        array $noCsrfRoutes = ['index']): array
     {
@@ -285,6 +291,7 @@ trait ModelSnippetActionRouteHelpers
             $parameterRoutes, 
             $postRoutes, 
             $parentParameters,
+            $genericImport,
             $genericExport,
             $noCsrfRoutes);
     }

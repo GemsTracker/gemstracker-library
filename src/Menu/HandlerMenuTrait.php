@@ -73,6 +73,11 @@ trait HandlerMenuTrait
             }
             $parent['children'][] = $show;
         }
+        if (isset($actions['import'])) {
+            // At the moment not in the menu
+            $parent['children'][] = $this->createMenuItem($name . '.import', $this->_('Import'));
+            unset($actions['inport']);
+        }
         if (isset($actions['export'])) {
             // At the moment not in the menu
             $parent['children'][] = $this->createMenuItem($name . '.export', $this->_('Export'));

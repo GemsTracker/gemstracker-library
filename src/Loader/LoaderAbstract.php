@@ -43,17 +43,22 @@ use Zalt\Loader\ProjectOverloader;
 class LoaderAbstract extends Source
 {
     /**
-     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
-     *
-     * @var string $cascade An optional subdirectory where this subclass always loads from.
+     * @var array
      */
-    protected ?string $cascade = null;
+    protected array $_classes = [];
 
     /**
      * @var array
      * @deprecated
      */
     protected array $_dirs = [];
+
+    /**
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
+     *
+     * @var string $cascade An optional subdirectory where this subclass always loads from.
+     */
+    protected ?string $cascade = null;
 
     protected ProjectOverloader $_overLoader;
 
@@ -75,8 +80,11 @@ class LoaderAbstract extends Source
 
     }
 
-    public function __get(string $name): callable
+    public function __get(string $name): mixed
     {
+        if (isset($this->_classes[$name])) {
+            return $this->_classes[$name];
+        }
         if (method_exists($this, $name)) {
             // Return a callable
             return array($this, $name);
@@ -107,14 +115,14 @@ class LoaderAbstract extends Source
      */
     protected function _getClass(string $name, ?string $className = null, array $arguments = []): object
     {
-        if (! isset($this->$name)) {
+        if (! isset($this->_classes[$name])) {
             if (null === $className) {
                 $className = $name;
             }
-            $this->$name = $this->_loadClass($className, true, $arguments);
+            $this->_classes[$name] = $this->_loadClass($className, true, $arguments);
         }
 
-        return $this->$name;
+        return $this->_classes[$name];
     }
 
     /**
