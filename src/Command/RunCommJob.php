@@ -48,7 +48,7 @@ class RunCommJob extends Command
 
         $this->consoleSettings->setConsoleUser();
 
-        $jobs = $this->commJobRepository->getActiveJobs();
+        $jobs = $this->commJobRepository->getAutomaticJobs();
 
         $id = $input->getArgument('id');
         if ($id !== null) {

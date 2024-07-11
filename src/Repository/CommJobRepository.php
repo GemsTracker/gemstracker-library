@@ -15,6 +15,7 @@ use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SetCommJobTokenAsSent;
 use Gems\Tracker;
 use Gems\Tracker\Token;
+use Laminas\Db\Sql\Predicate\Predicate;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\TranslatorInterface;
 
@@ -54,13 +55,11 @@ class CommJobRepository
 
     public function getActiveJobs(): array
     {
-        $select = $this->cachedResultFetcher->getSelect('gems__comm_jobs');
-        $select->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
-            ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger')
-            ->where(['gcj_active' => 0])
-            ->order('gcj_id_order');
+        $allJobs = $this->getAllJobs();
 
-        return $this->cachedResultFetcher->fetchAll('activeCommJobs', $select, null, $this->cacheTags);
+        return array_filter($allJobs, function($job) {
+           return $job['gcj_active'] > 0;
+        });
     }
 
     public function getActiveOptions(): array
@@ -79,6 +78,15 @@ class CommJobRepository
             ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger');
 
         return $this->cachedResultFetcher->fetchAll('allCommJobs', $select, null, $this->cacheTags);
+    }
+
+    public function getAutomaticJobs(): array
+    {
+        $allJobs = $this->getAllJobs();
+
+        return array_filter($allJobs, function($job) {
+            return $job['gcj_active'] === 1;
+        });
     }
 
     /**
