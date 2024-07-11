@@ -15,6 +15,7 @@ use Gems\Mail\TemplatedEmail;
 use Gems\Mail\TokenMailFields;
 use Gems\Mail\UserMailFields;
 use Gems\Mail\UserPasswordMailFields;
+use Gems\Repository\CommFieldRepository;
 use Gems\Tracker\Respondent;
 use Gems\Tracker\Token;
 use Gems\User\Organization;
@@ -50,6 +51,7 @@ class CommunicationRepository
         protected ManualMailerFactory $mailerFactory,
         protected EventDispatcherInterface $eventDispatcher,
         protected MessageBusInterface $messageBus,
+        protected readonly CommFieldRepository $commFieldRepository,
         MailBouncer $mailBouncer,
         protected array $config)
     {
@@ -74,6 +76,19 @@ class CommunicationRepository
             $headers = $mail->getHeaders();
             $headers->addHeader('X-Transport', $transportId);
         }
+    }
+
+    public function filterRawVariables(string $text, string $type): string
+    {
+        $rawFields = $this->commFieldRepository->getRawCommFields($type);
+        $curlyFields = array_map(function($fieldName) {
+            return '{{' . $fieldName . '}}';
+        }, $rawFields);
+        $rawedFields = array_map(function($fieldName) {
+            return '{{' . $fieldName . '|raw}}';
+        }, $rawFields);
+
+        return str_replace($curlyFields, $rawedFields, $text);
     }
 
     public function getCreateAccountTemplate(Organization $organization): ?int
@@ -122,16 +137,17 @@ class CommunicationRepository
         $language = $this->getCommunicationLanguage($language);
 
         $select = $this->resultFetcher->getSelect('gems__comm_template_translations');
-        $select->where([
-            'gctt_id_template' => $templateId,
-            'gctt_lang' => $language,
-        ]);
+        $select->join('gems__comm_templates', 'gctt_id_template = gct_id_template', ['gct_target'])
+            ->where([
+                'gctt_id_template' => $templateId,
+                'gctt_lang' => $language,
+            ]);
 
         $template = $this->resultFetcher->fetchRow($select);
         if ($template && !empty($template['gctt_subject'])) {
             return [
                 'subject' => $template['gctt_subject'],
-                'body' => $template['gctt_body'],
+                'body' => $this->filterRawVariables($template['gctt_body'], $template['gct_target']),
             ];
         }
 

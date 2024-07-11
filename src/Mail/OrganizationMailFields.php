@@ -31,4 +31,12 @@ class OrganizationMailFields extends ProjectMailFields
 
         return $mailFields;
     }
+
+    public static function getRawFields(): array
+    {
+        $rawFields = parent::getRawFields();
+        $rawFields[] = 'organization_signature';
+        $rawFields[] = 'organization_welcome';
+        return $rawFields;
+    }
 }

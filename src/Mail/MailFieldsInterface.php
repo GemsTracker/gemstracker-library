@@ -10,4 +10,6 @@ interface MailFieldsInterface
      * @return ?mixed[]
      */
     public function getMailFields(): array;
+
+    public static function getRawFields(): array;
 }

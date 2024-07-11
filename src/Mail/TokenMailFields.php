@@ -43,7 +43,7 @@ class TokenMailFields extends RespondentMailFields
             'todo_track_count' => $todoCounts['track'],
             'token' => strtoupper($this->token->getTokenId()),
             'token_from' => $this->token->getValidFrom() instanceof \DateTimeInterface ? $this->token->getValidFrom()->format('Y-m-d') : null,
-            'token_link' => '[url=' . $tokenLink . ']' . $survey->getExternalName() . '[/url]',
+            'token_link' => '<a href="' . $tokenLink . '">' . $survey->getExternalName() . '</a>',
             'token_until' => $this->token->getValidUntil() instanceof \DateTimeInterface ? $this->token->getValidUntil()->format('Y-m-d') : null,
             'token_url' => $tokenLink,
             'token_url_input' => $askUrl . 'index/' . $this->token->getTokenId(),
@@ -115,5 +115,12 @@ class TokenMailFields extends RespondentMailFields
         $todoCounts['track'] = $todoCounts['track'] ?? 0;
 
         return $todoCounts;
+    }
+
+    public static function getRawFields(): array
+    {
+        $rawFields = parent::getRawFields();
+        $rawFields[] = 'token_link';
+        return $rawFields;
     }
 }

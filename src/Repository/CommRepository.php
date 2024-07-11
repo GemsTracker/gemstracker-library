@@ -16,9 +16,9 @@ use Symfony\Component\Mime\Email;
 class CommRepository
 {
     public function __construct(
-        protected CommunicationRepository $communicationRepository,
-        protected CurrentUserRepository $currentUserRepository,
-        protected EventDispatcherInterface $event,
+        protected readonly CommunicationRepository $communicationRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
+        protected readonly EventDispatcherInterface $event,
     )
     {
 
@@ -54,6 +54,7 @@ class CommRepository
             $body,
             $mailFields,
             $mailTemplate,
+            'token',
         );
 
         $mailer = $this->communicationRepository->getMailer();
@@ -82,10 +83,14 @@ class CommRepository
         string $body = null,
         array $mailFields = [],
         string $mailTemplate = 'mail::gems',
+        string|null $type = null,
     ): Email
     {
         $mailTexts = null;
         if ($subject !== null && $body !== null) {
+            if ($type !== null) {
+                $body = $this->communicationRepository->filterRawVariables($body, $type);
+            }
             $mailTexts = [
                 'subject' => $subject,
                 'body' => $body,
