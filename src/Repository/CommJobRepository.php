@@ -57,9 +57,12 @@ class CommJobRepository
     {
         $allJobs = $this->getAllJobs();
 
-        return array_filter($allJobs, function($job) {
-           return $job['gcj_active'] > 0;
-        });
+        return $this->sortItems(
+            array_filter($allJobs, function($job) {
+                return $job['gcj_active'] > 0;
+            }),
+            'gcj_id_order'
+        );
     }
 
     public function getActiveOptions(): array
@@ -84,9 +87,12 @@ class CommJobRepository
     {
         $allJobs = $this->getAllJobs();
 
-        return array_filter($allJobs, function($job) {
-            return $job['gcj_active'] === 1;
-        });
+        return $this->sortItems(
+            array_filter($allJobs, function($job) {
+                return $job['gcj_active'] === 0;
+            }),
+            'gcj_id_order'
+        );
     }
 
     /**
@@ -803,5 +809,15 @@ class CommJobRepository
         $this->cache->setCacheItem($this->tokensInMessengerQueueKey, $tokens);
     }
 
+    public function sortItems(array $items, string $sortKey, bool $asc = true): array
+    {
+        usort($items, function($a, $b) use ($sortKey, $asc) {
+            if ($asc) {
+                return $a[$sortKey] <=> $b[$sortKey];
+            }
+            return $b[$sortKey] <=> $a[$sortKey];
+        });
 
+        return $items;
+    }
 }
