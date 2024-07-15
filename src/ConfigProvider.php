@@ -616,8 +616,18 @@ class ConfigProvider
          *          default.to is used.
          *
          * Add a default setting to fall back to those
+         *
+         * monitor file settings can be set in the file settings
+         *
          */
         return [
+            'file' => [
+                'dir' => null, // The directory the monitor file is stored. Defaults to <rootDir>/data
+                'name' => null, // The filename. defaults to monitor.json
+                'group' => null, // set the permission group the file should belong to. If null, no group changes will be made
+                'owner' => null, // set the permission group the file should belong to. If null, no owner changes will be made
+                'permissions' => null // Set the file permissions of the file. If null, no permission changes will be made
+            ],
             'default' => [
                 'from' => 'noreply@gemstracker.org',
             ],
