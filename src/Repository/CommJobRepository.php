@@ -89,7 +89,7 @@ class CommJobRepository
 
         return $this->sortItems(
             array_filter($allJobs, function($job) {
-                return $job['gcj_active'] === 0;
+                return $job['gcj_active'] === 1;
             }),
             'gcj_id_order'
         );
