@@ -73,6 +73,19 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
         }
 
         $model = $this->modelLoader->getStaffModel();
+
+        $checkDeletedFilter = [
+            'gsf_login'           => $deferredLogin,
+            'gsf_id_organization' => $embeddedUser->getBaseOrganizationId(),
+            'gsf_active'          => 0,
+        ];
+        if ($model->load($checkDeletedFilter)) {
+            throw new \Gems\Exception(sprintf(
+                $this->translator->_('Login not possible: user %s is deactivated in GemsTracker.'),
+                $deferredLogin,
+            ));
+        }
+
         $data  = $model->loadNew();
 
         $data['gsf_login']            = $deferredLogin;
