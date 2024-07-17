@@ -135,7 +135,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $organization = $this->organizationRepository->getOrganization($this->formData['org_id']);
 
         // Notice: both values contain the BaseDir
-        $url[] =  BaseDir::removeBaseDir($organization->getLoginUrl()) . $this->menuHelper->getRouteUrl('embed.login');
+        $url[] =  $organization->getLoginUrl() . BaseDir::removeBaseDir($this->menuHelper->getRouteUrl('embed.login'));
 
         $url['epd'] = $this->selectedUser->getLoginName();
         $url['org'] = $this->formData['org_id'];
