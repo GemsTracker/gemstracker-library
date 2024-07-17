@@ -25,7 +25,7 @@ class ResponseDataRepository
     public function addResponses(string $tokenId, array $responses, int $userId)
     {
         $defaultData = $this->getDefaultRowData($tokenId, $userId);
-        $responses = $this->removeMetaFields($tokenId, $responses);
+        //$responses = $this->removeMetaFields($tokenId, $responses);
 
         $currentResponses = $this->getCurrentResponses($tokenId);
         $inserts = [];
