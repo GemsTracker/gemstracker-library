@@ -1052,7 +1052,6 @@ class Tracker implements TrackerInterface
         $tokenSelect->andSurveys([]);
         $tokenSelect->forWhere(['gsu_surveyor_active' => 1]);
 
-        self::$verbose = true;
         return $this->processTokensBatch($session, $batch_id, $tokenSelect, $userId);
     }
 
@@ -1136,7 +1135,6 @@ class Tracker implements TrackerInterface
                 $batch->addTask('Tracker\\RefreshTokenAttributes', $token['gto_id_token']);
             }
         }
-        self::$verbose = true;
 
         return $batch;
     }
