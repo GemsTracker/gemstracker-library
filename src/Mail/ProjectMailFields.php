@@ -31,4 +31,9 @@ class ProjectMailFields implements MailFieldsInterface
 
         return $mailFields;
     }
+
+    public static function getRawFields(): array
+    {
+        return [];
+    }
 }

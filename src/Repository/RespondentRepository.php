@@ -61,7 +61,7 @@ class RespondentRepository
             $organizationColumns['organizationName'] = 'gor_name';
         }
 
-        if ($forOrganizationId) {
+        if ($forOrganizationId === null) {
             $forOrganizationId = $organizationId;
         }
 

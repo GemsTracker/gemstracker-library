@@ -223,7 +223,7 @@ class CommJobModel extends GemsJoinModel implements ApplyActionInterface
             'S' => [],
             'U' => [],
         ];
-        $this->metaModel->addDependency(['ValueSwitchDependency', $switches], 'gcj_from_method');
+        $this->metaModel->addDependency([ValueSwitchDependency::class, $switches], 'gcj_from_method');
         $this->metaModel->set('gcj_id_user_as', [
             'label' => $this->_('By staff member'),
             'multiOptions' => $unselected + $this->staffRepository->getActiveStaff(),

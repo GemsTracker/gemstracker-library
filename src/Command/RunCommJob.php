@@ -48,10 +48,11 @@ class RunCommJob extends Command
 
         $this->consoleSettings->setConsoleUser();
 
-        $jobs = $this->commJobRepository->getActiveJobs();
+        $jobs = $this->commJobRepository->getAutomaticJobs();
 
         $id = $input->getArgument('id');
         if ($id !== null) {
+            $jobs = $this->commJobRepository->getActiveJobs();
             $jobs = array_filter($jobs, function ($job) use ($id) {
                 return $job['gcj_id_job'] == $id;
             });
