@@ -311,11 +311,6 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 
         $data = $this->_getData();
 
-        if ($this->maintenanceLock->isLocked()) {
-            $maintenanceLockLabel = $this->_('Turn Maintenance Mode OFF');
-        } else {
-            $maintenanceLockLabel = $this->_('Turn Maintenance Mode ON');
-        }
         /*$request = $this->getRequest();
         $buttonList = $this->menu->getMenuList();
         $buttonList->addParameterSources($request)
@@ -323,10 +318,22 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             ->addByController($request->getControllerName(), 'monitor')
             ->addByController($request->getControllerName(), 'cacheclean');*/
 
-        $buttonList = [
-            \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.maintenance-mode'), $maintenanceLockLabel),
-            \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.cacheclean'), $this->_('Clear cache')),
-        ];
+
+        $maintenanceModeUrl = $this->routeHelper->getRouteUrl('setup.project-information.maintenance-mode');
+        $cacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.cacheclean');
+
+        $buttonList = [];
+        if ($maintenanceModeUrl) {
+            if ($this->maintenanceLock->isLocked()) {
+                $maintenanceLockLabel = $this->_('Turn Maintenance Mode OFF');
+            } else {
+                $maintenanceLockLabel = $this->_('Turn Maintenance Mode ON');
+            }
+            $buttonList[] = Html::actionLink($maintenanceModeUrl, $maintenanceLockLabel);
+        }
+        if ($cacheCleanUrl) {
+            $buttonList[] = Html::actionLink($cacheCleanUrl, $this->_('Clear cache'));
+        }
 
         // $this->html->buttonDiv($buttonList);
 
