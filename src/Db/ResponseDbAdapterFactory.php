@@ -9,7 +9,6 @@ use Psr\Container\ContainerInterface;
 
 class ResponseDbAdapterFactory implements FactoryInterface
 {
-
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         $profiler = null;
@@ -17,19 +16,20 @@ class ResponseDbAdapterFactory implements FactoryInterface
             $profiler = new Profiler();
         }
 
-        return new ResponseDbAdapter($this->getConfig(), null, null, $profiler);
+        return new ResponseDbAdapter($this->getConfig($container), null, null, $profiler);
     }
 
-    public function getConfig(): array
+    public function getConfig(ContainerInterface $container): array
     {
+        $config = $container->get('config');
         return [
             'driver'    => 'pdo_mysql',
-            'dsn'       => Env::get('RESPONSE_DB_DSN', $this->config['responseData']['dsn'] ?? Env::get('DB_DSN', $this->config['db']['dsn'] ?? null)),
-            'host'      => Env::get('RESPONSE_DB_HOST', $this->config['responseData']['host'] ?? Env::get('DB_HOST', $this->config['db']['host'] ?? null)),
-            'username'  => Env::get('RESPONSE_DB_USER', $this->config['responseData']['username'] ?? Env::get('DB_USER', $this->config['db']['username'] ?? null)),
-            'password'  => Env::get('RESPONSE_DB_PASS', $this->config['responseData']['password'] ?? Env::get('DB_PASS', $this->config['db']['password'] ?? null)),
-            'database'  => Env::get('RESPONSE_DB_NAME', $this->config['responseData']['database'] ?? Env::get('DB_NAME', $this->config['db']['database'] ?? null)),
-            'options'   => $this->config['responseData']['options'] ?? $this->config['db']['options'] ?? [],
+            'dsn'       => Env::get('RESPONSE_DB_DSN', $config['responseData']['dsn'] ?? Env::get('DB_DSN', $config['db']['dsn'] ?? null)),
+            'host'      => Env::get('RESPONSE_DB_HOST', $config['responseData']['host'] ?? Env::get('DB_HOST', $config['db']['host'] ?? null)),
+            'username'  => Env::get('RESPONSE_DB_USER', $config['responseData']['username'] ?? Env::get('DB_USER', $config['db']['username'] ?? null)),
+            'password'  => Env::get('RESPONSE_DB_PASS', $config['responseData']['password'] ?? Env::get('DB_PASS', $config['db']['password'] ?? null)),
+            'database'  => Env::get('RESPONSE_DB_NAME', $config['responseData']['database'] ?? Env::get('DB_NAME', $config['db']['database'] ?? null)),
+            'options'   => $config['responseData']['options'] ?? $config['db']['options'] ?? [],
         ];
     }
 }
