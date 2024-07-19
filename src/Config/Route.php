@@ -243,7 +243,7 @@ class Route
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     LocaleMiddleware::class,
-                    SiteGateMiddleware::class,
+                    // SiteGateMiddleware::class,
                     // CsrfMiddleware::class,
                     // HandlerCsrfMiddleware::class,
                     MaintenanceModeMiddleware::class,
