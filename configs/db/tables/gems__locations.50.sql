@@ -18,6 +18,7 @@ CREATE TABLE if not exists gems__locations (
         glo_city            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- glo_region          varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         glo_iso_country     char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'NL',
+        glo_email           varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         glo_phone_1         varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- glo_phone_2         varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- glo_phone_3         varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',

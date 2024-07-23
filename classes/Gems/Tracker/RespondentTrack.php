@@ -110,6 +110,13 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     protected $loader;
 
     /**
+     * Logger instance
+     *
+     * @var \Gems_Log
+     */
+    protected $logger;
+
+    /**
      *
      * @var \Gems_Tracker
      */
