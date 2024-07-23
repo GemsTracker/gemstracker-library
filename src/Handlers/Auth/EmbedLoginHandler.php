@@ -12,6 +12,7 @@ use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\Cache\HelperAdapter;
 use Gems\Cache\RateLimiter;
 use Gems\Log\Loggers;
+use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\UserLoader;
@@ -116,6 +117,8 @@ class EmbedLoginHandler implements RequestHandlerInterface
                     $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
                 }
             }
+            $request = $request->withAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE, (int)$input['org']);
+//            file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($input, true) . "\n", FILE_APPEND);
 
             if ($result && $result->isValid()) {
                 /** @var EmbedIdentity $identity */
@@ -123,6 +126,8 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
                 $embeddedUserData = $this->userLoader->getEmbedderData($result->systemUser);
                 $redirector = $embeddedUserData->getRedirector();
+//                file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  get_class($embeddedUserData) . "\n", FILE_APPEND);
+//                file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  get_class($redirector) . "\n", FILE_APPEND);
 
                 //if ($redirector instanceof RedirectAbstract) {
                 //    $redirector->answerRegistryRequest('request', $this->getRequest());
@@ -138,15 +143,22 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 );
 
                 if ($url) {
-                    $this->logInfo(sprintf(
-                        "Login for end user: %s, patient: %s successful",
-                        $input['usr'],
-                        $input['pid']
-                    ));
 
                     if ($url instanceof RedirectResponse) {
+                        $this->logInfo(sprintf(
+                            "Login for end user: %s, patient: %s successful, redirecting to: %s",
+                            $input['usr'],
+                            $input['pid'],
+                            $url->getBody(),
+                        ));
                         return $url;
                     }
+                    $this->logInfo(sprintf(
+                        "Login for end user: %s, patient: %s successful, redirecting to: %s",
+                        $input['usr'],
+                        $input['pid'],
+                        $url
+                    ));
 
                     return new RedirectResponse($url);
                 }
@@ -167,6 +179,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 'usedInput' => $input,
                 'result' => $messages,
             ], 401);*/
+            $this->logInfo("Unable to authenticate");
             $this->statusMessenger->addError($this->translator->_("Unable to authenticate"));
         } catch (\Exception $e) {
             $this->logInfo($e->getMessage());
