@@ -13,6 +13,7 @@ use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\ClientIpMiddleware;
+use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Site\SiteUtil;
 use Gems\User\PasswordChecker;
@@ -78,7 +79,7 @@ class LoginHandler implements RequestHandlerInterface
         }
 
         $cookiesParams = $request->getCookieParams();
-        $previousOrganizationId = $cookiesParams[AuthenticationMiddleware::CURRENT_ORGANIZATION_COOKIE_NAME] ?? null;
+        $previousOrganizationId = $cookiesParams[CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE] ?? null;
         $input = $this->flash->getFlash('login_input');
         if ($input === null && $previousOrganizationId !== null) {
             $input['organization'] = $previousOrganizationId;

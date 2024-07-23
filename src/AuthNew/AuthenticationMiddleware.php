@@ -165,7 +165,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         SessionInterface $session,
         UrlHelper $urlHelper,
         bool $addOrganizationCookie = false,
-    ): RedirectResponse {
+    ): ResponseInterface {
         $redirectUrl = $urlHelper->generate('respondent.index');
         if ($session->has(self::LOGIN_INTENDED_URL_SESSION_KEY)) {
             $loginName = $authenticationService->getIdentity()?->getLoginName();
@@ -181,7 +181,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $response = new RedirectResponse($redirectUrl);
         if ($addOrganizationCookie) {
             $organizationId = $authenticationService->getIdentity()->getOrganizationId();
-            CookieResponse::addCookieToResponse($request, $response, static::CURRENT_ORGANIZATION_COOKIE_NAME, $organizationId);
+            $response = CookieResponse::addCookieToResponse($request, $response, static::CURRENT_ORGANIZATION_COOKIE_NAME, $organizationId);
         }
 
         return $response;

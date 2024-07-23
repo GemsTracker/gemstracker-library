@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Auth;
 
+// use Gems\Audit\AuditLog;
 use Gems\AuthNew\Adapter\AuthenticationResult;
 use Gems\AuthNew\Adapter\EmbedAuthentication;
 use Gems\AuthNew\Adapter\EmbedAuthenticationResult;
@@ -11,6 +12,7 @@ use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\Cache\HelperAdapter;
 use Gems\Cache\RateLimiter;
+use Gems\CookieResponse;
 use Gems\Log\Loggers;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
@@ -40,6 +42,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
     public function __construct(
         private readonly TranslatorInterface $translator,
+//        private readonly AuditLog $auditLog,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly DeferredRouteHelper $routeHelper,
         private readonly UserLoader $userLoader,
@@ -117,10 +120,12 @@ class EmbedLoginHandler implements RequestHandlerInterface
                     $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
                 }
             }
-            $request = $request->withAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE, (int)$input['org']);
 //            file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($input, true) . "\n", FILE_APPEND);
 
             if ($result && $result->isValid()) {
+//                $request = $request->withAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE, (int)$input['org']);
+//                $this->auditLog->setRe
+
                 /** @var EmbedIdentity $identity */
                 $identity = $result->getIdentity();
 
@@ -146,21 +151,26 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
                     if ($url instanceof RedirectResponse) {
                         $this->logInfo(sprintf(
+                            "Login for end user: %s, patient: %s successful, redirecting...",
+                            $input['usr'],
+                            $input['pid']
+                        ));
+                        $response = $url;
+                    } else {
+                        $this->logInfo(sprintf(
                             "Login for end user: %s, patient: %s successful, redirecting to: %s",
                             $input['usr'],
                             $input['pid'],
-                            $url->getBody(),
+                            $url
                         ));
-                        return $url;
+                        $response = new RedirectResponse($url);
                     }
-                    $this->logInfo(sprintf(
-                        "Login for end user: %s, patient: %s successful, redirecting to: %s",
-                        $input['usr'],
-                        $input['pid'],
-                        $url
-                    ));
-
-                    return new RedirectResponse($url);
+                    return CookieResponse::addCookieToResponse(
+                        $request,
+                        $response,
+                        CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE,
+                        $input['org']
+                    );
                 }
             }
 

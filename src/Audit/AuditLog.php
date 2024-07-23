@@ -525,9 +525,9 @@ class AuditLog
                 }
             } catch (Exception $e) {
 //                echo $e->getMessage();
-                error_log(print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS. 10), true));
+                // error_log(print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS. 10), true));
                 error_log(__CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $e->getMessage());
-                error_log(print_r($logData, true));
+                // error_log(print_r($logData, true));
             }
             return null;
         }
@@ -543,7 +543,7 @@ class AuditLog
         } catch (Exception $e) {
 //            echo $e->getMessage();
             error_log(__CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $e->getMessage());
-            error_log(print_r($logData, true));
+            // error_log(print_r($logData, true));
             return $logId;
         }
     }

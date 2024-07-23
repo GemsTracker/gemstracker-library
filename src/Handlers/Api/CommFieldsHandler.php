@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\MetaModelInterface;
 
 class CommFieldsHandler implements RequestHandlerInterface
 {
@@ -53,7 +54,7 @@ class CommFieldsHandler implements RequestHandlerInterface
          * @var Locale $locale
          */
         $locale = $request->getAttribute(LocaleMiddleware::LOCALE_ATTRIBUTE);
-        $id = $request->getAttribute('id');
+        $id = $request->getAttribute(MetaModelInterface::REQUEST_ID);
         $queryParams = $request->getQueryParams();
         $organizationId = $request->getAttribute('organizationId') ?? $queryParams['organizationId'] ?? null;
 
@@ -85,7 +86,7 @@ class CommFieldsHandler implements RequestHandlerInterface
         return $event->fields;
     }
 
-    protected function getRespondentFields(int|null $respondentId, int|null $organizationId, string $language): array|null
+    protected function getRespondentFields(string|null $respondentId, int|null $organizationId, string $language): array|null
     {
         if ($respondentId === null || $organizationId === null) {
             /**

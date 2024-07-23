@@ -240,7 +240,7 @@ class TraceablePDO extends PDO
     {
         return array_reduce($this->executedStatements, function ($v, $s) {
             return $v + $s->getDuration();
-        });
+        }, 0.0);
     }
 
     /**
@@ -252,7 +252,7 @@ class TraceablePDO extends PDO
     {
         return array_reduce($this->executedStatements, function ($v, $s) {
             return $v + $s->getMemoryUsage();
-        });
+        }, 0.0);
     }
 
     /**
