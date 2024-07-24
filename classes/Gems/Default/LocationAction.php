@@ -39,6 +39,20 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
     public $cacheTags = array('location', 'locations');
 
     /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Location\LocationSearchFormSnippet');
+
+    /**
+     * The default search data to use.
+     *
+     * @var array()
+     */
+    protected $defaultSearchData = ['glo_active' => 1];
+
+    /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
@@ -83,27 +97,6 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
             );
 
         $this->addSnippets($snippets, $params);
-    }
-
-    /**
-     * Set column usage to use for the browser.
-     *
-     * Must be an array of arrays containing the input for TableBridge->setMultisort()
-     *
-     * @return array or false
-     */
-    public function getBrowseColumns()
-    {
-        // Newline placeholder
-        $br = \MUtil_Html::create('br');
-        $sp = \MUtil_Html::raw(' ');
-
-        $columns[10] = array('glo_name', $br, 'glo_organizations');
-        $columns[20] = array('glo_url', $br, 'glo_url_route');
-        $columns[30] = array('glo_address_1', $br, 'glo_zipcode', \MUtil_Html::raw('&nbsp;&nbsp;'), 'glo_city');
-        $columns[40] = array(\MUtil_Html::raw('&#9743; '), 'glo_phone_1', $br, 'glo_filter', $sp, 'glo_match_to');
-
-        return $columns;
     }
 
     /**
@@ -169,6 +162,11 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
         $model->setIfExists('glo_iso_country', 'label', $this->_('Country'),
                 'multiOptions', $this->util->getLocalized()->getCountries());
 
+        $model->setIfExists('glo_email', [
+            'label' => $this->_('E-Mail'),
+            'validator' => 'SimpleEmail',
+        ]);
+
         $model->setIfExists('glo_phone_1',     'label', $this->_('Phone'));
         $model->setIfExists('glo_phone_2',     'label', $this->_('Phone 2'));
         $model->setIfExists('glo_phone_3',     'label', $this->_('Phone 3'));
@@ -191,6 +189,27 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
     }
 
     /**
+     * Set column usage to use for the browser.
+     *
+     * Must be an array of arrays containing the input for TableBridge->setMultisort()
+     *
+     * @return array or false
+     */
+    public function getBrowseColumns()
+    {
+        // Newline placeholder
+        $br = \MUtil_Html::create('br');
+        $sp = \MUtil_Html::raw(' ');
+
+        $columns[10] = array('glo_name', $br, 'glo_organizations');
+        $columns[20] = array('glo_email', $br, 'glo_url');
+        $columns[30] = array('glo_address_1', $br, 'glo_zipcode', \MUtil_Html::raw('&nbsp;&nbsp;'), 'glo_city');
+        $columns[40] = array(\MUtil_Html::raw('&#9743; '), 'glo_phone_1', $br, 'glo_filter', $sp, 'glo_match_to');
+
+        return $columns;
+    }
+
+    /**
      * Helper function to get the title for the index action.
      *
      * @return $string
@@ -210,15 +229,6 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
     }
 
     /**
-     *
-     * @return type
-     */
-    public function getShowOnEmpty()
-    {
-        return $this->_('No example appointments found');
-
-    }
-    /**
      * Get an agenda filter for the current shown item
      *
      * @return array
@@ -230,6 +240,16 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
             'gap_id_location' => $this->_getIdParam(),
             'limit' => 10,
             );
+    }
+
+    /**
+     *
+     * @return type
+     */
+    public function getShowOnEmpty()
+    {
+        return $this->_('No example appointments found');
+
     }
 
     /**

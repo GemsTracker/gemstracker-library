@@ -109,6 +109,15 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
             $result['salutation']   = $this->respondent->getSalutation();
             $result['last_name']    = $this->respondent->getLastName();
             $result['name']         = $this->respondent->getName();
+            $result['patient_nr']   = $this->respondent->getPatientNumber();
+            $result['patient_organization_id'] = $this->respondent->getOrganizationId();
+            $result['patient_url']  = sprintf(
+                $this->organization->getLoginUrl() . '/respondent/show/%s/%s/%s/%s',
+                \MUtil_Model::REQUEST_ID1,
+                $result['patient_nr'],
+                \MUtil_Model::REQUEST_ID2,
+                $result['patient_organization_id']
+            );
         } else {
             $result = array(
                 'email'     => '',
@@ -117,7 +126,10 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
                 'full_name' => '',
                 'greeting'  => '',
                 'last_name' => '',
-                'name'      => ''
+                'name'      => '',
+                'patient_nr' => '',
+                'patient_organization_id' => '',
+                'patient_url' => '',
             );
         }
 

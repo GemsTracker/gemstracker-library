@@ -145,7 +145,7 @@ class TrackFieldCondition extends RoundConditionAbstract
         $param1     = $this->_data['gcon_condition_text3'];
         $param2     = $this->_data['gcon_condition_text4'];
 
-        $codeFields = $token->getRespondentTrack()->getCodeFields();
+        $codeFields = $token->getRespondentTrack()->getCodeFields(false);
 
         // If field (no longer?) exists, return true
         if (!array_key_exists($field, $codeFields)) {

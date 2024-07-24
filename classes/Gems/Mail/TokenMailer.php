@@ -280,7 +280,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
             $result['track']            = $this->token->getTrackName();
 
             // Add the code fields
-            $codes  = $this->token->getRespondentTrack()->getCodeFields();
+            $codes  = $this->token->getRespondentTrack()->getCodeFields(true);
             foreach ($codes as $code => $data) {
                 $key = 'track.' . $code;
                 if (is_array($data)) {

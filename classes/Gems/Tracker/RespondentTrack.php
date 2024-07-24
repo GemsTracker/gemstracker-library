@@ -110,6 +110,13 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     protected $loader;
 
     /**
+     * Logger instance
+     *
+     * @var \Gems_Log
+     */
+    protected $logger;
+
+    /**
      *
      * @var \Gems_Tracker
      */
@@ -693,9 +700,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     /**
      * Return all possible code fields with the values filled for those that exist for this track,
      *
+     * @param bool $formatted
      * @return array code => value
      */
-    public function getCodeFields()
+    public function getCodeFields($formatted = true)
     {
         $fieldDef = $this->getTrackEngine()->getFieldsDefinition();
         $codes    = $this->tracker->getAllCodeFields();
@@ -710,9 +718,11 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
             $fieldCode           = $codes[$id];
             $results[$fieldCode] = $value;
-            $field               = $fieldDef->getFieldByCode($fieldCode);
-            if (!is_null($field)) {
-                $results[$fieldCode] = $field->calculateFieldInfo($value, $this->_fieldData);
+            if ($formatted) {
+                $field               = $fieldDef->getFieldByCode($fieldCode);
+                if (!is_null($field)) {
+                    $results[$fieldCode] = $field->calculateFieldInfo($value, $this->_fieldData);
+                }
             }
         }
 
