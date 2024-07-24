@@ -62,6 +62,9 @@ class EmbedLoginHandler implements RequestHandlerInterface
         $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
         try {
+            /**
+             * @var SessionInterface $session
+             */
             $session = $request->getAttribute(SessionInterface::class);
             $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
@@ -120,19 +123,13 @@ class EmbedLoginHandler implements RequestHandlerInterface
                     $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
                 }
             }
-//            file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($input, true) . "\n", FILE_APPEND);
 
             if ($result && $result->isValid()) {
-//                $request = $request->withAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE, (int)$input['org']);
-//                $this->auditLog->setRe
-
                 /** @var EmbedIdentity $identity */
                 $identity = $result->getIdentity();
 
                 $embeddedUserData = $this->userLoader->getEmbedderData($result->systemUser);
                 $redirector = $embeddedUserData->getRedirector();
-//                file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  get_class($embeddedUserData) . "\n", FILE_APPEND);
-//                file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  get_class($redirector) . "\n", FILE_APPEND);
 
                 //if ($redirector instanceof RedirectAbstract) {
                 //    $redirector->answerRegistryRequest('request', $this->getRequest());

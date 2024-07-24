@@ -44,6 +44,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        /**
+         * @var ?SessionInterface $session
+         */
         $session = $request->getAttribute(SessionInterface::class);
 
         if ($session === null) {
