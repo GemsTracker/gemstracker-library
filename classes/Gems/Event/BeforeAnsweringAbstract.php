@@ -220,14 +220,14 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
     }
 
     /**
-     * Returns the track field VALUES as apposed to the DISPLAY VALUES returned by $respondentTrack->getCodeFields()
+     * Returns the track field VALUES as apposed to the DISPLAY VALUES returned by $respondentTrack->getCodeFields(false)
      *
      * @param array $requests
      * @return array
      */
     public function getTrackFieldValues(\Gems_Tracker_RespondentTrack $respondentTrack)
     {
-        $fieldCode2Label = $respondentTrack->getCodeFields();
+        $fieldCode2Label = $respondentTrack->getCodeFields(false);
         $rawFieldData    = $respondentTrack->getFieldData();    // Date (time) fields are unprocessed here
         $results         = [];
 

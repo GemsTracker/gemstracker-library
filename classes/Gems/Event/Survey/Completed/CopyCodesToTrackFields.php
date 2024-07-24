@@ -47,7 +47,7 @@ class CopyCodesToTrackFields extends \Gems_Event_EventCalculations implements \G
     {
         if ($token->getReceptionCode()->isSuccess() && $token->isCompleted()) {
             $respTrack = $token->getRespondentTrack();
-            $fields    = $respTrack->getCodeFields();
+            $fields    = $respTrack->getCodeFields(false);
             $answers   = $token->getRawAnswers();
             $newFields = [];
 

@@ -67,7 +67,6 @@ class AndCondition extends RoundConditionAbstract
             'gcon_condition_text2' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id', 'gcon_condition_text1'], $messages)],
             'gcon_condition_text3' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id', 'gcon_condition_text1', 'gcon_condition_text2'], $messages)],
             'gcon_condition_text4' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id', 'gcon_condition_text1', 'gcon_condition_text2', 'gcon_condition_text3'], $messages)]
-
         ];
 
         return $result;

@@ -73,7 +73,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
     {
         $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
 
-        $actual = $respondentTrack->getCodeFields();
+        $actual = $respondentTrack->getCodeFields(true);
 
         $date = new MUtil_Date('2010-10-08', 'yyyy-MM-dd');
         $expected = array(
