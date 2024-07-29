@@ -12,7 +12,7 @@ class GemsLogActivityForeignKeysPatch extends PatchAbstract
     private array $foreignKeys = [
         [ 'gla_action', 'gems__log_setup', 'gls_id_action' ],
         [ 'gla_respondent_id', 'gems__respondents', 'grs_id_user' ],
-        [ 'gla_organization', 'gems__organizations', 'gor_id_organization' ],
+//        [ 'gla_organization', 'gems__organizations', 'gor_id_organization' ],
     ];
 
     public function __construct(

@@ -22,7 +22,7 @@ namespace Gems;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Exception extends \Zend_Exception
+class Exception extends \Exception
 {
     /**
      * Optional extra information on the exception
