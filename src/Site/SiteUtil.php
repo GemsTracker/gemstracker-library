@@ -146,6 +146,9 @@ class SiteUtil
     protected function getSites(): array
     {
         $sitesArray = $this->getSitesArray();
+        // Additional arrays for login by EPD
+        $sitesArray[] = ['url' => 'https://null'];
+        $sitesArray[] = ['url' => 'http://null'];
         $sitesArray = $this->addOrganizationsToSitesArray($sitesArray);
         $sites = [];
         foreach($sitesArray as $siteArray) {
