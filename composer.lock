@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "46e5e734379a8fdfe3e11766283fb1c5",
+    "content-hash": "6cf87a8b493c383b99f1516c2b6a50e0",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -1757,7 +1757,7 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.9.x-dev",
+            "version": "7.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
@@ -1793,7 +1793,6 @@
                 "ext-intl": "Required for Internationalized Domain Name (IDN) support",
                 "psr/log": "Required for using the Log middleware"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -2217,20 +2216,20 @@
         },
         {
             "name": "laminas/laminas-config-aggregator",
-            "version": "1.14.x-dev",
+            "version": "1.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-config-aggregator.git",
-                "reference": "47dc6e4c4de80b37c780d4cc2ecd5db9ebd8a915"
+                "reference": "102e048734413a4499846571b156aeaa6c2aba56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-config-aggregator/zipball/47dc6e4c4de80b37c780d4cc2ecd5db9ebd8a915",
-                "reference": "47dc6e4c4de80b37c780d4cc2ecd5db9ebd8a915",
+                "url": "https://api.github.com/repos/laminas/laminas-config-aggregator/zipball/102e048734413a4499846571b156aeaa6c2aba56",
+                "reference": "102e048734413a4499846571b156aeaa6c2aba56",
                 "shasum": ""
             },
             "require": {
-                "brick/varexporter": "^0.4.0",
+                "brick/varexporter": "^0.5.0 || ^0.4.0",
                 "laminas/laminas-stdlib": "^3.18.0",
                 "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
                 "webimpress/safe-writer": "^2.2.0"
@@ -2241,12 +2240,10 @@
             },
             "require-dev": {
                 "laminas/laminas-coding-standard": "~2.5.0",
-                "laminas/laminas-config": "^3.8.0",
-                "laminas/laminas-servicemanager": "^3.20",
-                "nikic/php-parser": "^4.17.1",
-                "phpunit/phpunit": "^9.6.13",
-                "psalm/plugin-phpunit": "^0.18.4",
-                "vimeo/psalm": "^5.15"
+                "laminas/laminas-config": "^3.9.0",
+                "phpunit/phpunit": "^10.5.11",
+                "psalm/plugin-phpunit": "^0.19.0",
+                "vimeo/psalm": "^5.22.2"
             },
             "suggest": {
                 "laminas/laminas-config": "Allows loading configuration from XML, INI, YAML, and JSON files",
@@ -2283,7 +2280,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2023-09-19T12:35:45+00:00"
+            "time": "2024-05-12T10:04:30+00:00"
         },
         {
             "name": "laminas/laminas-db",
@@ -2740,22 +2737,23 @@
         },
         {
             "name": "laminas/laminas-i18n",
-            "version": "2.26.x-dev",
+            "version": "2.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-i18n.git",
-                "reference": "01738410cb263994d1d192861f642387e7e12ace"
+                "reference": "e1e312650232e5ef26c28ea08f3c4c18633f48c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/01738410cb263994d1d192861f642387e7e12ace",
-                "reference": "01738410cb263994d1d192861f642387e7e12ace",
+                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/e1e312650232e5ef26c28ea08f3c4c18633f48c3",
+                "reference": "e1e312650232e5ef26c28ea08f3c4c18633f48c3",
                 "shasum": ""
             },
             "require": {
                 "ext-intl": "*",
                 "laminas/laminas-servicemanager": "^3.21.0",
                 "laminas/laminas-stdlib": "^3.0",
+                "laminas/laminas-translator": "^1.0",
                 "php": "~8.1.0 || ~8.2.0 || ~8.3.0"
             },
             "conflict": {
@@ -2763,18 +2761,18 @@
                 "zendframework/zend-i18n": "*"
             },
             "require-dev": {
-                "laminas/laminas-cache": "^3.12.0",
+                "laminas/laminas-cache": "^3.12.1",
                 "laminas/laminas-cache-storage-adapter-memory": "^2.3.0",
                 "laminas/laminas-cache-storage-deprecated-factory": "^1.2",
                 "laminas/laminas-coding-standard": "~2.5.0",
                 "laminas/laminas-config": "^3.9.0",
                 "laminas/laminas-eventmanager": "^3.13",
                 "laminas/laminas-filter": "^2.34",
-                "laminas/laminas-validator": "^2.46",
-                "laminas/laminas-view": "^2.33",
-                "phpunit/phpunit": "^10.5.5",
-                "psalm/plugin-phpunit": "^0.18.4",
-                "vimeo/psalm": "^5.18.0"
+                "laminas/laminas-validator": "^2.49",
+                "laminas/laminas-view": "^2.34",
+                "phpunit/phpunit": "^10.5.11",
+                "psalm/plugin-phpunit": "^0.19.0",
+                "vimeo/psalm": "^5.22.2"
             },
             "suggest": {
                 "laminas/laminas-cache": "You should install this package to cache the translations",
@@ -2785,7 +2783,6 @@
                 "laminas/laminas-validator": "You should install this package to use the provided validators",
                 "laminas/laminas-view": "You should install this package to use the provided view helpers"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -2822,7 +2819,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2024-01-04T13:49:00+00:00"
+            "time": "2024-07-15T12:54:14+00:00"
         },
         {
             "name": "laminas/laminas-permissions-acl",
@@ -3115,6 +3112,59 @@
                 }
             ],
             "time": "2024-07-16T22:57:16+00:00"
+        },
+        {
+            "name": "laminas/laminas-translator",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laminas/laminas-translator.git",
+                "reference": "86d176c01a96b0ef205192b776cb69e8d4ca06b1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laminas/laminas-translator/zipball/86d176c01a96b0ef205192b776cb69e8d4ca06b1",
+                "reference": "86d176c01a96b0ef205192b776cb69e8d4ca06b1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0"
+            },
+            "require-dev": {
+                "laminas/laminas-coding-standard": "~2.5.0",
+                "vimeo/psalm": "^5.24.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Laminas\\Translator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Interfaces for the Translator component of laminas-i18n",
+            "homepage": "https://laminas.dev",
+            "keywords": [
+                "i18n",
+                "laminas"
+            ],
+            "support": {
+                "chat": "https://laminas.dev/chat",
+                "docs": "https://docs.laminas.dev/laminas-i18n/",
+                "forum": "https://discourse.laminas.dev",
+                "issues": "https://github.com/laminas/laminas-translator/issues",
+                "rss": "https://github.com/laminas/laminas-translator/releases.atom",
+                "source": "https://github.com/laminas/laminas-translator"
+            },
+            "funding": [
+                {
+                    "url": "https://funding.communitybridge.org/projects/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "time": "2024-06-18T15:09:24+00:00"
         },
         {
             "name": "laminas/laminas-uri",
@@ -5157,23 +5207,23 @@
         },
         {
             "name": "mezzio/mezzio-twigrenderer",
-            "version": "2.14.x-dev",
+            "version": "2.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mezzio/mezzio-twigrenderer.git",
-                "reference": "b6aae65115a92e8959234e28874cadbfebc41421"
+                "reference": "6ff476b7a6529f110f324c85652128474f0bb294"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mezzio/mezzio-twigrenderer/zipball/b6aae65115a92e8959234e28874cadbfebc41421",
-                "reference": "b6aae65115a92e8959234e28874cadbfebc41421",
+                "url": "https://api.github.com/repos/mezzio/mezzio-twigrenderer/zipball/6ff476b7a6529f110f324c85652128474f0bb294",
+                "reference": "6ff476b7a6529f110f324c85652128474f0bb294",
                 "shasum": ""
             },
             "require": {
                 "mezzio/mezzio-helpers": "^5.0",
                 "mezzio/mezzio-router": "^3.7",
                 "mezzio/mezzio-template": "^2.0",
-                "php": "~8.1.0 || ~8.2.0",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
                 "psr/container": "^1.0 || ^2.0",
                 "twig/twig": "^3.4.3"
             },
@@ -5183,11 +5233,10 @@
             },
             "require-dev": {
                 "laminas/laminas-coding-standard": "~2.5.0",
-                "phpunit/phpunit": "^10.1.2",
+                "phpunit/phpunit": "^10.5.2",
                 "psalm/plugin-phpunit": "^0.18.4",
-                "vimeo/psalm": "^5.11"
+                "vimeo/psalm": "^5.17"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -5228,7 +5277,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2023-05-05T16:00:45+00:00"
+            "time": "2023-12-19T11:55:44+00:00"
         },
         {
             "name": "middlewares/debugbar",
@@ -12402,16 +12451,16 @@
         },
         {
             "name": "vimeo/psalm",
-            "version": "5.x-dev",
+            "version": "5.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "dd24f5b2f06aefffa1fb492c81e3d48674bafef7"
+                "reference": "01a8eb06b9e9cc6cfb6a320bf9fb14331919d505"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/dd24f5b2f06aefffa1fb492c81e3d48674bafef7",
-                "reference": "dd24f5b2f06aefffa1fb492c81e3d48674bafef7",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/01a8eb06b9e9cc6cfb6a320bf9fb14331919d505",
+                "reference": "01a8eb06b9e9cc6cfb6a320bf9fb14331919d505",
                 "shasum": ""
             },
             "require": {
@@ -12465,7 +12514,6 @@
                 "ext-curl": "In order to send data to shepherd",
                 "ext-igbinary": "^2.0.5 is required, used to serialize caching data"
             },
-            "default-branch": true,
             "bin": [
                 "psalm",
                 "psalm-language-server",
@@ -12509,19 +12557,15 @@
                 "issues": "https://github.com/vimeo/psalm/issues",
                 "source": "https://github.com/vimeo/psalm"
             },
-            "time": "2024-07-16T14:56:35+00:00"
+            "time": "2024-06-16T15:08:35+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "guzzlehttp/guzzle": 20,
-        "laminas/laminas-config-aggregator": 20,
-        "laminas/laminas-i18n": 20,
-        "mezzio/mezzio-twigrenderer": 20,
         "vimeo/psalm": 20
     },
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.1.0",
