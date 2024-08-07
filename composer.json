@@ -35,7 +35,7 @@
         "src/"
     ],
     "minimum-stability": "stable",
-    "prefer-stable": false,
+    "prefer-stable": true,
     "require": {
         "php": ">=8.1.0",
         "ext-gd": "*",
