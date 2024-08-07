@@ -34,7 +34,7 @@
     "include-path": [
         "src/"
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": false,
     "require": {
         "php": ">=8.1.0",
