@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6cf87a8b493c383b99f1516c2b6a50e0",
+    "content-hash": "6a68785ced25c355f3ba29f7410a8a79",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -1532,11 +1532,11 @@
         },
         {
             "name": "gemstracker/gems-api",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gemstracker/gems-api.git",
-                "reference": "70c853a04e07afe93355928ae191ac366552e19f"
+                "reference": "35145f7833dfd828382adbf4c6e69a1d632f9545"
             },
             "require": {
                 "gemstracker/gems-oauth2": "^1.0.0",
@@ -1549,6 +1549,11 @@
                 "phpunit/phpunit": "^9"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Gems\\Api\\": "src/"
@@ -1560,15 +1565,15 @@
                 ]
             },
             "description": "Base API for GemsTracker",
-            "time": "2024-08-07T13:15:54+00:00"
+            "time": "2024-08-07T13:38:14+00:00"
         },
         {
             "name": "gemstracker/gems-fhir-api",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gemstracker/gems-fhir-api.git",
-                "reference": "7eebe700905651c06d05df4c354669e85068a06f"
+                "reference": "5c7cb57bc9beab6399b2afc7fc7132511008c5be"
             },
             "require": {
                 "gemstracker/gems-api": "^1.0.0",
@@ -1581,13 +1586,18 @@
                 "vimeo/psalm": "^5.8"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Gems\\Api\\Fhir\\": "src/"
                 }
             },
             "description": "FHIR API for GemsTracker",
-            "time": "2024-08-07T13:18:12+00:00"
+            "time": "2024-08-07T13:41:54+00:00"
         },
         {
             "name": "gemstracker/gems-oauth2",
@@ -3852,38 +3862,39 @@
         },
         {
             "name": "magnafacta/mutil",
-            "version": "1.9.1-p3",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GemsTracker/MUtil.git",
-                "reference": "fa5ec2ae3aff27f5f2c0213f5dcf0f491c8ff6f7"
+                "reference": "51f579c4deb8cd7c1eae8a884d6354736c6610f8"
             },
             "require": {
-                "oyejorge/less.php": "~1.7.0.9",
-                "php": ">=5.3.9",
+                "laminas/laminas-validator": "^2.20",
+                "magnafacta/zalt-html": "^1.0.0",
+                "magnafacta/zalt-model": "^1.0.0",
+                "php": ">=8.1",
+                "psr/cache": "^3.0",
+                "psr/http-message": "^1.0.1",
                 "shardj/zf1-extras-future": "^1.12",
-                "shardj/zf1-future": "^1.18"
+                "shardj/zf1-future": "^1.21",
+                "symfony/finder": "^6.1",
+                "symfony/translation": "^6.1"
             },
             "require-dev": {
-                "phing/phing": "^2.11",
-                "phpunit/dbunit": "1.3.*",
-                "zf1s/phpunit": "dev-master"
+                "phing/phing": "^2.17.3",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "10.*",
+                "symfony/yaml": "^6.1"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "MUtil_": "src/"
-                },
                 "psr-4": {
                     "MUtil\\": "src/MUtil"
                 }
             },
             "autoload-dev": {
-                "psr-0": {
-                    "MUtil_": "tests/"
-                },
                 "psr-4": {
-                    "MUtil\\": "tests/MUtil"
+                    "MUtilTest\\": "tests"
                 }
             },
             "include-path": [
@@ -3892,6 +3903,11 @@
             "archive": {
                 "exclude": [
                     "/tests"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/phpunit tests"
                 ]
             },
             "license": [
@@ -3925,7 +3941,7 @@
             ],
             "description": "MagnaFacta Utilities for site development",
             "homepage": "http://magnafacta.info/",
-            "time": "2021-10-07T16:02:20+00:00"
+            "time": "2024-08-07T12:13:24+00:00"
         },
         {
             "name": "magnafacta/zalt-html",
@@ -5869,73 +5885,6 @@
                 }
             ],
             "time": "2024-07-26T05:48:04+00:00"
-        },
-        {
-            "name": "oyejorge/less.php",
-            "version": "v1.7.0.14",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/oyejorge/less.php.git",
-                "reference": "42925c5a01a07d67ca7e82dfc8fb31814d557bc9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/oyejorge/less.php/zipball/42925c5a01a07d67ca7e82dfc8fb31814d557bc9",
-                "reference": "42925c5a01a07d67ca7e82dfc8fb31814d557bc9",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.8.24"
-            },
-            "bin": [
-                "bin/lessc"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Less": "lib/"
-                },
-                "classmap": [
-                    "lessc.inc.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Matt Agar",
-                    "homepage": "https://github.com/agar"
-                },
-                {
-                    "name": "Martin Jantošovič",
-                    "homepage": "https://github.com/Mordred"
-                },
-                {
-                    "name": "Josh Schmidt",
-                    "homepage": "https://github.com/oyejorge"
-                }
-            ],
-            "description": "PHP port of the Javascript version of LESS http://lesscss.org (Originally maintained by Josh Schmidt)",
-            "homepage": "http://lessphp.gpeasy.com",
-            "keywords": [
-                "css",
-                "less",
-                "less.js",
-                "lesscss",
-                "php",
-                "stylesheet"
-            ],
-            "support": {
-                "issues": "https://github.com/oyejorge/less.php/issues",
-                "source": "https://github.com/oyejorge/less.php/tree/master"
-            },
-            "abandoned": true,
-            "time": "2017-03-28T22:19:25+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
