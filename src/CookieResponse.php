@@ -28,7 +28,7 @@ class CookieResponse
         mixed $value,
         bool $httpOnly = true,
         string $sameSite = 'lax',
-        string|null $path = null,
+        string|null $path = '/',
         int $maxAge = 90 * 86400, // 90 days
         DateTimeInterface|null $expires = null,
         string|null $domain = null,
@@ -58,10 +58,13 @@ class CookieResponse
                 break;
         }
 
-        if ($path === null) {
-            $path = BaseDir::getBaseDir();
+
+
+        if ($path !== null) {
+            $path = BaseDir::getBaseDir() . $path;
+            $cookie = $cookie->withPath($path);
         }
-        $cookie = $cookie->withPath($path);
+
 
         if ($domain !== null) {
             $cookie = $cookie->withDomain($domain);
