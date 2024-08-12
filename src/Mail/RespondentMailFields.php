@@ -18,8 +18,10 @@ class RespondentMailFields extends OrganizationMailFields
     {
         $mailFields = parent::getMailFields();
         $mailFields += [
+            'patient_nr'    => $this->respondent->getPatientNumber(),
             'dear'          => $this->respondent->getDearGreeting($language),
             'email'         => $this->respondent->getEmailAddress(),
+            'phone'         => $this->respondent->getPhonenumber(),
             'from'          => null,
             'first_name'    => $this->respondent->getFirstName(),
             'full_name'     => $this->respondent->getFullName(),
