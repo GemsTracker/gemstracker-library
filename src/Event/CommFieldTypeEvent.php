@@ -14,7 +14,7 @@ class CommFieldTypeEvent extends Event
 
     public function addFieldType(string $fieldType): void
     {
-        $this->fieldTypes[] = $fieldType;
+        $this->fieldTypes[$fieldType] = $fieldType;
     }
 
     public function getFieldTypes(): array
