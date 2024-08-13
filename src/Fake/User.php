@@ -13,6 +13,20 @@ use Laminas\Permissions\Acl\Acl;
 
 class User extends \Gems\User\User
 {
+    protected int $id = 1;
+
+    protected string $login = 'jdevries';
+
+    protected bool $active = true;
+
+    protected int $baseOrgId = 0;
+    protected string|null $email = 'j.de.vries@example.test';
+    protected string|null $firstName = 'Jip';
+    protected string|null $surnamePrefix = 'de';
+    protected string|null $lastName = 'Vries';
+
+    protected string|null $gender = 'M';
+
     public function __construct(
         StaffUserDefinition $userDefinition,
         OrganizationRepository $organizationRepository,
@@ -36,20 +50,6 @@ class User extends \Gems\User\User
     public function getBaseOrganization(): Organization
     {
         return new Organization();
-    }
-
-    protected function getUserData(): array
-    {
-        return [
-            'user_id' => 1,
-            'user_login' => 'jdevries',
-            'user_last_name' => 'Vries',
-            'user_surname_prefix' => 'de',
-            'user_first_name' => 'Jip',
-            'user_gender' => 'M',
-            'user_email' => 'j.de.vries@example.test',
-            'user_role'  => null,
-        ];
     }
 
     public function getPasswordResetKey(): string
