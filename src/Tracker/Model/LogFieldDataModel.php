@@ -11,6 +11,11 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Model\GemsJoinModel;
+use Gems\Model\MetaModelLoader;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Sql\SqlRunnerInterface;
+
 /**
  *
  * @package    Gems
@@ -18,14 +23,15 @@ namespace Gems\Tracker\Model;
  * @license    New BSD License
  * @since      Class available since version 1.8.8
  */
-class LogFieldDataModel extends \Gems\Model\JoinModel
+class LogFieldDataModel extends GemsJoinModel
 {
-    /**
-     * LogFieldDataModel constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct('gems__log_respondent2track2field', 'gems__log_respondent2track2field', 'glrtf', true);
-    }
+    public function __construct(
+        MetaModelLoader $metaModelLoader,
+        SqlRunnerInterface $sqlRunner,
+        TranslatorInterface $translate,
+    ) {
+        parent::__construct('gems__log_respondent2track2field', $metaModelLoader, $sqlRunner, $translate, 'gems__log_respondent2track2field');
 
+        $metaModelLoader->setChangeFields($this->metaModel, 'glrtf');
+    }
 }
