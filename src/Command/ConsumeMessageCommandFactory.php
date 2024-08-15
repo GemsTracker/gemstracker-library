@@ -9,6 +9,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
+use Symfony\Component\Messenger\EventListener\AddErrorDetailsStampListener;
 use Symfony\Component\Messenger\EventListener\SendFailedMessageForRetryListener;
 use Symfony\Component\Messenger\EventListener\SendFailedMessageToFailureTransportListener;
 use Symfony\Component\Messenger\RoutableMessageBus;
@@ -21,6 +22,9 @@ class ConsumeMessageCommandFactory implements FactoryInterface
         $routableBus = $container->get(RoutableMessageBus::class);
         /** @var EventDispatcherInterface $eventDispatcher */
         $eventDispatcher = $container->get(EventDispatcherInterface::class);
+
+        $eventDispatcher->addSubscriber(new AddErrorDetailsStampListener());
+
         $logger = null;
         if ($container->has('messageBusLogger')) {
             /**

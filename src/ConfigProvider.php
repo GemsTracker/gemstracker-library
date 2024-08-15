@@ -371,6 +371,7 @@ class ConfigProvider
 
                 'messenger.transport.default' => TransportFactory::class,
                 'messenger.transport.doctrine' => TransportFactory::class,
+                'messenger.transport.failed' => TransportFactory::class,
 
                 \Symfony\Component\Mailer\Transport\TransportInterface::class => MailTransportFactory::class,
 
