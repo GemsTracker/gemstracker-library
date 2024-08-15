@@ -2,6 +2,7 @@
 
 namespace Gems\Command;
 
+use Gems\Messenger\AddErrorDetailsStampListener;
 use Gems\Messenger\FailureSenderContainer;
 use Gems\Messenger\RetryStrategyContainer;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -9,7 +10,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
-use Symfony\Component\Messenger\EventListener\AddErrorDetailsStampListener;
 use Symfony\Component\Messenger\EventListener\SendFailedMessageForRetryListener;
 use Symfony\Component\Messenger\EventListener\SendFailedMessageToFailureTransportListener;
 use Symfony\Component\Messenger\RoutableMessageBus;
