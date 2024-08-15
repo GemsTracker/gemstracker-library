@@ -2,9 +2,12 @@
 
 namespace Gems\Messenger;
 
+
+use Gems\Legacy\CurrentUserRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Messenger\EventListener\SendFailedMessageToFailureTransportListener;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware;
@@ -37,7 +40,7 @@ class MessengerFactory implements FactoryInterface
             $customMiddleware = $config['messenger']['buses'][$this->busName]['middleware'];
         }
 
-        $eventDispatcher = $container->get(EventDispatcherInterface::class);
+        $eventDispatcher = $this->getEventDispatcher($container);
 
         $sendMessageLocator = $this->getSendMessageLocator($config['messenger']['buses'][$this->busName], $container);
         $sendMessageMiddleware = new SendMessageMiddleware($sendMessageLocator, $eventDispatcher);
@@ -57,6 +60,7 @@ class MessengerFactory implements FactoryInterface
         }
 
         $middleware = [
+            new CurrentUserMiddleware($container->get(CurrentUserRepository::class)),
             new AddBusNameStampMiddleware($this->busName),
             new RejectRedeliveredMessageMiddleware(),
             new DispatchAfterCurrentBusMiddleware(),
@@ -67,6 +71,38 @@ class MessengerFactory implements FactoryInterface
         ];
 
         return new MessageBus($middleware);
+    }
+
+    protected function addFailedMessageListener(EventDispatcherInterface $eventDispatcher, ContainerInterface $container): void
+    {
+        $config = $container->get('config');
+        $failureTransportName = $config['messenger']['failure_transport'] ?? null;
+        if (!$failureTransportName) {
+            return;
+        }
+        if (!$container->has($failureTransportName)) {
+            return;
+        }
+
+        new SendFailedMessageToFailureTransportListener(
+            $container->get($failureTransportName),
+            null// $logger
+        );
+
+    }
+
+    protected function getEventDispatcher(ContainerInterface $container): EventDispatcherInterface
+    {
+        $eventDispatcher = $container->get(EventDispatcherInterface::class);
+
+        //$this->addFailedMessageListener($eventDispatcher, $container);
+
+        /*new SendFailedMessageToFailureTransportListener(
+            $container->get($failureTransportName),
+            $logger ? $container->get($logger) : null
+        );*/
+
+        return $eventDispatcher;
     }
 
     protected function getHandleMessageLocator(array $config, ContainerInterface $container): Psr11HandlersLocator
