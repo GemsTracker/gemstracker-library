@@ -12,9 +12,11 @@
 namespace Gems\Task\Tracker;
 
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\ResponseDataRepository;
 use Gems\Tracker\TrackerInterface;
 use Exception;
 use MUtil\Html\HtmlInterface;
+use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
 
 /**
@@ -43,6 +45,11 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
      * @var \Gems\Project\ProjectSettings
      */
     protected $project;
+
+    /**
+     * @var ProjectOverloader
+     */
+    protected $overLoader;
 
     /**
      * @var TrackerInterface
@@ -126,45 +133,19 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
      */
     protected function replaceCreateView(\Gems\Tracker\Survey $survey, DataReaderInterface $answerModel)
     {
-        $viewName = $this->getViewName($survey);
-        $responseDb = $this->project->getResponseDatabase();
-        $fieldSql   = '';
-
-        $metaModel = $answerModel->getMetaModel();
-
-        foreach ($metaModel->getItemsOrdered() as $name) {
-            if (true === $metaModel->get($name, 'survey_question') && // It should be a question
-                    !in_array($name, ['submitdate', 'startdate', 'datestamp']) && // Leave out meta info
-                    !$metaModel->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {         // Only real answers
-                $fieldSql .= ',MAX(IF(gdr_answer_id = ' . $responseDb->quote($name) . ', gdr_response, NULL)) AS ' . $responseDb->quoteIdentifier($name);
-            }
-        }
-
-        if ($fieldSql > '') {
-            $dbConfig = $this->db->getConfig();
-            $tokenTable = $this->db->quoteIdentifier($dbConfig['dbname'] . '.gems__tokens');
-            $createViewSql = 'CREATE OR REPLACE VIEW ' . $responseDb->quoteIdentifier($viewName) . ' AS SELECT gdr_id_token';
-            $createViewSql .= $fieldSql;
-            $createViewSql .= "FROM gemsdata__responses join " . $tokenTable .
-                    " on (gto_id_token=gdr_id_token and gto_id_survey=" . $survey->getSurveyId() .
-                    ") GROUP BY gdr_id_token;";
-            try {
-                $responseDb->query($createViewSql)->execute();
-            } catch (Exception $exc) {
-                $responseConfig = $responseDb->getConfig();
-                $dbUser = $this->db->quoteIdentifier($responseConfig['username']) . '@' .
-                        $this->db->quoteIdentifier($responseConfig['host']);
-                $statement = "GRANT SELECT ON  " . $tokenTable . " TO " . $dbUser;
-
-                $batch = $this->getBatch();
-                $batch->addMessage(sprintf(
-                        $this->_("View creation failed for survey %s with message: '%s'"),
-                        $survey->getName(),
-                        $exc->getMessage()
-                        ));
-                $batch->addMessage(sprintf($this->_("View creation statement: %s"), $createViewSql));
-                $batch->addMessage(sprintf($this->_("Try adding rights using this statement: %s"), $statement));
-            }
+        /**
+         * @var ResponseDataRepository $repository
+         */
+        $repository = $this->overLoader->getContainer()->get(ResponseDataRepository::class);
+        try {
+            $repository->replaceCreateView($survey, $answerModel);
+        } catch (Exception $exc) {
+            $batch = $this->getBatch();
+            $batch->addMessage(sprintf(
+                    $this->_("View creation failed for survey %s with message: '%s'"),
+                    $survey->getName(),
+                    $exc->getMessage()
+                    ));
         }
     }
 
