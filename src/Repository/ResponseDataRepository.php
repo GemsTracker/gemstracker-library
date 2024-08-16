@@ -42,6 +42,8 @@ class ResponseDataRepository
         $currentResponses = $this->getCurrentResponses($tokenId);
         $inserts = [];
 
+        $checkDuplicateNames = [];
+
         foreach($responses as $fieldName => $response) {
             $data = $defaultData;
             $data['gdr_answer_id'] = $fieldName;
@@ -49,6 +51,12 @@ class ResponseDataRepository
                 $response = join('|', $response);
             }
             $data['gdr_response'] = $response;
+
+            if (in_array(strtolower($fieldName), $checkDuplicateNames)) {
+                continue;
+            }
+            $checkDuplicateNames[] = strtolower($fieldName);
+
             if (array_key_exists($fieldName, $currentResponses)) {    // Already exists, do update
                 // But only if value changed
                 if ($currentResponses[$fieldName] != $response) {
