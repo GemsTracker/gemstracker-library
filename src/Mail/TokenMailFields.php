@@ -29,7 +29,7 @@ class TokenMailFields extends RespondentMailFields
         $survey = $this->token->getSurvey();
 
         $tokenLink = $organization->getLoginUrl() . '/ask/forward/' . $this->token->getTokenId();
-        $askUrl = $organization->getLoginUrl() . '/ask/';
+        $askUrl = $organization->getLoginUrl() . '/ask';
 
         $todoCounts = $this->getTodoCounts();
 
