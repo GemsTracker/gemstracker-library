@@ -9,6 +9,7 @@ use Gems\Exception\Coding;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
@@ -550,6 +551,11 @@ class AuditLog
 
     protected function storeRequestEntry($route, $message, $data, bool $changed, ?int $respondentId, int $logId = 0): ? int
     {
+        $currentOrganizationId = $this->getCurrentOrganizationId();
+        if ($currentOrganizationId === OrganizationRepository::SYSTEM_NO_ORG) {
+            $currentOrganizationId = 0;
+        }
+
         $logData = [
             'gla_action'        => $route,
             'gla_method'        => $this->request->getMethod(),
@@ -559,7 +565,7 @@ class AuditLog
             'gla_data'          => json_encode($data),
             'gla_remote_ip'     => $this->request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE),
             'gla_respondent_id' => $respondentId,
-            'gla_organization'  => $this->getCurrentOrganizationId(),
+            'gla_organization'  => $currentOrganizationId,
             'gla_role'          => $this->getCurrentRole(),
         ];
 
