@@ -53,7 +53,7 @@ class TokenMailFields extends RespondentMailFields
         // Add the code fields
         $codes  = $this->token->getRespondentTrack()->getCodeFields();
         foreach ($codes as $code => $data) {
-            $key = 'track.' . $code;
+            $key = 'track_' . $code;
             if (is_array($data)) {
                 $data = implode(' ', $data);
             }
