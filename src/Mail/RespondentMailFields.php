@@ -29,10 +29,18 @@ class RespondentMailFields extends OrganizationMailFields
             'salutation'    => $this->respondent->getSalutation($language),
             'last_name'     => $this->respondent->getLastName(),
             'name'          => $this->respondent->getName(),
+            'birthday'      => null,
+            'birthYear'     => null,
             'reply_to'      => null,
             'to'            => $this->respondent->getEmailAddress(),
             'reset_ask'     => $this->respondent->getOrganization()->getPreferredSiteUrl() . '/password-reset',
         ];
+
+        $birthday = $this->respondent->getBirthday();
+        if ($birthday instanceof \DateTimeInterface) {
+            $mailFields['birthday'] = $birthday->format('d-m-Y');
+            $mailFields['birthYear'] = $birthday->format('Y');
+        }
 
         return $mailFields;
     }
