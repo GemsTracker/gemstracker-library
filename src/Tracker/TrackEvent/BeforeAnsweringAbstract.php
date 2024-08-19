@@ -46,7 +46,7 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
      *
      * @var array fieldname => value
      */
-    private $_output;
+    private $_output = [];
 
     /**
      * @var bool When true the answer fields are mapped case-sensitive (default is not)
@@ -147,12 +147,17 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
         return array_fill_keys(array_keys($token->getSurvey()->getQuestionList($this->locale->getLanguage())), null);
     }
 
+    protected function getLog(): array
+    {
+        return $this->_log;
+    }
+
     /**
      * The final output
      *
      * @return array fieldName => value
      */
-    protected function getOutput()
+    protected function getOutput(): array
     {
         // Wo do not want to output these ever.
         unset($this->_output['datestamp'], $this->_output['id'], $this->_output['startdate'], $this->_output['startlanguage'], $this->_output['submitdate'], $this->_output['token']);
