@@ -104,6 +104,11 @@ class LimeSurvey3m00Database extends SourceAbstract
     ];
 
     /**
+     * @var string Default language when none is specified nor found
+     */
+    protected string $defaultLanguage = 'en';
+
+    /**
      *
      * @var array of \Gems\Tracker\Source\LimeSurvey3m00FieldMap
      */
@@ -150,6 +155,9 @@ class LimeSurvey3m00Database extends SourceAbstract
     ) {
         parent::__construct($_sourceData, $_gemsResultFetcher, $translate, $tokenLibrary, $tracker, $valueEncryptor, $config);
 
+        if (isset($config['locale']['default'])) {
+            $this->defaultLanguage = $config['locale']['default'];
+        }
         $this->logger = $loggers->getLogger(ConfigProvider::ERROR_LOGGER);
         $this->siteName = $config['app']['name'] ?? null;
 
@@ -357,6 +365,10 @@ class LimeSurvey3m00Database extends SourceAbstract
                     WHERE sid = ?';
 
                 $this->_languageMap[$sourceSurveyId][$language] = $lsResultFetcher->fetchOne($sql, [$sourceSurveyId]);
+
+                if (! $this->_languageMap[$sourceSurveyId][$language]) {
+                    $this->_languageMap[$sourceSurveyId][$language] = $language ?? $this->defaultLanguage;
+                }
             }
         }
 

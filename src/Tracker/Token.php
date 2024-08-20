@@ -1956,7 +1956,7 @@ class Token
      */
     public function setCompletionTime(string|DateTimeInterface|null $completionTime, int $userId): self
     {
-        $values['gto_completion_time'] = $this->getDateTimeValue($completionTime);
+        $values['gto_completion_time'] = $this->getDateTimeValue($completionTime)?->format(Tracker::DB_DATETIME_FORMAT);
         $this->_updateToken($values, $userId);
 
         $survey = $this->getSurvey();

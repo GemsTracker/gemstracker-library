@@ -21,6 +21,7 @@ use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\Export\ExportSurveyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\LegacyAskRedirectHandler;
+use Gems\Handlers\RedirectHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
 use Gems\Handlers\Respondent\FindTokenHandler;
 use Gems\Handlers\Setup\Database\PatchHandler;
@@ -416,6 +417,18 @@ class Route
                 ],
                 noCsrfRoutes: ['index', 'lost']
             ),
+
+            ...$this->createRoute(
+                name: 'legacyAskIndex',
+                path: '/ask/',
+                methods: ['GET', 'POST'],
+                middleware: [
+                    RedirectHandler::class,
+                ],
+                options: [
+                    'redirect' => 'ask.index',
+                ],
+            )
         ];
 
     }
