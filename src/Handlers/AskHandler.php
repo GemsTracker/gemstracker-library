@@ -439,11 +439,14 @@ class AskHandler extends SnippetLegacyHandlerAbstract
 
             $params = $this->requestInfo->getRequestPostParams();
             if (isset($params['id'])) {
-                $route = $this->routeHelper->getRouteSibling($this->requestInfo->getRouteName(), 'forward');
-                $routeUrl = $this->routeHelper->getRouteUrl($route['name'], [
-                    MetaModelInterface::REQUEST_ID => $params['id'],
-                ]);
-                return $this->getRedirectResponse($routeUrl);
+                $tokenId = $this->tracker->filterToken($params['id']);
+                if (!empty($tokenId)) {
+                    $route = $this->routeHelper->getRouteSibling($this->requestInfo->getRouteName(), 'forward');
+                    $routeUrl = $this->routeHelper->getRouteUrl($route['name'], [
+                        MetaModelInterface::REQUEST_ID => $tokenId,
+                    ]);
+                    return $this->getRedirectResponse($routeUrl);
+                }
             }
         }
 
