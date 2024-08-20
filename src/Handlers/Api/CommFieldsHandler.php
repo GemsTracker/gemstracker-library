@@ -54,8 +54,8 @@ class CommFieldsHandler implements RequestHandlerInterface
          * @var Locale $locale
          */
         $locale = $request->getAttribute(LocaleMiddleware::LOCALE_ATTRIBUTE);
-        $id = $request->getAttribute(MetaModelInterface::REQUEST_ID);
         $queryParams = $request->getQueryParams();
+        $id = $request->getAttribute(MetaModelInterface::REQUEST_ID) ?? $queryParams['id'] ?? null;
         $organizationId = $request->getAttribute('organizationId') ?? $queryParams['organizationId'] ?? null;
 
         $commFields = match ($target) {
