@@ -14,6 +14,7 @@ namespace Gems\User;
 use Gems\Registry\CachedArrayTargetAbstract;
 use Gems\Repository\OrganizationRepository;
 use Gems\Site\SiteUtil;
+use Mezzio\Helper\UrlHelper;
 
 /**
  * Contains information on the organization of the current User
@@ -120,6 +121,11 @@ class Organization extends CachedArrayTargetAbstract
      * @var string Name of table used in gtrs_table
      */
     protected $translationTable = 'gems__organizations';
+
+    /**
+     * @var UrlHelper
+     */
+    protected $urlHelper;
 
     /**
      * Creates the object.
@@ -431,7 +437,7 @@ class Organization extends CachedArrayTargetAbstract
     /**
      * get the parameters where the survey should return to
      *
-     * @return array
+     * @return string
      */
     public function getPreferredSiteUrl()
     {
@@ -575,7 +581,9 @@ class Organization extends CachedArrayTargetAbstract
             return null;
         }
 
-        return $this->getPreferredSiteUrl() . '/participate/unsubscribe/org/' . $this->getId();
+        $url = $this->urlHelper->generate('participate.unsubscribe', [], ['org' => $this->getId()]);
+
+        return $this->getPreferredSiteUrl() . $url;
     }
 
     /**

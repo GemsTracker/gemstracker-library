@@ -14,6 +14,7 @@ use Gems\Tracker;
 use Gems\Tracker\TrackEvents;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
+use Mezzio\Helper\UrlHelper;
 use Zalt\Base\TranslatorInterface;
 
 class Respondent extends \Gems\Tracker\Respondent
@@ -31,6 +32,7 @@ class Respondent extends \Gems\Tracker\Respondent
         Tracker                 $tracker,
         TrackEvents             $trackEvents,
         CurrentUserRepository   $currentUserRepository,
+        protected readonly UrlHelper $urlHelper,
     ) {
         parent::__construct(
             'EXAMPLE001',
@@ -66,7 +68,9 @@ class Respondent extends \Gems\Tracker\Respondent
 
     public function getOrganization(): Organization
     {
-        return new Organization();
+        $organization = new Organization();
+        $organization->answerRegistryRequest('urlHelper', $this->urlHelper);
+        return $organization;
     }
 
     public function refresh(): void

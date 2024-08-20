@@ -10,6 +10,7 @@ use Gems\Repository\TrackDataRepository;
 use Gems\User\StaffUserDefinition;
 use Gems\Util\Translated;
 use Laminas\Permissions\Acl\Acl;
+use Mezzio\Helper\UrlHelper;
 
 class User extends \Gems\User\User
 {
@@ -35,6 +36,7 @@ class User extends \Gems\User\User
         Acl $acl,
         Translated $translatedUtil,
         ResultFetcher $resultFetcher,
+        protected readonly UrlHelper $urlHelper,
     ) {
         parent::__construct(
             $userDefinition,
@@ -49,7 +51,9 @@ class User extends \Gems\User\User
 
     public function getBaseOrganization(): Organization
     {
-        return new Organization();
+        $organization = new Organization();
+        $organization->answerRegistryRequest('urlHelper', $this->urlHelper);
+        return $organization;
     }
 
     public function getPasswordResetKey(): string
