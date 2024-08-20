@@ -349,7 +349,7 @@ class AppointmentModel extends GemsMaskedModel
 
             $id = $this->resultFetcher->fetchOne(
                 $sql,
-                array($newValues['gap_id_in_source'], $newValues['gap_id_organization'], $newValues['gap_source'])
+                [(string)$newValues['gap_id_in_source'], $newValues['gap_id_organization'], $newValues['gap_source']]
             );
 
             if ($id) {
