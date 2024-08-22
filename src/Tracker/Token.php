@@ -1811,7 +1811,7 @@ class Token
             $filler = $this->getRespondent();
         }
         $hasEmail = !empty($email);
-        $trackIsMailable = $filler->getMailCode() >= $this->getRespondentTrack()->getMailCode();
+        $trackIsMailable = $this->getRespondentTrack()->isMailable();
         $tokenIsMailable = $filler->getMailCode() >= $this->getSurvey()->getMailCode();
         
         return $hasEmail && $trackIsMailable && $tokenIsMailable;
