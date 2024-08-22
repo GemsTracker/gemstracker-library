@@ -123,6 +123,11 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
      */
     protected $util;
 
+    public function getCode(): string|null
+    {
+        return $this->_get('ggp_code');
+    }
+
     /**
      * Return default new use group, if it exists
      *
