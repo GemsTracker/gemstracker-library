@@ -754,6 +754,7 @@ class CommJobRepository
     protected function checkTokenCompletion(string $tokenId, $retry = 0): bool
     {
         $maxRetries = 5;
+        $token = null;
         try {
             $token = $this->tracker->getToken($tokenId);
             if ($token->inSource()) {
@@ -765,9 +766,12 @@ class CommJobRepository
         } catch(InvalidQueryException $e) {
             if (str_contains($e->getMessage(), 'MySQL server has gone away') && $retry <= $maxRetries) {
                 sleep(3);
-                $sourceConnection = $token->getSurvey()->getSource()->getSourceDatabase()->getDriver()->getConnection();
-                $sourceConnection->disconnect();
-                $sourceConnection->connect();
+                if ($token) {
+                    $sourceConnection = $token->getSurvey()->getSource()->getSourceDatabase()->getDriver(
+                    )->getConnection();
+                    $sourceConnection->disconnect();
+                    $sourceConnection->connect();
+                }
                 $connection = $this->cachedResultFetcher->getAdapter()->getDriver()->getConnection();
                 $connection->disconnect();
                 $connection->connect();
