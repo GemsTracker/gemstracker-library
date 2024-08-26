@@ -14,8 +14,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SetCommJobTokenAsSent;
 use Gems\Tracker;
-use Gems\Tracker\Token;
-use Laminas\Db\Sql\Predicate\Predicate;
+use Laminas\Db\Adapter\Exception\InvalidQueryException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\TranslatorInterface;
 
@@ -706,13 +705,7 @@ class CommJobRepository
             $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId, $forced);
             $reload   = false;
             foreach($tokenIds as $tokenData) {
-                $token = $this->tracker->getToken($tokenData['gto_id_token']);
-                if ($token->inSource()) {
-                    if ($token->checkTokenCompletion($this->currentUserId)) {
-                        // Completion may change the result of the initial query
-                        $reload = true;
-                    }
-                }
+                $reload = $this->checkTokenCompletion($tokenData['gto_id_token']);
             }
         }
 
@@ -756,6 +749,36 @@ class CommJobRepository
         }
 
         return $output;
+    }
+
+    protected function checkTokenCompletion(string $tokenId, $retry = 0): bool
+    {
+        $maxRetries = 5;
+        try {
+            $token = $this->tracker->getToken($tokenId);
+            if ($token->inSource()) {
+                if ($token->checkTokenCompletion($this->currentUserId)) {
+                    // Completion may change the result of the initial query
+                    return true;
+                }
+            }
+        } catch(InvalidQueryException $e) {
+            if (str_contains($e->getMessage(), 'MySQL server has gone away') && $retry <= $maxRetries) {
+                sleep(3);
+                $sourceConnection = $token->getSurvey()->getSource()->getSourceDatabase()->getDriver()->getConnection();
+                $sourceConnection->disconnect();
+                $sourceConnection->connect();
+                $connection = $this->cachedResultFetcher->getAdapter()->getDriver()->getConnection();
+                $connection->disconnect();
+                $connection->connect();
+
+                return $this->checkTokenCompletion($tokenId, $retry+1);
+            } else {
+                throw $e;
+            }
+        }
+
+        return false;
     }
 
     public function isTokenInQueue(string $tokenId): bool
