@@ -1094,16 +1094,22 @@ class Agenda
     {
         $tokenChanges = 0;
 
-        // Find all the fields that use this agenda item
-        $select = $this->resultFetcher->getSelect('gems__respondent2track2appointment');
-        $select->columns(['gr2t2a_id_respondent_track'])
-            ->join('gems__respondent2track', 'gr2t_id_respondent_track = gr2t2a_id_respondent_track', ['gr2t_id_track'])
-            ->quantifier($select::QUANTIFIER_DISTINCT)
+        $subSelect = $this->resultFetcher->getSelect('gems__respondent2track2appointment')
+            ->columns(['gr2t2a_id_respondent_track'])
+            ->where(['gr2t2a_id_appointment' => $appointment->getId()]);
+
+        $select = $this->resultFetcher->getSelect('gems__respondent2track')
+            ->columns([
+                'gr2t_id_respondent_track',
+                'gr2t_id_track',
+            ])
+            //->quantifier(Select::QUANTIFIER_DISTINCT)
             ->order('gr2t_id_track');
 
-        $nestedWhere = $select->where->nest();
+        $select->where->in('gr2t_id_respondent_track', $subSelect);
 
-        $nestedWhere->equalTo('gr2t2a_id_appointment', $appointment->getId());
+        // Now find all the existing tracks that should be checked
+        $respTracks = $this->resultFetcher->fetchPairs($select);
 
         // AND find the filters for any new fields to fill
         $filters = $this->trackFieldFilterRepository->matchFilters($appointment);
@@ -1115,17 +1121,22 @@ class Agenda
             $respId = $appointment->getRespondentId();
             $orgId  = $appointment->getOrganizationId();
 
-            $nestedWhere->or->nest()
-                ->equalTo('gr2t_id_user', $respId)
-                ->equalTo('gr2t_id_organization', $orgId)
-                ->in('gr2t_id_track', $ids)
-                ->unnest();
+            $filterSelect = $this->resultFetcher->getSelect('gems__respondent2track')
+                ->columns([
+                    'gr2t_id_respondent_track',
+                    'gr2t_id_track',
+                ])
+                ->order('gr2t_id_track')
+                ->where([
+                    'gr2t_id_user' => $respId,
+                    'gr2t_id_organization' => $orgId,
+                    'gr2t_id_track' => $ids,
+                ]);
+
+            $filterRespTracks = $this->resultFetcher->fetchPairs($filterSelect);
+
+            $respTracks = $respTracks + $filterRespTracks;
         }
-
-        $nestedWhere->unnest();
-
-        // Now find all the existing tracks that should be checked
-        $respTracks = $this->resultFetcher->fetchPairs($select);
 
         // \MUtil\EchoOut\EchoOut::track($respTracks);
         $existingTracks = [];
