@@ -11,8 +11,9 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Loader;
 use Gems\Model\SurveyQuestionsModel;
-use Gems\Tracker;
+use Gems\Tracker\TrackerInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelInterface;
 
@@ -32,8 +33,9 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
      */
     protected $db;
 
+    protected Loader $loader;
 
-    protected Tracker $tracker;
+    protected ?TrackerInterface $tracker = null;
 
     protected ProjectOverloader $overLoader;
 
@@ -45,6 +47,10 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
      */
     public function execute($surveyId = null, $questionId = null, $order = null)
     {
+        if (! $this->tracker) {
+            $this->tracker = $this->loader->getTracker();
+        }
+
         $batch  = $this->getBatch();
         $survey = $this->tracker->getSurvey($surveyId);
 
