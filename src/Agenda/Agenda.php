@@ -293,7 +293,7 @@ class Agenda
      */
     public function getAppointmentDisplay(array $row): string
     {
-        $results[] = Model::reformatDate($row['gap_admission_time'], null, $this->appointmentDisplayFormat);
+        $results[] = Model::reformatDate($row['gap_admission_time'], ['Y-m-d H:i:s'], $this->appointmentDisplayFormat);
         if ($row['gaa_name']) {
             $results[] = $row['gaa_name'];
         }
