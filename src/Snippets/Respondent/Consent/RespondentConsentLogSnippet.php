@@ -80,7 +80,7 @@ class RespondentConsentLogSnippet extends ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {
@@ -90,6 +90,7 @@ class RespondentConsentLogSnippet extends ModelTableSnippetAbstract
     public function getFilter(MetaModelInterface $metaModel): array
     {
         $filter = parent::getFilter($metaModel);
+        unset($filter['gr2o_patient_nr'], $filter['gr2o_id_organization']);
         if ($this->respondent && $this->respondent->exists) {
             $filter['glrc_id_user'] = $this->respondent->getId();
             $filter['glrc_id_organization'] = $this->respondent->getOrganizationId();
