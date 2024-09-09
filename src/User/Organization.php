@@ -501,7 +501,7 @@ class Organization extends CachedArrayTargetAbstract
     /**
      * Get the signature of the organization.
      *
-     * @return string
+     * @return ?string
      */
     public function getSignature()
     {
@@ -589,7 +589,7 @@ class Organization extends CachedArrayTargetAbstract
     /**
      * Get the welcome message for the organization.
      *
-     * @return string
+     * @return ?string
      */
     public function getWelcome()
     {
