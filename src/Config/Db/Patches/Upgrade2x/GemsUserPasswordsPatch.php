@@ -2,26 +2,18 @@
 
 namespace Gems\Config\Db\Patches\Upgrade2x;
 
+use Gems\Db\Migration\DatabaseInfo;
 use Gems\Db\Migration\PatchAbstract;
 use Gems\Db\ResultFetcher;
 use Laminas\Db\Adapter\Adapter;
 
 class GemsUserPasswordsPatch extends PatchAbstract
 {
-    var array $gems_table_constraints;
-
     public function __construct(
         protected array $config,
-        protected readonly ResultFetcher $resultFetcher,
+        protected readonly DatabaseInfo $databaseInfo,
     )
-    {
-    }
-
-    protected function prepare(): void
-    {
-        $sql = sprintf('SELECT * FROM information_schema.table_constraints_extensions WHERE constraint_schema = "%s" AND table_name = "%s"', $this->config['db']['database'], 'gems__user_passwords');
-        $this->gems_table_constraints = $this->resultFetcher->fetchAll($sql);
-    }
+    { }
 
     public function getDescription(): string|null
     {
@@ -35,16 +27,9 @@ class GemsUserPasswordsPatch extends PatchAbstract
 
     public function up(): array
     {
-        $this->prepare();
-
         $statements = [];
-        // Check if the key we want to drop exists.
-        // If it does, we need to drop it.
-        foreach ($this->gems_table_constraints as $constraint) {
-            if ($constraint['CONSTRAINT_NAME'] === 'gup_reset_key_2') {
-                $statements[] = 'ALTER TABLE gems__user_passwords DROP KEY gup_reset_key_2';
-                continue;
-            }
+        if ($this->databaseInfo->tableHasConstraint('gems__user_passwords', 'gup_reset_key_2')) {
+            $statements[] = 'ALTER TABLE gems__user_passwords DROP KEY gup_reset_key_2';
         }
 
         return $statements;
