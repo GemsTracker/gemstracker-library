@@ -51,10 +51,10 @@ class AppointmentInfoField extends FieldAbstract
 
                     $fieldName = $this->fieldDefinition['gtf_field_values'];
                     if ($fieldName && array_key_exists($fieldName, $info)) {
-                        $options = $this->appointmentInfoTypesRepository->getValueOptionsForType($fieldName);
+                        /*$options = $this->appointmentInfoTypesRepository->getValueOptionsForType($fieldName);
                         if ($options && isset($options[$info[$fieldName]])) {
                             return $options[$info[$fieldName]];
-                        }
+                        }*/
 
                         return $info[$fieldName];
                     }
