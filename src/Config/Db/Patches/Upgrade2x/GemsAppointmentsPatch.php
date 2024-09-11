@@ -4,25 +4,14 @@ namespace Gems\Config\Db\Patches\Upgrade2x;
 
 use Gems\Db\Migration\DatabaseInfo;
 use Gems\Db\Migration\PatchAbstract;
-use Gems\Db\ResultFetcher;
 
 class GemsAppointmentsPatch extends PatchAbstract
 {
-    var array $gems_table_constraints;
-
     public function __construct(
         protected array $config,
-        protected readonly ResultFetcher $resultFetcher,
         protected readonly DatabaseInfo $databaseInfo,
     )
-    {
-    }
-
-    protected function prepare(): void
-    {
-        $sql = sprintf('SELECT * FROM information_schema.table_constraints_extensions WHERE constraint_schema = "%s" AND table_name = "%s"', $this->config['db']['database'], 'gems__appointments');
-        $this->gems_table_constraints = $this->resultFetcher->fetchAll($sql);
-    }
+    { }
 
     public function getDescription(): string|null
     {
@@ -36,8 +25,6 @@ class GemsAppointmentsPatch extends PatchAbstract
 
     public function up(): array
     {
-        $this->prepare();
-
         $statements = [];
         if (!$this->databaseInfo->tableHasColumn('gems__appointments', 'gap_last_synch')) {
             $statements[] = 'ALTER TABLE gems__appointments ADD COLUMN gap_last_synch timestamp NULL DEFAULT NULL AFTER gap_id_in_source';
@@ -45,13 +32,8 @@ class GemsAppointmentsPatch extends PatchAbstract
         $statements[] = 'ALTER TABLE gems__appointments MODIFY COLUMN gap_id_in_source varchar(40) DEFAULT NULL';
         $statements[] = 'ALTER TABLE gems__appointments MODIFY COLUMN gap_comment text';
 
-        // Check if the key we want to drop exists.
-        // If it does, we need to drop it.
-        foreach ($this->gems_table_constraints as $constraint) {
-            if ($constraint['CONSTRAINT_NAME'] === 'gap_changed') {
-                $statements[] = 'ALTER TABLE gems__appointments DROP KEY gap_changed';
-                break;
-            }
+        if ($this->databaseInfo->tableHasConstraint('gems__appointments', 'gap_changed')) {
+            $statements[] = 'ALTER TABLE gems__appointments DROP KEY gap_changed';
         }
 
         return $statements;
