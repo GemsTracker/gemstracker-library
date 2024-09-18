@@ -17,7 +17,7 @@ use Gems\Tracker;
 use Gems\Tracker\Respondent;
 use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\TrackEvent\RespondentChangedEventInterface;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -38,7 +38,7 @@ class CreateDefaultTracks implements RespondentChangedEventInterface
      */
     protected string $trackCode = 'default';
 
-    public function __construct(protected Tracker $tracker, protected ResultFetcher $resultFetcher, protected Translator $translator, CurrentUserRepository $currentUserRepository)
+    public function __construct(protected Tracker $tracker, protected ResultFetcher $resultFetcher, protected TranslatorInterface $translator, CurrentUserRepository $currentUserRepository)
     {
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }

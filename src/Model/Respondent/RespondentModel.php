@@ -30,6 +30,7 @@ use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Localized;
+use Gems\Util\ReceptionCodeLibrary;
 use Gems\Util\Translated;
 use Gems\Validator\OneOf;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -258,6 +259,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->metaModel->set('grs_id_user', [
             'elementClass' => 'Hidden',
         ]);
+        // $this->metaModel->setSaveWhenNew('grs_id_user');
+        $this->metaModel->setAutoSave('grs_id_user');
         $this->metaModel->setOnSave('grs_id_user', [$this->gemsUserIdGenerator, 'createGemsUserId']);
 
         // NAME
@@ -369,9 +372,10 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $this->receptionCodeRepository->getRespondentRestoreCodes(),
             $this->receptionCodeRepository->getRespondentDeletionCodes(),
             'row_class');
-
         $activatingMultiType->applyClass($this->metaModel, 'gr2o_reception_code');
-
+        $this->metaModel->set('gr2o_reception_code', [
+            'default' => ReceptionCodeLibrary::RECEPTION_OK,
+        ]);
 
         $changers = Late::method($this->staffRepository, 'getStaff');
         $this->setIfExists('gr2o_opened', [

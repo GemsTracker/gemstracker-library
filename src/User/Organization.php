@@ -13,6 +13,8 @@ namespace Gems\User;
 
 use Gems\Registry\CachedArrayTargetAbstract;
 use Gems\Repository\OrganizationRepository;
+use Gems\Screens\SubscribeScreenInterface;
+use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Site\SiteUtil;
 use Mezzio\Helper\UrlHelper;
 
@@ -73,7 +75,7 @@ class Organization extends CachedArrayTargetAbstract
      *
      * @var \Gems\Screens\SubscribeScreenInterface
      */
-    protected $_subscribeScreen;
+    protected ?SubscribeScreenInterface $_subscribeScreen = null;
 
     /**
      *
@@ -85,7 +87,7 @@ class Organization extends CachedArrayTargetAbstract
      *
      * @var \Gems\Screens\UnsubscribeScreenInterface
      */
-    protected $_unsubscribeScreen;
+    protected ?UnsubscribeScreenInterface $_unsubscribeScreen = null;
 
     /**
      * Required
@@ -510,9 +512,9 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @return \Gems\Screens\SubscribeScreenInterface
+     * @return null|\Gems\Screens\SubscribeScreenInterface
      */
-    public function getSubscribeScreen()
+    public function getSubscribeScreen(): ?SubscribeScreenInterface
     {
         if ($this->_subscribeScreen || (! $this->_get('gor_respondent_subscribe'))) {
             return $this->_subscribeScreen;
@@ -557,9 +559,9 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @return \Gems\Screens\UnsubscribeScreenInterface
+     * @return null?\Gems\Screens\UnsubscribeScreenInterface
      */
-    public function getUnsubscribeScreen()
+    public function getUnsubscribeScreen(): ?UnsubscribeScreenInterface
     {
         if ($this->_unsubscribeScreen || (! $this->_get('gor_respondent_unsubscribe'))) {
             return $this->_unsubscribeScreen;

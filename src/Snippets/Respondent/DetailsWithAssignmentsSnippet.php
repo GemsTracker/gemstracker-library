@@ -12,12 +12,18 @@
 namespace Gems\Snippets\Respondent;
 
 use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Model;
+use Gems\Repository\ConsentRepository;
+use Gems\Repository\OrganizationRepository;
 use Gems\Tracker;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Late\Late;
+use Zalt\Message\MessengerInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -48,12 +54,18 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        MessengerInterface $messenger,
+        ConsentRepository $consentRepository,
         MaskRepository $maskRepository,
+        MenuSnippetHelper $menuSnippetHelper,
+        OrganizationRepository $organizationRepository,
         protected readonly Tracker $tracker,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $maskRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $currentUserRepository, $messenger, $consentRepository, $maskRepository, $menuSnippetHelper,$organizationRepository);
     }
+
 
     /**
      * @param DetailTableBridge $bridge
@@ -69,9 +81,13 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
 
         // Caption for tracks
         $trackLabel = $this->_('Assigned tracks');
-        if ($menuItem = $this->findMenuItem('track', 'index')) {
-            $href = $menuItem->toHRefAttribute($this->request, $bridge);
-            $bridge->tdh(array('class' => 'linked'))->a($href, $trackLabel);
+        $url        = false;
+        if ($this->menuSnippetHelper) {
+            $queryParams = $this->requestInfo->getParams();
+            $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.index', $queryParams);
+        }
+        if ($url) {
+            $bridge->tdh(array('class' => 'linked'))->a($url, $trackLabel);
         } else {
             $bridge->tdh($trackLabel, array('class' => 'linked'));
         }
@@ -92,9 +108,13 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
                 array('gr2t_created' => SORT_DESC)));
         $tracksList  = $HTML->div($tracksData, array('class' => 'tracksList'));
         $tracksList->setOnEmpty($this->_('No tracks'));
-        if ($menuItem = $this->findMenuItem('track', 'show-track')) {
-            $href = $menuItem->toHRefAttribute($tracksData, array('gr2o_patient_nr' => $this->repeater->gr2o_patient_nr));
-            $tracksTarget = $tracksList->p()->a($href);
+        $url        = false;
+        if ($this->menuSnippetHelper) {
+            $queryParams = $this->requestInfo->getParams();
+            $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.show', $queryParams + [Model::TRACK_ID => $this->repeater->gr2t_id_respondent_track]);
+        }
+        if ($url) {
+            $tracksTarget = $tracksList->p()->a($url);
         } else {
             $tracksTarget = $tracksList->p();
         }

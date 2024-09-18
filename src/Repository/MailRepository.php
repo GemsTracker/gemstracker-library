@@ -16,6 +16,16 @@ class MailRepository
     {
     }
 
+    public function getDefaultRespondentMailCode(): int
+    {
+        $mailCodes = $this->getRespondentMailCodes();
+        // Use the second mailCode, the first is the no-mail code.
+        next($mailCodes);
+        $mailable = key($mailCodes);
+
+        return $mailable;
+    }
+
     public function getRespondentMailCodes(): array
     {
         $select = $this->cachedResultFetcher->getResultFetcher()->getSelect('gems__mail_codes');

@@ -102,6 +102,18 @@ class ConsentRepository
             return $this->consentConfig['consentDefault'];
         }
 
+        return $this->getConsentUnknown();
+    }
+
+    /**
+     * Get the code for an unknwon user consent
+     *
+     * This is de consent description from gems__consents, not the consentCODE
+     *
+     * @return string
+     */
+    public function getConsentUnknown(): string
+    {
         return 'Unknown';
     }
 

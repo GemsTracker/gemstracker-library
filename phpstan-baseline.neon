@@ -4976,6 +4976,11 @@ parameters:
 			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
 
 		-
+			message: "#^Access to an undefined property Zalt\\\\Late\\\\RepeatableInterface\\:\\:\\$gr2t_id_respondent_track\\.$#"
+			count: 1
+			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php
+
+		-
 			message: "#^Access to an undefined property Zalt\\\\Late\\\\RepeatableInterface\\:\\:\\$gr2o_patient_nr\\.$#"
 			count: 1
 			path: src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php

@@ -20,6 +20,8 @@ class GemsSourcesPatch extends PatchAbstract
     {
         return [
             "ALTER TABLE gems__sources MODIFY COLUMN gso_ls_class varchar(60) NOT NULL default 'Gems\\Tracker\\Source\\LimeSurvey3m00Database'",
+            "UPDATE gems__sources SET gso_ls_class = 'LimeSurvey3m00Database' WHERE gso_ls_class IN ('LimeSurvey1m9Database', 'LimeSurvey1m91Database', 'LimeSurvey2m00Database')",
+            "UPDATE gems__sources SET gso_ls_class = 'LimeSurvey5m00Database' WHERE gso_ls_class = 'LimeSurvey4m00Database'",
         ];
     }
 }
