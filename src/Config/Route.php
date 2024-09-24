@@ -44,6 +44,7 @@ use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Util\RouteGroupTrait;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Session\SessionMiddleware;
+use Zalt\Model\MetaModelInterface;
 
 class Route
 {
@@ -451,8 +452,10 @@ class Route
 
     public function getParticipateRoutes(): array
     {
-        return [
-            ...$this->createSnippetRoutes(baseName: 'participate',
+        // path: '/ask/forward/id/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}',
+        $output = [
+            ...$this->createSnippetRoutes(
+                baseName: 'participate',
                 controllerClass: \Gems\Handlers\ParticipateHandler::class,
                 basePrivilege: false,
                 pages: [
@@ -462,12 +465,21 @@ class Route
                     'unsubscribe',
                     'unsubscribe-thanks',
                 ],
+                parameters: ['org' => '[a-zA-Z0-9]*',],
+                parameterRoutes: [
+                    'subscribe',
+                    'unsubscribe',
+                ],
                 postRoutes: [
                     'subscribe',
                     'unsubscribe',
                 ]
             ),
         ];
+        // Make sure the org paramter is optional
+        $output['participate.subscribe']['path'] = '/participate/subscribe[/{org:[a-zA-Z0-9]+}]';
+        $output['participate.unsubscribe']['path'] = '/participate/unsubscribe[/{org:[a-zA-Z0-9]+}]';
+        return $output;
     }
 
     public function getContactRoutes(): array

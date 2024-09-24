@@ -14,12 +14,14 @@ namespace Gems\Handlers;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
+use Gems\Repository\OrganizationRepository;
 use Gems\Screens\ScreenRepository;
 use Gems\Screens\SubscribeScreenInterface;
 use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Site\SiteUtil;
 use Gems\User\User;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 
@@ -81,11 +83,12 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
-        protected CurrentUserRepository $currentUserRepository,
-        protected ScreenRepository $screenRepository,
-        protected RouteHelper $routeHelper,
-        protected ResultFetcher $resultFetcher,
-        protected SiteUtil $siteUtil,
+        protected readonly CurrentUserRepository $currentUserRepository,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly RouteHelper $routeHelper,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly ScreenRepository $screenRepository,
+        protected readonly SiteUtil $siteUtil,
         protected array $config,
     ) {
         parent::__construct($responder, $translate);
@@ -107,6 +110,38 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
         return $this->resultFetcher->fetchPairs($select);
     }
 
+    public function getOrganizationId(array &$subscribableOrganizations): ?int
+    {
+        $orgId = $this->requestInfo->getParam('org');
+        if (! is_numeric($orgId)) {
+            $orgs  = $this->organizationRepository->getOrganizationsByCode($orgId);
+            $orgId = array_key_first($orgs);
+        }
+
+        if ($this->currentUser) {
+            $allowedOrganizations = $this->currentUser->getAllowedOrganizations();
+        } else {
+            $site = $this->siteUtil->getCurrentSite($this->request);
+            $allowedOrganizations = $this->siteUtil->getNamedOrganizationsFromSiteUrl($site);
+        }
+        $subscribableOrganizations = array_intersect_assoc($allowedOrganizations, $subscribableOrganizations);
+
+        if ($orgId && !isset($subscribableOrganizations[$orgId])) {
+            // The organization Id was set but it is not valid.
+            $orgId = null;
+        }
+
+        if (count($subscribableOrganizations) == 1) {
+            $orgId = array_key_first($subscribableOrganizations);
+        }
+
+        if ($orgId) {
+            $this->setCurrentOrganization($orgId);
+        }
+
+        return $orgId;
+    }
+
     /**
      * Nothing here yet.
      */
@@ -119,52 +154,32 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
      */
     public function subscribeAction(): void
     {
-        $queryParams = $this->request->getQueryParams();
-        $orgId = $queryParams['org'] ?? null;
-
-        if ($this->currentUser) {
-            $allowedOrganizations = $this->currentUser->getAllowedOrganizations();
-        } else {
-            $site = $this->siteUtil->getCurrentSite($this->request);
-            $allowedOrganizations = $this->siteUtil->getNamedOrganizationsFromSiteUrl($site);
-        }
-        $screenOrganizations = $this->_getScreenOrgs('gor_respondent_subscribe');
-        $subscribableOrganizations = array_intersect_assoc($allowedOrganizations, $screenOrganizations);
-
-        if ($orgId && !isset($subscribableOrganizations[$orgId])) {
-            // The organization Id was set but it is not valid.
-            $ordId = null;
-        }
-
-        // If there is only one organization we can subscribe to, select it.
-        if (count($subscribableOrganizations) == 1) {
-            $orgId = key($subscribableOrganizations);
-        }
-
-        $this->setCurrentOrganization($orgId);
+        $subscribableOrganizations = $this->_getScreenOrgs('gor_respondent_subscribe');
+        $orgId = $this->getOrganizationId($subscribableOrganizations);
 
         // What to show if there are no organizations to subscribe to.
         $params   = [];
         $snippets = ['Subscribe\\NoSubscriptionsSnippet'];
 
         if ($orgId) {
+            $params['afterSaveRouteUrl'] = $this->routeHelper->getRouteUrl('participate.subscribe-thanks');
+
             $screen = $this->screenRepository->getSubscribeScreenForOrganizationId($orgId);
             if ($screen instanceof SubscribeScreenInterface) {
-                $params   = $screen->getSubscribeParameters();
+                $params   = $screen->getSubscribeParameters() + $params;
                 $snippets = $screen->getSubscribeSnippets();
             }
         } else {
             if ($subscribableOrganizations) {
                 $params   = [
-                    'action' => 'subscribe',
                     'info'   => $this->_('Select an organization to subscribe to:'),
                     'orgs'   => $subscribableOrganizations,
+                    'route'  => 'participate.subscribe',
                     ];
                 $snippets = ['Organization\\ChooseListedOrganizationSnippet'];
             }
         }
 
-        $params = $this->convertLegacyRouteActionToAfterSaveRouteUrl($params);
         $params['csrfName']  = $this->getCsrfTokenName();
         $params['csrfToken'] = $this->getCsrfToken();
 
@@ -189,52 +204,32 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
      */
     public function unsubscribeAction(): void
     {
-        $queryParams = $this->request->getQueryParams();
-        $orgId = $queryParams['org'] ?? null;
-
-        if ($this->currentUser) {
-            $allowedOrganizations = $this->currentUser->getAllowedOrganizations();
-        } else {
-            $site = $this->siteUtil->getCurrentSite($this->request);
-            $allowedOrganizations = $this->siteUtil->getNamedOrganizationsFromSiteUrl($site);
-        }
-        $screenOrganizations = $this->_getScreenOrgs('gor_respondent_unsubscribe');
-        $unsubscribableOrganizations = array_intersect_assoc($allowedOrganizations, $screenOrganizations);
-
-        if ($orgId && !isset($unsubscribableOrganizations[$orgId])) {
-            // The organization Id was set but it is not valid.
-            $ordId = null;
-        }
-
-        // If there is only one organization we can subscribe to, select it.
-        if (count($unsubscribableOrganizations) == 1) {
-            $orgId = key($unsubscribableOrganizations);
-        }
-
-        $this->setCurrentOrganization($orgId);
+        $unsubscribableOrganizations = $this->_getScreenOrgs('gor_respondent_unsubscribe');
+        $orgId = $this->getOrganizationId($unsubscribableOrganizations);
 
         // What to show if there are no organizations to subscribe to.
         $params   = [];
         $snippets = ['Unsubscribe\\NoUnsubscriptionsSnippet'];
 
         if ($orgId) {
+            $params['afterSaveRouteUrl'] = $this->routeHelper->getRouteUrl('participate.unsubscribe-thanks');
+
             $screen = $this->screenRepository->getUnsubscribeScreenForOrganizationId($orgId);
             if ($screen instanceof UnsubscribeScreenInterface) {
-                $params   = $screen->getUnsubscribeParameters();
+                $params   = $screen->getUnsubscribeParameters() + $params;
                 $snippets = $screen->getUnsubscribeSnippets();
             }
         } else {
             if ($unsubscribableOrganizations) {
                 $params   = [
-                    'action' => 'unsubscribe',
                     'info'   => $this->_('Select an organization to unsubscribe from:'),
                     'orgs'   => $unsubscribableOrganizations,
+                    'route'  => 'participate.unsubscribe',
                     ];
                 $snippets = ['Organization\\ChooseListedOrganizationSnippet'];
             }
         }
 
-        $params = $this->convertLegacyRouteActionToAfterSaveRouteUrl($params);
         $params['csrfName']  = $this->getCsrfTokenName();
         $params['csrfToken'] = $this->getCsrfToken();
 
@@ -252,22 +247,6 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
 
             $this->addSnippets($this->unsubscribeThanksSnippets, $params);
         }
-    }
-
-    /**
-     * Since we don't have the routeHelper in the Snippets we're loading, convert
-     * the route name to a URL here.
-     * @param  array  $params Snippet parameters
-     * @return array          Updated snippet parameters
-     */
-    private function convertLegacyRouteActionToAfterSaveRouteUrl(array $params): array
-    {
-        // Convert routeAction to afterSaveRouteUrl
-        if (isset($params['routeAction'])) {
-            $params['afterSaveRouteUrl'] = $this->routeHelper->getRouteUrl($params['routeAction']);
-            unset($params['routeAction']);
-        }
-        return $params;
     }
 
     /**
