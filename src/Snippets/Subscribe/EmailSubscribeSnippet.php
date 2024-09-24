@@ -152,6 +152,8 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
     {
         $this->addMessage($this->getSubscribeMessage());
 
+        $this->currentUserRepository->setCurrentOrganizationId($this->formData['org']);
+
         $values = $this->getSaveData();
         $result = $this->respondentModel->save($values);
 

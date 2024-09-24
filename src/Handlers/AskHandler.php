@@ -256,6 +256,24 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         return $output;
     }
 
+    protected function checkReturnUrl(string $url): string
+    {
+        // Fix for ask index redirect to forward not set in HTTP_REFERER in RedirectLoop
+        $urlWithoutQueryParams = strstr($url, '?', true);
+        $askIndexUrl = $this->routeHelper->getRouteUrl('ask.index');
+
+        if ($this->token instanceof Token && ((! $url) || str_ends_with($urlWithoutQueryParams, $askIndexUrl))) {
+            $forwardUrl = $this->routeHelper->getRouteUrl('ask.forward', [
+                MetaModelInterface::REQUEST_ID => $this->token->getTokenId(),
+            ]);
+            // Add the supplied query params
+            //$forwardUrl .= strstr($url, '?');
+            return $forwardUrl;
+        }
+
+        return $url;
+    }
+
     /**
      * Function for overruling the display of the login form.
      *
@@ -436,7 +454,6 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         ]);
 
         if ($this->requestInfo->isPost() && $form->isValid($this->requestInfo->getRequestPostParams(), false)) {
-
             $params = $this->requestInfo->getRequestPostParams();
             if (isset($params['id'])) {
                 $tokenId = $this->tracker->filterToken($params['id']);
@@ -546,23 +563,6 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     public function tokenAction()
     {
         return $this->forward('index');
-    }
-
-    protected function checkReturnUrl(string $url): string
-    {
-        // Fix for ask index redirect to forward not set in HTTP_REFERER in RedirectLoop
-        $urlWithoutQueryParams = strstr($url, '?', true);
-        $askIndexUrl = $this->routeHelper->getRouteUrl('ask.index');
-        if ($this->token instanceof Token && str_ends_with($urlWithoutQueryParams, $askIndexUrl)) {
-            $forwardUrl = $this->routeHelper->getRouteUrl('ask.forward', [
-                MetaModelInterface::REQUEST_ID => $this->token->getTokenId(),
-            ]);
-            // Add the supplied query params
-            //$forwardUrl .= strstr($url, '?');
-            return $forwardUrl;
-        }
-
-        return $url;
     }
 
     /**
