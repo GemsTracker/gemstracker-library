@@ -89,6 +89,8 @@ class SeedRepository extends MigrationRepositoryAbstract
         foreach($rows as $row) {
             $key = array_key_first($row);
             $check = $sql->select($table)->where([$key => $row[$key]]);
+
+            // Yeah I know: works only with single key tables for now
             if (! $this->resultFetcher->fetchRow($check)) {
                 $insert = $sql->insert($table);
                 $insert->values($row);
