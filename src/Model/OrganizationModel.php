@@ -150,8 +150,8 @@ class OrganizationModel extends \Gems\Model\JoinModel
             $ct->apply($this, 'gor_sites');
         }
 
-        $this->addColumn('gor_id_organization', 'pref_url');
-        $this->set('pref_url', 'label', $this->_("Preferred url"), 'elementClass', 'Exhibitor');
+//        $this->addColumn('gor_id_organization', 'pref_url');
+//        $this->set('pref_url', 'label', $this->_("Preferred url"), 'elementClass', 'Exhibitor');
         //$this->setOnLoad('pref_url', [$this->util->getSites(), 'getOrganizationPreferredUrl']);
 
         $this->setIfExists('gor_code',             'label', $this->_('Organization code'),
@@ -243,7 +243,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
                 'multiOptions', $localized->getLanguages()
                 );
         if ($this->_styles) {
-            $this->setIfExists('gor_style',     'label', $this->_('Style'), 'multiOptions', $this->_styles, 'default', 'gems');
+            $this->setIfExists('gor_style',     'label', $this->_('Mail template'), 'multiOptions', $this->_styles, 'default', 'gems');
         }
 
         if ($this->notEditing && $this->project->translateDatabaseFields()) {
