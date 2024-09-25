@@ -15,8 +15,11 @@ use Zalt\Loader\ProjectOverloader;
 
 class SeedRepository extends MigrationRepositoryAbstract
 {
+    public string $lastSql = '';
 
     protected string $modelName = 'databaseSeedModel';
+
+    protected readonly ResultFetcher $resultFetcher;
 
     public function __construct(
         array $config,
@@ -25,6 +28,9 @@ class SeedRepository extends MigrationRepositoryAbstract
         protected readonly ProjectOverloader $overloader,
     ) {
         parent::__construct($config, $databases, $eventDispatcher);
+
+        $adapter = $this->databases->getDefaultDatabase();
+        $this->resultFetcher = new ResultFetcher($adapter);
     }
 
     protected array $seedFileTypes = [
@@ -32,20 +38,6 @@ class SeedRepository extends MigrationRepositoryAbstract
         'yaml',
         'json',
     ];
-
-    protected function resolveReferences(array $data, array $references): array
-    {
-        foreach($data as $rowKey => $row) {
-            foreach($row as $column => $value) {
-                foreach($references as $reference => $replacement) {
-                    if ($value === '{{' . $reference . '}}') {
-                        $data[$rowKey][$column] = $replacement;
-                    }
-                }
-            }
-        }
-        return $data;
-    }
 
     protected function getSeedDataFromFile(SplFileInfo $file): array|null
     {
@@ -95,9 +87,13 @@ class SeedRepository extends MigrationRepositoryAbstract
         $sql = new Sql($adapter);
         $sqlStatements = [];
         foreach($rows as $row) {
-            $insert = $sql->insert($table);
-            $insert->values($row);
-            $sqlStatements[] = $sql->buildSqlString($insert);
+            $key = array_key_first($row);
+            $check = $sql->select($table)->where([$key => $row[$key]]);
+            if (! $this->resultFetcher->fetchRow($check)) {
+                $insert = $sql->insert($table);
+                $insert->values($row);
+                $sqlStatements[] = $sql->buildSqlString($insert);
+            }
         }
         return $sqlStatements;
     }
@@ -235,6 +231,23 @@ class SeedRepository extends MigrationRepositoryAbstract
         return $this->getResourceDirectories('seeds');
     }
 
+    protected function resolveReferences(array $data, array $references): array
+    {
+        foreach($data as $rowKey => $row) {
+            foreach($row as $column => $value) {
+                foreach($references as $reference => $replacement) {
+                    if ($value === '{{' . $reference . '}}') {
+                        $data[$rowKey][$column] = $replacement;
+                    } elseif (str_starts_with($value, '{{')) {
+                        unset($data[$rowKey]);
+                        break;
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+
     public function runSeed(array $seedInfo)
     {
         if (!isset($seedInfo['db'], $seedInfo['data']) || empty($seedInfo['data'])) {
@@ -264,6 +277,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 $sqlQueries = $this->getQueriesFromRows($adapter, $seedTable, $this->resolveReferences($seedRows, $generatedValues));
 
                 foreach($sqlQueries as $index => $sqlQuery) {
+                    $this->lastSql = $sqlQuery;
                     $resultFetcher->query($sqlQuery);
                     $generatedValues[$seedTable.'.'.$index] = $resultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
                     $finalQueries[] = $sqlQuery;

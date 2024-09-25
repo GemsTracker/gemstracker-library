@@ -121,6 +121,9 @@ class RunMigrations extends Command
                 $this->patchRepository->runPatch($patchInfo);
                 $io->success(sprintf('%s %s successfully executed', 'Patch', $patchInfo['name']));
             } catch (\Exception $e) {
+                if ($this->patchRepository->lastSql) {
+                    $io->error(sprintf("While running patch %s for the SQL statement:\n\n%s", $patchInfo['name'], $this->patchRepository->lastSql));
+                }
                 $io->error(sprintf('%s %s failed.. %s', 'Patch', $patchInfo['name'], $e->getMessage()));
                 return false;
             }
@@ -136,6 +139,9 @@ class RunMigrations extends Command
                 $this->seedRepository->runSeed($seedInfo);
                 $io->success(sprintf('%s %s successfully executed', 'Seed', $seedInfo['name']));
             } catch (\Exception $e) {
+                if ($this->seedRepository->lastSql) {
+                    $io->error(sprintf("While running patch %s for the SQL statement:\n\n%s", $seedInfo['name'], $this->seedRepository->lastSql));
+                }
                 $io->error(sprintf('%s %s failed.. %s', 'Seed', $seedInfo['name'], $e->getMessage()));
                 return false;
             }

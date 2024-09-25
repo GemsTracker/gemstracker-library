@@ -17,6 +17,7 @@ use Zalt\String\Str;
 
 class PatchRepository extends MigrationRepositoryAbstract
 {
+    public string $lastSql = '';
 
     protected string $modelName = 'databasePatchesModel';
     public function __construct(
@@ -181,6 +182,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                 $localTransaction = true;
             }
             foreach($patchInfo['sql'] as $sqlQuery) {
+                $this->lastSql = $sqlQuery;
                 $resultFetcher->query($sqlQuery);
             }
             if ($localTransaction && $connection->inTransaction()) { // @phpstan-ignore-line
