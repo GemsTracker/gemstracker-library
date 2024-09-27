@@ -146,10 +146,12 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             if (! \Composer\InstalledVersions::isInstalled($package)) {
                 continue;
             }
-            $display = sprintf('%s (%s)',
-                \Composer\InstalledVersions::getPrettyVersion($package),
-                \Composer\InstalledVersions::getReference($package));
-                $data[$this->_('Version').' '.$package] = $display;
+            $version = \Composer\InstalledVersions::getPrettyVersion($package);
+            if (!preg_match('/^v?[\d\.]+$/', $version)) {
+                $reference = \Composer\InstalledVersions::getReference($package);
+                $version = sprintf('%s (%s)', $version, $reference);
+            }
+            $data[$this->_('Version').' '.$package] = $version;
         }
 
         return $data;
