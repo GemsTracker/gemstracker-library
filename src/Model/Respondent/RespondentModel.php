@@ -354,14 +354,16 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->currentGroup = $this->_('Settings');
         $this->setIfExists('grs_iso_lang', [
             'default' => $this->localizedUtil->getDefaultLanguage(),
-            'elementClass' => 'radio',
+            'elementClass' => 'Radio',
             'multiOptions' => $this->localizedUtil->getLanguages(),
             'separator' => ' ',
         ]);
         $this->setIfExists('gr2o_consent', [
             'default' => $this->consentRepository->getDefaultConsent(),
             'description' => $this->_('Has the respondent signed the informed consent letter?'),
-            'elementClass' => 'Exhibitor',
+            'elementClass' => 'Radio',
+            'multiOptions' => $this->consentRepository->getUserConsentOptions(),
+            'separator' => ' ',
         ]);
         foreach ($this->consentFields as $consent) {
             $this->addColumn($consent, 'old_' . $consent);

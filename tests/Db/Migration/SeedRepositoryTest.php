@@ -11,10 +11,12 @@ use Gems\Event\Application\RunSeedMigrationEvent;
 use Gems\Model\IteratorModel;
 use Gems\Model\MetaModelLoader;
 use GemsTest\Data\Db\SeedRepository\PhpSeed;
+use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
 use PHPUnit\Framework\Attributes\Group;
 use Prophecy\Argument;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ConstructorProjectOverloader;
@@ -440,6 +442,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
     {
         if ($databases === null) {
             $databasesProphecy = $this->prophesize(Databases::class);
+            $databasesProphecy->getDefaultDatabase()->willReturn($this->getTestDatabase());
             $databases = $databasesProphecy->reveal();
         }
 
