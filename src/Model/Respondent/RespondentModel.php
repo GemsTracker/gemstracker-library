@@ -342,14 +342,11 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         $phoneFilter    = (new PhoneNumberFilter($this->config))->filter(...);
         $phoneValidator = new PhoneNumberValidator($this->config, $this->translate);
-        $this->setIfExists('grs_phone_1', ['validator' => $phoneValidator,]);
-        $this->setIfExists('grs_phone_2', ['validator' => $phoneValidator,]);
-        $this->setIfExists('grs_phone_3', ['validator' => $phoneValidator,]);
-        $this->setIfExists('grs_phone_4', ['validator' => $phoneValidator,]);
-        $this->metaModel->setOnSave('grs_phone_1', $phoneFilter);
-        $this->metaModel->setOnSave('grs_phone_2', $phoneFilter);
-        $this->metaModel->setOnSave('grs_phone_3', $phoneFilter);
-        $this->metaModel->setOnSave('grs_phone_4', $phoneFilter);
+        $settings       = ['filters[phone]' => $phoneFilter, 'validators[phone]' => $phoneValidator,];
+        $this->setIfExists('grs_phone_1', $settings);
+        $this->setIfExists('grs_phone_2', $settings);
+        $this->setIfExists('grs_phone_3', $settings);
+        $this->setIfExists('grs_phone_4', $settings);
 
         $this->currentGroup = $this->_('Settings');
         $this->setIfExists('grs_iso_lang', [
@@ -587,7 +584,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         if ($this->metaModel->has($name)) {
             if ((!isset($options['label'])) && isset($this->_labels[$name]) && $this->_labels[$name]) {
                 $options['label'] = $this->_labels[$name];
-
             }
             if ($this->currentGroup) {
                 $options['tab'] = $this->currentGroup;
