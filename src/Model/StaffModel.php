@@ -15,10 +15,10 @@ namespace Gems\Model;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Model\Type\EncryptedField;
 use Gems\User\Embed\EmbedLoader;
-use Gems\User\Filter\PhoneNumberFilter;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Gems\User\Validate\PhoneNumberValidator;
+use Gems\Util\PhoneNumberFormatter;
 use Gems\Util\Translated;
 use Laminas\Filter\Callback;
 use MUtil\Validator\NoScript;
@@ -313,7 +313,7 @@ class StaffModel extends JoinModel
             'label' => $this->_('Mobile phone'),
             'validator' => new PhoneNumberValidator($this->config, $this->translate),
         ]);
-        $this->setOnSave('gsf_phone_1', (new PhoneNumberFilter($this->config))->filter(...));
+        $this->setOnSave('gsf_phone_1', new PhoneNumberFormatter($this->config));
 
 
         $this->set('gsf_id_primary_group', [

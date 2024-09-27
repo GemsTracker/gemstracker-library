@@ -24,12 +24,12 @@ use Gems\Repository\RespondentRepository;
 use Gems\Repository\StaffRepository;
 use Gems\SnippetsActions\ApplyLegacyActionInterface;
 use Gems\SnippetsActions\ApplyLegacyActionTrait;
-use Gems\User\Filter\PhoneNumberFilter;
 use Gems\User\GemsUserIdGenerator;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Localized;
+use Gems\Util\PhoneNumberFormatter;
 use Gems\Util\ReceptionCodeLibrary;
 use Gems\Util\Translated;
 use Gems\Validator\OneOf;
@@ -340,13 +340,17 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $this->localizedUtil->getCountries(),
         ]);
 
-        $phoneFilter    = (new PhoneNumberFilter($this->config))->filter(...);
+        $phoneFilter    = new PhoneNumberFormatter($this->config);
         $phoneValidator = new PhoneNumberValidator($this->config, $this->translate);
         $settings       = ['filters[phone]' => $phoneFilter, 'validators[phone]' => $phoneValidator,];
         $this->setIfExists('grs_phone_1', $settings);
         $this->setIfExists('grs_phone_2', $settings);
         $this->setIfExists('grs_phone_3', $settings);
         $this->setIfExists('grs_phone_4', $settings);
+        $this->metaModel->setOnSave('grs_phone_1', $phoneFilter);
+        $this->metaModel->setOnSave('grs_phone_2', $phoneFilter);
+        $this->metaModel->setOnSave('grs_phone_3', $phoneFilter);
+        $this->metaModel->setOnSave('grs_phone_4', $phoneFilter);
 
         $this->currentGroup = $this->_('Settings');
         $this->setIfExists('grs_iso_lang', [

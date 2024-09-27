@@ -1,25 +1,36 @@
 <?php
 
-namespace Gems\User\Filter;
+declare(strict_types=1);
 
-use Laminas\Filter\FilterInterface;
+/**
+ * @package    Gems
+ * @subpackage Util
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ */
+
+namespace Gems\Util;
+
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
 
 /**
- * Note: Currently, this filter assumes the $value has been validated by PhoneNumberValidator. Hence,
- * it cannot be used as an actual Laminas filter. It is intended to be used with setOnSave().
- *
- * @deprecated Replaced by PhoneNumberFormatter as this is not used as a filter
+ * @package    Gems
+ * @subpackage Util
+ * @since      Class available since version 1.0
  */
-class PhoneNumberFilter implements FilterInterface, \Zend_Filter_Interface
+class PhoneNumberFormatter
 {
     public function __construct(
         private readonly array $config,
     ) {
     }
 
-    public function filter($value)
+    public function __invoke($value)
+    {
+        return $this->format($value);
+    }
+
+    public function format($value)
     {
         if ($value === null) {
             return null;
@@ -29,7 +40,7 @@ class PhoneNumberFilter implements FilterInterface, \Zend_Filter_Interface
         $parsedPhone = $phoneUtil->parse($value, $this->config['account']['edit-auth']['defaultRegion']);
 
         if (!$phoneUtil->isValidNumber($parsedPhone)) {
-            throw new \Exception(); // This should have been validated first
+            throw new \Exception("An invalid phone number was entered."); // This should have been validated first
         }
 
         return $phoneUtil->format($parsedPhone, PhoneNumberFormat::E164);
