@@ -342,7 +342,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         $phoneFilter    = new PhoneNumberFormatter($this->config);
         $phoneValidator = new PhoneNumberValidator($this->config, $this->translate);
-        $settings       = ['filters[phone]' => $phoneFilter, 'validators[phone]' => $phoneValidator,];
+        $settings       = ['validators[phone]' => $phoneValidator,];
         $this->setIfExists('grs_phone_1', $settings);
         $this->setIfExists('grs_phone_2', $settings);
         $this->setIfExists('grs_phone_3', $settings);
