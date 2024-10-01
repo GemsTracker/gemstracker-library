@@ -2,12 +2,12 @@
 
 namespace Gems\Model\Transform;
 
-use MUtil\Model\ModelTransformerAbstract;
 use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Transform\ModelTransformerAbstract;
 
 class TrackValidTransformer extends ModelTransformerAbstract
 {
-    public function transformFilter(MetaModelInterface $model, array $filter)
+    public function transformFilter(MetaModelInterface $model, array $filter): array
     {
         if (isset($filter['valid']) && $filter['valid'] == 1) {
             $filter[] = new \Zend_Db_Expr('gtr_date_start < CURRENT_TIMESTAMP');
