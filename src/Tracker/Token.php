@@ -495,10 +495,16 @@ class Token
             $values['gto_start_time'] = null;
         }
 
-        if ($this->_updateToken($values, $userId)) {
-            // Communicate change
-            $result += self::COMPLETION_DATACHANGE;
+        try {
+            if ($this->_updateToken($values, $userId)) {
+                // Communicate change
+                $result += self::COMPLETION_DATACHANGE;
+            }
+        } catch(\Exception) {
+            throw new \Exception(sprintf('failed to update token %s with result', $this->getTokenId()));
         }
+
+
 
         return $result;
     }
