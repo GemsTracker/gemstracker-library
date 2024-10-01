@@ -2136,7 +2136,7 @@ class Token
 
             $start = $this->getDateTimeValue($validFrom);
 
-            if ($start->getTimestamp() < $mailSentDate->getTimestamp()) {
+            if ($start->getTimestamp() > $mailSentDate->getTimestamp()) {
                 $values['gto_mail_sent_date'] = null;
                 $values['gto_mail_sent_num']  = 0;
 
