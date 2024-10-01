@@ -31,21 +31,14 @@ class AuditLog
     protected ?int $lastLogId = null;
 
     /**
-     * @var array|string[] routes that should always be logged as request, those not containing \\. will have that added
+     * @var string[] Attributes for which defaults are taken from config during creation.
      */
-    protected array $logRequestActions = [
-        'answer', 'ask\\.forward', 'ask\\.return', 'ask\\.take', 'logout', 'respondent.*\\.show', 'to-survey',
-        ];
-
-    /**
-     * @var array|string[] routes that should always be logged when changed, those not containing \\. will have that added
-     */
-    protected array $logRequestChanges = [
-        'active-toggle', 'answer-export', 'ask\\.lost', 'attributes', 'cacheclean', 'change', 'check', 'cleanup',
-        'correct', 'create', 'delete', 'download', 'edit', 'execute', 'export', 'import', 'insert', 'lock',
-        'maintenance-mode', 'merge', 'patches', 'ping', 'recalc', 'reset', 'run', 'seeds', 'subscribe',
-        'synchronize', 'tfa', 'two-factor', 'undelete', 'unsubscribe',
-        ];
+    protected array $overridableAttributes = [
+        'when_no_user',
+        'on_action',
+        'on_post',
+        'on_change',
+    ];
 
     protected array $organizationIdFields = [
         'gr2o_id_organization', 'gr2t_id_organization', 'gap_id_organization', 'gec_id_organization', 'gto_id_organization', 'gor_id_organization',
@@ -68,6 +61,7 @@ class AuditLog
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
         protected RespondentRepository $respondentRepository,
+        protected readonly array $config,
     )
     {}
 
@@ -87,32 +81,34 @@ class AuditLog
             return $actions[$routeName];
         }
 
-        $logChange  = 0;
-        $logRequest = 0;
-        foreach ($this->logRequestActions as $routePart) {
-            if ($this->matchAction($routeName, $routePart)) {
-                $logRequest = 1;
-                break;
+        $overrideAttributes = [];
+        foreach ($this->overridableAttributes as $config_key) {
+            if (!isset($this->config['auditlog'][$config_key])) {
+                // Config key not set, nothing to override.
+                continue;
             }
-        }
-        foreach ($this->logRequestChanges as $routePart) {
-            if ($this->matchAction($routeName, $routePart)) {
-                $logChange = 1;
-                break;
+            $routeParts = $this->config['auditlog'][$config_key];
+            $attribute = 'gls_' . $config_key;
+            foreach ($routeParts as $routePart) {
+                if ($this->matchAction($routeName, $routePart)) {
+                    $overrideAttributes[$attribute] = 1;
+                    break;
+                }
             }
         }
 
         $logAction = [
             'gls_name' => $routeName,
             'gls_when_no_user' => 0,
-            'gls_on_action' => $logRequest,
+            'gls_on_action' => 0,
             'gls_on_post' => 0,
-            'gls_on_change' => $logChange,
+            'gls_on_change' => 0,
             'gls_changed' => new Expression('NOW()'),
             'gls_changed_by' => 0,
             'gls_created' => new Expression('NOW()'),
             'gls_created_by' => 0,
         ];
+        $logAction = array_merge($logAction, $overrideAttributes);
 
         $table = new TableGateway('gems__log_setup', $this->cachedResultFetcher->getAdapter());
         $table->insert($logAction);
