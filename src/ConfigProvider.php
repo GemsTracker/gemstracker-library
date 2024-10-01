@@ -208,27 +208,31 @@ class ConfigProvider
     /**
      * Any configuration added here will override the settings from the log_setup table.
      * Valid top level array keys: when_no_user, on_action, on_post, on_change.
-     * Values in the sub arrays are regular expression patterns for route names.
-     * Patterns are always matched at the end of the route. Patterns that contain \\. are
-     * also matched at the start of the route. Patterns that don't contain \\. are
-     * matched after a literal '.'.
+     * Values in the sub arrays are matched at the start and at at a literal '.' or
+     * at the start or and of the route name.
      */
     protected function getAuditLogSettings(): array
     {
         return [
             'on_action' => [
                 'answer',
-                'ask\\.forward',
-                'ask\\.return',
-                'ask\\.take',
+                'ask.forward',
+                'ask.return',
+                'ask.take',
                 'logout',
-                'respondent.*\\.show',
+                'respondent.activity-log.show',
+                'respondent.appointments.show',
+                'respondent.communication-log.show',
+                'respondent.episodes-of-care.show',
+                'respondent.relations.show',
+                'respondent.tokens.show',
+                'respondent.tracks.show',
                 'to-survey',
             ],
             'on_change' => [
                 'active-toggle',
                 'answer-export',
-                'ask\\.lost',
+                'ask.lost',
                 'attributes',
                 'cacheclean',
                 'change',

@@ -383,13 +383,9 @@ class AuditLog
         $this->user = $user;
     }
 
-    protected function matchAction($route, $action): bool
+    protected function matchAction(string $route, string $action): bool
     {
-        if (str_contains($action, '\\.')) {
-            $pattern = '/^' . $action . '[^.]*$/';
-        } else {
-            $pattern = '/\\.' . $action . '[^.]*$/';
-        }
+        $pattern = '/(^|\\.)' . preg_quote($action) . '(\\.|$)/';
         return (bool) preg_match($pattern, $route);
     }
 
