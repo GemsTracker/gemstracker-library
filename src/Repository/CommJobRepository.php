@@ -765,7 +765,7 @@ class CommJobRepository
             }
         } catch(InvalidQueryException $e) {
             if (str_contains($e->getMessage(), 'MySQL server has gone away') && $retry <= $maxRetries) {
-                sleep(3);
+                sleep(5);
                 if ($token) {
                     $sourceConnection = $token->getSurvey()->getSource()->getSourceDatabase()->getDriver(
                     )->getConnection();
@@ -778,7 +778,7 @@ class CommJobRepository
 
                 return $this->checkTokenCompletion($tokenId, $retry+1);
             } else {
-                throw $e;
+                throw new InvalidQueryException(sprintf('%s with %d retries', $e->getMessage(), $retry), $e->getCode(), $e);
             }
         }
 
