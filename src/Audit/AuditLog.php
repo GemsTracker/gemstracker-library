@@ -66,7 +66,9 @@ class AuditLog
     {}
 
     /**
-     * Get a specific action from the database actions
+     * Get a specific action from the database actions. An action is inserted
+     * into the database if it doesn't exist yet, and updated if it does exist
+     * but isn't uptodate.
      *
      * @return array
      * @throws Coding
@@ -77,7 +79,7 @@ class AuditLog
             $routeName = strtolower($this->getRouteName());
         }
         $actions = $this->getDbActions();
-        if (isset($actions[$routeName])) {
+        if (isset($actions[$routeName]) && $this->isUptodate($actions[$routeName])) {
             return $actions[$routeName];
         }
 
@@ -97,26 +99,52 @@ class AuditLog
             }
         }
 
-        $logAction = [
-            'gls_name' => $routeName,
-            'gls_when_no_user' => 0,
-            'gls_on_action' => 0,
-            'gls_on_post' => 0,
-            'gls_on_change' => 0,
-            'gls_changed' => new Expression('NOW()'),
-            'gls_changed_by' => 0,
-            'gls_created' => new Expression('NOW()'),
-            'gls_created_by' => 0,
-        ];
+        if (isset($actions[$routeName])) {
+            $logAction = $actions[$routeName];
+            // These values don't need to be updated.
+            unset($logAction['gls_name']);
+            unset($logAction['gls_created']);
+            unset($logAction['gls_created_by']);
+            // But these are.
+            $logAction['gls_changed'] = new Expression('NOW()');
+            $logAction['gls_changed_by'] = 0;
+        } else {
+            $logAction = [
+                'gls_name' => $routeName,
+                'gls_when_no_user' => 0,
+                'gls_on_action' => 0,
+                'gls_on_post' => 0,
+                'gls_on_change' => 0,
+                'gls_changed' => new Expression('NOW()'),
+                'gls_changed_by' => 0,
+                'gls_created' => new Expression('NOW()'),
+                'gls_created_by' => 0,
+            ];
+        }
         $logAction = array_merge($logAction, $overrideAttributes);
 
         $table = new TableGateway('gems__log_setup', $this->cachedResultFetcher->getAdapter());
-        $table->insert($logAction);
+        if (isset($actions[$routeName])) {
+            $id = $logAction['gls_id_action'];
+            unset($logAction['gls_id_action']);
+            $table->update($logAction, ['gls_id_action' => $id]);
+        } else {
+            $table->insert($logAction);
+        }
 
         $this->cachedResultFetcher->invalidateTags($this->actionsCacheTags);
 
         $actions = $this->getDbActions(true);
         return $actions[$routeName];
+    }
+
+    /**
+     * Return true if the configured action is uptodate, or false if it needs
+     * to be updated with values from the config.
+     */
+    protected function isUptodate(array $action): bool
+    {
+        return true;
     }
 
     protected function getCurrentOrganizationId(): int
