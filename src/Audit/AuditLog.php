@@ -83,22 +83,6 @@ class AuditLog
             return $actions[$routeName];
         }
 
-        $overrideAttributes = [];
-        foreach ($this->overridableAttributes as $config_key) {
-            if (!isset($this->config['auditlog'][$config_key])) {
-                // Config key not set, nothing to override.
-                continue;
-            }
-            $routeParts = $this->config['auditlog'][$config_key];
-            $attribute = 'gls_' . $config_key;
-            foreach ($routeParts as $routePart) {
-                if ($this->matchAction($routeName, $routePart)) {
-                    $overrideAttributes[$attribute] = 1;
-                    break;
-                }
-            }
-        }
-
         if (isset($actions[$routeName])) {
             $logAction = $actions[$routeName];
             // These values don't need to be updated.
@@ -121,7 +105,7 @@ class AuditLog
                 'gls_created_by' => 0,
             ];
         }
-        $logAction = array_merge($logAction, $overrideAttributes);
+        $logAction = array_merge($logAction, $this->getOverrideAttributes($routeName));
 
         $table = new TableGateway('gems__log_setup', $this->cachedResultFetcher->getAdapter());
         if (isset($actions[$routeName])) {
@@ -145,6 +129,30 @@ class AuditLog
     protected function isUptodate(array $action): bool
     {
         return true;
+    }
+
+    /**
+     * Check the configuration to see if we need to override specific settings
+     * for this route.
+     */
+    protected function getOverrideAttributes(string $routeName): array
+    {
+        $overrideAttributes = [];
+        foreach ($this->overridableAttributes as $config_key) {
+            if (!isset($this->config['auditlog'][$config_key])) {
+                // Config key not set, nothing to override.
+                continue;
+            }
+            $routeParts = $this->config['auditlog'][$config_key];
+            $attribute = 'gls_' . $config_key;
+            foreach ($routeParts as $routePart) {
+                if ($this->matchAction($routeName, $routePart)) {
+                    $overrideAttributes[$attribute] = 1;
+                    break;
+                }
+            }
+        }
+        return $overrideAttributes;
     }
 
     protected function getCurrentOrganizationId(): int
