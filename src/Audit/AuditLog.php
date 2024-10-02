@@ -13,6 +13,7 @@ use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Gems\Versions;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\TableGateway\TableGateway;
@@ -61,6 +62,7 @@ class AuditLog
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
         protected RespondentRepository $respondentRepository,
+        protected readonly Versions $versions,
         protected readonly array $config,
     )
     {}
@@ -123,12 +125,15 @@ class AuditLog
     }
 
     /**
-     * Return true if the configured action is uptodate, or false if it needs
-     * to be updated with values from the config.
+     * Return true if the configured action is based on the config of the current
+     * application version, or false if it isn't.
      */
     protected function isUptodate(array $action): bool
     {
-        return true;
+        if (!isset($action['gls_app_version'])) {
+            return false;
+        }
+        return $action['gls_app_version'] === $this->versions->getProjectVersion();
     }
 
     /**
@@ -152,6 +157,9 @@ class AuditLog
                 }
             }
         }
+        // Set the application version.
+        $overrideAttributes['gls_app_version'] = $this->versions->getProjectVersion();
+
         return $overrideAttributes;
     }
 
