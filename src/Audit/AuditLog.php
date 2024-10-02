@@ -109,6 +109,12 @@ class AuditLog
         }
         $logAction = array_merge($logAction, $this->getOverrideAttributes($routeName));
 
+        // As long as the related migration hasn't been executed, we cannot
+        // add the application version to the record.
+        if (!array_key_exists('gls_app_version', $actions[$routeName])) {
+            unset($logAction['gls_app_version']);
+        }
+
         $table = new TableGateway('gems__log_setup', $this->cachedResultFetcher->getAdapter());
         if (isset($actions[$routeName])) {
             $id = $logAction['gls_id_action'];
