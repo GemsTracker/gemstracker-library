@@ -33,11 +33,11 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
      */
     protected $db;
 
-    protected Loader $loader;
+    public Loader $loader;
 
     protected ?TrackerInterface $tracker = null;
 
-    protected ProjectOverloader $overLoader;
+    protected ?ProjectOverloader $overLoader = null;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -49,6 +49,9 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
     {
         if (! $this->tracker) {
             $this->tracker = $this->loader->getTracker();
+        }
+        if (! isset($this->overLoader)) {
+            $this->overLoader = $this->loader->getOverLoader();
         }
 
         $batch  = $this->getBatch();
@@ -69,11 +72,6 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
 
         $metaModel = $answerModel->getMetaModel();
         $label = $metaModel->get($questionId, 'label');
-        /*
-        if ($label instanceof \MUtil\Html\HtmlInterface) {
-            $label = $label->render($this->view);
-        }
-        // */
 
         $question['gsq_id_survey']   = $surveyId;
         $question['gsq_name']        = $questionId;

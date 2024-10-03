@@ -79,19 +79,20 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
         // Now save the questions
         $answerModel = $survey->getAnswerModel('en');
 
-        $hash = $survey->calculateHash();
-
-        if ($survey->getHash() === $hash) {
-            return;
-        }
+        // Skip hash calculation as this is a rare function and we cannot trust there to be no changes
+//        $hash = $survey->calculateHash();
+//
+//        if ($survey->getHash() === $hash) {
+//            return;
+//        }
 
         $survey->setHash($hash, $this->currentUserRepository->getCurrentUserId());
         $metaModel = $answerModel->getMetaModel();
 
         foreach ($metaModel->getItemsOrdered() as $order => $name) {
-            if (true === $metaModel->get($name, 'survey_question')) {
+             if (true === $metaModel->get($name, 'survey_question')) {
                 $batch->addTask('Tracker\\RefreshQuestion', $survey->getSurveyId(), $name, $order);
-            }
+             }
         }
 
         // If we have a response database, create a view on the answers
