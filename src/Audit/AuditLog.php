@@ -13,6 +13,7 @@ use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Gems\Versions;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\TableGateway\TableGateway;
@@ -31,21 +32,14 @@ class AuditLog
     protected ?int $lastLogId = null;
 
     /**
-     * @var array|string[] routes that should always be logged as request, those not containing \\. will have that added
+     * @var string[] Attributes for which defaults are taken from config during creation.
      */
-    protected array $logRequestActions = [
-        'answer', 'ask\\.forward', 'ask\\.return', 'ask\\.take', 'logout', 'respondent.*\\.show', 'to-survey',
-        ];
-
-    /**
-     * @var array|string[] routes that should always be logged when changed, those not containing \\. will have that added
-     */
-    protected array $logRequestChanges = [
-        'active-toggle', 'answer-export', 'ask\\.lost', 'attributes', 'cacheclean', 'change', 'check', 'cleanup',
-        'correct', 'create', 'delete', 'download', 'edit', 'execute', 'export', 'import', 'insert', 'lock',
-        'maintenance-mode', 'merge', 'patches', 'ping', 'recalc', 'reset', 'run', 'seeds', 'subscribe',
-        'synchronize', 'tfa', 'two-factor', 'undelete', 'unsubscribe',
-        ];
+    protected array $overridableAttributes = [
+        'when_no_user',
+        'on_action',
+        'on_post',
+        'on_change',
+    ];
 
     protected array $organizationIdFields = [
         'gr2o_id_organization', 'gr2t_id_organization', 'gap_id_organization', 'gec_id_organization', 'gto_id_organization', 'gor_id_organization',
@@ -68,11 +62,15 @@ class AuditLog
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
         protected RespondentRepository $respondentRepository,
+        protected readonly Versions $versions,
+        protected readonly array $config,
     )
     {}
 
     /**
-     * Get a specific action from the database actions
+     * Get a specific action from the database actions. An action is inserted
+     * into the database if it doesn't exist yet, and updated if it does exist
+     * but isn't uptodate.
      *
      * @return array
      * @throws Coding
@@ -83,44 +81,92 @@ class AuditLog
             $routeName = strtolower($this->getRouteName());
         }
         $actions = $this->getDbActions();
-        if (isset($actions[$routeName])) {
+        if (isset($actions[$routeName]) && $this->isUptodate($actions[$routeName])) {
             return $actions[$routeName];
         }
 
-        $logChange  = 0;
-        $logRequest = 0;
-        foreach ($this->logRequestActions as $routePart) {
-            if ($this->matchAction($routeName, $routePart)) {
-                $logRequest = 1;
-                break;
-            }
+        if (isset($actions[$routeName])) {
+            $logAction = $actions[$routeName];
+            // These values don't need to be updated.
+            unset($logAction['gls_name']);
+            unset($logAction['gls_created']);
+            unset($logAction['gls_created_by']);
+            // But these are.
+            $logAction['gls_changed'] = new Expression('NOW()');
+            $logAction['gls_changed_by'] = 0;
+        } else {
+            $logAction = [
+                'gls_name' => $routeName,
+                'gls_when_no_user' => 0,
+                'gls_on_action' => 0,
+                'gls_on_post' => 0,
+                'gls_on_change' => 0,
+                'gls_changed' => new Expression('NOW()'),
+                'gls_changed_by' => 0,
+                'gls_created' => new Expression('NOW()'),
+                'gls_created_by' => 0,
+            ];
         }
-        foreach ($this->logRequestChanges as $routePart) {
-            if ($this->matchAction($routeName, $routePart)) {
-                $logChange = 1;
-                break;
-            }
-        }
+        $logAction = array_merge($logAction, $this->getOverrideAttributes($routeName));
 
-        $logAction = [
-            'gls_name' => $routeName,
-            'gls_when_no_user' => 0,
-            'gls_on_action' => $logRequest,
-            'gls_on_post' => 0,
-            'gls_on_change' => $logChange,
-            'gls_changed' => new Expression('NOW()'),
-            'gls_changed_by' => 0,
-            'gls_created' => new Expression('NOW()'),
-            'gls_created_by' => 0,
-        ];
+        // As long as the related migration hasn't been executed, we cannot
+        // add the application version to the record.
+        if (!array_key_exists('gls_app_version', $actions[$routeName])) {
+            unset($logAction['gls_app_version']);
+        }
 
         $table = new TableGateway('gems__log_setup', $this->cachedResultFetcher->getAdapter());
-        $table->insert($logAction);
+        if (isset($actions[$routeName])) {
+            $id = $logAction['gls_id_action'];
+            unset($logAction['gls_id_action']);
+            $table->update($logAction, ['gls_id_action' => $id]);
+        } else {
+            $table->insert($logAction);
+        }
 
         $this->cachedResultFetcher->invalidateTags($this->actionsCacheTags);
 
         $actions = $this->getDbActions(true);
         return $actions[$routeName];
+    }
+
+    /**
+     * Return true if the configured action is based on the config of the current
+     * application version, or false if it isn't.
+     */
+    protected function isUptodate(array $action): bool
+    {
+        if (!isset($action['gls_app_version'])) {
+            return false;
+        }
+        return $action['gls_app_version'] === $this->versions->getProjectVersion();
+    }
+
+    /**
+     * Check the configuration to see if we need to override specific settings
+     * for this route.
+     */
+    protected function getOverrideAttributes(string $routeName): array
+    {
+        $overrideAttributes = [];
+        foreach ($this->overridableAttributes as $config_key) {
+            if (!isset($this->config['auditlog'][$config_key])) {
+                // Config key not set, nothing to override.
+                continue;
+            }
+            $routeParts = $this->config['auditlog'][$config_key];
+            $attribute = 'gls_' . $config_key;
+            foreach ($routeParts as $routePart) {
+                if ($this->matchAction($routeName, $routePart)) {
+                    $overrideAttributes[$attribute] = 1;
+                    break;
+                }
+            }
+        }
+        // Set the application version.
+        $overrideAttributes['gls_app_version'] = $this->versions->getProjectVersion();
+
+        return $overrideAttributes;
     }
 
     protected function getCurrentOrganizationId(): int
@@ -387,13 +433,9 @@ class AuditLog
         $this->user = $user;
     }
 
-    protected function matchAction($route, $action): bool
+    protected function matchAction(string $route, string $action): bool
     {
-        if (str_contains($action, '\\.')) {
-            $pattern = '/^' . $action . '[^.]*$/';
-        } else {
-            $pattern = '/\\.' . $action . '[^.]*$/';
-        }
+        $pattern = '/(^|\\.)' . preg_quote($action) . '(\\.|$)/';
         return (bool) preg_match($pattern, $route);
     }
 

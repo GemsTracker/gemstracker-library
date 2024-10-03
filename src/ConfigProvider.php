@@ -145,6 +145,7 @@ class ConfigProvider
         return [
             'account'                  => $this->getAccountSettings(),
             'app'                      => $this->getAppSettings(),
+            'auditlog'                 => $this->getAuditlogSettings(),
             'auth'                     => $this->getAuthSettings(),
             'autoconfig'               => $this->getAutoConfigSettings(),
             'cache'                    => $this->getCacheSettings(),
@@ -202,6 +203,67 @@ class ConfigProvider
     {
         $app = new App();
         return $app();
+    }
+
+    /**
+     * Any configuration added here will override the settings from the log_setup table.
+     * Valid top level array keys: when_no_user, on_action, on_post, on_change.
+     * Values in the sub arrays are matched at the start and at at a literal '.' or
+     * at the start or and of the route name.
+     */
+    protected function getAuditLogSettings(): array
+    {
+        return [
+            'on_action' => [
+                'answer',
+                'ask.forward',
+                'ask.return',
+                'ask.take',
+                'logout',
+                'respondent.activity-log.show',
+                'respondent.appointments.show',
+                'respondent.communication-log.show',
+                'respondent.episodes-of-care.show',
+                'respondent.relations.show',
+                'respondent.tokens.show',
+                'respondent.tracks.show',
+                'to-survey',
+            ],
+            'on_change' => [
+                'active-toggle',
+                'answer-export',
+                'ask.lost',
+                'attributes',
+                'cacheclean',
+                'change',
+                'check',
+                'cleanup',
+                'correct',
+                'create',
+                'delete',
+                'download',
+                'edit',
+                'execute',
+                'export',
+                'import',
+                'insert',
+                'lock',
+                'maintenance-mode',
+                'merge',
+                'patches',
+                'ping',
+                'recalc',
+                'reset',
+                'run',
+                'seeds',
+                'subscribe',
+                'synchronize',
+                'tfa',
+                'two-factor',
+                'undelete',
+                'unsubscribe',
+            ],
+        ];
     }
 
     public function getAuthSettings(): array
