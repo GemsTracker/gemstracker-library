@@ -23,7 +23,6 @@ use Gems\Repository\MailRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Tracker;
-use Gems\Translate\GenderTranslation;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\Organization;
 use Gems\User\User;

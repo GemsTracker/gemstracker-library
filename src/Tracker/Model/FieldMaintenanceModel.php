@@ -334,7 +334,7 @@ class FieldMaintenanceModel extends UnionModel
             'size' => '30',
             'minlength' => 2,
             'required' => true,
-            'validator' => $this->createUniqueValidator(['gtf_field_name', 'gtf_id_track']),
+            'validator' => $this->createUniqueValidator('gtf_field_name', ['gtf_id_track', 'gtf_id_field']),
             'translate' => true
         ]);
 
@@ -342,7 +342,7 @@ class FieldMaintenanceModel extends UnionModel
             'elementClass' => 'Text',
             'validators[int]' => 'Digits',
             'validators[gt]' => new GreaterThan(0),
-            'validators[unique]' => $this->createUniqueValidator('gtf_id_order', 'gtf_id_track'),
+            'validators[unique]' => $this->createUniqueValidator('gtf_id_order', ['gtf_id_track', 'gtf_id_field']),
         ]);
 
         $this->metaModel->set('gtf_field_code', [
