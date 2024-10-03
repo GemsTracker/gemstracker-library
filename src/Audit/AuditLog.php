@@ -111,7 +111,7 @@ class AuditLog
 
         // As long as the related migration hasn't been executed, we cannot
         // add the application version to the record.
-        if (!array_key_exists('gls_app_version', $actions[$routeName])) {
+        if (isset($actions[$routeName]) && !array_key_exists('gls_app_version', $actions[$routeName])) {
             unset($logAction['gls_app_version']);
         }
 

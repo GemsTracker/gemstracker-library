@@ -27,6 +27,11 @@ class TokenHelpers
             }
         }
 
+        $serverParams = $request->getServerParams();
+        if (isset($serverParams['HTTP_REFERER'])) {
+            return $serverParams['HTTP_REFERER'];
+        }
+
         $baseUrl = $token->getOrganization()->getPreferredSiteUrl();
         $baseDir = BaseDir::getBaseDir();
         if ($baseDir && str_ends_with($baseUrl, $baseUrl)) {
