@@ -1,0 +1,10 @@
+<h1>
+    {% if _config.title.show %}
+        {{ _config.title.name }}
+    {% endif %}
+    {% if 'short' == _config.environment.show %}
+        {{ _config.environment.short }}
+    {% elseif 'full' == _config.environment.show %}
+        {{ _config.environment.full }}
+    {% endif %}
+</h1>

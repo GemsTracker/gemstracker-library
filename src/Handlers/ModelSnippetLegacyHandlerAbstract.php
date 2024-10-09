@@ -134,8 +134,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         'csrfName'         => 'getCsrfTokenName',
         'csrfToken'        => 'getCsrfToken',
         'formatBoxClass'   => 'browser table',
-        // 'importer'         => 'getImporter',
-        'tempDirectory'    => 'getImportTempDirectory',
         'topicCallable'    => 'getTopic',
     ];
 

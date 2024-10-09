@@ -80,8 +80,8 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
         $answerModel = $survey->getAnswerModel('en');
 
         // Skip hash calculation as this is a rare function and we cannot trust there to be no changes
-//        $hash = $survey->calculateHash();
-//
+        $hash = $survey->calculateHash();
+
 //        if ($survey->getHash() === $hash) {
 //            return;
 //        }

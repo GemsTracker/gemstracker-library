@@ -15,7 +15,7 @@ use Gems\Locale\Locale;
 use Gems\Tracker\Mock\TokenReadonly;
 use Gems\Tracker\Token;
 use MUtil\Model;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -53,7 +53,7 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
      */
     protected $mapKeysCaseSensitive = false;
 
-    public function __construct(protected Translator $translator, protected Locale $locale)
+    public function __construct(protected TranslatorInterface $translator, protected Locale $locale)
     {}
 
     /**

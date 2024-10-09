@@ -7,12 +7,6 @@
     {{ include('@gems/vite.html.twig') }}
     {% block header %}
     {% endblock %}
-    <style>
-        :root {
-            --bs-primary: #167c85;
-            --bs-secondary: #1a355d;
-        }
-    </style>
 </head>
 <body
         {% if current_identity is defined %}
@@ -23,6 +17,7 @@
 <div id="container" class="container-fluid">
     <header>
         <div class="logo {{ current_organization_code ?? '' }}"></div>
+        <div class="application-title">{{ include('@layout/application-title.html.twig') }}</div>
         <div class="tools">
             {{ include('@layout/organization-switcher.html.twig') }}
             {{ include('@layout/group-switcher.html.twig') }}

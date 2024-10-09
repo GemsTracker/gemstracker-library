@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Gems\Layout;
 
 use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\Helper\Env;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\LocaleMiddleware;
@@ -107,8 +108,23 @@ class LayoutRenderer
 
         $params += $defaultParams;
 
+        $env = Env::get('APP_ENV', '');
+        if (str_starts_with($env, 'prod')) {
+            $showEnv = false;
+        } else {
+            $showEnv = $this->config['app']['show_env'] ?? 'short';
+        }
+
         $params['_config'] = [
-            'application_title' => $this->config['app']['name'] ?? null,
+            'title' => [
+                'name' => $this->config['app']['name'] ?? '',
+                'show' => $this->config['app']['show_title'] ?? false,
+                ],
+            'environment' => [
+                'short' => strtoupper(substr($env, 0, 3)),
+                'full' => ucfirst($env),
+                'show' => $showEnv,
+                ],
             'max_idle_time' => $this->config['session']['max_idle_time'],
             'auth_poll_interval' => $this->config['session']['auth_poll_interval'],
         ];
