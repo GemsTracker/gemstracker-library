@@ -370,6 +370,7 @@ class Route
                 options: [
                     'action' => 'forward',
                 ],
+                methods: ['GET', 'POST'],
             ),
             ...$this->createRoute(
                 name: 'legacyAskTake',
@@ -415,6 +416,7 @@ class Route
                 postRoutes: [
                     ...$this->defaultPostRoutes,
                     'lost',
+                    'forward',
                 ],
                 noCsrfRoutes: ['index', 'lost']
             ),

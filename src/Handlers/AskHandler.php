@@ -361,6 +361,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $forwardSnippets = $this->forwardSnippets;
         if ($screen instanceof AskScreenInterface) {
             $params = $screen->getParameters($this->token);
+            $params = $this->_processParameters($params);
             if (false !== $screen->getSnippets($this->token)) {
                 $forwardSnippets = $screen->getSnippets($this->token);
             }
@@ -372,7 +373,14 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $params['requestInfo'] = $this->getRequestInfo();
 
         // Display token when possible
-        if ($this->html->snippet($forwardSnippets, $params)) {
+        $displayToken = false;
+        foreach($forwardSnippets as $forwardSnippet) {
+            $result = $this->html->snippet($forwardSnippet, $params);
+            if ($result) {
+                $displayToken = true;
+            }
+        }
+        if ($displayToken) {
             return;
         }
 
