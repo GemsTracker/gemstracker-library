@@ -21,7 +21,6 @@ use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Site\SiteUtil;
 use Gems\User\User;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 
@@ -174,7 +173,7 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
                 $params   = [
                     'info'   => $this->_('Select an organization to subscribe to:'),
                     'orgs'   => $subscribableOrganizations,
-                    'route'  => 'participate.subscribe',
+                    'route'  => 'participate.subscribe-form',
                     ];
                 $snippets = ['Organization\\ChooseListedOrganizationSnippet'];
             }
@@ -185,6 +184,11 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
 
         $this->addSnippets('Gems\\Snippets\\Generic\\ContentTitleSnippet', ['contentTitle' => $this->_('Subscribe'), 'tagName' => 'h1']);
         $this->addSnippets($snippets, $params);
+    }
+
+    public function subscribeFormAction(): void
+    {
+        $this->subscribeAction();
     }
 
     /**
@@ -224,7 +228,7 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
                 $params   = [
                     'info'   => $this->_('Select an organization to unsubscribe from:'),
                     'orgs'   => $unsubscribableOrganizations,
-                    'route'  => 'participate.unsubscribe',
+                    'route'  => 'participate.unsubscribe-form',
                     ];
                 $snippets = ['Organization\\ChooseListedOrganizationSnippet'];
             }
@@ -235,6 +239,11 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
 
         $this->addSnippets('Gems\\Snippets\\Generic\\ContentTitleSnippet', ['contentTitle' => $this->_('Unsubscribe'), 'tagName' => 'h1']);
         $this->addSnippets($snippets, $params);
+    }
+
+    public function unsubscribeFormAction(): void
+    {
+        $this->unsubscribeAction();
     }
 
     /**

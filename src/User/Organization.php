@@ -13,10 +13,13 @@ namespace Gems\User;
 
 use Gems\Registry\CachedArrayTargetAbstract;
 use Gems\Repository\OrganizationRepository;
+use Gems\Screens\AskScreenAbstract;
+use Gems\Screens\AskScreenInterface;
+use Gems\Screens\EditScreenInterface;
+use Gems\Screens\ShowScreenInterface;
 use Gems\Screens\SubscribeScreenInterface;
 use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Site\SiteUtil;
-use Mezzio\Helper\UrlHelper;
 
 /**
  * Contains information on the organization of the current User
@@ -61,27 +64,27 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @var \Gems\Screens\EditScreenInterface
+     * @var null|\Gems\Screens\EditScreenInterface
      */
-    protected $_respondentEditScreen;
+    protected ?EditScreenInterface $_respondentEditScreen = null;
 
     /**
      *
-     * @var \Gems\Screens\ShowScreenInterface
+     * @var null|\Gems\Screens\ShowScreenInterface
      */
-    protected $_respondentShowScreen;
+    protected ?ShowScreenInterface $_respondentShowScreen = null;
 
     /**
      *
-     * @var \Gems\Screens\SubscribeScreenInterface
+     * @var null|\Gems\Screens\SubscribeScreenInterface
      */
     protected ?SubscribeScreenInterface $_subscribeScreen = null;
 
     /**
      *
-     * @var \Gems\Screens\AskScreenInterface
+     * @var null|\Gems\Screens\AskScreenInterface
      */
-    protected $_tokenAskScreen;
+    protected ?AskScreenInterface $_tokenAskScreen = null;
 
     /**
      *
@@ -123,11 +126,6 @@ class Organization extends CachedArrayTargetAbstract
      * @var string Name of table used in gtrs_table
      */
     protected $translationTable = 'gems__organizations';
-
-    /**
-     * @var UrlHelper
-     */
-    protected $urlHelper;
 
     /**
      * Creates the object.
@@ -575,16 +573,16 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @return string Url
+     * @return null?string Url
      */
-    public function getUnsubscribeUrl()
+    public function getUnsubscribeUrl(): ?string
     {
         if (! $this->_get('gor_respondent_unsubscribe')) {
             return null;
         }
 
-        $url = $this->urlHelper->generate('participate.unsubscribe', [], ['org' => $this->getId()]);
-
+        // Routes not initiated on command line!!!!
+        $url = '/participate/unsubscribe-form/' . $this->getId();
         return $this->getPreferredSiteUrl() . $url;
     }
 

@@ -455,7 +455,7 @@ class Route
     public function getParticipateRoutes(): array
     {
         // path: '/ask/forward/id/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}',
-        $output = [
+        return [
             ...$this->createSnippetRoutes(
                 baseName: 'participate',
                 controllerClass: \Gems\Handlers\ParticipateHandler::class,
@@ -463,25 +463,23 @@ class Route
                 pages: [
                     'index',
                     'subscribe',
+                    'subscribe-form',
                     'subscribe-thanks',
                     'unsubscribe',
+                    'unsubscribe-form',
                     'unsubscribe-thanks',
                 ],
-                parameters: ['org' => '[a-zA-Z0-9]*',],
+                parameters: ['org' => '[a-zA-Z0-9]+',],
                 parameterRoutes: [
-                    'subscribe',
-                    'unsubscribe',
+                    'subscribe-form',
+                    'unsubscribe-form',
                 ],
                 postRoutes: [
-                    'subscribe',
-                    'unsubscribe',
+                    'subscribe-form',
+                    'unsubscribe-form',
                 ]
             ),
         ];
-        // Make sure the org paramter is optional
-        $output['participate.subscribe']['path'] = '/participate/subscribe[/{org:[a-zA-Z0-9]+}]';
-        $output['participate.unsubscribe']['path'] = '/participate/unsubscribe[/{org:[a-zA-Z0-9]+}]';
-        return $output;
     }
 
     public function getContactRoutes(): array

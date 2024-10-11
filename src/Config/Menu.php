@@ -1775,6 +1775,16 @@ class Menu
                     'type' => 'route-link-item',
                 ],
                 [
+                    'name' => 'participate.subscribe-form',
+                    'type' => 'alias',
+                    'alias' => 'participate.subscribe',
+                ],
+                [
+                    'name' => 'participate.unsubscribe-form',
+                    'type' => 'alias',
+                    'alias' => 'participate.unsubscribe',
+                ],
+                [
                     'name' => 'participate.subscribe-thanks',
                     'type' => 'alias',
                     'alias' => 'participate.subscribe',
