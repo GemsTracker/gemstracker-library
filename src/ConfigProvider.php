@@ -155,6 +155,7 @@ class ConfigProvider
             'dependencies'             => $this->getDependencies(),
             'email'                    => $this->getEmailSettings(),
             'events'                   => $this->getEventSubscribers(),
+            'import'                   => $this->getImportSettings(),
             'locale'                   => $this->getLocaleSettings(),
             'log'                      => $this->getLoggers(),
             'messenger'                => $this->getMessengerSettings(),
@@ -549,6 +550,17 @@ class ConfigProvider
         return [
             'subscribers' => [],
             'listeners' => [],
+        ];
+    }
+
+    protected function getImportSettings(): array
+    {
+        return [
+            'dirs' => [
+                'success' => 'data/uploads/success',
+                'failed' => 'data/uploads/failures',
+                'temp' => 'data/temp',
+            ],
         ];
     }
 
