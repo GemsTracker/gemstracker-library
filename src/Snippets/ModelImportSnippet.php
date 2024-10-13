@@ -11,10 +11,18 @@
 
 namespace Gems\Snippets;
 
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\Translator\StraightTranslator;
+use Gems\Repository\ImportRepository;
+use Mezzio\Session\SessionInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
+use Zalt\Message\MessengerInterface;
+use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Translator\ModelTranslatorInterface;
 use Zalt\Snippets\Zend\ZendFormSnippetTrait;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -34,6 +42,26 @@ class ModelImportSnippet extends \Zalt\Snippets\ModelImportSnippetAbstract
      * @var \Gems\Audit\AuditLog
      */
     protected $accesslog;
+
+    protected string $afterSaveRoutePart = 'index';
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MetaModelLoader $metaModelLoader,
+        SessionInterface $session,
+        protected readonly ImportRepository $importRepository,
+        protected readonly MenuSnippetHelper $menuHelper,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $metaModelLoader, $session);
+
+        $this->failureDirectory = $this->importRepository->getImportFailureDir();
+        $this->successDirectory = $this->importRepository->getImportSuccessDir();
+        $this->tempDirectory    = $this->importRepository->getImportTempDir();
+    }
 
     /**
      * @inheritdoc
@@ -96,5 +124,28 @@ class ModelImportSnippet extends \Zalt\Snippets\ModelImportSnippetAbstract
         parent::init();
 
         $this->stepsHeader = $this->_('Data import. Step %d of %d.');
+    }
+
+    /**
+     * If menu item does not exist or is not allowed, redirect to index
+     */
+    protected function setAfterSaveRoute()
+    {
+        if (! $this->afterSaveRouteUrl) {
+            $route  = $this->menuHelper->getRelatedRoute($this->afterSaveRoutePart);
+            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' . $route . "\n", FILE_APPEND);
+            $keys   = $this->getModel()->getMetaModel()->getKeys();
+            $params = $this->requestInfo->getRequestMatchedParams();
+            foreach ($keys as $key => $field) {
+                if (isset($this->formData[$field]) && (strlen((string) $this->formData[$field]) > 0)) {
+                    $params[$key] = $this->formData[$field];
+                } elseif (! isset($params[$key])) {
+                    $params[$key] = null;
+                }
+            }
+
+            $this->afterSaveRouteUrl = $this->menuHelper->routeHelper->getRouteUrl($route, $params);
+        }
+        parent::setAfterSaveRoute();
     }
 }

@@ -339,6 +339,11 @@ class Organization extends CachedArrayTargetAbstract
         return $this->_get('gor_id_organization');
     }
 
+    public function getLanguage(): ?string
+    {
+        return $this->_get('gor_iso_lang');
+    }
+
     public function getLocation(): ?string
     {
         return $this->_get('gor_location');
