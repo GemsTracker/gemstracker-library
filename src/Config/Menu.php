@@ -1762,7 +1762,7 @@ class Menu
         return [
             'name' => 'participate.index',
             'label' => $this->translator->trans('Participate'),
-            'type' => 'route',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'participate.subscribe',
@@ -1803,7 +1803,7 @@ class Menu
         return [
             'name' => 'contact.index',
             'label' => $this->translator->trans('Contact'),
-            'type' => 'route',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'contact.about',
