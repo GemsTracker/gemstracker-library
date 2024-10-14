@@ -1488,7 +1488,7 @@ class Menu
                 ],
                 [
                     'name' => 'track-builder.chartconfig.index',
-                    'label' => $this->translator->trans('Chart config'),
+                    'label' => $this->translator->plural('Chart config', 'Chart configs', 1),
                     'type' => 'route-link-item',
                     'children' => [
                         [

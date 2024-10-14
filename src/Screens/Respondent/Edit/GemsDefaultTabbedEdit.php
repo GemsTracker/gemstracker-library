@@ -52,7 +52,7 @@ class GemsDefaultTabbedEdit extends EditScreenAbstract
      */
     public function getScreenLabel(): string
     {
-        return $this->translator->_('(default \Gems respondent tabbed edit)');
+        return $this->translator->_('(default Gems respondent tabbed edit)');
     }
 
     /**

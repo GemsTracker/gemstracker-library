@@ -565,7 +565,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 'grs_birthday' => $this->_('Birthday'),
 
                 'grs_address_1' => $this->_('Street'),
-                'grs_address_2' => $this->_(' '),
+                'grs_address_2' => ' ',
                 'grs_zipcode' => $this->_('Zipcode'),
                 'grs_city' => $this->_('City'),
                 'grs_region' => $this->_('Region'),

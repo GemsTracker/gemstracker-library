@@ -233,7 +233,7 @@ class CommJobHandler extends BrowseChangeUsageHandler
             $batch->autoStart = true;
         }
 
-        $title = $this->_('Executing all message job');
+        $title = $this->_('Executing all message jobs');
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($title);

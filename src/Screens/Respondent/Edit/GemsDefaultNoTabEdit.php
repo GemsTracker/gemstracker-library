@@ -52,7 +52,7 @@ class GemsDefaultNoTabEdit extends EditScreenAbstract
      */
     public function getScreenLabel(): string
     {
-        return $this->translator->_('(default \Gems respondent no tab edit)');
+        return $this->translator->_('(default Gems respondent no tab edit)');
     }
 
     /**
