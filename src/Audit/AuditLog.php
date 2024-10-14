@@ -461,7 +461,7 @@ class AuditLog
         }
         $organizationId = $this->getCurrentOrganizationId();
 
-        $this->setRequestLogData($actionData['gls_id_action'], $messages, $data, true, $respondentId, $organizationId);
+        $this->setRequestLogData($actionData, $messages, $data, true, $respondentId, $organizationId);
 
         return $this->storeLogEntry($logId);
     }
@@ -480,7 +480,7 @@ class AuditLog
         }
         $organizationId = $this->getOrganizationId($currentValues) ?? $this->getOrganizationId($oldValues);
 
-        $this->setCliLogData($actionData['gls_id_action'], $messages, $data, true, $respondentId, $organizationId);
+        $this->setCliLogData($actionData, $messages, $data, true, $respondentId, $organizationId);
 
         return $this->storeLogEntry($logId);
     }
@@ -499,7 +499,7 @@ class AuditLog
         $respondentId = $this->getRespondentId($data);
         $organizationId = $this->getCurrentOrganizationId();
 
-        $this->setRequestLogData($actionData['gls_id_action'], $message, $data, true, $respondentId, $organizationId);
+        $this->setRequestLogData($actionData, $message, $data, true, $respondentId, $organizationId);
 
         return $this->storeLogEntry(0);
     }
@@ -582,13 +582,13 @@ class AuditLog
         }
     }
 
-    protected function setRequestLogData($route, $message, $data, bool $changed, ?int $respondentId, ?int $organizationId): void
+    protected function setRequestLogData(array $actionData, $message, $data, bool $changed, ?int $respondentId, ?int $organizationId): void
     {
         if ($organizationId === OrganizationRepository::SYSTEM_NO_ORG) {
             $organizationId = 0;
         }
         $this->logData = [
-            'gla_action'        => $route,
+            'gla_action'        => $actionData['gls_id_action'],
             'gla_method'        => $this->request->getMethod(),
             'gla_by'            => $this->getCurrentUserId(),
             'gla_changed'       => (int) ($changed || $this->isChanged($this->request)),
@@ -601,13 +601,13 @@ class AuditLog
         ];
     }
 
-    protected function setCliLogData($route, $message, $data, bool $changed, ?int $respondentId, ?int $organizationId): void
+    protected function setCliLogData(array $actionData, $message, $data, bool $changed, ?int $respondentId, ?int $organizationId): void
     {
         if ($organizationId === OrganizationRepository::SYSTEM_NO_ORG) {
             $organizationId = 0;
         }
         $this->logData = [
-            'gla_action'        => $route,
+            'gla_action'        => $actionData['gls_id_action'],
             'gla_method'        => 'CLI',
             'gla_by'            => $this->getCurrentUserId(),
             'gla_changed'       => $changed ? 1 : 0,
