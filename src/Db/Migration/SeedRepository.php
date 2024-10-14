@@ -6,6 +6,7 @@ use Gems\Db\Databases;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunSeedMigrationEvent;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Metadata\Source\Factory;
 use Laminas\Db\Sql\Sql;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
@@ -20,6 +21,8 @@ class SeedRepository extends MigrationRepositoryAbstract
     protected string $modelName = 'databaseSeedModel';
 
     protected readonly ResultFetcher $resultFetcher;
+
+    protected array $tableKeys = [];
 
     public function __construct(
         array $config,
@@ -87,15 +90,18 @@ class SeedRepository extends MigrationRepositoryAbstract
         $sql = new Sql($adapter);
         $sqlStatements = [];
         foreach($rows as $row) {
-            $key = array_key_first($row);
-            $check = $sql->select($table)->where([$key => $row[$key]]);
+            $keyFilter = $this->getKeyFilter($adapter, $table, $row);
 
-            // Yeah I know: works only with single key tables for now
-            if (! $this->resultFetcher->fetchRow($check)) {
-                $insert = $sql->insert($table);
-                $insert->values($row);
-                $sqlStatements[] = $sql->buildSqlString($insert);
+            if ($keyFilter !== null) {
+                $check = $sql->select($table)->where($keyFilter);
+                if ($this->resultFetcher->fetchRow($check)) {
+                    continue;
+                }
             }
+
+            $insert = $sql->insert($table);
+            $insert->values($row);
+            $sqlStatements[] = $sql->buildSqlString($insert);
         }
         return $sqlStatements;
     }
@@ -134,6 +140,38 @@ class SeedRepository extends MigrationRepositoryAbstract
         }
 
         return $seedInfo;
+    }
+
+    protected function getKeyFilter(Adapter $adapter, $tableName, $row): array|null
+    {
+        $keys = $this->getTableKeys($adapter, $tableName);
+        $filter = [];
+        foreach($keys as $key) {
+            if (!isset($row[$key])) {
+                return null;
+            }
+            $filter[$key] = $row[$key];
+        }
+
+        return $filter;
+    }
+
+    protected function getTableKeys(Adapter $adapter, string $tableName): array
+    {
+        if (!isset($this->tableKeys[$tableName])) {
+            $metaData = Factory::createSourceFromAdapter($adapter);
+            $table = $metaData->getTable($tableName);
+            $keys = [];
+            foreach($table->getConstraints() as $constraint) {
+                if ($constraint->getType() === 'PRIMARY KEY') {
+                    $keys = $constraint->getColumns();
+                    break;
+                }
+            }
+            $this->tableKeys[$tableName] = $keys;
+        }
+
+        return $this->tableKeys[$tableName];
     }
 
     public function getSeedsFromClasses(): array
@@ -238,15 +276,16 @@ class SeedRepository extends MigrationRepositoryAbstract
         foreach($data as $rowKey => $row) {
             foreach($row as $column => $value) {
                 foreach($references as $reference => $replacement) {
-                    if ($value === '{{' . $reference . '}}') {
+                    if ($data[$rowKey][$column] === '{{' . $reference . '}}') {
                         $data[$rowKey][$column] = $replacement;
-                    } elseif (str_starts_with($value, '{{')) {
-                        unset($data[$rowKey]);
-                        break;
                     }
+                }
+                if (is_string($data[$rowKey][$column]) && str_starts_with($data[$rowKey][$column], '{{')) {
+                    unset($data[$rowKey]);
                 }
             }
         }
+
         return $data;
     }
 
