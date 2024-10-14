@@ -17,6 +17,8 @@ use Gems\Model\Type\GemsDateTimeType;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Log\LogSearchSnippet;
+use Gems\Snippets\Log\LogTableSnippet;
+use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModellerInterface;
@@ -41,7 +43,9 @@ class LogHandler extends BrowseChangeHandler
      *
      * @var mixed String or array of snippets name
      */
-    protected array $autofilterSnippets = ['Log\\LogTableSnippet'];
+    protected array $autofilterSnippets = [
+        LogTableSnippet::class,
+    ];
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -148,7 +152,10 @@ class LogHandler extends BrowseChangeHandler
     public function prepareAction(SnippetActionInterface $action): void
     {
         parent::prepareAction($action);
-        if ($action instanceof BrowseTableAction) {
+
+        if ($action instanceof BrowseSearchAction) {
+            $action->setStartSnippets($this->indexStartSnippets);
+        } elseif ($action instanceof BrowseTableAction) {
             $action->setSnippets($this->autofilterSnippets);
         }
     }
