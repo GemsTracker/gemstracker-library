@@ -32,6 +32,11 @@ class AuditLog
     protected ?int $lastLogId = null;
 
     /**
+     * Array of data to save to the gems__log_activity table.
+     */
+    protected array $logData = [];
+
+    /**
      * @var string[] Attributes for which defaults are taken from config during creation.
      */
     protected array $overridableAttributes = [
@@ -473,7 +478,7 @@ class AuditLog
             $respondentId = $this->getRespondentId($currentValues + $oldValues);
         }
 
-        $logData = [
+        $this->logData = [
             'gla_action'        => $actionData['gls_id_action'],
             'gla_method'        => 'CLI',
             'gla_by'            => $this->getCurrentUserId(),
@@ -486,13 +491,13 @@ class AuditLog
             'gla_role'          => $this->getCurrentRole(),
         ];
         if (isset($this->request)) {
-            $logData['gla_method']    = $this->request->getMethod();
-            $logData['gla_remote_ip'] = $this->request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE);
+            $this->logData['gla_method']    = $this->request->getMethod();
+            $this->logData['gla_remote_ip'] = $this->request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE);
 //        } else {
-//            print_r($logData);
+//            print_r($this->logData);
         }
 
-        $this->lastLogId = $this->storeLogEntry($logData, $logId);
+        $this->lastLogId = $this->storeLogEntry($logId);
 
         return $this->lastLogId;
     }
@@ -550,8 +555,10 @@ class AuditLog
         return true;
     }
 
-    protected function storeLogEntry(array $logData, int $logId = 0): ? int
+    protected function storeLogEntry(int $logId = 0): ? int
     {
+        $logData = $this->logData;
+        $this->logData = [];
 //        print_r($logData);
         $sql = new Sql($this->cachedResultFetcher->getAdapter());
         if (0 == $logId) {
@@ -598,7 +605,7 @@ class AuditLog
             $currentOrganizationId = 0;
         }
 
-        $logData = [
+        $this->logData = [
             'gla_action'        => $route,
             'gla_method'        => $this->request->getMethod(),
             'gla_by'            => $this->getCurrentUserId(),
@@ -611,6 +618,6 @@ class AuditLog
             'gla_role'          => $this->getCurrentRole(),
         ];
 
-        return $this->storeLogEntry($logData, $logId);
+        return $this->storeLogEntry($logId);
     }
 }
