@@ -43,6 +43,7 @@ use Zalt\Model\Type\ActivatingMultiType;
 use Zalt\SnippetsActions\Form\EditActionAbstract;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\Validator\Model\ModelUniqueValidator;
+use Zalt\Validator\SimpleEmail;
 
 /**
  * @package    Gems
@@ -307,7 +308,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->currentGroup = $this->_('Contact information');
         $this->setIfExists('gr2o_email', [
             'required' => true,
-            'autoInsertNotEmptyValidator' => false
+            'autoInsertNotEmptyValidator' => false,
+            'validators[simple]' => SimpleEmail::class,
             ]);
         if ($this->metaModel->has('gr2o_email')) {
             $this->addColumn('CASE WHEN gr2o_email IS NULL OR LENGTH(TRIM(gr2o_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
