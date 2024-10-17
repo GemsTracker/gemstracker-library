@@ -58,6 +58,14 @@ class StaffTranslator extends \Gems\Model\Translator\StraightTranslator
         $this->_organization = $currentUserRepository->getCurrentOrganization();
     }
 
+    public function getRequiredFields(): array
+    {
+        return [
+            'gsf_login',
+            'gsf_id_organization',
+        ];
+    }
+
     /**
      * Add organization id and gul_user_class when needed
      *
@@ -89,6 +97,24 @@ class StaffTranslator extends \Gems\Model\Translator\StraightTranslator
         // Use organization default userclass is not specified
         if (!isset($row['gul_user_class'])) {
             $row['gul_user_class'] = $this->loader->getUserLoader()->getOrganization($row['gsf_id_organization'])->get('gor_user_class');
+        }
+
+        if (isset($row['gsf_login'], $row['gsf_id_organization'])) {
+            $userId = $this->resultFetcher->fetchOne(
+                "SELECT gsf_id_user FROM gems__staff WHERE gsf_login = ? AND gsf_id_organization = ?",
+                [$row['gsf_login'], $row['gsf_id_organization']]
+            );
+            if ($userId !== false) {
+                $row['gsf_id_user'] = $userId;
+            }
+
+            $loginId = $this->resultFetcher->fetchOne(
+                "SELECT gul_id_user FROM gems__user_logins WHERE gul_login = ? AND gul_id_organization = ?",
+                [$row['gsf_login'], $row['gsf_id_organization']]
+            );
+            if ($loginId !== false) {
+                $row['gul_id_user'] = $loginId;
+            }
         }
 
         return $row;

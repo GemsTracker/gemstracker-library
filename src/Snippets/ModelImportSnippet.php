@@ -61,6 +61,10 @@ class ModelImportSnippet extends \Zalt\Snippets\ModelImportSnippetAbstract
         $this->failureDirectory = $this->importRepository->getImportFailureDir();
         $this->successDirectory = $this->importRepository->getImportSuccessDir();
         $this->tempDirectory    = $this->importRepository->getImportTempDir();
+
+        if (isset($this->translatorNames[StraightTranslator::class])) {
+            $this->translatorNames[StraightTranslator::class] = $this->_('Straight');
+        }
     }
 
     /**
@@ -104,19 +108,6 @@ class ModelImportSnippet extends \Zalt\Snippets\ModelImportSnippetAbstract
         $form = new \Gems\Form($options);
 
         return $form;
-    }
-
-    /**
-     * @param string $name Optional identifier
-     * @return ModelTranslatorInterface
-     */
-    protected function getImportTranslator(string $name = ''): ModelTranslatorInterface
-    {
-        $translator = $this->metaModelLoader->createTranslator(StraightTranslator::class);
-        $translator->setTargetModel($this->targetModel);
-        $translator->setDescription($this->_('Straight translator'));
-
-        return $translator;
     }
 
     protected function init(): void

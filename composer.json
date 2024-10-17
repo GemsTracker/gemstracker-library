@@ -75,7 +75,7 @@
         "laminas/laminas-uri": "2.*",
         "league/html-to-markdown": "^5.1",
         "magnafacta/mutil": "^2.0.2",
-        "magnafacta/zalt-html": "^1.0.4",
+        "magnafacta/zalt-html": "^1.0.5",
         "magnafacta/zalt-laminas-filter": "^1.0.1",
         "magnafacta/zalt-laminas-validator": "^1.0.1",
         "magnafacta/zalt-model": "^2.0.5",
