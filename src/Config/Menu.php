@@ -895,6 +895,11 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
+                                    'name' => 'setup.access.staff.import',
+                                    'label' => $this->translator->trans('Import'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
                                     'name' => 'setup.access.staff.show',
                                     'label' => $this->translator->trans('Show'),
                                     'type' => 'route-link-item',

@@ -1100,6 +1100,7 @@ class Route
                     'create',
                     'show',
                     'edit',
+                    'import',
                     'reset',
                     'active-toggle',
 
@@ -1113,6 +1114,7 @@ class Route
                 postRoutes: [
                     ...$this->defaultPostRoutes,
                     'active-toggle',
+                    'import',
                     'reset',
                 ],
             ),
