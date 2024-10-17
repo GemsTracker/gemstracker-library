@@ -152,6 +152,7 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                     'gto_id_token',
                     'to',
                     'template',
+                    'communicationTemplate',
                     'subject',
                     'body',
                 ],
