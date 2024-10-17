@@ -44,10 +44,11 @@ trait CookieHandlerTrait
 
     protected function _addCookie(string $name, ?string $value, int $days, string $path): void
     {
+        $path = rtrim($path, '\\');
         $cookie = SetCookie::create($name, $value);
         $cookie = $cookie->withHttpOnly()
                 ->withSameSite(SameSite::strict())
-                ->withPath($path)
+                ->withPath($path ?: '\\')
                 ->withMaxAge($days * 86400)
                 ->withSecure(RequestUtil::isSecure($this->request));
 
