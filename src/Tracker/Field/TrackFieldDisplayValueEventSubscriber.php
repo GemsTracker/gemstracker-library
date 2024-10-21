@@ -31,6 +31,7 @@ class TrackFieldDisplayValueEventSubscriber implements EventSubscriberInterface
     {
         if ($event->rawValue === null) {
             $event->stopPropagation();
+            return;
         }
 
         $event->displayValue = match($event->type) {
