@@ -487,8 +487,11 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
         $jobId = $this->getRequest()->getParam('id');
         if (!is_null($jobId)) {
+
+            $commJobUtil = $this->loader->getUtil()->getCommJobsUtil();
+
             $jobId = (int) $jobId;
-            $job   = $this->db->fetchRow("SELECT * FROM gems__comm_jobs WHERE gcj_id_job = ?", $jobId);
+            $job = $commJobUtil->getJob($jobId);
 
             // Show a different color when not active,
             switch ($job['gcj_active']) {
@@ -509,7 +512,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                     break;
             }
             $model  = $this->loader->getTracker()->getTokenModel();
-            $filter = $this->loader->getUtil()->getCommJobsUtil()->getJobFilter($job);
+            $filter = $commJobUtil->getJobFilter($job);
             // Clone request and unset the id parameter to prevent filtering
             $cleanReq = clone $this->getRequest();
             $cleanReq->setParam(\MUtil_Model::REQUEST_ID, null);
