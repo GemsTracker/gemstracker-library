@@ -4886,26 +4886,6 @@ parameters:
 			path: src/Snippets/Organization/ChooseListedOrganizationSnippet.php
 
 		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:h3\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Organization/ChooseOrganizationSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 3
-			path: src/Snippets/Organization/ChooseOrganizationSnippet.php
-
-		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: src/Snippets/Organization/ChooseOrganizationSnippet.php
-
-		-
-			message: "#^Right side of && is always true\\.$#"
-			count: 1
-			path: src/Snippets/Organization/ChooseOrganizationSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Model\\\\Data\\\\DataReaderInterface\\:\\:get\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Organization/OrganizationEditSnippet.php

@@ -39,7 +39,7 @@ class GemsDefaultBrowse extends BrowseScreenAbstract
      */
     public function getScreenLabel(): string
     {
-        return $this->translator->_('(default \Gems table display)');
+        return $this->translator->_('(default Gems table display)');
     }
 
     /**

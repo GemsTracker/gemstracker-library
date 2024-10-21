@@ -147,12 +147,12 @@ class RoundTokenSnippet extends RespondentTokenSnippet
                 $track = $this->tracker->getTrackEngine($default);
                 if ($track->isUserCreatable()) {
                     $url   = $this->menuHelper->getRouteUrl('respondent.tracks.create', $this->requestInfo->getRequestMatchedParams() + [Model::TRACK_ID => $default]);
-                    $label = $this->_('Create track');
+                    $label = $this->_('Create new track');
                 }
             }
             if (! $url) {
                 $url   = $this->menuHelper->getRouteUrl('respondent.tracks.index', $this->requestInfo->getRequestMatchedParams());
-                $label = $this->_('Create a track');
+                $label = $this->_('Create new track');
             }
         }
 

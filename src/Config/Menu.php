@@ -895,6 +895,11 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
+                                    'name' => 'setup.access.staff.import',
+                                    'label' => $this->translator->trans('Import'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
                                     'name' => 'setup.access.staff.show',
                                     'label' => $this->translator->trans('Show'),
                                     'type' => 'route-link-item',
@@ -1488,7 +1493,7 @@ class Menu
                 ],
                 [
                     'name' => 'track-builder.chartconfig.index',
-                    'label' => $this->translator->trans('Chart config'),
+                    'label' => $this->translator->plural('Chart config', 'Chart configs', 1),
                     'type' => 'route-link-item',
                     'children' => [
                         [

@@ -42,7 +42,7 @@ class GemsDefaultShow extends ShowScreenAbstract
      */
     public function getScreenLabel(): string
     {
-        return $this->translator->_('(default \Gems respondent show)');
+        return $this->translator->_('(default Gems respondent show)');
     }
 
     /**

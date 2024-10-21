@@ -49,6 +49,7 @@ class LogSearchSnippet extends AutosearchInRespondentSnippet
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger, $periodSelectRepository);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
+        dump('hi1');
     }
 
     /**
@@ -62,6 +63,7 @@ class LogSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function getAutoSearchElements(array $data)
     {
+        dump('hi2');
         $elements = parent::getAutoSearchElements($data);
 
         $this->addPeriodSelectors($elements, 'gla_created');

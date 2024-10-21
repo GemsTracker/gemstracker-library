@@ -16,6 +16,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model;
+use Gems\Model\Translator\StaffTranslator;
 use Gems\Repository\AccessRepository;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelConfirmDeleteSnippet;
@@ -113,6 +114,11 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $deactivateParameters = ['saveData' => ['gsf_active' => 0]];
+
+    protected array $importParameters = [
+        'afterSaveRoutePart' => 'index',
+        'translatorNames' => 'getStaffTranslators',
+    ];
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -359,6 +365,13 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         }
 
         return $filter;
+    }
+
+    public function getStaffTranslators(): array
+    {
+        return [
+            StaffTranslator::class => $this->_('Staff'),
+        ];
     }
 
     /**

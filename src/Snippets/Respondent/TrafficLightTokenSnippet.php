@@ -166,7 +166,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
     ];
 
     protected array $trackParameters = [
-        Model::RESPONDENT_TRACK         => 'gto_id_respondent_track',
+        Model::RESPONDENT_TRACK         => ['gto_id_respondent_track', 'gr2t_id_respondent_track'],
         MetaModelInterface::REQUEST_ID1 => 'gr2o_patient_nr',
         MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization',
     ];
@@ -215,7 +215,17 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         $output = [];
 
         foreach ($keys as $param => $input) {
-            if (isset($data[$input])) {
+            if (is_array($input)) {
+                foreach ($input as $subKey) {
+                    if (isset($data[$subKey])) {
+                        $output[$param] = $data[$subKey];
+                        break;
+                    }
+                }
+                if ((! isset($output[$param])) && isset($data[$param]))  {
+                    $output[$param] = $data[$param];
+                }
+            } elseif (isset($data[$input])) {
                 $output[$param] = $data[$input];
             } elseif (isset($data[$param])) {
                 $output[$param] = $data[$param];

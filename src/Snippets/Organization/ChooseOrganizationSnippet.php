@@ -11,6 +11,13 @@
 
 namespace Gems\Snippets\Organization;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\RouteHelper;
+use Gems\User\User;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -20,57 +27,36 @@ namespace Gems\Snippets\Organization;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ChooseOrganizationSnippet extends \MUtil\Snippets\SnippetAbstract
+class ChooseOrganizationSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
-    /**
-     * Required
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected readonly User $currentUser;
 
-    /**
-     * Required
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        protected readonly RouteHelper $routeHelper,
+        )
     {
-        return (boolean) $this->loader && $this->request && parent::checkRegistryRequestsAnswers();
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         $html = $this->getHtmlSequence();
 
         $html->h3($this->_('Choose an organization'));
 
-        $user = $this->loader->getCurrentUser();
-        $url['controller'] = 'organization';
-        $url['action']     = 'change-ui';
-
-        if ($orgs = $user->getRespondentOrganizations()) {
+        if ($orgs = $this->currentUser->getRespondentOrganizations()) {
             $html->pInfo($this->_('This organization cannot have any respondents, please choose one that does:'));
 
             foreach ($orgs as $orgId => $name) {
-                $url['org'] = $orgId;
+                $url = $this->routeHelper->getRouteUrl('organization.switch-ui', [], ['org' => $orgId]);
 
+                // @phpstan-ignore method.notFound
                 $html->pInfo()->actionLink($url, $name)->appendAttrib('class', 'larger');
             }
         } else {

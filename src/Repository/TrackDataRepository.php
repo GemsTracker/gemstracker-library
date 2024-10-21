@@ -27,10 +27,13 @@ class TrackDataRepository
 
     public function getActiveTracksForOrgs(array $organizationIds)
     {
+        if (! $organizationIds) {
+            return [];
+        }
         $where = new Predicate();
 
         $whereNest = $where->equalTo('gtr_active', 1)->and->nest();
-        foreach($organizationIds as $key => $organizationId) {
+        foreach($organizationIds as $organizationId) {
             $whereNest->like('gtr_organizations', "%|$organizationId|%");
             $whereNest = $whereNest->or;
         }
