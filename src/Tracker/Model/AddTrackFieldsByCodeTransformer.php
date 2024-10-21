@@ -36,7 +36,8 @@ class AddTrackFieldsByCodeTransformer extends ModelTransformerAbstract
      */
     public function transformLoad(MetaModelInterface $model, array $data, $new = false, $isPostData = false): array
     {
-        foreach($data as $tokenId=>$row) {
+        foreach($data as $index => $row) {
+            $tokenId = $row['gto_id_token'];
             if (isset($row[$this->respTrackIdField])) {
                 $respTrackId = $row[$this->respTrackIdField];
                 if (!isset($this->trackFieldsByRespondentTrack[$respTrackId])) {
@@ -44,7 +45,7 @@ class AddTrackFieldsByCodeTransformer extends ModelTransformerAbstract
                     $this->trackFieldsByRespondentTrack[$respTrackId] = $this->getTrackFields($trackId, $respTrackId);
                 }
                 $newData = $this->trackFieldsByRespondentTrack[$respTrackId];
-                $data[$tokenId] = array_merge($data[$tokenId], $newData);
+                $data[$index] = array_merge($data[$index], $newData);
             }
 
         }
