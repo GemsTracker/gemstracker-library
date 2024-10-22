@@ -110,7 +110,8 @@
         "symfony/redis-messenger": "^6.1",
         "symfony/translation": "^6.1",
         "symfony/yaml": "^6.2",
-        "twig/twig": "^3.4"
+        "twig/twig": "^3.4",
+        "symfony/string": "^6.4"
     },
     "require-dev": {
         "itsgoingd/clockwork": "^5.1",
