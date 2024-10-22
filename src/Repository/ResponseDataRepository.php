@@ -9,6 +9,7 @@ use Gems\Tracker;
 use Gems\Tracker\Source\SourceAbstract;
 use Gems\Tracker\Survey;
 use Laminas\Db\Metadata\Source\Factory;
+use Symfony\Component\String\UnicodeString;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 
@@ -50,6 +51,9 @@ class ResponseDataRepository
             if (is_array($response)) {
                 $response = join('|', $response);
             }
+            $stringObject = new UnicodeString($response);
+            $response = $stringObject->normalize()->toString();
+
             $data['gdr_response'] = $response;
 
             if (in_array(strtolower($fieldName), $checkDuplicateNames)) {
