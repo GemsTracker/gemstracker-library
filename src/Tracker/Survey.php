@@ -71,10 +71,10 @@ class Survey
      * @param mixed $gemsSurveyData Token Id or array containing token record
      */
     public function __construct(
-        protected array $data,
         protected readonly Tracker $tracker,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly TrackEvents $trackEvents,
+        protected array $data,
     )
     {
         $this->id = $this->data['gsu_id_survey'];
