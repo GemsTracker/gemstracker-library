@@ -471,9 +471,7 @@ class Route
                 ],
                 parameters: ['org' => '[a-zA-Z0-9]+',],
                 parameterRoutes: [
-                    'subscribe',
                     'subscribe-form',
-                    'unsubscribe',
                     'unsubscribe-form',
                 ],
                 postRoutes: [
