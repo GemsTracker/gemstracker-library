@@ -37,6 +37,7 @@ use Gems\Factory\MonologFactory;
 use Gems\Factory\PdoFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Factory\ReflectionAbstractFactory;
+use Gems\Factory\TwigEnvironmentFactory;
 use Gems\Menu\RouteHelper;
 use Gems\Menu\RouteHelperFactory;
 use Gems\Messenger\MessengerFactory;
@@ -109,6 +110,7 @@ use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Twig\Environment;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
 use Zalt\Base\TranslatorInterface;
@@ -455,6 +457,9 @@ class ConfigProvider
                 SnippetLoader::class => SnippetLoaderFactory::class,
                 SnippetMiddleware::class => SnippetMiddlewareFactory::class,
                 GemsSnippetResponder::class => GemsSnippetResponderFactory::class,
+
+                // Twig
+                Environment::class   => TwigEnvironmentFactory::class,
             ],
             'abstract_factories' => [
                 ReflectionAbstractFactory::class,
