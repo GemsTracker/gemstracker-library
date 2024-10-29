@@ -59,7 +59,7 @@ class LogfileHandler extends GemsHandler
     protected function createModel(SnippetActionInterface $action): MetaModellerInterface
     {
         $finder = new Finder();
-        $finder->files()->in($this->config['logDir']);
+        $finder->files()->in([$this->getDirectory()]);
         $model = $this->metaModelLoader->createModel(FolderModel::class, $finder);
 
         $metaModel = $model->getMetaModel();
@@ -85,5 +85,19 @@ class LogfileHandler extends GemsHandler
         }
 
         return $model;
+    }
+
+    protected function getDirectory(): string
+    {
+        return $this->config['logDir'];
+    }
+
+    public function prepareAction(SnippetActionInterface $action): void
+    {
+        parent::prepareAction($action);
+
+        if ($action instanceof DownloadFileAction) {
+            $action->directory = $this->getDirectory();
+        }
     }
 }

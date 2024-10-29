@@ -13,9 +13,10 @@ namespace Gems\SnippetsActions\Download;
 
 use Gems\Snippets\File\DownloadFileSnippet;
 use Gems\SnippetsActions\Show\ShowAction;
+use Zalt\SnippetsActions\ParameterActionInterface;
 use Zalt\SnippetsActions\PostActionInterface;
 
-class DownloadFileAction extends ShowAction implements PostActionInterface
+class DownloadFileAction extends ShowAction implements PostActionInterface, ParameterActionInterface
 {
     /**
      * @inheritDoc
@@ -37,4 +38,6 @@ class DownloadFileAction extends ShowAction implements PostActionInterface
      * @var string
      */
     public ?string $csrfToken = null;
+
+    public string|null $directory = null;
 }

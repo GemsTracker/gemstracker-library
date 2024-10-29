@@ -33,6 +33,8 @@ class DownloadFileSnippet extends FormSnippetAbstract
 {
     use DataReaderGenericModelTrait;
 
+    protected string|null $directory;
+
     protected array $subjects = ['log file', 'log files'];
 
     /**
@@ -49,7 +51,6 @@ class DownloadFileSnippet extends FormSnippetAbstract
         MessengerInterface $messenger,
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
-        protected readonly array $config,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
@@ -63,7 +64,7 @@ class DownloadFileSnippet extends FormSnippetAbstract
         if (preg_match('/\/|\.\./', $filename)) {
             throw new Exception('File not found');
         }
-        $file = $this->config['logDir'].'/'.$filename;
+        $file = $this->directory.'/'.$filename;
         if (!is_readable($file)) {
             throw new Exception('File not found');
         }
