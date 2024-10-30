@@ -183,7 +183,7 @@ class ResponseDataRepository
         }
 
         if ($fieldSql > '') {
-            $tokenTable = $platform->quoteIdentifier($this->gemsDbName . '.gems__tokens');
+            $tokenTable = $platform->quoteIdentifier($this->gemsDbName) . '.' . $platform->quoteIdentifier('gems__tokens');
             $createViewSql = 'CREATE OR REPLACE VIEW ' . $platform->quoteIdentifier($viewName) . ' AS SELECT gdr_id_token';
             $createViewSql .= $fieldSql;
             $createViewSql .= "FROM gemsdata__responses join " . $tokenTable .
