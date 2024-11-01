@@ -124,7 +124,6 @@ class ModelImportSnippet extends \Zalt\Snippets\ModelImportSnippetAbstract
     {
         if (! $this->afterSaveRouteUrl) {
             $route  = $this->menuHelper->getRelatedRoute($this->afterSaveRoutePart);
-            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' . $route . "\n", FILE_APPEND);
             $keys   = $this->getModel()->getMetaModel()->getKeys();
             $params = $this->requestInfo->getRequestMatchedParams();
             foreach ($keys as $key => $field) {
