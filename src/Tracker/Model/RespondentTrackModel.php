@@ -396,10 +396,17 @@ class RespondentTrackModel extends GemsMaskedModel
             $list = DatePicker::splitTojQueryDateTimeFormat($displayFormat);
             if (!$list[2]) {
                 if (!$newValues['gr2t_end_date'] instanceof DateTimeInterface) {
-                    $newValues['gr2t_end_date'] = DateTimeImmutable::createFromFormat(
+                    $date = DateTimeImmutable::createFromFormat(
                         $displayFormat,
                         $newValues['gr2t_end_date']
                     );
+                    if (!$date instanceof DateTimeInterface) {
+                        $date = DateTimeImmutable::createFromFormat(
+                            $this->metaModel->get('gr2t_end_date', 'storageFormat'),
+                            $newValues['gr2t_end_date']
+                        );
+                    }
+                    $newValues['gr2t_end_date'] = $date;
                 }
                 $newValues['gr2t_end_date']->setTime(23, 59, 59);
             }
