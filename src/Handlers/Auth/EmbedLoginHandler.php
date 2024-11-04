@@ -35,6 +35,8 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
     private RateLimiter $rateLimiter;
 
+    private bool $showKeyInLog = false;
+
     private StatusMessengerInterface $statusMessenger;
 
     private int $throttleMaxAttempts;
@@ -93,12 +95,17 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 unset($input['patientId']);
             }
 
+            $logKey = null;
+            if ($this->showKeyInLog) {
+                $logKey = $input['key'];
+            }
+
             $this->logInfo(sprintf(
                 "Login user: %s, end user: %s, patient: %s, key: %s",
                 $input['epd'],
                 $input['usr'],
                 $input['pid'],
-                $input['key']
+                $logKey
             ));
             // TODO: org should be an existing organization?
 
