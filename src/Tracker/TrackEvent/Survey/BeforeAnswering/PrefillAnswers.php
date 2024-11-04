@@ -42,7 +42,7 @@ class PrefillAnswers extends FillBirthDayGender
      */
     public function getEventName(): string
     {
-        return $this->translator->_('Fill survey question when code starts with: TF for trackfield, CP for survey or RD for Respondent (only age/sex/birthdate)');
+        return $this->translator->_('Fill survey question when code starts with: TF for trackfield, CP for survey or RD for Respondent (only age/sex/birthdate/name)');
     }
 
     /**
@@ -85,6 +85,7 @@ class PrefillAnswers extends FillBirthDayGender
         $respondent = $token->getRespondent();
         $this->addCheckedValue('rdAge', $respondent->getAge());
         $this->addCheckedValue('rdSex', $respondent->getGender());
+        $this->addCheckedValue('rdName', $respondent->getName());
         $birthDate = $respondent->getBirthday();
         if (!is_null($birthDate) && $birthDate instanceof \DateTimeInterface) {
             $this->addCheckedValue('rdBirthDate', $birthDate->format('Y-m-d'));
