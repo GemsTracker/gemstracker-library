@@ -62,7 +62,7 @@ trait GetRespondentTrait
             $this->_respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
 
             if ((! $this->_respondent->exists) && $patientNumber && $organizationId) {
-                throw new Exception(sprintf($this->getMissingRespondentMessage(), $patientNumber));
+                throw new Exception(sprintf($this->getMissingRespondentMessage(), $patientNumber), 404);
             }
 
             if ($this->_respondent->exists && (! array_key_exists($this->_respondent->getOrganizationId(), $this->currentUser->getAllowedOrganizations()))) {
