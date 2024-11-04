@@ -51,8 +51,10 @@ class ResponseDataRepository
             if (is_array($response)) {
                 $response = join('|', $response);
             }
-            $stringObject = new UnicodeString($response);
-            $response = $stringObject->normalize()->toString();
+            if ($response !== null) {
+                $stringObject = new UnicodeString((string)$response);
+                $response = $stringObject->normalize()->toString();
+            }
 
             $data['gdr_response'] = $response;
 
