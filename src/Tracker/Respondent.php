@@ -76,9 +76,6 @@ class Respondent
      * @param int $respondentId   Optional respondent id, used when patient id is empty
      */
     public function __construct(
-        protected ?string                          $patientId,
-        protected int                              $organizationId,
-        protected int|null                         $respondentId = null,
         protected readonly ConsentRepository       $consentRepository,
         protected readonly MailRepository          $mailRepository,
         protected readonly MaskRepository          $maskRepository,
@@ -91,6 +88,9 @@ class Respondent
         protected readonly Tracker                 $tracker,
         protected readonly TrackEvents             $trackEvents,
         CurrentUserRepository                      $currentUserRepository,
+        protected string|null                      $patientId,
+        protected int                              $organizationId,
+        protected int|null                         $respondentId = null,
     )
     {
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
