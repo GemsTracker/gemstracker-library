@@ -489,7 +489,7 @@ class CommJobRepository
             intval($job['gcj_filter_max_reminders']),
             $forceSent);
 
-        $this->addToFilter($filter, $job['gcj_target'], $job['gcj_to_method'], $job['gcj_fallback_method']);
+        $this->addToFilter($filter, $job['gcj_target'], $job['gcj_to_method'], (string) $job['gcj_fallback_method']);
 
         $groups = $this->getAllGroups();
 
