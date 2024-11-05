@@ -102,9 +102,6 @@ class RespondentTest extends TestCase
         $respondentModelProphecy->applyStringAction(Argument::type('string'), Argument::type('bool'));
 
         return new Respondent(
-            $patientId,
-            $organizationId,
-            $respondentId,
             $consentRepository,
             $mailRepository,
             $maskRepository,
@@ -117,6 +114,9 @@ class RespondentTest extends TestCase
             $tracker,
             $trackEvents,
             $currentUserRepository,
+            $patientId,
+            $organizationId,
+            $respondentId,
         );
     }
 }
