@@ -35,9 +35,6 @@ class Respondent extends \Gems\Tracker\Respondent
         protected readonly UrlHelper $urlHelper,
     ) {
         parent::__construct(
-            'EXAMPLE001',
-            0,
-            0,
             $consentRepository,
             $mailRepository,
             $maskRepository,
@@ -50,6 +47,9 @@ class Respondent extends \Gems\Tracker\Respondent
             $tracker,
             $trackEvents,
             $currentUserRepository,
+            'EXAMPLE001',
+            0,
+            0,
         );
     }
 
