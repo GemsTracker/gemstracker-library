@@ -52,7 +52,6 @@ class User extends \Gems\User\User
     public function getBaseOrganization(): Organization
     {
         $organization = new Organization();
-        $organization->answerRegistryRequest('urlHelper', $this->urlHelper);
         return $organization;
     }
 
