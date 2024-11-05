@@ -20,10 +20,9 @@ use Gems\Model\MetaModelLoader;
 use Gems\Repository\MailRepository;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\User\Mask\MaskRepository;
-use Gems\Util;
 use Gems\Util\Translated;
-use MUtil\JQuery\Form\Element\DatePicker;
 use MUtil\Model;
+use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Legacy\CurrentUserRepository;
@@ -392,23 +391,32 @@ class RespondentTrackModel extends GemsMaskedModel
                 $displayFormat = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
             }
 
-            // Of course do not do so when we got a time format
-            $list = DatePicker::splitTojQueryDateTimeFormat($displayFormat);
-            if (!$list[2]) {
-                if (!$newValues['gr2t_end_date'] instanceof DateTimeInterface) {
+            // Of course do not do so when we got a time format so check for those chars
+            if (strpbrk($displayFormat, 'aAgGhHis') === false) {
+                if ($newValues['gr2t_end_date'] instanceof DateTimeInterface) {
+                    $date = $newValues['gr2t_end_date'];
+                } else {
                     $date = DateTimeImmutable::createFromFormat(
                         $displayFormat,
                         $newValues['gr2t_end_date']
                     );
-                    if (!$date instanceof DateTimeInterface) {
+                    if (!$date instanceof DateTimeImmutable) {
+                        $storageFormat = $this->metaModel->get('gr2t_end_date', 'storageFormat');
+                        if (!$storageFormat) {
+                            $storageFormat = Model::getTypeDefault(Model::TYPE_DATE, 'storageFormat');
+                        }
                         $date = DateTimeImmutable::createFromFormat(
-                            $this->metaModel->get('gr2t_end_date', 'storageFormat'),
+                            $storageFormat,
                             $newValues['gr2t_end_date']
                         );
+
+                        if (! $date instanceof DateTimeImmutable) {
+                            $date = new \DateTimeImmutable($newValues['gr2t_end_date']);
+                        }
                     }
-                    $newValues['gr2t_end_date'] = $date;
                 }
-                $newValues['gr2t_end_date']->setTime(23, 59, 59);
+                // @phpstan-ignore-next-line
+                $newValues['gr2t_end_date'] = $date->setTime(23, 59, 59);
             }
         }
 
