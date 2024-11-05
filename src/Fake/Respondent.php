@@ -69,7 +69,6 @@ class Respondent extends \Gems\Tracker\Respondent
     public function getOrganization(): Organization
     {
         $organization = new Organization();
-        $organization->answerRegistryRequest('urlHelper', $this->urlHelper);
         return $organization;
     }
 
