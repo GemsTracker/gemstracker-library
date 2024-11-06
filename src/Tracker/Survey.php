@@ -560,7 +560,7 @@ class Survey
      */
     public function hasPdf(): bool
     {
-        return isset($this->data['gsu_survey_pdf']);
+        return isset($this->data['gsu_survey_pdf']) && $this->data['gsu_survey_pdf'] == 1;
     }
 
     /**
@@ -581,7 +581,7 @@ class Survey
      */
     public function isActive(): bool
     {
-        return $this->exists && isset($this->data['gsu_active']);
+        return $this->exists && isset($this->data['gsu_active']) && $this->data['gsu_active'] == 1;
     }
 
     /**
