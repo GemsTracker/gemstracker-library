@@ -35,13 +35,6 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
     protected $currentUserRepository;
 
     /**
-     * The \Gems DB
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
      * @var \Gems\Project\ProjectSettings
      */
     protected $project;
@@ -79,12 +72,11 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
         // Now save the questions
         $answerModel = $survey->getAnswerModel('en');
 
-        // Skip hash calculation as this is a rare function and we cannot trust there to be no changes
         $hash = $survey->calculateHash();
 
-//        if ($survey->getHash() === $hash) {
-//            return;
-//        }
+        if ($survey->getHash() === $hash) {
+            return;
+        }
 
         $survey->setHash($hash, $this->currentUserRepository->getCurrentUserId());
         $metaModel = $answerModel->getMetaModel();
