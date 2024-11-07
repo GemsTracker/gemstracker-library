@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{{ _config.application_title ?? 'GemsTracker 2' }}{{ title_breadcrumbs ?? '' }}</title>
+    <title>{{ _config.title.name ?? 'GemsTracker 2' }}{{ title_breadcrumbs ?? '' }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="{{ path('home') }}" />
     {{ include('@gems/vite.html.twig') }}
