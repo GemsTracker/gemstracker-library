@@ -40,7 +40,8 @@ class PhoneNumberFormatter
         $parsedPhone = $phoneUtil->parse($value, $this->config['account']['edit-auth']['defaultRegion']);
 
         if (!$phoneUtil->isValidNumber($parsedPhone)) {
-            throw new \Exception("An invalid phone number was entered."); // This should have been validated first
+            return $value;
+            //throw new \Exception("An invalid phone number was entered."); // This should have been validated first
         }
 
         return $phoneUtil->format($parsedPhone, PhoneNumberFormat::E164);
