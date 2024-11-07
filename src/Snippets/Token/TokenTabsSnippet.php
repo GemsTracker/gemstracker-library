@@ -110,7 +110,7 @@ class TokenTabsSnippet extends TabSnippetAbstract
                 $filter[] = 'DATEDIFF(gto_valid_from, CURRENT_TIMESTAMP) < 15';
                 $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
         }
-        $this->model->setMeta('tab_filter', $filter);
+        $this->model->getMetaModel()->setMeta('tab_filter', $filter);
 
         return parent::hasHtmlOutput();
     }
