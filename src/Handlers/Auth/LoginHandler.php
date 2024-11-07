@@ -26,6 +26,7 @@ use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;
 use Laminas\Validator\InArray;
 use Laminas\Validator\NotEmpty;
+use Laminas\Validator\StringLength;
 use Laminas\Validator\ValidatorChain;
 use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Helper\UrlHelper;
@@ -122,6 +123,14 @@ class LoginHandler implements RequestHandlerInterface
             || !$notEmptyValidation->isValid($input['password'] ?? null)
         ) {
             return $this->redirectBack($request, [$this->translator->trans('Make sure you fill in all fields')]);
+        }
+
+        // The database doesn't handle username input longer than 30 characters.
+        $usernameValidation = new ValidatorChain();
+        $usernameValidation->attach(new StringLength(0, 30));
+
+        if (!$usernameValidation->isValid($input['username'])) {
+            return $this->redirectBack($request, [$this->translator->trans('The username is too long')]);
         }
 
         $loginThrottle = $this->loginThrottleBuilder->buildLoginThrottle(
