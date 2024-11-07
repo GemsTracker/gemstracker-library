@@ -30,6 +30,11 @@ class CommJobRepository
 
     protected string $tokensInMessengerQueueKey = 'messenger.queue.comm-job.tokens';
 
+    protected array $unansweredSort = [
+        'gto_valid_from' => SORT_ASC,
+        'gto_round_order' => SORT_ASC,
+        ];
+
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
         protected HelperAdapter $cache,
@@ -40,7 +45,6 @@ class CommJobRepository
         protected CommunicationRepository $communicationRepository,
         protected MessageBusInterface $messageBus,
         CurrentUserRepository $currentUserRepository,
-
     )
     {
         $this->resultFetcher = $this->cachedResultFetcher->getResultFetcher();
@@ -613,7 +617,7 @@ class CommJobRepository
         // Fix for #680: token with the valid from the longest in the past should be the
         // used as first token and when multiple rounds start at the same date the
         // lowest round order should be used.
-        $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
+        $model->setSort($this->unansweredSort);
 
         // Prevent out of memory errors, only load the tokenid
         $metaModel = $model->getMetaModel();

@@ -11,13 +11,15 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Audit\AuditLog;
 use Gems\Communication\CommunicationRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\CommJobRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
-use Gems\Snippets\ZendFormSnippetAbstract;
+use Gems\Snippets\FormSnippetAbstract;
 use Gems\Tracker;
 use Symfony\Component\Mime\Address;
 use Zalt\Base\RequestInfo;
@@ -32,9 +34,11 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8
  */
-class TokenForgottenSnippet extends ZendFormSnippetAbstract
+class TokenForgottenSnippet extends FormSnippetAbstract
 {
     protected ?string $clientIp = null;
+
+    protected int $layoutFixedWidth = 20;
 
     /**
      * The field name for the organization element.
@@ -61,6 +65,8 @@ class TokenForgottenSnippet extends ZendFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AuditLog $auditLog,
+        MenuSnippetHelper $menuHelper,
         protected CurrentUserRepository $currentUserRepository,
         protected Tracker $tracker,
         protected OrganizationRepository $organizationRepository,
@@ -69,7 +75,7 @@ class TokenForgottenSnippet extends ZendFormSnippetAbstract
         protected CommunicationRepository $communicationRepository,
         protected CommJobRepository $commJobRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
 
     /**

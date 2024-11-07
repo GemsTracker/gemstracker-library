@@ -150,6 +150,10 @@ class Token
 
     protected LoggerInterface $logger;
 
+    protected bool $nextUnansweredInSameOrg = false;
+
+    protected array $nextUnansweredSort = ['gto_valid_from', 'gto_round_order'];
+
     /**
      * The size of the result field, calculated from meta data when null,
      * but can be set by project specific class to fixed value
@@ -951,15 +955,15 @@ class Token
                 // ->andConsents
                 ->andRounds([])
                 ->andSurveys([])
-                ->forRespondent($this->getRespondentId())
+                ->forRespondent($this->getRespondentId(), $this->nextUnansweredInSameOrg ? $this->getOrganizationId() : null)
                 ->forGroupId($this->getSurvey()->getGroupId())
                 ->onlySucces()
                 ->onlyValid()
                 ->forWhere([
                     'gsu_active' => 1,
-                    '(gro_active = 1 OR gro_active IS NULL)',
+                    'gro_active' => 1,
                 ])
-                ->order(['gto_valid_from', 'gto_round_order']);
+                ->order($this->nextUnansweredSort);
 
         $this->_addRelation($tokenSelect);
 
