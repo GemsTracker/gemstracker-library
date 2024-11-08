@@ -41,9 +41,7 @@ class ConditionLoader
     const COMPARATOR_EQUALLESS = 'EqualLess';
     const COMPARATOR_EQUALMORE = 'EqualMore';
     const COMPARATOR_IN        = 'In';
-
     const COMPARATOR_ISEMPTY   = 'IsEmpty';
-
     const COMPARATOR_NOT       = 'NotEquals';
 
     const ROUND_CONDITION  = 'Round';

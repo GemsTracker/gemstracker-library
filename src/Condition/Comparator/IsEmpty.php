@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace Gems\Condition\Comparator;
 
-use Gems\Condition\Comparator\ComparatorAbstract;
-
 /**
  * @package    Gems
  * @subpackage Condition\Comparator
