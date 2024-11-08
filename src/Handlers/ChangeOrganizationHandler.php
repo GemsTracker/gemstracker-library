@@ -7,7 +7,6 @@ use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\CookieResponse;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Repository\OrganizationRepository;
-use Gems\Site\SiteUtil;
 use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
@@ -18,9 +17,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 class ChangeOrganizationHandler implements RequestHandlerInterface
 {
     public function __construct(
-        private SiteUtil $siteUtil,
+        private OrganizationRepository $organizationRepository,
         private UrlHelper $urlHelper,
-        private OrganizationRepository $organizationRepository
     )
     {
     }
@@ -59,7 +57,7 @@ class ChangeOrganizationHandler implements RequestHandlerInterface
     protected function getUrl(ServerRequestInterface $request): string
     {
         $serverParams = $request->getServerParams();
-        if (isset($serverParams['HTTP_REFERER']) && $this->siteUtil->isAllowedUrl($serverParams['HTTP_REFERER'])) {
+        if (isset($serverParams['HTTP_REFERER']) && $this->organizationRepository->isAllowedUrl($serverParams['HTTP_REFERER'])) {
             return $serverParams['HTTP_REFERER'];
         }
 

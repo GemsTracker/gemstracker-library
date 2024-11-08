@@ -66,7 +66,7 @@ class IndexControllerTest extends ControllerTestAbstract
             'organization' => \Gems\User\UserLoader::SYSTEM_NO_ORG,
             'userlogin'    => 'superadmin',  // Valid login, this comes from project.ini in new-project
             'password'     => 'superadmin',
-            'button'       => 'Login'           // Submit button / label come from \Gems\User\Form\LoginForm
+            'button'       => 'Login'
             );
         
         $this->getRequest()->setMethod('POST')->setPost($postVars);

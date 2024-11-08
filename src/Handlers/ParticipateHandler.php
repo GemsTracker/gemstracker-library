@@ -18,7 +18,6 @@ use Gems\Repository\OrganizationRepository;
 use Gems\Screens\ScreenRepository;
 use Gems\Screens\SubscribeScreenInterface;
 use Gems\Screens\UnsubscribeScreenInterface;
-use Gems\Site\SiteUtil;
 use Gems\User\User;
 use Zalt\Base\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -87,7 +86,6 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
         protected readonly RouteHelper $routeHelper,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly ScreenRepository $screenRepository,
-        protected readonly SiteUtil $siteUtil,
         protected array $config,
     ) {
         parent::__construct($responder, $translate);
@@ -120,8 +118,7 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
         if ($this->currentUser) {
             $allowedOrganizations = $this->currentUser->getAllowedOrganizations();
         } else {
-            $site = $this->siteUtil->getCurrentSite($this->request);
-            $allowedOrganizations = $this->siteUtil->getNamedOrganizationsFromSiteUrl($site);
+            $allowedOrganizations = $this->organizationRepository->getOrganizationsWithRespondents();
         }
         $subscribableOrganizations = array_intersect_assoc($allowedOrganizations, $subscribableOrganizations);
 

@@ -3,9 +3,8 @@
 namespace Gems\Handlers;
 
 use Gems\CookieResponse;
-use Gems\Locale\LocaleCookie;
 use Gems\Middleware\LocaleMiddleware;
-use Gems\Site\SiteUtil;
+use Gems\Repository\OrganizationRepository;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
 use Psr\Http\Message\ResponseInterface;
@@ -14,7 +13,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ChangeLanguageHandler implements RequestHandlerInterface
 {
-    public function __construct(private SiteUtil $siteUtil, private UrlHelper $urlHelper)
+    public function __construct(
+        private readonly OrganizationRepository $organizationRepository,
+        private readonly UrlHelper $urlHelper)
     {
     }
 
@@ -30,7 +31,7 @@ class ChangeLanguageHandler implements RequestHandlerInterface
     protected function getUrl(ServerRequestInterface $request): string
     {
         $serverParams = $request->getServerParams();
-        if (isset($serverParams['HTTP_REFERER']) && $this->siteUtil->isAllowedUrl($serverParams['HTTP_REFERER'])) {
+        if (isset($serverParams['HTTP_REFERER']) && $this->organizationRepository->isAllowedUrl($serverParams['HTTP_REFERER'])) {
             return $serverParams['HTTP_REFERER'];
         }
 

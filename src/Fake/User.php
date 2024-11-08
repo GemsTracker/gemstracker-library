@@ -3,7 +3,6 @@
 namespace Gems\Fake;
 
 use Gems\Db\ResultFetcher;
-use Gems\Fake\Organization;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\TrackDataRepository;
@@ -51,7 +50,7 @@ class User extends \Gems\User\User
 
     public function getBaseOrganization(): Organization
     {
-        $organization = new Organization();
+        $organization = new Organization($this->organizationRepository->getSiteUrls());
         return $organization;
     }
 

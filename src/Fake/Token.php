@@ -77,7 +77,7 @@ class Token extends \Gems\Tracker\Token
 
     public function getOrganization(): Organization
     {
-        return new Organization();
+        return new Organization($this->organizationRepository->getSiteUrls());
     }
 
     public function getRespondent(): Respondent

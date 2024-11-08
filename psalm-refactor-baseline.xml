@@ -228,9 +228,4 @@
       <code><![CDATA[twig_escape_filter($env, $csrf->generateToken(), 'html_attr')]]></code>
     </UndefinedFunction>
   </file>
-  <file src="src/User/Form/OrganizationFormAbstract.php">
-    <ParamNameMismatch>
-      <code>$data</code>
-    </ParamNameMismatch>
-  </file>
 </files>

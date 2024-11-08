@@ -87,12 +87,6 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems\Util\SiteUtil
-     */
-    protected $sites;
-
-    /**
-     *
      * @var \Gems\Util\TokenData
      */
     protected $tokenData;
@@ -374,15 +368,6 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
     public function getReceptionCodeRepository(): ReceptionCodeRepository
     {
         return $this->containerLoad(ReceptionCodeRepository::class);
-    }
-
-    /**
-     *
-     * @return \Gems\Util\SiteUtil
-     */
-    public function getSites()
-    {
-        return $this->_getClass('siteUtil');
     }
 
     /**

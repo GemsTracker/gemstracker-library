@@ -11,6 +11,7 @@
 
 namespace Gems\User;
 
+use Gems\Model\OrganizationModel;
 use Gems\Registry\CachedArrayTargetAbstract;
 use Gems\Repository\OrganizationRepository;
 use Gems\Screens\AskScreenAbstract;
@@ -19,7 +20,6 @@ use Gems\Screens\EditScreenInterface;
 use Gems\Screens\ShowScreenInterface;
 use Gems\Screens\SubscribeScreenInterface;
 use Gems\Screens\UnsubscribeScreenInterface;
-use Gems\Site\SiteUtil;
 
 /**
  * Contains information on the organization of the current User
@@ -34,12 +34,6 @@ use Gems\Site\SiteUtil;
  */
 class Organization extends CachedArrayTargetAbstract
 {
-    /**
-     *
-     * @var array of class name => class label
-     */
-    protected $_allowedProjectUserClasses;
-
     /**
      * Variable to add tags to the cache for cleanup.
      *
@@ -93,13 +87,6 @@ class Organization extends CachedArrayTargetAbstract
     protected ?UnsubscribeScreenInterface $_unsubscribeScreen = null;
 
     /**
-     * Required
-     *
-     * @var \Gems\Util\BasePath
-     */
-    protected $basepath;
-
-    /**
      * @var array
      */
     protected $config;
@@ -116,11 +103,6 @@ class Organization extends CachedArrayTargetAbstract
     protected $organizationRepository;
 
     /**
-     * @var SiteUtil
-     */
-    protected $siteUtil;
-
-    /**
      * Set in child classes
      *
      * @var string Name of table used in gtrs_table
@@ -131,13 +113,16 @@ class Organization extends CachedArrayTargetAbstract
      * Creates the object.
      *
      * @param mixed $id Whatever identifies this object.
+     * @param array $sites Allowed site urls
      * @param array $allowedProjectUserClasses of class name => class label
      */
-    public function __construct($id, array $allowedProjectUserClasses)
+    public function __construct(
+        $id,
+        protected readonly array $sites,
+        protected readonly array $allowedProjectUserClasses,
+    )
     {
         parent::__construct($id);
-
-        $this->_allowedProjectUserClasses = $allowedProjectUserClasses;
     }
 
     /**
@@ -262,7 +247,7 @@ class Organization extends CachedArrayTargetAbstract
      */
     public function getAllowedUserClasses()
     {
-        $output = $this->_allowedProjectUserClasses;
+        $output = $this->allowedProjectUserClasses;
 
         if (\Gems\User\UserLoader::USER_RADIUS !== $this->_get('gor_user_class')) {
             unset($output[\Gems\User\UserLoader::USER_RADIUS]);
@@ -446,11 +431,23 @@ class Organization extends CachedArrayTargetAbstract
      */
     public function getPreferredSiteUrl()
     {
-        if (! $this->_has('preferredSite')) {
-            $this->_set('preferredSite', $this->siteUtil->getOrganizationPreferredUrl($this->_id));
+        $sites = $this->_get('gor_sites');
+        if (is_string($sites)) {
+            $sites = array_filter(explode(OrganizationModel::URL_SEPARATOR, $sites));
+            $this->_set('gor_sites', $sites);
         }
 
-        return $this->_get('preferredSite');
+        if ($sites) {
+            $siteId = array_key_first($sites);
+        } else {
+            $siteId = null;
+        }
+
+        if (isset($this->sites[$siteId])) {
+            return $this->sites[$siteId];
+        }
+
+        return $this->sites[array_key_first($this->sites)];
     }
 
     /**
@@ -648,22 +645,6 @@ class Organization extends CachedArrayTargetAbstract
         }
 
         return $data;
-    }
-
-    /**
-     * Set this organization as the one currently active
-     *
-     * @return \Gems\User\Organization (continuation pattern)
-     */
-    public function setAsCurrentOrganization()
-    {
-        /*$organizationId = $this->getId();
-
-        if ($organizationId && (! \Gems\Cookies::setOrganization($organizationId, $this->basepath->getBasePath()))) {
-            throw new \Exception('Cookies must be enabled for this site.');
-        }*/
-
-        return $this;
     }
 
     /**

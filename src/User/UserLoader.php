@@ -338,7 +338,7 @@ class UserLoader
         }
 
         if (! isset($organizations[$organizationId])) {
-            $organizations[$organizationId] = $this->projectOverloader->create('User\\Organization', $organizationId, $this->getAvailableStaffDefinitions());
+            $organizations[$organizationId] = $this->projectOverloader->create('User\\Organization', $organizationId, $this->getSiteUrls(), $this->getAvailableStaffDefinitions());
         }
 
         return $organizations[$organizationId];
@@ -363,6 +363,23 @@ class UserLoader
     public function getPasswordChecker(): PasswordChecker
     {
         return $this->passwordChecker;
+    }
+
+    public function getSiteUrls(): array
+    {
+        static $sites;
+
+        if (is_array($sites)) {
+            return $sites;
+        }
+
+        if (isset($this->config['sites']['allowed'])) {
+            $sites = array_column($this->config['sites']['allowed'], 'url');
+        } else {
+            $sites = [];
+        }
+
+        return $sites;
     }
 
     /**

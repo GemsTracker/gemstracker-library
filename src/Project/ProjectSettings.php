@@ -259,7 +259,7 @@ class ProjectSettings extends \ArrayObject
      * Array of hosts allowed to post data to this project
      *
      * @return array
-     * @deprecated since version 1.9.1, is stored in gems__sites
+     * @deprecated since version 2 use OrganizationRepository
      */
     public function getAllowedHosts()
     {
@@ -375,21 +375,6 @@ class ProjectSettings extends \ArrayObject
         }
 
         return false;
-    }
-
-    /**
-     * The site url during command line actions
-     *
-     * @return string
-     * @deprecated since version 1.9.1, is stored in gems__sites
-     */
-    public function getConsoleUrl()
-    {
-        if ($this->offsetExists('console') && isset($this->console['url'])) {
-            return trim($this->console['url']);
-        }
-
-        return 'localhost';
     }
 
     /**
