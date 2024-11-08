@@ -1408,17 +1408,17 @@ parameters:
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:snippet\\(\\)\\.$#"
 			count: 1
-			path: src/Handlers/AskHandler.php
+			path: src/Handlers/AskLegacyHandler.php
 
 		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 2
-			path: src/Handlers/AskHandler.php
+			path: src/Handlers/AskLegacyHandler.php
 
 		-
-			message: "#^Method Gems\\\\Handlers\\\\AskHandler\\:\\:indexAction\\(\\) with return type void returns Laminas\\\\Diactoros\\\\Response\\\\RedirectResponse but should not return anything\\.$#"
+			message: "#^Method Gems\\\\Handlers\\\\AskLegacyHandler\\:\\:indexAction\\(\\) with return type void returns Laminas\\\\Diactoros\\\\Response\\\\RedirectResponse but should not return anything\\.$#"
 			count: 1
-			path: src/Handlers/AskHandler.php
+			path: src/Handlers/AskLegacyHandler.php
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\SnippetsActions\\\\ModelActionInterface&Zalt\\\\SnippetsActions\\\\SnippetActionInterface\\:\\:\\$model\\.$#"

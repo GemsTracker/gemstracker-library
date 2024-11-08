@@ -53,7 +53,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class AskHandler extends SnippetLegacyHandlerAbstract
+class AskLegacyHandler extends SnippetLegacyHandlerAbstract
 {
     use CookieHandlerTrait;
     use CsrfHandlerTrait;
