@@ -134,7 +134,10 @@ class AskHandler extends SnippetHandler
             return false;
         }
 
-        $this->tokenId = $this->tracker->filterToken($this->tokenId);
+        $this->tokenId = $this->tracker->filterToken($this->tokenId) ?? '';
+        if (! $this->tokenId) {
+            return false;
+        }
 
         $this->token = $this->tracker->getToken($this->tokenId);
 
