@@ -129,7 +129,11 @@ class AskHandler extends SnippetHandler
 
     protected function loadToken(ServerRequestInterface $request): bool
     {
-        $this->tokenId = $request->getAttribute(MetaModelInterface::REQUEST_ID);
+        $this->tokenId = $request->getAttribute(MetaModelInterface::REQUEST_ID, '');
+        if (! $this->tokenId) {
+            return false;
+        }
+
         $this->tokenId = $this->tracker->filterToken($this->tokenId);
 
         $this->token = $this->tracker->getToken($this->tokenId);
