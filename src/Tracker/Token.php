@@ -966,6 +966,7 @@ class Token
                 ->order($this->nextUnansweredSort);
 
         $this->_addRelation($tokenSelect);
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): sql: ' . $tokenSelect->getSelect()->getSqlString($this->resultFetcher->getPlatform()) . "\n", FILE_APPEND);
 
         if ($tokenData = $tokenSelect->fetchRow()) {
             return $this->tracker->getToken($tokenData);
@@ -1296,9 +1297,9 @@ class Token
     /**
      * The full return url for a redirect
      *
-     * @return string
+     * @return ?string
      */
-    public function getReturnUrl(): string
+    public function getReturnUrl(): ?string
     {
         return $this->_gemsData['gto_return_url'];
     }
