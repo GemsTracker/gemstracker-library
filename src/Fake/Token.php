@@ -53,7 +53,7 @@ class Token extends \Gems\Tracker\Token
 
     public function getTokenData(OrganizationRepository $organizationRepository): array
     {
-        $this->fakeOrganization = new Organization($this->organizationRepository->getSiteUrls());
+        $this->fakeOrganization = new Organization($organizationRepository->getSiteUrls());
 
         $now = new DateTimeImmutable();
         $nextMonth = $now->add(new DateInterval('P1M'));
