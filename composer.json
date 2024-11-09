@@ -79,7 +79,7 @@
         "magnafacta/zalt-laminas-filter": "^1.0.1",
         "magnafacta/zalt-laminas-validator": "^1.0.1",
         "magnafacta/zalt-model": "^2.0.5",
-        "magnafacta/zalt-util": "^1.0.2",
+        "magnafacta/zalt-util": "^1.0.3",
         "mezzio/mezzio": "^3.16",
         "mezzio/mezzio-csrf": "^1.5",
         "mezzio/mezzio-fastroute": "^3.5.0",

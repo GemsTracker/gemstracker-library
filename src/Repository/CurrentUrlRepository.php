@@ -16,6 +16,6 @@ class CurrentUrlRepository
 
     public function getCurrentUrl(): string|null
     {
-        return $this->organizationRepository->getAllowedUrl(RequestUtil::getCurrentUrl($this->urlHelper->getRequest()));
+        return $this->organizationRepository->getAllowedUrl(RequestUtil::getCurrentSite($this->urlHelper->getRequest()));
     }
 }

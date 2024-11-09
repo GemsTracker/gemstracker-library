@@ -35,7 +35,7 @@ class SiteGateMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $request = BaseDir::withBaseDir($request);
-        $url     = RequestUtil::getCurrentUrl($request);
+        $url     = RequestUtil::getCurrentSite($request);
         $site    = $this->organizationRepository->getAllowedUrl($url);
         if (! $site) {
             /**

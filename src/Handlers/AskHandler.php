@@ -10,9 +10,11 @@ declare(strict_types=1);
 
 namespace Gems\Handlers;
 
+use Gems\Locale\Locale;
+use Gems\Menu\RouteHelper;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
-use Gems\Snippets\Ask\AskReturnSnippet;
+use Gems\Middleware\LocaleMiddleware;
 use Gems\Snippets\Ask\MaintenanceModeAskSnippet;
 use Gems\Snippets\Ask\ShowAllOpenSnippet;
 use Gems\SnippetsActions\Ask\AskInputAction;
@@ -23,9 +25,12 @@ use Gems\SnippetsActions\Ask\ToSurveyAction;
 use Gems\Tracker;
 use Gems\Tracker\Token;
 use Gems\Util\Lock\MaintenanceLock;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Translation\Translator;
+use Zalt\Base\SymfonyTranslator;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModelLoader;
@@ -83,7 +88,9 @@ class AskHandler extends SnippetHandler
         SnippetResponderInterface $responder,
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
+        protected readonly Locale $locale,
         protected readonly MaintenanceLock $maintenanceLock,
+        protected readonly RouteHelper $routeHelper,
         protected readonly Tracker $tracker,
     )
     {
@@ -105,6 +112,16 @@ class AskHandler extends SnippetHandler
 //        }
 
         if ($tokenExists) {
+            $language = $this->token->getRespondentLanguage();
+            if ($this->locale->getLanguage() !== $language) {
+                $this->addSiteCookie(LocaleMiddleware::LOCALE_ATTRIBUTE, $language);
+                $this->locale->setCurrentLanguage($language);
+
+                if ($this->translate instanceof SymfonyTranslator) {
+                    $this->translate->setLocale($language);
+                }
+            }
+
             // Always check here first for tokens to process
             if ($this->tracker->processCompletedTokens(
                     $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
@@ -115,13 +132,15 @@ class AskHandler extends SnippetHandler
                 $this->token->refresh();
             }
 
-        } else {
+        } elseif ($this->tokenId) {
             $messenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
             // There is a token but is incorrect
             $messenger->addMessage(sprintf(
                 $this->_('The token %s does not exist (any more).'),
                 strtoupper($this->tokenId)
             ));
+
+            return new RedirectResponse($this->routeHelper->getRouteUrl('ask.index'));
         }
 
         return $this->processResponseCookies(parent::handle($request));
@@ -134,7 +153,7 @@ class AskHandler extends SnippetHandler
             return false;
         }
 
-        $this->tokenId = $this->tracker->filterToken($this->tokenId) ?? '';
+        $this->tokenId = $this->tracker->filterToken($this->tokenId);
         if (! $this->tokenId) {
             return false;
         }

@@ -48,7 +48,6 @@ class ToSurveyAskSnippet extends MessageableSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         CurrentUserRepository $currentUserRepository,
-        protected readonly Locale $locale,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly MenuSnippetHelper $menuSnippetHelper,
         protected readonly ServerRequestInterface $request,
@@ -102,7 +101,7 @@ class ToSurveyAskSnippet extends MessageableSnippetAbstract
 
         $returnUrl = $this->checkReturnUrl($this->tokenHelper->getReturnUrl($this->request, $this->token));
         $url  = $this->token->getUrl(
-            $this->locale->getLanguage(),
+            $this->token->getRespondentLanguage(),
             $this->currentUser instanceof User ? $this->currentUser->getUserId() : $this->token->getRespondentId(),
             $returnUrl
         );
