@@ -5251,16 +5251,6 @@ parameters:
 			path: src/Snippets/Staff/StaffCreateEditSnippet.php
 
 		-
-			message: "#^Call to an undefined method Zalt\\\\Message\\\\MessengerInterface\\:\\:addInfo\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Staff/StaffResetAuthenticationSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Communication\\\\CommunicationRepository\\:\\:getMailer\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: src/Snippets/Staff/StaffResetAuthenticationSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:actionLink\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/Subscribe/NoSubscriptionsSnippet.php

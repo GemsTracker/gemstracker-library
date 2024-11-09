@@ -239,9 +239,9 @@ class TokenForgottenSnippet extends FormSnippetAbstract
 
                 if ($respondent->exists && $respondent->canBeMailed()) {
 
-                    $sentTokens = $this->commJobRepository->sendAllCommunications($respondent->getId(), $respondent->getOrganizationId());
+                    $sentTokens = $this->commJobRepository->sendAllCommunications($respondent->getId(), $respondent->getOrganizationId(), true);
                     $sent = count($sentTokens);
-                    // \MUtil\EchoOut\EchoOut::track($sent, $batch->getCounter('jobs_started'), $userData);
+                    // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): xx ' .  print_r($sentTokens, true) . "\n", FILE_APPEND);
                 }
                 if (0 === $sent) {
                     // Try to sent a "nothingToSend" mail
