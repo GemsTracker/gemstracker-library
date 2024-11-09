@@ -52,6 +52,7 @@ class AskHandler extends SnippetHandler
         'index'     => AskInputAction::class,
         'lost'      => LostTokenAction::class,
         'return'    => AskReturnAction::class,
+        'take'      => ToSurveyAction::class,
         'to-survey' => ToSurveyAction::class,
     ];
 
@@ -123,14 +124,13 @@ class AskHandler extends SnippetHandler
             }
 
             // Always check here first for tokens to process
-            if ($this->tracker->processCompletedTokens(
-                    $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
-                    $this->token->getRespondentId(),
-                    $this->token->getChangedBy(),
-                    $this->token->getOrganizationId(),
-                    )) {
-                $this->token->refresh();
-            }
+            $this->tracker->processCompletedTokens(
+                $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
+                $this->token->getRespondentId(),
+                $this->token->getChangedBy(),
+                $this->token->getOrganizationId(),
+                );
+            $this->token->refresh();
 
         } elseif ($this->tokenId) {
             $messenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);

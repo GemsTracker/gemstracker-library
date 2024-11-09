@@ -20,7 +20,6 @@ use Gems\Repository\CommJobRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\FormSnippetAbstract;
-use Gems\Tracker;
 use Symfony\Component\Mime\Address;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -68,7 +67,6 @@ class TokenForgottenSnippet extends FormSnippetAbstract
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         protected CurrentUserRepository $currentUserRepository,
-        protected Tracker $tracker,
         protected OrganizationRepository $organizationRepository,
         protected ResultFetcher $resultFetcher,
         protected RespondentRepository $respondentRepository,
@@ -142,7 +140,6 @@ class TokenForgottenSnippet extends FormSnippetAbstract
                 ->setAttrib('size', 30)
                 ->setRequired(true)
                 ->addValidator('SimpleEmail');
-                //->addValidator($this->tracker->getTokenValidator($this->clientIp));
 
         return $element;
     }

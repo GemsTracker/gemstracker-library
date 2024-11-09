@@ -137,4 +137,10 @@ class AskTokenInputSnippet extends FormSnippetAbstract
 
         return $div;
     }
+
+    protected function setAfterSaveRoute()
+    {
+        $route = $this->menuHelper->getRelatedRoute('forward');
+        $this->redirectRoute = $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl($route, $this->formData);
+    }
 }

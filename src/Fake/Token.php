@@ -32,6 +32,7 @@ class Token extends \Gems\Tracker\Token
         parent::__construct($tokenData);
     }*/
 
+    /*
     public function __construct(
         ResultFetcher $resultFetcher,
         MaskRepository $maskRepository,
@@ -51,8 +52,6 @@ class Token extends \Gems\Tracker\Token
         Loggers $loggers,
         CurrentUserRepository $currentUserRepository
     ) {
-
-
         parent::__construct(
             $this->getTokenData(),
             $resultFetcher,
@@ -73,7 +72,7 @@ class Token extends \Gems\Tracker\Token
             $loggers,
             $currentUserRepository
         );
-    }
+    } -- */
 
     public function getOrganization(): Organization
     {
