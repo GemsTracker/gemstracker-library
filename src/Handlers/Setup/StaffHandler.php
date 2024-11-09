@@ -85,7 +85,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $createEditParameters = [
-        'routeAction' => 'reset',
+        'afterSaveRoutePart' => 'reset',
     ];
 
     /**
