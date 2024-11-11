@@ -220,12 +220,29 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 $this->metaModel->set('grs_ssn', ['autoSubmit' => 'blur']);
             }
 
-            $organizationSettings['default'] = $this->currentOrganizationId;
-
-            if ($this->currentUser === null || count($this->currentUser->getAllowedOrganizations()) == 1) {
-                $organizationSettings['elementClass'] = 'Exhibitor';
+            // If we're creating a new respondent, we only allow organizations
+            // that accept new respondents.
+            if ($action instanceof EditActionAbstract && $action->createData) {
+                $respondentOrganizations = $this->currentUser->getNewRespondentOrganizations();
             } else {
-                $organizationSettings['multiOptions']  = $this->currentUser->getRespondentOrganizations();
+                $respondentOrganizations = $this->currentUser->getRespondentOrganizations();
+            }
+
+            // If our current organization is not in the list of organizations we
+            // can use for the respondent, we'll default to the first organization.
+            if (isset($respondentOrganizations[$this->currentOrganizationId])) {
+                $organizationSettings['default'] = $this->currentOrganizationId;
+            } else {
+                if (count($respondentOrganizations) > 0) {
+                    $organizationSettings['default'] = array_keys($respondentOrganizations)[0];
+                } else {
+                    throw new \Gems\Exception($this->_('No organization available to add respondent to.'));
+                }
+            }
+
+            $organizationSettings['multiOptions'] = $respondentOrganizations;
+            if ($this->currentUser === null || count($respondentOrganizations) == 1) {
+                $organizationSettings['elementClass'] = 'Exhibitor';
             }
             $this->setIfExists('gr2o_id_organization', $organizationSettings);
 
