@@ -25,9 +25,9 @@ class ProjectDefaultBrowse extends BrowseScreenAbstract
 {
     /**
      *
-     * @return array Added before all other parameters
+     * @inheritDoc
      */
-    public function getAutofilterParameters()
+    public function getAutofilterParameters(): array
     {
         return [
             'useColumns' => true,
@@ -36,18 +36,18 @@ class ProjectDefaultBrowse extends BrowseScreenAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('(default project specific table display)');
+        return $this->translator->_('(default project specific table display)');
     }
 
     /**
      *
-     * @return array Of snippets or false to use original
+     * @inheritDoc
      */
-    public function getStartSnippets()
+    public function getStartSnippets(): array|bool
     {
         return false;
     }

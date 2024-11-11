@@ -6,17 +6,14 @@ declare(strict_types=1);
 namespace Gems\Factory;
 
 
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Gems\ConfigProvider;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\RedisHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Psr\Container\ContainerInterface;
 use Redis;
 
 class MonologFactory implements FactoryInterface
@@ -68,6 +65,9 @@ class MonologFactory implements FactoryInterface
                         $stream = 'data/logs';
                         if (isset($handlerConfig['options'], $handlerConfig['options']['stream'])) {
                             $stream = $handlerConfig['options']['stream'];
+                            if (ConfigProvider::ERROR_LOGGER === $requestedName) {
+                                ini_set('error_log', $stream);
+                            }
                         }
                         $handler = new StreamHandler($stream, $priority);
                         break;

@@ -5,52 +5,42 @@ namespace Gems\Db\Migration;
 use Gems\Db\Databases;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunSeedMigrationEvent;
-use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Metadata\Source\Factory;
 use Laminas\Db\Sql\Sql;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
-use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
-use Zalt\String\Str;
 
 class SeedRepository extends MigrationRepositoryAbstract
 {
+    public string $lastSql = '';
 
     protected string $modelName = 'databaseSeedModel';
+
+    protected readonly ResultFetcher $resultFetcher;
+
+    protected array $tableKeys = [];
 
     public function __construct(
         array $config,
         Databases $databases,
-        TranslatorInterface $translator,
         EventDispatcherInterface $eventDispatcher,
-        MetaModelLoader $metaModelLoader,
         protected readonly ProjectOverloader $overloader,
     ) {
-        parent::__construct($config, $databases, $translator, $eventDispatcher, $metaModelLoader);
+        parent::__construct($config, $databases, $eventDispatcher);
+
+        $adapter = $this->databases->getDefaultDatabase();
+        $this->resultFetcher = new ResultFetcher($adapter);
     }
 
-    protected $seedFileTypes = [
+    protected array $seedFileTypes = [
         'yml',
         'yaml',
         'json',
     ];
-
-    protected function resolveReferences(array $data, array $references): array
-    {
-        foreach($data as $rowKey => $row) {
-            foreach($row as $column => $value) {
-                foreach($references as $reference => $replacement) {
-                    if ($value === '{{' . $reference . '}}') {
-                        $data[$rowKey][$column] = $replacement;
-                    }
-                }
-            }
-        }
-        return $data;
-    }
 
     protected function getSeedDataFromFile(SplFileInfo $file): array|null
     {
@@ -64,6 +54,20 @@ class SeedRepository extends MigrationRepositoryAbstract
         }
 
         return null;
+    }
+
+    public function getSeedInfo(string $seedFile): array
+    {
+        if (class_exists($seedFile)) {
+            return $this->getSeedClassInfo($seedFile);
+        }
+
+        if (file_exists($seedFile)) {
+            $file = new SplFileInfo($seedFile, '', '');
+            return $this->getSeedFileInfo($file);
+        }
+
+        return [];
     }
 
     /*protected function getQueriesFromData(Adapter $adapter, array $data): array
@@ -86,6 +90,15 @@ class SeedRepository extends MigrationRepositoryAbstract
         $sql = new Sql($adapter);
         $sqlStatements = [];
         foreach($rows as $row) {
+            $keyFilter = $this->getKeyFilter($adapter, $table, $row);
+
+            if ($keyFilter !== null) {
+                $check = $sql->select($table)->where($keyFilter);
+                if ($this->resultFetcher->fetchRow($check)) {
+                    continue;
+                }
+            }
+
             $insert = $sql->insert($table);
             $insert->values($row);
             $sqlStatements[] = $sql->buildSqlString($insert);
@@ -129,6 +142,38 @@ class SeedRepository extends MigrationRepositoryAbstract
         return $seedInfo;
     }
 
+    protected function getKeyFilter(Adapter $adapter, $tableName, $row): array|null
+    {
+        $keys = $this->getTableKeys($adapter, $tableName);
+        $filter = [];
+        foreach($keys as $key) {
+            if (!isset($row[$key])) {
+                return null;
+            }
+            $filter[$key] = $row[$key];
+        }
+
+        return $filter;
+    }
+
+    protected function getTableKeys(Adapter $adapter, string $tableName): array
+    {
+        if (!isset($this->tableKeys[$tableName])) {
+            $metaData = Factory::createSourceFromAdapter($adapter);
+            $table = $metaData->getTable($tableName);
+            $keys = [];
+            foreach($table->getConstraints() as $constraint) {
+                if ($constraint->getType() === 'PRIMARY KEY') {
+                    $keys = $constraint->getColumns();
+                    break;
+                }
+            }
+            $this->tableKeys[$tableName] = $keys;
+        }
+
+        return $this->tableKeys[$tableName];
+    }
+
     public function getSeedsFromClasses(): array
     {
         $seedClasses = $this->getResourceClasses('seeds');
@@ -137,31 +182,65 @@ class SeedRepository extends MigrationRepositoryAbstract
 
         foreach($seedClasses as $seedClassInfo) {
             $seedClassName = $seedClassInfo['class'];
-            $id = $this->getIdFromName($seedClassName);
-            $seedClass = $this->overloader->create($seedClassName);
-            $description = null;
-            if (!$seedClass instanceof SeedInterface) {
-                throw new MigrationException("$seedClassName is not a valid seed class");
-            }
-            $data = $seedClass();
-            $reflectionClass = new \ReflectionClass($seedClassName);
 
-            $seed = [
-                'id' => $id,
-                'name' => $seedClassName,
-                'module' => $seedClassInfo['module'] ?? 'gems',
-                'type' => 'seed',
-                'description' => $description,
-                'order' => $seedClass->getOrder() ?? $this->defaultOrder,
-                'data' => $data,
-                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime($reflectionClass->getFileName())),
-                'location' => $reflectionClass->getFileName(),
-                'db' => $seedClassInfo['db'],
-            ];
-
-            $seeds[$id] = $seed;
+            $seed = $this->getSeedClassInfo($seedClassName, $seedClassInfo['module'], $seedClassInfo['db']);
+            $seeds[$seed['id']] = $seed;
         }
         return $seeds;
+    }
+
+    protected function getSeedClassInfo(string $seedClassName, string $module = 'gems', string|null $db = null): array
+    {
+        $id = $this->getIdFromName($seedClassName);
+        $seedClass = $this->overloader->create($seedClassName);
+        $description = null;
+        if (!$seedClass instanceof SeedInterface) {
+            throw new MigrationException("$seedClassName is not a valid seed class");
+        }
+        $data = $seedClass();
+        $order = $seedClass->getOrder();
+        if ($order === 0) {
+            $order = $this->defaultOrder;
+        }
+        $reflectionClass = new \ReflectionClass($seedClassName);
+
+        return [
+            'id' => $id,
+            'name' => $seedClassName,
+            'module' => $module,
+            'type' => 'seed',
+            'description' => $description,
+            'order' => $order,
+            'data' => $data,
+            'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) filemtime($reflectionClass->getFileName())),
+            'location' => $reflectionClass->getFileName(),
+            'db' => $db ?? $this->defaultDatabase,
+        ];
+    }
+
+    public function getSeedFileInfo(SplFileInfo $file, string $module = 'gems', string|null $db = null): array
+    {
+        $filenameParts = explode('.', $file->getBaseName());
+        $name = $filenameParts[0];
+        $id = $this->getIdFromName($name);
+        $data = $this->getSeedDataFromFile($file);
+        $description = $data['description'] ?? null;
+        $seed = [
+            'id' => $id,
+            'name' => $filenameParts[0],
+            'module' => $module,
+            'type' => 'seed',
+            'description' => $description,
+            'order' => $this->defaultOrder,
+            'data' => $data,
+            'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) $file->getMTime()),
+            'location' => $file->getRealPath(),
+            'db' => $db ?? $this->defaultDatabase,
+        ];
+        if (count($filenameParts) === 3 && is_numeric($filenameParts[1])) {
+            $seed['order'] = (int)$filenameParts[1];
+        }
+        return $seed;
     }
 
     public function getSeedsFromFiles()
@@ -179,27 +258,8 @@ class SeedRepository extends MigrationRepositoryAbstract
             $files = $currentFinder->files()->name($searchNames)->in($directory['path']);
 
             foreach ($files as $file) {
-                $filenameParts = explode('.', $file->getBaseName());
-                $name = $filenameParts[0];
-                $id = $this->getIdFromName($name);
-                $data = $this->getSeedDataFromFile($file);
-                $description = $data['description'] ?? null;
-                $seed = [
-                    'id' => $id,
-                    'name' => $filenameParts[0],
-                    'module' => $directory['module'] ?? 'gems',
-                    'type' => 'seed',
-                    'description' => $description,
-                    'order' => $this->defaultOrder,
-                    'data' => $data,
-                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', $file->getMTime()),
-                    'location' => $file->getRealPath(),
-                    'db' => $directory['db'],
-                ];
-                if (count($filenameParts) === 3 && is_numeric($filenameParts[1])) {
-                    $seed['order'] = (int)$filenameParts[1];
-                }
-                $seeds[$id] = $seed;
+                $seed = $this->getSeedFileInfo($file, $directory['module'], $directory['db']);
+                $seeds[$seed['id']] = $seed;
             }
         }
 
@@ -209,6 +269,24 @@ class SeedRepository extends MigrationRepositoryAbstract
     public function getSeedsDirectories(): array
     {
         return $this->getResourceDirectories('seeds');
+    }
+
+    protected function resolveReferences(array $data, array $references): array
+    {
+        foreach($data as $rowKey => $row) {
+            foreach($row as $column => $value) {
+                foreach($references as $reference => $replacement) {
+                    if ($data[$rowKey][$column] === '{{' . $reference . '}}') {
+                        $data[$rowKey][$column] = $replacement;
+                    }
+                }
+                if (is_string($data[$rowKey][$column]) && str_starts_with($data[$rowKey][$column], '{{')) {
+                    unset($data[$rowKey]);
+                }
+            }
+        }
+
+        return $data;
     }
 
     public function runSeed(array $seedInfo)
@@ -240,6 +318,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 $sqlQueries = $this->getQueriesFromRows($adapter, $seedTable, $this->resolveReferences($seedRows, $generatedValues));
 
                 foreach($sqlQueries as $index => $sqlQuery) {
+                    $this->lastSql = $sqlQuery;
                     $resultFetcher->query($sqlQuery);
                     $generatedValues[$seedTable.'.'.$index] = $resultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
                     $finalQueries[] = $sqlQuery;

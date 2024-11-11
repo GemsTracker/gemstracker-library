@@ -151,6 +151,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $metaModel->set('filler',  'label', $this->_('Filler'), 'no_text_search', true);
 
         $filter = $this->getSearchFilter($action !== 'export');
+        $this->autofilterParameters['extraFilter'] = [];
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
             $this->autofilterParameters['extraFilter']['gto_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         } else {
@@ -166,7 +167,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 $this->autofilterParameters['extraFilter'][] = $where;
             }
         } else {
-            $this->autofilterParameters['extraFilter'][1] = 0;
+            $this->autofilterParameters['extraFilter'] = [1 => 0];
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
         }
 

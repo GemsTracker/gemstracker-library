@@ -72,4 +72,8 @@ class SiteUrl
         return $this->blocked;
     }
 
+    public function notAllowed(): bool
+    {
+        return (! $this->isActive()) && $this->isBlocked();
+    }
 }

@@ -27,29 +27,27 @@ class GemsTimelineShow extends ShowScreenAbstract
      *
      * @return array Added before all other parameters
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return [
-            'baseUrl'        => 'getItemUrlArray',
             'forOtherOrgs'   => 'getOtherOrgs',
             '-run-once'      => 'openedRespondent',
             ];
     }
 
     /**
-     *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('Timeline show respondent');
+        return $this->translator->_('Timeline show respondent');
     }
 
     /**
      *
      * @return array Of snippets or false to use original
      */
-    public function getSnippets()
+    public function getSnippets(): array
     {
         return [
             'Generic\\ContentTitleSnippet',

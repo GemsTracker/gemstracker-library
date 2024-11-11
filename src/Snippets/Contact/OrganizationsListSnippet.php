@@ -14,6 +14,7 @@ namespace Gems\Snippets\Contact;
 use Gems\Project\ProjectSettings;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Late\Late;
 use Zalt\SnippetsLoader\SnippetOptions;
 use Zalt\Snippets\TranslatableSnippetAbstract;
 
@@ -44,14 +45,6 @@ class OrganizationsListSnippet extends TranslatableSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
     public function getHtmlOutput()
     {
         $html = $this->getHtmlSequence();
@@ -83,12 +76,12 @@ class OrganizationsListSnippet extends TranslatableSnippetAbstract
                     $this->project->getName()
                 ));
 
-                $data = \MUtil\Lazy::repeat($this->organizations);
+                $data = Late::repeat($this->organizations);
                 $ul = $p->ul($data, ['class' => 'indent']);
                 $li = $ul->li();
-                $li->a($data->gor_url->call($this, '_'), $data->gor_name, ['rel' => 'external']);
+                $li->a($data->__get('gor_url'), $data->__get('gor_name'), ['rel' => 'external']);
                 $li->append(' (');
-                $li->append($data->gor_task->call([$this, '_']));
+                $li->append($data->__get('gor_task'));
                 $li->append(')');
 
                 $html->pInfo()->sprintf(

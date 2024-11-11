@@ -109,8 +109,9 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
-
-        $this->saveLabel = $this->_('Save');
+        if ('OK' == $this->saveLabel) {
+            $this->saveLabel = $this->_('Save');
+        }
     }
 
     /**
@@ -198,10 +199,6 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      */
     protected function addSaveButton(string $saveButtonId, ?string $saveLabel, string $buttonClass)
     {
-        if ("OK" == $this->saveLabel) {
-            $this->saveLabel = $this->_('Save');
-        }
-
         if ($this->_form instanceof \Gems\TabForm) {
             $this->_form->resetContext();
         }

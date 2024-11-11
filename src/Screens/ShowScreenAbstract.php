@@ -11,6 +11,8 @@
 
 namespace Gems\Screens;
 
+use Zalt\Base\TranslatorInterface;
+
 /**
  *
  * @package    Gems
@@ -19,13 +21,17 @@ namespace Gems\Screens;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 17, 2017 5:07:33 PM
  */
-abstract class ShowScreenAbstract extends \MUtil\Translate\TranslateableAbstract implements ShowScreenInterface
+abstract class ShowScreenAbstract implements ShowScreenInterface
 {
+    public function __construct(
+        protected readonly TranslatorInterface $translator,
+    )
+    {}
     /**
      *
      * @return array Added before all other parameters
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return [];
     }
@@ -34,14 +40,8 @@ abstract class ShowScreenAbstract extends \MUtil\Translate\TranslateableAbstract
      *
      * @return array Of snippets or false to use original
      */
-    public function getSnippets()
+    public function getSnippets(): array|bool
     {
         return false;
     }
-
-    /**
-     *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
-     */
-    // public function getScreenLabel();
 }

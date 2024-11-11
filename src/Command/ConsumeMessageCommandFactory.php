@@ -2,6 +2,7 @@
 
 namespace Gems\Command;
 
+use Gems\Messenger\AddErrorDetailsStampListener;
 use Gems\Messenger\FailureSenderContainer;
 use Gems\Messenger\RetryStrategyContainer;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -21,6 +22,9 @@ class ConsumeMessageCommandFactory implements FactoryInterface
         $routableBus = $container->get(RoutableMessageBus::class);
         /** @var EventDispatcherInterface $eventDispatcher */
         $eventDispatcher = $container->get(EventDispatcherInterface::class);
+
+        $eventDispatcher->addSubscriber(new AddErrorDetailsStampListener());
+
         $logger = null;
         if ($container->has('messageBusLogger')) {
             /**

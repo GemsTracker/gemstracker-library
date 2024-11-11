@@ -18,15 +18,18 @@ use Gems\Handlers\ChangeGroupHandler;
 use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
+use Gems\Handlers\Export\ExportSurveyHandler;
 use Gems\Handlers\InfoHandler;
+use Gems\Handlers\LegacyAskRedirectHandler;
+use Gems\Handlers\RedirectHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
+use Gems\Handlers\Respondent\FindTokenHandler;
 use Gems\Handlers\Setup\Database\PatchHandler;
 use Gems\Handlers\Setup\Database\SeedHandler;
 use Gems\Handlers\Setup\Database\TableHandler;
 use Gems\Handlers\Setup\QueueMessageCountHandler;
 use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\AuditLogMiddleware;
-use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
@@ -41,6 +44,7 @@ use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Util\RouteGroupTrait;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Session\SessionMiddleware;
+use Zalt\Model\MetaModelInterface;
 
 class Route
 {
@@ -49,7 +53,6 @@ class Route
 
     public static array $loggedInMiddleware = [
         SecurityHeadersMiddleware::class,
-        ClientIpMiddleware::class,
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
         LocaleMiddleware::class,
@@ -66,7 +69,6 @@ class Route
 
     public static array $maybeLoggedInMiddleware = [
         SecurityHeadersMiddleware::class,
-        ClientIpMiddleware::class,
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
         LocaleMiddleware::class,
@@ -84,7 +86,6 @@ class Route
 
     public static array $loggedOutMiddleware = [
         SecurityHeadersMiddleware::class,
-        ClientIpMiddleware::class,
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
         LocaleMiddleware::class,
@@ -102,7 +103,6 @@ class Route
 
     public static array $idlePollMiddleware = [
         SecurityHeadersMiddleware::class,
-        ClientIpMiddleware::class,
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
         LocaleMiddleware::class,
@@ -137,6 +137,7 @@ class Route
                 ...$this->getOverviewRoutes(),
                 ...$this->getProjectRoutes(),
                 ...$this->getSetupRoutes(),
+                ...$this->getExportRoutes(),
                 ...$this->getTrackBuilderRoutes(),
                 ...$this->getOptionRoutes(),
             ]),
@@ -197,7 +198,6 @@ class Route
                 path: '/tfa',
                 middleware: [
                     SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     LocaleMiddleware::class,
@@ -220,7 +220,6 @@ class Route
                 path: '/logout',
                 middleware: [
                     SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     LocaleMiddleware::class,
@@ -243,11 +242,10 @@ class Route
                 path: '/embed/login',
                 middleware: [
                     SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     LocaleMiddleware::class,
-                    SiteGateMiddleware::class,
+                    // SiteGateMiddleware::class,
                     // CsrfMiddleware::class,
                     // HandlerCsrfMiddleware::class,
                     MaintenanceModeMiddleware::class,
@@ -266,7 +264,6 @@ class Route
                 path: '/change-password',
                 middleware: [
                     SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     LocaleMiddleware::class,
@@ -364,6 +361,37 @@ class Route
     public function getAskRoutes(): array
     {
         return [
+            ...$this->createRoute(
+                name: 'legacyAskForward',
+                path: '/ask/forward/id/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}',
+                middleware: [
+                    LegacyAskRedirectHandler::class,
+                ],
+                options: [
+                    'action' => 'forward',
+                ],
+                methods: ['GET', 'POST'],
+            ),
+            ...$this->createRoute(
+                name: 'legacyAskTake',
+                path: '/ask/take/id/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}',
+                middleware: [
+                    LegacyAskRedirectHandler::class,
+                ],
+                options: [
+                    'action' => 'take',
+                ],
+            ),
+            ...$this->createRoute(
+                name: 'legacyAskToSurvey',
+                path: '/ask/to-survey/id/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}',
+                middleware: [
+                    LegacyAskRedirectHandler::class,
+                ],
+                options: [
+                    'action' => 'to-survey',
+                ],
+            ),
             ...$this->createSnippetRoutes(
                 baseName: 'ask',
                 controllerClass: \Gems\Handlers\AskHandler::class,
@@ -377,7 +405,7 @@ class Route
                     'lost',
                 ],
                 parameters: [
-                    'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}',
+                    'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}'
                 ],
                 parameterRoutes: [
                     'forward',
@@ -388,28 +416,69 @@ class Route
                 postRoutes: [
                     ...$this->defaultPostRoutes,
                     'lost',
+                    'forward',
                 ],
                 noCsrfRoutes: ['index', 'lost']
             ),
+
+            ...$this->createRoute(
+                name: 'legacyAskIndex',
+                path: '/ask/',
+                methods: ['GET', 'POST'],
+                middleware: [
+                    RedirectHandler::class,
+                ],
+                options: [
+                    'redirect' => 'ask.index',
+                ],
+            )
+        ];
+
+    }
+
+    public function getExportRoutes(): array
+    {
+        return [
+            ...$this->createRoute(
+                name: 'export',
+                path: '/export',
+                middleware: [
+                    EmptyHandler::class,
+                ]),
+            ...$this->createHandlerRoute(
+                baseName: 'export.survey',
+                controllerClass: ExportSurveyHandler::class,
+            )
         ];
     }
 
     public function getParticipateRoutes(): array
     {
+        // path: '/ask/forward/id/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}',
         return [
-            ...$this->createSnippetRoutes(baseName: 'participate',
+            ...$this->createSnippetRoutes(
+                baseName: 'participate',
                 controllerClass: \Gems\Handlers\ParticipateHandler::class,
                 basePrivilege: false,
                 pages: [
                     'index',
                     'subscribe',
+                    'subscribe-form',
                     'subscribe-thanks',
                     'unsubscribe',
+                    'unsubscribe-form',
                     'unsubscribe-thanks',
+                ],
+                parameters: ['org' => '[a-zA-Z0-9]+',],
+                parameterRoutes: [
+                    'subscribe-form',
+                    'unsubscribe-form',
                 ],
                 postRoutes: [
                     'subscribe',
+                    'subscribe-form',
                     'unsubscribe',
+                    'unsubscribe-form',
                 ]
             ),
         ];
@@ -604,6 +673,7 @@ class Route
                     'change-organization',
                     'export-archive',
                 ],
+                genericImport: true,
                 genericExport: true,
             ),
             ...$this->createSnippetRoutes(
@@ -841,6 +911,10 @@ class Route
                 ],
             ),
 
+            ...$this->createHandlerRoute(
+                baseName: 'respondent.find-token',
+                controllerClass: FindTokenHandler::class,
+            )
         ];
     }
 
@@ -1028,6 +1102,7 @@ class Route
                     'create',
                     'show',
                     'edit',
+                    'import',
                     'reset',
                     'active-toggle',
 
@@ -1041,6 +1116,7 @@ class Route
                 postRoutes: [
                     ...$this->defaultPostRoutes,
                     'active-toggle',
+                    'import',
                     'reset',
                 ],
             ),
@@ -1194,6 +1270,25 @@ class Route
                 parameterRoutes: [
                     'show',
                 ],
+            ),
+            ...$this->createSnippetRoutes(baseName: 'setup.logfiles',
+                controllerClass: \Gems\Handlers\Setup\LogfileHandler::class,
+                pages: [
+                    'index',
+                    'download',
+                    'show',
+                ],
+                parameterRoutes: [
+                    'download',
+                    'show',
+                ],
+                parameters: [
+                    'filename' => '[a-z0-9A-Z\.-]+',
+                ],
+                postRoutes: [
+                    'index',
+                    'download',
+                ]
             ),
             ...$this->createRoute(
                 name: 'setup.queue',

@@ -11,6 +11,8 @@
 
 namespace Gems\Screens;
 
+use Zalt\Base\TranslatorInterface;
+
 /**
  *
  * @package    Gems
@@ -19,13 +21,18 @@ namespace Gems\Screens;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 17, 2017 5:07:33 PM
  */
-abstract class BrowseScreenAbstract extends \MUtil\Translate\TranslateableAbstract implements BrowseScreenInterface
+abstract class BrowseScreenAbstract implements BrowseScreenInterface
 {
+    public function __construct(
+        protected readonly TranslatorInterface $translator,
+    )
+    {}
+
     /**
      *
      * @return array Added before all other parameters
      */
-    public function getAutofilterParameters()
+    public function getAutofilterParameters(): array
     {
         return [
             'columns'    => null,
@@ -35,9 +42,9 @@ abstract class BrowseScreenAbstract extends \MUtil\Translate\TranslateableAbstra
 
     /**
      *
-     * @return array Of snippets or false to use original
+     * @return array|bool Array Of snippets or false to use original
      */
-    public function getAutofilterSnippets()
+    public function getAutofilterSnippets(): array|bool
     {
         return false;
     }
@@ -50,27 +57,27 @@ abstract class BrowseScreenAbstract extends \MUtil\Translate\TranslateableAbstra
 
     /**
      *
-     * @return array Of snippets or false to use original
+     * @return array|bool Array Of snippets or false to use original
      */
-    public function getStartSnippets()
+    public function getStartSnippets(): array|bool
     {
         return ['Generic\\ContentTitleSnippet', 'Respondent\\RespondentSearchSnippet'];
     }
 
     /**
      *
-     * @return array Of snippets or false to use original
+     * @return array|bool Array Of snippets or false to use original
      */
-    public function getStopSnippets()
+    public function getStopSnippets(): array|bool
     {
         return false;
     }
 
     /**
      *
-     * @return array Added before all other parameters
+     * @return array Array Of snippets or false to use original
      */
-    public function getStartStopParameters()
+    public function getStartStopParameters(): array
     {
         return [];
     }

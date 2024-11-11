@@ -12,6 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zalt\Base\BaseDir;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Message\MezzioSessionMessenger;
@@ -33,9 +34,9 @@ class SiteGateMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        try {
-            $this->siteUtil->isRequestFromAllowedUrl($request);
-        } catch(NotAllowedUrlException $e) {
+        $request    = BaseDir::withBaseDir($request);
+        $blockedUrl = $this->siteUtil->isRequestFromBlockingUrl($request);
+        if ($blockedUrl) {
             /**
              * @var MezzioSessionMessenger $statusMessenger
              */
@@ -44,7 +45,7 @@ class SiteGateMiddleware implements MiddlewareInterface
 
 //            $data = ['statusMessenger' => $statusMessenger];
             $logger = $this->loggers->getLogger($this->logName);
-            $logger->warning(sprintf('Unknown host: %s', $e->getUrl()));
+            $logger->warning(sprintf('Unknown host: %s', $blockedUrl));
             $data['content'] = Html::create('p', $this->translator->_('This page was blocked for security reasons!'));
 
             return new HtmlResponse($this->layoutRenderer->render($this->layoutSettings, $request, $data), 403);

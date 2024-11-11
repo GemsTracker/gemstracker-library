@@ -79,6 +79,13 @@ class MetaModelLoader extends \Zalt\Model\MetaModelLoader
         return $this->loader->create(SqlTableModel::class, $table);
     }
 
+    public function createUnionModel(string $name, string $modelField = 'sub'): UnionModel
+    {
+        /**
+         * @var UnionModel
+         */
+        return $this->loader->create(UnionModel::class, $name, $modelField);
+    }
 
     public function getRespondentModel(): RespondentModel
     {

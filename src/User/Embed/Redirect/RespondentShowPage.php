@@ -16,9 +16,9 @@ use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
-use MUtil\Model;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -54,9 +54,9 @@ class RespondentShowPage extends RedirectAbstract
         User $deferredUser,
         string $patientId,
         array $organizations,
-    ): RedirectResponse|string|null {
+    ): RedirectResponse|string|null
+    {
         $orgId = $deferredUser->getCurrentOrganizationId();
-
         $patient = $this->respondentRepository->getPatient($patientId, $orgId);
 
         if ($patient === null) {
@@ -64,8 +64,8 @@ class RespondentShowPage extends RedirectAbstract
         }
 
         return $routeHelper->getRouteUrl('respondent.show', [
-            Model::REQUEST_ID1 => $patientId,
-            Model::REQUEST_ID2 => $orgId,
+            MetaModelInterface::REQUEST_ID1 => $patientId,
+            MetaModelInterface::REQUEST_ID2 => $orgId,
         ], [], $deferredUser->getRole());
     }
 }

@@ -25,29 +25,29 @@ interface BrowseScreenInterface extends ScreenInterface
      *
      * @return array Added before all other parameters
      */
-    public function getAutofilterParameters();
+    public function getAutofilterParameters(): array;
 
     /**
      *
-     * @return array Of snippets or false to use original
+     * @return array|bool Array Of snippets or false to use original
      */
-    public function getAutofilterSnippets();
+    public function getAutofilterSnippets(): array|bool;
 
     /**
      *
-     * @return array Of snippets or false to use original
+     * @return array|bool Array Of snippets or false to use original
      */
-    public function getStartSnippets();
+    public function getStartSnippets(): array|bool;
 
     /**
      *
-     * @return array Of snippets or false to use original
+     * @return array|bool Array Of snippets or false to use original
      */
-    public function getStopSnippets();
+    public function getStopSnippets(): array|bool;
 
     /**
      *
      * @return array Added before all other parameters
      */
-    public function getStartStopParameters();
+    public function getStartStopParameters(): array;
 }

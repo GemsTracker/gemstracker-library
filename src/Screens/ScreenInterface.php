@@ -11,6 +11,8 @@
 
 namespace Gems\Screens;
 
+use Zalt\Html\HtmlInterface;
+
 /**
  *
  * @package    Gems
@@ -23,7 +25,7 @@ interface ScreenInterface
 {
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @return HtmlInterface|string Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
-    public function getScreenLabel();
+    public function getScreenLabel(): HtmlInterface|string;
 }

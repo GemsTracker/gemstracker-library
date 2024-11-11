@@ -3,10 +3,11 @@
 namespace Gems\Db\Migration;
 
 use Gems\Db\ResultFetcher;
+use Gems\Db\SqliteConverter;
 use Gems\Event\Application\CreateTableMigrationEvent;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Metadata\Source\Factory;
 use Symfony\Component\Finder\Finder;
-use Zalt\String\Str;
 
 
 class TableRepository extends MigrationRepositoryAbstract
@@ -36,17 +37,23 @@ class TableRepository extends MigrationRepositoryAbstract
         if (!$adapter instanceof Adapter) {
             throw new MigrationException('Not enough table info to create table');
         }
+
+        $sql = $tableInfo['sql'];
+        if ($adapter->getPlatform()->getName() === 'SQLite') {
+            $sql = SqliteConverter::fromMysqlSchema($sql);
+        }
+
         $resultFetcher = new ResultFetcher($adapter);
         $start = microtime(true);
         try {
-            $resultFetcher->query($tableInfo['sql']);
+            $resultFetcher->query($sql);
             $event = new CreateTableMigrationEvent(
                 'table',
                 1,
                 $tableInfo['module'],
                 $tableInfo['name'],
                 'success',
-                $tableInfo['sql'],
+                $sql,
                 null,
                 $start,
                 microtime(true),
@@ -59,13 +66,24 @@ class TableRepository extends MigrationRepositoryAbstract
                 $tableInfo['module'],
                 $tableInfo['name'],
                 'error',
-                $tableInfo['sql'],
+                $sql,
                 $e->getMessage(),
                 $start,
                 microtime(true),
             );
             $this->eventDispatcher->dispatch($event);
             throw new MigrationException($e->getMessage());
+        }
+    }
+
+    public function createTables(array $tableNames): void
+    {
+        $allTables = $this->getInfo();
+        foreach($tableNames as $tableName) {
+            if (!isset($allTables[$tableName])) {
+                throw new MigrationException(sprintf('Table %s does not exist', $tableName));
+            }
+            $this->createTable($allTables[$tableName]);
         }
     }
 
@@ -93,31 +111,30 @@ class TableRepository extends MigrationRepositoryAbstract
             if (!$adapter instanceof Adapter) {
                 continue;
             }
-            $resultFetcher = new ResultFetcher($adapter);
-            $sql = 'SHOW FULL TABLES';
-            $tableNames = $resultFetcher->fetchAll($sql);
+            $metaData = Factory::createSourceFromAdapter($adapter);
+            $tableTypes = [
+                'table' => $metaData->getTableNames(),
+                'view' => $metaData->getViewNames(),
+            ];
 
-            foreach($tableNames as $tableInfo) {
-                list($tableName, $rawTableType) = array_values($tableInfo);
-                $tableType = match($rawTableType) {
-                    'VIEW' => 'view',
-                    default => 'table',
-                };
-                $id = $this->getIdFromName($tableName);
-                $table = [
-                    'id' => $id,
-                    'name' => $tableName,
-                    'module' => $this->getGroupName($tableName),
-                    'type' => $tableType,
-                    'description' => null,
-                    'order' => $this->defaultOrder,
-                    'sql' => '',
-                    'lastChanged' => null,
-                    'location' => null,
-                    'db' => $dbName,
-                ];
+            foreach($tableTypes as $tableType => $tableNames) {
+                foreach ($tableNames as $tableName) {
+                    $id = $this->getIdFromName($tableName);
+                    $table = [
+                        'id' => $id,
+                        'name' => $tableName,
+                        'module' => $this->getGroupName($tableName),
+                        'type' => $tableType,
+                        'description' => null,
+                        'order' => $this->defaultOrder,
+                        'sql' => '',
+                        'lastChanged' => null,
+                        'location' => null,
+                        'db' => $dbName,
+                    ];
 
-                $tables[$id] = $table;
+                    $tables[$id] = $table;
+                }
             }
         }
         return $tables;
@@ -185,7 +202,7 @@ class TableRepository extends MigrationRepositoryAbstract
                     'order' => $this->defaultOrder,
                     'data' => $fileContent,
                     'sql' => $fileContent,
-                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', $file->getMTime()),
+                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', (string) $file->getMTime()),
                     'location' => $file->getRealPath(),
                     'db' => $tableDirectory['db'],
                 ];

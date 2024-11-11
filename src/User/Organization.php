@@ -13,6 +13,12 @@ namespace Gems\User;
 
 use Gems\Registry\CachedArrayTargetAbstract;
 use Gems\Repository\OrganizationRepository;
+use Gems\Screens\AskScreenAbstract;
+use Gems\Screens\AskScreenInterface;
+use Gems\Screens\EditScreenInterface;
+use Gems\Screens\ShowScreenInterface;
+use Gems\Screens\SubscribeScreenInterface;
+use Gems\Screens\UnsubscribeScreenInterface;
 use Gems\Site\SiteUtil;
 
 /**
@@ -58,33 +64,33 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @var \Gems\Screens\EditScreenInterface
+     * @var null|\Gems\Screens\EditScreenInterface
      */
-    protected $_respondentEditScreen;
+    protected ?EditScreenInterface $_respondentEditScreen = null;
 
     /**
      *
-     * @var \Gems\Screens\ShowScreenInterface
+     * @var null|\Gems\Screens\ShowScreenInterface
      */
-    protected $_respondentShowScreen;
+    protected ?ShowScreenInterface $_respondentShowScreen = null;
 
     /**
      *
-     * @var \Gems\Screens\SubscribeScreenInterface
+     * @var null|\Gems\Screens\SubscribeScreenInterface
      */
-    protected $_subscribeScreen;
+    protected ?SubscribeScreenInterface $_subscribeScreen = null;
 
     /**
      *
-     * @var \Gems\Screens\AskScreenInterface
+     * @var null|\Gems\Screens\AskScreenInterface
      */
-    protected $_tokenAskScreen;
+    protected ?AskScreenInterface $_tokenAskScreen = null;
 
     /**
      *
      * @var \Gems\Screens\UnsubscribeScreenInterface
      */
-    protected $_unsubscribeScreen;
+    protected ?UnsubscribeScreenInterface $_unsubscribeScreen = null;
 
     /**
      * Required
@@ -333,6 +339,11 @@ class Organization extends CachedArrayTargetAbstract
         return $this->_get('gor_id_organization');
     }
 
+    public function getLanguage(): ?string
+    {
+        return $this->_get('gor_iso_lang');
+    }
+
     public function getLocation(): ?string
     {
         return $this->_get('gor_location');
@@ -431,7 +442,7 @@ class Organization extends CachedArrayTargetAbstract
     /**
      * get the parameters where the survey should return to
      *
-     * @return array
+     * @return string
      */
     public function getPreferredSiteUrl()
     {
@@ -495,7 +506,7 @@ class Organization extends CachedArrayTargetAbstract
     /**
      * Get the signature of the organization.
      *
-     * @return string
+     * @return ?string
      */
     public function getSignature()
     {
@@ -504,9 +515,9 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @return \Gems\Screens\SubscribeScreenInterface
+     * @return null|\Gems\Screens\SubscribeScreenInterface
      */
-    public function getSubscribeScreen()
+    public function getSubscribeScreen(): ?SubscribeScreenInterface
     {
         if ($this->_subscribeScreen || (! $this->_get('gor_respondent_subscribe'))) {
             return $this->_subscribeScreen;
@@ -551,9 +562,9 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @return \Gems\Screens\UnsubscribeScreenInterface
+     * @return null?\Gems\Screens\UnsubscribeScreenInterface
      */
-    public function getUnsubscribeScreen()
+    public function getUnsubscribeScreen(): ?UnsubscribeScreenInterface
     {
         if ($this->_unsubscribeScreen || (! $this->_get('gor_respondent_unsubscribe'))) {
             return $this->_unsubscribeScreen;
@@ -567,21 +578,23 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @return string Url
+     * @return null?string Url
      */
-    public function getUnsubscribeUrl()
+    public function getUnsubscribeUrl(): ?string
     {
         if (! $this->_get('gor_respondent_unsubscribe')) {
             return null;
         }
 
-        return $this->getPreferredSiteUrl() . '/participate/unsubscribe/org/' . $this->getId();
+        // Routes not initiated on command line!!!!
+        $url = '/participate/unsubscribe-form/' . $this->getId();
+        return $this->getPreferredSiteUrl() . $url;
     }
 
     /**
      * Get the welcome message for the organization.
      *
-     * @return string
+     * @return ?string
      */
     public function getWelcome()
     {

@@ -2,37 +2,38 @@
 
 namespace Gems\Snippets\Database;
 
-use Gems\Db\Migration\PatchRepository;
 use Gems\Db\Migration\SeedRepository;
 use Gems\Menu\MenuSnippetHelper;
-use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
-use Zalt\Snippets\SnippetAbstract;
+use Zalt\Snippets\DataReaderGenericModelTrait;
+use Zalt\Snippets\ModelSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
-class RunAllSeedsSnippet extends SnippetAbstract
+class RunAllSeedsSnippet extends ModelSnippetAbstract
 {
+    use DataReaderGenericModelTrait;
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
+        TranslatorInterface $translate,
         protected readonly MenuSnippetHelper $menuSnippetHelper,
         protected readonly SeedRepository $seedRepository,
-        protected readonly Translator $translator,
         protected readonly StatusMessengerInterface $statusMessenger,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo);
+        parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
     protected function createTable(): void
     {
-        $model = $this->seedRepository->getModel();
+        $model = $this->getModel();
 
         $items = $model->load(['status' => ['new', 'error']]);
 
         if (!$items) {
-            $this->statusMessenger->addInfo($this->translator->_('No seed to execute'));
+            $this->statusMessenger->addInfo($this->translate->_('No seed to execute'));
             return;
         }
 
@@ -40,11 +41,11 @@ class RunAllSeedsSnippet extends SnippetAbstract
             try {
                 $this->seedRepository->runSeed($item);
                 $this->statusMessenger->addSuccess(
-                    sprintf($this->translator->_('Seed %s has been successfully executed'), $item['name'])
+                    sprintf($this->translate->_('Seed %s has been successfully executed'), $item['name'])
                 );
             } catch (\Exception $e) {
                 $this->statusMessenger->addError(
-                    sprintf($this->translator->_('Error executing seed %s. %s'), $item['name'], $e->getMessage())
+                    sprintf($this->translate->_('Error executing seed %s. %s'), $item['name'], $e->getMessage())
                 );
             }
         }

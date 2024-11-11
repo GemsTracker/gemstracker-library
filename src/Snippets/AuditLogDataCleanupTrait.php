@@ -30,7 +30,10 @@ trait AuditLogDataCleanupTrait
     {
         $output    = [];
 
-        unset($newData[$this->csrfName], $newData['auto_form_focus_tracker'], $newData['__tmpEvenOut']);
+        if (property_exists($this, 'csrfName')) {
+            unset($newData[$this->csrfName]);
+        }
+        unset($newData['auto_form_focus_tracker'], $newData['__tmpEvenOut']);
 
         foreach ($this->extraNotLoggedFields as $field) {
             unset($newData[$field]);

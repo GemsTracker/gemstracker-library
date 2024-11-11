@@ -54,11 +54,13 @@ class MailBouncer
 
         if (isset($config['email']['bounce']) && $config['email']['bounce'] === true) {
             $currentUser = $this->currentUserRepository->getCurrentUser();
-            $email = $currentUser->getEmailAddress();
-            if ($email) {
-                return [$email];
+            if ($currentUser) {
+                $email = $currentUser->getEmailAddress();
+                if ($email) {
+                    return [$email];
+                }
             }
-            $currentOrganizationEmail = $currentUser->getCurrentOrganization()->getEmail();
+            $currentOrganizationEmail = $this->currentUserRepository->getCurrentOrganization()->getEmail();
             if ($currentOrganizationEmail) {
                 return [$currentOrganizationEmail];
             }

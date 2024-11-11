@@ -24,20 +24,19 @@ use Gems\Screens\BrowseScreenAbstract;
 class NoAddressBrowse extends BrowseScreenAbstract
 {
     /**
-     *
-     * @return array Of snippets or false to use original
+     * @inheritDoc
      */
-    public function getAutofilterSnippets()
+    public function getAutofilterSnippets(): array
     {
         return ['Respondent\\RespondentNoAddressTableSnippet'];
     }
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('Browse without address');
+        return $this->translator->_('Browse without address');
     }
 }

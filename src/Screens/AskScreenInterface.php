@@ -11,6 +11,8 @@
 
 namespace Gems\Screens;
 
+use Gems\Tracker\Token;
+
 /**
  *
  * @package    Gems
@@ -23,15 +25,15 @@ interface AskScreenInterface extends ScreenInterface
 {
     /**
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      * @return array Added before all other parameters
      */
-    public function getParameters(\Gems\Tracker\Token $token);
+    public function getParameters(Token $token): array;
 
     /**
      *
-     * @param \Gems\Tracker\Token $token
-     * @return array Of snippets or false to use original
+     * @param Token $token
+     * @return array|bool Array of snippets or false to use original
      */
-    public function getSnippets(\Gems\Tracker\Token $token);
+    public function getSnippets(Token $token): array|bool;
 }

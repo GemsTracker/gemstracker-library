@@ -706,7 +706,6 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                 'label' => $this->translator->_('Add to date'),
                 'description' => $this->translator->_('Can be negative'),
                 'required' => true,
-                'default' => 10,
                 'filter' => new NumberFormat(),
                 'validator' => new IsInt()
             ]);

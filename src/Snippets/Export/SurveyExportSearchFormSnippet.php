@@ -21,7 +21,7 @@ namespace Gems\Snippets\Export;
  */
 class SurveyExportSearchFormSnippet extends SurveyExportSearchFormSnippetAbstract
 {
-	/**
+    /**
      * Returns start elements for auto search.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
@@ -30,22 +30,20 @@ class SurveyExportSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getSurveySelectElements(array $data)
+    protected function getSurveySelectElements(array $data): array
     {
-     	$dbLookup = $this->util->getDbLookup();
-
         // get the current selections
         $roundDescr = isset($data['gto_round_description']) ? $data['gto_round_description'] : null;
         $surveyId   = isset($data['gto_id_survey']) ? $data['gto_id_survey'] : null;
         $trackId    = isset($data['gto_id_track']) ? $data['gto_id_track'] : null;
 
         // Get the selection data
-        $rounds = $dbLookup->getRoundsForExport($trackId, $surveyId);
-        $surveys = $dbLookup->getSurveysForExport($trackId, $roundDescr);
+        $rounds = $this->getRoundsForExport($trackId, $surveyId);
+        $surveys = $this->getSurveysForExport($trackId, $roundDescr);
         if ($surveyId) {
-            $tracks = $this->util->getTrackData()->getTracksBySurvey($surveyId);
+            $tracks = $this->trackDataRepository->getTracksBySurvey($surveyId);
         } else {
-            $tracks = $this->util->getTrackData()->getTracksForOrgs($this->currentUser->getRespondentOrganizations());
+            $tracks = $this->trackDataRepository->getTracksForOrgs($this->currentUserRepository->getCurrentUser()->getRespondentOrganizations());
         }
 
         $elements['gto_id_survey'] = $this->_createSelectElement(

@@ -16,6 +16,7 @@ use Gems\Model;
 use Gems\Tracker\Field\FieldInterface;
 use Gems\Tracker\Round;
 use MUtil\Validator\NotEqualExcept;
+use Zalt\File\File;
 
 /**
  *
@@ -1013,7 +1014,7 @@ class ImportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
         if (! (isset($this->_session->localfile) && $this->_session->localfile)) {
             $importLoader = $this->loader->getImportLoader();
 
-            $this->_session->localfile = \MUtil\File::createTemporaryIn(
+            $this->_session->localfile = File::createTemporaryIn(
                     $importLoader->getTempDirectory(),
                     $this->request->getControllerName() . '_'
                     );

@@ -104,12 +104,12 @@ class ConfigProvider
     {
         return [
             'allowed' => [
-                [
-                    'url' => 'http://gemstracker.test',
-                ],
-                [
-                    'url' => 'http://localhost',
-                ],
+//                [
+//                    'url' => 'http://gemstracker.test',
+//                ],
+//                [
+//                    'url' => 'http://localhost',
+//                ],
             ]
         ];
     }

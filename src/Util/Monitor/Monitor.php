@@ -359,8 +359,13 @@ This messages was send automatically.";
             // This should not be possible for an installation
         }
 
+        MonitorJob::$monitorFilename = $this->config['monitor']['file']['name'] ?? 'monitor.json';
+        MonitorJob::$monitorFileGroup = $this->config['monitor']['file']['group'] ?? null;
+        MonitorJob::$monitorFileOwner = $this->config['monitor']['file']['owner'] ?? null;
+        MonitorJob::$monitorFilePermissions = $this->config['monitor']['file']['permissions'] ?? null;
+
         MonitorJob::$monitorDateFormat  = 'l j F Y H:i';
-        MonitorJob::$monitorDir         = $this->config['rootDir'] . '/data';
+        MonitorJob::$monitorDir         = $this->config['monitor']['file']['dir'] ?? $this->config['rootDir'] . '/data';
     }
 
     /**

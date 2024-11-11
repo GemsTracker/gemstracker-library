@@ -53,6 +53,7 @@ trait ModelSnippetActionRouteHelpers
         string $path,
         array $middleware = [],
         array $methods = ['GET'],
+        array $options = [],
     )
     {
         return [
@@ -61,6 +62,7 @@ trait ModelSnippetActionRouteHelpers
                 'path' => $path,
                 'methods' => $methods,
                 'middleware' => $middleware,
+                'options' => $options,
             ],
         ];
     }
@@ -75,6 +77,7 @@ trait ModelSnippetActionRouteHelpers
                                        ?array $parameterRoutes = null,
                                        ?array $postRoutes = null,
                                        ?array $parentParameters = null,
+                                       bool $genericImport = false,
                                        bool $genericExport = false,
                                        array $noCsrfRoutes = ['index']): array
     {
@@ -115,6 +118,10 @@ trait ModelSnippetActionRouteHelpers
 
         $parameterString = join('/', $combinedParameters);
 
+        if ($genericImport) {
+            array_unshift($pages, 'import');
+            $postRoutes[] = 'import';
+        }
         if ($genericExport) {
             array_unshift($pages, 'export');
             $postRoutes[] = 'export';
@@ -216,7 +223,10 @@ trait ModelSnippetActionRouteHelpers
         // Create the sub routes
         $routes = [];
         foreach ($controllerClass::$actions as $pageName => $actionClass) {
-            $interfaces = class_implements($actionClass) ?? [];
+            if (!class_exists($actionClass)) {
+                throw new \Exception(sprintf('Action class "%s" does not exist', $actionClass));
+            }
+            $interfaces = class_implements($actionClass);
 
             $pagePrivilege = 'autofilter' == $pageName ? 'index' : $pageName;
 
@@ -266,6 +276,7 @@ trait ModelSnippetActionRouteHelpers
                                        ?array $parameterRoutes = null,
                                        ?array $postRoutes = null,
                                        ?array $parentParameters = null,
+                                       bool $genericImport = false,
                                        bool $genericExport = false,
                                        array $noCsrfRoutes = ['index']): array
     {
@@ -283,6 +294,7 @@ trait ModelSnippetActionRouteHelpers
             $parameterRoutes, 
             $postRoutes, 
             $parentParameters,
+            $genericImport,
             $genericExport,
             $noCsrfRoutes);
     }

@@ -1,5 +1,6 @@
 gems__groups:
   - ggp_id_group: 900
+    ggp_code: super_administrators
     ggp_name: Super Administrators
     ggp_description: Super administrators with access to the whole site
     ggp_role: super
@@ -8,11 +9,13 @@ gems__groups:
     ggp_no_2factor_ip_ranges: 127.0.0.1
     ggp_group_active: 1
     ggp_staff_members: 1
+    ggp_member_type: staff
     ggp_respondent_members: 0
     ggp_changed_by: 1
     ggp_created_by: 1
 
   - ggp_id_group: 901
+    ggp_code: site_admins
     ggp_name: Site Admins
     ggp_description: Site Administrators
     ggp_role: siteadmin
@@ -22,10 +25,12 @@ gems__groups:
     ggp_group_active: 1
     ggp_staff_members: 1
     ggp_respondent_members: 0
+    ggp_member_type: staff
     ggp_changed_by: 1
     ggp_created_by: 1
 
   - ggp_id_group: 902
+    ggp_code: local_admins
     ggp_name: Local Admins
     ggp_description: Local Administrators
     ggp_role: admin
@@ -35,10 +40,12 @@ gems__groups:
     ggp_group_active: 1
     ggp_staff_members: 1
     ggp_respondent_members: 0
+    ggp_member_type: staff
     ggp_changed_by: 1
     ggp_created_by: 1
 
   - ggp_id_group: 903
+    ggp_code: staff
     ggp_name: Staff
     ggp_description: Health care staff
     ggp_role: staff
@@ -48,10 +55,12 @@ gems__groups:
     ggp_group_active: 1
     ggp_staff_members: 1
     ggp_respondent_members: 0
+    ggp_member_type: staff
     ggp_changed_by: 1
     ggp_created_by: 1
 
   - ggp_id_group: 904
+    ggp_code: respondents
     ggp_name: Respondents
     ggp_description: Respondents
     ggp_role: respondent
@@ -61,10 +70,12 @@ gems__groups:
     ggp_group_active: 1
     ggp_staff_members: 1
     ggp_respondent_members: 0
+    ggp_member_type: respondent
     ggp_changed_by: 1
     ggp_created_by: 1
 
   - ggp_id_group: 905
+    ggp_code: security
     ggp_name: Security
     ggp_description: Security
     ggp_role: security
@@ -74,5 +85,6 @@ gems__groups:
     ggp_group_active: 1
     ggp_staff_members: 1
     ggp_respondent_members: 0
+    ggp_member_type: staff
     ggp_changed_by: 1
     ggp_created_by: 1

@@ -18,6 +18,7 @@ use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\FormSnippetAbstract;
 use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\UserLoader;
+use Zalt\Base\BaseDir;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\UrlArrayAttribute;
@@ -80,7 +81,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $orgOptions = [
             'label'        => $this->_('Organization'),
             'multiOptions' => $this->selectedUser->getAllowedOrganizations(),
-            'autoSubmit'   => true,
+            'class'        => 'auto-submit',
             ];
 
         $orgSelect = $form->createElement('Select', 'org_id', $orgOptions);
@@ -90,7 +91,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
             'label'        => $this->_('Staff'),
             'description'  => $this->_('The Staff User to login as.'),
             'multiOptions' => $this->getStaffUsers($this->formData['org_id']),
-            'autoSubmit'   => true,
+            'class'        => 'auto-submit',
             ];
         $userSelect = $form->createElement('Select', 'login_id', $userOptions);
         $form->addElement($userSelect);
@@ -99,7 +100,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
             'label'        => $this->_('Respondent'),
             'description'  => $this->_('The respondent to login to.'),
             'multiOptions' => $this->getPatients($this->formData['org_id']),
-            'autoSubmit'   => true,
+            'class'        => 'auto-submit',
             ];
         $pidSelect = $form->createElement('Select', 'pid', $pidOptions);
         $form->addElement($pidSelect);
@@ -133,7 +134,8 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
 
         $organization = $this->organizationRepository->getOrganization($this->formData['org_id']);
 
-        $url[] =  $organization->getLoginUrl() . $this->menuHelper->getRouteUrl('embed.login');
+        // Notice: both values contain the BaseDir
+        $url[] =  $organization->getLoginUrl() . BaseDir::removeBaseDir($this->menuHelper->getRouteUrl('embed.login'));
 
         $url['epd'] = $this->selectedUser->getLoginName();
         $url['org'] = $this->formData['org_id'];

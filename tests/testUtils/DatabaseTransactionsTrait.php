@@ -3,17 +3,17 @@
 declare(strict_types=1);
 
 
-namespace testUtils;
+namespace GemsTest\testUtils;
 
 
 use Laminas\Db\Adapter\Adapter;
 
-trait DatabaseTransactions
+trait DatabaseTransactionsTrait
 {
     /**
      * @var Adapter
      */
-    protected $db;
+    protected Adapter $db;
 
     protected function beginDatabaseTransaction()
     {

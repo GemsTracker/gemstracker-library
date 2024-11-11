@@ -29,7 +29,7 @@ class TokenMailFields extends RespondentMailFields
         $survey = $this->token->getSurvey();
 
         $tokenLink = $organization->getLoginUrl() . '/ask/forward/' . $this->token->getTokenId();
-        $askUrl = $organization->getLoginUrl() . '/ask/';
+        $askUrl = $organization->getLoginUrl() . '/ask';
 
         $todoCounts = $this->getTodoCounts();
 
@@ -43,7 +43,7 @@ class TokenMailFields extends RespondentMailFields
             'todo_track_count' => $todoCounts['track'],
             'token' => strtoupper($this->token->getTokenId()),
             'token_from' => $this->token->getValidFrom() instanceof \DateTimeInterface ? $this->token->getValidFrom()->format('Y-m-d') : null,
-            'token_link' => '[url=' . $tokenLink . ']' . $survey->getExternalName() . '[/url]',
+            'token_link' => '<a href="' . $tokenLink . '">' . $survey->getExternalName() . '</a>',
             'token_until' => $this->token->getValidUntil() instanceof \DateTimeInterface ? $this->token->getValidUntil()->format('Y-m-d') : null,
             'token_url' => $tokenLink,
             'token_url_input' => $askUrl . 'index/' . $this->token->getTokenId(),
@@ -53,7 +53,7 @@ class TokenMailFields extends RespondentMailFields
         // Add the code fields
         $codes  = $this->token->getRespondentTrack()->getCodeFields();
         foreach ($codes as $code => $data) {
-            $key = 'track.' . $code;
+            $key = 'track_' . $code;
             if (is_array($data)) {
                 $data = implode(' ', $data);
             }
@@ -111,6 +111,16 @@ class TokenMailFields extends RespondentMailFields
             ->forGroupId($this->token->getSurvey()->getGroupId())
             ->onlyValid();
 
-        return $tSelect->fetchRow();
+        $todoCounts = $tSelect->fetchRow();
+        $todoCounts['track'] = $todoCounts['track'] ?? 0;
+
+        return $todoCounts;
+    }
+
+    public static function getRawFields(): array
+    {
+        $rawFields = parent::getRawFields();
+        $rawFields[] = 'token_link';
+        return $rawFields;
     }
 }

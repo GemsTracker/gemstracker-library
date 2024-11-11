@@ -20,6 +20,7 @@ use Gems\User\Embed\EmbedLoader;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Zalt\Loader\DependencyResolver\ConstructorDependencyParametersResolver;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  *
@@ -300,6 +301,11 @@ class Loader extends LoaderAbstract
         $loader = $this->getUserLoader();
 
         return $loader->getOrganization($organizationId);
+    }
+
+    public function getOverLoader(): ProjectOverloader
+    {
+        return $this->_overLoader;
     }
 
     /**

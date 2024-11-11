@@ -3,9 +3,16 @@
 namespace Gems\Config\Db\Patches\Upgrade2x;
 
 use Gems\Db\Migration\PatchAbstract;
+use Gems\Db\ResultFetcher;
 
 class GemsAddPasswordCommTemplates extends PatchAbstract
 {
+    public function __construct(
+        protected readonly ResultFetcher $resultFetcher,
+    )
+    {
+    }
+
     public function getDescription(): string|null
     {
         return 'Add confirm data change communication templates';
@@ -13,6 +20,10 @@ class GemsAddPasswordCommTemplates extends PatchAbstract
 
     public function up(): array
     {
+        if ($this->resultFetcher->fetchOne("SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'confirmChangeEmail'") !== null) {
+            return [];
+        }
+
         return [
             "INSERT INTO `gems__comm_templates` (`gct_name`, `gct_target`, `gct_code`, `gct_changed`, `gct_changed_by`, `gct_created`, `gct_created_by`)
                 VALUES

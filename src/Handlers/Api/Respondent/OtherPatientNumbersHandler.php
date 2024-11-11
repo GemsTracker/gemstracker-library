@@ -27,12 +27,12 @@ class OtherPatientNumbersHandler implements RequestHandlerInterface
             $pairs = false;
         }
 
-        $userOrganizationId = $request->getAttribute(ApiAuthenticationMiddleware::CURRENT_USER_ORGANIZATION);
-
-        // TEMP FOR PENTEST
-        //if ($request->getAttribute(\Gems\Api\Middleware\ApiAuthenticationMiddleware::AUTH_TYPE) === 'session') {
-        //    $pairs = false;
-        //}
+        $userRole = null;
+        $userOrganizationId = $organizationId;
+        if (isset($queryParams['allowed-organizations']) && $queryParams['allowed-organizations'] == 1) {
+            $userRole = $request->getAttribute(ApiAuthenticationMiddleware::CURRENT_USER_ROLE);
+            $userOrganizationId = $request->getAttribute(ApiAuthenticationMiddleware::CURRENT_USER_ORGANIZATION);
+        }
 
         $otherPatientNumbers = $this->respondentRepository->getOtherPatientNumbers(
             $patientNr,
@@ -40,7 +40,8 @@ class OtherPatientNumbersHandler implements RequestHandlerInterface
             $pairs,
             false,
             true,
-            $userOrganizationId
+            $userOrganizationId,
+            $userRole,
         );
 
         return new JsonResponse($otherPatientNumbers);

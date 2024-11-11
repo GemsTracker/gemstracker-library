@@ -18,8 +18,10 @@ class RespondentMailFields extends OrganizationMailFields
     {
         $mailFields = parent::getMailFields();
         $mailFields += [
+            'patient_nr'    => $this->respondent->getPatientNumber(),
             'dear'          => $this->respondent->getDearGreeting($language),
             'email'         => $this->respondent->getEmailAddress(),
+            'phone'         => $this->respondent->getPhonenumber(),
             'from'          => null,
             'first_name'    => $this->respondent->getFirstName(),
             'full_name'     => $this->respondent->getFullName(),
@@ -27,10 +29,18 @@ class RespondentMailFields extends OrganizationMailFields
             'salutation'    => $this->respondent->getSalutation($language),
             'last_name'     => $this->respondent->getLastName(),
             'name'          => $this->respondent->getName(),
+            'birthday'      => null,
+            'birthYear'     => null,
             'reply_to'      => null,
             'to'            => $this->respondent->getEmailAddress(),
             'reset_ask'     => $this->respondent->getOrganization()->getPreferredSiteUrl() . '/password-reset',
         ];
+
+        $birthday = $this->respondent->getBirthday();
+        if ($birthday instanceof \DateTimeInterface) {
+            $mailFields['birthday'] = $birthday->format('d-m-Y');
+            $mailFields['birthYear'] = $birthday->format('Y');
+        }
 
         return $mailFields;
     }

@@ -11,7 +11,11 @@
 
 namespace Gems\Snippets\Organization;
 
+use Gems\Menu\RouteHelper;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Snippets\TranslatableSnippetAbstract;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -27,12 +31,6 @@ class ChooseListedOrganizationSnippet extends TranslatableSnippetAbstract
      *
      * @var string
      */
-    protected $action;
-
-    /**
-     *
-     * @var string
-     */
     protected $info;
 
     /**
@@ -42,11 +40,24 @@ class ChooseListedOrganizationSnippet extends TranslatableSnippetAbstract
     protected $orgs;
 
     /**
-     * Create the snippets content
      *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @var string
+     */
+    protected $route;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected readonly RouteHelper $routeHelper,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+    }
+
+
+    /**
+     * @inheritDoc
      */
     public function getHtmlOutput()
     {
@@ -54,19 +65,12 @@ class ChooseListedOrganizationSnippet extends TranslatableSnippetAbstract
 
         $html->h3($this->_('Choose an organization'));
 
-        $url = [
-            $this->requestInfo->getBasePath(),
-            'action' => $this->action,
-        ];
-
         if ($this->info) {
             $html->pInfo($this->info);
         }
 
         foreach ($this->orgs as $orgId => $name) {
-            $url['org'] = $orgId;
-
-            $html->pInfo()->actionLink($url, $name)->appendAttrib('class', 'larger');
+            $html->pInfo()->actionLink($this->routeHelper->getRouteUrl($this->route, ['org' => $orgId]), $name)->appendAttrib('class', 'larger');
         }
 
         return $html;

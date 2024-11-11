@@ -12,6 +12,8 @@
 namespace Gems\Snippets\Survey;
 
 use Gems\Locale\Locale;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Repository\ImportRepository;
 use Gems\Snippets\ModelImportSnippet;
 use Gems\Tracker;
 use Gems\Util;
@@ -63,13 +65,15 @@ class AnswerImportSnippet extends ModelImportSnippet
         MessengerInterface $messenger,
         MetaModelLoader $metaModelLoader,
         SessionInterface $session,
+        ImportRepository $importRepository,
+        MenuSnippetHelper $menuHelper,
         protected readonly Locale $locale,
         protected readonly Tracker $tracker,
         protected readonly Translated $translatedUtil,
         protected readonly Util $util,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $metaModelLoader, $session);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $metaModelLoader, $session, $importRepository, $menuHelper);
     }
 
     /**
@@ -237,13 +241,11 @@ class AnswerImportSnippet extends ModelImportSnippet
     }
 
     /**
-     * Try to get the current translator
-     *
-     * @return ModelTranslatorInterface|bool or false if none is current
+     * @inheritdoc
      */
-    protected function getImportTranslator()
+    protected function getCurrentImportTranslator(): ?ModelTranslatorInterface
     {
-        $translator = parent::getImportTranslator();
+        $translator = parent::getCurrentImportTranslator();
 
         if ($translator instanceof \Gems\Model\Translator\AnswerTranslatorAbstract) {
             // Set answer specific options
@@ -291,7 +293,7 @@ class AnswerImportSnippet extends ModelImportSnippet
             // Add (optional) survey specific translators
             $extraTrans  = $this->importLoader->getAnswerImporters($this->_survey);
             if ($extraTrans) {
-                $this->importTranslators = $extraTrans + $this->importTranslators;
+                // $this->importTranslators = $extraTrans + $this->importTranslators;
 
                 $this->_translatorDescriptions = false;
 
@@ -301,7 +303,6 @@ class AnswerImportSnippet extends ModelImportSnippet
 
         if ($this->_survey instanceof \Gems\Tracker\Survey) {
             $this->targetModel = $this->_survey->getAnswerModel($this->locale->getCurrentLanguage());
-            $this->importer->setTargetModel($this->targetModel);
 
             $source = $this->menu->getParameterSource();
             $source->offsetSet('gsu_has_pdf', $this->_survey->hasPdf() ? 1 : 0);

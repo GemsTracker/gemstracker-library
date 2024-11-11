@@ -11,7 +11,6 @@
 
 namespace Gems\Handlers;
 
-use Gems\AuthTfa\TfaService;
 use Gems\CookieResponse;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
@@ -22,6 +21,7 @@ use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Project\ProjectSettings;
+use Gems\Screens\AskScreenInterface;
 use Gems\Snippets\Ask\MaintenanceModeAskSnippet;
 use Gems\Snippets\Ask\ResumeLaterSnippet;
 use Gems\Snippets\Ask\ShowAllOpenSnippet;
@@ -256,6 +256,24 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         return $output;
     }
 
+    protected function checkReturnUrl(string $url): string
+    {
+        // Fix for ask index redirect to forward not set in HTTP_REFERER in RedirectLoop
+        $urlWithoutQueryParams = strstr($url, '?', true);
+        $askIndexUrl = $this->routeHelper->getRouteUrl('ask.index');
+
+        if ($this->token instanceof Token && ((! $url) || str_ends_with($urlWithoutQueryParams, $askIndexUrl))) {
+            $forwardUrl = $this->routeHelper->getRouteUrl('ask.forward', [
+                MetaModelInterface::REQUEST_ID => $this->token->getTokenId(),
+            ]);
+            // Add the supplied query params
+            //$forwardUrl .= strstr($url, '?');
+            return $forwardUrl;
+        }
+
+        return $url;
+    }
+
     /**
      * Function for overruling the display of the login form.
      *
@@ -339,10 +357,14 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         );
 
         $screen = $this->token->getOrganization()->getTokenAskScreen();
-        $params   = $screen->getParameters($this->token);
-        $snippets = $screen->getSnippets($this->token);
-        if (false !== $snippets) {
-            $this->forwardSnippets = $snippets;
+        $params = [];
+        $forwardSnippets = $this->forwardSnippets;
+        if ($screen instanceof AskScreenInterface) {
+            $params = $screen->getParameters($this->token);
+            $params = $this->_processParameters($params);
+            if (false !== $screen->getSnippets($this->token)) {
+                $forwardSnippets = $screen->getSnippets($this->token);
+            }
         }
 
         $params['token'] = $this->token;
@@ -351,7 +373,14 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $params['requestInfo'] = $this->getRequestInfo();
 
         // Display token when possible
-        if ($this->html->snippet($this->forwardSnippets, $params)) {
+        $displayToken = false;
+        foreach($forwardSnippets as $forwardSnippet) {
+            $result = $this->html->snippet($forwardSnippet, $params);
+            if ($result) {
+                $displayToken = true;
+            }
+        }
+        if ($displayToken) {
             return;
         }
 
@@ -433,14 +462,16 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         ]);
 
         if ($this->requestInfo->isPost() && $form->isValid($this->requestInfo->getRequestPostParams(), false)) {
-
             $params = $this->requestInfo->getRequestPostParams();
             if (isset($params['id'])) {
-                $route = $this->routeHelper->getRouteSibling($this->requestInfo->getRouteName(), 'forward');
-                $routeUrl = $this->routeHelper->getRouteUrl($route['name'], [
-                    MetaModelInterface::REQUEST_ID => $params['id'],
-                ]);
-                return $this->getRedirectResponse($routeUrl);
+                $tokenId = $this->tracker->filterToken($params['id']);
+                if (!empty($tokenId)) {
+                    $route = $this->routeHelper->getRouteSibling($this->requestInfo->getRouteName(), 'forward');
+                    $routeUrl = $this->routeHelper->getRouteUrl($route['name'], [
+                        MetaModelInterface::REQUEST_ID => $tokenId,
+                    ]);
+                    return $this->getRedirectResponse($routeUrl);
+                }
             }
         }
 
@@ -540,23 +571,6 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     public function tokenAction()
     {
         return $this->forward('index');
-    }
-
-    protected function checkReturnUrl(string $url): string
-    {
-        // Fix for ask index redirect to forward not set in HTTP_REFERER in RedirectLoop
-        $urlWithoutQueryParams = strstr($url, '?', true);
-        $askIndexUrl = $this->routeHelper->getRouteUrl('ask.index');
-        if ($this->token instanceof Token && str_ends_with($urlWithoutQueryParams, $askIndexUrl)) {
-            $forwardUrl = $this->routeHelper->getRouteUrl('ask.forward', [
-                MetaModelInterface::REQUEST_ID => $this->token->getTokenId(),
-            ]);
-            // Add the supplied query params
-            //$forwardUrl .= strstr($url, '?');
-            return $forwardUrl;
-        }
-
-        return $url;
     }
 
     /**

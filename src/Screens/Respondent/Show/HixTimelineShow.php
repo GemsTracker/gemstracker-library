@@ -27,7 +27,7 @@ class HixTimelineShow extends GemsTimelineShow
      *
      * @return array Added before all other parameters
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         $params = parent::getParameters();
 
@@ -36,18 +36,18 @@ class HixTimelineShow extends GemsTimelineShow
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('Timeline show respondent for HiX');
+        return $this->translator->_('Timeline show respondent for HiX');
     }
 
     /**
      *
      * @return array Of snippets or false to use original
      */
-    public function getSnippets()
+    public function getSnippets(): array
     {
         return [
             // 'Generic\\ContentTitleSnippet',

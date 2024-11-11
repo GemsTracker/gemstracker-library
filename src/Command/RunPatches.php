@@ -2,6 +2,7 @@
 
 namespace Gems\Command;
 
+use Gems\Db\Migration\MigrationModelFactory;
 use Gems\Db\Migration\PatchRepository;
 use Gems\Db\Migration\TableRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -19,7 +20,9 @@ class RunPatches extends RunMigrationAbstract
     protected string $topicPlural = 'patches';
     public function __construct(
         protected TableRepository $tableRepository,
-        protected PatchRepository $patchRepository)
+        protected PatchRepository $patchRepository,
+        protected readonly MigrationModelFactory $migrationModelFactory,
+    )
     {
         parent::__construct();
     }
@@ -86,7 +89,7 @@ class RunPatches extends RunMigrationAbstract
 
     protected function getModel(): DataReaderInterface
     {
-        return $this->patchRepository->getModel();
+        return $this->migrationModelFactory->createModel($this->patchRepository);
     }
 
     protected function getNewOrder(InputInterface $input, OutputInterface $output): int

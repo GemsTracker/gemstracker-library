@@ -14,8 +14,8 @@ namespace Gems\Handlers\Setup;
 use Gems\Agenda\Agenda;
 use Gems\Model\AgendaDiagnosisModel;
 use Gems\Model\Dependency\ActivationDependency;
+use Gems\Snippets\Agenda\CalendarDiagnosisExampleTableSnippet;
 use Gems\Snippets\AutosearchFormSnippet;
-use Gems\Snippets\Agenda\CalendarExampleTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
@@ -87,7 +87,7 @@ class AgendaDiagnosisHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbs
         ContentTitleSnippet::class,
         ModelDetailTableSnippet::class,
         CurrentButtonRowSnippet::class,
-        CalendarExampleTableSnippet::class,
+        CalendarDiagnosisExampleTableSnippet::class,
     ];
 
     public function __construct(

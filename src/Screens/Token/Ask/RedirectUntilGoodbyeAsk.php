@@ -12,6 +12,7 @@
 namespace Gems\Screens\Token\Ask;
 
 use Gems\Screens\AskScreenAbstract;
+use Gems\Tracker\Token;
 
 /**
  *
@@ -23,32 +24,28 @@ use Gems\Screens\AskScreenAbstract;
  */
 class RedirectUntilGoodbyeAsk extends AskScreenAbstract
 {
+
     /**
-     *
-     * @param \Gems\Tracker\Token $token
-     * @return array Added before all other parameters
+     * @inheritDoc
      */
-    public function getParameters(\Gems\Tracker\Token $token)
+    public function getParameters(Token $token): array
     {
         return ['showLastName' => true];
     }
 
     /**
-     *
-     * @param \Gems\Tracker\Token $token
-     * @return array Of snippets or false to use original
+     * @inheritDoc
      */
-    public function getSnippets(\Gems\Tracker\Token $token)
+    public function getSnippets(Token $token): array
     {
         return ['Gems\\Snippets\\Ask\\RedirectUntilGoodbyeSnippet'];
     }
 
     /**
-     *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('Answer first open until finished');
+        return $this->translator->_('Answer first open until finished');
     }
 }

@@ -42,6 +42,7 @@ class GemsTablesToUtf8Mb4Patch extends PatchAbstract
             if ($table['TABLE_COLLATION'] === 'utf8mb4_unicode_ci') {
                 continue;
             }
+            $statements[] = 'ALTER TABLE ' . $table['TABLE_NAME'] . ' ENGINE=InnoDB, ROW_FORMAT=DYNAMIC;';
             $statements[] = 'ALTER TABLE ' . $table['TABLE_NAME'] . ' CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
         }
 

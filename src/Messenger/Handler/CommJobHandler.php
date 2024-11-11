@@ -31,6 +31,7 @@ class CommJobHandler
 
         $allTokenCount = 0;
         foreach ($tokensNested as $firstToken => $allTokens) {
+            $allTokenCount++;
             $allTokenCount += count($allTokens);
 
             if (!$this->commJobRepository->isTokenInQueue($firstToken)) {

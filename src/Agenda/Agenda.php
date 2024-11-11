@@ -127,9 +127,10 @@ class Agenda
     /**
      * Check if a track should be created for any of the filters
      *
+     * @param Appointment $appointment
      * @param TrackFieldFilterCalculationInterface[] $filters
      * @param array $existingTracks Of $trackId => [RespondentTrack objects]
-     * @param Tracker $tracker
+     * @param FilterTracer|null $filterTracer
      *
      * @return int Number of tokenchanges
      */
@@ -223,8 +224,8 @@ class Agenda
     /**
      * Create a new track for this appointment and the given filter
      *
+     * @param Appointment $appointment
      * @param TrackFieldFilterCalculationInterface $filter
-     * @param Tracker $tracker
      */
     protected function _createTrack(Appointment $appointment, TrackFieldFilterCalculationInterface $filter): RespondentTrack
     {
@@ -292,7 +293,7 @@ class Agenda
      */
     public function getAppointmentDisplay(array $row): string
     {
-        $results[] = Model::reformatDate($row['gap_admission_time'], null, $this->appointmentDisplayFormat);
+        $results[] = Model::reformatDate($row['gap_admission_time'], ['Y-m-d H:i:s'], $this->appointmentDisplayFormat);
         if ($row['gaa_name']) {
             $results[] = $row['gaa_name'];
         }
@@ -457,7 +458,7 @@ class Agenda
     /**
      * Get an appointment object
      *
-     * @param mixed $episodeData Episode id or array containing episode data
+     * @param array|int $episodeData Episode id or array containing episode data
      * @return EpisodeOfCare
      */
     public function getEpisodeOfCare(array|int $episodeData): EpisodeOfCare
@@ -971,7 +972,7 @@ class Agenda
             return $this->_filters;
         }
 
-        $this->_filters = $this->filterRepository->getAllActivelyUsedFilters();
+        $this->_filters = $this->filterRepository->getAllActiveFilters();
 
         return $this->_filters;
     }
@@ -991,7 +992,7 @@ class Agenda
 
     /**
      *
-     * @param mixed $to \Gems\Agenda\Appointment:EpsiodeOfCare
+     * @param Appointment|EpisodeOfCare $to \Gems\Agenda\Appointment:EpsiodeOfCare
      * @return AppointmentFilterInterface[]
      */
     public function matchFilters(Appointment|EpisodeOfCare $to): array
@@ -1039,7 +1040,7 @@ class Agenda
      * @param string $name The name to match against
      * @param int $organizationId Organization id
      * @param boolean $create Create a match when it does not exist
-     * @return array location
+     * @return int|null location
      */
     public function matchLocation(string $name, int $organizationId, bool $create = true): int|null
     {
@@ -1086,25 +1087,29 @@ class Agenda
     public function updateAppointmentInfo(Appointment $appointment): void
     {
         $filters = $this->infoFilterRepository->matchFilters($appointment);
-        foreach($filters as $filter) {
-            $this->infoFilterRepository->addInfoToAppointment($appointment, $filter);
-        }
+        $this->infoFilterRepository->updateAppointmentInfo($appointment, $filters);
     }
 
     public function updateTracksForAppointment(Appointment $appointment, FilterTracer|null $filterTracer = null): int
     {
         $tokenChanges = 0;
 
-        // Find all the fields that use this agenda item
-        $select = $this->resultFetcher->getSelect('gems__respondent2track2appointment');
-        $select->columns(['gr2t2a_id_respondent_track'])
-            ->join('gems__respondent2track', 'gr2t_id_respondent_track = gr2t2a_id_respondent_track', ['gr2t_id_track'])
-            ->quantifier($select::QUANTIFIER_DISTINCT)
+        $subSelect = $this->resultFetcher->getSelect('gems__respondent2track2appointment')
+            ->columns(['gr2t2a_id_respondent_track'])
+            ->where(['gr2t2a_id_appointment' => $appointment->getId()]);
+
+        $select = $this->resultFetcher->getSelect('gems__respondent2track')
+            ->columns([
+                'gr2t_id_respondent_track',
+                'gr2t_id_track',
+            ])
+            //->quantifier(Select::QUANTIFIER_DISTINCT)
             ->order('gr2t_id_track');
 
-        $nestedWhere = $select->where->nest();
+        $select->where->in('gr2t_id_respondent_track', $subSelect);
 
-        $nestedWhere->equalTo('gr2t2a_id_appointment', $appointment->getId());
+        // Now find all the existing tracks that should be checked
+        $respTracks = $this->resultFetcher->fetchPairs($select);
 
         // AND find the filters for any new fields to fill
         $filters = $this->trackFieldFilterRepository->matchFilters($appointment);
@@ -1116,17 +1121,22 @@ class Agenda
             $respId = $appointment->getRespondentId();
             $orgId  = $appointment->getOrganizationId();
 
-            $nestedWhere->or->nest()
-                ->equalTo('gr2t_id_user', $respId)
-                ->equalTo('gr2t_id_organization', $orgId)
-                ->in('gr2t_id_track', $ids)
-                ->unnest();
+            $filterSelect = $this->resultFetcher->getSelect('gems__respondent2track')
+                ->columns([
+                    'gr2t_id_respondent_track',
+                    'gr2t_id_track',
+                ])
+                ->order('gr2t_id_track')
+                ->where([
+                    'gr2t_id_user' => $respId,
+                    'gr2t_id_organization' => $orgId,
+                    'gr2t_id_track' => $ids,
+                ]);
+
+            $filterRespTracks = $this->resultFetcher->fetchPairs($filterSelect);
+
+            $respTracks = $respTracks + $filterRespTracks;
         }
-
-        $nestedWhere->unnest();
-
-        // Now find all the existing tracks that should be checked
-        $respTracks = $this->resultFetcher->fetchPairs($select);
 
         // \MUtil\EchoOut\EchoOut::track($respTracks);
         $existingTracks = [];

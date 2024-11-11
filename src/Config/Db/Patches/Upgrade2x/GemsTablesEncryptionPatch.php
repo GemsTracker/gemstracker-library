@@ -20,9 +20,14 @@ class GemsTablesEncryptionPatch extends PatchAbstract
     protected function prepare(): void
     {
         $this->gems_tables = $this->resultFetcher->fetchAll('SELECT * FROM information_schema.tables WHERE table_schema = "' . $this->config['db']['database'] . '"');
-        $default_encryption = $this->resultFetcher->fetchOne('SELECT DEFAULT_ENCRYPTION FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = "' . $this->config['db']['database'] . '"');
-        if ($default_encryption) {
-            $this->default_encryption = $default_encryption;
+        $this->default_encryption = 'NO';
+        try {
+            $default_encryption = $this->resultFetcher->fetchOne('SELECT DEFAULT_ENCRYPTION FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = "' . $this->config['db']['database'] . '"');
+            if ($default_encryption) {
+                $this->default_encryption = $default_encryption;
+            }
+        } catch (\Exception $e) {
+            // encryption is disabled
         }
     }
 

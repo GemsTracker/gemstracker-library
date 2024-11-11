@@ -96,6 +96,11 @@ This messages was send automatically.";
      */
     public static string $monitorFilename = 'monitor.json';
 
+    public static string|null $monitorFileGroup = null;
+    public static string|null $monitorFileOwner = null;
+    public static int|null $monitorFilePermissions = null;
+
+
     /**
      * Period in seconds, default is 25 hours
      *
@@ -216,6 +221,17 @@ This messages was send automatically.";
         $file = self::$monitorDir . DIRECTORY_SEPARATOR . self::$monitorFilename;
 
         file_put_contents($file, json_encode($monitors));
+
+        if (self::$monitorFileOwner) {
+            @chown($file, self::$monitorFileOwner);
+        }
+        if (self::$monitorFileGroup) {
+            @chown($file, self::$monitorFileGroup);
+        }
+        if (self::$monitorFilePermissions) {
+            @chmod($file, self::$monitorFilePermissions);
+        }
+
     }
 
     /**

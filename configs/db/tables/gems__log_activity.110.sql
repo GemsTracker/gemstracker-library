@@ -6,7 +6,7 @@ CREATE TABLE if not exists gems__log_activity (
         gla_respondent_id   bigint unsigned null     references gems__respondents   (grs_id_user),
 
         gla_by              bigint unsigned null,
-        gla_organization    bigint unsigned not null references gems__organizations (gor_id_organization),
+        gla_organization    bigint unsigned not null, -- references gems__organizations (gor_id_organization),
         gla_role            varchar(20) character set 'utf8mb4' collate 'utf8mb4_unicode_ci' not null,
 
         gla_changed         boolean not null default 0,

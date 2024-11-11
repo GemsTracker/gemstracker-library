@@ -11,7 +11,9 @@
 
 namespace Gems\Screens\Respondent\Unsubscribe;
 
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Screens\UnsubscribeScreenInterface;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -21,37 +23,36 @@ use Gems\Screens\UnsubscribeScreenInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 11:41:08
  */
-class EmailOnlyUnsubscribe extends \MUtil\Translate\TranslateableAbstract implements UnsubscribeScreenInterface
+class EmailOnlyUnsubscribe implements UnsubscribeScreenInterface
 {
-    /**
-     * Use currentUserRepository, we may not have a currentUser.
-     *
-     * @var \Gems\Legacy\CurrentUserRepository
-     */
-    protected $currentUserRepository;
+    public function __construct(
+        protected readonly TranslatorInterface $translator,
+        protected readonly CurrentUserRepository $currentUserRepository,
+    )
+    {}
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('Unsubscribe using e-mail address only');
+        return $this->translator->_('Unsubscribe using e-mail address only');
     }
 
     /**
      *
      * @return array Added before all other parameters
      */
-    public function getUnsubscribeParameters()
+    public function getUnsubscribeParameters(): array
     {
         return [
             'formTitle' => sprintf(
-                    $this->_('Unsubscribe from surveys for %s'),
+                    $this->translator->_('Unsubscribe from surveys for %s'),
                     $this->currentUserRepository->getCurrentOrganization()->getName()
                     ),
             'routeAction' => 'participate.unsubscribe-thanks',
-            'saveLabel' => $this->_('Unsubscribe'),
+            'saveLabel' => $this->translator->_('Unsubscribe'),
         ];
     }
 
@@ -59,7 +60,7 @@ class EmailOnlyUnsubscribe extends \MUtil\Translate\TranslateableAbstract implem
      *
      * @return array Of snippets
      */
-    public function getUnsubscribeSnippets()
+    public function getUnsubscribeSnippets(): array
     {
         return ['Unsubscribe\\EmailUnsubscribeSnippet'];
     }

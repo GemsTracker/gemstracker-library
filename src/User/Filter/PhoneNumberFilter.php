@@ -9,6 +9,8 @@ use libphonenumber\PhoneNumberUtil;
 /**
  * Note: Currently, this filter assumes the $value has been validated by PhoneNumberValidator. Hence,
  * it cannot be used as an actual Laminas filter. It is intended to be used with setOnSave().
+ *
+ * @deprecated Replaced by PhoneNumberFormatter as this is not used as a filter
  */
 class PhoneNumberFilter implements FilterInterface, \Zend_Filter_Interface
 {

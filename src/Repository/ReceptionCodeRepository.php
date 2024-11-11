@@ -238,4 +238,20 @@ class ReceptionCodeRepository
 
         return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');
     }
+
+    /**
+     * Returns the token restore reception code list.
+     *
+     * @return array a value => label array.
+     */
+    public function getTokenRestoreCodes(): array
+    {
+        $allReceptionCodes = $this->getAllActiveReceptionCodes();
+
+        $successCodes = array_filter($allReceptionCodes, function ($row) {
+            return $row[self::SUCCESS_FIELD] == 1 && $row[self::SURVEY_TYPE_FIELD] == 1;
+        });
+
+        return array_column($successCodes, 'grc_description', 'grc_id_reception_code');
+    }
 }

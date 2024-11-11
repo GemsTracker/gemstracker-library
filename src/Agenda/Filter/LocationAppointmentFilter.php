@@ -28,7 +28,7 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
     /**
      * The locations that this filter matches or true when not matching against any location
      *
-     * @var array glo_id_location => glo_id_location
+     * @var array|bool glo_id_location => glo_id_location
      */
     protected array|bool $_locations;
 

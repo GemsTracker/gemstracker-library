@@ -12,10 +12,20 @@
 namespace Gems\Snippets;
 
 use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Repository\ConsentRepository;
+use Gems\Repository\OrganizationRepository;
+use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
+use Gems\User\User;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\AElement;
+use Zalt\Late\Late;
+use Zalt\Message\MessageTrait;
+use Zalt\Message\MessengerInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -28,49 +38,11 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippetAbstract
+abstract class RespondentDetailSnippetAbstract extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
-    /**
-     * Add the children of the current menu item
-     *
-     * @var boolean
-     */
-    protected $addCurrentChildren = false;
+    use MessageTrait;
 
-    /**
-     * Add the parent of the current menu item
-     *
-     * @var boolean
-     */
-    protected $addCurrentParent = true;
-
-    /**
-     * Add the siblings of the current menu item
-     *
-     * @var boolean
-     */
-    protected $addCurrentSiblings = false;
-
-    /**
-     * Add siblings of the current menu item with any parameters.
-     *
-     * Add only those with the same when false.
-     *
-     * @var boolean
-     */
-    protected $anyParameterSiblings = false;
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected User $currentUser;
 
     /**
      *
@@ -88,9 +60,9 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
     /**
      * Optional
      *
-     * @var \Gems\Tracker\Respondent
+     * @var ?\Gems\Tracker\Respondent
      */
-    protected $respondent;
+    protected ?Respondent $respondent = null;
 
     /**
      * Show a warning if informed consent has not been set
@@ -99,26 +71,22 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      */
     protected $showConsentWarning = true;
 
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    /**
-     *
-     * @var \Zend_View
-     */
-    protected $view;
-
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
-        protected MaskRepository $maskRepository,
+        CurrentUserRepository $currentUserRepository,
+        MessengerInterface $messenger,
+        protected readonly ConsentRepository $consentRepository,
+        protected readonly MaskRepository $maskRepository,
+        protected readonly MenuSnippetHelper $menuSnippetHelper,
+        protected readonly OrganizationRepository $organizationRepository,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+        $this->messenger = $messenger;
     }
 
     /**
@@ -144,37 +112,30 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
             return $consent;
         }
 
-        $unknown = $this->util->getConsentUnknown();
+        $unknown = $this->consentRepository->getConsentUnknown();
 
         // Value is translated by now if in bridge
         if (($consent == $unknown) || ($consent == $this->_($unknown))) {
 
             $warned    = true;
             $msg       = $this->_('Please settle the informed consent form for this respondent.');
-            $urlString = '';
 
-            if ($this->view instanceof \Zend_View) {
-                $queryParams = $this->requestInfo->getRequestQueryParams();
-
-                $url['controller'] = 'respondent';
-                $url[\MUtil\Model::REQUEST_ID1]          = $queryParams[\MUtil\Model::REQUEST_ID1];
-                $url[\MUtil\Model::REQUEST_ID2]          = $queryParams[\MUtil\Model::REQUEST_ID2];
-
-                // \MUtil\EchoOut\EchoOut::track($this->menu->findAllowedController('respondent', 'change-consent'), $this->menu->findAllowedController('respondent', 'edit'));
-                if ($this->menu->findAllowedController('respondent', 'change-consent')) {
-                    $url['action'] = 'change-consent';
-                    $urlString = $this->view->url($url);
-
-                } elseif ($this->menu->findAllowedController('respondent', 'edit')) {
-                    $url['action'] = 'edit';
-                    $urlString = $this->view->url($url) . '#tabContainer-frag-4';
-                }
-            }
-            if ($urlString) {
-                $this->addMessage(Html::create()->a($urlString, $msg));
-            } else {
+//            if ($this->menuSnippetHelper) {
+//                $queryParams = $this->requestInfo->getParams();
+//
+//                $url = $this->menuSnippetHelper->getRouteUrl('respondent.change-consent', $queryParams);
+//                if (! $url) {
+//                    $url = $this->menuSnippetHelper->getRouteUrl('respondent.edit', $queryParams);
+//                    if ($url) {
+//                        $url .= '#tabContainer-frag-4';
+//                    }
+//                }
+//            }
+//            if ($url) {
+//                $this->addMessage(Html::create()->a($url, $msg)->render());
+//            } else {
                 $this->addMessage($msg);
-            }
+//            }
         }
 
         return $consent;
@@ -186,13 +147,16 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      * @param boolean $onlyNotCurrent Only return a string when the organization is different
      * @return string
      */
-    protected function getCaption($onlyNotCurrent = false)
+    protected function getCaption(bool $onlyNotCurrent = false): string
     {
-        $orgId = null;
-        $params = $this->requestInfo->getRequestMatchedParams();
-        if (isset($params[\MUtil\Model::REQUEST_ID2])) {
-            $orgId = $params[\MUtil\Model::REQUEST_ID2];
+        $orgId = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2);
+        if ($orgId == $this->currentUser->getCurrentOrganizationId()) {
+            if ($onlyNotCurrent) {
+                return '';
+            }
+            return $this->_('Respondent information');
         }
+        return sprintf($this->_('%s respondent information'), $this->organizationRepository->getOrganization($orgId)->getName());
     }
 
     public function getHtmlOutput()
@@ -245,12 +209,18 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
         }
 
         if (! $this->repeater) {
-            if (! $this->respondent) {
-                $this->repeater = $this->model->loadRepeatable();
+            if ($this->respondent) {
+                $data = [$this->respondent->getArrayCopy()];
+                $this->repeater = Late::repeat($data);
             } else {
-                $data = array($this->respondent->getArrayCopy());
+                $keys   = $metaModel->getKeys();
+                $filter = [];
+                foreach ($keys as $id => $name) {
+                    $val = $this->requestInfo->getParam($id);
+                    $filter[$name] = $val;
+                }
 
-                $this->repeater = \MUtil\Lazy::repeat($data);
+                $this->repeater = $this->model->loadRepeatable($filter);
             }
         }
 

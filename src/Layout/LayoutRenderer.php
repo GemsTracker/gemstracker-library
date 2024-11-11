@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Gems\Layout;
 
 use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\Event\LayoutParamsEvent;
+use Gems\Helper\Env;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\LocaleMiddleware;
@@ -12,6 +14,7 @@ use Gems\Middleware\MenuMiddleware;
 use Gems\User\User;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Template\TemplateRendererInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class LayoutRenderer
@@ -27,7 +30,11 @@ class LayoutRenderer
         CsrfMiddleware::GUARD_ATTRIBUTE,
     ];
 
-    public function __construct(protected TemplateRendererInterface $template, private readonly array $config)
+    public function __construct(
+        protected readonly TemplateRendererInterface $template,
+        protected readonly EventDispatcherInterface $eventDispatcher,
+        private readonly array $config
+    )
     {}
 
     protected function getAvailableOrganizations(ServerRequestInterface $request): ?array
@@ -79,8 +86,7 @@ class LayoutRenderer
 
         return $params;
     }
-
-    public function render(LayoutSettings $layoutSettings, ServerRequestInterface $request, array $params = []): string
+    protected function getParams(LayoutSettings $layoutSettings, ServerRequestInterface $request, array $params = []): array
     {
         $params = $params + $layoutSettings->getLayoutParameters();
         $defaultParams = $this->getDefaultParams($request);
@@ -107,12 +113,36 @@ class LayoutRenderer
 
         $params += $defaultParams;
 
+        $env = Env::get('APP_ENV', '');
+        if (str_starts_with($env, 'prod')) {
+            $showEnv = false;
+        } else {
+            $showEnv = $this->config['app']['show_env'] ?? 'short';
+        }
+
         $params['_config'] = [
-            'application_title' => $this->config['app']['name'] ?? null,
+            'title' => [
+                'name' => $this->config['app']['name'] ?? '',
+                'show' => $this->config['app']['show_title'] ?? false,
+                ],
+            'environment' => [
+                'short' => strtoupper(substr($env, 0, 3)),
+                'full' => ucfirst($env),
+                'show' => $showEnv,
+                ],
             'max_idle_time' => $this->config['session']['max_idle_time'],
             'auth_poll_interval' => $this->config['session']['auth_poll_interval'],
         ];
 
+        $event = new LayoutParamsEvent($params);
+        $this->eventDispatcher->dispatch($event);
+
+        return $event->getParams();
+    }
+
+    public function render(LayoutSettings $layoutSettings, ServerRequestInterface $request, array $params = []): string
+    {
+        $params = $this->getParams($layoutSettings, $request, $params);
         return $this->template->render($layoutSettings->getTemplate(), $params);
     }
 

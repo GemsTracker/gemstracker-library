@@ -34,7 +34,7 @@ use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Tracker\Model\FieldMaintenanceModel;
-use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\Source\SourceAbstract;
 use Gems\Tracker\Token\LaminasTokenSelect;
 use Gems\User\Mask\MaskRepository;
@@ -45,6 +45,7 @@ use Laminas\Db\Sql\Expression;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\String\UnicodeString;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\FullDataInterface;
@@ -477,12 +478,11 @@ class Token
                         // Cast to string, because that is the way the result is stored in the db
                         // not casting to strings means e.g. float results always result in
                         // an update, even when they did not change.
-                        $values['gto_result'] = (string) $rawAnswers[$resultField];
-
-                        // Chunk of text that is too long
-                        if ($len = $this->_getResultFieldLength()) {
-                            $values['gto_result'] = substr($values['gto_result'], 0, $len);
-                        }
+                        $stringObject = new UnicodeString((string)$rawAnswers[$resultField]);
+                        $values['gto_result'] = $stringObject
+                            ->normalize() // Normalize characters including whitespaces
+                            ->truncate($this->_getResultFieldLength()) // Chunk of text that is too long
+                            ->toString();
                     }
                 }
 
@@ -495,10 +495,16 @@ class Token
             $values['gto_start_time'] = null;
         }
 
-        if ($this->_updateToken($values, $userId)) {
-            // Communicate change
-            $result += self::COMPLETION_DATACHANGE;
+        try {
+            if ($this->_updateToken($values, $userId)) {
+                // Communicate change
+                $result += self::COMPLETION_DATACHANGE;
+            }
+        } catch(\Exception) {
+            throw new \Exception(sprintf('failed to update token %s with result', $this->getTokenId()));
         }
+
+
 
         return $result;
     }
@@ -892,9 +898,9 @@ class Token
     /**
      * Returns a model that can be used to save, edit, etc. the token
      *
-     * @return StandardTokenModel
+     * @return TokenModel
      */
-    public function getModel(): StandardTokenModel
+    public function getModel(): TokenModel
     {
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenModel();
@@ -1811,7 +1817,7 @@ class Token
             $filler = $this->getRespondent();
         }
         $hasEmail = !empty($email);
-        $trackIsMailable = $filler->getMailCode() >= $this->getRespondentTrack()->getMailCode();
+        $trackIsMailable = $this->getRespondentTrack()->isMailable();
         $tokenIsMailable = $filler->getMailCode() >= $this->getSurvey()->getMailCode();
         
         return $hasEmail && $trackIsMailable && $tokenIsMailable;
@@ -1956,7 +1962,7 @@ class Token
      */
     public function setCompletionTime(string|DateTimeInterface|null $completionTime, int $userId): self
     {
-        $values['gto_completion_time'] = $this->getDateTimeValue($completionTime);
+        $values['gto_completion_time'] = $this->getDateTimeValue($completionTime)?->format(Tracker::DB_DATETIME_FORMAT);
         $this->_updateToken($values, $userId);
 
         $survey = $this->getSurvey();
@@ -2067,8 +2073,14 @@ class Token
     {
         $resultField = $this->getSurvey()->getResultField();
         if (isset($answers[$resultField])) {
+            $stringObject = new UnicodeString((string)$answers[$resultField]);
+            $resultValue = $stringObject
+                ->normalize() // Normalize characters including whitespaces
+                ->truncate($this->_getResultFieldLength()) // Chunk of text that is too long
+                ->toString();
+
             $values = [
-                'gto_result' => $answers[$resultField],
+                'gto_result' => $resultValue,
             ];
             $this->_updateToken($values, $userId);
 
@@ -2130,7 +2142,7 @@ class Token
 
             $start = $this->getDateTimeValue($validFrom);
 
-            if ($start->getTimestamp() < $mailSentDate->getTimestamp()) {
+            if ($start->getTimestamp() > $mailSentDate->getTimestamp()) {
                 $values['gto_mail_sent_date'] = null;
                 $values['gto_mail_sent_num']  = 0;
 

@@ -2,6 +2,7 @@
 
 namespace Gems\Config;
 
+use Gems\Handlers\Export\ExportSurveyHandler;
 use Gems\Handlers\Setup\CommJobHandler;
 use Gems\Handlers\Setup\ConsentHandler;
 use Gems\Handlers\Setup\MailCodeHandler;
@@ -34,6 +35,7 @@ class Menu
             $this->getOverviewMenu(),
             $this->getProjectMenu(),
             $this->getSetupMenu(),
+            $this->getExportMenu(),
             $this->getTrackBuilderMenu(),
             $this->getOptionMenu(),
             $this->getAskMenu(),
@@ -55,7 +57,7 @@ class Menu
             'type' => 'route',
             'children' => [
                 [
-                    'name' => 'ask.lost',
+                'name' => 'ask.lost',
                     'label' => $this->translator->trans('Token lost?'),
                     'type' => 'route-link-item',
                 ],
@@ -75,6 +77,22 @@ class Menu
                     'label' => $this->translator->trans('Export'),
                     'type' => 'route-link-item',
                 ],
+            ],
+        ];
+    }
+
+    public function getExportMenu(): array
+    {
+        return [
+            'name' => 'export',
+            'label' => $this->translator->trans('Export'),
+            'type' => 'container',
+            'children' => [
+                $this->createMenuForHandler(
+                    controllerClass: ExportSurveyHandler::class,
+                    name: 'export.survey',
+                    label: $this->translator->trans('Export survey'),
+                )
             ],
         ];
     }
@@ -381,8 +399,18 @@ class Menu
                     ],
                 ],
                 [
+                    'name' => 'respondent.import',
+                    'label' => $this->translator->trans('Import'),
+                    'type' => 'route-link-item',
+                ],
+                [
                     'name' => 'respondent.export',
                     'label' => $this->translator->trans('Export'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'respondent.find-token.index',
+                    'label' => $this->translator->trans('Find token'),
                     'type' => 'route-link-item',
                 ],
             ],
@@ -864,6 +892,11 @@ class Menu
                                 [
                                     'name' => 'setup.access.staff.create',
                                     'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.staff.import',
+                                    'label' => $this->translator->trans('Import'),
                                     'type' => 'route-link-item',
                                 ],
                                 [
@@ -1364,6 +1397,25 @@ class Menu
                         ],
                     ],
                 ],
+                [
+                    'name' => 'setup.logfiles.index',
+                    'label' => $this->translator->trans('Log files'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'setup.logfiles.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.logfiles.download',
+                                    'label' => $this->translator->trans('Download'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
     }
@@ -1441,7 +1493,7 @@ class Menu
                 ],
                 [
                     'name' => 'track-builder.chartconfig.index',
-                    'label' => $this->translator->trans('Chart config'),
+                    'label' => $this->translator->plural('Chart config', 'Chart configs', 1),
                     'type' => 'route-link-item',
                     'children' => [
                         [
@@ -1715,7 +1767,7 @@ class Menu
         return [
             'name' => 'participate.index',
             'label' => $this->translator->trans('Participate'),
-            'type' => 'route',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'participate.subscribe',
@@ -1726,6 +1778,16 @@ class Menu
                     'name' => 'participate.unsubscribe',
                     'label' => $this->translator->trans('Unsubscribe'),
                     'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'participate.subscribe-form',
+                    'type' => 'alias',
+                    'alias' => 'participate.subscribe',
+                ],
+                [
+                    'name' => 'participate.unsubscribe-form',
+                    'type' => 'alias',
+                    'alias' => 'participate.unsubscribe',
                 ],
                 [
                     'name' => 'participate.subscribe-thanks',
@@ -1746,7 +1808,7 @@ class Menu
         return [
             'name' => 'contact.index',
             'label' => $this->translator->trans('Contact'),
-            'type' => 'route',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'contact.about',

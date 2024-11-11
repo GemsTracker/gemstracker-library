@@ -34,8 +34,8 @@
     "include-path": [
         "src/"
     ],
-    "minimum-stability": "dev",
-    "prefer-stable": false,
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "require": {
         "php": ">=8.1.0",
         "ext-gd": "*",
@@ -57,28 +57,28 @@
         "doctrine/dbal": "^3.4",
         "doctrine/orm": "^2.13",
         "erusev/parsedown": "~1.7",
-        "gemstracker/gems-api": "dev-main",
-        "gemstracker/gems-fhir-api": "dev-main",
+        "gemstracker/gems-api": "^1.0.0",
+        "gemstracker/gems-fhir-api": "^1.0.0",
         "giggsey/libphonenumber-for-php": "^8.13.7",
-        "guzzlehttp/guzzle": "^7.5@dev",
+        "guzzlehttp/guzzle": "^7.9.0",
         "ifsnop/mysqldump-php": "^2.9",
         "laminas/laminas-authentication": "^2.10",
-        "laminas/laminas-config-aggregator": "1.14.x-dev",
+        "laminas/laminas-config-aggregator": "^1.14",
         "laminas/laminas-db": "^2.15.0",
         "laminas/laminas-diactoros": "^2.11",
         "laminas/laminas-filter": "^2.17",
         "laminas/laminas-hydrator": "^4.5",
-        "laminas/laminas-i18n": "2.26.x-dev",
+        "laminas/laminas-i18n": "^2.28",
         "laminas/laminas-permissions-acl": "^2.9",
         "laminas/laminas-servicemanager": "^3.11",
         "laminas/laminas-stratigility": "^3.9.0",
         "laminas/laminas-uri": "2.*",
         "league/html-to-markdown": "^5.1",
-        "magnafacta/mutil": "2.x-dev",
-        "magnafacta/zalt-html": "dev-main",
-        "magnafacta/zalt-laminas-filter": "dev-main",
-        "magnafacta/zalt-laminas-validator": "dev-main",
-        "magnafacta/zalt-model": "2.x-dev",
+        "magnafacta/mutil": "^2.0.2",
+        "magnafacta/zalt-html": "^1.0.5",
+        "magnafacta/zalt-laminas-filter": "^1.0.1",
+        "magnafacta/zalt-laminas-validator": "^1.0.1",
+        "magnafacta/zalt-model": "^2.0.5",
         "mezzio/mezzio": "^3.16",
         "mezzio/mezzio-csrf": "^1.5",
         "mezzio/mezzio-fastroute": "^3.5.0",
@@ -88,7 +88,7 @@
         "mezzio/mezzio-session-cache": "^1.7",
         "mezzio/mezzio-session-ext": "^1.12",
         "mezzio/mezzio-template": "^2.4.0",
-        "mezzio/mezzio-twigrenderer": "2.14.x-dev",
+        "mezzio/mezzio-twigrenderer": "^2.15",
         "middlewares/debugbar": "^2.1",
         "mlocati/ip-lib": "1.*",
         "monolog/monolog": "^3.0.0",
@@ -110,14 +110,16 @@
         "symfony/redis-messenger": "^6.1",
         "symfony/translation": "^6.1",
         "symfony/yaml": "^6.2",
-        "twig/twig": "^3.4"
+        "twig/twig": "^3.4",
+        "symfony/string": "^6.4"
     },
     "require-dev": {
         "itsgoingd/clockwork": "^5.1",
+        "jangregor/phpstan-prophecy": "1.*",
         "phing/phing": "^2.17.3",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "1.10.22",
-        "phpunit/phpunit": "^10.1.3",
+        "phpstan/phpstan": "1.*",
+        "phpunit/phpunit": "^10.5.0",
         "symfony/yaml": "^6.1",
         "vimeo/psalm": "^5.0@dev"
     },
@@ -183,10 +185,10 @@
             "vendor/bin/phpunit tests"
         ],
         "test-nodb": [
-            "vendor/bin/phpunit  --exclude-group database tests"
+            "vendor/bin/phpunit --exclude-group database tests"
         ],
         "stan": [
-            "vendor/bin/phpstan"
+            "vendor/bin/phpstan --memory-limit=512M"
         ]
     }
 }

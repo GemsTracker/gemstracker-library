@@ -24,12 +24,13 @@ use Gems\Repository\RespondentRepository;
 use Gems\Repository\StaffRepository;
 use Gems\SnippetsActions\ApplyLegacyActionInterface;
 use Gems\SnippetsActions\ApplyLegacyActionTrait;
-use Gems\User\Filter\PhoneNumberFilter;
 use Gems\User\GemsUserIdGenerator;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Localized;
+use Gems\Util\PhoneNumberFormatter;
+use Gems\Util\ReceptionCodeLibrary;
 use Gems\Util\Translated;
 use Gems\Validator\OneOf;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -42,6 +43,7 @@ use Zalt\Model\Type\ActivatingMultiType;
 use Zalt\SnippetsActions\Form\EditActionAbstract;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\Validator\Model\ModelUniqueValidator;
+use Zalt\Validator\SimpleEmail;
 
 /**
  * @package    Gems
@@ -205,7 +207,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
     public function applyAction(SnippetActionInterface $action): void
     {
         if (! $action->isDetailed()) {
-            if (! $this->joinStore->hasTable('gr2o_id_organization')) {
+            if (! $this->joinStore->hasTable('gems__organizations')) {
                 $this->addTable('gems__organizations', array('gr2o_id_organization' => 'gor_id_organization'));
                 $options = $this->metaModel->get('gr2o_id_organization');
                 $options['order'] = $this->metaModel->getOrder('gr2o_id_organization') + 1;
@@ -258,6 +260,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->metaModel->set('grs_id_user', [
             'elementClass' => 'Hidden',
         ]);
+        // $this->metaModel->setSaveWhenNew('grs_id_user');
+        $this->metaModel->setAutoSave('grs_id_user');
         $this->metaModel->setOnSave('grs_id_user', [$this->gemsUserIdGenerator, 'createGemsUserId']);
 
         // NAME
@@ -304,7 +308,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->currentGroup = $this->_('Contact information');
         $this->setIfExists('gr2o_email', [
             'required' => true,
-            'autoInsertNotEmptyValidator' => false
+            'autoInsertNotEmptyValidator' => false,
+            'validators[simple]' => SimpleEmail::class,
             ]);
         if ($this->metaModel->has('gr2o_email')) {
             $this->addColumn('CASE WHEN gr2o_email IS NULL OR LENGTH(TRIM(gr2o_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
@@ -337,12 +342,13 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $this->localizedUtil->getCountries(),
         ]);
 
-        $phoneFilter    = (new PhoneNumberFilter($this->config))->filter(...);
+        $phoneFilter    = new PhoneNumberFormatter($this->config);
         $phoneValidator = new PhoneNumberValidator($this->config, $this->translate);
-        $this->setIfExists('grs_phone_1', ['validator' => $phoneValidator,]);
-        $this->setIfExists('grs_phone_2', ['validator' => $phoneValidator,]);
-        $this->setIfExists('grs_phone_3', ['validator' => $phoneValidator,]);
-        $this->setIfExists('grs_phone_4', ['validator' => $phoneValidator,]);
+        $settings       = ['validators[phone]' => $phoneValidator,];
+        $this->setIfExists('grs_phone_1', $settings);
+        $this->setIfExists('grs_phone_2', $settings);
+        $this->setIfExists('grs_phone_3', $settings);
+        $this->setIfExists('grs_phone_4', $settings);
         $this->metaModel->setOnSave('grs_phone_1', $phoneFilter);
         $this->metaModel->setOnSave('grs_phone_2', $phoneFilter);
         $this->metaModel->setOnSave('grs_phone_3', $phoneFilter);
@@ -351,14 +357,16 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->currentGroup = $this->_('Settings');
         $this->setIfExists('grs_iso_lang', [
             'default' => $this->localizedUtil->getDefaultLanguage(),
-            'elementClass' => 'radio',
+            'elementClass' => 'Radio',
             'multiOptions' => $this->localizedUtil->getLanguages(),
             'separator' => ' ',
         ]);
         $this->setIfExists('gr2o_consent', [
             'default' => $this->consentRepository->getDefaultConsent(),
             'description' => $this->_('Has the respondent signed the informed consent letter?'),
-            'elementClass' => 'Exhibitor',
+            'elementClass' => 'Radio',
+            'multiOptions' => $this->consentRepository->getUserConsentOptions(),
+            'separator' => ' ',
         ]);
         foreach ($this->consentFields as $consent) {
             $this->addColumn($consent, 'old_' . $consent);
@@ -369,9 +377,10 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $this->receptionCodeRepository->getRespondentRestoreCodes(),
             $this->receptionCodeRepository->getRespondentDeletionCodes(),
             'row_class');
-
         $activatingMultiType->applyClass($this->metaModel, 'gr2o_reception_code');
-
+        $this->metaModel->set('gr2o_reception_code', [
+            'default' => ReceptionCodeLibrary::RECEPTION_OK,
+        ]);
 
         $changers = Late::method($this->staffRepository, 'getStaff');
         $this->setIfExists('gr2o_opened', [
@@ -558,7 +567,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 'grs_birthday' => $this->_('Birthday'),
 
                 'grs_address_1' => $this->_('Street'),
-                'grs_address_2' => $this->_(' '),
+                'grs_address_2' => ' ',
                 'grs_zipcode' => $this->_('Zipcode'),
                 'grs_city' => $this->_('City'),
                 'grs_region' => $this->_('Region'),
@@ -581,7 +590,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         if ($this->metaModel->has($name)) {
             if ((!isset($options['label'])) && isset($this->_labels[$name]) && $this->_labels[$name]) {
                 $options['label'] = $this->_labels[$name];
-
             }
             if ($this->currentGroup) {
                 $options['tab'] = $this->currentGroup;

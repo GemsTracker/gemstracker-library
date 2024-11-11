@@ -27,6 +27,6 @@ class SetCommJobTokenAsSentHandler
 
         $event = new TokenMarkedAsSent($token, $jobData);
 
-        $this->eventDispatcher->dispatch($event, TokenMarkedAsSent::NAME);
+        $this->eventDispatcher->dispatch($event);
     }
 }

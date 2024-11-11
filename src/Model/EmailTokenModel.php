@@ -118,6 +118,11 @@ class EmailTokenModel extends GemsJoinModel
             throw new \Exception('Missing token ID');
         }
         $token = $this->tracker->getToken($newValues['gto_id_token']);
+
+        if (!$token->isMailable()) {
+            throw new \Exception('Token cannot be mailed. Receiver disabled email');
+        }
+
         $templateId = $newValues['communicationTemplate'] ?? null;
         $from = $newValues['from'] ?? $token->getOrganization()->getEmail();
         $fromName = $newValues['fromName'] ?? $token->getOrganization()->getContactName();
@@ -125,7 +130,7 @@ class EmailTokenModel extends GemsJoinModel
         $subject = $newValues['subject'] ?? null;
         $body = $newValues['body'] ?? null;
 
-        if ($this->commRepository->sendEmail($token, $templateId, $from, $fromName, $to, $subject, $body)) {
+        if ($this->commRepository->sendTokenEmail($token, $templateId, $from, $fromName, $to, $subject, $body)) {
             return $newValues;
         }
 

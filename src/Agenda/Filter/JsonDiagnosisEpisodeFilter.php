@@ -90,9 +90,7 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
             return true;
         }
 
-        if (!is_string($data)) {
-            $data = json_encode($data);
-        }
+        $data = json_encode($data);
 
         $regex = $this->getRegex();
 

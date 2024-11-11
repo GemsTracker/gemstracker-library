@@ -14,7 +14,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SetCommJobTokenAsSent;
 use Gems\Tracker;
-use Gems\Tracker\Token;
+use Laminas\Db\Adapter\Exception\InvalidQueryException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\TranslatorInterface;
 
@@ -54,12 +54,14 @@ class CommJobRepository
 
     public function getActiveJobs(): array
     {
-        $select = $this->cachedResultFetcher->getSelect('gems__comm_jobs');
-        $select->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
-            ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger')
-            ->where('gcj_active > 0');
+        $allJobs = $this->getAllJobs();
 
-        return $this->cachedResultFetcher->fetchAll('activeCommJobs', $select, null, $this->cacheTags);
+        return $this->sortItems(
+            array_filter($allJobs, function($job) {
+                return $job['gcj_active'] > 0;
+            }),
+            'gcj_id_order'
+        );
     }
 
     public function getActiveOptions(): array
@@ -78,6 +80,18 @@ class CommJobRepository
             ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger');
 
         return $this->cachedResultFetcher->fetchAll('allCommJobs', $select, null, $this->cacheTags);
+    }
+
+    public function getAutomaticJobs(): array
+    {
+        $allJobs = $this->getAllJobs();
+
+        return $this->sortItems(
+            array_filter($allJobs, function($job) {
+                return $job['gcj_active'] === 1;
+            }),
+            'gcj_id_order'
+        );
     }
 
     /**
@@ -475,7 +489,7 @@ class CommJobRepository
             intval($job['gcj_filter_max_reminders']),
             $forceSent);
 
-        $this->addToFilter($filter, $job['gcj_target'], $job['gcj_to_method'], $job['gcj_fallback_method']);
+        $this->addToFilter($filter, $job['gcj_target'], $job['gcj_to_method'], (string) $job['gcj_fallback_method']);
 
         $groups = $this->getAllGroups();
 
@@ -645,12 +659,14 @@ class CommJobRepository
                 case 'A':   // Only first token mailed and marked
                     if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
                         $sendTokenList[] = $token->getTokenId();
+                        $sentContactData[$respondentId][$contactData] = true;
                     }
                     break;
 
                 case 'O':   // Only first token mailed, all marked
                     if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
                         $sendTokenList[] = $token->getTokenId();
+                        $sentContactData[$respondentId][$contactData] = true;
                     } else {
                         $incrementWithoutSendingList[] = $token->getTokenId();
                     }
@@ -689,13 +705,7 @@ class CommJobRepository
             $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId, $forced);
             $reload   = false;
             foreach($tokenIds as $tokenData) {
-                $token = $this->tracker->getToken($tokenData['gto_id_token']);
-                if ($token->inSource()) {
-                    if ($token->checkTokenCompletion($this->currentUserId)) {
-                        // Completion may change the result of the initial query
-                        $reload = true;
-                    }
-                }
+                $reload = $this->checkTokenCompletion($tokenData['gto_id_token']);
             }
         }
 
@@ -714,22 +724,22 @@ class CommJobRepository
 
             switch ($jobData['gcj_process_method']) {
                 case 'M':   // Each token sends an email
-                    $output[$tokenId][$tokenId] = $tokenId;
+                    $output[$tokenId] = [];
                     break;
 
                 case 'A':   // Only first token mailed and marked
                     if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
-                        $output[$tokenId][$tokenId] = $tokenId;
+                        $output[$tokenId] = [];
                         $sentContactData[$respondentId][$contactData] = $tokenId;
                     }
                     break;
 
                 case 'O':   // Only first token mailed, all marked
                     if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
-                        $output[$tokenId][$tokenId] = $tokenId;
+                        $output[$tokenId] = [];
                         $sentContactData[$respondentId][$contactData] = $tokenId;
-                    } else {
-                        $output[$sentContactData[$respondentId][$contactData]][$tokenId] = $tokenId;
+                    } elseif (!in_array($tokenId, $output[$sentContactData[$respondentId][$contactData]])) {
+                        $output[$sentContactData[$respondentId][$contactData]][] = $tokenId;
                     }
                     break;
 
@@ -739,6 +749,40 @@ class CommJobRepository
         }
 
         return $output;
+    }
+
+    protected function checkTokenCompletion(string $tokenId, $retry = 0): bool
+    {
+        $maxRetries = 5;
+        $token = null;
+        try {
+            $token = $this->tracker->getToken($tokenId);
+            if ($token->inSource()) {
+                if ($token->checkTokenCompletion($this->currentUserId)) {
+                    // Completion may change the result of the initial query
+                    return true;
+                }
+            }
+        } catch(InvalidQueryException $e) {
+            if (str_contains($e->getMessage(), 'MySQL server has gone away') && $retry <= $maxRetries) {
+                sleep(5);
+                if ($token) {
+                    $sourceConnection = $token->getSurvey()->getSource()->getSourceDatabase()->getDriver(
+                    )->getConnection();
+                    $sourceConnection->disconnect();
+                    $sourceConnection->connect();
+                }
+                $connection = $this->cachedResultFetcher->getAdapter()->getDriver()->getConnection();
+                $connection->disconnect();
+                $connection->connect();
+
+                return $this->checkTokenCompletion($tokenId, $retry+1);
+            } else {
+                throw new InvalidQueryException(sprintf('%s with %d retries', $e->getMessage(), $retry), $e->getCode(), $e);
+            }
+        }
+
+        return false;
     }
 
     public function isTokenInQueue(string $tokenId): bool
@@ -792,5 +836,15 @@ class CommJobRepository
         $this->cache->setCacheItem($this->tokensInMessengerQueueKey, $tokens);
     }
 
+    public function sortItems(array $items, string $sortKey, bool $asc = true): array
+    {
+        usort($items, function($a, $b) use ($sortKey, $asc) {
+            if ($asc) {
+                return $a[$sortKey] <=> $b[$sortKey];
+            }
+            return $b[$sortKey] <=> $a[$sortKey];
+        });
 
+        return $items;
+    }
 }

@@ -40,6 +40,7 @@ CREATE TABLE if not exists gems__organizations (
         gor_respondent_group        bigint unsigned null references gems__groups (ggp_id_group),
         gor_create_account_template bigint unsigned null,
         gor_reset_pass_template     bigint unsigned null,
+        gor_reset_tfa_template      bigint unsigned null,
         gor_allowed_ip_ranges       text CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
         gor_active                  boolean not null default 1,
 

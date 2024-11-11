@@ -2,6 +2,7 @@
 
 namespace Gems\Repository;
 
+use Gems\Cache\HelperAdapter;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\Util\UtilDbHelper;
@@ -26,10 +27,13 @@ class TrackDataRepository
 
     public function getActiveTracksForOrgs(array $organizationIds)
     {
+        if (! $organizationIds) {
+            return [];
+        }
         $where = new Predicate();
 
         $whereNest = $where->equalTo('gtr_active', 1)->and->nest();
-        foreach($organizationIds as $key => $organizationId) {
+        foreach($organizationIds as $organizationId) {
             $whereNest->like('gtr_organizations', "%|$organizationId|%");
             $whereNest = $whereNest->or;
         }
@@ -224,6 +228,23 @@ class TrackDataRepository
         }
 
         return $return;
+    }
+
+    public function getTracksBySurvey(int $surveyId): array
+    {
+        $key = HelperAdapter::cleanupForCacheId('tracksBySurvey_' . $surveyId);
+        $select = $this->cachedResultFetcher->getSelect('gems__tracks');
+        $select
+            ->columns(['gtr_id_track', 'gtr_track_name'])
+            ->join('gems__rounds', 'gtr_id_track = gro_id_track', [])
+            ->where([
+                'gro_active' => 1,
+                'gtr_active' => 1,
+                'gro_id_survey' => $surveyId,
+            ])
+            ->order('gtr_track_name');
+
+        return $this->cachedResultFetcher->fetchPairs($key, $select, null, $this->cacheTags);
     }
 
     /**

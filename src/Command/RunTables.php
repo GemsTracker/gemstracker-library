@@ -2,6 +2,7 @@
 
 namespace Gems\Command;
 
+use Gems\Db\Migration\MigrationModelFactory;
 use Gems\Db\Migration\TableRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +17,9 @@ class RunTables extends RunMigrationAbstract
 
     protected string $topicPlural = 'tables';
     public function __construct(
-        protected TableRepository $tableRepository)
+        protected TableRepository $tableRepository,
+        protected readonly MigrationModelFactory $migrationModelFactory,
+    )
     {
         parent::__construct();
     }
@@ -36,7 +39,7 @@ class RunTables extends RunMigrationAbstract
 
     protected function getModel(): DataReaderInterface
     {
-        return $this->tableRepository->getModel();
+        return $this->migrationModelFactory->createModel($this->tableRepository);
     }
 
     protected function repositoryRunMigration(array $info): void

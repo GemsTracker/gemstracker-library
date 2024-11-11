@@ -9,6 +9,21 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\MetaModelLoader;
+use Gems\Model\Respondent\RespondentModel;
+use Gems\Repository\PeriodSelectRepository;
+use Gems\Repository\TokenRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\AutosearchPeriodFormSnippet;
+use Gems\Tracker;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  * @package    Gems
@@ -17,8 +32,12 @@ namespace Gems\Snippets\Export;
  * @license    New BSD License
  * @since      Class available since version 1.8.2
  */
-abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchFormSnippet
+abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFormSnippet
 {
+    public const SURVEY_ACTIVE          = 'active';
+    public const SURVEY_INACTIVE        = 'inactive';
+    public const SURVEY_SOURCE_INACTIVE = 'source inactive';
+
 	/**
      * Defines the value used for 'no round description'
      *
@@ -26,19 +45,33 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\Auto
      */
     const NoRound = '-1';
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MenuSnippetHelper $menuSnippetHelper,
+        MetaModelLoader $metaModelLoader,
+        ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
+        PeriodSelectRepository $periodSelectRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
+        protected readonly RespondentModel $respondentModel,
+        protected readonly TrackDataRepository $trackDataRepository,
+        protected readonly Tracker $tracker,
+    ) {
+        parent::__construct(
+            $snippetOptions,
+            $requestInfo,
+            $translate,
+            $menuSnippetHelper,
+            $metaModelLoader,
+            $resultFetcher,
+            $messenger,
+            $periodSelectRepository
+        );
+    }
 
     /**
-     *
-     * @var \Gems\Export\ModelSource\ExportModelSourceAbstract
-     */
-    protected $exportModelSource;
-
-	/**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
@@ -47,13 +80,13 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\Auto
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(array $data)
+    protected function getAutoSearchElements(array $data): array
     {
         $elements = $this->getSurveySelectElements($data);
 
         $elements[] = null;
 
-        $organizations = $this->currentUser->getRespondentOrganizations();
+        $organizations = $this->currentUserRepository->getCurrentUser()->getRespondentOrganizations();
         if (count($organizations) > 1) {
             $elements['gto_id_organization'] = $this->_createMultiCheckBoxElements('gto_id_organization', $organizations);
 
@@ -69,7 +102,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\Auto
             'gto_completion_time' => $this->_('Completion date'),
             );
         // $dates = 'gto_valid_from';
-        $this->_addPeriodSelectors($elements, $dates, 'gto_valid_from');
+        $this->addPeriodSelectors($elements, $dates, 'gto_valid_from');
 
         $elements[] = null;
 
@@ -139,12 +172,162 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\Auto
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
      * That creates a distinct group of elements
      *
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @param array $data The $form field values (can be useful, but no need to set them)
+     * @return array Of \Zend_Form_Element's or static text to add to the html or null for group breaks.
      */
-    protected function getExtraFieldElements(array $data)
+    protected function getExtraFieldElements(array $data): array
     {
-        return $this->exportModelSource->getExtraDataFormElements($this->form, $data);
+        if (isset($data['gto_id_track']) && $data['gto_id_track']) {
+            $elements['add_track_fields'] = $this->_createCheckboxElement(
+                'add_track_fields',
+                $this->_('Track fields'),
+                $this->_('Add track fields to export')
+            );
+        }
+        if ($this->currentUserRepository->getCurrentUser()->hasPrivilege('pr.export.add-resp-nr')) {
+            $elements['export_resp_nr'] = $this->_createCheckboxElement(
+                'export_resp_nr',
+                $this->respondentModel->getMetaModel()->get('gr2o_patient_nr', 'label'),
+                $this->_('Add respondent nr to export')
+            );
+        }
+        if ($this->currentUserRepository->getCurrentUser()->hasPrivilege('pr.export.gender-age')) {
+            $elements['export_resp_gender'] = $this->_createCheckboxElement(
+                'export_resp_gender',
+                $this->_('Respondent gender'),
+                $this->_('Add respondent gender to export')
+            );
+
+            $elements['export_birth_year'] = $this->_createCheckboxElement(
+                'export_birth_year',
+                $this->_('Respondent birth year'),
+                $this->_('Add respondent birth year to export')
+            );
+
+            $elements['export_birth_month'] = $this->_createCheckboxElement(
+                'export_birth_month',
+                $this->_('Respondent birth month'),
+                $this->_('Add respondent birth month to export')
+            );
+
+            $elements['export_birth_yearmonth'] = $this->_createCheckboxElement(
+                'export_birth_yearmonth',
+                $this->_('Respondent birth year/month'),
+                $this->_('Add respondent birth year and month to export')
+            );
+        }
+
+        $elements['export_track_reception_code'] = $this->_createCheckboxElement(
+            'export_track_reception_code',
+            $this->_('Track reception code'),
+            $this->_('Add reception code of track')
+        );
+
+        $elements['export_token_reception_code'] = $this->_createCheckboxElement(
+            'export_token_reception_code',
+            $this->_('Token reception code'),
+            $this->_('Add reception code of token')
+        );
+
+        return $elements;
+    }
+
+    protected function getRoundsForExport(int|null $trackId = null, int|null $surveyId = null): array
+    {
+        // Read some data from tables, initialize defaults...
+        // Fetch all round descriptions
+        $select = $this->resultFetcher->getSelect('gems__tokens');
+        $select->columns(['gto_round_description', 'gto_round_description'])
+            ->quantifier($select::QUANTIFIER_DISTINCT)
+            ->order(['gto_round_description']);
+        $select->where->isNotNull('gto_round_description')->notEqualTo('gto_round_description', '');
+
+        if (!empty($trackId)) {
+            $select->where(['gto_id_track', $trackId]);
+        }
+
+        if (!empty($surveyId)) {
+            $select->where(['gto_id_survey', $surveyId]);
+        }
+
+        return $this->resultFetcher->fetchPairs($select);
+    }
+
+    public function getSurveysForExport(int|null $trackId = null, string|null $roundDescription = null, bool $flat = false, bool $keepSourceInactive = false): array
+    {
+        // Read some data from tables, initialize defaults...
+        $select = $this->resultFetcher->getSelect('gems__surveys');
+
+        // Fetch all surveys
+        $select
+            ->join('gems__sources', 'gsu_id_source = gso_id_source')
+            ->where([
+                'gso_active' => 1,
+                'gsu_allow_export' => 1,
+
+            ])
+            ->where('gsu_allow_export = 1')
+            ->where(TokenRepository::getShowAnswersExpression($this->currentUserRepository->getCurrentUser()->getGroupId(true)))
+            //->where('gsu_surveyor_active = 1')
+            // Leave inactive surveys, we toss out the inactive ones for limesurvey
+            // as it is no problem for OpenRosa to have them in
+            ->order(['gsu_active DESC', 'gsu_surveyor_active DESC', 'gsu_survey_name']);
+
+        $subSelect = $this->resultFetcher->getSelect('gems__tokens');
+
+        $addSubSelect = false;
+        if ($roundDescription) {
+            $addSubSelect = true;
+            $subSelect->where(['gsu_round_description' => $roundDescription]);
+        }
+        if ($trackId) {
+            $addSubSelect = true;
+            $subSelect->where(['gto_id_track' => $trackId]);
+        }
+
+        if ($addSubSelect) {
+            $select->where->in('gsu_id_survey', $subSelect);
+        }
+
+        $result  = $this->resultFetcher->fetchAll($select);
+
+        $surveys = [];
+        if ($result) {
+            // And transform to have inactive surveys in gems and source in a
+            // different group at the bottom
+            $inactive = $this->_('inactive');
+            $sourceInactive = $this->_('source inactive');
+            foreach ($result as $surveyData) {
+                $survey = $this->tracker->getSurvey($surveyData);
+
+                $id   = $surveyData['gsu_id_survey'];
+                $name = $survey->getName();
+                if (! $survey->isActiveInSource()) {
+                    // Inactive in the source, for LimeSurvey this is a problem!
+                    if ($keepSourceInactive || $survey->getSource()->canExportInactive()) {
+                        if ($flat) {
+                            $surveys[$id] = $name . " ($sourceInactive) ";
+                        } else {
+                            $surveys[self::SURVEY_SOURCE_INACTIVE][$id] = $name;
+                        }
+                    }
+                } elseif (!$survey->isActive()) {
+                    if ($flat) {
+                        $surveys[$id] = $name . " ($inactive) ";
+                    } else {
+                        $surveys[self::SURVEY_INACTIVE][$id] = $name;
+                    }
+                } else {
+                    if ($flat) {
+                        $surveys[$id] = $name;
+                    } else {
+                        $surveys[self::SURVEY_ACTIVE][$id] = $name;
+                    }
+                }
+            }
+        }
+
+        return $surveys;
     }
 
 	/**

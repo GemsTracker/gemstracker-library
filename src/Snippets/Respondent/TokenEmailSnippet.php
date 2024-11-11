@@ -3,13 +3,11 @@
 namespace Gems\Snippets\Respondent;
 
 use Gems\Layout\LayoutSettings;
-use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Vue\CreateEditSnippet;
 use Gems\Tracker;
 use Mezzio\Helper\UrlHelper;
-use Mezzio\Template\TemplateRendererInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
@@ -19,22 +17,20 @@ use Zalt\SnippetsLoader\SnippetOptions;
 class TokenEmailSnippet extends CreateEditSnippet
 {
     protected ?string $afterSaveUrl = null;
-    
+
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         LayoutSettings $layoutSettings,
-        TemplateRendererInterface $templateRenderer,
         Locale $locale,
         UrlHelper $urlHelper,
-        CurrentUserRepository $currentUserRepository,
         array $config,
         protected Tracker $tracker,
         protected TranslatorInterface $translator,
         protected StatusMessengerInterface $messenger,
         protected MenuSnippetHelper $menuSnippetHelper,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $templateRenderer, $locale, $urlHelper, $currentUserRepository, $config);
+        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $locale, $urlHelper, $config);
     }
 
     public function getRedirectRoute(): ?string

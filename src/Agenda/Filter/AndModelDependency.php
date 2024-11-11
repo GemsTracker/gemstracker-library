@@ -83,7 +83,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return string
+     * @return array
      */
     protected function calculateNameOutput(mixed $value, bool $isNew, string|null $name, array $context): array
     {

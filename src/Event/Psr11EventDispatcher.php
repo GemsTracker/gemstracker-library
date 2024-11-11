@@ -71,6 +71,11 @@ class Psr11EventDispatcher extends EventDispatcher
         if (class_exists($listener)) {
             return $listener;
         }
+
+        if (!is_callable([$eventSubscriber, $listener])) {
+            throw new \Exception (sprintf('Event function %s not found in Subscriber %s', $listener, get_class($eventSubscriber)));
+        }
+
         return [$eventSubscriber, $listener];
     }
 }

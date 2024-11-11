@@ -25,10 +25,10 @@ class ProjectDefaultEdit extends EditScreenAbstract
 {
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('(default project respondent edit)');
+        return $this->translator->_('(default project respondent edit)');
     }
 }

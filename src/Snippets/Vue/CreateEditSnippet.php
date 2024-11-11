@@ -2,14 +2,7 @@
 
 namespace Gems\Snippets\Vue;
 
-use Gems\Layout\LayoutSettings;
-use Gems\Locale\Locale;
-use Mezzio\Template\TemplateRendererInterface;
-use MUtil\Model;
-use Zalt\Base\RequestInfo;
-use Zalt\Html\Html;
-use Zalt\Snippets\SnippetAbstract;
-use Zalt\SnippetsLoader\SnippetOptions;
+use Zalt\Model\MetaModelInterface;
 
 class CreateEditSnippet extends VueSnippetAbstract
 {
@@ -38,7 +31,7 @@ class CreateEditSnippet extends VueSnippetAbstract
         $attributes['form-type'] = $this->formType;
 
         if ($this->createData === false) {
-            $attributes['edit'] = $this->requestInfo->getParam(Model::REQUEST_ID);
+            $attributes['edit'] = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID);
         }
 
         if ($this->submitLabel) {

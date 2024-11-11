@@ -11,6 +11,10 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Loader;
+use Gems\Model\SurveyQuestionsModel;
+use Gems\Tracker\TrackerInterface;
+use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelInterface;
 
 /**
@@ -29,16 +33,11 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
      */
     protected $db;
 
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    public Loader $loader;
 
-    /**
-     *
-     * @var \Zend_View
-     */
-    protected $view;
+    protected ?TrackerInterface $tracker = null;
+
+    protected ?ProjectOverloader $overLoader = null;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -48,22 +47,31 @@ class RefreshQuestion extends \MUtil\Task\TaskAbstract
      */
     public function execute($surveyId = null, $questionId = null, $order = null)
     {
+        if (! $this->tracker) {
+            $this->tracker = $this->loader->getTracker();
+        }
+        if (! isset($this->overLoader)) {
+            $this->overLoader = $this->loader->getOverLoader();
+        }
+
         $batch  = $this->getBatch();
-        $survey = $this->loader->getTracker()->getSurvey($surveyId);
+        $survey = $this->tracker->getSurvey($surveyId);
 
         // Now save the questions
         $answerModel   = $survey->getAnswerModel('en');
-        $questionModel = new \MUtil\Model\TableModel('gems__survey_questions');
 
-        \Gems\Model::setChangeFieldsByPrefix($questionModel, 'gsq');
+        /**
+         * @var SurveyQuestionsModel $questionModel
+         */
+        $questionModel = $this->overLoader->create(SurveyQuestionsModel::class);
+
+        // MetaModel expects a string name, some can be int
+        if (is_int($questionId)) {
+            $questionId = (string) $questionId;
+        }
 
         $metaModel = $answerModel->getMetaModel();
         $label = $metaModel->get($questionId, 'label');
-        /*
-        if ($label instanceof \MUtil\Html\HtmlInterface) {
-            $label = $label->render($this->view);
-        }
-        // */
 
         $question['gsq_id_survey']   = $surveyId;
         $question['gsq_name']        = $questionId;

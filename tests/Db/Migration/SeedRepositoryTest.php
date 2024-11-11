@@ -3,27 +3,32 @@
 namespace GemsTest\Db\Migration;
 
 use Gems\Db\Databases;
+use Gems\Db\Migration\MigrationModelFactory;
+use Gems\Db\Migration\MigrationRepositoryAbstract;
 use Gems\Db\Migration\SeedRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunSeedMigrationEvent;
 use Gems\Model\IteratorModel;
 use Gems\Model\MetaModelLoader;
 use GemsTest\Data\Db\SeedRepository\PhpSeed;
+use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
+use PHPUnit\Framework\Attributes\Group;
 use Prophecy\Argument;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ConstructorProjectOverloader;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModel;
 
-/**
- * @group database
- */
+#[Group('database')]
 class SeedRepositoryTest extends MigrationRepositoryTestAbstract
 {
     public function setUp(): void
     {
+        parent::setUp();
         $this->createLogTable();
         $this->createTestTable();
     }
@@ -32,6 +37,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
     {
         $this->deleteLogTable();
         $this->deleteTestTable();
+        parent::tearDown();
     }
 
 
@@ -366,7 +372,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
             'gml_created' => new Expression('NOW()'),
         ]);
 
-        $model = $repository->getModel();
+        $model = $this->getModel($repository);
 
         $seeds = $model->load(['status' => 'new']);
 
@@ -436,6 +442,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
     {
         if ($databases === null) {
             $databasesProphecy = $this->prophesize(Databases::class);
+            $databasesProphecy->getDefaultDatabase()->willReturn($this->getTestDatabase());
             $databases = $databasesProphecy->reveal();
         }
 
@@ -448,7 +455,11 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
             $overloaderProphecy = $this->prophesize(ConstructorProjectOverloader::class);
             $overloader = $overloaderProphecy->reveal();
         }
+        return new SeedRepository($config, $databases, $eventDispatcher, $overloader);
+    }
 
+    protected function getModel(MigrationRepositoryAbstract $repository): DataReaderInterface
+    {
         $translatorProphecy = $this->prophesize(TranslatorInterface::class);
         $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
         $translatorProphecy->_(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
@@ -458,6 +469,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
         $metaModelLoader->createModel(IteratorModel::class, 'databaseSeedModel')->willReturn($model);
         $metaModelLoader->getDefaultTypeInterface(Argument::type('int'))->willReturn(null);
 
-        return new SeedRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $metaModelLoader->reveal(), $overloader);
+        $factory = new MigrationModelFactory($translatorProphecy->reveal(), $metaModelLoader->reveal());
+        return $factory->createModel($repository);
     }
 }

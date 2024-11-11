@@ -97,7 +97,7 @@ class ConsentPlanHandler extends GemsHandler
         foreach ($consents as $consent => $translated) {
             $fields[$consent] = new Expression(sprintf($sql, $consent));
         }
-        $fields[$this->_('Totaal OK')] = new Expression("SUM(CASE WHEN grc_success = 1 THEN 1 ELSE 0 END)");
+        $fields[$this->_('Total OK')] = new Expression("SUM(CASE WHEN grc_success = 1 THEN 1 ELSE 0 END)");
 
         $sql      = "SUM(CASE WHEN gr2o_reception_code = '%s' THEN 1 ELSE 0 END)";
         foreach ($deleteds as $code => $translated) {

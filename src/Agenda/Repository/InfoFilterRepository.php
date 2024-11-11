@@ -49,6 +49,18 @@ class InfoFilterRepository
     }
 
     /**
+     * Get all fields that can be added by link filters
+     * @return string[]
+     */
+    public function getAllLinkFields(): array
+    {
+        $filters = $this->getAllActivelyUsedFilters();
+        return array_map(function (LinkFilterContainer $filter) {
+            return $filter->getKeyField();
+        }, $filters);
+    }
+
+    /**
      *
      * @param Appointment|EpisodeOfCare $to
      * @return LinkFilterContainer[]
@@ -89,5 +101,26 @@ class InfoFilterRepository
                 'gap_info' => json_encode($info)
             ], 'gap_id_appointment = ' . $appointment->getId());
         }
+    }
+
+    public function updateAppointmentInfo(Appointment $appointment, array $filters): void
+    {
+        $currentInfo = $appointment->getInfo();
+        $linkFields = array_flip($this->getAllLinkFields());
+
+        $newInfo = array_diff_key($currentInfo, $linkFields);
+        foreach ($filters as $linkFilterContainer) {
+            $newInfo[$linkFilterContainer->getKeyField()] = $linkFilterContainer->getValue();
+        }
+
+        $info = null;
+        if ($newInfo) {
+            $info = json_encode($newInfo);
+        }
+
+        $table = new TableGateway('gems__appointments', $this->cachedResultFetcher->getAdapter());
+        $table->update([
+            'gap_info' => $info,
+        ], 'gap_id_appointment = ' . $appointment->getId());
     }
 }

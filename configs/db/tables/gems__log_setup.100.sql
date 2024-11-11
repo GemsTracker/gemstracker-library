@@ -7,6 +7,7 @@ CREATE TABLE if not exists gems__log_setup (
         gls_on_action       boolean not null default 0,
         gls_on_post         boolean not null default 0,
         gls_on_change       boolean not null default 1,
+        gls_app_version     varchar(100) null default null,
 
         gls_changed         timestamp not null default current_timestamp on update current_timestamp,
         gls_changed_by      bigint unsigned not null,

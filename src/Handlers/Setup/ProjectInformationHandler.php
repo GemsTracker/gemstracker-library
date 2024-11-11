@@ -13,6 +13,8 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Audit\AuditLog;
 use Gems\Cache\HelperAdapter;
+use Gems\ConfigProvider;
+use Gems\Db\ResultFetcher;
 use Gems\Handlers\SnippetLegacyHandlerAbstract;
 use Gems\Html;
 use Gems\Log\ErrorLogger;
@@ -91,6 +93,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         protected RouteHelper $routeHelper,
         protected UrlHelper $urlHelper,
         protected Versions $versions,
+        protected readonly ResultFetcher $resultFetcher,
         protected readonly array $config,
     )
     {
@@ -132,14 +135,23 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $data[$this->_('Server Hostname')]         = php_uname('n');
         $data[$this->_('Server OS')]               = php_uname('s');
         $data[$this->_('Time on server')]          = date('r');
+        // Report database connection encryption.
+        $sslQuery = "SHOW STATUS LIKE 'Ssl_version'";
+        $sslOption = $this->resultFetcher->fetchRow($sslQuery);
+        $data[$this->_('Database connection SSL version')] = $sslOption['Value'] ?: '-';
+        $sslQuery = "SHOW STATUS LIKE 'Ssl_cipher'";
+        $sslOption = $this->resultFetcher->fetchRow($sslQuery);
+        $data[$this->_('Database connection SSL cipher')] = $sslOption['Value'] ?: '-';
         foreach ($this->reportPackageVersions as $package) {
             if (! \Composer\InstalledVersions::isInstalled($package)) {
                 continue;
             }
-            $display = sprintf('%s (%s)',
-                \Composer\InstalledVersions::getPrettyVersion($package),
-                \Composer\InstalledVersions::getReference($package));
-                $data[$this->_('Version').' '.$package] = $display;
+            $version = \Composer\InstalledVersions::getPrettyVersion($package);
+            if (!preg_match('/^v?[\d\.]+$/', $version)) {
+                $reference = \Composer\InstalledVersions::getReference($package);
+                $version = sprintf('%s (%s)', $version, $reference);
+            }
+            $data[$this->_('Version').' '.$package] = $version;
         }
 
         return $data;
@@ -301,11 +313,6 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 
         $data = $this->_getData();
 
-        if ($this->maintenanceLock->isLocked()) {
-            $maintenanceLockLabel = $this->_('Turn Maintenance Mode OFF');
-        } else {
-            $maintenanceLockLabel = $this->_('Turn Maintenance Mode ON');
-        }
         /*$request = $this->getRequest();
         $buttonList = $this->menu->getMenuList();
         $buttonList->addParameterSources($request)
@@ -313,10 +320,22 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             ->addByController($request->getControllerName(), 'monitor')
             ->addByController($request->getControllerName(), 'cacheclean');*/
 
-        $buttonList = [
-            \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.maintenance-mode'), $maintenanceLockLabel),
-            \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.cacheclean'), $this->_('Clear cache')),
-        ];
+
+        $maintenanceModeUrl = $this->routeHelper->getRouteUrl('setup.project-information.maintenance-mode');
+        $cacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.cacheclean');
+
+        $buttonList = [];
+        if ($maintenanceModeUrl) {
+            if ($this->maintenanceLock->isLocked()) {
+                $maintenanceLockLabel = $this->_('Turn Maintenance Mode OFF');
+            } else {
+                $maintenanceLockLabel = $this->_('Turn Maintenance Mode ON');
+            }
+            $buttonList[] = Html::actionLink($maintenanceModeUrl, $maintenanceLockLabel);
+        }
+        if ($cacheCleanUrl) {
+            $buttonList[] = Html::actionLink($cacheCleanUrl, $this->_('Clear cache'));
+        }
 
         // $this->html->buttonDiv($buttonList);
 
@@ -381,7 +400,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 
     public function phpErrorsAction()
     {
-        $logFile = $this->getLogFile(ErrorLogger::class);
+        $logFile = $this->getLogFile(ConfigProvider::ERROR_LOGGER);
 
         if ($logFile !== null) {
             $this->_showText(

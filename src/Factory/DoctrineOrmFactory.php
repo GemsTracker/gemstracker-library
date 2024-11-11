@@ -29,7 +29,9 @@ class DoctrineOrmFactory implements FactoryInterface
         $connection = $container->get(Connection::class);
         $config = $container->get('config');
 
-        $paths = array_column($config['doctrine'], 'path');
+        $doctrineConfig = $config['doctrine'] ?? [];
+        $paths = array_column($doctrineConfig, 'path');
+
         $isDevMode = false;
         if (isset($config['app'], $config['app']['env']) && $config['app']['env'] === 'development') {
             $isDevMode = true;

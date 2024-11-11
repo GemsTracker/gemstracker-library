@@ -48,13 +48,18 @@ class Versions
     }
 
     /**
-     * The official \Gems version number
+     * The official numerical \Gems version number.
      *
      * @return string
      */
     public final function getGemsVersion()
     {
-        return '2.0.0';
+        try {
+            $version = \Composer\InstalledVersions::getPrettyVersion('gemstracker/gemstracker');
+            return ltrim($version, 'v');
+        } catch (\Exception $e) {
+            return 'unknown';
+        }
     }
 
     /**

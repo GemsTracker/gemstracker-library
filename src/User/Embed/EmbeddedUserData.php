@@ -119,9 +119,9 @@ class EmbeddedUserData extends \ArrayObject
 
     /**
      *
-     * @return int Group id or null
+     * @return int|null Group id or null
      */
-    public function getUserGroupId(): int
+    public function getUserGroupId(): int|null
     {
         return $this->offsetGet('gsus_deferred_user_group');
     }

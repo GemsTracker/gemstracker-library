@@ -241,7 +241,7 @@ class Model
     /**
      * Create a \Gems project wide unique user id
      *
-     * @see \Gems\Model\RespondentModel
+     * @see \Gems\Model\Respondent\RespondentModel
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved

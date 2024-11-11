@@ -6,7 +6,6 @@ use Exception;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Gems\Console\ConsoleSettings;
-use Gems\Model\StaffModel;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\StaffRepository;
@@ -32,9 +31,11 @@ class AddUser extends Command
         protected Translated $translatedUtil,
         protected ConsoleSettings $consoleSettings,
         protected array $config,
+        \Zend_Db_Adapter_Abstract $db,
     )
     {
         parent::__construct();
+        \Zend_Db_Table::setDefaultAdapter($db);
     }
 
     protected function configure()

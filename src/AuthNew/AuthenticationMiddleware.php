@@ -4,8 +4,9 @@ namespace Gems\AuthNew;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\TfaService;
+use Gems\CookieResponse;
 use Gems\Handlers\ChangeGroupHandler;
-use Gems\Menu\RouteHelper;
+use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -27,6 +28,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
     public const CURRENT_USER_WITHOUT_TFA_ATTRIBUTE = 'current_user_without_tfa';
     public const CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE = 'current_identity_without_tfa';
 
+    public const CURRENT_ORGANIZATION_COOKIE_NAME = 'current_organization';
 
     private const LOGIN_INTENDED_URL_SESSION_KEY = 'login_intended_url';
 
@@ -42,6 +44,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        /**
+         * @var ?SessionInterface $session
+         */
         $session = $request->getAttribute(SessionInterface::class);
 
         if ($session === null) {
@@ -79,7 +84,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 ->withAttribute(self::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE, $authenticationService->getIdentity());
         }
 
-        if (!$user->isAllowedIpForLogin(IpFinder::getClientIp($request))) {
+        if (!$user->isAllowedIpForLogin($request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE))) {
             $authenticationService->logout();
             if (isset($tfaService)) {
                 $tfaService->logout();
@@ -159,9 +164,12 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
     public static function redirectToIntended(
         AuthenticationService $authenticationService,
+        ServerRequestInterface $request,
         SessionInterface $session,
-        UrlHelper $urlHelper
-    ): RedirectResponse {
+        UrlHelper $urlHelper,
+        bool $addOrganizationCookie = false,
+    ): ResponseInterface {
+        $redirectUrl = $urlHelper->generate('respondent.index');
         if ($session->has(self::LOGIN_INTENDED_URL_SESSION_KEY)) {
             $loginName = $authenticationService->getIdentity()?->getLoginName();
 
@@ -170,10 +178,15 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $session->unset(self::LOGIN_INTENDED_URL_SESSION_KEY);
 
             if (empty($loginRedirect['loginname']) || $loginRedirect['loginname'] === $loginName) {
-                return new RedirectResponse($loginRedirect['url']);
+                $redirectUrl = $loginRedirect['url'];
             }
         }
+        $response = new RedirectResponse($redirectUrl);
+        if ($addOrganizationCookie) {
+            $organizationId = $authenticationService->getIdentity()->getOrganizationId();
+            $response = CookieResponse::addCookieToResponse($request, $response, static::CURRENT_ORGANIZATION_COOKIE_NAME, $organizationId);
+        }
 
-        return new RedirectResponse($urlHelper->generate('respondent.index'));
+        return $response;
     }
 }

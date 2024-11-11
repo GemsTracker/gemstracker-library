@@ -5,6 +5,7 @@ namespace Gems\Model;
 use Gems\Locale\Locale;
 use Gems\Model;
 use Gems\Model\Transform\HtmlSanitizeTransformer;
+use Gems\Repository\CommFieldRepository;
 use Gems\Repository\MailRepository;
 use Gems\Util\Translated;
 use MUtil\Model\TableModel;
@@ -20,7 +21,7 @@ class CommTemplateModel extends GemsJoinModel
         protected readonly MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
-        protected readonly MailRepository $mailRepository,
+        protected CommFieldRepository $commFieldRepository,
         protected readonly array $config,
         protected readonly Translated $translatedUtil,
         protected readonly Locale $locale,
@@ -38,7 +39,7 @@ class CommTemplateModel extends GemsJoinModel
             'apiName' => 'name',
         ]);
 
-        $commTargets = $this->mailRepository->getMailTargets();
+        $commTargets = $this->commFieldRepository->getCommFieldTypes();
         $this->metaModel->set('gct_target', [
             'label' => $translate->_('Mail Target'),
             'apiName' => 'mailTarget',

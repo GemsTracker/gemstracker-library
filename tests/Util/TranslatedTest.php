@@ -4,15 +4,11 @@ namespace Util;
 
 use Carbon\CarbonImmutable;
 use Gems\Util\Translated;
-use MUtil\Translate\Translator;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
+use Zalt\Mock\MockTranslator;
 
 class TranslatedTest extends TestCase
 {
-    use ProphecyTrait;
-
     /**
      * @dataProvider describeDateFromNowDataProvider
      */
@@ -40,12 +36,6 @@ class TranslatedTest extends TestCase
 
     public function getTranslated(): Translated
     {
-        $translatorProphecy = $this->prophesize(Translator::class);
-        $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
-        $translatorProphecy->getLocale()->willReturn('en');
-
-        $translator = $translatorProphecy->reveal();
-        //$translatorProphecy->_(Argument::type('string'))->willReturnArgument();
-        return new Translated($translator);
+        return new Translated(new MockTranslator());
     }
 }

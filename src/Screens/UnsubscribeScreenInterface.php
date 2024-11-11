@@ -25,11 +25,11 @@ interface UnsubscribeScreenInterface extends ScreenInterface
      *
      * @return array Added before all other parameters
      */
-    public function getUnsubscribeParameters();
+    public function getUnsubscribeParameters(): array;
 
     /**
      *
      * @return array Of snippets
      */
-    public function getUnsubscribeSnippets();
+    public function getUnsubscribeSnippets(): array|bool;
 }

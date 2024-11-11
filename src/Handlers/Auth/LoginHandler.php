@@ -9,10 +9,11 @@ use Gems\AuthNew\Adapter\GemsTrackerAuthenticationResult;
 use Gems\AuthNew\Adapter\GenericRoutedAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
-use Gems\AuthNew\IpFinder;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\Layout\LayoutRenderer;
+use Gems\Middleware\ClientIpMiddleware;
+use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Site\SiteUtil;
 use Gems\User\PasswordChecker;
@@ -25,6 +26,7 @@ use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;
 use Laminas\Validator\InArray;
 use Laminas\Validator\NotEmpty;
+use Laminas\Validator\StringLength;
 use Laminas\Validator\ValidatorChain;
 use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Helper\UrlHelper;
@@ -77,6 +79,13 @@ class LoginHandler implements RequestHandlerInterface
             return $this->handlePost($request);
         }
 
+        $cookiesParams = $request->getCookieParams();
+        $previousOrganizationId = $cookiesParams[CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE] ?? null;
+        $input = $this->flash->getFlash('login_input');
+        if ($input === null && $previousOrganizationId !== null) {
+            $input['organization'] = $previousOrganizationId;
+        }
+
         $data = [
             'trans' => [
                 'organization' => $this->translator->trans('Organization'),
@@ -85,7 +94,7 @@ class LoginHandler implements RequestHandlerInterface
                 'login' => $this->translator->trans('Login'),
             ],
             'organizations' => $this->organizations,
-            'input' => $this->flash->getFlash('login_input'),
+            'input' => $input,
         ];
 
         return new HtmlResponse($this->layoutRenderer->renderTemplate($this->loginTemplate, $request, $data));
@@ -116,6 +125,14 @@ class LoginHandler implements RequestHandlerInterface
             return $this->redirectBack($request, [$this->translator->trans('Make sure you fill in all fields')]);
         }
 
+        // The database doesn't handle username input longer than 30 characters.
+        $usernameValidation = new ValidatorChain();
+        $usernameValidation->attach(new StringLength(0, 30));
+
+        if (!$usernameValidation->isValid($input['username'])) {
+            return $this->redirectBack($request, [$this->translator->trans('The username is too long')]);
+        }
+
         $loginThrottle = $this->loginThrottleBuilder->buildLoginThrottle(
             $input['username'],
             (int)$input['organization'],
@@ -134,7 +151,7 @@ class LoginHandler implements RequestHandlerInterface
             (int)$input['organization'],
             $input['username'],
             $input['password'],
-            IpFinder::getClientIp($request),
+            $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE),
         ));
 
         $blockMinutes = $loginThrottle->processAuthenticationResult($result);
@@ -158,7 +175,7 @@ class LoginHandler implements RequestHandlerInterface
 
         $this->auditLog->registerUserRequest($request, $user, [sprintf('%s logged in', $user->getLoginName())]);
 
-        return AuthenticationMiddleware::redirectToIntended($authenticationService, $session, $this->urlHelper);
+        return AuthenticationMiddleware::redirectToIntended($authenticationService, $request, $session, $this->urlHelper, true);
     }
 
     private function blockMessage(int $minutes)

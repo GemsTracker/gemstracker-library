@@ -25,11 +25,11 @@ interface ConsentInterface extends EditScreenInterface
      *
      * @return array Of snippets or false to use original for consent editing
      */
-    public function getConsentSnippets();
+    public function getConsentSnippets(): array|bool;
 
     /**
      *
      * @return array Added before all other parameters
      */
-    public function getConsentParameters();
+    public function getConsentParameters(): array;
 }

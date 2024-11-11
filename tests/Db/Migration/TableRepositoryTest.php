@@ -3,6 +3,8 @@
 namespace GemsTest\Db\Migration;
 
 use Gems\Db\Databases;
+use Gems\Db\Migration\MigrationModelFactory;
+use Gems\Db\Migration\MigrationRepositoryAbstract;
 use Gems\Db\Migration\TableRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\CreateTableMigrationEvent;
@@ -10,25 +12,27 @@ use Gems\Model\IteratorModel;
 use Gems\Model\MetaModelLoader;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
+use PHPUnit\Framework\Attributes\Group;
 use Prophecy\Argument;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModel;
 
-/**
- * @group database
- */
+#[Group('database')]
 class TableRepositoryTest extends MigrationRepositoryTestAbstract
 {
 
     public function setUp(): void
     {
+        parent::setUp();
         $this->createLogTable();
     }
 
     public function tearDown(): void
     {
         $this->deleteLogTable();
+        parent::tearDown();
     }
     public function testGetDbConnectionNamesFromDirs()
     {
@@ -313,7 +317,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
             'gml_created' => new Expression('NOW()'),
         ]);
 
-        $model = $repository->getModel();
+        $model = $this->getModel($repository);
 
         $tableItems = $model->load(['status' => 'new']);
 
@@ -343,6 +347,11 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
             $eventDispatcher = $eventDispatcherProphecy->reveal();
         }
 
+        return new TableRepository($config, $databases, $eventDispatcher);
+    }
+
+    protected function getModel(MigrationRepositoryAbstract $repository): DataReaderInterface
+    {
         $translatorProphecy = $this->prophesize(TranslatorInterface::class);
         $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
         $translatorProphecy->_(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
@@ -352,6 +361,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
         $metaModelLoader->createModel(IteratorModel::class, 'databaseTableModel')->willReturn($model);
         $metaModelLoader->getDefaultTypeInterface(Argument::type('int'))->willReturn(null);
 
-        return new TableRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $metaModelLoader->reveal());
+        $factory = new MigrationModelFactory($translatorProphecy->reveal(), $metaModelLoader->reveal());
+        return $factory->createModel($repository);
     }
 }

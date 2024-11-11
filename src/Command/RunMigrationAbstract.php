@@ -73,8 +73,32 @@ abstract class RunMigrationAbstract extends Command
             return $this->runMigration($info[$id-1], $io);
         }
 
+        if (str_contains($id, '-')) {
+            // It's a range!
+            $idParts = array_map('trim', explode('-', $id));
+            if (!is_numeric($idParts[0]) || !is_numeric($idParts[1])) {
+                $io->error('Range does not consist of numbers');
+                return static::FAILURE;
+            }
+            $items = array_slice($info, ($idParts[0] - 1), ($idParts[1] - $idParts[0] + 1));
+            return $this->runAllMigrations($items, $io);
+        }
+        if (str_contains($id, ',')) {
+            // It's a range!
+            $idParts = array_map('trim', explode(',', $id));
+            $items = [];
+            foreach($idParts as $idPart) {
+                if (!is_numeric($idPart) || !isset($info[$idPart - 1])) {
+                    $io->error(sprintf('%s %s does not exist', ucfirst($this->topic), $id));
+                    return static::FAILURE;
+                }
+                $items[] = $info[$idPart - 1];
+            }
+            return $this->runAllMigrations($items, $io);
+        }
+
         foreach($info as $item) {
-            if ($item['name'] ===  $id) {
+            if ($item['name'] === $id) {
                 return $this->runMigration($item, $io);
             }
         }

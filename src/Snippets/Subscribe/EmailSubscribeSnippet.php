@@ -12,18 +12,18 @@
 namespace Gems\Snippets\Subscribe;
 
 use Gems\Audit\AuditLog;
+use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\MailRepository;
 use Gems\Snippets\FormSnippetAbstract;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
+use Zalt\Validator\SimpleEmail;
 
 /**
  *
@@ -37,15 +37,15 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
 {
     /**
      *
-     * @var \Gems\User\Organization
+     * @var int
      */
-    protected $currentOrganization;
+    protected int $currentOrganizationId;
 
     /**
      *
-     * @var \Gems\User\User
+     * @var int
      */
-    protected $currentUser;
+    protected int $currentUserId;
 
     /**
      *
@@ -61,15 +61,15 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         protected readonly Locale $locale,
-        protected readonly Adapter $db,
         protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly MailRepository $mailRepository,
         protected readonly RespondentModel $respondentModel,
+        protected readonly ResultFetcher $resultFetcher,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
 
-        $this->currentUser = $currentUserRepository->getCurrentUser();
-        $this->currentOrganization = $currentUserRepository->getCurrentOrganization();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
+        $this->currentOrganizationId = $currentUserRepository->getCurrentOrganizationId();
     }
 
     /**
@@ -85,11 +85,62 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         $element->setLabel($this->_('Your E-Mail address'))
                 ->setAttrib('size', 30)
                 ->setRequired(true)
-                ->addValidator('SimpleEmail');
+                ->addValidator(SimpleEmail::class);
 
         $form->addElement($element);
 
+        $form->addElement($form->createElement('hidden', 'org'));
+
         return $form;
+    }
+
+    protected function afterRegistration(array $respondentData)
+    { }
+
+    protected function getDefaultFormValues(): array
+    {
+        return [
+            'org' => $this->currentOrganizationId,
+            ];
+    }
+
+    protected function getSaveData(): array
+    {
+        $select = $this->resultFetcher->getSelect()
+            ->columns([
+                'gr2o_id_user',
+                'gr2o_patient_nr',
+            ])
+            ->from('gems__respondent2org')
+            ->where([
+                'gr2o_email' => $this->formData['email'],
+                'gr2o_id_organization' => $this->formData['org'],
+            ]);
+        $userId = $this->resultFetcher->fetchRow($select);
+
+        $values['grs_iso_lang']         = $this->locale->getLanguage();
+        $values['gr2o_id_organization'] = $this->formData['org'];
+        $values['gr2o_email']           = $this->formData['email'];
+        $values['gr2o_mailable']        = $this->mailRepository->getDefaultRespondentMailCode();
+        $values['gr2o_comments']        = $this->_('Created by subscription');
+        $values['gr2o_opened_by']       = $this->currentUserId;
+
+        // dump($userId, $this->formData['email']);
+        if ($userId) {
+            $values['grs_id_user']     = $userId['gr2o_id_user'];
+            $values['gr2o_id_user']    = $userId['gr2o_id_user'];
+            $values['gr2o_patient_nr'] = $userId['gr2o_patient_nr'];
+        } else {
+            $func = $this->patientNrGenerator;
+            $values['gr2o_patient_nr'] = $func($values['gr2o_id_organization']);
+        }
+
+        return $values;
+    }
+
+    protected function getSubscribeMessage(): string
+    {
+        return $this->_('You have been subscribed successfully.');
     }
 
     /**
@@ -99,48 +150,14 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
      */
     protected function saveData(): int
     {
-        $this->addMessage($this->_('You have been subscribed succesfully.'));
+        $this->addMessage($this->getSubscribeMessage());
 
-        $sql = new Sql($this->db);
-        $select = $sql->select()
-            ->columns([
-                'gr2o_id_user',
-                'gr2o_patient_nr',
-            ])
-            ->from('gems__respondent2org')
-            ->where([
-                'gr2o_email' => $this->formData['email'],
-                'gr2o_id_organization' => $this->currentOrganization->getId(),
-            ]);
+        $this->currentUserRepository->setCurrentOrganizationId($this->formData['org']);
 
-        $resultSet = $sql->prepareStatementForSqlObject($select)->execute();
-        $resultSet->buffer();
-        $userIds = $resultSet->current(); // Take only the first one
+        $values = $this->getSaveData();
+        $result = $this->respondentModel->save($values);
 
-        $mailCodes = $this->mailRepository->getRespondentMailCodes();
-        // Use the second mailCode, the first is the no-mail code.
-        next($mailCodes);
-        $mailable = key($mailCodes);
-        
-        $values['grs_iso_lang']         = $this->locale->getLanguage();
-        $values['gr2o_id_organization'] = $this->currentOrganization->getId();
-        $values['gr2o_email']           = $this->formData['email'];
-        $values['gr2o_mailable']        = $mailable;
-        $values['gr2o_comments']        = $this->_('Created by subscription');
-        $values['gr2o_opened_by']       = $this->currentUserRepository->getCurrentUserId();
-
-        // \MUtil\EchoOut\EchoOut::track($userIds, $this->formData['email']);
-        if ($userIds) {
-            $values['grs_id_user']     = $userIds['gr2o_id_user'];
-            $values['gr2o_id_user']    = $userIds['gr2o_id_user'];
-            $values['gr2o_patient_nr'] = $userIds['gr2o_patient_nr'];
-        } else {
-            $func = $this->patientNrGenerator;
-            $values['gr2o_patient_nr'] = $func();
-        }
-        // \MUtil\EchoOut\EchoOut::track($values);
-
-        $this->respondentModel->save($values);
+        $this->afterRegistration($result);
 
         return $this->respondentModel->getChanged();
     }

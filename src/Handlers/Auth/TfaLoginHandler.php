@@ -55,7 +55,7 @@ class TfaLoginHandler implements RequestHandlerInterface
         $this->tfaService = new TfaService($session, $this->authenticationService, $this->otpMethodBuilder);
 
         if ($this->tfaService->isLoggedIn($this->user) || !$this->tfaService->requiresAuthentication($this->user, $request)) {
-            return AuthenticationMiddleware::redirectToIntended($this->authenticationService, $session, $this->urlHelper);
+            return AuthenticationMiddleware::redirectToIntended($this->authenticationService, $request, $session, $this->urlHelper);
         }
 
         $tfaConfigured = $this->user->hasTwoFactorConfigured();
@@ -147,7 +147,7 @@ class TfaLoginHandler implements RequestHandlerInterface
             LoginStatusTracker::make($session, $this->user)->setRequireAuthenticatorTotpActive();
         }
 
-        return AuthenticationMiddleware::redirectToIntended($this->authenticationService, $session, $this->urlHelper);
+        return AuthenticationMiddleware::redirectToIntended($this->authenticationService, $request, $session, $this->urlHelper, true);
     }
 
     private function redirectBack(ServerRequestInterface $request, string $error): RedirectResponse

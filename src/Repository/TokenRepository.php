@@ -326,7 +326,7 @@ class TokenRepository
                 }
             }
 
-            return $this->getTokenCopyLink($tokenId, $tokenStatus);
+            return $this->getTokenCopyLink($tokenId, $tokenStatus, $memberType);
         }
     }
 
@@ -381,16 +381,11 @@ class TokenRepository
 
         if (! $method) {
             $method = Late::method($this, 'getTokenCopyLink',
-                $bridge->getLate('gto_id_token'), $bridge->getLate('token_status')
+                $bridge->getLate('gto_id_token'), $bridge->getLate('token_status'), $bridge->getLate('ggp_member_type')
             );
         }
 
-        return [
-            $method,
-            'class' => Late::method($this, 'getTokenCopyLinkClass',
-                $bridge->getLate('token_status'), $bridge->getLate('ggp_member_type')
-            ),
-        ];
+        return [$method];
     }
 
     /**
@@ -400,26 +395,13 @@ class TokenRepository
      * @param string $tokenStatus
      * @return string|null
      */
-    public function getTokenCopyLink($tokenId, $tokenStatus)
+    public function getTokenCopyLink($tokenId, $tokenStatus, $memberType)
     {
         if ('O' == $tokenStatus || 'P' == $tokenStatus) {
-            return $tokenId . ' ';
-        }
-        return null;
-    }
-
-    /**
-     * Generate a token item with (in the future) a copy to clipboard button
-     *
-     * @param string $tokenId
-     * @param string $tokenStatus
-     * @param boolean $memberType To determine whether the token is answerable by staff
-     * @return string
-     */
-    public function getTokenCopyLinkClass($tokenStatus, $memberType)
-    {
-        if (('O' == $tokenStatus || 'P' == $tokenStatus) && $memberType !== 'staff') {
-            return 'token';
+            if ($memberType === 'staff') {
+                return $tokenId;
+            }
+            return Html::create('span', $tokenId, ['class' => 'token']);
         }
         return null;
     }

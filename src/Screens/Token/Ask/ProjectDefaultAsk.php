@@ -25,10 +25,10 @@ class ProjectDefaultAsk extends AskScreenAbstract
 {
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
+     * @inheritDoc
      */
-    public function getScreenLabel()
+    public function getScreenLabel(): string
     {
-        return $this->_('(default project specific token ask screen)');
+        return $this->translator->_('(default project specific token ask screen)');
     }
 }

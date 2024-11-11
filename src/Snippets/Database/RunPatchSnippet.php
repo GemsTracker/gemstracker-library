@@ -4,48 +4,50 @@ namespace Gems\Snippets\Database;
 
 use Gems\Db\Migration\PatchRepository;
 use Gems\Menu\MenuSnippetHelper;
-use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
-use Zalt\Snippets\SnippetAbstract;
+use Zalt\Snippets\DataReaderGenericModelTrait;
+use Zalt\Snippets\ModelSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
-class RunPatchSnippet extends SnippetAbstract
+class RunPatchSnippet extends ModelSnippetAbstract
 {
+    use DataReaderGenericModelTrait;
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
+        TranslatorInterface $translate,
         protected readonly MenuSnippetHelper $menuSnippetHelper,
         protected readonly PatchRepository $patchRepository,
-        protected readonly Translator $translator,
         protected readonly StatusMessengerInterface $statusMessenger,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo);
+        parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
     protected function createTable(): void
     {
-        $model = $this->patchRepository->getModel();
+        $model = $this->getModel();
 
         $params = $this->requestInfo->getRequestMatchedParams();
         if (!isset($params['name'])) {
-            $this->statusMessenger->addError($this->translator->_('No valid name'));
+            $this->statusMessenger->addError($this->translate->_('No valid name'));
             return;
         }
 
         $patchItem = $model->loadFirst(['name' => $params['name']]);
 
         if (!$patchItem) {
-            $this->statusMessenger->addError(sprintf($this->translator->_('Patch %s not found'), $params['name']));
+            $this->statusMessenger->addError(sprintf($this->translate->_('Patch %s not found'), $params['name']));
             return;
         }
 
         try {
             $this->patchRepository->runPatch($patchItem);
-            $this->statusMessenger->addSuccess(sprintf($this->translator->_('Patch %s successfully executed'), $params['name']));
+            $this->statusMessenger->addSuccess(sprintf($this->translate->_('Patch %s successfully executed'), $params['name']));
         } catch(\Exception $e) {
-            $this->statusMessenger->addError(sprintf($this->translator->_('Error executing patch %s. %s'), $params['name'], $e->getMessage()));
+            $this->statusMessenger->addError(sprintf($this->translate->_('Error executing patch %s. %s'), $params['name'], $e->getMessage()));
         }
     }
 

@@ -72,7 +72,7 @@ class StaffLogHandler extends LogHandler
 
     protected function getModel(SnippetActionInterface $action): MetaModellerInterface
     {
-        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE);
+        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
         $selectedUser = $this->getSelectedUser();
         if ($selectedUser) {
             if (! ($currentUser->hasPrivilege('pr.staff.see.all') ||

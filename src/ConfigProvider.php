@@ -37,7 +37,7 @@ use Gems\Factory\MonologFactory;
 use Gems\Factory\PdoFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Factory\ReflectionAbstractFactory;
-use Gems\Log\ErrorLogger;
+use Gems\Factory\TwigEnvironmentFactory;
 use Gems\Menu\RouteHelper;
 use Gems\Menu\RouteHelperFactory;
 use Gems\Messenger\MessengerFactory;
@@ -110,6 +110,7 @@ use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Twig\Environment;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
 use Zalt\Base\TranslatorInterface;
@@ -131,6 +132,8 @@ class ConfigProvider
 {
     use ModelSnippetActionRouteHelpers;
 
+    public const ERROR_LOGGER = 'error-log';
+
     /**
      * Returns the configuration array
      *
@@ -141,45 +144,43 @@ class ConfigProvider
      */
     public function __invoke(): array
     {
-        $appSettings = new App();
-        $messengerSettings = new Messenger();
-        $routeSettings = new Route();
-        $surveySettings = new Survey();
-
         return [
-            'account'       => $this->getAccountSettings(),
-            'app'           => $appSettings(),
-            'autoconfig'    => $this->getAutoConfigSettings(),
-            'cache'         => $this->getCacheSettings(),
-            'contact'       => $this->getContactSettings(),
-            'console'       => $this->getConsoleSettings(),
-            'db'            => $this->getDbSettings(),
-            'dependencies'  => $this->getDependencies(),
-            'email'         => $this->getEmailSettings(),
-            'events'        => $this->getEventSubscribers(),
-            'locale'        => $this->getLocaleSettings(),
-            'log'           => $this->getLoggers(),
-            'messenger'     => $messengerSettings(),
-            'model'         => $this->getModelSettings(),
-            'monitor'       => $this->getMonitorSettings(),
-            'migrations'    => $this->getMigrations(),
-            'overLoaderPaths' => $this->getOverloaderPaths(),
-            'password'      => $this->getPasswordSettings(),
-            'supplementary_privileges'   => $this->getSupplementaryPrivileges(),
-            'routes'        => $routeSettings(),
-            'ratelimit'     => $this->getRatelimitSettings(),
-            'responseData'  => $this->getResponseDataSettings(),
-            'security'      => $this->getSecuritySettings(),
-            'session'       => $this->getSession(),
-            'sites'         => $this->getSitesSettings(),
-            'style'         => 'gems.scss',
-            'survey'        => $surveySettings(),
-            'templates'     => $this->getTemplates(),
-            'twig'          => $this->getTwigSettings(),
-            'twofactor'     => $this->getTwoFactor(),
-            'tokens'        => $this->getTokenSettings(),
-            'translations'  => $this->getTranslationSettings(),
-            'vue'           => $this->getVueSettings(),
+            'account'                  => $this->getAccountSettings(),
+            'app'                      => $this->getAppSettings(),
+            'auditlog'                 => $this->getAuditlogSettings(),
+            'auth'                     => $this->getAuthSettings(),
+            'autoconfig'               => $this->getAutoConfigSettings(),
+            'cache'                    => $this->getCacheSettings(),
+            'contact'                  => $this->getContactSettings(),
+            'console'                  => $this->getConsoleSettings(),
+            'db'                       => $this->getDbSettings(),
+            'dependencies'             => $this->getDependencies(),
+            'email'                    => $this->getEmailSettings(),
+            'events'                   => $this->getEventSubscribers(),
+            'import'                   => $this->getImportSettings(),
+            'locale'                   => $this->getLocaleSettings(),
+            'log'                      => $this->getLoggers(),
+            'messenger'                => $this->getMessengerSettings(),
+            'model'                    => $this->getModelSettings(),
+            'monitor'                  => $this->getMonitorSettings(),
+            'migrations'               => $this->getMigrations(),
+            'overLoaderPaths'          => $this->getOverloaderPaths(),
+            'password'                 => $this->getPasswordSettings(),
+            'supplementary_privileges' => $this->getSupplementaryPrivileges(),
+            'routes'                   => $this->getRouteSettings(),
+            'ratelimit'                => $this->getRatelimitSettings(),
+            'responseData'             => $this->getResponseDataSettings(),
+            'security'                 => $this->getSecuritySettings(),
+            'session'                  => $this->getSession(),
+            'sites'                    => $this->getSitesSettings(),
+            'style'                    => $this->getStyleSettings(),
+            'survey'                   => $this->getSurveySettings(),
+            'templates'                => $this->getTemplates(),
+            'twig'                     => $this->getTwigSettings(),
+            'twofactor'                => $this->getTwoFactor(),
+            'tokens'                   => $this->getTokenSettings(),
+            'translations'             => $this->getTranslationSettings(),
+            'vue'                      => $this->getVueSettings(),
         ];
     }
 
@@ -198,6 +199,84 @@ class ConfigProvider
                 ],
                 'defaultRegion' => 'NL',
             ],
+        ];
+    }
+
+    protected function getAppSettings()
+    {
+        $app = new App();
+        return $app();
+    }
+
+    /**
+     * Any configuration added here will override the settings from the log_setup table.
+     * Valid top level array keys: when_no_user, on_action, on_post, on_change.
+     * Values in the sub arrays are matched at the start and at at a literal '.' or
+     * at the start or and of the route name.
+     */
+    protected function getAuditLogSettings(): array
+    {
+        return [
+            'on_action' => [
+                'answer',
+                'ask.forward',
+                'ask.return',
+                'ask.take',
+                'logout',
+                'respondent.activity-log.show',
+                'respondent.appointments.show',
+                'respondent.communication-log.show',
+                'respondent.episodes-of-care.show',
+                'respondent.relations.show',
+                'respondent.tokens.show',
+                'respondent.tracks.show',
+                'to-survey',
+            ],
+            'on_change' => [
+                'active-toggle',
+                'answer-export',
+                'ask.lost',
+                'attributes',
+                'cacheclean',
+                'change',
+                'check',
+                'cleanup',
+                'correct',
+                'create',
+                'delete',
+                'download',
+                'edit',
+                'execute',
+                'export',
+                'import',
+                'insert',
+                'lock',
+                'maintenance-mode',
+                'merge',
+                'patches',
+                'ping',
+                'recalc',
+                'reset',
+                'run',
+                'seeds',
+                'subscribe',
+                'synchronize',
+                'tfa',
+                'two-factor',
+                'undelete',
+                'unsubscribe',
+            ],
+        ];
+    }
+
+    public function getAuthSettings(): array
+    {
+        return [
+            'allowLoginOnOtherOrganization' => false,
+            'allowLoginOnAnyOrganization' => false,
+            'allowLoginOnWithoutOrganization' => false,
+            'allowRespondentEmailLogin' => false,
+            'allowStaffEmailLogin' => false,
         ];
     }
 
@@ -325,7 +404,6 @@ class ConfigProvider
                 // Logs
                 'LegacyLogger' => MonologFactory::class,
                 'embeddedLoginLog' => MonologFactory::class,
-                ErrorLogger::class => MonologFactory::class,
 
                 // Cache
                 \Symfony\Component\Cache\Adapter\AdapterInterface::class => CacheFactory::class,
@@ -358,6 +436,7 @@ class ConfigProvider
 
                 'messenger.transport.default' => TransportFactory::class,
                 'messenger.transport.doctrine' => TransportFactory::class,
+                'messenger.transport.failed' => TransportFactory::class,
 
                 \Symfony\Component\Mailer\Transport\TransportInterface::class => MailTransportFactory::class,
 
@@ -378,6 +457,9 @@ class ConfigProvider
                 SnippetLoader::class => SnippetLoaderFactory::class,
                 SnippetMiddleware::class => SnippetMiddlewareFactory::class,
                 GemsSnippetResponder::class => GemsSnippetResponderFactory::class,
+
+                // Twig
+                Environment::class   => TwigEnvironmentFactory::class,
             ],
             'abstract_factories' => [
                 ReflectionAbstractFactory::class,
@@ -476,6 +558,17 @@ class ConfigProvider
         ];
     }
 
+    protected function getImportSettings(): array
+    {
+        return [
+            'dirs' => [
+                'success' => 'data/uploads/success',
+                'failed' => 'data/uploads/failures',
+                'temp' => 'data/temp',
+            ],
+        ];
+    }
+
     protected function getLocaleSettings(): array
     {
         return [
@@ -489,7 +582,7 @@ class ConfigProvider
     protected function getLoggers(): array
     {
         return [
-            ErrorLogger::class => [
+            static::ERROR_LOGGER => [
                 'writers' => [
                     'stream' => [
                         'name' => 'stream',
@@ -547,17 +640,23 @@ class ConfigProvider
         ];
     }
 
+    protected function getMessengerSettings()
+    {
+        $messenger = new Messenger();
+        return $messenger();
+    }
+
     protected function getMigrations(): array
     {
         return [
             'tables' => [
-                __DIR__ . '/../configs/db/tables',
+                dirname(__DIR__) . '/configs/db/tables',
             ],
             'seeds' => [
-                __DIR__ . '/../configs/db/seeds',
+                dirname(__DIR__) . '/configs/db/seeds',
             ],
             'patches' => [
-                __DIR__ . '/../configs/db/patches',
+                dirname(__DIR__) . '/configs/db/patches',
             ],
 
         ];
@@ -597,8 +696,18 @@ class ConfigProvider
          *          default.to is used.
          *
          * Add a default setting to fall back to those
+         *
+         * monitor file settings can be set in the file settings
+         *
          */
         return [
+            'file' => [
+                'dir' => null, // The directory the monitor file is stored. Defaults to <rootDir>/data
+                'name' => null, // The filename. defaults to monitor.json
+                'group' => null, // set the permission group the file should belong to. If null, no group changes will be made
+                'owner' => null, // set the permission group the file should belong to. If null, no owner changes will be made
+                'permissions' => null // Set the file permissions of the file. If null, no permission changes will be made
+            ],
             'default' => [
                 'from' => 'noreply@gemstracker.org',
             ],
@@ -647,19 +756,6 @@ class ConfigProvider
         ];
     }
 
-    protected function getResponseDataSettings(): array
-    {
-        return [
-            'enabled' => false,
-            // 'database' => 'gems_data',
-            'migrations' => [
-                'tables' => [
-                    __DIR__ . '/../configs/db_response_data/tables',
-                ],
-            ],
-        ];
-    }
-
     /**
      * The rate limit settings.
      * This is a one-dimensional array. The keys are route names, with or
@@ -687,6 +783,25 @@ class ConfigProvider
             'participate.subscribe.POST' => '10/60',
             'participate.unsubscribe.POST' => '10/60',
         ];
+    }
+
+    protected function getResponseDataSettings(): array
+    {
+        return [
+            'enabled' => false,
+            // 'database' => 'gems_data',
+            'migrations' => [
+                'tables' => [
+                    dirname(__DIR__) . '/configs/db_response_data/tables',
+                ],
+            ],
+        ];
+    }
+
+    protected function getRouteSettings()
+    {
+        $routeSettings = new Route();
+        return $routeSettings();
     }
 
     protected function getSecuritySettings(): array
@@ -737,10 +852,11 @@ class ConfigProvider
     {
         return [
             'paths' => [
-                'gems' => [__DIR__ . '/../templates/gems'],
-                'layout' => [__DIR__ . '/../templates/layout'],
-                'mail' => [__DIR__ . '/../templates/mail'],
-                'menu' => [__DIR__ . '/../templates/menu'],
+                'gems' => [dirname(__DIR__) . '/templates/gems'],
+                'layout' => [dirname(__DIR__) . '/templates/layout'],
+                'mail' => [dirname(__DIR__) . '/templates/mail'],
+                'menu' => [dirname(__DIR__) . '/templates/menu'],
+                'error' => [dirname(__DIR__) . '/templates/error'],
             ],
         ];
     }
@@ -816,11 +932,16 @@ class ConfigProvider
         return [
             'databaseFields' => false,
             'paths' => [
-                'gems' => [__DIR__ . '/../languages'],
-                'gems-male' => [__DIR__ . '/../languages/gender/male'],
-                'gems-female' => [__DIR__ . '/../languages/gender/female'],
+                'gems' => [dirname(__DIR__) . '/languages'],
+                'gems-male' => [dirname(__DIR__) . '/languages/gender/male'],
+                'gems-female' => [dirname(__DIR__) . '/languages/gender/female'],
             ],
         ];
+    }
+
+    protected function getStyleSettings()
+    {
+        return 'gems.scss';
     }
 
     /**
@@ -850,6 +971,13 @@ class ConfigProvider
             'pr.survey-maintenance.answer-groups' => new UntranslatedString('Grant right to set answer access to surveys.'),
             'pr.maintenance.maintenance-mode' => new UntranslatedString('Enable, disable and stay online during maintenance mode'),
         ];
+    }
+
+    protected function getSurveySettings()
+    {
+        $surveys = new Survey();
+
+        return $surveys();
     }
 
     public function getVueSettings(): array

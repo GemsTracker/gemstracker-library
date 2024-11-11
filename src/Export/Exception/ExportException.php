@@ -2,7 +2,7 @@
 
 namespace Gems\Export\Exception;
 
-use Exception;
+use Gems\Exception;
 
 class ExportException extends Exception
 {

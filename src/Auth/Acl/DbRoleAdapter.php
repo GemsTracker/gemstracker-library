@@ -42,9 +42,10 @@ class DbRoleAdapter implements RoleAdapterInterface
 
             $roles = [];
             foreach ($dbRoles as $dbRole) {
+                $privileges = $dbRole['grl_privileges'] ?? '';
                 $privileges = array_filter(
-                    explode(',', $dbRole['grl_privileges']),
-                    fn (string $privilege) => !empty(trim($privilege)),
+                    explode(',', $privileges),
+                    fn(string $privilege) => !empty(trim($privilege)),
                 );
 
                 $privileges = array_diff($privileges, $dropPrivilegesEvent->getDroppedPrivileges());

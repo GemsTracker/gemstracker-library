@@ -43,9 +43,9 @@ class AppointmentSelect
      * @param string|array $fields Optional select fieldlist
      */
     public function __construct(
-        array|string|null $fields = null,
         protected readonly Agenda $agenda,
         protected readonly \Zend_Db_Adapter_Abstract $db,
+        array|string|null $fields = null,
     )
     {
         if (null !== $fields) {

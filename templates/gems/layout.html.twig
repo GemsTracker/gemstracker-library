@@ -1,18 +1,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{{ _config.application_title ?? 'GemsTracker 2' }}{{ title_breadcrumbs ?? '' }}</title>
+    <title>{{ _config.title.name ?? 'GemsTracker 2' }}{{ title_breadcrumbs ?? '' }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="{{ path('home') }}" />
     {{ include('@gems/vite.html.twig') }}
     {% block header %}
     {% endblock %}
-    <style>
-        :root {
-            --bs-primary: #167c85;
-            --bs-secondary: #1a355d;
-        }
-    </style>
 </head>
 <body
         {% if current_identity is defined %}
@@ -23,6 +17,7 @@
 <div id="container" class="container-fluid">
     <header>
         <div class="logo {{ current_organization_code ?? '' }}"></div>
+        <div class="application-title">{{ include('@layout/application-title.html.twig') }}</div>
         <div class="tools">
             {{ include('@layout/organization-switcher.html.twig') }}
             {{ include('@layout/group-switcher.html.twig') }}
@@ -47,6 +42,7 @@
         </div>
     </div>
     <footer>
+        {{ include('@layout/footer.html.twig') }}
     </footer>
 </div>
 {{ include('@layout/auth-idle-checker.html.twig') }}

@@ -100,7 +100,19 @@ class TranslationFactory implements FactoryInterface
     protected function getResourcePaths(): array
     {
         if (isset($this->config['translations'], $this->config['translations']['paths'])) {
-            return $this->config['translations']['paths'];
+            if (! isset($this->config['translations']['priorities'])) {
+                return $this->config['translations']['paths'];
+            }
+
+            $sortedPaths = $this->config['translations']['paths'];
+            $priorities  = $this->config['translations']['priorities'];
+            sort($priorities);
+            foreach ($this->config['translations']['priorities'] as $path => $prio) {
+                $value = $sortedPaths[$path];
+                unset($sortedPaths[$path]);
+                $sortedPaths[$path] = $value;
+            }
+            return $sortedPaths;
         }
         return [];
     }

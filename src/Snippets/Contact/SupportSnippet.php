@@ -13,6 +13,7 @@ namespace Gems\Snippets\Contact;
 
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Late\Late;
 use Zalt\SnippetsLoader\SnippetOptions;
 use Zalt\Snippets\TranslatableSnippetAbstract;
 
@@ -101,11 +102,11 @@ class SupportSnippet extends TranslatableSnippetAbstract
             $p->a($organization['gor_url'], $organization['gor_name']);
         } elseif (count($this->organizations) > 1) {
             $html->h4($this->_('Or contact any of these organizations'));
-            $data = \MUtil\Lazy::repeat($this->organizations);
+            $data = Late::repeat($this->organizations);
             $p = $html->pInfo();
             $ul = $p->ul($data, array('class' => 'indent'));
             $li = $ul->li();
-            $li->a($data->gor_url->call($this, '_'), $data->gor_name, array('rel' => 'external'));
+            $li->a($data->__get('gor_url'), $data->__get('gor_name'), array('rel' => 'external'));
         }
 
         return $html;

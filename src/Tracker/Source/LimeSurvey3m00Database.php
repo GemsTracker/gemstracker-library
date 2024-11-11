@@ -14,11 +14,12 @@ namespace Gems\Tracker\Source;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Cache\HelperAdapter;
+use Gems\ConfigProvider;
 use Gems\Db\ResultFetcher;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Html;
 use Gems\Locale\Locale;
-use Gems\Log\ErrorLogger;
+use Gems\Log\Loggers;
 use Gems\Log\LogHelper;
 use Gems\Repository\CurrentUrlRepository;
 use Gems\Tracker;
@@ -34,6 +35,7 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Ddl\AlterTable;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
+use Psr\Log\LoggerInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\FullDataInterface;
 
@@ -102,6 +104,11 @@ class LimeSurvey3m00Database extends SourceAbstract
     ];
 
     /**
+     * @var string Default language when none is specified nor found
+     */
+    protected string $defaultLanguage = 'en';
+
+    /**
      *
      * @var array of \Gems\Tracker\Source\LimeSurvey3m00FieldMap
      */
@@ -126,6 +133,8 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected string $fieldMapClass = LimeSurvey3m00FieldMap::class;
 
+    protected readonly LoggerInterface $logger;
+
     protected string|null $siteName = null;
 
     protected array $surveyConfig;
@@ -138,13 +147,18 @@ class LimeSurvey3m00Database extends SourceAbstract
         Tracker $tracker,
         ValueEncryptor $valueEncryptor,
         array $config,
+        Loggers $loggers,
         protected readonly HelperAdapter $cache,
         protected readonly Locale $locale,
-        protected readonly ErrorLogger $logger,
+
         protected readonly CurrentUrlRepository $currentUrlRepository,
     ) {
         parent::__construct($_sourceData, $_gemsResultFetcher, $translate, $tokenLibrary, $tracker, $valueEncryptor, $config);
 
+        if (isset($config['locale']['default'])) {
+            $this->defaultLanguage = $config['locale']['default'];
+        }
+        $this->logger = $loggers->getLogger(ConfigProvider::ERROR_LOGGER);
         $this->siteName = $config['app']['name'] ?? null;
 
         $this->surveyConfig = $config['survey'] ?? [];
@@ -351,6 +365,10 @@ class LimeSurvey3m00Database extends SourceAbstract
                     WHERE sid = ?';
 
                 $this->_languageMap[$sourceSurveyId][$language] = $lsResultFetcher->fetchOne($sql, [$sourceSurveyId]);
+
+                if (! $this->_languageMap[$sourceSurveyId][$language]) {
+                    $this->_languageMap[$sourceSurveyId][$language] = $language ?? $this->defaultLanguage;
+                }
             }
         }
 

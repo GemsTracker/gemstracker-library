@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Auth;
 
+// use Gems\Audit\AuditLog;
 use Gems\AuthNew\Adapter\AuthenticationResult;
 use Gems\AuthNew\Adapter\EmbedAuthentication;
 use Gems\AuthNew\Adapter\EmbedAuthenticationResult;
@@ -11,137 +12,210 @@ use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\Cache\HelperAdapter;
 use Gems\Cache\RateLimiter;
-use Gems\Repository\RespondentRepository;
+use Gems\CookieResponse;
+use Gems\Log\Loggers;
+use Gems\Middleware\CurrentOrganizationMiddleware;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\UserLoader;
-use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
+use Psr\Log\LoggerInterface;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
 
 class EmbedLoginHandler implements RequestHandlerInterface
 {
     private const MAX_ATTEMPTS_KEY = 'embed_login_max_attempts';
 
+    protected LoggerInterface $logger;
+
     private RateLimiter $rateLimiter;
+
+    private bool $showKeyInLog = false;
+
+    private StatusMessengerInterface $statusMessenger;
+
     private int $throttleMaxAttempts;
     private int $throttleBlockSeconds;
 
     public function __construct(
         private readonly TranslatorInterface $translator,
+//        private readonly AuditLog $auditLog,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly DeferredRouteHelper $routeHelper,
         private readonly UserLoader $userLoader,
-        HelperAdapter $cacheHelper,
         private readonly array $config,
+        HelperAdapter $cacheHelper,
+        Loggers $loggers,
     ) {
         $this->rateLimiter = new RateLimiter($cacheHelper);
         $this->throttleMaxAttempts = $this->config['embedThrottle']['maxAttempts'] ?? 5;
         $this->throttleBlockSeconds = $this->config['embedThrottle']['blockSeconds'] ?? 600;
+
+        $this->logger = $loggers->getLogger('embeddedLoginLog');
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $session = $request->getAttribute(SessionInterface::class);
-        $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
+        $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
-        $input = ($request->getMethod() === 'POST') ? $request->getParsedBody() : $request->getQueryParams();
+        try {
+            /**
+             * @var SessionInterface $session
+             */
+            $session = $request->getAttribute(SessionInterface::class);
+            $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
-        $result = null;
+            $input = ($request->getMethod() === 'POST') ? $request->getParsedBody() : $request->getQueryParams();
 
-        if ($this->rateLimiter->tooManyAttempts(self::MAX_ATTEMPTS_KEY, $this->throttleMaxAttempts)) {
-            throw new \Gems\Exception($this->translator->trans("Too many login attempts"));
-        }
+            $result = null;
 
-        // Backwards compatibility with old id types
-        if (isset($input['id1'], $input['id2'], $input['id3'], $input['id4'])) {
-            $input['org'] = $input['id1'];
-            $input['key'] = $input['id2'];
-            $input['epd'] = $input['id3'];
-            $input['usr'] = $input['id4'];
-            unset($input['id1']);
-            unset($input['id2']);
-            unset($input['id3']);
-            unset($input['id4']);
-        }
+            if ($this->rateLimiter->tooManyAttempts(self::MAX_ATTEMPTS_KEY, $this->throttleMaxAttempts)) {
+                throw new \Gems\Exception($this->translator->trans("Too many login attempts"));
+            }
 
-        if (isset($input['patientId'])) {
-            $input['pid'] = $input['patientId'];
-            unset($input['patientId']);
-        }
+            // Backwards compatibility with old id types
+            if (isset($input['id1'], $input['id2'], $input['id3'], $input['id4'])) {
+                $input['org'] = $input['id1'];
+                $input['key'] = $input['id2'];
+                $input['epd'] = $input['id3'];
+                $input['usr'] = $input['id4'];
+                unset($input['id1']);
+                unset($input['id2']);
+                unset($input['id3']);
+                unset($input['id4']);
+            }
 
-        // TODO: org should be an existing organization?
+            if (isset($input['patientId'])) {
+                $input['pid'] = $input['patientId'];
+                unset($input['patientId']);
+            }
 
-        if (!empty($input['epd'])
-            && !empty($input['key'])
-            && !empty($input['usr'])
-            && !empty($input['pid'])
-            && !empty($input['org'])
-            && ctype_digit($input['org'])
-        ) {
-            /** @var EmbedAuthenticationResult $result */
-            $result = $authenticationService->authenticate(new EmbedAuthentication(
-                $this->userLoader,
+            $logKey = null;
+            if ($this->showKeyInLog) {
+                $logKey = $input['key'];
+            }
+
+            $this->logInfo(sprintf(
+                "Login user: %s, end user: %s, patient: %s, key: %s",
                 $input['epd'],
-                $input['key'],
                 $input['usr'],
                 $input['pid'],
-                (int)$input['org'],
+                $logKey
             ));
+            // TODO: org should be an existing organization?
 
-            if (!$result->isValid() && $result->getCode() !== AuthenticationResult::FAILURE_DEFERRED) {
-                $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
-            }
-        }
+            if (!empty($input['epd'])
+                && !empty($input['key'])
+                && !empty($input['usr'])
+                && !empty($input['pid'])
+                && !empty($input['org'])
+                && ctype_digit($input['org'])
+            ) {
+                /** @var EmbedAuthenticationResult $result */
+                $result = $authenticationService->authenticate(new EmbedAuthentication(
+                    $this->userLoader,
+                    $input['epd'],
+                    $input['key'],
+                    $input['usr'],
+                    $input['pid'],
+                    (int)$input['org'],
+                ));
 
-        if ($result && $result->isValid()) {
-            /** @var EmbedIdentity $identity */
-            $identity = $result->getIdentity();
-
-            $embeddedUserData = $this->userLoader->getEmbedderData($result->systemUser);
-            $redirector = $embeddedUserData->getRedirector();
-
-            //if ($redirector instanceof RedirectAbstract) {
-            //    $redirector->answerRegistryRequest('request', $this->getRequest());
-            //}
-
-            $url = $redirector?->getRedirectUrl(
-                $request,
-                $this->routeHelper,
-                $result->systemUser,
-                $result->deferredUser,
-                $identity->getPatientId(),
-                [$identity->getOrganizationId()],
-            );
-
-            if ($url instanceof RedirectResponse) {
-                return $url;
+                if (!$result->isValid() && $result->getCode() !== AuthenticationResult::FAILURE_DEFERRED) {
+                    $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
+                }
             }
 
-            if ($url) {
-                return new RedirectResponse($url);
+            if ($result && $result->isValid()) {
+                /** @var EmbedIdentity $identity */
+                $identity = $result->getIdentity();
+
+                $embeddedUserData = $this->userLoader->getEmbedderData($result->systemUser);
+                $redirector = $embeddedUserData->getRedirector();
+
+                //if ($redirector instanceof RedirectAbstract) {
+                //    $redirector->answerRegistryRequest('request', $this->getRequest());
+                //}
+
+                $url = $redirector?->getRedirectUrl(
+                    $request,
+                    $this->routeHelper,
+                    $result->systemUser,
+                    $result->deferredUser,
+                    $identity->getPatientId(),
+                    [$identity->getOrganizationId()],
+                );
+
+                if ($url) {
+
+                    if ($url instanceof RedirectResponse) {
+                        $this->logInfo(sprintf(
+                            "Login for end user: %s, patient: %s successful, redirecting...",
+                            $input['usr'],
+                            $input['pid']
+                        ));
+                        $response = $url;
+                    } else {
+                        $this->logInfo(sprintf(
+                            "Login for end user: %s, patient: %s successful, redirecting to: %s",
+                            $input['usr'],
+                            $input['pid'],
+                            $url
+                        ));
+                        $response = new RedirectResponse($url);
+                    }
+                    return CookieResponse::addCookieToResponse(
+                        $request,
+                        $response,
+                        CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE,
+                        $input['org']
+                    );
+                }
             }
+
+            /* Debug help
+            if (isset($input['key'])) {
+                $input['key'] = '*******';
+            }
+
+            $messages = [];
+            if ($result) {
+                $messages = $result->getMessages();
+            }
+
+            return new JsonResponse([
+                'error' => 'Unable to Authenticate',
+                'usedInput' => $input,
+                'result' => $messages,
+            ], 401);*/
+            $this->logInfo("Unable to authenticate");
+            $this->statusMessenger->addError($this->translator->_("Unable to authenticate"));
+        } catch (\Exception $e) {
+            $this->logInfo($e->getMessage());
+            $this->statusMessenger->addError($e->getMessage());
+
         }
 
-        /* Debug help
-        if (isset($input['key'])) {
-            $input['key'] = '*******';
+        $homeUrl = $this->routeHelper->getRouteUrl( 'auth.logout');
+        return new RedirectResponse($homeUrl);
+    }
+
+    /**
+     * @param  string   $message   Message to log
+     */
+    public function logInfo(string $message): void
+    {
+        try {
+            // dump($message);
+            $this->logger->notice($message);
+        } catch(\Exception $e) {
+            error_log($e->getMessage());
+            error_log($message);
         }
-
-        $messages = [];
-        if ($result) {
-            $messages = $result->getMessages();
-        }
-
-        return new JsonResponse([
-            'error' => 'Unable to Authenticate',
-            'usedInput' => $input,
-            'result' => $messages,
-        ], 401);*/
-
-        throw new \Gems\Exception($this->translator->trans("Unable to authenticate"));
     }
 }

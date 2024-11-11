@@ -49,26 +49,43 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
     public function getDeferredUser(User $embeddedUser, string $deferredLogin): ?User
     {
         $embeddedUserData = $this->userLoader->getEmbedderData($embeddedUser);
-        if (! ($embeddedUserData instanceof EmbeddedUserData && $embeddedUser->isActive())) {
+        if (!($embeddedUserData instanceof EmbeddedUserData && $embeddedUser->isActive())) {
             return null;
         }
 
-        $user = $this->getUser($deferredLogin, [
+        $user = $this->getUserOrNull($deferredLogin, [
             $embeddedUser->getBaseOrganizationId(),
             $embeddedUser->getCurrentOrganizationId(),
-            ]);
+        ]);
 
-        if ($user->isActive()) {
+        if ($user instanceof User && $user->isActive()) {
             $this->checkCurrentSettings($embeddedUser, $embeddedUserData, $user);
-
             return $user;
         }
 
-        if (! $embeddedUserData->canCreateUser()) {
+        return $this->createNewUser($deferredLogin, $embeddedUser, $embeddedUserData);
+    }
+
+    protected function createNewUser(string $deferredLogin, User $embeddedUser, EmbeddedUserData $embeddedUserData): User|null
+    {
+        if (!$embeddedUserData->canCreateUser()) {
             return null;
         }
 
         $model = $this->modelLoader->getStaffModel();
+
+        $checkDeletedFilter = [
+            'gsf_login'           => $deferredLogin,
+            'gsf_id_organization' => $embeddedUser->getBaseOrganizationId(),
+            'gsf_active'          => 0,
+        ];
+        if ($model->load($checkDeletedFilter)) {
+            throw new \Gems\Exception(sprintf(
+                $this->translator->_('Login not possible: user %s is deactivated in GemsTracker.'),
+                $deferredLogin,
+            ));
+        }
+
         $data  = $model->loadNew();
 
         $data['gsf_login']            = $deferredLogin;
@@ -83,7 +100,7 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
 
         $user = $this->userLoader->getUser($deferredLogin, $embeddedUser->getBaseOrganizationId());
 
-        if ($user->isActive()) {
+        if ($user instanceof User && $user->isActive()) {
             $this->checkCurrentSettings($embeddedUser, $embeddedUserData, $user);
 
             return $user;

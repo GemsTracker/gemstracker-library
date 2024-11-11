@@ -4,13 +4,14 @@ namespace Gems\Site;
 
 use Gems\Cache\HelperAdapter;
 use Gems\Repository\OrganizationRepository;
-use Gems\Util\RequestUtil;
 use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\TableModel;
 use MUtil\Model\Transform\TranslateFieldNames;
 use MUtil\Model\Type\ConcatenatedRow;
 use Psr\Http\Message\ServerRequestInterface;
+use Zalt\Base\BaseDir;
+use Zalt\Base\RequestUtil;
 
 class SiteUtil
 {
@@ -42,6 +43,7 @@ class SiteUtil
             $this->config = $config['sites'];
         }
         $this->sites = $this->getSites();
+        // dump($this->sites);
     }
 
 
@@ -118,15 +120,6 @@ class SiteUtil
         return array_intersect_key($namedSites, array_flip($siteOrganizations));
     }
 
-    public function getProtocol(ServerRequestInterface $request):string
-    {
-        if (!RequestUtil::isSecure($request)) {
-            return 'http';
-        }
-
-        return 'https';
-    }
-
     public function getSiteFromUrl(string $url): ?SiteUrl
     {
         foreach($this->sites as $site) {
@@ -153,6 +146,9 @@ class SiteUtil
     protected function getSites(): array
     {
         $sitesArray = $this->getSitesArray();
+        // Additional arrays for login by EPD
+        $sitesArray[] = ['url' => 'https://null'];
+        $sitesArray[] = ['url' => 'http://null'];
         $sitesArray = $this->addOrganizationsToSitesArray($sitesArray);
         $sites = [];
         foreach($sitesArray as $siteArray) {
@@ -187,8 +183,11 @@ class SiteUtil
 
     protected function getUrlFromHost(ServerRequestInterface $request, string $host): string
     {
-        $protocol = $this->getProtocol($request);
-        return $protocol . '://' . $host;
+        if (str_contains($host, '://')) {
+            return BaseDir::addBaseDir($host);
+        }
+        $protocol = RequestUtil::getProtocol($request);
+        return $protocol . '://' . BaseDir::addBaseDir($host);
     }
 
     public function isLocked(): bool
@@ -199,7 +198,7 @@ class SiteUtil
         return true;
     }
 
-    public function isRequestFromAllowedUrl(ServerRequestInterface $request): bool
+    public function isRequestFromBlockingUrl(ServerRequestInterface $request): ?string
     {
         $hosts = [];
         $serverParams = $request->getServerParams();
@@ -212,16 +211,12 @@ class SiteUtil
         }
 
         foreach(array_unique($hosts) as $host) {
-            $url = $this->getUrlFromHost($request, $host);
+            $url  = $this->getUrlFromHost($request, $host);
             $site = $this->getSiteFromUrl($url);
-            if ($site === null) {
-                throw new NotAllowedUrlException($url);
-            }
-            if ($site instanceof SiteUrl && (!$site->isActive() || $site->isBlocked())) {
-                throw new NotAllowedUrlException($url);
+            if ((! $site instanceof SiteUrl) || $site->notAllowed()) {
+                return $url;
             }
         }
-
         if ($request->getMethod() === 'POST') {
             $referrers = [];
             if (isset($serverParams['HTTP_ORIGIN'])) {
@@ -230,18 +225,16 @@ class SiteUtil
             if (isset($serverParams['HTTP_REFERER'])) {
                 $referrers[] = $serverParams['HTTP_REFERER'];
             }
-            foreach(array_unique($referrers) as $referrerUrl) {
-                $site = $this->getSiteByFullUrl($referrerUrl);
-                if ($site === null) {
-                    throw new NotAllowedUrlException($url);
-                }
-                if ($site instanceof SiteUrl && (!$site->isActive() || $site->isBlocked())) {
-                    throw new NotAllowedUrlException($url);
+            foreach(array_unique($referrers) as $referrer) {
+                $url  = $this->getUrlFromHost($request, $referrer);
+                $site = $this->getSiteByFullUrl($url);
+                if ((! $site instanceof SiteUrl) || $site->notAllowed()) {
+                    return $url;
                 }
             }
         }
 
-        return true;
+        return null;
     }
 
     public function isAllowedUrl(string $url): bool

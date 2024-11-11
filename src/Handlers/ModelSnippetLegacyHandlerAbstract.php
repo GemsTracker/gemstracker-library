@@ -131,9 +131,9 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var array Mixed key => value array for snippet initializPdfation
      */
     private array $_importExtraParameters = [
+        'csrfName'         => 'getCsrfTokenName',
+        'csrfToken'        => 'getCsrfToken',
         'formatBoxClass'   => 'browser table',
-        'importer'         => 'getImporter',
-        'tempDirectory'    => 'getImportTempDirectory',
         'topicCallable'    => 'getTopic',
     ];
 

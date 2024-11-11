@@ -1185,7 +1185,7 @@ class ProjectSettings extends \ArrayObject
      */
     public function hasResponseDatabase(): bool
     {
-        return isset($this['responseData']['enable']) && $this['responseData']['enabled'] === true;
+        return isset($this['responseData']['enabled']) && $this['responseData']['enabled'] === true;
     }
 
     /**
