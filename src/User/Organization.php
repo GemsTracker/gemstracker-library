@@ -447,7 +447,10 @@ class Organization extends CachedArrayTargetAbstract
             return $this->sites[$siteId];
         }
 
-        return $this->sites[array_key_first($this->sites)];
+        if (count($this->sites)) {
+            return $this->sites[array_key_first($this->sites)];
+        }
+        return '';
     }
 
     /**
