@@ -871,7 +871,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         $tokenSelect->onlyActive($quickCheck)
                     ->forRespondent($respondentId)
                     ->andSurveys(array('gsu_surveyor_id'))
-                    ->forWhere('gsu_surveyor_active = 1')
+                    ->forWhere('gsu_surveyor_active = 1 AND gsu_active = 1')
                     ->order('gsu_surveyor_id');
 
         if (null !== $orgId) {

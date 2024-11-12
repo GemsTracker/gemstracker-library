@@ -182,7 +182,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
                         rcto.grc_success = 1 AND
                         rctr.grc_success = 1
                     GROUP BY COALESCE(gto_round_description, '')
-                    ORDER BY MIN(COALESCE(gto_round_order, 100000)), gto_round_description";
+                    ORDER BY MIN(COALESCE(gto_round_order, 100000)), COALESCE(gto_round_description, '')";
 
         // \MUtil_Echo::track($this->respondentId);
         $tabLabels = $this->db->fetchAll($sql, $this->respondentId);
