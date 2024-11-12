@@ -180,15 +180,13 @@ class AuditLog
             if ($this->request->getAttribute(MetaModelInterface::REQUEST_ID2)) {
                 return $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
             }
-            if (isset($this->request)) {
-                $organizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
-                if ($organizationId !== null) {
-                    return $organizationId;
-                }
-                $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-                if ($currentUser instanceof User) {
-                    return $currentUser->getCurrentOrganizationId();
-                }
+            $organizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
+            if ($organizationId !== null) {
+                return $organizationId;
+            }
+            $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+            if ($currentUser instanceof User) {
+                return $currentUser->getCurrentOrganizationId();
             }
         }
 
