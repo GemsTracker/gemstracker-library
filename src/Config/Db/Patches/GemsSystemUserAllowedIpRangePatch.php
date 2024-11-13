@@ -37,6 +37,7 @@ class GemsSystemUserAllowedIpRangePatch implements PatchInterface
 
     public function down(): ?array
     {
+        $patches = [];
         if ($this->databaseInfo->tableHasColumn('gems__systemuser_setup', 'gsus_allowed_ip_ranges')) {
             $patches[] = "ALTER TABLE gems__systemuser_setup DROP COLUMN gsus_allowed_ip_ranges text";
         }
