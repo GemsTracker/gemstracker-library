@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
@@ -42,18 +43,21 @@ class AppointmentTokensSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         RequestInfo                         $requestInfo,
         MenuSnippetHelper                   $menuHelper,
         TranslatorInterface                 $translate,
-    CurrentUserRepository                   $currentUserRepository,
+        CurrentUserRepository               $currentUserRepository,
         MaskRepository                      $maskRepository,
         MetaModelLoader                     $metaModelLoader,
         Tracker                             $tracker,
         TokenRepository                     $tokenRepository,
-        protected \Zend_Db_Adapter_Abstract $db
+        protected ResultFetcher             $resultFetcher,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $currentUserRepository, $maskRepository, $metaModelLoader, $tracker, $tokenRepository);
 
         $this->caption = $this->_("Tokens set by this appointment");
         $this->onEmpty = $this->_("No tokens are set by this appointment");
+        if (isset($this->extraFilter['gap_id_appointment'])) {
+            unset($this->extraFilter['gap_id_appointment']);
+        }
     }
 
     public function getFilter(MetaModelInterface $metaModel) : array
@@ -63,23 +67,28 @@ class AppointmentTokensSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         $appId = $this->requestInfo->getParam(Model::APPOINTMENT_ID);
 
         if ($appId) {
-            $appKeyPrefix = $this->db->quote(FieldsDefinition::makeKey(FieldMaintenanceModel::APPOINTMENTS_NAME, null));
-            $appSource = $this->db->quote(StepEngineAbstract::APPOINTMENT_TABLE);
+            $platform = $this->resultFetcher->getPlatform();
+            $appKeyPrefix = $platform->quoteValue(FieldsDefinition::makeKey(FieldMaintenanceModel::APPOINTMENTS_NAME, null));
+            $appSource = $platform->quoteValue(StepEngineAbstract::APPOINTMENT_TABLE);
 
-            $or[] = $this->db->quoteInto(
-                "gro_valid_after_source = $appSource AND
+            $or[] = sprintf(
+                "gro_valid_after_source = %s AND
                         (gto_id_respondent_track, gro_valid_after_field) IN
-                            (SELECT gr2t2a_id_respondent_track, CONCAT($appKeyPrefix, gr2t2a_id_app_field)
+                            (SELECT gr2t2a_id_respondent_track, CONCAT(%s, gr2t2a_id_app_field)
                                 FROM gems__respondent2track2appointment
-                                WHERE gr2t2a_id_appointment = ?)",
+                                WHERE gr2t2a_id_appointment = %s)",
+                $appSource,
+                $appKeyPrefix,
                 $appId
             );
-            $or[] = $this->db->quoteInto(
-                "gro_valid_for_source = $appSource AND
+            $or[] = sprintf(
+                "gro_valid_for_source = %s AND
                         (gto_id_respondent_track, gro_valid_for_field) IN
-                            (SELECT gr2t2a_id_respondent_track, CONCAT($appKeyPrefix, gr2t2a_id_app_field)
+                            (SELECT gr2t2a_id_respondent_track, CONCAT(%s, gr2t2a_id_app_field)
                                 FROM gems__respondent2track2appointment
-                                WHERE gr2t2a_id_appointment = ?)",
+                                WHERE gr2t2a_id_appointment = %s)",
+                $appSource,
+                $appKeyPrefix,
                 $appId
             );
 
