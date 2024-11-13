@@ -14,6 +14,7 @@ use Gems\Cache\HelperAdapter;
 use Gems\Cache\RateLimiter;
 use Gems\CookieResponse;
 use Gems\Log\Loggers;
+use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\User\Embed\DeferredRouteHelper;
@@ -124,6 +125,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
                     $input['usr'],
                     $input['pid'],
                     (int)$input['org'],
+                    $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE)
                 ));
 
                 if (!$result->isValid() && $result->getCode() !== AuthenticationResult::FAILURE_DEFERRED) {
