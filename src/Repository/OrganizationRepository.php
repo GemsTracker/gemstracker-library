@@ -261,4 +261,19 @@ class OrganizationRepository
             'natsort'
         );
     }
+
+    public function getSiteUrls(): array
+    {
+        return $this->userLoader->getSiteUrls();
+    }
+
+    public function isAllowedUrl(string $url): bool
+    {
+        foreach($this->getSiteUrls() as $siteUrl) {
+            if (str_starts_with($url, $siteUrl)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
