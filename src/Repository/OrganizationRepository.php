@@ -242,6 +242,26 @@ class OrganizationRepository
         );
     }
 
+    /**
+     * Returns a list of the organizations to which respondents can be added.
+     *
+     * @return array The list organizations
+     */
+    public function getOrganizationsOpenToRespondents()
+    {
+        return $this->utilDbHelper->getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            ['organizations'],
+            [
+                'gor_active' => 1,
+                'gor_add_respondents' => 1,
+            ],
+            'natsort'
+        );
+    }
+
     public function getSiteUrls(): array
     {
         return $this->userLoader->getSiteUrls();

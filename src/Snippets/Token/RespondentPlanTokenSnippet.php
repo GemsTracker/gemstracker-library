@@ -70,7 +70,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
         $bridge->addSortable('gto_id_token');
         // $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'))->rowspan = 2;
 
-        $metaModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gto_round_description', ['tableDisplay' => 'small']);
         $bridge->addMultiSort('gsu_survey_name', 'gto_round_description');
         $bridge->addMultiSort('ggp_name', [$this->createActionButtons($bridge)]);
 
@@ -81,7 +81,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
         $bridge->addSortable('gto_completion_time');
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
-        $metaModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $metaModel->set('gr2t_track_info', ['tableDisplay' => 'small']);
         $bridge->addMultiSort('gtr_track_name', 'gr2t_track_info');
 
         $bridge->addSortable('assigned_by');

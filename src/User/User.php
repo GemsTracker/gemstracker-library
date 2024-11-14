@@ -57,8 +57,21 @@ class User
     protected string|null $currentRole = null;
     protected bool $currentlyFramed = false;
 
+    /**
+     * List of active organizations that can be accessed by the current
+     * logged in user.
+     */
     protected array|null $allowedOrganizations = null;
+    /**
+     * List of active organizations that have or can have respondents for
+     * the current logged in user.
+     */
     protected array|null $allowedRespondentOrganizations = null;
+    /**
+     * List of active organizations to which new respondents can be added,
+     * for the current logged in user.
+     */
+    protected array|null $newRespondentOrganizations = null;
     protected string|null $allowedIpRanges = null;
     protected string|null $phoneNumber = null;
     protected string $locale = 'en';
@@ -519,6 +532,23 @@ class User
             $this->allowedRespondentOrganizations = array_intersect($respondentOrganizations, $allowedOrganizations);
         }
         return $this->allowedRespondentOrganizations;
+    }
+
+    /**
+     * Get an array of OrgId => Org Name for all allowed organizations to which
+     * new respondents can be added.
+     *
+     * @return array
+     */
+    public function getNewRespondentOrganizations(): array
+    {
+        if ($this->newRespondentOrganizations === null) {
+            $respondentOrganizations = $this->organizationRepository->getOrganizationsOpenToRespondents();
+            $allowedOrganizations = $this->getAllowedOrganizations();
+
+            $this->newRespondentOrganizations = array_intersect($respondentOrganizations, $allowedOrganizations);
+        }
+        return $this->newRespondentOrganizations;
     }
 
     /**
