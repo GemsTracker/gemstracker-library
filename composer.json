@@ -132,11 +132,6 @@
             "GemsTest\\": "tests/"
         }
     },
-    "extra": {
-        "branch-alias": {
-            "dev-2.x-no-sites-new-ask": "2.x-dev"
-        }
-    },
     "repositories": [
         {
             "type": "git",
