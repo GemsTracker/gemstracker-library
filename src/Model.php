@@ -453,19 +453,6 @@ class Model
     }
 
     /**
-     * Load the organization model
-     *
-     * @return SiteModel
-     */
-    public function getSiteModel(): SiteModel
-    {
-        /**
-         * @var SiteModel
-         */
-        return $this->_createModel('SiteModel');
-    }
-
-    /**
      * Load the staffmodel
      *
      * @param boolean $addLogin Add the login tables to the model

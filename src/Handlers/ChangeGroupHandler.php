@@ -3,7 +3,7 @@
 namespace Gems\Handlers;
 
 use Gems\AuthNew\AuthenticationMiddleware;
-use Gems\Site\SiteUtil;
+use Gems\Repository\OrganizationRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -19,7 +19,7 @@ class ChangeGroupHandler implements RequestHandlerInterface
     public const CURRENT_USER_GROUP_ATTRIBUTE = 'current_user_group';
 
     public function __construct(
-        private readonly SiteUtil $siteUtil,
+        private readonly OrganizationRepository $organizationRepository,
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
         private readonly TranslatorInterface $translator,
@@ -40,7 +40,7 @@ class ChangeGroupHandler implements RequestHandlerInterface
     protected function getUrl(ServerRequestInterface $request): string
     {
         $serverParams = $request->getServerParams();
-        if (isset($serverParams['HTTP_REFERER']) && $this->siteUtil->isAllowedUrl($serverParams['HTTP_REFERER'])) {
+        if (isset($serverParams['HTTP_REFERER']) && $this->organizationRepository->isAllowedUrl($serverParams['HTTP_REFERER'])) {
             return $serverParams['HTTP_REFERER'];
         }
 

@@ -401,21 +401,6 @@ parameters:
 			path: src/Actions/RoleOverviewAction.php
 
 		-
-			message: "#^Access to an undefined property Gems\\\\Actions\\\\SiteMaintenanceAction\\:\\:\\$menu\\.$#"
-			count: 2
-			path: src/Actions/SiteMaintenanceAction.php
-
-		-
-			message: "#^Call to an undefined method Gems\\\\Actions\\\\SiteMaintenanceAction\\:\\:getRequest\\(\\)\\.$#"
-			count: 1
-			path: src/Actions/SiteMaintenanceAction.php
-
-		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, DateTimeImmutable\\|null given\\.$#"
-			count: 1
-			path: src/Actions/SiteMaintenanceAction.php
-
-		-
 			message: "#^Call to an undefined method Gems\\\\Actions\\\\TemplateAction\\:\\:getInstanceId\\(\\)\\.$#"
 			count: 1
 			path: src/Actions/TemplateAction.php
@@ -1196,11 +1181,6 @@ parameters:
 			path: src/Form/AutoLoadFormAbstract.php
 
 		-
-			message: "#^Method Gems\\\\Form\\\\AutoLoadFormAbstract\\:\\:setLoadDefault\\(\\) should return Gems\\\\User\\\\Form\\\\LoginForm but returns \\$this\\(Gems\\\\Form\\\\AutoLoadFormAbstract\\)\\.$#"
-			count: 1
-			path: src/Form/AutoLoadFormAbstract.php
-
-		-
 			message: "#^Call to an undefined method Zend_View_Interface\\:\\:headScript\\(\\)\\.$#"
 			count: 1
 			path: src/Form/Decorator/CKEditor.php
@@ -1428,17 +1408,17 @@ parameters:
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:snippet\\(\\)\\.$#"
 			count: 1
-			path: src/Handlers/AskHandler.php
+			path: src/Handlers/AskLegacyHandler.php
 
 		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 2
-			path: src/Handlers/AskHandler.php
+			path: src/Handlers/AskLegacyHandler.php
 
 		-
-			message: "#^Method Gems\\\\Handlers\\\\AskHandler\\:\\:indexAction\\(\\) with return type void returns Laminas\\\\Diactoros\\\\Response\\\\RedirectResponse but should not return anything\\.$#"
+			message: "#^Method Gems\\\\Handlers\\\\AskLegacyHandler\\:\\:indexAction\\(\\) with return type void returns Laminas\\\\Diactoros\\\\Response\\\\RedirectResponse but should not return anything\\.$#"
 			count: 1
-			path: src/Handlers/AskHandler.php
+			path: src/Handlers/AskLegacyHandler.php
 
 		-
 			message: "#^Access to an undefined property Zalt\\\\SnippetsActions\\\\ModelActionInterface&Zalt\\\\SnippetsActions\\\\SnippetActionInterface\\:\\:\\$model\\.$#"
@@ -3119,16 +3099,6 @@ parameters:
 			message: "#^Call to function is_null\\(\\) with int will always evaluate to false\\.$#"
 			count: 1
 			path: src/Model/RespondentRelationModel.php
-
-		-
-			message: "#^If condition is always false\\.$#"
-			count: 1
-			path: src/Model/SiteModel.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$defaultOrgId$#"
-			count: 1
-			path: src/Model/SiteModel.php
 
 		-
 			message: "#^Access to an undefined property Gems\\\\Project\\\\ProjectSettings\\:\\:\\$locale\\.$#"
@@ -5221,31 +5191,6 @@ parameters:
 			path: src/Snippets/Role/RoleEditFormSnippet.php
 
 		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:br\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/SiteMaintenance/SiteMaintenanceInformation.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:div\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/SiteMaintenance/SiteMaintenanceInformation.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:h2\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/SiteMaintenance/SiteSetupCheckSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:pInfo\\(\\)\\.$#"
-			count: 4
-			path: src/Snippets/SiteMaintenance/SiteSetupCheckSnippet.php
-
-		-
-			message: "#^Call to an undefined method MUtil\\\\Html\\\\Sequence\\:\\:ul\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/SiteMaintenance/SiteSetupCheckSnippet.php
-
-		-
 			message: "#^Call to an undefined method Zalt\\\\Loader\\\\ProjectOverloader\\:\\:removePrefixPath\\(\\)\\.$#"
 			count: 1
 			path: src/Snippets/SnippetLoader.php
@@ -5269,51 +5214,6 @@ parameters:
 			message: "#^PHPDoc tag @return with type mixed is not subtype of native type object\\.$#"
 			count: 1
 			path: src/Snippets/SnippetLoader.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Staff\\\\StaffCreateEditSnippet\\:\\:\\$afterSaveRouteKeys\\.$#"
-			count: 2
-			path: src/Snippets/Staff/StaffCreateEditSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Staff\\\\StaffCreateEditSnippet\\:\\:\\$request\\.$#"
-			count: 3
-			path: src/Snippets/Staff/StaffCreateEditSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Staff\\\\StaffCreateEditSnippet\\:\\:\\$resetRoute\\.$#"
-			count: 2
-			path: src/Snippets/Staff/StaffCreateEditSnippet.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\Snippets\\\\Staff\\\\StaffCreateEditSnippet\\:\\:\\$routeAction\\.$#"
-			count: 2
-			path: src/Snippets/Staff/StaffCreateEditSnippet.php
-
-		-
-			message: "#^Cannot assign offset 'controller' to string\\.$#"
-			count: 1
-			path: src/Snippets/Staff/StaffCreateEditSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Snippets\\\\Staff\\\\StaffCreateEditSnippet\\:\\:setAfterSaveRoute\\(\\) should return MUtil\\\\Snippets\\\\ModelFormSnippetAbstract but returns \\$this\\(Gems\\\\Snippets\\\\Staff\\\\StaffCreateEditSnippet\\)\\.$#"
-			count: 1
-			path: src/Snippets/Staff/StaffCreateEditSnippet.php
-
-		-
-			message: "#^Property Zalt\\\\Snippets\\\\FormSnippetAbstract\\:\\:\\$afterSaveRouteUrl \\(string\\) does not accept array\\<int\\|string, mixed\\>\\.$#"
-			count: 1
-			path: src/Snippets/Staff/StaffCreateEditSnippet.php
-
-		-
-			message: "#^Call to an undefined method Zalt\\\\Message\\\\MessengerInterface\\:\\:addInfo\\(\\)\\.$#"
-			count: 1
-			path: src/Snippets/Staff/StaffResetAuthenticationSnippet.php
-
-		-
-			message: "#^Method Gems\\\\Communication\\\\CommunicationRepository\\:\\:getMailer\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: src/Snippets/Staff/StaffResetAuthenticationSnippet.php
 
 		-
 			message: "#^Call to an undefined method Zalt\\\\Html\\\\Sequence\\:\\:actionLink\\(\\)\\.$#"
@@ -6449,11 +6349,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$patientId of method Gems\\\\Loader\\:\\:getRespondent\\(\\) expects string, null given\\.$#"
 			count: 1
 			path: src/Task/Respondent/UpdateRespondentTask.php
-
-		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, DateTimeImmutable\\|null given\\.$#"
-			count: 1
-			path: src/Task/Sites/BlockNewSites.php
 
 		-
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$params$#"
@@ -7741,111 +7636,6 @@ parameters:
 			path: src/User/Embed/Redirect/StaffAccountPage.php
 
 		-
-			message: "#^Call to an undefined method Zend_Translate\\:\\:_\\(\\)\\.$#"
-			count: 6
-			path: src/User/Form/LoginForm.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Form\\\\LoginForm\\:\\:getLostPasswordElement\\(\\) should return MUtil\\\\Form\\\\Element\\\\Html but returns Zend_Form_Element\\.$#"
-			count: 1
-			path: src/User/Form/LoginForm.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Form\\\\LoginForm\\:\\:getPasswordElement\\(\\) should return Zend_Form_Element_Password but returns Zend_Form_Element\\.$#"
-			count: 1
-			path: src/User/Form/LoginForm.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Form\\\\LoginForm\\:\\:getTokenElement\\(\\) should return MUtil\\\\Form\\\\Element\\\\Html but returns Zend_Form_Element\\.$#"
-			count: 1
-			path: src/User/Form/LoginForm.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Form\\\\LoginForm\\:\\:getTokenLink\\(\\) should return MUtil\\\\Html\\\\AElement but returns MUtil\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/User/Form/LoginForm.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\User\\\\Form\\\\OrganizationFormAbstract\\:\\:\\$_organizationFromUrl\\.$#"
-			count: 2
-			path: src/User/Form/OrganizationFormAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zend_Controller_Request_Abstract\\:\\:getPost\\(\\)\\.$#"
-			count: 1
-			path: src/User/Form/OrganizationFormAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zend_Controller_Request_Abstract\\:\\:isPost\\(\\)\\.$#"
-			count: 3
-			path: src/User/Form/OrganizationFormAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zend_Form_Element\\:\\:setMultiOptions\\(\\)\\.$#"
-			count: 1
-			path: src/User/Form/OrganizationFormAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zend_Form_Element\\:\\:setRegisterInArrayValidator\\(\\)\\.$#"
-			count: 1
-			path: src/User/Form/OrganizationFormAbstract.php
-
-		-
-			message: "#^Call to an undefined method Zend_Translate\\:\\:_\\(\\)\\.$#"
-			count: 2
-			path: src/User/Form/OrganizationFormAbstract.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Form\\\\OrganizationFormAbstract\\:\\:getOrganizationElement\\(\\) should return Zend_Form_Element_Xhtml but returns Zend_Form_Element\\.$#"
-			count: 1
-			path: src/User/Form/OrganizationFormAbstract.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Form\\\\OrganizationFormAbstract\\:\\:getUserNameElement\\(\\) should return Zend_Form_Element_Text but returns Zend_Form_Element\\.$#"
-			count: 1
-			path: src/User/Form/OrganizationFormAbstract.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Form\\\\OrganizationFormAbstract\\:\\:setOrganizationMaxLines\\(\\) should return Gems\\\\User\\\\Form\\\\LoginForm but returns \\$this\\(Gems\\\\User\\\\Form\\\\OrganizationFormAbstract\\)\\.$#"
-			count: 1
-			path: src/User/Form/OrganizationFormAbstract.php
-
-		-
-			message: "#^Negated boolean expression is always false\\.$#"
-			count: 2
-			path: src/User/Form/OrganizationFormAbstract.php
-
-		-
-			message: "#^Access to an undefined property Gems\\\\User\\\\Form\\\\ResetRequestForm\\:\\:\\$_tokenFieldName\\.$#"
-			count: 1
-			path: src/User/Form/ResetRequestForm.php
-
-		-
-			message: "#^Call to an undefined method Zend_Translate\\:\\:_\\(\\)\\.$#"
-			count: 2
-			path: src/User/Form/ResetRequestForm.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/User/Form/ResetRequestForm.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Form\\\\ResetRequestForm\\:\\:getLoginLink\\(\\) should return MUtil\\\\Html\\\\AElement but returns MUtil\\\\Html\\\\HtmlElement\\.$#"
-			count: 1
-			path: src/User/Form/ResetRequestForm.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Form\\\\ResetRequestForm\\:\\:getUserNameElement\\(\\) should return Zend_Form_Element_Text but returns Zend_Form_Element\\.$#"
-			count: 1
-			path: src/User/Form/ResetRequestForm.php
-
-		-
-			message: "#^Method Gems\\\\User\\\\Form\\\\ResetRequestForm\\:\\:loadDefaultElements\\(\\) should return Gems\\\\User\\\\Form\\\\LoginForm but returns \\$this\\(Gems\\\\User\\\\Form\\\\ResetRequestForm\\)\\.$#"
-			count: 1
-			path: src/User/Form/ResetRequestForm.php
-
-		-
 			message: "#^Left side of \\|\\| is always true\\.$#"
 			count: 3
 			path: src/User/Group.php
@@ -8039,26 +7829,6 @@ parameters:
 			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:build\\(\\)\\.$#"
 			count: 1
 			path: src/Util/Lock/LockFactory.php
-
-		-
-			message: "#^Call to an undefined method Zend_Controller_Request_Abstract\\:\\:getServer\\(\\)\\.$#"
-			count: 2
-			path: src/Util/SiteUtil.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Util/SiteUtil.php
-
-		-
-			message: "#^Instanceof between Zend_Controller_Response_Abstract\\|null and Zend_Controller_Request_Abstract will always evaluate to false\\.$#"
-			count: 1
-			path: src/Util/SiteUtil.php
-
-		-
-			message: "#^Parameter \\#2 \\$blockOnCreation of class Gems\\\\Util\\\\SiteUrl constructor expects false, bool given\\.$#"
-			count: 1
-			path: src/Util/SiteUtil.php
 
 		-
 			message: "#^Access to an undefined property MUtil\\\\Html\\\\HtmlElement\\:\\:\\$title\\.$#"

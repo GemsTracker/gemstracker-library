@@ -232,7 +232,7 @@ class Upgrades extends \Gems\UpgradesAbstract
         $this->_batch->addTask('Db\\CreateNewTables');
         $this->_batch->addTask('Db\\AddPatches', 67);
 
-        $this->_batch->addTask('Sites\\SiteUpgradeFromOrgAndProject');
+        // $this->_batch->addTask('Sites\\SiteUpgradeFromOrgAndProject');
         
         // Use AddTask task to execute after patches
         $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));

@@ -632,7 +632,7 @@ class CommJobRepository
      * @throws Exception
      * @throws Exception\Coding
      */
-    public function getSendableTokens(int $commJobId, ?int $respondentId = null, ?int $organizationId = null): array
+    public function getSendableTokens(int $commJobId, ?int $respondentId = null, ?int $organizationId = null, $forceSent = false): array
     {
         $jobData = $this->getJob($commJobId);
 
@@ -640,7 +640,7 @@ class CommJobRepository
             throw new Exception('Mail job not found!');
         }
 
-        $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId);
+        $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId, $forceSent);
 
         $sendTokenList = [];
         $incrementWithoutSendingList = [];
@@ -798,12 +798,12 @@ class CommJobRepository
         return false;
     }
 
-    public function sendAllCommunications(?int $respondentId = null, ?int $organizationId = null)
+    public function sendAllCommunications(?int $respondentId = null, ?int $organizationId = null, $forceSent = false)
     {
         $jobs = $this->getActiveJobs();
         $processedTokens = [];
         foreach($jobs as $job) {
-            $sendableTokens = $this->getSendableTokens($job['gcj_id_job'], $respondentId, $organizationId);
+            $sendableTokens = $this->getSendableTokens($job['gcj_id_job'], $respondentId, $organizationId, $forceSent);
 
             foreach ($sendableTokens['send'] as $sendableTokenId) {
                 if (!in_array($sendableTokenId, $processedTokens)) {

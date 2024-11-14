@@ -115,6 +115,27 @@ class SurveyRepository
         return $this->projectOverloader->create('Tracker\\Survey', $surveyData);
     }
 
+    /**
+     * Get all the surveys for a certain code
+     *
+     * @param string $code
+     * @return array survey id => survey name
+     */
+    public function getSurveysByCode(string $code): array
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $code;
+
+        $select = $this->cachedResultFetcher->getSelect('gems__surveys');
+        $select->columns(['gsu_id_survey', 'gsu_survey_name'])
+            ->where([
+                "gsu_code" => $code,
+                "gsu_active" => 1,
+            ])
+            ->order(['gsu_survey_name']);
+
+        return $this->cachedResultFetcher->fetchPairs($cacheId, $select, [], ['surveys']);
+    }
+
     public function getSurveyData(array|int|null $surveyData): array
     {
         $data = null;
