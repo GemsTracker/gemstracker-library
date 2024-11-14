@@ -199,7 +199,7 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
                 'getAvailableMailTemplates' => 'CommTemplateUtil->getCommTemplatesForTarget',
                 ],
             '\\Gems\\Project\\ProjectSettings' => [
-                'getAllowedHosts' => 'SiteUtil->isRequestFromAllowedHost',
+                // 'getAllowedHosts' => 'XiteUtil->isRequestFromAllowedHost',
                 'getConsoleUrl' => 'Gems\User\Organization->getPreferredSiteUrl',
                 'hasAnySupportUrl' => null,
                 'hasBugsUrl' => null,
@@ -211,7 +211,7 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
                 ],
             '\\Gems\\User\\UserLoader' => [
                 'getOrganizationIdByUrl' => null,
-                'getOrganizationUrls'    => 'SiteUrl->getSiteForCurrentUrl', 
+                'getOrganizationUrls'    => 'XSiteUrl->getSiteForCurrentUrl',
             ],
             'Gems_User_LoginStatusTracker' => [
                 'getUsedOrganisationId'     => 'getUsedOrganizationId',

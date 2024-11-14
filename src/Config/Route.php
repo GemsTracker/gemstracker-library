@@ -394,7 +394,7 @@ class Route
             ),
             ...$this->createSnippetRoutes(
                 baseName: 'ask',
-                controllerClass: \Gems\Handlers\AskHandler::class,
+                controllerClass: \Gems\Handlers\AskLegacyHandler::class, // Should later be changed to AskHandler
                 basePrivilege: false,
                 pages: [
                     'index',

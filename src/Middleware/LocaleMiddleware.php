@@ -3,7 +3,6 @@
 namespace Gems\Middleware;
 
 use Gems\Locale\Locale;
-use Gems\Site\SiteUrl;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -62,14 +61,7 @@ class LocaleMiddleware implements MiddlewareInterface
             return $headerLanguage;
         }
 
-        // Default language from site
-        $site = $request->getAttribute(SiteGateMiddleware::SITE_URL_ATTRIBUTE);
-        if ($site instanceof SiteUrl) {
-            $language = $site->getLang();
-            if ($language !== null && in_array($language, $this->config['availableLocales'])) {
-                return $language;
-            }
-        }
+        // Default language from site no longer possible
 
         // Default language from config
         if (isset($this->config['default']) && in_array($this->config['default'], $this->config['availableLocales'])) {

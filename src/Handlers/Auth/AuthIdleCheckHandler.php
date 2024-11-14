@@ -6,7 +6,7 @@ namespace Gems\Handlers\Auth;
 
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
-use Gems\Site\SiteUtil;
+use Gems\Repository\OrganizationRepository;
 use Gems\Middleware\FlashMessageMiddleware;
 use Laminas\Diactoros\Response\JsonResponse;
 use Mezzio\Router\RouterInterface;
@@ -22,8 +22,8 @@ class AuthIdleCheckHandler implements RequestHandlerInterface
 {
     public function __construct(
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
+        private readonly OrganizationRepository $organizationRepository,
         private readonly RouterInterface $router,
-        private readonly SiteUtil $siteUtil,
         private readonly TranslatorInterface $translator,
         private readonly array $config,
     ) {
@@ -44,7 +44,7 @@ class AuthIdleCheckHandler implements RequestHandlerInterface
             ]);
 
             $serverParams = $request->getServerParams();
-            if (isset($serverParams['HTTP_REFERER']) && $this->siteUtil->isAllowedUrl($serverParams['HTTP_REFERER'])) {
+            if (isset($serverParams['HTTP_REFERER']) && $this->organizationRepository->isAllowedUrl($serverParams['HTTP_REFERER'])) {
                 AuthenticationMiddleware::registerIntended(
                     $authenticationService->getLoggedInUser(),
                     $session,

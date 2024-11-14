@@ -20,7 +20,6 @@ use Gems\Repository\CommJobRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\FormSnippetAbstract;
-use Gems\Tracker;
 use Symfony\Component\Mime\Address;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -68,7 +67,6 @@ class TokenForgottenSnippet extends FormSnippetAbstract
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         protected CurrentUserRepository $currentUserRepository,
-        protected Tracker $tracker,
         protected OrganizationRepository $organizationRepository,
         protected ResultFetcher $resultFetcher,
         protected RespondentRepository $respondentRepository,
@@ -142,7 +140,6 @@ class TokenForgottenSnippet extends FormSnippetAbstract
                 ->setAttrib('size', 30)
                 ->setRequired(true)
                 ->addValidator('SimpleEmail');
-                //->addValidator($this->tracker->getTokenValidator($this->clientIp));
 
         return $element;
     }
@@ -242,9 +239,9 @@ class TokenForgottenSnippet extends FormSnippetAbstract
 
                 if ($respondent->exists && $respondent->canBeMailed()) {
 
-                    $sentTokens = $this->commJobRepository->sendAllCommunications($respondent->getId(), $respondent->getOrganizationId());
+                    $sentTokens = $this->commJobRepository->sendAllCommunications($respondent->getId(), $respondent->getOrganizationId(), true);
                     $sent = count($sentTokens);
-                    // \MUtil\EchoOut\EchoOut::track($sent, $batch->getCounter('jobs_started'), $userData);
+                    // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): xx ' .  print_r($sentTokens, true) . "\n", FILE_APPEND);
                 }
                 if (0 === $sent) {
                     // Try to sent a "nothingToSend" mail

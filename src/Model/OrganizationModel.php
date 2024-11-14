@@ -34,6 +34,8 @@ use Zalt\Html\Html;
  */
 class OrganizationModel extends \Gems\Model\JoinModel
 {
+    CONST URL_SEPARATOR = '|';
+
     /**
      * @var array
      */
@@ -137,22 +139,15 @@ class OrganizationModel extends \Gems\Model\JoinModel
                    'description', $this->_('The website of the organization, for information purposes.'),
                    'translate', true);
 
-        if (isset($this->config['sites']['allowed'])) {
-            $sites = array_column($this->config['sites']['allowed'], 'url');
-            $this->set('gor_sites', [
-                'label' => $this->_('Available from urls'),
-                'description' => $this->_('This organization can be reached from these site url\'s. Leave empty for all sites.'),
-                'multiOptions' => $sites,
-                'elementClass' => 'MultiCheckbox',
-            ]);
+        $this->set('gor_sites', [
+            'label' => $this->_('Available from urls'),
+            'description' => $this->_('This organization can be reached from these site url\'s. Leave empty for all sites.'),
+            'multiOptions' => $this->userLoader->getSiteUrls(),
+            'elementClass' => 'MultiCheckbox',
+        ]);
 
-            $ct = new ConcatenatedRow('|', $this->_(', '), true);
-            $ct->apply($this, 'gor_sites');
-        }
-
-//        $this->addColumn('gor_id_organization', 'pref_url');
-//        $this->set('pref_url', 'label', $this->_("Preferred url"), 'elementClass', 'Exhibitor');
-        //$this->setOnLoad('pref_url', [$this->util->getSites(), 'getOrganizationPreferredUrl']);
+        $ct = new ConcatenatedRow(self::URL_SEPARATOR, $this->_(', '), true);
+        $ct->apply($this, 'gor_sites');
 
         $this->setIfExists('gor_code',             'label', $this->_('Organization code'),
                 'description', $this->_('Optional code name to link the organization to program code.')
@@ -327,6 +322,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
             'size' => 50,
             'validators[url]' => 'ExistingUrl',
             ]);
+        $this->set('gor_sites');
         $this->setIfExists('gor_code',
                 'size', 10
                 );

@@ -15,6 +15,7 @@ use Gems\Snippets\ModelFormSnippet;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -93,11 +94,7 @@ class StaffCreateEditSnippet extends ModelFormSnippet
                         //now ask if this is the one we would like to reactivate?
 
                         $this->addMessage(sprintf($this->_('User with id %s already exists but is deleted, do you want to reactivate the account?'), $result['gsf_login']));
-                        $this->afterSaveRouteUrl = array(
-                            $this->request->getControllerKey() => $this->request->getControllerName(),
-                            $this->request->getActionKey() => 'reactivate',
-                            \MUtil\Model::REQUEST_ID       => $result['gsf_id_user']
-                        );
+                        $this->afterSaveRoutePart = 'reactivate';
 
                         return;
                     } else {
@@ -139,36 +136,5 @@ class StaffCreateEditSnippet extends ModelFormSnippet
             }
         }
         return $output;
-    }
-
-    /**
-     * Set what to do when the form is 'finished'.
-     *
-     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
-     */
-    public function setAfterSaveRoute()
-    {
-        if ($this->switch) {
-            $controller = $this->isStaff ? 'staff' : 'system-user';
-            $this->afterSaveRouteUrl['controller'] = $controller;
-            $this->routeAction = 'show';
-            $this->resetRoute = true;
-            $this->afterSaveRouteKeys = true;
-        } else {
-            $user = $this->loader->getUserLoader()->getUserOrNull($this->formData['gsf_login'], $this->formData['gsf_id_organization']);
-
-            if (!$user || ! $user->canSetPassword()) {
-                $this->routeAction = 'show';
-                $this->resetRoute = true;
-                $this->afterSaveRouteKeys = true;
-            }
-        }
-
-        parent::setAfterSaveRoute();
-        if ($this->switch) {
-            // Controller is reset in \MUtil\Snippets\ModelFormSnippetAbstract::setAfterSaveRoute()
-            $this->afterSaveRouteUrl['controller'] = $controller;
-        }
-        return $this;
     }
 }

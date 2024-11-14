@@ -3,7 +3,7 @@
 namespace Gems\Tracker\Token;
 
 use Gems\Menu\RouteHelper;
-use Gems\Site\SiteUtil;
+use Gems\Repository\OrganizationRepository;
 use Gems\Tracker\Token;
 use MUtil\Model;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,9 +12,9 @@ use Zalt\Base\BaseDir;
 class TokenHelpers
 {
     public function __construct(
-        protected RouteHelper $routeHelper,
-        protected SiteUtil $siteUtil,
-        protected array $config,
+        protected readonly RouteHelper $routeHelper,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly array $config,
     )
     {}
     public function getReturnUrl(ServerRequestInterface $request, Token $token): string
@@ -43,7 +43,7 @@ class TokenHelpers
 
     public function isValidReturnUrl($url): bool
     {
-        if ($this->siteUtil->isAllowedUrl($url)) {
+        if ($this->organizationRepository->isAllowedUrl($url)) {
             return true;
         }
 

@@ -2,13 +2,13 @@
 
 namespace Gems\Repository;
 
-use Gems\Site\SiteUtil;
 use Mezzio\Helper\UrlHelper;
+use Zalt\Base\RequestUtil;
 
 class CurrentUrlRepository
 {
     public function __construct(
-        private readonly SiteUtil $siteUtil,
+        private readonly OrganizationRepository $organizationRepository,
         private readonly UrlHelper $urlHelper,
     )
     {
@@ -16,10 +16,6 @@ class CurrentUrlRepository
 
     public function getCurrentUrl(): string|null
     {
-        $site = $this->siteUtil->getCurrentSite($this->urlHelper->getRequest());
-        if ($site) {
-            return $site->getUrl();
-        }
-        return null;
+        return $this->organizationRepository->getAllowedUrl(RequestUtil::getCurrentSite($this->urlHelper->getRequest()));
     }
 }

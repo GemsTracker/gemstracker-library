@@ -32,7 +32,6 @@ class GemsTablesCreatedTimestampDefaultPatch extends PatchAbstract
         [ 'gems__respondent_relations', 'grr_created' ],
         [ 'gems__roles', 'grl_created' ],
         [ 'gems__rounds', 'gro_created' ],
-        [ 'gems__sites', 'gsi_created' ],
         [ 'gems__survey_question_options', 'gsqo_created' ],
         [ 'gems__survey_questions', 'gsq_created' ],
         [ 'gems__surveys', 'gsu_created' ],

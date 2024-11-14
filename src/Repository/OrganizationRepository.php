@@ -41,7 +41,11 @@ class OrganizationRepository
     public function getNoOrganizationOrganization(): Organization
     {
         if (!$this->noOrgOrganization) {
-            $this->noOrgOrganization = $this->projectOverloader->create('User\\Organization', static::SYSTEM_NO_ORG, $this->userLoader->getAvailableStaffDefinitions());
+            $this->noOrgOrganization = $this->projectOverloader->create(
+                'User\\Organization',
+                static::SYSTEM_NO_ORG,
+                $this->getSiteUrls(),
+                $this->userLoader->getAvailableStaffDefinitions());
         }
         return $this->noOrgOrganization;
     }
@@ -52,7 +56,12 @@ class OrganizationRepository
             return $this->getNoOrganizationOrganization();
         }
         if (!isset($this->organizations[$organizationId])) {
-            $this->organizations[$organizationId] = $this->projectOverloader->create('User\\Organization', $organizationId, $this->userLoader->getAvailableStaffDefinitions());
+            $this->organizations[$organizationId] = $this->projectOverloader->create(
+                'User\\Organization',
+                $organizationId,
+                $this->getSiteUrls(),
+                $this->userLoader->getAvailableStaffDefinitions(),
+            );
         }
         return $this->organizations[$organizationId];
     }
@@ -124,6 +133,16 @@ class OrganizationRepository
                 ->equalTo('gor_active', 1);
 
         return $this->cachedResultFetcher->fetchPairs($key, $select, null, $this->cacheTags);
+    }
+
+    public function getAllowedUrl(string $url): ? string
+    {
+        foreach($this->getSiteUrls() as $siteUrl) {
+            if (str_starts_with($url, $siteUrl)) {
+                return $siteUrl;
+            }
+        }
+        return null;
     }
 
     /**

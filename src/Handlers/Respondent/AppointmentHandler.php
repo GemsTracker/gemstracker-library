@@ -426,9 +426,4 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
             }
         }
     }
-
-    protected function getParameterMaps(): array
-    {
-        return [];
-    }
 }

@@ -22,6 +22,7 @@ use Gems\Util;
 use Gems\Util\Translated;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\ActivatingMultiType;
 use Zalt\Model\Type\JsonType;
@@ -105,6 +106,9 @@ class AppointmentModel extends GemsMaskedModel
                 $this->agenda->getStatusCodesInactive(),
                 'row_class'),
         ]);
+
+        $this->metaModel->addMap(MetaModelInterface::REQUEST_ID1, 'gr2o_patient_nr');
+        $this->metaModel->addMap(MetaModelInterface::REQUEST_ID2, 'gr2o_id_organization');
     }
 
     /**

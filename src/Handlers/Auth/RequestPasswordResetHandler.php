@@ -11,7 +11,7 @@ use Gems\Communication\Exception;
 use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
-use Gems\Site\SiteUtil;
+use Gems\Repository\OrganizationRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Gems\User\UserMailer;
@@ -36,7 +36,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly LayoutRenderer $layoutRenderer,
-        private readonly SiteUtil $siteUtil,
+        private readonly OrganizationRepository $organizationRepository,
         private readonly PasswordResetThrottleBuilder $passwordResetThrottleBuilder,
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
@@ -49,9 +49,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-
-        $siteUrl = $this->siteUtil->getSiteByFullUrl((string)$request->getUri());
-        $this->organizations = $siteUrl ? $this->siteUtil->getNamedOrganizationsFromSiteUrl($siteUrl) : [];
+        $this->organizations   = $this->organizationRepository->getOrganizationsForLogin();
 
         if ($request->getMethod() === 'POST') {
             return $this->handlePost($request);

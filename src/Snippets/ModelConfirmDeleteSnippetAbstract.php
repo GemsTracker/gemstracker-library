@@ -19,6 +19,7 @@ use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\DeleteModeEnum;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -154,6 +155,10 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
 
     public function getHtmlOutput()
     {
+        if (! $this->onEmpty) {
+            $this->onEmpty = $this->getOnEmpty();
+        }
+
         $html = $this->getHtmlSequence();
 
         $html->append($this->getTitleElement());
@@ -174,6 +179,21 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
             DeleteModeEnum::Activate => $this->getActivationMessage(),
             DeleteModeEnum::Block => '',
         };
+    }
+
+    public function getOnEmpty(): mixed
+    {
+        if ($this->requestInfo->getParam(MetaModelInterface::REQUEST_ID)) {
+            return sprintf(
+                $this->_('%s "%s" not found!'),
+                ucfirst($this->getTopic(1)),
+                $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID)
+            );
+        }
+        return sprintf(
+            $this->_('%s not found!'),
+            ucfirst($this->getTopic(1))
+        );
     }
 
     protected function getQuestion(): string
