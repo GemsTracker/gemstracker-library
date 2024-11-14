@@ -20,6 +20,7 @@ use Gems\User\UserLoader;
 use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\PhoneNumberFormatter;
 use Gems\Util\Translated;
+use Gems\Validator\IPRanges;
 use Laminas\Filter\Callback;
 use MUtil\Validator\NoScript;
 use MUtil\Validator\SimpleEmail;
@@ -495,6 +496,15 @@ class StaffModel extends JoinModel
             'default' => 'Gems\\User\\Embed\\Redirect\\RespondentShowPage',
             'description' => $this->_('The page the user is redirected to after successful login.'),
             'multiOptions' => $this->embedLoader->listRedirects(),
+        ]);
+
+        $this->set('gsus_allowed_ip_ranges', [
+            'label' => $this->_('Login allowed from IP Ranges'),
+            'description' => $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
+            'elementClass' => 'Textarea',
+            'itemDisplay' => [$this, 'ipWrap'],
+            'rows' => 4,
+            'validator' => new IPRanges(),
         ]);
 
         $this->set('gsus_deferred_mvc_layout', [

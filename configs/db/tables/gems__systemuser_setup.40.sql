@@ -14,6 +14,8 @@ CREATE TABLE if not exists gems__systemuser_setup (
         gsus_deferred_user_group    bigint(20) signed NULL default null,
         gsus_redirect               varchar(200) COLLATE 'utf8mb4_unicode_ci' NULL
                                         default 'Gems\\User\\Embed\\Redirect\\RespondentShowPage',
+        gsus_allowed_ip_ranges      text CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
+
         gsus_deferred_mvc_layout    varchar(200) COLLATE 'utf8mb4_unicode_ci' NULL default null,
         gsus_deferred_user_layout   varchar(200) COLLATE 'utf8mb4_unicode_ci' NULL default null,
         gsus_hide_breadcrumbs       varchar(20) COLLATE 'utf8mb4_unicode_ci' default '',
