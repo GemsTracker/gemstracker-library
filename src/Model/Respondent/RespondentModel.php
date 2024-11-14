@@ -116,8 +116,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         protected readonly array $config,
     )
     {
-        $this->currentUser    = $currentUserRepository->getCurrentUser();
-        $this->currentUserId = $currentUserRepository->getCurrentUserId();
+        $this->currentUser           = $currentUserRepository->getCurrentUser();
+        $this->currentUserId         = $currentUserRepository->getCurrentUserId();
         $this->currentOrganizationId = $currentUserRepository->getCurrentOrganizationId();
 
         $this->maskRepository = $maskRepository;
@@ -222,10 +222,14 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
             // If we're creating a new respondent, we only allow organizations
             // that accept new respondents.
-            if ($action instanceof EditActionAbstract && $action->createData) {
-                $respondentOrganizations = $this->currentUser->getNewRespondentOrganizations();
+            if ($this->currentUser instanceof User) {
+                if ($action instanceof EditActionAbstract && $action->createData) {
+                    $respondentOrganizations = $this->currentUser->getNewRespondentOrganizations();
+                } else {
+                    $respondentOrganizations = $this->currentUser->getRespondentOrganizations();
+                }
             } else {
-                $respondentOrganizations = $this->currentUser->getRespondentOrganizations();
+                $respondentOrganizations = $this->organizationRepository->getOrganizationsOpenToRespondents();
             }
 
             // If our current organization is not in the list of organizations we
