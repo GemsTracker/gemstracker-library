@@ -5779,7 +5779,7 @@ msgstr "Taal"
 #: gemstracker/gemstracker/src/Model/CommTemplateModel.php:137
 #: gemstracker/gemstracker/src/Model/Type/CommTemplateSingleLanguageFlatModel.php:64
 msgid "Body"
-msgstr "Hoofd-stuk"
+msgstr "Inhoud"
 
 #: gemstracker/gemstracker/src/Model/ConditionModel.php:62
 msgid "Determines where the condition can be applied."

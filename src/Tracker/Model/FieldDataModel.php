@@ -59,8 +59,8 @@ class FieldDataModel extends UnionModel
      */
     public function getFieldName(string $field, string $modelName): string
     {
-        if (isset($this->_unionMapsTo[$modelName][$field])) {
-            return $this->_unionMapsTo[$modelName][$field];
+        if (isset($this->unionMapsTo[$modelName][$field])) {
+            return $this->unionMapsTo[$modelName][$field];
         }
 
         return $field;
@@ -74,7 +74,7 @@ class FieldDataModel extends UnionModel
      */
     public function getTableName(string $modelName): string|null
     {
-        if (! isset($this->_unionModels[$modelName])) {
+        if (! isset($this->unionModels[$modelName])) {
             return null;
         }
 

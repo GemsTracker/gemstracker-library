@@ -2,14 +2,15 @@
 
 namespace Gems\Model;
 
+use Gems\Html;
 use Gems\Locale\Locale;
-use Gems\Model;
 use Gems\Model\Transform\HtmlSanitizeTransformer;
 use Gems\Repository\CommFieldRepository;
-use Gems\Repository\MailRepository;
 use Gems\Util\Translated;
-use MUtil\Model\TableModel;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Html\Raw;
+use Zalt\Html\Sequence;
+use Zalt\Model\Bridge\DisplayBridge;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
@@ -76,16 +77,17 @@ class CommTemplateModel extends GemsJoinModel
 
         $oneToMany = new OneToManyTransformer();
         $oneToMany->addModel($subModel, [
-            'gct_id_template' => 'gctt_id_template',
-        ],
+                'gct_id_template' => 'gctt_id_template',
+            ],
             'translations');
 
         $this->metaModel->addTransformer($oneToMany);
         $this->metaModel->set('translations', [
-            'model' => $subModel,
-            'elementClass' => 'commTemplateTranslations',
-            'type' => MetaModelInterface::TYPE_CHILD_MODEL,
             'label' => $this->translate->_('Translations'),
+            'formatFunction' => [$this, 'displayTranslations'],
+            'elementClass' => 'commTemplateTranslations',
+            'model' => $subModel,
+            'type' => MetaModelInterface::TYPE_CHILD_MODEL,
         ]);
 
         $requiredRows = [
@@ -114,8 +116,37 @@ class CommTemplateModel extends GemsJoinModel
         return [$this->locale->getDefaultLanguage()];
     }
 
+    public function displayTranslations($translations)
+    {
+        $subModel = $this->getSubModel();
+        $subMeta  = $subModel->getMetaModel();
+        $bridge   = $this->metaModelLoader->createBridge(DisplayBridge::class, $subModel);
+
+        $html = Html::div(['class' => 'comm-translations']);
+        foreach ($translations as $translation) {
+            // @phpstan-ignore method.notFound
+            $html->hr();
+            $div = $html->div(['class' => 'comm-translation']);
+            foreach ($translation as $field => $value) {
+                $label = $subMeta->get($field, 'label');
+                if ($label) {
+                    $div->strong($label);
+                    $div->p($bridge->format($field, $value));
+                }
+            }
+        }
+
+        return $html;
+    }
+
+
     protected function getSubModel(): DataReaderInterface
     {
+        static $subModel = null;
+
+        if ($subModel) {
+            return $subModel;
+        }
 
         $languages = array_combine($this->getEmailLanguages(), $this->getEmailLanguages());
 
@@ -137,6 +168,7 @@ class CommTemplateModel extends GemsJoinModel
             'label' => $this->translate->_('Body'),
             'apiName' => 'body',
             'elementClass' => 'Textarea',
+            'formatFunction' => [Html::class, 'raw'],
             'cols' => 100,
             'rows' => 10
         ]);

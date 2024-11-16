@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker;
 
 use Gems\Tracker\Snippets\EditTrackSnippetAbstract;
 use Mezzio\Session\SessionInterface;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -69,6 +70,9 @@ class EditTrackSnippet extends EditTrackSnippetAbstract
             // concatenate user input (gtf_field fields)
             // before the data is saved (the fields them
             $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->formData);
+        }
+        if (! isset($this->formData['gr2t_id_organization'])) {
+            $this->formData['gr2t_id_organization'] = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2);
         }
 
         // Perform the save
