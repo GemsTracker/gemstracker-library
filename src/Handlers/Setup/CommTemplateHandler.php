@@ -49,20 +49,6 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
         'dataEndpoint' => 'comm-template',
     ];
 
-    /**
-     * The snippets used for the create and edit actions.
-     *
-     * @var mixed String or array of snippets name
-     */
-    //protected array $createEditSnippets = ['Mail\\MailModelFormSnippet'];
-
-    /**
-     * The snippets used for the show action
-     *
-     * @var mixed String or array of snippets name
-     */
-    //protected array $showSnippets = ['Mail\\CommTemplateShowSnippet'];
-
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,

@@ -81,6 +81,9 @@ abstract class AutoLoadFormAbstract extends \Gems\Form
             $options = array('class' => 'button');
 
             $element = $this->createElement('submit', $this->_submitFieldName, $options);
+            /**
+             * @var \Zend_Form_Element_Submit $element
+             */
             $element->setLabel($this->getSubmitButtonLabel());
 
             $this->addElement($element);
@@ -109,7 +112,7 @@ abstract class AutoLoadFormAbstract extends \Gems\Form
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $loadDefault
-     * @return \Gems\User\Form\LoginForm (continuation pattern)
+     * @return \Gems\Form\AutoLoadFormAbstract (continuation pattern)
      */
     public function setLoadDefault($loadDefault = true)
     {

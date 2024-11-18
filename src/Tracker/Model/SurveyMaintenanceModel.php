@@ -94,7 +94,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
     public function applyAction(SnippetActionInterface $action): void
     {
         if ($action->isDetailed()) {
-            $hideSetting = ['elementClass' => 'Hidden', 'label' => ''];
+            $hideSetting = ['elementClass' => 'None', 'label' => ''];
 
             /**
              *

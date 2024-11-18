@@ -16,6 +16,7 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Tracker;
 use Gems\Util\Translated;
+use Laminas\Db\Adapter\Adapter;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -40,23 +41,28 @@ class TracksForAppointment extends TracksSnippet
         TranslatorInterface $translate,
         Tracker $tracker,
         Translated $translatedUtil,
-        protected \Zend_Db_Adapter_Abstract $db,
+        protected ResultFetcher $resultFetcher,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $tracker, $translatedUtil);
 
         $this->caption = $this->_("Tracks using this appointment");
         $this->onEmpty = $this->_("No tracks use this appointment");
+
+        if (isset($this->extraFilter['gap_id_appointment'])) {
+            unset($this->extraFilter['gap_id_appointment']);
+        }
     }
 
     public function getFilter(MetaModelInterface $metaModel) : array
     {
-        $filter[] = $this->db->quoteInto(
+        $platform = $this->resultFetcher->getPlatform();
+        $filter[] = sprintf(
             "gr2t_id_respondent_track IN (
                     SELECT gr2t2a_id_respondent_track
                     FROM gems__respondent2track2appointment
-                    WHERE gr2t2a_id_appointment = ?)",
-            $this->requestInfo->getParam(Model::APPOINTMENT_ID)
+                    WHERE gr2t2a_id_appointment = %s)",
+            $platform->quoteValue($this->requestInfo->getParam(Model::APPOINTMENT_ID))
         );
         return $filter;
     }

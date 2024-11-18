@@ -24,60 +24,16 @@ use DateInterval;
 
 class Token extends \Gems\Tracker\Token
 {
-    /*public function __construct(protected ProjectOverloader $overloader)
+    protected Organization $fakeOrganization;
+
+    public function __construct(ResultFetcher $resultFetcher, MaskRepository $maskRepository, Tracker $tracker, ProjectSettings $projectSettings, ConsentRepository $consentRepository, OrganizationRepository $organizationRepository, ReceptionCodeRepository $receptionCodeRepository, RespondentRepository $respondentRepository, ProjectOverloader $projectOverloader, Translated $translatedUtil, Locale $locale, TokenRepository $tokenRepository, EventDispatcherInterface $eventDispatcher, TranslatorInterface $translator, MessageBusInterface $messageBus, Loggers $loggers, CurrentUserRepository $currentUserRepository)
     {
-        //if ($tokenData === null) {
-            $tokenData = $this->getTokenData();
-        //}
-        parent::__construct($tokenData);
-    }*/
-
-    public function __construct(
-        ResultFetcher $resultFetcher,
-        MaskRepository $maskRepository,
-        Tracker $tracker,
-        ProjectSettings $projectSettings,
-        ConsentRepository $consentRepository,
-        OrganizationRepository $organizationRepository,
-        ReceptionCodeRepository $receptionCodeRepository,
-        RespondentRepository $respondentRepository,
-        ProjectOverloader $projectOverloader,
-        Translated $translatedUtil,
-        Locale $locale,
-        TokenRepository $tokenRepository,
-        EventDispatcherInterface $eventDispatcher,
-        TranslatorInterface $translator,
-        MessageBusInterface $messageBus,
-        Loggers $loggers,
-        CurrentUserRepository $currentUserRepository
-    ) {
-
-
-        parent::__construct(
-            $this->getTokenData(),
-            $resultFetcher,
-            $maskRepository,
-            $tracker,
-            $projectSettings,
-            $consentRepository,
-            $organizationRepository,
-            $receptionCodeRepository,
-            $respondentRepository,
-            $projectOverloader,
-            $translatedUtil,
-            $locale,
-            $tokenRepository,
-            $eventDispatcher,
-            $translator,
-            $messageBus,
-            $loggers,
-            $currentUserRepository
-        );
+        parent::__construct($this->getTokenData($organizationRepository), $resultFetcher, $maskRepository, $tracker, $projectSettings, $consentRepository, $organizationRepository, $receptionCodeRepository, $respondentRepository, $projectOverloader, $translatedUtil, $locale, $tokenRepository, $eventDispatcher, $translator, $messageBus, $loggers, $currentUserRepository);
     }
 
     public function getOrganization(): Organization
     {
-        return new Organization();
+        return $this->fakeOrganization;
     }
 
     public function getRespondent(): Respondent
@@ -95,9 +51,9 @@ class Token extends \Gems\Tracker\Token
         return $this->projectOverloader->create(Survey::class);
     }
 
-    public function getTokenData(): array
+    public function getTokenData(OrganizationRepository $organizationRepository): array
     {
-        $organization = $this->getOrganization();
+        $this->fakeOrganization = new Organization($organizationRepository->getSiteUrls());
 
         $now = new DateTimeImmutable();
         $nextMonth = $now->add(new DateInterval('P1M'));
@@ -105,7 +61,7 @@ class Token extends \Gems\Tracker\Token
         return [
             'gto_id_token' => 'abcd-1234',
             'gto_id_respondent' => 0,
-            'gto_id_organization' => $organization->getId(),
+            'gto_id_organization' => $this->fakeOrganization->getId(),
             'gto_id_survey' => 9999,
             'gto_id_respondent_track' => 987654321,
             'gto_round_description' => 'Test round',
@@ -114,11 +70,9 @@ class Token extends \Gems\Tracker\Token
             'gto_valid_from' => $now,
             'gto_valid_until' => $nextMonth,
 
-
             'gr2o_id_user' => 0,
             'gr2o_patient_nr' => 'TEST001',
             'gco_code' => 'OK',
-
         ];
     }
 

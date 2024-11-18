@@ -256,6 +256,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         }
 
         $subName  = $model->getModelNameForRow($context);
+
         $sql = sprintf("SELECT COUNT(*)
             FROM %s INNER JOIN gems__respondent2track ON %s = gr2t_id_respondent_track
                 INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
@@ -267,7 +268,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
                 $model->getFieldName('gr2t2f_value', $subName),
                 $this->trackId
                 );
-        
+
         // Add the period filter - if any
         if ($this->dateWhere) {
             $sql .= ' AND ' . $this->dateWhere;

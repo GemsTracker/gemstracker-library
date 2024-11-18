@@ -28,6 +28,8 @@ use Gems\Tracker\Token;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -244,6 +246,17 @@ class TokenHandler extends TokenSearchHandlerAbstract
         ]);
 
         return $batchRunner->getResponse($this->request);
+    }
+
+    public function createModel(bool $detailed, string $action): DataReaderInterface
+    {
+        $model = parent::createModel($detailed, $action);
+        $metaModel = $model->getMetaModel();
+
+        $metaModel->addMap(MetaModelInterface::REQUEST_ID1, 'gr2o_patient_nr');
+        $metaModel->addMap(MetaModelInterface::REQUEST_ID2, 'gr2o_id_organization');
+
+        return $model;
     }
 
     /**

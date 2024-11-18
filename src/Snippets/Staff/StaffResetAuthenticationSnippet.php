@@ -34,7 +34,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
 {
-    protected User $user;
+    protected bool|User $user;
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -56,8 +56,12 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
      */
     protected function addFormElements(mixed $form)
     {
+        if (false === $this->user) {
+            $this->messenger->addMessage($this->_('This account cannot login, so it cannot be reset..'));
+            return;
+        }
         if (!$this->user->hasEmailAddress()) {
-            $this->messenger->addInfo($this->_('This account has no e-mail address configured. An e-mail address is required to reset authentication.'));
+            $this->messenger->addMessage($this->_('This account has no e-mail address configured. An e-mail address is required to reset authentication.'));
             return;
         }
 
@@ -158,7 +162,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
             $email->addFrom(new Address($organization->getEmail()));
 
             $template = $this->communicationRepository->getTemplate($organization);
-            $mailer = $this->communicationRepository->getMailer($organization->getEmail());
+            $mailer = $this->communicationRepository->getMailer();
 
             $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
             $email->subject($mailTexts['subject'], $mailFields);

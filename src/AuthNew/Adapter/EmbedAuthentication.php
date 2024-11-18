@@ -17,6 +17,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
         private readonly string $deferredLoginName,
         private readonly string $patientId,
         private readonly int $organizationId,
+        private readonly string $ipAddress,
     ) {
     }
 
@@ -35,6 +36,10 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
         $systemUserData = $this->userLoader->getEmbedderData($systemUser);
         if (! $systemUserData instanceof EmbeddedUserData) {
             return $this->makeFailResult(AuthenticationResult::FAILURE, ['No user data']);
+        }
+
+        if (!$systemUserData->isAllowedIpForLogin($this->ipAddress)) {
+            return $this->makeFailResult(AuthenticationResult::DISALLOWED_IP, ['You are not allowed to login from this location.']);
         }
 
         $authClass = $systemUserData->getAuthenticator();
