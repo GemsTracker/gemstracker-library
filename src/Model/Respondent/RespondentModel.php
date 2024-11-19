@@ -279,7 +279,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'validator[uniquePatientnr]' => new ModelUniqueValidator('gr2o_patient_nr', 'gr2o_id_organization')
         ]);
         $this->metaModel->set('grs_id_user', [
-            'elementClass' => 'Hidden',
+            'elementClass' => 'None',
         ]);
         // $this->metaModel->setSaveWhenNew('grs_id_user');
         $this->metaModel->setAutoSave('grs_id_user');
@@ -412,7 +412,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         $this->setIfExists('gr2o_opened_by', [
             'default' => $this->currentUserId,
-            'elementClass' => 'Hidden',  // Has little use to show: is usually editor, but otherwise is set to null during save
+            'elementClass' => 'None',  // Has little use to show: is usually editor, but otherwise is set to null during save
             'multiOptions' => $changers
         ]);
         $this->setIfExists('gr2o_changed', [
