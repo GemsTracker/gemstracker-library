@@ -11,12 +11,10 @@
 
 namespace Gems\Handlers\Respondent;
 
-use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Model;
+use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Repository\RespondentRepository;
-use Gems\Tracker\Respondent;
 use Gems\User\User;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
@@ -86,5 +84,17 @@ abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerA
     protected function assertAccessFromOrganization(User $currentUser, int $organizationId): void
     {
         $this->getRespondent()->assertAccessFromOrganizationId($currentUser, $organizationId);
+    }
+
+    protected function setRespondentIdInModel(MetaModelInterface $metaModel, string $respondentField, string|null $organizationField = null): void
+    {
+        $fixedData = [
+            $respondentField => $this->getRespondentId(),
+        ];
+        if ($organizationField) {
+            $fixedData[$organizationField] = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
+        }
+
+        $metaModel->addTransformer(new FixedValueTransformer($fixedData));
     }
 }

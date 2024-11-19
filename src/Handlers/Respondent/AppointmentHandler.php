@@ -259,6 +259,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
                     }
 
                     $this->appointmentModel->getMetaModel()->set('gap_id_user', ['default' => $this->respondentId]);
+                    $this->setRespondentIdInModel($this->appointmentModel->getMetaModel(), 'gap_id_user', 'gap_id_organization');
                     $this->appointmentModel->getMetaModel()->set('gap_manual_edit', ['default' => 1]);
                     $this->appointmentModel->getMetaModel()->set('gap_admission_time', ['default' => new \DateTimeImmutable('tomorrow')]);
                 } else {

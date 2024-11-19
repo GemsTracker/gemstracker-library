@@ -131,6 +131,8 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
             if (('edit' === $action) || ('create' === $action)) {
                 $model->applyEditSettings($respondent->getOrganizationId(), $respondent->getId());
 
+                $this->setRespondentIdInModel($model->getMetaModel(), 'gec_id_user', 'gec_id_organization');
+
                 // When there is something saved, then set manual edit to 1
                 $model->setSaveOnChange('gec_manual_edit');
                 $model->setOnSave(      'gec_manual_edit', 1);

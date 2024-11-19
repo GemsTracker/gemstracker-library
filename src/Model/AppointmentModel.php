@@ -17,6 +17,7 @@ use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model;
+use Gems\Repository\OrganizationRepository;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util;
 use Gems\Util\Translated;
@@ -80,9 +81,10 @@ class AppointmentModel extends GemsMaskedModel
         CurrentUserRepository $currentUserRepository,
         MaskRepository $maskRepository,
         protected readonly ResultFetcher $resultFetcher,
-        protected readonly Util $util,
         protected readonly Translated $translatedUtil,
         protected readonly RouteHelper $routeHelper,
+        protected readonly OrganizationRepository $organizationRepository,
+
     ) {
         // gems__respondents MUST be first table for INSERTS!!
         parent::__construct('gems__appointments', $this->metaModelLoader, $sqlRunner, $translate, $maskRepository);
@@ -222,7 +224,6 @@ class AppointmentModel extends GemsMaskedModel
     {
         $this->metaModel->resetOrder();
 
-        $dbLookup   = $this->util->getDbLookup();
         $empty      = $this->translatedUtil->getEmptyDropdownArray();
 
         $this->metaModel->setIfExists('gap_admission_time', [
@@ -264,7 +265,7 @@ class AppointmentModel extends GemsMaskedModel
         $this->metaModel->setIfExists('gap_id_organization', [
             'label' => $this->_('Organization'),
             'elementClass' => 'Exhibitor',
-            'multiOptions' => $empty + $dbLookup->getOrganizations()
+            'multiOptions' => $empty + $this->organizationRepository->getOrganizations(),
         ]);
         $this->metaModel->setIfExists('gap_subject', ['label' => $this->_('Subject')]);
         $this->metaModel->setIfExists('gap_comment', ['label' => $this->_('Comment')]);
@@ -299,7 +300,7 @@ class AppointmentModel extends GemsMaskedModel
         $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
         $this->metaModel->set('gap_id_user', [
-            'elementClass' => 'Hidden',
+            'elementClass' => 'None',
         ]);
 
         $this->metaModel->setIfExists('gap_id_organization', ['default' => $orgId ?: $this->currentOrganization->getId()]);
@@ -312,6 +313,8 @@ class AppointmentModel extends GemsMaskedModel
         $this->metaModel->setIfExists('gap_id_activity', ['multiOptions' => $empty + $this->agenda->getActivities($orgId)]);
         $this->metaModel->setIfExists('gap_id_procedure', ['multiOptions' => $empty + $this->agenda->getProcedures($orgId)]);
         $this->metaModel->setIfExists('gap_id_location', ['multiOptions' => $empty + $this->agenda->getLocations($orgId)]);
+        $this->metaModel->setIfExists('gap_id_attended_by', ['multiOptions' => $empty + $this->agenda->getHealthcareStaff($orgId)]);
+        $this->metaModel->setIfExists('gap_id_referred_by', ['multiOptions' => $empty + $this->agenda->getHealthcareStaff($orgId)]);
 
         if ($this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
             $this->metaModel->setIfExists('gap_id_episode', ['multiOptions' => $empty]);
