@@ -13,6 +13,8 @@ namespace Gems\Handlers\Respondent;
 
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
+use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Pdf;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\RespondentRepository;
@@ -21,6 +23,7 @@ use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\User\Mask\MaskRepository;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -185,6 +188,15 @@ class TrackHandler extends RespondentChildHandlerAbstract
         }
         if ($apply) {
             $model->applyBrowseSettings();
+        }
+        if ($action === 'edit' || $action === 'create') {
+            $metaModel = $model->getMetaModel();
+            $metaModel->addTransformer(new FixedValueTransformer([
+                'gr2t_id_user' => $this->getRespondentId(),
+                'gr2t_id_organization' => $this->request->getAttribute(MetaModelInterface::REQUEST_ID2),
+                'gr2t_id_track' => $this->request->getAttribute(Model::TRACK_ID),
+            ]));
+            $metaModel->setMulti(['gr2t_id_user', 'gr2t_id_organization', 'gr2t_id_track'], ['elementClass' => 'None']);
         }
 
         return $model;

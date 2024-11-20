@@ -7,6 +7,8 @@ namespace Gems\Handlers\Respondent;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Exception;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
+use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Export\RespondentExportSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -30,6 +32,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class RespondentTrackHandler extends RespondentChildHandlerAbstract
@@ -211,6 +214,15 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
         }
         if ($apply) {
             $model->applyBrowseSettings();
+        }
+        if ($action === 'edit' || $action === 'create') {
+            $metaModel = $model->getMetaModel();
+            $metaModel->addTransformer(new FixedValueTransformer([
+                'gr2t_id_user' => $this->getRespondentId(),
+                'gr2t_id_organization' => $this->request->getAttribute(MetaModelInterface::REQUEST_ID2),
+                'gr2t_id_track' => $this->request->getAttribute(Model::TRACK_ID),
+            ]));
+            $metaModel->setMulti(['gr2t_id_user', 'gr2t_id_organization', 'gr2t_id_track'], ['elementClass' => 'None']);
         }
 
         return $model;

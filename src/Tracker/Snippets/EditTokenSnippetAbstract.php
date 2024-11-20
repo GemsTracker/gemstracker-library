@@ -39,6 +39,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 abstract class EditTokenSnippetAbstract extends ModelFormSnippetAbstract
 {
+    protected TokenModel|StandardTokenModel|null $model = null;
+
     /**
      * Optional: $request or $tokenData must be set
      *
@@ -77,6 +79,10 @@ abstract class EditTokenSnippetAbstract extends ModelFormSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
+        if ($this->model) {
+            return $this->model;
+        }
+
         if (TokenModel::$useTokenModel) {
             $model = $this->metaModelLoader->createModel(TokenModel::class);
             $model->applyDetailedFormatting();

@@ -18,6 +18,7 @@ use Gems\Handlers\Overview\TokenSearchHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\MetaModelLoader;
+use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
@@ -256,6 +257,9 @@ class TokenHandler extends TokenSearchHandlerAbstract
         $metaModel->addMap(MetaModelInterface::REQUEST_ID1, 'gr2o_patient_nr');
         $metaModel->addMap(MetaModelInterface::REQUEST_ID2, 'gr2o_id_organization');
 
+        $metaModel->set('gto_id_respondent', ['elementClass' => 'None']);
+        $metaModel->addTransformer(new FixedValueTransformer(['gto_id_respondent' => $this->getRespondentId()]));
+
         return $model;
     }
 
@@ -296,7 +300,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
      * Email the user
      */
     public function emailAction()
-    {
+    {//
         if ($this->emailSnippets) {
             $params = $this->_processParameters($this->emailParameters + $this->defaultTokenParameters);
             $params['submitLabel'] = $this->translate->_('Send email');

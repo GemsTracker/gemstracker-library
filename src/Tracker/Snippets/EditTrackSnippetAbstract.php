@@ -18,6 +18,7 @@ use Gems\Model;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;
+use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
@@ -41,6 +42,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
 class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
 {
     protected string $afterSaveRoutePart = 'show-track';
+
+    protected RespondentTrackModel|null $model;
 
     /**
      * Optional, required when creating
@@ -114,8 +117,11 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
-    protected function createModel(): FullDataInterface
+    protected function createModel(): RespondentTrackModel
     {
+        if ($this->model) {
+            return $this->model;
+        }
         $model   = $this->tracker->getRespondentTrackModel();
 
         if (! $this->trackEngine instanceof TrackEngineInterface) {
