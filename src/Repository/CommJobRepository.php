@@ -11,6 +11,7 @@ use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\Exception;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Log\Loggers;
 use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SetCommJobTokenAsSent;
 use Gems\Tracker;
@@ -36,15 +37,16 @@ class CommJobRepository
         ];
 
     public function __construct(
-        protected CachedResultFetcher $cachedResultFetcher,
-        protected HelperAdapter $cache,
-        protected TranslatorInterface $translator,
-        protected Tracker $tracker,
-        protected MailJobMessenger $mailJobMessenger,
-        protected SmsJobMessenger $smsJobMessenger,
-        protected CommunicationRepository $communicationRepository,
-        protected MessageBusInterface $messageBus,
+        protected readonly CachedResultFetcher $cachedResultFetcher,
+        protected readonly HelperAdapter $cache,
+        protected readonly TranslatorInterface $translator,
+        protected readonly Tracker $tracker,
+        protected readonly MailJobMessenger $mailJobMessenger,
+        protected readonly SmsJobMessenger $smsJobMessenger,
+        protected readonly CommunicationRepository $communicationRepository,
+        protected readonly MessageBusInterface $messageBus,
         CurrentUserRepository $currentUserRepository,
+        protected readonly Loggers $loggers,
     )
     {
         $this->resultFetcher = $this->cachedResultFetcher->getResultFetcher();
@@ -704,12 +706,18 @@ class CommJobRepository
             throw new Exception('Mail job not found!');
         }
 
+        $cronErrorLog = $this->loggers->getLogger('commJobErrorLog');
+
         $reload = true;
         while ($reload) {
             $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId, $forced);
-            $reload   = false;
-            foreach($tokenIds as $tokenData) {
-                $reload = $this->checkTokenCompletion($tokenData['gto_id_token']);
+            $reload = false;
+            foreach ($tokenIds as $tokenData) {
+                try {
+                    $reload = $this->checkTokenCompletion($tokenData['gto_id_token']);
+                } catch (\Exception $e) {
+                    $cronErrorLog->error($e->getMessage(), $e->getTrace());
+                }
             }
         }
 
@@ -784,6 +792,8 @@ class CommJobRepository
             } else {
                 throw new InvalidQueryException(sprintf('%s with %d retries', $e->getMessage(), $retry), $e->getCode(), $e);
             }
+        } catch(\Exception $e) {
+
         }
 
         return false;

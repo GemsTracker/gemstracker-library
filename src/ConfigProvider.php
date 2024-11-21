@@ -404,6 +404,7 @@ class ConfigProvider
                 // Logs
                 'LegacyLogger' => MonologFactory::class,
                 'embeddedLoginLog' => MonologFactory::class,
+                'commJobErrorLog' => MonologFactory::class,
 
                 // Cache
                 \Symfony\Component\Cache\Adapter\AdapterInterface::class => CacheFactory::class,
@@ -611,6 +612,17 @@ class ConfigProvider
                         'priority' => LogLevel::NOTICE,
                         'options' => [
                             'stream' => 'data/logs/cron.log',
+                        ],
+                    ],
+                ],
+            ],
+            'commJobErrorLog' => [
+                'writers' => [
+                    'stream' => [
+                        'name' => 'stream',
+                        'priority' => LogLevel::DEBUG,
+                        'options' => [
+                            'stream' => 'data/logs/cron-error.log',
                         ],
                     ],
                 ],
