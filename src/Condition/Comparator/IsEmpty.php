@@ -43,6 +43,6 @@ class IsEmpty extends ComparatorAbstract
      */
     public function isValid(mixed $value): bool
     {
-        return strlen($value) === 0;
+        return strlen((string) $value) === 0;
     }
 }
