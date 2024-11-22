@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Model;
 use Gems\Tracker\Snippets\EditTrackSnippetAbstract;
 use Mezzio\Session\SessionInterface;
 use Zalt\Model\MetaModelInterface;
@@ -73,6 +74,9 @@ class EditTrackSnippet extends EditTrackSnippetAbstract
         }
         if (! isset($this->formData['gr2t_id_organization'])) {
             $this->formData['gr2t_id_organization'] = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2);
+        }
+        if (! isset($this->formData['gr2t_id_track'])) {
+            $this->formData['gr2t_id_track'] = $this->requestInfo->getParam(Model::RESPONDENT_TRACK);
         }
 
         // Perform the save
