@@ -57,7 +57,7 @@
         "doctrine/dbal": "^3.4",
         "doctrine/orm": "^2.13",
         "erusev/parsedown": "~1.7",
-        "gemstracker/gems-api": "^1.0.0",
+        "gemstracker/gems-api": "^1.0.6",
         "gemstracker/gems-fhir-api": "^1.0.0",
         "giggsey/libphonenumber-for-php": "^8.13.7",
         "guzzlehttp/guzzle": "^7.9.0",
