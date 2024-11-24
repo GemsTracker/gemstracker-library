@@ -42,6 +42,7 @@ class LoadTracksFor extends \MUtil\Task\TaskAbstract
             ->join('gems__tracks', 'gr2t_id_track = gtr_id_track', [])
             ->where($where)
             ->where(['gr2t_id_respondent_track <= ' . intval($maxTrackId)])
+            ->order('gr2t_id_respondent_track desc')
             ->limit(1000);
 
         $respTrackId = null;
