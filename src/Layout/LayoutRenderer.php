@@ -111,6 +111,8 @@ class LayoutRenderer
 
         $params['resources'] = array_merge($params['resources'], $layoutSettings->getResources());
 
+        $params['idle_check'] = $layoutSettings->checkIdle();
+
         $params += $defaultParams;
 
         $env = Env::get('APP_ENV', '');

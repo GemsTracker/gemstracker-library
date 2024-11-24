@@ -176,38 +176,35 @@ class Tracker implements TrackerInterface
         $userId = $this->_checkUserId($userId);
 
         $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
+        $batch->setVariable(ResultFetcher::class, $this->resultFetcher);
+
         //Now set the step duration
         $batch->minimalStepDurationMs = 3000;
 
         if (! $batch->isLoaded()) {
-            $respTrackSelect = $this->resultFetcher->getSelect();
-            $respTrackSelect->from('gems__respondent2track')
-                ->columns(['gr2t_id_respondent_track'])
+            $respTrackSelect = $this->resultFetcher->getSelect('gems__respondent2track');
+            $respTrackSelect
+                ->columns(['count' => new Expression('count(gr2t_id_respondent_track)'), 'max' => new Expression('max(gr2t_id_respondent_track)')])
                 ->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', [])
                 ->join('gems__tracks', 'gr2t_id_track = gtr_id_track', []);
 
-            if ($cond) {
-                $respTrackSelect->where($cond);
-            }
-            $respTrackSelect->where([
+            $where = [
                 'gr2t_active' => 1,
                 'grc_success' => 1,
                 'gtr_active' => 1,
-            ]);
-            // Also recaclulate when track was completed: there may be new rounds!
-            // $respTrackSelect->where('gr2t_count != gr2t_completed');
-
-            $resultSet = $this->resultFetcher->query($respTrackSelect);
-
-            if ($resultSet instanceof ResultSet) {
-                //Process one item at a time to prevent out of memory errors for really big resultsets
-                while ($resultSet->valid()) {
-                    $respTrackData = $resultSet->current();
-                    $respTrackId = $respTrackData['gr2t_id_respondent_track'];
-                    $batch->setTask('Tracker\\CheckTrackRounds', 'trkchk-' . $respTrackId, $respTrackId, $userId);
-                    $batch->addToCounter('resptracks');
-                    $resultSet->next();
-                }
+            ];
+            if ($cond) {
+                $where = $cond + $where;
+            }
+            $respTrackSelect->where($where);
+            $row = $this->resultFetcher->fetchRow($respTrackSelect);
+            if (! $row) {
+                $row['count'] = 0;
+                $row['max'] = null;
+            }
+            $batch->setMessage('trackCount', sprintf($this->translator->_('%d tracks available'), $row['count']));
+            if ($row['max']) {
+                $batch->addTask('Tracker\\LoadTracksFor', $row['max'], $where, 'Tracker\\CheckTrackRounds', $userId);
             }
         }
 
@@ -1066,36 +1063,36 @@ class Tracker implements TrackerInterface
      */
     public function recalcTrackFields(SessionInterface $session, string $batchId, array $cond = []): TaskRunnerBatch
     {
-        $respTrackSelect = $this->resultFetcher->getSelect();
-        $respTrackSelect->from('gems__respondent2track');
-        $respTrackSelect->columns(['gr2t_id_respondent_track'])
-            ->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', [])
-            ->join('gems__tracks', 'gr2t_id_track = gtr_id_track', []);
-
-        $cond['gr2t_active'] = 1;
-        $cond['grc_success'] = 1;
-        $cond['gtr_active'] = 1;
-        $respTrackSelect->where($cond);
-
         $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
+        $batch->setVariable(ResultFetcher::class, $this->resultFetcher);
+
         //Now set the step duration
         $batch->minimalStepDurationMs = 3000;
 
         if (! $batch->isLoaded()) {
-            $resultSet = $this->resultFetcher->query($respTrackSelect);
+            $respTrackSelect = $this->resultFetcher->getSelect('gems__respondent2track');
+            $respTrackSelect
+                ->columns(['count' => new Expression('count(gr2t_id_respondent_track)'), 'max' => new Expression('max(gr2t_id_respondent_track)')])
+                ->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', [])
+                ->join('gems__tracks', 'gr2t_id_track = gtr_id_track', []);
 
-            $count = 1;
-            if ($resultSet instanceof ResultSet) {
-                // Process one item at a time to prevent out of memory errors for really big resultsets
-                while ($resultSet->valid()) {
-                    $respTrackData = $resultSet->current();
-                    if ($respTrackData) {
-                        $respTrackId = $respTrackData['gr2t_id_respondent_track'];
-                        $batch->setTask('Tracker\\RecalculateFields', 'trkfcalc-' . $respTrackId, $respTrackId);
-                        $batch->addToCounter('resptracks');
-                    }
-                    $resultSet->next();
-                }
+            $where = [
+                'gr2t_active' => 1,
+                'grc_success' => 1,
+                'gtr_active' => 1,
+            ];
+            if ($cond) {
+                $where = $cond + $where;
+            }
+            $respTrackSelect->where($where);
+            $row = $this->resultFetcher->fetchRow($respTrackSelect);
+            if (! $row) {
+                $row['count'] = 0;
+                $row['max'] = null;
+            }
+            $batch->setMessage('trackCount', sprintf($this->translator->_('%d tracks available'), $row['count']));
+            if ($row['max']) {
+                $batch->addTask('Tracker\\LoadTracksFor', $row['max'], $where, 'Tracker\\RecalculateFields', null);
             }
         }
 

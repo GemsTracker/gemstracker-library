@@ -66,6 +66,7 @@ class BatchRunner
         }
 
         $this->layoutSettings->addVue($this->vueSettings);
+        $this->layoutSettings->disableIdleCheck();
         $attributes = $this->batch->getJsAttributes();
         $attributes['title'] = $this->getTitle();
         $this->layoutSettings->addLayoutParameter('tag', 'batch-runner')

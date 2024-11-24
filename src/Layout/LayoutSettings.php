@@ -6,6 +6,8 @@ class LayoutSettings
 {
     public const TEMPLATE_ATTRIBUTE = 'view-template';
 
+    protected bool $idleCheck = true;
+
     protected array $layoutParams = [];
 
     /**
@@ -58,14 +60,24 @@ class LayoutSettings
         }
     }
 
-    public function enableMenu(): void
+    public function checkIdle() : bool
     {
-        $this->showMenu = true;
+        return $this->idleCheck;
+    }
+
+    public function disableIdleCheck(): void
+    {
+        $this->idleCheck = false;
     }
 
     public function disableMenu(): void
     {
         $this->showMenu = false;
+    }
+
+    public function enableMenu(): void
+    {
+        $this->showMenu = true;
     }
 
     public function getLayoutParameters(): array

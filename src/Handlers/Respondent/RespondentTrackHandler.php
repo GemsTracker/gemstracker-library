@@ -194,7 +194,6 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
 
     protected function createModel(bool $detailed, string $action): RespondentTrackModel
     {
-        $apply = true;
         $model = $this->tracker->getRespondentTrackModel();
         if ($detailed) {
             $engine = $this->getTrackEngine();
@@ -205,24 +204,34 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
                     $model->applyDetailSettings($engine);
                     break;
 
+                case 'edit':
+                    $model->applyEditSettings($engine);
+                    $metaModel = $model->getMetaModel();
+                    $metaModel->addTransformer(new FixedValueTransformer([
+                        'gr2t_id_user' => $this->getRespondentId(),
+                        'gr2t_id_organization' => $this->request->getAttribute(MetaModelInterface::REQUEST_ID2),
+                        'gr2t_id_respondent_track' => $this->request->getAttribute(Model::RESPONDENT_TRACK),
+                    ]));
+                    break;
+
+                case 'create':
+                    $model->applyEditSettings($engine);
+                    $metaModel = $model->getMetaModel();
+                    $metaModel->addTransformer(new FixedValueTransformer([
+                        'gr2t_id_user' => $this->getRespondentId(),
+                        'gr2t_id_organization' => $this->request->getAttribute(MetaModelInterface::REQUEST_ID2),
+                        'gr2t_id_track' => $this->request->getAttribute(Model::TRACK_ID),
+                    ]));
+                    break;
+
                 default:
                     $model->applyEditSettings($engine);
                     break;
             }
 
             $apply = false;
-        }
-        if ($apply) {
+        } else {
             $model->applyBrowseSettings();
-        }
-        if ($action === 'edit' || $action === 'create') {
-            $metaModel = $model->getMetaModel();
-            $metaModel->addTransformer(new FixedValueTransformer([
-                'gr2t_id_user' => $this->getRespondentId(),
-                'gr2t_id_organization' => $this->request->getAttribute(MetaModelInterface::REQUEST_ID2),
-                'gr2t_id_track' => $this->request->getAttribute(Model::TRACK_ID),
-            ]));
-            $metaModel->setMulti(['gr2t_id_user', 'gr2t_id_organization', 'gr2t_id_track'], ['elementClass' => 'None']);
         }
 
         return $model;

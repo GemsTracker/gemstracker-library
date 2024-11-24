@@ -247,15 +247,13 @@ class RespondentTrackModel extends GemsMaskedModel
     {
         $this->applyDetailSettings($trackEngine, true);
 
-        $this->metaModel->set('gr2t_id_user', [
-            'elementClass' => 'Hidden',
-        ]);
-
         $this->metaModel->set('gr2o_patient_nr', ['elementClass' => 'Exhibitor']);
         $this->metaModel->set('respondent_name', ['elementClass' => 'Exhibitor']);
         $this->metaModel->set('gtr_track_name', ['elementClass' => 'Exhibitor']);
 
-        $this->metaModel->set('gr2t_id_user', ['elementClass' => 'Hidden']);
+        $this->metaModel->set('gr2t_id_respondent_track', ['elementClass' => 'None']);
+        $this->metaModel->set('gr2t_id_organization', ['elementClass' => 'None']);
+        $this->metaModel->set('gr2t_id_user', ['elementClass' => 'None']);
         $this->metaModel->set('gr2t_id_track', ['elementClass' => 'Hidden']);
         // Fields set in details
 
