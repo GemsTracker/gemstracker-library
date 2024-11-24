@@ -53,7 +53,7 @@ class LoadTracksFor extends \MUtil\Task\TaskAbstract
         $batch->setMessage('respLoaded', sprintf($this->_('%d tracks loaded.'), $batch->getCounter('resptracks')));
 
         if ($respTrackId !== null) {
-            $batch->addTask('Tracker\\LoadTracksFor', $respTrackId + 1, $where, $rowTask, $userId);
+            $batch->addTask('Tracker\\LoadTracksFor', $respTrackId - 1, $where, $rowTask, $userId);
         }
     }
 }
