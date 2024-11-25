@@ -53,8 +53,6 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
 
     protected ServerRequestInterface $request;
 
-    private ?ResponseInterface $response = null;
-
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
