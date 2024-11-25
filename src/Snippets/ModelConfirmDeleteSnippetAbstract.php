@@ -59,6 +59,8 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
 
     protected string $formClass = 'form-row';
 
+    protected ResponseInterface|null $response = null;
+
     protected UsageCounterInterface $usageCounter;
 
     public function __construct(
