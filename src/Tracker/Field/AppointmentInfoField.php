@@ -51,17 +51,28 @@ class AppointmentInfoField extends FieldAbstract
 
                     $fieldName = $this->fieldDefinition['gtf_field_values'];
                     if ($fieldName && array_key_exists($fieldName, $info)) {
-                        /*$options = $this->appointmentInfoTypesRepository->getValueOptionsForType($fieldName);
-                        if ($options && isset($options[$info[$fieldName]])) {
-                            return $options[$info[$fieldName]];
-                        }*/
-
                         return $info[$fieldName];
                     }
                     return null;
                 }
             }
         }
+        return $currentValue;
+    }
+
+    public function calculateFieldInfo(mixed $currentValue, array $fieldData): mixed
+    {
+        if ($currentValue === null || $currentValue === false) {
+            return $currentValue;
+        }
+        $infoType = $this->fieldDefinition['gtf_field_value_keys'];
+        if ($infoType) {
+            $options = $this->appointmentInfoTypesRepository->getValueOptionsForType($infoType);
+            if (isset($options[$currentValue])) {
+                return $options[$currentValue];
+            }
+        }
+
         return $currentValue;
     }
 
