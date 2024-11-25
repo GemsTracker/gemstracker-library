@@ -43,7 +43,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: COMPOSER_ROOT_VERSION=2.x-dev composer install --prefer-source --no-progress
+      run: COMPOSER_ROOT_VERSION=2.x-dev composer install --prefer-dist --no-progress
 
     - name: Run phpunit
       run: vendor/bin/phpunit
@@ -65,7 +65,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: COMPOSER_ROOT_VERSION=2.x-dev composer install --prefer-source --no-progress
+      run: COMPOSER_ROOT_VERSION=2.x-dev composer install --prefer-dist --no-progress
 
     - name: Run phpstan
       run: vendor/bin/phpstan --no-progress
