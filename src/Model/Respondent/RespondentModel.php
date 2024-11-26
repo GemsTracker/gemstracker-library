@@ -16,6 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\GemsJoinModel;
 use Gems\Model\MaskedModelTrait;
 use Gems\Model\MetaModelLoader;
+use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\ConsentRepository;
 use Gems\Repository\OrganizationRepository;
@@ -434,6 +435,11 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         $event = new RespondentModelSetEvent($this);
         $this->eventDispatcher->dispatch($event, RespondentModelSetEvent::class);
+
+        $this->metaModel->addTransformer(new FixedValueTransformer([
+            'gr2o_opened' => new \DateTimeImmutable(),
+            'gr2o_opened_by' => $this->currentUserId,
+        ]));
 
         $this->applyMask();
     }
