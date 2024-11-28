@@ -184,7 +184,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     public function createModel(bool $detailed, string $action): DataReaderInterface
     {

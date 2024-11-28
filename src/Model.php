@@ -202,10 +202,7 @@ class Model
     {
         $model->addTable(
                 'gems__user_logins',
-                [$loginField => 'gul_login', $organizationField => 'gul_id_organization'],
-                DatabaseModelAbstract::SAVE_MODE_INSERT |
-                DatabaseModelAbstract::SAVE_MODE_UPDATE |
-                DatabaseModelAbstract::SAVE_MODE_DELETE
+                [$loginField => 'gul_login', $organizationField => 'gul_id_organization']
         );
 
 
