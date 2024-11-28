@@ -19,8 +19,10 @@ use Gems\Model\CommMessengersModel;
 use Gems\Model\CommTemplateModel;
 use Gems\Model\EpisodeOfCareModel;
 use Gems\Model\ExportDbaModel;
+use Gems\Model\GemsJoinModel;
 use Gems\Model\JoinModel;
 use Gems\Model\MaskedModel;
+use Gems\Model\MetaModelLoader;
 use Gems\Model\OrganizationModel;
 use Gems\Model\Respondent\RespondentModel;
 use Gems\Model\RespondentRelationModel;
@@ -33,6 +35,7 @@ use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\ResultInterface;
+use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use MUtil\Db\Expr\CurrentTimestamp;
 use MUtil\Model\DatabaseModelAbstract;
@@ -191,28 +194,33 @@ class Model
     /**
      * Link the model to the user_logins table.
      *
-     * @param JoinModel $model
+     * @param StaffModel $model
      * @param string $loginField Field that links to login name field.
      * @param string $organizationField Field that links to the organization field.
      */
-    protected function addUserLogin(JoinModel $model, string $loginField, string $organizationField): void
+    protected function addUserLogin(StaffModel $model, string $loginField, string $organizationField): void
     {
         $model->addTable(
                 'gems__user_logins',
-                array($loginField => 'gul_login', $organizationField => 'gul_id_organization'),
-                'gul',
+                [$loginField => 'gul_login', $organizationField => 'gul_id_organization'],
                 DatabaseModelAbstract::SAVE_MODE_INSERT |
                 DatabaseModelAbstract::SAVE_MODE_UPDATE |
                 DatabaseModelAbstract::SAVE_MODE_DELETE
-                );
+        );
 
-        if ($model->has('gul_two_factor_key')) {
+
+        $metaModel = $model->getMetaModel();
+        if ($metaModel->has('gul_two_factor_key')) {
             $model->addColumn(
-                new Zend_Db_Expr("CASE
+                new Expression("CASE
                         WHEN gul_two_factor_key LIKE 'AuthenticatorTotp%' THEN 1
                         ELSE 0 END"),
                 'has_authenticator_tfa'
             );
+        }
+        $metaModelLoader = $metaModel->getMetaModelLoader();
+        if ($metaModelLoader instanceof MetaModelLoader) {
+            $metaModelLoader->setChangeFields($metaModel, 'gul');
         }
     }
 
@@ -468,7 +476,7 @@ class Model
         if ($addLogin) {
             $this->addUserLogin($model, 'gsf_login', 'gsf_id_organization');
         }
-        $this->setAsGemsUserId($model, 'gsf_id_user');
+        $this->setAsGemsUserId($model->getMetaModel(), 'gsf_id_user');
 
         return $model;
     }
@@ -490,10 +498,10 @@ class Model
     /**
      * Set a field in this model as a gems unique user id
      *
-     * @param DatabaseModelAbstract $model
+     * @param MetaModelInterface $model
      * @param string $idField Field that uses global id.
      */
-    public function setAsGemsUserId(DatabaseModelAbstract $model, string $idField): void
+    public function setAsGemsUserId(MetaModelInterface $model, string $idField): void
     {
         // Make sure field is added to save when not there
         $model->setAutoSave($idField);
