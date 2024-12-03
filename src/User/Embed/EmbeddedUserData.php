@@ -39,7 +39,7 @@ class EmbeddedUserData extends \ArrayObject
 
     public function getAllowedIPRanges(): string|null
     {
-        return $this->offsetGet('gsus_create_user');
+        return $this->offsetGet('gsus_allowed_ip_ranges');
     }
 
     /**
