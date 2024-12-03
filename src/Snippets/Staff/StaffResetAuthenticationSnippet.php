@@ -147,7 +147,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
 
                     $this->otpMethodBuilder->setOtpMethod($this->user, 'SmsHotp');
 
-                    $mailFields = $this->communicationRepository->getUserMailFields($this->user, $language);
+                    $mailFields = $this->communicationRepository->getUserPasswordMailFields($this->user, $language);
                     $successMessage = sprintf(
                         $this->_('The two factor key for user %s has been reset and a notification mail has been sent'),
                         $this->user->getLoginName()
