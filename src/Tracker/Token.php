@@ -485,7 +485,7 @@ class Token
                         $stringObject = new UnicodeString((string)$rawAnswers[$resultField]);
                         $values['gto_result'] = $stringObject
                             ->normalize() // Normalize characters including whitespaces
-                            ->truncate($this->_getResultFieldLength()) // Chunk of text that is too long
+                            ->truncate($this->_getResultFieldLength() - 1) // Chunk of text that is too long
                             ->toString();
                     }
                 }
@@ -2081,7 +2081,7 @@ class Token
             $stringObject = new UnicodeString((string)$answers[$resultField]);
             $resultValue = $stringObject
                 ->normalize() // Normalize characters including whitespaces
-                ->truncate($this->_getResultFieldLength()) // Chunk of text that is too long
+                ->truncate($this->_getResultFieldLength() - 1) // Chunk of text that is too long
                 ->toString();
 
             $values = [
