@@ -19,6 +19,8 @@ class GroupRepository
 
 
 
+
+
     public function getActiveGroupsData(): array
     {
         return array_filter($this->getGroupsData(), function($groupRow) {
@@ -58,5 +60,25 @@ class GroupRepository
     {
         $groups = $this->getGroupsData();
         return array_column($groups, 'ggp_name', 'ggp_id_group');
+    }
+
+    public function getRespondentGroupOptions(): array
+    {
+        $staffGroups = array_filter($this->getGroupsData(), function($groupRow) {
+            return ($groupRow['ggp_group_active']) && $groupRow['ggp_member_type'] === 'respondent';
+        });
+        $options = array_column($staffGroups, 'ggp_name', 'ggp_id_group');
+        natsort($options);
+        return $options;
+    }
+
+    public function getStaffGroupOptions(): array
+    {
+        $staffGroups = array_filter($this->getGroupsData(), function($groupRow) {
+            return ($groupRow['ggp_group_active']) && $groupRow['ggp_member_type'] === 'staff';
+        });
+        $options = array_column($staffGroups, 'ggp_name', 'ggp_id_group');
+        natsort($options);
+        return $options;
     }
 }

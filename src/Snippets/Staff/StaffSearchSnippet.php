@@ -75,14 +75,15 @@ class StaffSearchSnippet extends AutosearchFormSnippet
                 $elements[] = $elementO;
             }
 
-            $optionsA = $this->model->get('gsf_active', 'multiOptions');
+            $metaModel = $this->model->getMetaModel();
+            $optionsA = $metaModel->get('gsf_active', 'multiOptions');
             $elementA = $this->_createSelectElement('gsf_active', $optionsA, $this->_('(both)'));
-            $elementA->setLabel($this->model->get('gsf_active', 'label'));
+            $elementA->setLabel($metaModel->get('gsf_active', 'label'));
             $elements[] = $elementA;
 
-            $optionsT = $this->model->get('has_authenticator_tfa', 'multiOptions');
+            $optionsT = $metaModel->get('has_authenticator_tfa', 'multiOptions');
             $elementT = $this->_createSelectElement('has_authenticator_tfa', $optionsT, $this->_('(all)'));
-            $elementT->setLabel($this->model->get('has_authenticator_tfa', 'label'));
+            $elementT->setLabel($metaModel->get('has_authenticator_tfa', 'label'));
             $elements[] = $elementT;
         }
 

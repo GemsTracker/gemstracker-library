@@ -233,7 +233,7 @@ class ReceptionCodeRepository
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
         $filteredCodes = array_filter($allReceptionCodes, function ($row) {
-            return $row[self::SURVEY_TYPE_FIELD] == 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
+            return $row[self::SURVEY_TYPE_FIELD] != 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
         });
 
         return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');

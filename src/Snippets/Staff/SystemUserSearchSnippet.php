@@ -81,9 +81,10 @@ class SystemUserSearchSnippet extends AutosearchFormSnippet
             $elementT = $this->_createSelectElement('specials', $optionsT, $this->_('(all)'));
             $elements[] = $elementT;
 
-            $optionsA = $this->model->get('gsf_active', 'multiOptions');
+            $metaModel = $this->model->getMetaModel();
+            $optionsA = $metaModel->get('gsf_active', 'multiOptions');
             $elementA = $this->_createSelectElement('gsf_active', $optionsA, $this->_('(both)'));
-            $elementA->setLabel($this->model->get('gsf_active', 'label'));
+            $elementA->setLabel($metaModel->get('gsf_active', 'label'));
             $elements[] = $elementA;
         }
 

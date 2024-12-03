@@ -53,6 +53,8 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     use ButtonRowTrait;
     use TopicCallableTrait;
 
+    public const KEEP_VALUE_FOR_SAVE = 'keepForSave';
+
     protected string $afterSaveRoutePart = 'show';
 
     protected bool $autosubmit = false;
@@ -255,6 +257,17 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
         }
 
         parent::beforeDisplay();
+    }
+
+    /**
+     * After validation we clean the form data to remove all
+     * entries that do not have elements in the form (and
+     * this filters the data as well).
+     */
+    public function cleanFormData()
+    {
+        $columns = $this->getModel()->getMetaModel()->getCol(static::KEEP_VALUE_FOR_SAVE);
+        $this->formData = $this->_form->getValues() + array_intersect_key($this->formData, $columns);
     }
 
     /**
