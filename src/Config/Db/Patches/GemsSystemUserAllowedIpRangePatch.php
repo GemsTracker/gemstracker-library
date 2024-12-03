@@ -3,9 +3,9 @@
 namespace Gems\Config\Db\Patches;
 
 use Gems\Db\Migration\DatabaseInfo;
-use Gems\Db\Migration\PatchInterface;
+use Gems\Db\Migration\PatchAbstract;
 
-class GemsSystemUserAllowedIpRangePatch implements PatchInterface
+class GemsSystemUserAllowedIpRangePatch extends PatchAbstract
 {
     public function __construct(
         protected readonly DatabaseInfo $databaseInfo,
