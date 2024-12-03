@@ -19,13 +19,19 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Log\LogSearchSnippet;
 use Gems\Snippets\Log\LogShowSnippet;
 use Gems\Snippets\Log\LogTableSnippet;
+use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Browse\FastBrowseSearchAction;
+use Gems\SnippetsActions\Export\ExportAction;
+use Gems\SnippetsActions\Form\CreateAction;
+use Gems\SnippetsActions\Form\EditAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\SnippetsActions\Browse\BrowseTableAction;
+use Zalt\SnippetsActions\Delete\DeleteAction;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -40,6 +46,21 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class LogHandler extends BrowseChangeHandler
 {
+    /**
+     * Defined in Gems\Handlers\BrowseChangeHandler.
+     *
+     * @inheritdoc
+     */
+    public static $actions = [
+        'autofilter' => BrowseFilteredAction::class,
+        'index'      => FastBrowseSearchAction::class, // Override to disable totals
+        'create'     => CreateAction::class,
+        'export'     => ExportAction::class,
+        'edit'       => EditAction::class,
+        'delete'     => DeleteAction::class,
+        'show'       => ShowAction::class,
+    ];
+
     /**
      * The snippets used for the autofilter action.
      *

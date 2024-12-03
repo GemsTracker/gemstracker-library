@@ -268,9 +268,11 @@ class TokenHandler extends TokenSearchHandlerAbstract
      */
     public function correctAction()
     {
-        $this->deleteParameters = $this->correctParameters + $this->deleteParameters;
+        $this->deleteParameters = $this->correctParameters + $this->deleteParameters + $this->defaultTokenParameters;
+        $this->deleteSnippets   = $this->getToken()->getCorrectSnippetNames();
+        $this->deleteParameters['requestUndelete'] = false;
 
-        $this->deleteAction();
+        parent::deleteAction();
     }
 
     /**
