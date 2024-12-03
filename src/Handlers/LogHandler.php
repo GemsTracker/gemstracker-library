@@ -21,6 +21,7 @@ use Gems\Snippets\Log\LogShowSnippet;
 use Gems\Snippets\Log\LogTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Browse\FastBrowseSearchAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
@@ -52,7 +53,7 @@ class LogHandler extends BrowseChangeHandler
      */
     public static $actions = [
         'autofilter' => BrowseFilteredAction::class,
-        'index'      => BrowseSearchAction::class,
+        'index'      => FastBrowseSearchAction::class, // Override to disable totals
         'create'     => CreateAction::class,
         'export'     => ExportAction::class,
         'edit'       => EditAction::class,
