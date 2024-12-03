@@ -825,6 +825,22 @@ class Token
     }
 
     /**
+     * Returns an array of snippet names that can be used to delete this token.
+     *
+     * @return array of strings
+     */
+    public function getCorrectSnippetNames(): array
+    {
+        if (!$this->exists) {
+            return ['Token\\TokenNotFoundSnippet'];
+        }
+        if (!$this->isCompleted()) {
+            return ['Token\\TokenNotCompletedSnippet'];
+        }
+        return $this->getTrackEngine()->getTokenDeleteSnippetNames($this);
+    }
+
+    /**
      *
      * @return ?int Duration
      */
