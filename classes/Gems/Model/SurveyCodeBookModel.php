@@ -160,7 +160,7 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
 
     protected function limitCharacters($value)
     {
-        if (strlen($value > Worksheet::MAX_CHARACTERS_PER_CELL)) {
+        if (strlen($value) > Worksheet::MAX_CHARACTERS_PER_CELL) {
             $value = substr($value, 0, Worksheet::MAX_CHARACTERS_PER_CELL - 4) . '...';
         }
         return $value;
