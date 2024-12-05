@@ -16,12 +16,12 @@ use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model;
+use Gems\Model\OrganizationModel;
 use Gems\Repository\TemplateRepository;
 use Gems\Task\TaskRunnerBatch;
 use Gems\User\UserLoader;
 use Laminas\Db\Sql\Select;
 use Mezzio\Session\SessionInterface;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
@@ -194,7 +194,7 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel(bool $detailed, string $action): ModelAbstract
+    public function createModel(bool $detailed, string $action): OrganizationModel
     {
         $styles = $this->templateRepository->getNamespaceTemplateOptions('mail');
 

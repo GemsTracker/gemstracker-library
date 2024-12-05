@@ -63,7 +63,8 @@ class OrganizationTableSnippet extends ModelTableSnippet
 
         $bridge->addMultiSort($orgName, $br, 'gor_task', $br, 'gor_location');
         $bridge->addMultiSort($mailName, $br, 'gor_active', $br, 'gor_has_login');
-        if ($dataModel->has('gor_respondent_group', 'label')) {
+
+        if ($dataModel->getMetaModel()->has('gor_respondent_group', 'label')) {
             $bridge->addMultiSort('gor_add_respondents', $br, 'gor_has_respondents', $br, 'gor_respondent_group');
         } else {
             $bridge->addMultiSort('gor_add_respondents', $br, 'gor_has_respondents');

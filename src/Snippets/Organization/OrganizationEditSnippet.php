@@ -75,11 +75,12 @@ class OrganizationEditSnippet extends ModelFormSnippet
 
         if (isset($this->formData['gor_id_organization']) && $this->formData['gor_id_organization']) {
             $model = $this->getModel();
+            $metaModel = $model->getMetaModel();
 
             // Strip self from list of organizations
-            $multiOptions = $model->get('gor_accessible_by', 'multiOptions');
+            $multiOptions = $metaModel->get('gor_accessible_by', 'multiOptions');
             unset($multiOptions[$this->formData['gor_id_organization']]);
-            $model->set('gor_accessible_by', 'multiOptions', $multiOptions);
+            $metaModel->set('gor_accessible_by', 'multiOptions', $multiOptions);
 
             // Show allowed organizations
             $org         = $this->userLoader->getOrganization($this->formData['gor_id_organization']);
@@ -91,7 +92,7 @@ class OrganizationEditSnippet extends ModelFormSnippet
                 $display = Html::create('em', $this->_('No access to other organizations.'));
             }
             $this->formData['allowed'] = $display;
-            $model->set('allowed', 'value', $display);
+            $metaModel->set('allowed', 'value', $display);
         }
         // MultiOption null is ''.
         if (! isset($this->formData['gor_respondent_edit'])) {

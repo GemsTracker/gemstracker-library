@@ -12,6 +12,7 @@ namespace Gems\User;
 use Gems\Exception;
 use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\Db\Sql\Select;
+use Zalt\Model\MetaModelInterface;
 
 /**
  * Delegates authentication to the Radius server
@@ -56,7 +57,7 @@ class RadiusUserDefinition extends StaffUserDefinition implements UserDefinition
      *
      * @param \MUtil\Model\ModelAbstract $orgModel
      */
-    public function addConfigFields(\MUtil\Model\ModelAbstract $orgModel)
+    public function addConfigFields(MetaModelInterface $orgModel): void
     {
         $configModel = $this->getConfigModel(true);
         $order       = $orgModel->getOrder('gor_user_class') + 1;
@@ -140,7 +141,7 @@ class RadiusUserDefinition extends StaffUserDefinition implements UserDefinition
     /**
      * Return the number of changed records for the save performed
      */
-    public function getConfigChanged()
+    public function getConfigChanged(): int
     {
         return $this->getConfigModel(true)->getChanged();
     }
@@ -246,7 +247,7 @@ class RadiusUserDefinition extends StaffUserDefinition implements UserDefinition
      *
      * @return boolean
      */
-    public function hasConfig()
+    public function hasConfig(): bool
     {
         return true;
     }
@@ -271,7 +272,7 @@ class RadiusUserDefinition extends StaffUserDefinition implements UserDefinition
      * @param array $data
      * @return array
      */
-    public function loadConfig($data)
+    public function loadConfig(array $data): array
     {
         $model = $this->getConfigModel(false);
 
@@ -291,7 +292,7 @@ class RadiusUserDefinition extends StaffUserDefinition implements UserDefinition
      * @param array $values
      * @return array
      */
-    public function saveConfig($data, $values)
+    public function saveConfig(array $data, array $values): array
     {
         $model = $this->getConfigModel(true);
 

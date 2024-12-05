@@ -10,6 +10,8 @@
 
 namespace Gems\User;
 
+use Zalt\Model\MetaModelInterface;
+
 /**
  *
  *
@@ -26,19 +28,19 @@ interface UserDefinitionConfigurableInterface
      *
      * @param \MUtil\Model\ModelAbstract $orgModel
      */
-    public function addConfigFields(\MUtil\Model\ModelAbstract $orgModel);
+    public function addConfigFields(MetaModelInterface $orgModel): void;
 
     /**
      * Should return the number of changed records for the save performed
      */
-    public function getConfigChanged();
+    public function getConfigChanged(): int;
 
     /**
      * Do we need to add custom config parameters to use this definition?
      *
      * @return boolean
      */
-    public function hasConfig();
+    public function hasConfig(): bool;
 
     /**
      * Handles loading the config for the given data
@@ -46,7 +48,7 @@ interface UserDefinitionConfigurableInterface
      * @param array $data
      * @return array
      */
-    public function loadConfig($data);
+    public function loadConfig(array $data): array;
 
     /**
      * Handles saving the configvalues in $values using the $data
@@ -55,5 +57,5 @@ interface UserDefinitionConfigurableInterface
      * @param array $values
      * @return array
      */
-    public function saveConfig($data, $values);
+    public function saveConfig(array $data, array $values): array;
 }
