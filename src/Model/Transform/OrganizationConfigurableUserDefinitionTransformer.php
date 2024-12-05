@@ -42,10 +42,6 @@ class OrganizationConfigurableUserDefinitionTransformer extends ModelTransformer
 
             if ($definition instanceof UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                 $savedValues = $definition->saveConfig($savedValues, $row);
-
-                if ($definition->getConfigChanged()>0 && $this->getChanged()<1) {
-                    $this->changed = 1;
-                }
             }
         }
 

@@ -55,7 +55,7 @@ class RadiusUserDefinition extends StaffUserDefinition implements UserDefinition
     /**
      * Appends the needed fields for this config to the $bridge
      *
-     * @param \MUtil\Model\ModelAbstract $orgModel
+     * @param MetaModelInterface $orgModel
      */
     public function addConfigFields(MetaModelInterface $orgModel): void
     {
