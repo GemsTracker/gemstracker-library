@@ -104,10 +104,6 @@ class StaffLogHandler extends LogHandler
     {
         $data = parent::getSearchDefaults();
 
-        if (! isset($data[MetaModelInterface::REQUEST_ID])) {
-            $data[MetaModelInterface::REQUEST_ID] = $this->request->getAttribute(MetaModelInterface::REQUEST_ID);
-        }
-
         return $data;
     }
 
