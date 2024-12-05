@@ -37,11 +37,11 @@ class OrganizationConfigurableUserDefinitionTransformer extends ModelTransformer
     {
         $savedValues = parent::transformRowAfterSave($model, $row);
 
-        if (isset($newValues['gor_user_class']) && !empty($newValues['gor_user_class'])) {
-            $definition = $this->userLoader->getUserDefinition($newValues['gor_user_class']);
+        if (isset($row['gor_user_class'])) {
+            $definition = $this->userLoader->getUserDefinition($row['gor_user_class']);
 
             if ($definition instanceof UserDefinitionConfigurableInterface && $definition->hasConfig()) {
-                $savedValues = $definition->saveConfig($savedValues, $newValues);
+                $savedValues = $definition->saveConfig($savedValues, $row);
 
                 if ($definition->getConfigChanged()>0 && $this->getChanged()<1) {
                     $this->changed = 1;

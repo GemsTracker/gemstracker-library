@@ -92,7 +92,7 @@ class OrganizationModel extends GemsJoinModel
      * Set those settings needed for the browse display
      *
      *
-     * @return \Gems\Model\OrganizationModel
+     * @return static
      */
     public function applyBrowseSettings(): static
     {
@@ -263,7 +263,7 @@ class OrganizationModel extends GemsJoinModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @return \Gems\Model\OrganizationModel
+     * @return static
      */
     public function applyDetailSettings(): static
     {
@@ -272,23 +272,38 @@ class OrganizationModel extends GemsJoinModel
 
         $this->applyBrowseSettings();
 
-        $this->metaModel->set('gor_welcome', 'label', $this->_('Greeting'),
-                'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
-        $this->metaModel->set('gor_signature', 'label', $this->_('Signature'),
-                'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
-        $this->metaModel->set('gor_create_account_template', 'label', $this->_('Create Account template'),
-                'default', $this->commTemplateRepository->getCommTemplateForCode('accountCreate', 'staffPassword'),
-                'multiOptions', $staffTemplates);
-        $this->metaModel->set('gor_reset_pass_template',       'label', $this->_('Reset Password template'),
-                'default', $this->commTemplateRepository->getCommTemplateForCode('passwordReset', 'staffPassword'),
-                'multiOptions', $staffTemplates);
-        $this->metaModel->set('gor_reset_tfa_template',       'label', $this->_('Reset TFA template'),
-            'default', $this->commTemplateRepository->getCommTemplateForCode('tfaReset', 'staffPassword'),
-            'multiOptions', $staffTemplates);
+        $this->metaModel->set('gor_welcome', [
+            'label' => $this->_('Greeting'),
+            'description' => $this->_('For emails and token forward screen.'),
+            'elementClass' => 'Textarea',
+            'rows' => 5
+        ]);
+        $this->metaModel->set('gor_signature', [
+            'label' => $this->_('Signature'),
+            'description' => $this->_('For emails and token forward screen.'),
+            'elementClass' => 'Textarea',
+            'rows' => 5
+        ]);
+        $this->metaModel->set('gor_create_account_template', [
+            'label' => $this->_('Create Account template'),
+            'default' => $this->commTemplateRepository->getCommTemplateForCode('accountCreate', 'staffPassword'),
+            'multiOptions' => $staffTemplates,
+        ]);
+        $this->metaModel->set('gor_reset_pass_template',       [
+            'label' => $this->_('Reset Password template'),
+            'default' => $this->commTemplateRepository->getCommTemplateForCode('passwordReset', 'staffPassword'),
+            'multiOptions' => $staffTemplates
+        ]);
+        $this->metaModel->set('gor_reset_tfa_template',       [
+            'label' => $this->_('Reset TFA template'),
+            'default' => $this->commTemplateRepository->getCommTemplateForCode('tfaReset', 'staffPassword'),
+            'multiOptions' => $staffTemplates,
+        ]);
 
-        $this->metaModel->setIfExists('gor_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
-            'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25')
-            );
+        $this->metaModel->setIfExists('gor_allowed_ip_ranges', [
+            'label' => $this->_('Allowed IP Ranges'),
+            'description' => $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
+        ]);
 
         if ($this->notEditing) {
             //$this->metaModelLoader->addDatabaseTranslations($this->metaModel);
@@ -300,7 +315,7 @@ class OrganizationModel extends GemsJoinModel
     /**
      * Set those values needed for editing
      *
-     * @return \Gems\Model\OrganizationModel
+     * @return static
      */
     public function applyEditSettings(): static
     {
