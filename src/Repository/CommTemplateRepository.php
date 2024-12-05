@@ -52,7 +52,6 @@ class CommTemplateRepository
      *
      * @param string|null $target Optional communications template target
      * @param string|null $code Optional communications template code
-     * @param bool $addEmpty Add empty choice for drop down
      * @return array Of id => name
      */
     public function getCommTemplatesForTarget(string|null $target = null, string|null $code = null): array
