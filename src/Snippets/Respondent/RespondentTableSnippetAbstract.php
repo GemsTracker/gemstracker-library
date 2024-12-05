@@ -13,11 +13,13 @@ namespace Gems\Snippets\Respondent;
 
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Model;
 use Gems\Model\Respondent\RespondentModel;
 use Gems\User\Mask\MaskRepository;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -182,13 +184,27 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
         }
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
         return $this->respondentModel;
+    }
+
+    protected function getTracksLink(TableBridge $bridge, MetaModelInterface $metaModel): mixed
+    {
+        $metaModel->set('gtr_track_name',  'label', $this->_('Track'));
+        $metaModel->set('gr2t_track_info', 'label', $this->_('Track description'));
+
+        $routeMap = $this->getRouteMaps($metaModel);
+        $routeMap[Model::RESPONDENT_TRACK] = 'gr2t_id_respondent_track';
+
+        $url = $this->menuHelper->getLateRouteUrl('respondent.tracks.show', $routeMap, $bridge);
+        if ($url) {
+            $track[0] = Html::create('a', $url['url'], $bridge->gtr_track_name);
+            $track[1] = $bridge->createSortLink('gtr_track_name', $bridge->gtr_track_name);
+        } else {
+            $track = 'gtr_track_name';
+        }
+
+        return $track;
     }
 }

@@ -122,7 +122,8 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
             $metaModel->set('gtr_track_name',  'label', $this->_('Track'));
             $metaModel->set('gr2t_track_info', 'label', $this->_('Track description'));
 
-            $bridge->addMultiSort('gtr_track_name', $br, 'gr2t_track_info');
+            $track = $this->getTracksLink($bridge, $dataModel->getMetaModel());
+            $bridge->addMultiSort($track, $br, 'gr2t_track_info');
         }
     }
 }

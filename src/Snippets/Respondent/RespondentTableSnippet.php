@@ -119,8 +119,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
             $model->set('gtr_track_name',  'label', $this->_('Track'));
             $model->set('gr2t_track_info', 'label', $this->_('Track description'));
 
-            $track = 'gtr_track_name';
-
+            $track = $this->getTracksLink($bridge, $dataModel->getMetaModel());
             $bridge->addMultiSort($track, $br, 'gr2t_track_info');
         } else {
             $maskAddress = $this->maskRepository->isFieldMaskedWhole('grs_address_1');

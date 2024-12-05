@@ -14,7 +14,9 @@ namespace Gems\Handlers\Setup;
 use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\ConfigGroupAdapter;
 use Gems\Auth\Acl\GroupRepository;
+use Gems\Html;
 use Gems\Repository\AccessRepository;
+use Gems\Screens\ScreenLoader;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
@@ -88,11 +90,12 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        private readonly UserLoader $userLoader,
-        private readonly AclRepository $aclRepository,
-        private readonly GroupRepository $groupRepository,
-        private readonly AccessRepository $accessRepository,
-        private readonly Translated $translatedUtil,
+        protected readonly AccessRepository $accessRepository,
+        protected readonly AclRepository $aclRepository,
+        protected readonly GroupRepository $groupRepository,
+        protected readonly ScreenLoader $screenLoader,
+        protected readonly Translated $translatedUtil,
+        protected readonly UserLoader $userLoader,
     ) {
         parent::__construct($responder, $translate, $cache);
     }
@@ -226,7 +229,7 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         ]);
 
         if ($detailed) {
-            /*$html = \MUtil\Html::create()->h4($this->_('Screen settings'));
+            $html = Html::create('h4', $this->_('Screen settings'));
             $model->set('screensettings', 'label', ' ',
                 'default', $html,
                 'elementClass', 'Html',
@@ -238,6 +241,7 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 'elementClass', 'Radio',
                 'multiOptions', $this->screenLoader->listRespondentBrowseScreens()
             );
+            /*
             $model->set('ggp_respondent_edit', 'label', $this->_('Respondent edit screen'),
                 'default', 'Gems\\Screens\\Respondent\\Edit\\ProjectDefaultEdit',
                 'elementClass', 'Radio',

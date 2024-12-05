@@ -12,7 +12,6 @@
 namespace Gems\Snippets\Respondent;
 
 use Gems\Html;
-use Zalt\Html\AElement;
 use Zalt\Html\Raw;
 use Zalt\Late\Late;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
@@ -31,7 +30,7 @@ class RespondentDetailsSnippet extends \Gems\Snippets\RespondentDetailSnippetAbs
     /**
      * Place to set the data to display
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param DetailTableBridge $bridge
      * @return void
      */
     protected function addTableCells(DetailTableBridge $bridge)

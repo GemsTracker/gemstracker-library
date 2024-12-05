@@ -97,7 +97,7 @@ class Survey
             if (is_array($this->data)) {
                 $values = $values + $this->data;
             } else {
-                \MUtil\EchoOut\EchoOut::track($this->data);
+                dump($this->data);
             }
             $this->data = [];
         }
