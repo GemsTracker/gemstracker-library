@@ -328,7 +328,7 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
     public function getOtherOrgsFor($forOrgId = null)
     {
         // Do not show data from other orgs
-        return false;
+        return [];
 
         // Do show data from all other orgs
         // return true;

@@ -255,10 +255,10 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
     }
     
     /**
-     * @param $key The key of a set value
+     * @param string $key The key of a set value
      * @return false|mixed The value set or used in answers
      */
-    protected function getValue($key)
+    protected function getValue(string $key)
     {
         $akey = $this->checkOutputKey($key);
         if ($akey && isset($this->_output[$akey])) {
