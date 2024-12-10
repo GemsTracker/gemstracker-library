@@ -10,6 +10,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 
@@ -34,6 +35,13 @@ class CacheFactory
                  */
                 $client = RedisAdapter::createConnection($dsn);
                 $cache = new RedisAdapter($client, $namespace, $defaultLifetime);
+                break;
+
+            case 'memcache':
+                $dsn = $config['dsn'] ?? 'memcached://localhost';
+                $options = $config['options'] ?? [];
+                $client = MemcachedAdapter::createConnection($dsn, $options);
+                $cache = new MemcachedAdapter($client, $namespace, $defaultLifetime);
                 break;
 
             case 'file':
