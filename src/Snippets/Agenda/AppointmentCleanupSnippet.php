@@ -18,6 +18,7 @@ use Zalt\Base\TranslatorInterface;
 use Zalt\Html\UrlArrayAttribute;
 use Zalt\Message\MessageTrait;
 use Zalt\Message\MessengerInterface;
+use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
@@ -142,6 +143,14 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelDetailTableSnippet
      */
     public function hasHtmlOutput(): bool
     {
+        if ($this->bridgeMode === BridgeInterface::MODE_SINGLE_ROW) {
+            $bridge = $this->getModel()->getBridgeFor($this->bridgeClass);
+            $row = $bridge->getRow();
+            if (empty($row)) {
+                $this->setNotFound();
+                return false;
+            }
+        }
         if ($this->requestInfo->getParam($this->confirmParameter)) {
             $this->performAction();
 
