@@ -201,8 +201,9 @@ class Model
     protected function addUserLogin(StaffModel $model, string $loginField, string $organizationField): void
     {
         $model->addTable(
-                'gems__user_logins',
-                [$loginField => 'gul_login', $organizationField => 'gul_id_organization']
+            'gems__user_logins',
+            [$loginField => 'gul_login', $organizationField => 'gul_id_organization'],
+            true
         );
 
 
