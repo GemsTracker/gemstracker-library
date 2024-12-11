@@ -437,12 +437,17 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
                 $project->db['password'] = '********';
             }
         }
+        // Don't show the private key in plain text.
+        if ($project->offsetExists('certificates')) {
+            if (isset($project->certificates['private'])) {
+                $project->certificates['private'] = $this->redactKey($project->certificates['private']);
+            }
+        }
 
         $this->html->h2($this->_('Project settings'));
         $appName = $this->config['app']['name'] ?? 'GemsTracker';
         $this->_showTable($appName . ' Project.ini', $project);
     }
-
 
     public function sessionAction()
     {
@@ -458,5 +463,15 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             $sessionData = [];
         }
         $this->_showTable($this->_('Session'), $sessionData);
+    }
+
+    private function redactKey($input)
+    {
+        if (!is_string($input)) {
+            return $input;
+        }
+        $pattern = '/-----BEGIN PRIVATE KEY-----.*?-----END PRIVATE KEY-----/s';
+        $replacement = '-----BEGIN PRIVATE KEY----- REDACTED -----END PRIVATE KEY-----';
+        return preg_replace($pattern, $replacement, $input);
     }
 }
