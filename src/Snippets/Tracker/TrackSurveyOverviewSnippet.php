@@ -146,6 +146,9 @@ class TrackSurveyOverviewSnippet extends \Zalt\Snippets\TranslatableSnippetAbstr
 
     public static function oneLine($line)
     {
+        if ($line === null) {
+            return null;
+        }
         if (strlen($line) > 2) {
             if ($p = strpos($line, '<', 1)) {
                 $line = substr($line, 0, $p);
