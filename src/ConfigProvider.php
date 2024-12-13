@@ -997,7 +997,7 @@ class ConfigProvider
         return [
             'template' => 'gems::vue',
             'resource' => 'resource/js/gems-vue.js',
-            'style' => 'resource/js/gems-vue.css',
+            // 'style' => 'resource/css/gems-vue.css',
         ];
     }
 }
