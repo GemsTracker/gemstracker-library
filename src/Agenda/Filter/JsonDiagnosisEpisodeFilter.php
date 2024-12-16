@@ -74,7 +74,14 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
     public function getSqlEpisodeWhere(): string
     {
         $regex = $this->getRegex();
-        return "gec_diagnosis_data REGEXP '$regex'";
+        // If we have a value without any special characters, optimize the query
+        // by using a LIKE statement to filter out the most obvious non-matches.
+        if (preg_match('/^[a-zA-Z0-9_ -]+$/', $this->_value) !== false) {
+            $like = $this->_value;
+            return "(gec_diagnosis_data LIKE '%$like%' AND gec_diagnosis_data REGEXP '$regex')";
+        } else {
+            return "gec_diagnosis_data REGEXP '$regex'";
+        }
     }
 
     /**
