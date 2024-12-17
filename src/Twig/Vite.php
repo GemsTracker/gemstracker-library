@@ -52,6 +52,11 @@ class Vite extends AbstractExtension
                 throw new Exception("Resource {$resourceName} not found.");
             }
             $tags[] = $this->makeTag($tagDir . $manifest[$resourceName]['file']);
+            if (isset($manifest[$resourceName]['css'])) {
+                foreach($manifest[$resourceName]['css'] as $style) {
+                    $tags[] = $this->makeTag($tagDir . $style);
+                }
+            }
         }
         return join("\n", $tags);
     }
