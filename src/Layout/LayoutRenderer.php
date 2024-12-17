@@ -54,7 +54,7 @@ class LayoutRenderer
     {
         /** @var User|null $user */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-        if ($user instanceof User /*&& $user->hasPrivilege('pr.group.switch')*/) {
+        if ($user instanceof User && $user->hasPrivilege('pr.group.switch')) {
             return $user->getAllowedStaffGroups(false);
         }
         return null;
@@ -64,7 +64,7 @@ class LayoutRenderer
     {
         /** @var User|null $user */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-        if ($user instanceof User /*&& $user->hasPrivilege('pr.group.switch')*/) {
+        if ($user instanceof User && $user->hasPrivilege('pr.group.switch')) {
             return $user->getGroupId();
         }
         return null;

@@ -58,7 +58,7 @@ class CommTemplateRepository
     {
         $allTemplates = $this->getAllCommTemplateData();
 
-        return array_filter($allTemplates, function ($template) use ($code, $target) {
+        $result = array_filter($allTemplates, function ($template) use ($code, $target) {
             $forTarget = true;
             if ($target !== null ) {
                 $forTarget = $template['gct_target'] === $target;
@@ -70,5 +70,7 @@ class CommTemplateRepository
             }
             return $forTarget && $forCode;
         });
+
+        return array_column($result, 'gct_name', 'gct_id_template');
     }
 }

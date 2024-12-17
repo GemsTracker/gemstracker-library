@@ -345,12 +345,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 $edit = $org->getRespondentEditScreen();
             }
 
-            if (!$edit) {
-                $group = $this->currentUser->getGroup();
-                if ($group) {
-                    $edit = $group->getRespondentEditScreen();
-                }
-            }
+//            if (!$edit) {
+//                $group = $this->currentUser->getGroup();
+//                if ($group) {
+//                    $edit = $group->getRespondentEditScreen();
+//                }
+//            }
 
             if ($edit) {
                 if ($edit instanceof ProcessModelInterface) {
@@ -413,12 +413,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 $edit = $org->getRespondentEditScreen();
             }
 
-            if (!$edit) {
-                $group = $this->currentUser->getGroup();
-                if ($group) {
-                    $edit = $group->getRespondentEditScreen();
-                }
-            }
+//            if (!$edit) {
+//                $group = $this->currentUser->getGroup();
+//                if ($group) {
+//                    $edit = $group->getRespondentEditScreen();
+//                }
+//            }
 
             if ($edit) {
                 if ($edit instanceof ProcessModelInterface) {
@@ -480,12 +480,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 $edit = $org->getRespondentEditScreen();
             }
 
-            if (!$edit) {
-                $group = $this->currentUser->getGroup();
-                if ($group) {
-                    $edit = $group->getRespondentEditScreen();
-                }
-            }
+//            if (!$edit) {
+//                $group = $this->currentUser->getGroup();
+//                if ($group) {
+//                    $edit = $group->getRespondentEditScreen();
+//                }
+//            }
 
             if ($edit) {
                 if ($edit instanceof ProcessModelInterface) {
@@ -857,12 +857,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 $show = $org->getRespondentShowScreen();
             }
 
-            if (!$show) {
-                $group = $this->currentUser->getGroup();
-                if ($group) {
-                    $show = $group->getRespondentShowScreen();
-                }
-            }
+//            if (!$show) {
+//                $group = $this->currentUser->getGroup();
+//                if ($group) {
+//                    $show = $group->getRespondentShowScreen();
+//                }
+//            }
 
             if ($show) {
                 if ($show instanceof ProcessModelInterface) {
