@@ -311,7 +311,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
         $language = $this->communicationRepository->getCommunicationLanguage($this->currentUser->getLocale());
         $templateId = $this->communicationRepository->getConfirmChangeEmailTemplate($organization);
 
-        $variables = $this->communicationRepository->getUserMailFields($this->currentUser, $language);
+        $variables = $this->communicationRepository->getUserPasswordMailFields($this->currentUser, $language);
         $variables += [
             'confirmation_code' => $code,
         ];
@@ -349,7 +349,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
         $language = $this->communicationRepository->getCommunicationLanguage($this->currentUser->getLocale());
         $templateId = $this->communicationRepository->getConfirmChangePhoneTemplate($organization);
 
-        $variables = $this->communicationRepository->getUserMailFields($this->currentUser, $language);
+        $variables = $this->communicationRepository->getUserPasswordMailFields($this->currentUser, $language);
         $variables += [
             'confirmation_code' => $code,
         ];
