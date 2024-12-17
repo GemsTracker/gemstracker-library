@@ -25,7 +25,6 @@ use Gems\Screens\ProcessModelInterface;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Respondent\DeleteRespondentSnippet;
 use Gems\Snippets\Respondent\RespondentDetailsSnippet;
-use Gems\Snippets\Respondent\TrafficLightTokenSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\User\Mask\MaskRepository;
 use Psr\Cache\CacheItemPoolInterface;
@@ -177,7 +176,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $deleteParameters = [
-        'baseUrl' => 'getItemUrlArray',
         'formTitle' => null,
         'forOtherOrgs' => 'getOtherOrgs',
         // 'respondentData' => 'getRespondentData',
@@ -599,24 +597,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     public function getIndexTitle(): string
     {
         return $this->_('Respondents');
-    }
-
-    /**
-     * Return the array with items that should be used to find this item
-     *
-     * @return array
-     */
-    public function getItemUrlArray(): array
-    {
-        $queryParams = $this->request->getQueryParams();
-        $patientNr = isset($queryParams[Model::REQUEST_ID1]) ? $queryParams[Model::REQUEST_ID1] : null;
-        $organizationId = isset($queryParams[Model::REQUEST_ID2]) ? $queryParams[Model::REQUEST_ID2] : null;
-        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
-
-        return [
-            Model::REQUEST_ID1 => $patientNr,
-            Model::REQUEST_ID2 => $organizationId,
-        ];
     }
 
     /**
