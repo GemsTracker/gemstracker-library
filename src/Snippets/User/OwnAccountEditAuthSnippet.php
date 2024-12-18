@@ -237,7 +237,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
             if ($this->sessionNamespace->has('new_phone') && $this->sessionNamespace->get('new_phone')['phone'] !== '') {
                 $phoneSession = $this->sessionNamespace->get('new_phone');
 
-                $newPhoneSecret = $formData['new_phone_secret'] ?: '';
+                $newPhoneSecret = $formData['new_phone_secret'] ?? '';
                 if ($newPhoneSecret !== $phoneSession['secret']) {
                     $phoneSession['attempts']++;
                     if ($phoneSession['attempts'] >= self::MAX_ATTEMPTS) {
