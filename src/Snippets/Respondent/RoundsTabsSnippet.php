@@ -45,15 +45,6 @@ class RoundsTabsSnippet extends TabSnippetAbstract
     protected $_tabs = [];
 
     /**
-     * Default href parameter values
-     *
-     * Clicking a tab always resets the page counter
-     *
-     * @var array
-     */
-    protected array $href = ['page' => null];
-
-    /**
      * The RESPONDENT model, not the token model
      *
      * @var DataReaderInterface

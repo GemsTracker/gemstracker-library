@@ -69,6 +69,8 @@ class OrganizationModel extends GemsJoinModel
     ) {
         parent::__construct('gems__organizations', $metaModelLoader, $sqlRunner, $translate, 'organization');
 
+        $this->metaModelLoader->setChangeFields($this->metaModel, 'gor');
+
         $this->addColumn("CASE WHEN gor_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
         $yesNo      = $this->translatedUtil->getYesNo();

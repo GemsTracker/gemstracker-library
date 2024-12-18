@@ -30,7 +30,6 @@ class GemsRoundTabsShow extends ShowScreenAbstract
     public function getParameters(): array
     {
         return [
-            'baseUrl'        => 'getItemUrlArray',
             'forOtherOrgs'   => 'getOtherOrgs',
             '-run-once'      => 'openedRespondent',
             ];
