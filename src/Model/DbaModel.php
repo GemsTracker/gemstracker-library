@@ -220,7 +220,7 @@ class DbaModel extends \MUtil\Model\ArrayModelAbstract
                 }
             }
         }
-        return $data;
+        return new \ArrayIterator($data);
     }
 
     /**

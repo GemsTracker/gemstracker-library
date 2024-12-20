@@ -62,7 +62,7 @@ class ProjectSettings extends \ArrayObject
     {
         parent::__construct($config, \ArrayObject::ARRAY_AS_PROPS);
 
-        $this->offsetSet('multiLocale', $this->offsetExists('locales') && (count($this->offsetGet('locales')) > 1));
+        $this->offsetSet('multiLocale', isset($this['locale'], $this['locale']['availableLocales']) && (count($this['locale']['availableLocales']) > 1));
     }
 
     /**
@@ -1271,9 +1271,9 @@ class ProjectSettings extends \ArrayObject
      */
     public function translateDatabaseFields()
     {
-        return isset($this['multiLocale'], $this['translate'], $this['translate']['databasefields']) &&
+        return isset($this['multiLocale'], $this['mdoel'], $this['model']['translateDatabaseFields']) &&
             $this['multiLocale'] &&
-            (1 == $this['translate']['databasefields']);
+            $this['model']['translateDatabaseFields'];
     }
 
     /**

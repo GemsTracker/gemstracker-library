@@ -178,20 +178,6 @@ class Model
     }
 
     /**
-     * Add database translation edit to model
-     */
-    public function addDatabaseTranslationEditFields(ModelAbstract|MetaModelInterface $model): void
-    {
-        if ($this->project->translateDatabaseFields()) {
-            /**
-             * @var ModelTransformerInterface $transformer
-             */
-            $transformer = $this->overloader->create('Transform\\TranslateFieldEditor');
-            $model->addTransformer($transformer);
-        }
-    }
-
-    /**
      * Link the model to the user_logins table.
      *
      * @param StaffModel $model
@@ -205,7 +191,6 @@ class Model
             [$loginField => 'gul_login', $organizationField => 'gul_id_organization'],
             true
         );
-
 
         $metaModel = $model->getMetaModel();
         if ($metaModel->has('gul_two_factor_key')) {

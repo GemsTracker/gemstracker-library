@@ -685,7 +685,6 @@ class ConfigProvider
             MetaModelInterface::TYPE_DATETIME => GemsDateTimeType::class,
             MetaModelInterface::TYPE_TIME => GemsTimeType::class,
         ];
-        $settings['translateDatabaseFields'] = true;
 
         foreach ($settings['bridges'] as $name => $className) {
             \MUtil\Model::setDefaultBridge($name, $className);

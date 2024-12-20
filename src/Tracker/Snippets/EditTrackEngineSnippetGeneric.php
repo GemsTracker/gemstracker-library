@@ -87,14 +87,13 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
             $bridge->addHidden('table_keys');
         }
         $bridge->addText('gtr_track_name');
-        if ($this->project->translateDatabaseFields()) {
-            $bridge->addFormTable('translations_gtr_track_name');
+        foreach ($metaModel->getItemsFor(['original' => 'gtr_track_name']) as $itemName) {
+            $bridge->add($itemName);
         }
         $bridge->addText('gtr_external_description');
-        if ($this->project->translateDatabaseFields()) {
-            $bridge->addFormTable('translations_gtr_external_description');
+        foreach ($metaModel->getItemsFor(['original' => 'gtr_external_description']) as $itemName) {
+            $bridge->add($itemName);
         }
-
 
         // gtr_track_class
         if ($this->trackEngine) {

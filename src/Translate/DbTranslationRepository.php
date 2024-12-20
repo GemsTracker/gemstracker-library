@@ -55,7 +55,7 @@ class DbTranslationRepository
                 'gtrs_table' => $tableName,
                 'gtrs_keys' => $keyValue,
                 'gtrs_iso_lang' => $this->language,
-                new Expression('LENGTH(gtrs_translation) > 0')
+                'LENGTH(gtrs_translation) > 0'
             ]);
 
         try {

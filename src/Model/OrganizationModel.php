@@ -23,6 +23,7 @@ use Gems\Screens\ScreenLoader;
 use Gems\Tracker\TrackEvents;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
+use Gems\Validator\IPRanges;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\ActivatingYesNoType;
@@ -44,12 +45,7 @@ class OrganizationModel extends GemsJoinModel
 {
     public CONST URL_SEPARATOR = '|';
 
-    /**
-     * @var bool Whether we are editing
-     */
-    protected bool $notEditing = true;
-
-    protected string $projectName;
+   protected string $projectName;
 
     public function __construct(
         protected readonly MetaModelLoader $metaModelLoader,
@@ -96,7 +92,7 @@ class OrganizationModel extends GemsJoinModel
      *
      * @return static
      */
-    public function applyBrowseSettings(): static
+    public function applyBrowseSettings($setTranslations = true): static
     {
         $definitions = $this->userLoader->getAvailableStaffDefinitions();
         $yesNo       = $this->translatedUtil->getYesNo();
@@ -212,17 +208,13 @@ class OrganizationModel extends GemsJoinModel
             }
         }
 
-        $groupLevel = [
-            '' => $this->_('Defer to user group setting'),
-        ];
-
         $this->metaModel->setIfExists('gor_respondent_edit', [
             'label' => $this->_('Respondent edit screen'),
-            'multiOptions' => $groupLevel + $this->screenLoader->listRespondentEditScreens(),
+            'multiOptions' => $empty + $this->screenLoader->listRespondentEditScreens(),
         ]);
         $this->metaModel->setIfExists('gor_respondent_show', [
             'label' => $this->_('Respondent show screen'),
-            'multiOptions' => $groupLevel + $this->screenLoader->listRespondentShowScreens(),
+            'multiOptions' => $empty + $this->screenLoader->listRespondentShowScreens(),
         ]);
         $this->metaModel->setIfExists('gor_respondent_subscribe', [
             'label' => $this->_('Subscribe screen'),
@@ -234,7 +226,7 @@ class OrganizationModel extends GemsJoinModel
         ]);
         $this->metaModel->setIfExists('gor_token_ask', [
             'label' => $this->_('Token ask screen'),
-            'multiOptions' => $this->screenLoader->listTokenAskScreens(),
+            'multiOptions' => $empty + $this->screenLoader->listTokenAskScreens(),
         ]);
 
         $this->metaModel->setIfExists('gor_resp_change_event', [
@@ -253,8 +245,9 @@ class OrganizationModel extends GemsJoinModel
             ]);
         }
 
-        if ($this->notEditing) {
-            //$this->metaModelLoader->addDatabaseTranslations($this->metaModel);
+        if ($setTranslations) {
+            // As not all labels are set at this moment
+            $this->metaModelLoader->addDatabaseTranslations($this->metaModel, false);
         }
 
         $this->metaModel->addTransformer(new OrganizationConfigurableUserDefinitionTransformer($this->userLoader));
@@ -267,12 +260,12 @@ class OrganizationModel extends GemsJoinModel
      *
      * @return static
      */
-    public function applyDetailSettings(): static
+    public function applyDetailSettings($setTranslations = true): static
     {
         $empty = $this->translatedUtil->getEmptyDropdownArray();
         $staffTemplates = $empty + $this->commTemplateRepository->getCommTemplatesForTarget('staffPassword');
 
-        $this->applyBrowseSettings();
+        $this->applyBrowseSettings(false);
 
         $this->metaModel->set('gor_welcome', [
             'label' => $this->_('Greeting'),
@@ -307,8 +300,8 @@ class OrganizationModel extends GemsJoinModel
             'description' => $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
         ]);
 
-        if ($this->notEditing) {
-            //$this->metaModelLoader->addDatabaseTranslations($this->metaModel);
+        if ($setTranslations) {
+            $this->metaModelLoader->addDatabaseTranslations($this->metaModel, true);
         }
 
         return $this;
@@ -321,9 +314,7 @@ class OrganizationModel extends GemsJoinModel
      */
     public function applyEditSettings(): static
     {
-        $this->notEditing = false;
-
-        $this->applyDetailSettings();
+        $this->applyDetailSettings(false);
         $this->metaModel->resetOrder();
 
         $yesNo = $this->translatedUtil->getYesNo();
@@ -416,6 +407,7 @@ class OrganizationModel extends GemsJoinModel
             'elementClass' => 'CheckBox',
         ]);
         $this->metaModel->set('gor_has_respondents', [
+            'default' => 0,
             'elementClass' => 'Exhibitor',
         ]);
         $this->metaModel->set('gor_respondent_group');
@@ -430,7 +422,7 @@ class OrganizationModel extends GemsJoinModel
         $this->metaModel->setIfExists('gor_allowed_ip_ranges', [
             'elementClass' => 'Textarea',
             'rows' => 4,
-            'validator' => new \Gems\Validator\IPRanges(),
+            'validator' => new IPRanges(),
         ]);
         $this->metaModel->setIfExists('gor_user_class');
 
@@ -488,12 +480,12 @@ class OrganizationModel extends GemsJoinModel
             $this->metaModel->setIfExists('gor_style');
         }
 
-        $this->metaModel->addTransformer(new HtmlSanitizeTransformer([
-            'gor_welcome',
-            'gor_signature',
-        ]));
+//        $this->metaModel->addTransformer(new HtmlSanitizeTransformer([
+//            'gor_welcome',
+//            'gor_signature',
+//        ]));
 
-        //$this->metaModelLoader->addDatabaseTranslationEditFields($this->metaModel);
+        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, true);
 
         return $this;
     }

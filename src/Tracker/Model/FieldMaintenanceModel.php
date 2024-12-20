@@ -160,7 +160,8 @@ class FieldMaintenanceModel extends UnionModel
 
         $this->metaModel->set('gtf_id_track'); // Set order
         $this->metaModel->set('gtf_field_name', [
-            'label' => $this->_('Name')
+            'label' => $this->_('Name'),
+            'translate' => true,
         ]);
         $this->metaModel->set('gtf_id_order', [
             'label' => $this->_('Order'),
@@ -170,12 +171,19 @@ class FieldMaintenanceModel extends UnionModel
             'label' => $this->_('Type'),
             'multiOptions' => $types
         ]);
-        if ($detailed) {
+        if ($detailed) { // Set order
             $this->metaModel->set('gtf_field_value_keys'); // Set order
-            $this->metaModel->set('gtf_field_values'); // Set order
-            $this->metaModel->set('gtf_field_default'); // Set order
-            $this->metaModel->set('gtf_field_description'); // Set order
         }
+        $this->metaModel->set('gtf_field_values', [
+            'translate' => true,
+        ]);
+        if ($detailed) {
+            $this->metaModel->set('gtf_field_default'); // Set order
+        }
+
+        $this->metaModel->set('gtf_field_description', [
+            'translate' => true,
+        ]);
         $this->metaModel->set('gtf_field_code', [
             'label' => $this->_('Field code'),
             'description' => $this->_('Optional code name to link the field to program code.')
@@ -251,7 +259,9 @@ class FieldMaintenanceModel extends UnionModel
         ]);
         $this->metaModel->set('gtf_create_wait_days'); // Set order
 
-        //$this->loader->getModels()->addDatabaseTranslations($this);
+        if (! $detailed) {
+            $this->metaModelLoader->addDatabaseTranslations($this->metaModel, false);
+        }
 
         return $this;
     }
@@ -261,7 +271,7 @@ class FieldMaintenanceModel extends UnionModel
      *
      * @return self
      */
-    public function applyDetailSettings(): self
+    public function applyDetailSettings($editing = false): self
     {
         $this->applyBrowseSettings(true);
 
@@ -307,6 +317,10 @@ class FieldMaintenanceModel extends UnionModel
         ];
         $this->metaModel->addDependency(['ValueSwitchDependency', $switches], 'gtf_to_track_info');
 
+        if (! $editing) {
+            $this->metaModelLoader->addDatabaseTranslations($this->metaModel, true);
+        }
+
         return $this;
     }
 
@@ -317,7 +331,7 @@ class FieldMaintenanceModel extends UnionModel
      */
     public function applyEditSettings(): self
     {
-        $this->applyDetailSettings();
+        $this->applyDetailSettings(true);
 
         $this->metaModel->set('gtf_id_field', [
             'elementClass' => 'Hidden'
@@ -335,7 +349,6 @@ class FieldMaintenanceModel extends UnionModel
             'minlength' => 2,
             'required' => true,
             'validator' => $this->createUniqueValidator('gtf_field_name', ['gtf_id_track', 'gtf_id_field']),
-            'translate' => true
         ]);
 
         $this->metaModel->set('gtf_id_order', [
@@ -352,11 +365,9 @@ class FieldMaintenanceModel extends UnionModel
         $this->metaModel->set('gtf_field_description', [
             'elementClass' => 'Text',
             'size' => 30,
-            'translate' => true
         ]);
         $this->metaModel->set('gtf_field_values', [
             'elementClass' => 'Hidden',
-            'translate' => true
         ]);
         $this->metaModel->set('gtf_field_default', [
             'elementClass' => 'Hidden'
@@ -410,7 +421,7 @@ class FieldMaintenanceModel extends UnionModel
         $dependency = $this->tracker->createTrackClass($class, $this->modelField);
         $this->metaModel->addDependency($dependency);
 
-        //$this->loader->getModels()->addDatabaseTranslationEditFields($this);
+        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, true);
 
         return $this;
     }

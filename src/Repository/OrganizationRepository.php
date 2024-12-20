@@ -131,6 +131,7 @@ class OrganizationRepository
                     ->like('gor_accessible_by', "%:$orgId:%")
                 ->unnest()
                 ->equalTo('gor_active', 1);
+        $select->order('gor_name');
 
         return $this->cachedResultFetcher->fetchPairs($key, $select, null, $this->cacheTags);
     }

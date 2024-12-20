@@ -29,7 +29,7 @@ use Zalt\Validator\Model\ModelUniqueValidator;
 class ConsentModel extends \Gems\Model\SqlTableModel implements ApplyActionInterface
 {
     public function __construct(
-        MetaModelLoader $metaModelLoader,
+        protected readonly  MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
         protected readonly ConsentRepository $consentRepository,
@@ -45,11 +45,7 @@ class ConsentModel extends \Gems\Model\SqlTableModel implements ApplyActionInter
 
     public function applyAction(SnippetActionInterface $action): void
     {
-//        if ($action->isEditing()) {
-//            $this->modelLoader->addDatabaseTranslationEditFields($this->metaModel);
-//        } else {
-//            $this->modelLoader->addDatabaseTranslations($this->metaModel);
-//        }
+        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $action->isDetailed());
     }
 
     public function applySettings()

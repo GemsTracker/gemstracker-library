@@ -15,6 +15,7 @@ use Gems\Audit\AuditLog;
 use Gems\Auth\Acl\AclRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\GroupModel;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
@@ -39,7 +40,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var GroupModel
      */
     protected $model;
 
@@ -59,7 +60,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
@@ -98,8 +99,8 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         if (! $this->formData) {
             parent::loadFormData();
 
-            $model     = $this->getModel();
-            $roles     = $model->get('ggp_role', 'multiOptions');
+            $metaModel = $this->getModel()->getMetaModel();
+            $roles     = $metaModel->get('ggp_role', 'multiOptions');
             $userRoles = $this->aclRepository->getAllowedRoles($this->currentUserRepository->getCurrentUser());
 
             // \MUtil\EchoOut\EchoOut::track($userRoles, $roles);
@@ -120,10 +121,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
                     return $this->formData;
                 }
             }
-            $model->set('ggp_role', 'multiOptions', $roles);
-
-            // TODO: Reenable?
-            // $this->menu->getParameterSource()->offsetSet('ggp_role', $this->formData['ggp_role']);
+            $metaModel->set('ggp_role', 'multiOptions', $roles);
         }
         
         return $this->formData;

@@ -30,13 +30,13 @@ use Gems\Util\Translated;
 use Gems\Validator\IPRanges;
 use Gems\Validator\OneOf;
 use Laminas\Db\Sql\Expression;
-use Laminas\Filter\Callback;
 use MUtil\Validator\NoScript;
 use MUtil\Validator\SimpleEmail;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Filter\RequireOneCapsFilter;
 use Zalt\Html\AElement;
 use Zalt\Model\Dependency\ValueSwitchDependency;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\ActivatingYesNoType;
 use Zalt\Validator\Model\ModelUniqueValidator;
@@ -281,20 +281,14 @@ class StaffModel extends GemsJoinModel
             'multiOptions' => $editing ? $this->currentUser->getAllowedStaffGroups() : $this->groupRepository->getStaffGroupOptions()
         ]);
 
-
         if ($detailed) {
-
             $this->metaModel->set('gsf_iso_lang', [
                 'label' => $this->_('Language'),
                 'default' => $this->project->locale['default'],
                 'multiOptions' => $this->locale->getAvailableLanguages(),
             ]);
             $this->metaModel->set('gul_can_login', [
-                'label' => $this->_('Can login'),
-                'default' => 1,
-                'description' => $this->_('Users can only login when this box is checked.'),
                 'elementClass' => 'Checkbox',
-                'multiOptions' => $yesNo,
             ]);
             $this->metaModel->set('gsf_mail_watcher', [
                 'label' => $this->_('Check cron job mail'),
@@ -311,8 +305,11 @@ class StaffModel extends GemsJoinModel
         ]);
 
         $this->metaModel->set('gul_can_login', [
-            'elementClass' => 'None',
-            'type' => new ActivatingYesNoType($yesNo, 'row_class'),
+            'label' => $this->_('Can login'),
+            'description' => $this->_('Users can only login when this box is checked.'),
+            'default' => 1,
+            'multiOptions' => $yesNo,
+            MetaModelInterface::TYPE_ID => new ActivatingYesNoType($yesNo, 'row_class'),
         ]);
 
         $this->metaModel->setIfExists('has_authenticator_tfa', [

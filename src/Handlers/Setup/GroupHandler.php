@@ -11,19 +11,14 @@
 
 namespace Gems\Handlers\Setup;
 
-use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\ConfigGroupAdapter;
 use Gems\Auth\Acl\GroupRepository;
 use Gems\Html;
-use Gems\Repository\AccessRepository;
-use Gems\Screens\ScreenLoader;
-use Gems\User\UserLoader;
-use Gems\Util\Translated;
-use MUtil\Model\ModelAbstract;
+use Gems\Model\GroupModel;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
-use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
  *
@@ -68,34 +63,18 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     protected array $createEditSnippets = ['Group\\GroupFormSnippet'];
 
     /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
-
-    /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
      */
     protected array $deleteSnippets = ['Group\\GroupDeleteSnippet'];
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
-
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected readonly AccessRepository $accessRepository,
-        protected readonly AclRepository $aclRepository,
+        protected readonly GroupModel $groupModel,
         protected readonly GroupRepository $groupRepository,
-        protected readonly ScreenLoader $screenLoader,
-        protected readonly Translated $translatedUtil,
-        protected readonly UserLoader $userLoader,
     ) {
         parent::__construct($responder, $translate, $cache);
     }
@@ -124,147 +103,12 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
-    public function createModel(bool $detailed, string $action): ModelAbstract
+    public function createModel(bool $detailed, string $action): DataReaderInterface
     {
-        $model = new \MUtil\Model\TableModel('gems__groups');
-
-        // Add id for excel export
-        if ($action == 'export') {
-            $model->set('ggp_id_group', 'label', 'id');
-        }
-
-        $model->set('ggp_name', [
-            'label' => $this->_('Name'),
-            'minlength' => 4,
-            'size' => 15,
-            'translate' => true,
-            'validator' => ModelUniqueValidator::class,
-        ]);
-        $model->set('ggp_code', [
-            'label' => $this->_('Code'),
-            'minlength' => 4,
-            'size' => 15,
-            'validator' => ModelUniqueValidator::class,
-        ]);
-        if ($action === 'edit') {
-            if ($this->requestInfo->isPost()) {
-                $model->remove('ggp_code');
-            } else {
-                $model->set('ggp_code', [
-                    'readonly' => 'readonly',
-                    'disabled' => 'disabled',
-                ]);
-            }
-        }
-        $model->set('ggp_description', [
-            'label' => $this->_('Description'),
-            'size' => 40,
-            'translate' => true,
-        ]);
-        $model->set('ggp_role', [
-            'label' => $this->_('Role'),
-            'multiOptions' => $this->aclRepository->getRoleValues(),
-        ]);
-
-        $groups = $this->accessRepository->getGroups();
-        unset($groups['']);
-        $model->set('ggp_may_set_groups', [
-            'label' => $this->_('May set these groups'),
-            'elementClass' => 'MultiCheckbox',
-            'multiOptions' => $groups,
-        ]);
-        $tpa = new \MUtil\Model\Type\ConcatenatedRow(',', ', ');
-        $tpa->apply($model, 'ggp_may_set_groups');
-
-        $model->set('ggp_default_group', [
-            'label' => $this->_('Default group'),
-            'description' => $this->_('Default group when creating new staff member'),
-            'elementClass' => 'Select',
-            'multiOptions' => $this->accessRepository->getGroups(),
-        ]);
-
-        $model->set('ggp_member_type', [
-            'label' => $this->_('Can be assigned to'),
-            'elementClass' => 'Radio',
-            'multiOptions' => $this->translatedUtil->getMemberTypes(),
-        ]);
-
-        $model->set('ggp_allowed_ip_ranges', [
-            'label' => $this->_('Login allowed from IP Ranges'),
-            'description' => $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
-            'elementClass' => 'Textarea',
-            'itemDisplay' => [$this, 'ipWrap'],
-            'rows' => 4,
-            'validator' => new \Gems\Validator\IPRanges(),
-        ]);
-        $model->setIfExists('ggp_no_2factor_ip_ranges', [
-            'label' => $this->_('Two factor Optional IP Ranges'),
-            'description' => $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
-            'default' => '127.0.0.1|::1',
-            'elementClass' => 'Textarea',
-            'itemDisplay' => [$this, 'ipWrap'],
-            'rows' => 4,
-            'validator' => new \Gems\Validator\IPRanges(),
-        ]);
-
-        $model->setIfExists('ggp_2factor_set', [
-            'label' => $this->_('Login with two factor set'),
-            'elementClass' => 'Radio',
-            'multiOptions' => $this->userLoader->getGroupTwoFactorSetOptions(),
-            'separator' => '<br/>',
-        ]);
-        $model->setIfExists('ggp_2factor_not_set', [
-            'label' => $this->_('Login without two factor set'),
-            'elementClass' => 'Radio',
-            'multiOptions' => $this->userLoader->getGroupTwoFactorNotSetOptions(),
-            'separator' => '<br/>',
-        ]);
-        $yesNo = $this->translatedUtil->getYesNo();
-        $model->set('ggp_group_active', [
-            'label' => $this->_('Active'),
-            'elementClass' => 'Checkbox',
-            'multiOptions' => $yesNo,
-        ]);
-
-        if ($detailed) {
-            $html = Html::create('h4', $this->_('Screen settings'));
-            $model->set('screensettings', 'label', ' ',
-                'default', $html,
-                'elementClass', 'Html',
-                'value', $html
-            );
-
-            $model->set('ggp_respondent_browse', 'label', $this->_('Respondent browse screen'),
-                'default', 'Gems\\Screens\\Respondent\\Browse\\ProjectDefaultBrowse',
-                'elementClass', 'Radio',
-                'multiOptions', $this->screenLoader->listRespondentBrowseScreens()
-            );
-            /*
-            $model->set('ggp_respondent_edit', 'label', $this->_('Respondent edit screen'),
-                'default', 'Gems\\Screens\\Respondent\\Edit\\ProjectDefaultEdit',
-                'elementClass', 'Radio',
-                'multiOptions', $this->screenLoader->listRespondentEditScreens()
-            );
-            $model->set('ggp_respondent_show', 'label', $this->_('Respondent show screen'),
-                'default', 'Gems\\Screens\\Respondent\\Show\\GemsProjectDefaultShow',
-                'elementClass', 'Radio',
-                'multiOptions', $this->screenLoader->listRespondentShowScreens()
-            );*/
-        }
-
-        if (isset($this->config['translate'], $this->config['translate']['databaseFields']) && $this->config['translate']['databaseFields'] === true) {
-            if ('create' == $action || 'edit' == $action) {
-                $this->loader->getModels()->addDatabaseTranslationEditFields($model);
-            } else {
-                $this->loader->getModels()->addDatabaseTranslations($model);
-            }
-        }
-
-        \Gems\Model::setChangeFieldsByPrefix($model, 'ggp');
-
-        return $model;
+        $this->groupModel->applyStringAction($action, $detailed);
+        return $this->groupModel;
     }
 
     /**
@@ -276,7 +120,7 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function getBrowseColumns(): bool|array
     {
-        $br = \Zalt\Html\Html::create('br');
+        $br = Html::create('br');
         return [
             ['ggp_name', $br, 'ggp_code', $br, 'ggp_role'],
             ['ggp_description'],
@@ -315,15 +159,5 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function getTopic($count = 1): string
     {
         return $this->plural('group', 'groups', $count);
-    }
-
-    /**
-     *
-     * @param string $value
-     * @return string
-     */
-    public function ipWrap($value)
-    {
-        return \MUtil\Lazy::call('str_replace', '|', ' | ', $value ?? '');
     }
 }

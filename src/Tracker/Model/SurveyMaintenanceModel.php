@@ -208,11 +208,8 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
                 'required' => false,
                 'validators[pdf]' => \MUtil\Validator\Pdf::class,
             ]);
-
-//             $this->metaModelLoader->addDatabaseTranslationEditFields($this->metaModel);
-        } else {
-            $this->metaModelLoader->addDatabaseTranslations($this->metaModel);
         }
+        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $action->isDetailed());
 
         $event = new SurveyModelSetEvent($this, $action->isDetailed(), $action->isEditing());
         $this->eventDispatcher->dispatch($event, SurveyModelSetEvent::class);

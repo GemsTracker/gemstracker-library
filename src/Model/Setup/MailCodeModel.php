@@ -26,7 +26,7 @@ use Zalt\Validator\Model\ModelUniqueValidator;
 class MailCodeModel extends \Gems\Model\SqlTableModel implements \Zalt\SnippetsActions\ApplyActionInterface
 {
     public function __construct(
-        MetaModelLoader $metaModelLoader,
+        protected readonly MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
         protected readonly Translated $translatedUtil,
@@ -42,11 +42,7 @@ class MailCodeModel extends \Gems\Model\SqlTableModel implements \Zalt\SnippetsA
 
     public function applyAction(SnippetActionInterface $action): void
     {
-//        if ($action->isEditing()) {
-//            $this->modelLoader->addDatabaseTranslationEditFields($this->metaModel);
-//        } else {
-//            $this->modelLoader->addDatabaseTranslations($this->metaModel);
-//        }
+        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $action->isDetailed());
     }
 
     public function applySettings()

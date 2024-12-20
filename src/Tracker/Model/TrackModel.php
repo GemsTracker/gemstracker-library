@@ -42,7 +42,7 @@ use Zalt\Validator\Model\ModelUniqueValidator;
 class TrackModel extends SqlTableModel
 {
     public function __construct(
-        MetaModelLoader $metaModelLoader,
+        protected readonly MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
         protected readonly Model $model,
@@ -106,8 +106,6 @@ class TrackModel extends SqlTableModel
             'description' => $this->translate->_('Optional code name to link the track to program code.')
         ]);
 
-        $this->model->addDatabaseTranslationEditFields($this->metaModel);
-
         if ($detailed) {
             $caList = $this->trackEvents->listTrackCalculationEvents();
             if (count($caList) > 1) {
@@ -161,13 +159,8 @@ class TrackModel extends SqlTableModel
             ]);
         }
 
-        if ($this->project->translateDatabaseFields()) {
-            if ($edit) {
-                $this->model->addDatabaseTranslationEditFields($this->metaModel);
-            } else {
-                $this->model->addDatabaseTranslations($this->metaModel);
-            }
-        }
+        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $detailed);
+
         return $this;
     }
 
