@@ -372,6 +372,17 @@ class TokenHandler extends TokenSearchHandlerAbstract
         return $data;
     }
 
+    public function getSurveyId(): int
+    {
+        $token = $this->getToken();
+
+        if ($token->exists) {
+            return $token->getSurveyId();
+        }
+
+        return 0;
+    }
+
     public function getToken()
     {
         static $token;

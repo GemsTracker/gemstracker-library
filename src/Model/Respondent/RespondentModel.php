@@ -207,7 +207,12 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
     public function applyAction(SnippetActionInterface $action): void
     {
-        if (! $action->isDetailed()) {
+        if ($action->isDetailed()) {
+            $this->metaModel->addTransformer(new FixedValueTransformer([
+                'gr2o_opened' => new \DateTimeImmutable(),
+                'gr2o_opened_by' => $this->currentUserId,
+            ]));
+        } else {
             if (! $this->joinStore->hasTable('gems__organizations')) {
                 $this->addTable('gems__organizations', array('gr2o_id_organization' => 'gor_id_organization'));
                 $options = $this->metaModel->get('gr2o_id_organization');
@@ -435,11 +440,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         $event = new RespondentModelSetEvent($this);
         $this->eventDispatcher->dispatch($event, RespondentModelSetEvent::class);
-
-        $this->metaModel->addTransformer(new FixedValueTransformer([
-            'gr2o_opened' => new \DateTimeImmutable(),
-            'gr2o_opened_by' => $this->currentUserId,
-        ]));
 
         $this->applyMask();
     }
@@ -727,6 +727,11 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         $newValues = $this->checkIds($newValues);
 
+        if (isset($filter[MetaModelInterface::REQUEST_ID1], $filter[MetaModelInterface::REQUEST_ID2]) && (! isset($newValues['gr2o_id_user']))) {
+            $newValues['gr2o_id_user'] = $this->respondentRepository->getRespondentId($filter[MetaModelInterface::REQUEST_ID1], (int) $filter[MetaModelInterface::REQUEST_ID2]);
+            $newValues['grs_id_user']  = $newValues['gr2o_id_user'];
+        }
+
         $output = parent::save($newValues, $filter, $saveTables);
 
         $this->logConsentChanges($output);
@@ -741,6 +746,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $respondent = $this->respondentRepository->getRespondent($output['gr2o_patient_nr'], intval($output['gr2o_id_organization']), intval($output['grs_id_user']));
             $respondent->handleChanged();
         }
+
+        dump($newValues, $filter, $saveTables);
 
         return $output;
     }

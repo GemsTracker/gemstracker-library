@@ -77,6 +77,7 @@ class GroupModel extends SqlTableModel implements ApplyLegacyActionInterface
                 'label' => ' ',
                 'default' => $html,
                 'elementClass' => 'Html',
+                'order' => $this->metaModel->getOrder('ggp_respondent_browse') - 1,
                 'value' => $html,
             ]);
 

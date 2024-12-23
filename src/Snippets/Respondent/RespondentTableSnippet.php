@@ -116,9 +116,6 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
          * @var RespondentModel $dataModel
          */
         if ($dataModel->getJoinStore()->hasTable('gems__respondent2track')) {
-            $model->set('gtr_track_name',  'label', $this->_('Track'));
-            $model->set('gr2t_track_info', 'label', $this->_('Track description'));
-
             $track = $this->getTracksLink($bridge, $dataModel->getMetaModel());
             $bridge->addMultiSort($track, $br, 'gr2t_track_info');
         } else {
@@ -184,6 +181,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
         }
         if ($maskBirthday) {
             $bridge->addMultiSort($phonesep, 'grs_phone_1');
+            return;
         }
 
         $br = Html::create('br');

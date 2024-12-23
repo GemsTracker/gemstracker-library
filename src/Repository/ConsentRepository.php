@@ -5,9 +5,8 @@ namespace Gems\Repository;
 use Gems\Db\CachedResultFetcher;
 use Gems\Exception\ConsentCreateException;
 use Gems\Translate\CachedDbTranslationRepository;
-use Gems\Translate\DbTranslationRepository;
 use Gems\Util\ConsentCode;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 class ConsentRepository
 {
@@ -19,7 +18,7 @@ class ConsentRepository
 
     public function __construct(
         protected readonly CachedResultFetcher $cachedResultFetcher,
-        protected readonly Translator $translator,
+        protected readonly TranslatorInterface $translator,
         protected readonly CachedDbTranslationRepository $dbTranslationRepository,
         readonly array $config
     )

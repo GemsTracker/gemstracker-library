@@ -200,7 +200,7 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
         $url = $this->menuHelper->getLateRouteUrl('respondent.tracks.show', $routeMap, $bridge);
         if ($url) {
             $track[0] = Html::create('a', $url['url'], $bridge->gtr_track_name);
-            $track[1] = $bridge->createSortLink('gtr_track_name', $bridge->gtr_track_name);
+            $track[1] = $bridge->createSortLink('gtr_track_name', $metaModel->get('gtr_track_name', 'label'));
         } else {
             $track = 'gtr_track_name';
         }

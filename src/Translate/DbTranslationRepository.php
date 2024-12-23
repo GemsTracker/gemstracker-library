@@ -19,7 +19,7 @@ class DbTranslationRepository
     {
         $this->language = $locale->getLanguage();
         $defaultLocale = $config['locale']['default'] ?? null;
-        $configEnabled = $config['translations']['databaseFields'] ?? false;
+        $configEnabled = $config['model']['translateDatabaseFields'] ?? false;
         if ($this->language !== $defaultLocale && $configEnabled) {
             $this->translationsEnabled = true;
         }
