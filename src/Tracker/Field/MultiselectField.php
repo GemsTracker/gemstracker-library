@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Tracker\Model\Dependency\ValuesMaintenanceDependency;
 use MUtil\Model\Type\ConcatenatedRow;
 
 /**
@@ -49,7 +50,45 @@ class MultiselectField extends FieldAbstract
         $settings  = $concatter->getSettings() + $settings;
 
         $settings['elementClass'] = 'MultiCheckbox';
-        $settings['multiOptions'] = array_combine($multiKeys, $multi);
+        $settings['multiOptions'] = $this->getMultiOptions();
+    }
+
+    /**
+     * Calculation the field info display for this type
+     *
+     * @param string|array $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function calculateFieldInfo($currentValue, array $fieldData): mixed
+    {
+        $options = $this->getMultiOptions();
+
+        if (is_array($currentValue)){
+            $values = $currentValue;
+        } else {
+            $values = explode(parent::FIELD_SEP, trim($currentValue, parent::FIELD_SEP));
+        }
+        $output = [];
+        foreach ($values as $value) {
+            if (isset($options[$value])) {
+                $output[] = $options[$value];
+            } else {
+                $output[] = $value;
+            }
+        }
+        if ($output) {
+            return implode($this->displaySeparator, $output);
+        }
+        return null;
+    }
+
+    protected function getMultiOptions()
+    {
+        $multiKeys = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_value_keys']);
+        $multi     = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_values']);
+
+        return ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
     }
 
     /**

@@ -101,7 +101,6 @@ class FieldMaintenanceModel extends UnionModel
         parent::__construct($metaModel, $modelField);
 
         $model = $metaModelLoader->createTableModel('gems__track_fields');
-        $model->addColumn(new Expression('gtf_field_values'), 'gtf_field_value_keys');
         $metaModelLoader->setChangeFields($model->getMetaModel(), 'gtf');
         $this->addUnionModel($model, null, self::FIELDS_NAME);
 
@@ -173,6 +172,7 @@ class FieldMaintenanceModel extends UnionModel
         ]);
         if ($detailed) { // Set order
             $this->metaModel->set('gtf_field_value_keys'); // Set order
+            $this->metaModel->set('gtf_field_values'); // Set order
         }
         $this->metaModel->set('gtf_field_values', [
             'translate' => true,
@@ -365,6 +365,9 @@ class FieldMaintenanceModel extends UnionModel
         $this->metaModel->set('gtf_field_description', [
             'elementClass' => 'Text',
             'size' => 30,
+        ]);
+        $this->metaModel->set('gtf_field_value_keys', [
+            'elementClass' => 'Hidden',
         ]);
         $this->metaModel->set('gtf_field_values', [
             'elementClass' => 'Hidden',
