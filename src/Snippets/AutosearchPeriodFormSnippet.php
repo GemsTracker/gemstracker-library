@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\Snippets;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
@@ -32,6 +33,7 @@ class AutosearchPeriodFormSnippet extends AutosearchFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        ConfigAccessor $configAccessor,
         MenuSnippetHelper $menuSnippetHelper,
         MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
@@ -39,7 +41,7 @@ class AutosearchPeriodFormSnippet extends AutosearchFormSnippet
         protected PeriodSelectRepository $periodSelectRepository,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $configAccessor, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger);
     }
     
     /**

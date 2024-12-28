@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
 use Gems\Form;
 use Gems\Form\Element\DateTimeInput;
@@ -124,6 +125,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        protected readonly ConfigAccessor $configAccessor,
         protected readonly MenuSnippetHelper $menuSnippetHelper,
         protected readonly MetaModelLoader $metaModelLoader,
         protected readonly ResultFetcher $resultFetcher,
@@ -333,6 +335,14 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         if (! isset($options['name'])) {
             $className = get_class($this);
             $options['name'] = substr($className, strrpos($className, '\\'));
+        }
+        if ($this->configAccessor->isAutosearch()) {
+            if (! isset($options['class'])) {
+                $options['class'] = '';
+            } else {
+                $options['class'] .= ' ';
+            }
+            $options['class'] .= 'auto-submit';
         }
 
         $form = new Form($options);

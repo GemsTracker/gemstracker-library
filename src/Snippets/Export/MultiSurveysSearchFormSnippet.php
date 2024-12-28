@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
 use Gems\Export;
 use Gems\Html;
@@ -42,6 +43,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        ConfigAccessor $configAccessor,
         MenuSnippetHelper $menuSnippetHelper,
         MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
@@ -57,6 +59,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
             $snippetOptions,
             $requestInfo,
             $translate,
+            $configAccessor,
             $menuSnippetHelper,
             $metaModelLoader,
             $resultFetcher,
