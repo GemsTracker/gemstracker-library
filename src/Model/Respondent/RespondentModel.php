@@ -747,8 +747,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $respondent->handleChanged();
         }
 
-        dump($newValues, $filter, $saveTables);
-
         return $output;
     }
 
