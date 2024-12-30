@@ -22,6 +22,14 @@ class ConfigAccessor
     )
     { }
 
+    public function hasTFAMethod(string $method): bool
+    {
+        if (isset($this->config['twofactor']['methods'][$method])) {
+            return ! ($this->config['twofactor']['methods'][$method]['disabled'] ?? false);
+        }
+        return false;
+    }
+
     public function isAutosearch(): bool
     {
         return $this->config['interface']['autosearch'] ?? false;

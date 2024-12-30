@@ -625,6 +625,19 @@ class User
         };
     }
 
+    public function getTfaMethodDescription(): string
+    {
+        if (! $this->hasTwoFactorConfigured()) {
+            return 'None';
+        }
+        return match($this->getTfaMethodClass()) {
+            'SmsHotp' => 'SMS',
+            'AuthenticatorTotp' => 'Authenticator App',
+            'MailHotp' => 'Mail',
+            default => 'None',
+        };
+    }
+
     public function getUserDefinitionClass(): string
     {
         return $this->definition;

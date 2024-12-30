@@ -144,28 +144,35 @@ class SeedRepository extends MigrationRepositoryAbstract
 
     protected function getKeyFilter(Adapter $adapter, $tableName, $row): array|null
     {
-        $keys = $this->getTableKeys($adapter, $tableName);
+        $keysets = $this->getTableKeysets($adapter, $tableName);
         $filter = [];
-        foreach($keys as $key) {
-            if (!isset($row[$key])) {
-                return null;
+        foreach($keysets as $keys) {
+            $skipFilter = false;
+            foreach($keys as $key) {
+                if (isset($row[$key])) {
+                    $filter[$key] = $row[$key];
+                } else {
+                    $skipFilter = true;
+                }
             }
-            $filter[$key] = $row[$key];
+            if ($filter && (! $skipFilter)) {
+                // Return first searchable value
+                return $filter;
+            }
         }
 
-        return $filter;
+        return null;
     }
 
-    protected function getTableKeys(Adapter $adapter, string $tableName): array
+    protected function getTableKeysets(Adapter $adapter, string $tableName): array
     {
         if (!isset($this->tableKeys[$tableName])) {
             $metaData = Factory::createSourceFromAdapter($adapter);
             $table = $metaData->getTable($tableName);
             $keys = [];
             foreach($table->getConstraints() as $constraint) {
-                if ($constraint->getType() === 'PRIMARY KEY') {
-                    $keys = $constraint->getColumns();
-                    break;
+                if ($constraint->getType() === 'PRIMARY KEY' || $constraint->getType() === 'UNIQUE') {
+                    $keys[] = $constraint->getColumns();
                 }
             }
             $this->tableKeys[$tableName] = $keys;
@@ -276,11 +283,11 @@ class SeedRepository extends MigrationRepositoryAbstract
         foreach($data as $rowKey => $row) {
             foreach($row as $column => $value) {
                 foreach($references as $reference => $replacement) {
-                    if ($data[$rowKey][$column] === '{{' . $reference . '}}') {
+                    if (isset($data[$rowKey][$column]) && $data[$rowKey][$column] === '{{' . $reference . '}}') {
                         $data[$rowKey][$column] = $replacement;
                     }
                 }
-                if (is_string($data[$rowKey][$column]) && str_starts_with($data[$rowKey][$column], '{{')) {
+                if (is_string($data[$rowKey][$column] ?? '') && str_starts_with($data[$rowKey][$column] ?? '', '{{')) {
                     unset($data[$rowKey]);
                 }
             }
@@ -328,15 +335,6 @@ class SeedRepository extends MigrationRepositoryAbstract
             if ($localTransaction) {
                 $connection->commit();
             }
-
-            /*foreach($sqlQueriesPerTable as $table => $sqlQueries) {
-                foreach($sqlQueries as $index => $sqlQuery) {
-                    $sqlQuery = $this->resolveReferences($sqlQuery, $generatedValues);
-                    $resultFetcher->query($sqlQuery);
-                    $generatedValues[$table.'_'.$index] = $resultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
-                    $finalQueries[] = $sqlQuery;
-                }
-            }*/
 
             $event = new RunSeedMigrationEvent(
                 'seed',

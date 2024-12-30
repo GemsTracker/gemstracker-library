@@ -8,6 +8,7 @@ class UserPasswordMailFields extends UserMailFields
     {
         $mailFields = parent::getMailFields();
         $mailFields += [
+            'tfa_method' => $this->user->getTfaMethodDescription(),
             'reset_key' => $this->user->getPasswordResetKey(),
             'reset_url' => $this->user->getBaseOrganization()->getLoginUrl() . '/index/resetpassword/key/' . $this->user->getPasswordResetKey(),
         ];
