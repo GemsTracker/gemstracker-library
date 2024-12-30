@@ -89,7 +89,9 @@ class SeedRepository extends MigrationRepositoryAbstract
     {
         $sql = new Sql($adapter);
         $sqlStatements = [];
+        $index = 0;
         foreach($rows as $row) {
+            $index++;
             $keyFilter = $this->getKeyFilter($adapter, $table, $row);
 
             if ($keyFilter !== null) {
@@ -101,7 +103,7 @@ class SeedRepository extends MigrationRepositoryAbstract
 
             $insert = $sql->insert($table);
             $insert->values($row);
-            $sqlStatements[] = $sql->buildSqlString($insert);
+            $sqlStatements[$index] = $sql->buildSqlString($insert);
         }
         return $sqlStatements;
     }

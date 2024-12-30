@@ -301,7 +301,7 @@ class StaffModel extends GemsJoinModel
         $this->metaModel->set('gsf_active', [
             'label' => $this->_('Active'),
             'elementClass' => 'None',
-            'type' => new ActivatingYesNoType($yesNo, 'row_class'),
+            MetaModelInterface::TYPE_ID => new ActivatingYesNoType($yesNo, 'row_class'),
         ]);
 
         $this->metaModel->set('gul_can_login', [
@@ -309,7 +309,6 @@ class StaffModel extends GemsJoinModel
             'description' => $this->_('Users can only login when this box is checked.'),
             'default' => 1,
             'multiOptions' => $yesNo,
-            MetaModelInterface::TYPE_ID => new ActivatingYesNoType($yesNo, 'row_class'),
         ]);
 
         $this->metaModel->setIfExists('has_authenticator_tfa', [

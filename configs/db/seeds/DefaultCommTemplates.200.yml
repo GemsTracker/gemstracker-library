@@ -151,8 +151,8 @@ gems__comm_template_translations:
   - gctt_id_template: '{{gems__comm_templates.11}}'
     gctt_lang: en
     gctt_subject: 'Your TFA has been reset'
-    gctt_body: 'Your Authenticator TFA has been reset for the <strong>{{organization}}</strong> site <strong>{{project}}</strong>. Next time you log in, you will need to verify your login using {{tfa_method}} TFA, after which you can reactivate the Authenticator TFA.'
+    gctt_body: 'Your Authenticator TFA has been reset for the <strong>{{organization}}</strong> site <strong>{{project}}</strong>. Next time you log in, you will need to verify your login using {{tfa_method}} TFA, after which you can reactivate the Authenticator App TFA.'
   - gctt_id_template: '{{gems__comm_templates.11}}'
     gctt_lang: nl
     gctt_subject: 'Je TFA is gereset'
-    gctt_body: 'Je Authenticator TFA voor <strong>{{organization}}</strong> site <strong>{{project}}</strong> is zojuist gewist. De volgende keer dat je inlogt zul je met {{tfa_method}} TFA inloggen, waarna je weer de {{tfa_method}} TFA kan instellen.'
+    gctt_body: 'Je Authenticator TFA voor <strong>{{organization}}</strong> site <strong>{{project}}</strong> is zojuist gewist. De volgende keer dat je inlogt zul je met {{tfa_method}} TFA inloggen, waarna je weer de Authenticator App TFA kan instellen.'
