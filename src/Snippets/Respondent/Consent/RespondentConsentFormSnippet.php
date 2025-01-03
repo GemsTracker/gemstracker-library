@@ -66,7 +66,9 @@ class RespondentConsentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstra
 
         if (in_array('name', $this->exhibit)) {
             \Gems\Model\Respondent\RespondentModel::addNameToModel($metaModel, $this->_('Name'));
-            $metaModel->set('name', 'order', $metaModel->getOrder('gr2o_patient_nr') + 1);
+            $metaModel->set('name', [
+                'order' => $metaModel->getOrder('gr2o_patient_nr') + 1,
+            ]);
         }
 
         $all = $metaModel->getCol('label');
@@ -79,9 +81,13 @@ class RespondentConsentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstra
                 continue;
             }
             if (in_array($name, $this->exhibit)) {
-                $metaModel->set($name, 'elementClass', 'Exhibitor');
+                $metaModel->set($name, [
+                    'elementClass' => 'Exhibitor',
+                ]);
             } else {
-                $metaModel->set($name, 'elementClass', 'None');
+                $metaModel->set($name, [
+                    'elementClass' => 'None',
+                ]);
             }
         }
 

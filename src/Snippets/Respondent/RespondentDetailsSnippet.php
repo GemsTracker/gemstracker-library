@@ -39,7 +39,7 @@ class RespondentDetailsSnippet extends \Gems\Snippets\RespondentDetailSnippetAbs
 
         $HTML = Html::create();
 
-        $bridge->caption($this->getCaption());
+        $bridge->getTable()->caption($this->getCaption());
 
         $br = $HTML->br();
 
