@@ -39,9 +39,6 @@ class SelectField extends FieldAbstract
             $empty = $this->translatedUtil->getEmptyDropdownArray();
         }
 
-        //$multiKeys = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_value_keys'] ?? '');
-        //$multi = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_values'] ?? '');
-
         $settings['elementClass'] = 'Select';
         $settings['multiOptions'] = $empty + $this->getMultiOptions();
     }
@@ -65,9 +62,18 @@ class SelectField extends FieldAbstract
 
     protected function getMultiOptions()
     {
-        $multiKeys = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_value_keys'] ?? '');
-        $multi     = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_values'] ?? '');
+        $multiKeys = [];
+        if (!empty($this->fieldDefinition['gtf_field_value_keys'])) {
+            $multiKeys = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_value_keys']);
+        }
+        $multi = [];
+        if (!empty($this->fieldDefinition['gtf_field_values'])) {
+            $multi = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_values']);
+        }
 
-        return ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
+        if ($multiKeys) {
+            return ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
+        }
+        return ValuesMaintenanceDependency::combineKeyValues($multi, $multi);
     }
 }

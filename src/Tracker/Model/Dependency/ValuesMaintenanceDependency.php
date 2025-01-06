@@ -150,7 +150,7 @@ class ValuesMaintenanceDependency extends DependencyAbstract
                 'formatFunction' => array($this, 'formatLabels'),
                 'minlength'      => 3,// At least two single chars and a separator
                 'rows'           => 4,
-                'required'       => true,
+                //'required'       => true,
             ),
             'translations_gtf_field_values' => [
                 'model' => [
