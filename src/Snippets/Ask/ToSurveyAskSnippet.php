@@ -24,7 +24,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
-use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\MessageableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -48,6 +47,7 @@ class ToSurveyAskSnippet extends MessageableSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         CurrentUserRepository $currentUserRepository,
+        protected readonly Locale $locale,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly MenuSnippetHelper $menuSnippetHelper,
         protected readonly ServerRequestInterface $request,
@@ -87,6 +87,7 @@ class ToSurveyAskSnippet extends MessageableSnippetAbstract
 
     public function getResponse(): ?ResponseInterface
     {
+        // If this snippet is called for an already answered token something went wrong so we return to a general token page
         if ($this->token->isCompleted()) {
             $this->messenger->addMessages([$this->_('Thank you for completing the survey')]);
             $url = $this->menuSnippetHelper->getRelatedRouteUrl('index');
@@ -101,7 +102,7 @@ class ToSurveyAskSnippet extends MessageableSnippetAbstract
 
         $returnUrl = $this->checkReturnUrl($this->tokenHelper->getReturnUrl($this->request, $this->token));
         $url  = $this->token->getUrl(
-            $this->token->getRespondentLanguage(),
+            $this->currentUser ? $this->locale->getLanguage() : $this->token->getRespondentLanguage(),
             $this->currentUser instanceof User ? $this->currentUser->getUserId() : $this->token->getRespondentId(),
             $returnUrl
         );

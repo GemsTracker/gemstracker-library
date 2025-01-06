@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers;
 
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\Menu\RouteHelper;
 use Gems\Middleware\ClientIpMiddleware;
@@ -89,6 +90,7 @@ class AskHandler extends SnippetHandler
         SnippetResponderInterface $responder,
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly Locale $locale,
         protected readonly MaintenanceLock $maintenanceLock,
         protected readonly RouteHelper $routeHelper,
@@ -113,13 +115,16 @@ class AskHandler extends SnippetHandler
 //        }
 
         if ($tokenExists) {
-            $language = $this->token->getRespondentLanguage();
-            if ($this->locale->getLanguage() !== $language) {
-                $this->addSiteCookie(LocaleMiddleware::LOCALE_ATTRIBUTE, $language);
-                $this->locale->setCurrentLanguage($language);
+            // CHeck if there is no user
+            if (! $this->currentUserRepository->hasCurrentUserId()) {
+                $language = $this->token->getRespondentLanguage();
+                if ($this->locale->getLanguage() !== $language) {
+                    $this->addSiteCookie(LocaleMiddleware::LOCALE_ATTRIBUTE, $language);
+                    $this->locale->setCurrentLanguage($language);
 
-                if ($this->translate instanceof SymfonyTranslator) {
-                    $this->translate->setLocale($language);
+                    if ($this->translate instanceof SymfonyTranslator) {
+                        $this->translate->setLocale($language);
+                    }
                 }
             }
 
