@@ -61,7 +61,7 @@ class EmailTokenModel extends GemsJoinModel
             'apiName' => 'lastContact',
             'elementClass' => 'html',
         ]);
-        $this->metaModel->set('grs_iso_country', [
+        $this->metaModel->set('grs_iso_lang', [
             'label' => $this->translate->_('Preferred language'),
             'apiName' => 'preferredLanguage',
             'elementClass' => 'html',
