@@ -315,9 +315,14 @@ class StaffModel extends GemsJoinModel
             'multiOptions' => $yesNo,
         ]);
 
-        if (! $this->currentUser->hasPrivilege('pr.staff.edit.all')) {
+        $organizations = $this->currentUser->getAllowedOrganizations();
+        if (1 == count($organizations)) {
             $this->metaModel->set('gsf_id_organization', [
                 'elementClass' => 'Exhibitor',
+            ]);
+        } else {
+            $this->metaModel->set('gsf_id_organization', [
+                'options' => $organizations,
             ]);
         }
 
