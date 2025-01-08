@@ -12,8 +12,8 @@
 
 namespace Gems\Model;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Html;
-use Gems\Locale\Locale;
 use Gems\Model\Transform\HtmlSanitizeTransformer;
 use Gems\Model\Transform\OrganizationConfigurableUserDefinitionTransformer;
 use Gems\Repository\CommTemplateRepository;
@@ -51,9 +51,9 @@ class OrganizationModel extends GemsJoinModel
         protected readonly MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
+        protected readonly ConfigAccessor $configAccessor,
         protected readonly CommTemplateRepository $commTemplateRepository,
         protected readonly GroupRepository $groupRepository,
-        protected readonly Locale $locale,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly ScreenLoader $screenLoader,
         protected readonly TrackEvents $trackEvents,
@@ -235,7 +235,7 @@ class OrganizationModel extends GemsJoinModel
         ]);
         $this->metaModel->setIfExists('gor_iso_lang', [
             'label' => $this->_('Language'),
-            'multiOptions' => $this->locale->getAvailableLanguages(),
+            'multiOptions' => $this->configAccessor->getLocales(),
         ]);
         if ($this->styles) {
             $this->metaModel->setIfExists('gor_style', [
@@ -473,7 +473,7 @@ class OrganizationModel extends GemsJoinModel
         ]);
         $this->metaModel->setIfExists('gor_iso_lang', [
             'order' => $this->metaModel->getOrder('gor_user_class') + 1010,
-            'default' => $this->locale->getDefaultLanguage(),
+            'default' => $this->configAccessor->getDefaultLocale(),
         ]);
 
         if ($this->styles) {

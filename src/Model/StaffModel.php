@@ -12,12 +12,11 @@
 
 namespace Gems\Model;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Locale\Locale;
 use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Model\Type\EncryptedField;
-use Gems\Project\ProjectSettings;
 use Gems\Repository\GroupRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\ModelFormSnippet;
@@ -63,10 +62,8 @@ class StaffModel extends GemsJoinModel
         protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly OrganizationRepository $organizationRepository,
         protected readonly UserLoader $userLoader,
-        protected readonly ProjectSettings $project,
         protected readonly Translated $translatedUtil,
-        protected readonly Locale $locale,
-        protected readonly array $config,
+        protected readonly ConfigAccessor $configAccessor,
         protected readonly GroupRepository $groupRepository,
         protected readonly EmbedLoader $embedLoader,
         protected readonly ValueEncryptor $valueEncryptor,
@@ -140,7 +137,7 @@ class StaffModel extends GemsJoinModel
 
         if ($editing) {
             $uniqueFields = ['gsf_login', 'gsf_id_organization'];
-            if ($this->project->isLoginShared()) {
+            if ($this->configAccessor->isLoginShared()) {
                 $uniqueFields = ['gsf_login'];
             }
             $this->metaModel->set('gsf_login', [
@@ -197,7 +194,7 @@ class StaffModel extends GemsJoinModel
 
         $this->metaModel->set('gsf_iso_lang', [
             'label' => $this->_('Language'),
-            'multiOptions' => $this->locale->getAvailableLanguages(),
+            'multiOptions' => $this->configAccessor->getLocales(),
         ]);
 
         $this->setFilter(array('gsf_id_user' => $this->currentUser->getUserId()));
@@ -268,11 +265,12 @@ class StaffModel extends GemsJoinModel
             'size' => 30,
             'validators[email]' => 'SimpleEmail',
         ]);
+        $config = $this->configAccessor->getArray();
         $this->metaModel->set('gsf_phone_1', [
             'label' => $this->_('Mobile phone'),
-            'validator' => new PhoneNumberValidator($this->config, $this->translate),
+            'validator' => new PhoneNumberValidator($config, $this->translate),
         ]);
-        $this->metaModel->setOnSave('gsf_phone_1', new PhoneNumberFormatter($this->config));
+        $this->metaModel->setOnSave('gsf_phone_1', new PhoneNumberFormatter($config));
 
 
         $this->metaModel->set('gsf_id_primary_group', [
@@ -284,8 +282,8 @@ class StaffModel extends GemsJoinModel
         if ($detailed) {
             $this->metaModel->set('gsf_iso_lang', [
                 'label' => $this->_('Language'),
-                'default' => $this->project->locale['default'],
-                'multiOptions' => $this->locale->getAvailableLanguages(),
+                'default' => $this->configAccessor->getDefaultLocale(),
+                'multiOptions' => $this->configAccessor->getLocales(),
             ]);
             $this->metaModel->set('gul_can_login', [
                 'elementClass' => 'Checkbox',
@@ -463,8 +461,8 @@ class StaffModel extends GemsJoinModel
 
         $this->metaModel->set('gsf_iso_lang', [
             'label' => $this->_('Language'),
-            'default' => $this->project->locale['default'],
-            'multiOptions' => $this->locale->getAvailableLanguages(),
+            'default' => $this->configAccessor->getDefaultLocale(),
+            'multiOptions' => $this->configAccessor->getLocales(),
         ]);
         $this->metaModel->set('gsus_secret_key', [
             'label' => $this->_('Secret key'),

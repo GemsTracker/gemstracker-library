@@ -22,6 +22,31 @@ class ConfigAccessor
     )
     { }
 
+    public function getArray(): array
+    {
+        return $this->config;
+    }
+
+    public function getDefaultLocale(): string
+    {
+        return $this->config['locale']['default'] ?? 'en';
+    }
+
+    /**
+     * @return array<string, string> locale string => locale description
+     */
+    public function getLocales(): array
+    {
+        $locales = $this->config['locale']['locales'] ?? ['en', 'nl'];
+        $output  = [];
+
+        foreach ($locales as $locale) {
+            $output[$locale] = \Locale::getDisplayLanguage($locale);
+        }
+
+        return $output;
+    }
+
     public function hasTFAMethod(string $method): bool
     {
         if (isset($this->config['twofactor']['methods'][$method])) {
@@ -33,5 +58,17 @@ class ConfigAccessor
     public function isAutosearch(): bool
     {
         return $this->config['interface']['autosearch'] ?? false;
+    }
+
+    /**
+     * Is login shared between organizations (which therefore require
+     * a unique staff login id for each user, instead of for each
+     * user within an organization).
+     *
+     * @return boolean
+     */
+    public function isLoginShared(): bool
+    {
+        return $this->config['organization']['sharedLogin'] ?? false;
     }
 }
