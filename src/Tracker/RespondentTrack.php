@@ -703,7 +703,7 @@ class RespondentTrack
             $results[$fieldCode] = $value;
             $field               = $fieldDef->getFieldByCode($fieldCode);
             if (!is_null($field)) {
-                $results[$fieldCode] = $field->calculateFieldInfo($value, $this->_fieldData);
+                $results[$fieldCode] = $field->calculateFieldValue($value, $this->_fieldData, $this->_respTrackData);
             }
         }
 
