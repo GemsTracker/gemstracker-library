@@ -294,7 +294,7 @@ class Token
             foreach ($values as $key => $val) {
                 $echo .= $key . ': ' . $this->_gemsData[$key] . ' => ' . $val . "\n";
             }
-            dump('Updated values for ' . $this->_tokenId, $echo);
+            // dump('Updated values for ' . $this->_tokenId, $echo);
         }
 
         $defaults = [
