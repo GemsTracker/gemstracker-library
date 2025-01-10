@@ -12,7 +12,7 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Batch\BatchRunnerLoader;
-use Gems\Db\ResultFetcher;
+use Gems\Config\ConfigAccessor;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Locale\Locale;
 use Gems\Pdf;
@@ -132,17 +132,45 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected Tracker $tracker,
-        protected BatchRunnerLoader $batchRunnerLoader,
-        protected ResultFetcher $resultFetcher,
-        protected ProjectOverloader $overLoader,
-        protected Pdf $pdfEditor,
+        protected readonly Tracker $tracker,
+        protected readonly BatchRunnerLoader $batchRunnerLoader,
+        protected readonly ConfigAccessor $configAccessor,
+        protected readonly Locale $locale,
+        protected readonly ProjectOverloader $overLoader,
+        protected readonly Pdf $pdfEditor,
         protected readonly SurveyMaintenanceModel $surveyMaintenanceModel,
-        protected SurveyRepository $surveyRepository,
-        protected Locale $locale,
+        protected readonly SurveyRepository $surveyRepository,
     ) {
         parent::__construct($responder, $translate, $cache);
     }
+
+    public function attributesAction()
+    {
+        $this->configAccessor->extendBatchLoadTime();
+
+        $surveyId = $this->getSurveyId();
+        $where    = ['gsu_id_survey' => $surveyId];
+
+        $session = $this->request->getAttribute(SessionInterface::class);
+        $batch   = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
+
+        $title = sprintf($this->_('Refreshing token attributes for the %s survey.'),
+            $this->tracker->getSurvey($surveyId)->getName());
+
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+        $batchRunner->setJobInfo([
+            $this->_(
+                'Refreshes the attributes for a token as stored in the survey.'
+            ),
+            $this->_(
+                'Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'
+            ),
+        ]);
+        return $batchRunner->getResponse($this->request);
+    }
+
 
     /**
      * Import answers to a survey
@@ -175,6 +203,8 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function checkAction(): ?ResponseInterface
     {
+        $this->configAccessor->extendBatchLoadTime();
+
         $surveyId = $this->getSurveyId();
 
         $batch = $this->tracker->recalculateTokens(
@@ -187,8 +217,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));
 
         $title = sprintf($this->_('Checking for the %s survey for answers .'),
-                $this->resultFetcher->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", [$surveyId]));
-
+            $this->tracker->getSurvey($surveyId)->getName());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($title);
@@ -204,6 +233,8 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function checkAllAction(): ?ResponseInterface
     {
+        $this->configAccessor->extendBatchLoadTime();
+
         $batch = $this->tracker->recalculateTokens(
             $this->request->getAttribute(SessionInterface::class),
             'surveyCheckAll',
@@ -432,5 +463,4 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         $this->pdfEditor->echoPdfBySurveyId($this->getSurveyId());
 
     }
-
 }

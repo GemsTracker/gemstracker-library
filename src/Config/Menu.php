@@ -1570,6 +1570,11 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
+                                    'name' => 'track-builder.survey-maintenance.attributes',
+                                    'label' => $this->translator->trans('Check attributes'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
                                     'name' => 'track-builder.survey-maintenance.answer-import',
                                     'label' => $this->translator->trans('Import answers'),
                                     'type' => 'route-link-item',
