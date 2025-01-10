@@ -467,7 +467,7 @@ class Token
                     $result += self::COMPLETION_EVENTCHANGE;
 
                     if (Tracker::$verbose) {
-                        dump('Source values for ' . $this->_tokenId . ' changed by event.', $changed);
+                        // dump('Source values for ' . $this->_tokenId . ' changed by event.', $changed);
                     }
                 }
 
@@ -1687,7 +1687,7 @@ class Token
             $this->setRawAnswers($changed);
 
             if (Tracker::$verbose) {
-                dump('Source values for ' . $this->_tokenId . ' changed by event.', $changed);
+                // dump('Source values for ' . $this->_tokenId . ' changed by event.', $changed);
             }
         }
 
