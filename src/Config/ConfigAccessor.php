@@ -50,6 +50,11 @@ class ConfigAccessor
         return $this->config['locale']['default'] ?? 'en';
     }
 
+    public function getDumpFile():? string
+    {
+        return $this->config['dump-to'] ?? null;
+    }
+
     /**
      * @return array<string, string> locale string => locale description
      */
