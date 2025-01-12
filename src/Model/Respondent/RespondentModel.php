@@ -139,6 +139,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->addColumn('CASE WHEN gr2o_email IS NULL OR LENGTH(TRIM(gr2o_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
 
         $this->applySettings();
+
+        $metaModelLoader->addDatabaseTranslations($this->metaModel, false);
     }
 
     /**
@@ -358,6 +360,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $this->communicationRepository->getRespondentMailCodes(),
             ]);
         $this->setIfExists('grs_address_1', [
+            'description' => $this->_('With housenumber'),
             'filters[ucfirst]' => RequireOneCapsFilter::class,
         ]);
         $this->setIfExists('grs_address_2');

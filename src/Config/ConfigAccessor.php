@@ -60,7 +60,7 @@ class ConfigAccessor
      */
     public function getLocales(): array
     {
-        $locales = $this->config['locale']['locales'] ?? ['en', 'nl'];
+        $locales = $this->config['locale']['availableLocales'] ?? ['en', 'nl'];
         $output  = [];
 
         foreach ($locales as $locale) {

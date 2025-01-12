@@ -129,7 +129,10 @@ class ConsentRepository
     public function getUserConsentOptions(): array
     {
         $userConsents = $this->getUserConsents();
-
-        return array_column($userConsents, 'gco_description', 'gco_description');
+        $output       = [];
+        foreach (array_column($userConsents, 'gco_description', 'gco_description') as $key => $value) {
+            $output[$key] = $this->translator->_($value);
+        }
+        return $output;
     }
 }

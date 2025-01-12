@@ -6,6 +6,7 @@ use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use Gems\AuthTfa\Adapter\TotpAdapter;
 use Gems\Cache\HelperAdapter;
+use Gems\Helper\Env;
 use Gems\Html;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -74,8 +75,13 @@ class AuthenticatorTotp extends TotpAdapter implements OtpMethodInterface
      */
     public function addSetupFormElements(\Zend_Form $form, array $formData)
     {
-        $name  = $this->user->getLoginName();
-        $title = $this->config['app']['name'] . ' - GemsTracker';
+        $name    = $this->user->getLoginName();
+        $appName = $this->config['app']['name'];
+        $env     = Env::get('APP_ENV', '');
+        if ('production' !== strtolower($env)) {
+            $appName .= ' - ' . strtoupper(substr($env, 0, 3));
+        }
+        $title = $appName . ' - GemsTracker';
 
         $params['alt']    = $this->translator->trans('QR Code');
         $params['class']  = 'floatLeft';

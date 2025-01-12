@@ -828,22 +828,22 @@ class LimeSurvey3m00FieldMap
 
         if ($dataType = $this->getFieldTableDataType($fieldname)) {
             if ($dataType == 'datetime' || $dataType == 'timestamp') {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
+                $tmpres['storageFormat'] = 'Y-m-d H:i:s';
             } elseif ($dataType == 'date') {
-                $tmpres['storageFormat'] = 'yyyy-MM-dd';
+                $tmpres['storageFormat'] = 'Y-m-d';
             }
         } elseif ($type === Model::TYPE_DATETIME || $type === Model::TYPE_TIME) {
-            $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
+            $tmpres['storageFormat'] = 'Y-m-d H:i:s';
         } elseif ($type === Model::TYPE_DATE) {
-            $tmpres['storageFormat'] = 'yyyy-MM-dd';
+            $tmpres['storageFormat'] = 'Y-m-d';
         }
 
         if ($type === Model::TYPE_DATETIME) {
-            $tmpres['dateFormat']    = 'dd MMMM yyyy HH:mm';
+            $tmpres['dateFormat']    = 'd M Y H:i';
         } elseif ($type === Model::TYPE_DATE) {
-            $tmpres['dateFormat']    = 'dd MMMM yyyy';
+            $tmpres['dateFormat']    = 'd M Y';
         } elseif ($type === Model::TYPE_TIME) {
-            $tmpres['dateFormat']    = 'HH:mm:ss';
+            $tmpres['dateFormat']    = 'H:i:s';
         }
 
         return $tmpres;

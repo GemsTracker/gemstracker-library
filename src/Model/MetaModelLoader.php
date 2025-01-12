@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\Model;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\Respondent\RespondentModel;
 use Gems\Model\Transform\TranslateDatabaseFields;
@@ -39,10 +40,14 @@ class MetaModelLoader extends \Zalt\Model\MetaModelLoader
      *
      * @param MetaModelInterface $model
      */
-    public function addDatabaseTranslations(MetaModelInterface $metaModel, bool $detailed = false): void
+    public function addDatabaseTranslations(MetaModelInterface $metaModel, bool $detailed = false, ?array $config = null): void
     {
         if ($this->modelConfig['translateDatabaseFields']) {
-            $transformer = $this->createTransformer('Transform\\TranslateDatabaseFields', $detailed);
+            if ($config) {
+                $transformer = $this->createTransformer('Transform\\TranslateDatabaseFields', $detailed, $config);
+            } else {
+                $transformer = $this->createTransformer('Transform\\TranslateDatabaseFields', $detailed);
+            }
             $metaModel->addTransformer($transformer);
         }
     }

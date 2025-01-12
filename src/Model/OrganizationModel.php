@@ -183,7 +183,7 @@ class OrganizationModel extends GemsJoinModel
         $this->metaModel->set('gor_respondent_group', [
             'label' => $this->_('Respondent group'),
             'description' => $this->_('Allows respondents to login.'),
-            'multiOptions' => $this->groupRepository->getRespondentGroupOptions(),
+            'multiOptions' => $empty + $this->groupRepository->getRespondentGroupOptions(),
         ]);
         $this->metaModel->set('gor_accessible_by', [
             'label' => $this->_('Accessible by'),
