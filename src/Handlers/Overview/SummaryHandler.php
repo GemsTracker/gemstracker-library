@@ -145,8 +145,11 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         // $metaModel->set('success',  'label', $this->_('Success'));
         // $metaModel->set('removed',  'label', $this->_('Removed'));
 
-        $metaModel->setMulti(['answered', 'missed', 'open', 'total'],
-                'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        $metaModel->setMulti(['answered', 'missed', 'open', 'total'], [
+                'tdClass' => 'centerAlign',
+                'thClass' => 'centerAlign',
+                'no_text_search' => true,
+            ]);
 
         $metaModel->set('filler',  'label', $this->_('Filler'), 'no_text_search', true);
 

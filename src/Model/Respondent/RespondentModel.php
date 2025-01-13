@@ -144,7 +144,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
     }
 
     /**
-     * Add the respondent name as a caclulated field to the model
+     * Add the respondent name as a calculated field to the model.
      * @param MetaModelInterface $metaModel
      * @param string $label
      */
@@ -295,7 +295,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         // NAME
         if (isset($this->_labels['name']) && $this->_labels['name']) {
-            self::addNameToModel($this->metaModel, $this->_labels['name']);
+            static::addNameToModel($this->metaModel, $this->_labels['name']);
         }
         $this->setIfExists('grs_initials_name');
         $this->setIfExists('grs_first_name', [
