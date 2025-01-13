@@ -45,7 +45,15 @@ class TranslateDatabaseFields extends \Zalt\Model\Transform\ModelTransformerAbst
 
     public function getFieldInfo(MetaModelInterface $model): array
     {
-        $this->tableKeys = $this->getTablesWithTranslations();
+        $tablesWithTranslations = array_keys($this->getTablesWithTranslations());
+
+        foreach ($tablesWithTranslations as $table) {
+            $itemNames = $model->getItemsFor('table', $table, 'key', true);
+            foreach ($itemNames as $itemName) {
+                $this->tableKeys[$table][] = $itemName;
+            }
+        }
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->tableKeys, true) . "\n", FILE_APPEND);
 
         if ($this->showAllTranslations) {
             foreach ($model->getItemsFor(['translate' => true]) as $itemName) {
@@ -55,6 +63,7 @@ class TranslateDatabaseFields extends \Zalt\Model\Transform\ModelTransformerAbst
                 if (! isset($this->tableKeys[$settings['table']])) {
                     $this->tableKeys[$settings['table']] = $model->getKeys();
                 }
+                // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($model->getKeys(), true) . "\n", FILE_APPEND);
 
                 unset($settings['table'], $settings['validator'], $settings['validators']);
                 $settings['original'] = $itemName;
@@ -254,6 +263,8 @@ class TranslateDatabaseFields extends \Zalt\Model\Transform\ModelTransformerAbst
                                 'gtrs_translation' => $row[$field]
                             ];
                             $this->translationModel->save($values);
+                            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->tableKeys[$table], true) . "\n", FILE_APPEND);
+                            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($values, true) . "\n", FILE_APPEND);
                         } elseif ($rowId && ((! $row[$field]) || ($row[$field] == $row[$original]))) {
                             $this->translationModel->delete(['gtrs_id' => $rowId]);
                         }
@@ -285,9 +296,9 @@ class TranslateDatabaseFields extends \Zalt\Model\Transform\ModelTransformerAbst
             return $data;
         }
 
-        if ($language == $this->defaultLanguage) {
-            return $data;
-        }
+//        if ($language == $this->defaultLanguage) {
+//            return $data;
+//        }
 
         $translatedData = $this->translateData($data, $language);
 
@@ -306,9 +317,9 @@ class TranslateDatabaseFields extends \Zalt\Model\Transform\ModelTransformerAbst
     public function translateField($name, $row, $language): ?string
     {
         // dump($name, $language);
-        if ($language == $this->defaultLanguage) {
-            return $row[$name];
-        }
+//        if ($language == $this->defaultLanguage) {
+//            return $row[$name];
+//        }
 
         $result = $this->translateRow($row, $language);
         return $row[$name] == $result[$name] ? '' : $result[$name];

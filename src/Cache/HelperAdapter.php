@@ -17,7 +17,7 @@ class HelperAdapter extends TagAwareAdapter
      *
      * @param array<int, string> $plainKeyParts Array of strings to include in the cache
      *                                          key as is, so we still know what's what.
-     * @param ...$args All other arguments provided to the original caching function.
+     * @param ...$args mixed All other arguments provided to the original caching function.
      * @return string A unique string that can be used as a cache key.
      */
     public static function createCacheKey(array $plainKeyParts, ...$args): string

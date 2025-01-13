@@ -69,7 +69,7 @@ class OrganizationModel extends GemsJoinModel
 
         $this->addColumn("CASE WHEN gor_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
-        $yesNo      = $this->translatedUtil->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
 
         $this->metaModel->set('gor_active', [
             'label' => $this->_('Active'),

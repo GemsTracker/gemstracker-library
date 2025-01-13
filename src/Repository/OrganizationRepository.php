@@ -3,6 +3,7 @@
 namespace Gems\Repository;
 
 use Gems\Db\CachedResultFetcher;
+use Gems\Db\ResultFetcher;
 use Gems\User\Organization;
 use Gems\User\UserLoader;
 use Gems\Util\UtilDbHelper;
@@ -32,8 +33,9 @@ class OrganizationRepository
 
     public function __construct(
         protected readonly CachedResultFetcher $cachedResultFetcher,
-        protected readonly UtilDbHelper $utilDbHelper,
         protected readonly ProjectOverloader $projectOverloader,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly UtilDbHelper $utilDbHelper,
         protected readonly UserLoader $userLoader,
     )
     {}
@@ -64,6 +66,20 @@ class OrganizationRepository
             );
         }
         return $this->organizations[$organizationId];
+    }
+
+    public function getOrganizationForStaffId(int $staffId): ?Organization
+    {
+        $orgId = $this->getOrganizationIdForStaffId($staffId);
+        if ($orgId) {
+            return $this->getOrganization($orgId);
+        }
+        return null;
+    }
+
+    public function getOrganizationIdForStaffId(int $staffId): false|int
+    {
+        return $this->resultFetcher->fetchOne("SELECT gsf_id_organization FROM gems__staff WHERE gsf_id_user = ?", [$staffId]);
     }
 
     /**

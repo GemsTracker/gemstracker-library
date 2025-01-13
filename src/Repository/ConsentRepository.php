@@ -119,7 +119,7 @@ class ConsentRepository
     public function getUserConsents(): array
     {
         $select = $this->cachedResultFetcher->getSelect('gems__consents');
-        $select->columns(['gco_description', 'gco_code', 'gco_order'])
+        $select->columns(['gco_description AS untranslated_description', 'gco_description', 'gco_code', 'gco_order'])
             ->order(['gco_order']);
 
         $result = $this->cachedResultFetcher->fetchAll(__FUNCTION__, $select, null, $this->cacheTags);
@@ -129,8 +129,14 @@ class ConsentRepository
     public function getUserConsentOptions(): array
     {
         $userConsents = $this->getUserConsents();
+        $consentValues = array_column($userConsents, 'gco_description', 'untranslated_description');
+        if ($this->config['model']['translateDatabaseFields'] ?? false) {
+            return $consentValues;
+        }
+
+        // If NOT tranlated from the database, the use normal translations
         $output       = [];
-        foreach (array_column($userConsents, 'gco_description', 'gco_description') as $key => $value) {
+        foreach ($consentValues as $key => $value) {
             $output[$key] = $this->translator->_($value);
         }
         return $output;

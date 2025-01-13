@@ -12,10 +12,13 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\Db\ResultFetcher;
 use Gems\Exception;
 use Gems\Handlers\LogHandler;
 use Gems\Model\LogModel;
+use Gems\Repository\OrganizationRepository;
 use Gems\Repository\PeriodSelectRepository;
+use Gems\User\Organization;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Gems\Model\StaffLogModel;
@@ -64,23 +67,25 @@ class StaffLogHandler extends LogHandler
         CacheItemPoolInterface $cache,
         LogModel $logModel,
         PeriodSelectRepository $periodSelectRepository,
-        protected StaffLogModel $staffLogModel,
-        protected UserLoader $userLoader,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly StaffLogModel $staffLogModel,
+        protected readonly UserLoader $userLoader,
     ) {
         parent::__construct($responder, $metaModelLoader, $translate, $cache, $logModel, $periodSelectRepository);
     }
 
     protected function getModel(SnippetActionInterface $action): MetaModellerInterface
     {
-        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-        $selectedUser = $this->getSelectedUser();
-        if ($selectedUser) {
-            if (! ($currentUser->hasPrivilege('pr.staff.see.all') ||
-                $currentUser->isAllowedOrganization($selectedUser->getBaseOrganizationId()))) {
-                throw new Exception($this->_('No access to page'), 403, null, sprintf(
-                    $this->_('You have no right to access users from the organization %s.'),
-                    $selectedUser->getBaseOrganization()->getName()
-                ));
+        $currentUser  = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        if (! $currentUser->hasPrivilege('pr.staff.see.all')) {
+            $selectedUserOrg = $this->getSelectedUserOrganization();
+            if ($selectedUserOrg) {
+                if (! $currentUser->isAllowedOrganization($selectedUserOrg->getId())) {
+                    throw new Exception($this->_('No access to page'), 403, null, sprintf(
+                        $this->_('You have no right to access users from the organization %s.'),
+                        $selectedUserOrg->getName()
+                    ));
+                }
             }
         }
 
@@ -112,7 +117,7 @@ class StaffLogHandler extends LogHandler
      *
      * @staticvar User $user
      * @return User|bool or false when not available
-     */
+     * /
     public function getSelectedUser(): User|bool
     {
         static $user = null;
@@ -123,10 +128,18 @@ class StaffLogHandler extends LogHandler
 
         $staffId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID);
         if ($staffId) {
-            $user   = $this->userLoader->getUserByStaffId((int)$staffId);
+            $user = $this->userLoader->getUserByStaffId((int)$staffId);
             return $user;
         }
         return false;
+    }
+
+    /**
+     * @return Organization|null
+     */
+    public function getSelectedUserOrganization(): ?Organization
+    {
+        return $this->organizationRepository->getOrganizationForStaffId((int) $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID));
     }
 
     /**

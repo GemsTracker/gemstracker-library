@@ -16,19 +16,19 @@ class CachedDbTranslationRepository
 
     /**
      * @param string $tableName
-     * @param string $keyValue
+     * @param string $keyField
      * @param array $data
      * @return array
      */
-    public function translateTable(string $cacheKey, string $tableName, string $keyValue, array $data): array
+    public function translateTable(string $cacheKey, string $tableName, string $keyField, array $data): array
     {
-        $cacheKey = HelperAdapter::createCacheKey([get_called_class(), $cacheKey, $tableName, $keyValue, $this->locale->getLanguage()], $data);
+        $cacheKey = HelperAdapter::createCacheKey([get_called_class(), $cacheKey, $tableName, $keyField, $this->locale->getLanguage()], $data);
 
         if ($this->cache->hasItem($cacheKey)) {
             return $this->cache->getCacheItem($cacheKey);
         }
 
-        $translatedData = $this->dbTranslationRepository->translateTable($tableName, $keyValue, $data);
+        $translatedData = $this->dbTranslationRepository->translateTable($tableName, $keyField, $data);
         $this->cache->setCacheItem($cacheKey, $translatedData);
 
         return $translatedData;

@@ -90,7 +90,7 @@ class StaffUserDefinition extends DbUserDefinitionAbstract
                ])
                ->limit(1);
 
-        // \MUtil\EchoOut\EchoOut::track($select->__toString());
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $select->getSqlString($this->resultFetcher->getPlatform()) . "\n", FILE_APPEND);
 
         return $select;
     }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\Model\Setup;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Handlers\Setup\ConsentHandler;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\ConsentRepository;
@@ -32,6 +33,7 @@ class ConsentModel extends \Gems\Model\SqlTableModel implements ApplyActionInter
         protected readonly  MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
+        protected readonly ConfigAccessor $configAccessor,
         protected readonly ConsentRepository $consentRepository,
     )
     {
@@ -45,7 +47,17 @@ class ConsentModel extends \Gems\Model\SqlTableModel implements ApplyActionInter
 
     public function applyAction(SnippetActionInterface $action): void
     {
-        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $action->isDetailed());
+        // Maybe throw this out
+        $newConfig = [
+            'locale' =>  [
+                'default' => 'en',
+                'availableLocales' => array_keys($this->configAccessor->getLocales()),
+                ],
+            ];
+
+        // dump($newConfig->getLocales(), $newConfig->getDefaultLocale());
+
+        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $action->isDetailed(), $newConfig);
     }
 
     public function applySettings()
