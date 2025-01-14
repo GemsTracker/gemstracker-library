@@ -28,7 +28,7 @@ class TokenNotCompletedSnippet extends MessageableSnippetAbstract
     {
         $messenger = $this->getMessenger();
         if ($this->tokenId) {
-            $messenger->addMessage(sprintf($this->_('Token %s not completed.'), $this->tokenId));
+            $messenger->addMessage(sprintf($this->_('Token %s was not completed.'), $this->tokenId));
         } else {
             $messenger->addMessage($this->_('No token specified.'));
         }

@@ -39,7 +39,7 @@ class DbTranslationRepository
      * @param array $row
      * @return array
      */
-    protected function translateRow(string $tableName, string $keyValue, array $row): array
+    public function translateRow(string $tableName, string $keyValue, array $row): array
     {
         $tSelect = $this->resultFetcher->getSelect('gems__translations');
         $tSelect->columns(['gtrs_field', 'gtrs_translation'])
