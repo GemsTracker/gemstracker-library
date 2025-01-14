@@ -152,7 +152,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         $where    = ['gsu_id_survey' => $surveyId];
 
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch   = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where);
+        $batch   = $this->tracker->refreshTokenAttributes($session, 'attributeCheckSurvey' . $surveyId, $where);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Refreshing token attributes for the %s survey.'),

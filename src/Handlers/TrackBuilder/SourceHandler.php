@@ -116,7 +116,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         $where    = ['gsu_id_source' => $sourceId];
 
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch   = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where);
+        $batch   = $this->tracker->refreshTokenAttributes($session, 'attributeCheckSoruce' . $sourceId, $where);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
@@ -297,7 +297,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
 
         try {
             if ($source->checkSourceActive($this->currentUserId)) {
-                $message = $this->_('This installation is active.');
+                $message = $this->_('This installation is active.') . get_class($source);
                 $status  = 'success';
                 $messenger->addSuccess($message);
             } else {
