@@ -64,9 +64,9 @@ class LocaleMiddleware implements MiddlewareInterface
         // Default language from site no longer possible
 
         // Default language from config
-        if (isset($this->config['default']) && in_array($this->config['default'], $this->config['availableLocales'])) {
+        /*if (isset($this->config['default']) && in_array($this->config['default'], $this->config['availableLocales'])) {
             return $this->config['default'];
-        }
+        }*/
 
         return null;
     }

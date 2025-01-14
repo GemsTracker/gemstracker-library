@@ -207,7 +207,7 @@ class AskLegacyHandler extends SnippetLegacyHandlerAbstract
                 $this->currentUser->setCurrentOrganizationId($this->token->getOrganizationId());
                 $this->currentUserRepository->setCurrentOrganizationId($tokenOrganizationId);
             }
-            if ($tokenLang != $this->locale->getLanguage()) {
+            if ($this->locale->isCurrentLanguageDefault() && $tokenLang != $this->locale->getLanguage()) {
                 $this->changeLocaleTo = $tokenLang;
                 $this->locale->setCurrentLanguage($tokenLang);
             }
@@ -216,7 +216,7 @@ class AskLegacyHandler extends SnippetLegacyHandlerAbstract
                 $this->addSiteCookie(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE, (string) $tokenOrganizationId);
                 $this->currentUserRepository->setCurrentOrganizationId($tokenOrganizationId);
             }
-            if ($tokenLang != $this->locale->getLanguage()) {
+            if ($this->locale->isCurrentLanguageDefault() && $tokenLang != $this->locale->getLanguage()) {
                 $this->addSiteCookie(LocaleMiddleware::LOCALE_ATTRIBUTE, $tokenLang);
                 $this->locale->setCurrentLanguage($tokenLang);
             }

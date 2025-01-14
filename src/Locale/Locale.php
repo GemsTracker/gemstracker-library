@@ -8,6 +8,8 @@ class Locale
 
     private string $currentLanguage;
 
+    private bool $isDefaultLanguage;
+
     public function __construct(array $config)
     {
         if (isset($config['locale'])) {
@@ -15,6 +17,7 @@ class Locale
         }
 
         $this->setCurrentLanguage($this->getDefaultLanguage());
+        $this->isDefaultLanguage = true;
     }
 
     public function getAvailableLanguages(): array
@@ -51,7 +54,7 @@ class Locale
 
     public function isCurrentLanguageDefault(): bool
     {
-        return ($this->currentLanguage === $this->getDefaultLanguage());
+        return $this->isDefaultLanguage;
     }
 
     /**
@@ -62,5 +65,6 @@ class Locale
         \Locale::setDefault($currentLanguage);
         \setlocale(LC_ALL, $currentLanguage);
         $this->currentLanguage = $currentLanguage;
+        $this->isDefaultLanguage = false;
     }
 }

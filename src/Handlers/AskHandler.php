@@ -118,7 +118,7 @@ class AskHandler extends SnippetHandler
             // CHeck if there is no user
             if (! $this->currentUserRepository->hasCurrentUserId()) {
                 $language = $this->token->getRespondentLanguage();
-                if ($this->locale->getLanguage() !== $language) {
+                if ($this->locale->isCurrentLanguageDefault() && $this->locale->getLanguage() !== $language) {
                     $this->addSiteCookie(LocaleMiddleware::LOCALE_ATTRIBUTE, $language);
                     $this->locale->setCurrentLanguage($language);
 
