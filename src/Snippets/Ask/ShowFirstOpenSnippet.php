@@ -137,7 +137,7 @@ class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
             $html->p($this->_('Please click the button below to answer the next survey.'), ['class' => 'info']);
         } else {
             if ($welcome = $org->getWelcome()) {
-                $html->p(['class' => 'info'])->raw($welcome);
+                $html->p(['class' => 'info'])->raw(nl2br($welcome));
             }
             $html->p(sprintf(
                 $this->_('Please click the button below to answer the survey for token %s.'),
@@ -176,7 +176,7 @@ class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
             $html->p($this->_('This survey is the last survey to answer.'), ['class' => 'info']);
         }
         if ($sig = $org->getSignature()) {
-            $html->p($sig, ['class' => 'info']);
+            $html->p(nl2br($sig), ['class' => 'info']);
         }
         return $html;
     }
