@@ -103,7 +103,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
         if ($this->configAccessor->hasTFAMethod('MailHotp')) {
             $active = $currentTfa === 'MailHotp';
             $mailElement = new \MUtil\Form\Element\FakeSubmit('mail_tfa');
-            $mailElement->setLabel($active ? $this->_('TFA is already reset to mail, resent!') : $this->_('Reset TFA method using Mail for code'))
+            $mailElement->setLabel($active ? $this->_('TFA is already reset to mail, yet resend!') : $this->_('Reset TFA method using Mail for code'))
                 ->setAttrib('class', 'button btn btn-primary')
                 ->setOrder($order++);
             $form->addElement($mailElement);
@@ -112,7 +112,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
         if ($this->configAccessor->hasTFAMethod('SmsHotp')) {
             $active = $currentTfa === 'SmsHotp';
             $resetElement = new \MUtil\Form\Element\FakeSubmit('reset_tfa');
-            $resetElement->setLabel($active ? $this->_('TFA is already reset to SMS, resent!') : $this->_('Reset TFA method using SMS for code'))
+            $resetElement->setLabel($active ? $this->_('TFA is already reset to SMS, yet resend!') : $this->_('Reset TFA method using SMS for code'))
                 ->setAttrib('class', 'button btn btn-primary')
                 ->setOrder($order++);
             if ($active) {
