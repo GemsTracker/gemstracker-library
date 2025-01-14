@@ -20,6 +20,7 @@ use Gems\Screens\EditScreenInterface;
 use Gems\Screens\ShowScreenInterface;
 use Gems\Screens\SubscribeScreenInterface;
 use Gems\Screens\UnsubscribeScreenInterface;
+use Gems\Translate\CachedDbTranslationRepository;
 
 /**
  * Contains information on the organization of the current User
@@ -117,6 +118,7 @@ class Organization extends CachedArrayTargetAbstract
      * @param array $allowedProjectUserClasses of class name => class label
      */
     public function __construct(
+        protected CachedDbTranslationRepository $cachedDbTranslationRepository,
         $id,
         protected readonly array $sites,
         protected readonly array $allowedProjectUserClasses,
@@ -635,6 +637,9 @@ class Organization extends CachedArrayTargetAbstract
             try {
                 $sql = "SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1";
                 $data = $this->db->fetchRow($sql, intval($id));
+
+                $data = $this->cachedDbTranslationRepository->translateRow('gems__organizations', ['gor_id_organization'], $data);
+
             } catch (\Exception $e) {
                 $data = false;
             }
