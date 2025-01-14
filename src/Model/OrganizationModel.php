@@ -382,10 +382,12 @@ class OrganizationModel extends GemsJoinModel
         $this->metaModel->set('gor_welcome', [
             'elementClass' => 'Textarea',
             'rows' => 5,
+            'autoInsertNoTagsValidator' => false,
         ]);
         $this->metaModel->set('gor_signature', [
             'elementClass' => 'Textarea',
             'rows' => 5,
+            'autoInsertNoTagsValidator' => false,
         ]);
         $this->metaModel->set('gor_create_account_template');
         $this->metaModel->set('gor_reset_pass_template');
