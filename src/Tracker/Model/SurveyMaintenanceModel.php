@@ -186,7 +186,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
         }
 
         if ($action->isEditing()) {
-            if (true || $this->currentUser->hasPrivilege('pr.survey-maintenance.answer-groups')) {
+            if ($this->currentUser->hasPrivilege('pr.survey-maintenance.answer-groups')) {
                 $this->metaModel->addDependency(CanEditDependency::class, 'gsu_answers_by_group', ['gsu_answer_groups']);
             } else {
                 $this->metaModel->setMulti(['gsu_answers_by_group', 'gsu_answer_groups', 'gsu_allow_export'], ['readonly' => 'readonly', 'disabled' => 'disabled']);

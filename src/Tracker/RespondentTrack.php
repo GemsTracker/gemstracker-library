@@ -1479,12 +1479,14 @@ class RespondentTrack
     public function refresh(?array $gemsData = null): self
     {
         if (is_array($gemsData)) {
-            $this->_respTrackData = $this->dbTranslationRepository->translateTables($this->_tablesForTranslations, $gemsData) + $this->_respTrackData;
+            $data = [$gemsData];
         } else {
             $select = $this->resultFetcher->getSelect('gems__respondent2track')->where(['gr2t_id_respondent_track' => $this->_respTrackId]);
-            $result = $this->resultFetcher->fetchRow($select);
-            $this->_respTrackData = $this->dbTranslationRepository->translateTables($this->_tablesForTranslations, $result);
+            $select->limit(1);
+            $data   = $this->resultFetcher->fetchAll($select);
         }
+        $data = $this->dbTranslationRepository->translateTables($this->_tablesForTranslations, $data);
+        $this->_respTrackData = reset($data) + $this->_respTrackData;
 
         if ($this->_respTrackData) {
             $this->_respTrackData = $this->maskRepository->applyMaskToRow($this->_respTrackData);
