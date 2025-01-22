@@ -57,6 +57,7 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         MenuSnippetHelper $menuHelper, 
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
+        protected readonly RespondentModelOptions $respondentModelOptions,
         protected Model $modelLoader, 
     )
     {
@@ -98,7 +99,7 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
             $this->model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'), 'order', 3);
 
-            (new RespondentModelOptions)->addNameToModel($this->model, $this->_('Name'));
+            $this->respondentModelOptions->addNameToModel($this->model, $this->_('Name'));
 
             $this->model->set('name', 'order', 6);
         }

@@ -114,6 +114,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         protected readonly StaffRepository $staffRepository,
         protected readonly Translated $translatedUtil,
         protected readonly GemsUserIdGenerator $gemsUserIdGenerator,
+        protected readonly RespondentModelOptions $respondentModelOptions,
         protected readonly array $config,
     )
     {
@@ -231,7 +232,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         // NAME
         if (isset($this->_labels['name']) && $this->_labels['name']) {
-            (new RespondentModelOptions)->addNameToModel($this->metaModel, $this->_labels['name']);
+            $this->respondentModelOptions->addNameToModel($this->metaModel, $this->_labels['name']);
         }
         $this->setIfExists('grs_initials_name');
         $this->setIfExists('grs_first_name', [
