@@ -136,8 +136,12 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
     protected function addContactBlock(ThreeColumnTableBridge $bridge)
     {
         // E-MAIL
-        $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.email', $this->token->getMenuUrlParameters());
-        $buttons = Html::actionLink($url, $this->_('E-mail now!'));
+        if ($this->token->isMailable()) {
+            $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.email', $this->token->getMenuUrlParameters());
+            $buttons = Html::actionLink($url, $this->_('E-mail now!'));
+        } else {
+            $buttons = Html::actionDisabled($this->_('This token cannot be E-mailed'));
+        }
 
         $bridge->addWithThird('gto_mail_sent_date', 'gto_mail_sent_num', $buttons);
 
