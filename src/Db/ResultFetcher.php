@@ -141,4 +141,10 @@ class ResultFetcher
         $table = new TableGateway($tableName, $this->getAdapter());
         return $table->update($values, $where);
     }
+
+    public function reconnect(): void
+    {
+        $this->db->getDriver()->getConnection()->disconnect();
+        $this->db->getDriver()->getConnection()->connect();
+    }
 }
