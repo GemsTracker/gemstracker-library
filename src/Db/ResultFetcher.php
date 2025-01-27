@@ -3,6 +3,7 @@
 namespace Gems\Db;
 
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\Exception\InvalidQueryException;
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;
@@ -113,6 +114,23 @@ class ResultFetcher
     }
 
     public function query(Select|string $select, ?array $params = null)
+    {
+        try {
+            return $this->do_query($select, $params);
+        } catch (InvalidQueryException $e) {
+            // Rethrow the exception, unless it's error 2006 (MySQL server has gone away).
+            if ($e->getCode() != 2006) {
+                throw $e;
+            }
+        }
+        // Report to the system log, to avoid silent failures.
+        error_log('Retrying query after reconnecting to database');
+        // Retry the query once, after reconnecting to the database.
+        $this->reconnect();
+        return $this->do_query($select, $params);
+    }
+
+    protected function do_query(Select|string $select, ?array $params = null)
     {
         $resultSet = new ResultSet(ResultSet::TYPE_ARRAY);
         if ($select instanceof Select) {
