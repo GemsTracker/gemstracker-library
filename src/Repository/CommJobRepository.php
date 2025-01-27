@@ -714,7 +714,9 @@ class CommJobRepository
             $reload = false;
             foreach ($tokenIds as $tokenData) {
                 try {
-                    $reload = $this->checkTokenCompletion($tokenData['gto_id_token']);
+                    if ($this->checkTokenCompletion($tokenData['gto_id_token'])) {
+                        $reload = true;
+                    }
                 } catch (\Exception $e) {
                     $cronErrorLog->error($e->getMessage(), $e->getTrace());
                 }
