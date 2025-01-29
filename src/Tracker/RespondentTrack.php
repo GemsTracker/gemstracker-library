@@ -112,12 +112,8 @@ class RespondentTrack
         'gems__tracks' => 'gtr_id_track',
     ];
 
-    /**
-     *
-     * @param mixed $respTracksData Track Id or array containing reps2track record
-     */
     public function __construct(
-        array|int $respTracksData,
+        array|int $respTrackData,
         protected readonly Tracker $tracker,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly EventDispatcherInterface $event,
@@ -132,12 +128,12 @@ class RespondentTrack
         protected readonly int $currentUserId,
     )
     {
-        if (is_array($respTracksData)) {
-            $this->_respTrackData = $respTracksData;
-            $this->_respTrackId   = (int)$respTracksData['gr2t_id_respondent_track'];
-            $this->_respTrackData = $this->refresh($this->_respTrackData);
+        if (is_array($respTrackData)) {
+            $this->_respTrackData = $respTrackData;
+            $this->_respTrackId   = (int)$respTrackData['gr2t_id_respondent_track'];
+            $this->refresh($respTrackData);
         } else {
-            $this->_respTrackId = (int)$respTracksData;
+            $this->_respTrackId = (int)$respTrackData;
             $this->refresh();
         }
     }
