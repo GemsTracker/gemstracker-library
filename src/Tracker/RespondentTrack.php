@@ -135,8 +135,7 @@ class RespondentTrack
         if (is_array($respTracksData)) {
             $this->_respTrackData = $respTracksData;
             $this->_respTrackId   = (int)$respTracksData['gr2t_id_respondent_track'];
-            $this->_respTrackData = $this->dbTranslationRepository->translateTables($this->_tablesForTranslations, $this->_respTrackData);
-            $this->_respTrackData = $this->maskRepository->applyMaskToRow($this->_respTrackData);
+            $this->_respTrackData = $this->refresh($this->_respTrackData);
         } else {
             $this->_respTrackId = (int)$respTracksData;
             $this->refresh();
