@@ -54,7 +54,7 @@ use Zalt\Validator\Model\ModelUniqueValidator;
 class StaffModel extends GemsJoinModel
 {
 
-    protected User $currentUser;
+    protected User|null $currentUser;
     public function __construct(
         MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
@@ -88,7 +88,10 @@ class StaffModel extends GemsJoinModel
             'row_class'
         );
 
-        $allowedGroups = $this->currentUser->getAllowedStaffGroups();
+        $allowedGroups = null;
+        if ($this->currentUser instanceof User) {
+            $allowedGroups = $this->currentUser->getAllowedStaffGroups();
+        }
         if ($allowedGroups) {
             $expr = new Expression(sprintf(
                 "CASE WHEN gsf_id_primary_group IN (%s) THEN 1 ELSE 0 END",
