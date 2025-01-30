@@ -114,6 +114,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         protected readonly StaffRepository $staffRepository,
         protected readonly Translated $translatedUtil,
         protected readonly GemsUserIdGenerator $gemsUserIdGenerator,
+        protected readonly RespondentModelOptions $respondentModelOptions,
         protected readonly array $config,
     )
     {
@@ -141,70 +142,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->applySettings();
 
         $metaModelLoader->addDatabaseTranslations($this->metaModel, false);
-    }
-
-    /**
-     * Add the respondent name as a calculated field to the model.
-     * @param MetaModelInterface $metaModel
-     * @param string $label
-     */
-    public static function addNameToModel(MetaModelInterface $metaModel, $label)
-    {
-        $nameExpr['familyLast'] = "COALESCE(grs_last_name, '-')";
-        $fieldList[] = 'grs_last_name';
-
-        if ($metaModel->has('grs_partner_last_name')) {
-            $nameExpr['partnerSep'] = "' - '";
-            if ($metaModel->has('grs_partner_surname_prefix')) {
-                $nameExpr['partnerPrefix'] = "COALESCE(CONCAT(' ', grs_partner_surname_prefix), '')";
-                $fieldList[] = 'grs_partner_surname_prefix';
-            }
-
-            $nameExpr['partnerLast'] = "COALESCE(CONCAT(' ', grs_partner_last_name), '')";
-            $fieldList[] = 'grs_partner_last_name';
-        }
-        $nameExpr['lastFirstSep'] = "', '";
-
-        if ($metaModel->has('grs_first_name')) {
-            if ($metaModel->has('grs_initials_name')) {
-                $nameExpr['firstName']  = "COALESCE(grs_first_name, grs_initials_name, '')";
-                $fieldList[] = 'grs_first_name';
-                $fieldList[] = 'grs_initials_name';
-            } else {
-                $nameExpr['firstName']  = "COALESCE(grs_first_name, '')";
-                $fieldList[] = 'grs_first_name';
-            }
-        } elseif ($metaModel->has('grs_initials_name')) {
-            $nameExpr['firstName']  = "COALESCE(grs_initials_name, '')";
-            $fieldList[] = 'grs_initials_name';
-        }
-        if ($metaModel->has('grs_surname_prefix')) {
-            $nameExpr['familyPrefix']  = "COALESCE(CONCAT(' ', grs_surname_prefix), '')";
-            $fieldList[] = 'grs_surname_prefix';
-        }
-
-        if ($metaModel->has('grs_partner_name_after') && $metaModel->has('grs_partner_last_name')) {
-            $fieldList[] = 'grs_partner_name_after';
-
-            $lastPrefix = isset($nameExpr['familyPrefix']) ? $nameExpr['familyPrefix'] . ', ' : '';
-            $partnerPrefix = isset($nameExpr['partnerPrefix']) ? ', ' . $nameExpr['partnerPrefix'] : '';
-
-            $columnExpr = "CASE 
-                WHEN grs_partner_name_after = 0 AND grs_partner_name_after IS NOT NULL THEN
-                    CONCAT(grs_partner_last_name, ' - ', $lastPrefix grs_last_name, " . $nameExpr['lastFirstSep'] . ', ' . $nameExpr['firstName'] .  "$partnerPrefix)
-                ELSE 
-                    CONCAT(" . implode(', ', $nameExpr) . ") 
-                END";
-        } else {
-            $columnExpr = "CONCAT(" . implode(', ', $nameExpr) . ")";
-        }
-
-
-        $metaModel->set('name', [
-            'label' => $label,
-            'column_expression' => $columnExpr,
-            'fieldlist' => $fieldList,
-        ]);
     }
 
     public function applyAction(SnippetActionInterface $action): void
@@ -295,7 +232,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         // NAME
         if (isset($this->_labels['name']) && $this->_labels['name']) {
-            static::addNameToModel($this->metaModel, $this->_labels['name']);
+            $this->respondentModelOptions->addNameToModel($this->metaModel, $this->_labels['name']);
         }
         $this->setIfExists('grs_initials_name');
         $this->setIfExists('grs_first_name', [

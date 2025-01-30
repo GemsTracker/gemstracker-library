@@ -16,6 +16,7 @@ use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\AppointmentModel;
+use Gems\Model\Respondent\RespondentModelOptions;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -63,6 +64,7 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
                                 RequestInfo $requestInfo,
                                 MenuSnippetHelper $menuHelper,
                                 TranslatorInterface $translate,
+                                protected readonly RespondentModelOptions $respondentModelOptions,
                                 protected Model $modelLoader
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
@@ -161,7 +163,7 @@ class CalendarTableSnippet extends ModelTableSnippetAbstract
 
         $this->model->getMetaModel()->set('gr2o_patient_nr', ['label' => $this->_('Respondent nr')]);
 
-        Model\Respondent\RespondentModel::addNameToModel($this->model->getMetaModel(), $this->_('Name'));
+        $this->respondentModelOptions->addNameToModel($this->model->getMetaModel(), $this->_('Name'));
 
         $this->model->applyMask();
 

@@ -16,6 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\EpisodeOfCareModel;
+use Gems\Model\Respondent\RespondentModelOptions;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeInterface;
@@ -56,6 +57,7 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         MenuSnippetHelper $menuHelper, 
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
+        protected readonly RespondentModelOptions $respondentModelOptions,
         protected Model $modelLoader, 
     )
     {
@@ -97,7 +99,7 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
             $this->model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'), 'order', 3);
 
-            \Gems\Model\RespondentModel::addNameToModel($this->model, $this->_('Name'));
+            $this->respondentModelOptions->addNameToModel($this->model, $this->_('Name'));
 
             $this->model->set('name', 'order', 6);
         }

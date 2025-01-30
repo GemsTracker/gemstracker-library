@@ -11,7 +11,14 @@
 
 namespace Gems\Snippets\Respondent\Consent;
 
+use Gems\Audit\AuditLog;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\Respondent\RespondentModelOptions;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -55,6 +62,19 @@ class RespondentConsentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstra
      */
     protected $useTabbedForm = false;
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        AuditLog $auditLog,
+        MenuSnippetHelper $menuHelper,
+        protected readonly RespondentModelOptions $respondentModelOptions,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
+    }
+
     /**
      * Creates the model
      *
@@ -65,7 +85,7 @@ class RespondentConsentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstra
         $metaModel = $this->model->getMetaModel();
 
         if (in_array('name', $this->exhibit)) {
-            \Gems\Model\Respondent\RespondentModel::addNameToModel($metaModel, $this->_('Name'));
+            $this->respondentModelOptions->addNameToModel($metaModel, $this->_('Name'));
             $metaModel->set('name', [
                 'order' => $metaModel->getOrder('gr2o_patient_nr') + 1,
             ]);
