@@ -10,6 +10,14 @@
 
 namespace Gems\Snippets\Survey\Display;
 
+use Gems\Html;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Snippets\Generic\ButtonRowTrait;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Html\Raw;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  * Display survey answers with a toggle for full or compact view
  *
@@ -19,54 +27,64 @@ namespace Gems\Snippets\Survey\Display;
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class FullAnswerToggleSnippet extends \MUtil\Snippets\SnippetAbstract {
+class FullAnswerToggleSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
+{
+    use ButtonRowTrait;
 
-    /**
-     *
-     * @var \Zend_Controller_Request_Http
-     */
-    protected $request;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected readonly MenuSnippetHelper $menuHelper,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
 
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    public $menu;
+        $this->addCurrentParent   = true;
+    }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         $html = $this->getHtmlSequence();
 
-        $request = $this->request;
-        $html->hr(array('class'=>'noprint'));
-        $params = $request->getParams();
-        $state = $params;                   // Use current state for pdf export
+        // @phpstan-ignore method.notFound
+        $html->hr(['class'=>'noprint']);
 
-        if (isset($params['fullanswers'])) {
-            unset($params['fullanswers']);
+        $fullAnswers = $this->requestInfo->getParam('fullanswers', 0);
+
+        if ($fullAnswers) {
+            $link = $this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute(), $this->requestInfo->getParams());
         } else {
-            $params['fullanswers'] = 1;
+            $link = $this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute(), $this->requestInfo->getParams(), ['fullanswers' => 1]);
         }
 
-        $url = array('controller' => $request->getControllerName(),
-            'action' => $request->getActionName(),
-            'routereset' => true) + $params;
-        $html->actionLink($url, $this->_('Toggle'));
+        $container = $html->div(['class' => 'buttons', 'renderClosingTag' => true]);
+        $container->append(Html::actionLink($link, $fullAnswers ? $this->_('Show only scores') : $this->_('Show all answers')));
 
-        // Now add the menulist all buttons under answer
-        $menuList = $this->menu->getMenuList();
-        $menuList->addParameterSources($this->menu->getParameterSource())
-                 ->addCurrentChildren();
+        $menuList = $this->getButtons();
 
-        $html[] = $menuList;
-        $html->hr(array('class'=>'noprint'));
+        if (count($menuList)) {
+            foreach($menuList as $buttonInfo) {
+                if (isset($buttonInfo['label'])) {
+                    if (isset($buttonInfo['disabled']) && $buttonInfo['disabled'] === true) {
+                        $container->append(Html::actionDisabled(Raw::raw($buttonInfo['label'])));
+                    } elseif (isset($buttonInfo['url'])) {
+                        $container->append(Html::actionLink($buttonInfo['url'], Raw::raw($buttonInfo['label'])));
+                    }
+                }
+            }
+        }
+
+        // @phpstan-ignore method.notFound
+        $html->hr(['class'=>'noprint']);
 
         return $html;
     }
 
-    public function hasHtmlOutput(): bool {
+    public function hasHtmlOutput(): bool
+    {
         // Only show toggle for individual answer display
-        if ($this->request->getActionName() !== 'answer') {
+        if ($this->requestInfo->getCurrentAction() !== 'answer') {
             return false;
         }
 

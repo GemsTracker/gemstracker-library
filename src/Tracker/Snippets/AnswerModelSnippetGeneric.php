@@ -197,7 +197,7 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
                 $model = $event->getModel();
                 $answerNames = $event->getCurrentNames();
 
-                $answerNames = $answerFilter->filterAnswers($bridge, $model, $answerNames);
+                $answerNames = $answerFilter->filterAnswers($bridge, $model, $answerNames, $this->requestInfo);
 
                 $event->setCurrentNames($answerNames);
             };

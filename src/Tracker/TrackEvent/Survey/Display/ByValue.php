@@ -12,6 +12,7 @@
 namespace Gems\Tracker\TrackEvent\Survey\Display;
 
 use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -37,7 +38,7 @@ class ByValue extends SurveyAnswerFilterAbstract
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(TableBridge $bridge, DataReaderInterface $model, array $currentNames): array
+    public function filterAnswers(TableBridge $bridge, DataReaderInterface $model, array $currentNames, RequestInfo $requestInfo): array
     {
         $currentNames = array_combine($currentNames, $currentNames);
         $newOrder     = array();
