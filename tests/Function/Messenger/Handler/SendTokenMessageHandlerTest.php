@@ -53,6 +53,7 @@ class SendTokenMessageHandlerTest extends DatabaseTestCase
         'gems__groups',
         'gems__track_fields',
         'gems__track_appointments',
+        'gems__translations',
         'gems__mail_servers',
         'gems__log_respondent_communications',
     ];
