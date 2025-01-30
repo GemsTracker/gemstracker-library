@@ -421,12 +421,8 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
      */
     public function undeleteAction()
     {
-        if ($this->deleteSnippets) {
-            $this->deleteParameters['requestUndelete'] = true;
+        $this->deleteParameters['requestUndelete'] = true;
 
-            $params = $this->_processParameters($this->deleteParameters);
-
-            $this->addSnippets($this->deleteSnippets, $params);
-        }
+        parent::deleteAction();
     }
 }
