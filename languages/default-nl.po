@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-14 17:24+0100\n"
+"POT-Creation-Date: 2025-02-02 18:40+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Source-Language: en\n"
 "X-Poedit-SourceCharset: ISO-8859-1\n"
 "X-Poedit-Basepath: ../../..\n"
-"X-Poedit-KeywordsList: plural:1,2;trans:1\n"
+"X-Poedit-KeywordsList: plural:1,2;trans:1;_:1\n"
 "X-Generator: Poedit 3.5\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker/src\n"
 "X-Poedit-SearchPath-1: gemstracker/gemstracker/templates\n"
@@ -272,7 +272,7 @@ msgstr "Annuleren"
 #: gemstracker/gemstracker/src/Model/CommMessengersModel.php:52
 #: gemstracker/gemstracker/src/Model/ConditionModel.php:61
 #: gemstracker/gemstracker/src/Model/Respondent/RespondentConsentLogModel.php:49
-#: gemstracker/gemstracker/src/Model/StaffModel.php:364
+#: gemstracker/gemstracker/src/Model/StaffModel.php:367
 #: gemstracker/gemstracker/src/Tracker/Model/Dependency/ValuesAsReferenceDependency.php:51
 #: gemstracker/gemstracker/src/Tracker/Model/FieldMaintenanceModel.php:170
 msgid "Type"
@@ -298,15 +298,15 @@ msgstr "Type"
 #: gemstracker/gemstracker/src/Model/ConditionModel.php:81
 #: gemstracker/gemstracker/src/Model/GroupModel.php:109
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:103
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:594
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:531
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:323
-#: gemstracker/gemstracker/src/Model/StaffModel.php:249
+#: gemstracker/gemstracker/src/Model/StaffModel.php:252
 #: gemstracker/gemstracker/src/Model/TemplateModel.php:54
 #: gemstracker/gemstracker/src/Model/TrackBuilder/SourceModel.php:37
 #: gemstracker/gemstracker/src/Model/Type/CommTemplateSingleLanguageFlatModel.php:33
-#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:164
-#: gemstracker/gemstracker/src/Snippets/Agenda/EpisodeTableSnippet.php:100
-#: gemstracker/gemstracker/src/Snippets/Respondent/Consent/RespondentConsentFormSnippet.php:68
+#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:166
+#: gemstracker/gemstracker/src/Snippets/Agenda/EpisodeTableSnippet.php:102
+#: gemstracker/gemstracker/src/Snippets/Respondent/Consent/RespondentConsentFormSnippet.php:88
 #: gemstracker/gemstracker/src/Tracker/Model/FieldMaintenanceModel.php:162
 #: gemstracker/gemstracker/src/Tracker/Model/SurveyMaintenanceModel.php:251
 #: gemstracker/gemstracker/src/Tracker/Model/TrackModel.php:75
@@ -329,7 +329,7 @@ msgstr "Groep"
 #: gemstracker/gemstracker/src/Handlers/Setup/MaskHandler.php:80
 #: gemstracker/gemstracker/src/Model/CommMessengersModel.php:36
 #: gemstracker/gemstracker/src/Model/Setup/ConsentModel.php:78
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:538
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:537
 #: gemstracker/gemstracker/src/Tracker/Engine/TrackEngineAbstract.php:831
 #: gemstracker/gemstracker/src/Tracker/Model/FieldMaintenanceModel.php:166
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:494
@@ -358,7 +358,7 @@ msgstr "Locatie"
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:178
 #: gemstracker/gemstracker/src/Model/TrackBuilder/SourceModel.php:77
 #: gemstracker/gemstracker/src/Snippets/Token/CheckTokenEvents.php:81
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:187
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:196
 #: gemstracker/gemstracker/src/Tracker/Snippets/AnswerModelSnippetGeneric.php:160
 msgid "Status"
 msgstr "Status"
@@ -373,7 +373,7 @@ msgstr "Script"
 #: gemstracker/gemstracker/src/Actions/LogFileAction.php:96
 #: gemstracker/gemstracker/src/Model.php:390
 #: gemstracker/gemstracker/src/Model/Respondent/RespondentConsentLogModel.php:55
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:579
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:516
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:462
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:395
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:309
@@ -413,7 +413,7 @@ msgstr "Weet u het heel erg zeker?"
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:114
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:118
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:137
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:74
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:75
 #: gemstracker/gemstracker/src/Util/Translated.php:488
 #: magnafacta/MUtil/src/MUtil/Snippets/ModelConfirmDataChangeSnippetAbstract.php:255
 #: magnafacta/MUtil/src/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:237
@@ -868,7 +868,7 @@ msgstr "Hoogste niveau"
 #: gemstracker/gemstracker/src/Model/GroupModel.php:123
 #: gemstracker/gemstracker/src/Model/Setup/ConsentModel.php:69
 #: gemstracker/gemstracker/src/Model/Setup/ReceptionCodeModel.php:82
-#: gemstracker/gemstracker/src/Model/StaffModel.php:351
+#: gemstracker/gemstracker/src/Model/StaffModel.php:354
 #: gemstracker/gemstracker/src/Model/TrackBuilder/ChartConfigModel.php:54
 #: gemstracker/gemstracker/src/Snippets/Track/TracksSnippet.php:87
 #: gemstracker/gemstracker/src/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:99
@@ -944,8 +944,8 @@ msgstr "Handmatig (organisatie specifiek)"
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:81
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:140
 #: gemstracker/gemstracker/src/Model/Setup/ReceptionCodeModel.php:95
-#: gemstracker/gemstracker/src/Model/StaffModel.php:300
-#: gemstracker/gemstracker/src/Model/StaffModel.php:483
+#: gemstracker/gemstracker/src/Model/StaffModel.php:303
+#: gemstracker/gemstracker/src/Model/StaffModel.php:486
 #: gemstracker/gemstracker/src/Model/TrackBuilder/SourceModel.php:144
 #: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:102
 #: gemstracker/gemstracker/src/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:88
@@ -991,12 +991,12 @@ msgstr "Foutieve invoer"
 #: gemstracker/gemstracker/src/Model/AppointmentModel.php:266
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:174
 #: gemstracker/gemstracker/src/Model/LogModel.php:107
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:567
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:504
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:316
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:374
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:122
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:308
-#: gemstracker/gemstracker/src/Model/StaffModel.php:115
+#: gemstracker/gemstracker/src/Model/StaffModel.php:118
 #: gemstracker/gemstracker/src/Snippets/Export/ReportHeaderSnippet.php:49
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentSearchSnippet.php:108
 #: gemstracker/gemstracker/src/Snippets/Token/TokenForgottenSnippet.php:171
@@ -1017,7 +1017,7 @@ msgstr "Afspraken bron"
 #: gemstracker/gemstracker/src/Model/AppointmentModel.php:199
 #: gemstracker/gemstracker/src/Model/AppointmentModel.php:255
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:186
-#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:121
+#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:123
 msgid "With"
 msgstr "Met"
 
@@ -1841,7 +1841,7 @@ msgstr "Ronde"
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:221
 #: gemstracker/gemstracker/src/Tracker/Model/TrackModel.php:173
 #: gemstracker/gemstracker/src/Tracker/Snippets/ShowTrackUsageAbstract.php:133
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:69
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:70
 msgid "Track"
 msgstr "Traject"
 
@@ -1950,7 +1950,7 @@ msgstr ""
 #: gemstracker/gemstracker/src/Config/Menu.php:120
 #: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:135
 #: gemstracker/gemstracker/src/Model/LogModel.php:117
-#: gemstracker/gemstracker/src/Model/StaffModel.php:398
+#: gemstracker/gemstracker/src/Model/StaffModel.php:401
 #: gemstracker/gemstracker/src/Snippets/Log/LogShowSnippet.php:79
 #: gemstracker/gemstracker/src/Snippets/Respondent/DetailsWithAssignmentsSnippet.php:131
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentDetailsSnippet.php:60
@@ -1978,11 +1978,11 @@ msgid "Comparison operator"
 msgstr "Vergelijkings type"
 
 #: gemstracker/gemstracker/src/Condition/Round/GenderCondition.php:79
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:596
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:533
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:406
 #: gemstracker/gemstracker/src/Model/RespondentRelationModel.php:77
-#: gemstracker/gemstracker/src/Model/StaffModel.php:186
-#: gemstracker/gemstracker/src/Model/StaffModel.php:257
+#: gemstracker/gemstracker/src/Model/StaffModel.php:189
+#: gemstracker/gemstracker/src/Model/StaffModel.php:260
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:52
 msgid "Gender"
 msgstr "Geslacht"
@@ -2213,7 +2213,7 @@ msgstr "Organisatie is één van %s"
 #: gemstracker/gemstracker/src/Snippets/Ask/AskTokenInputSnippet.php:88
 #: gemstracker/gemstracker/src/Snippets/Import/FileImportSnippet.php:67
 #: gemstracker/gemstracker/src/Snippets/Token/CheckTokenEvents.php:77
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:160
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:169
 #: gemstracker/gemstracker/src/Tracker/Engine/StepEngineAbstract.php:853
 #: gemstracker/gemstracker/src/Tracker/Form/AskTokenForm.php:71
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:298
@@ -2349,7 +2349,7 @@ msgstr "Nieuw"
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentTableSnippetAbstract.php:165
 #: gemstracker/gemstracker/src/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:110
 #: gemstracker/gemstracker/src/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:112
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:63
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:64
 #: gemstracker/gemstracker/src/User/Mask/AddressMasker.php:70
 #: gemstracker/gemstracker/src/User/Mask/AnyMasker.php:62
 #: gemstracker/gemstracker/src/Util/TokenData.php:562
@@ -2390,7 +2390,7 @@ msgstr "Toon"
 #: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:54
 #: gemstracker/gemstracker/src/Snippets/ModelTableSnippetAbstract.php:129
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentTableSnippetAbstract.php:180
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:447
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:456
 #: gemstracker/gemstracker/src/Tracker/Snippets/ShowRoundSnippetAbstract.php:182
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:50
 msgid "Edit"
@@ -2399,7 +2399,7 @@ msgstr "Wijzig"
 #: gemstracker/gemstracker/src/Config/Menu.php:140
 #: gemstracker/gemstracker/src/Export/AnswerModelFactory.php:180
 #: gemstracker/gemstracker/src/Export/ModelSource/AnswerExportModelSource.php:119
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:574
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:511
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:343
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:444
 #: gemstracker/gemstracker/src/Tracker/Model/FieldMaintenanceModel.php:515
@@ -2441,7 +2441,7 @@ msgstr "Wijzig organisatie"
 #: gemstracker/gemstracker/src/Model/Dependency/UsageDependency.php:60
 #: gemstracker/gemstracker/src/Snippets/MonitorSnippet.php:109
 #: gemstracker/gemstracker/src/Snippets/Respondent/Relation/TableSnippet.php:80
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:98
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:99
 #: gemstracker/gemstracker/src/Tracker/Snippets/ShowRoundSnippetAbstract.php:186
 msgid "Delete"
 msgstr "Verwijder"
@@ -2473,7 +2473,7 @@ msgstr "Controleer alle rondes"
 #: gemstracker/gemstracker/src/Model/Setup/ReceptionCodeModel.php:106
 #: gemstracker/gemstracker/src/Snippets/Tracker/AddTracksSnippet.php:306
 #: gemstracker/gemstracker/src/Tracker.php:739
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:70
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:71
 msgid "Tracks"
 msgstr "Trajecten"
 
@@ -2485,7 +2485,7 @@ msgstr "Invoegen"
 #: gemstracker/gemstracker/src/Snippets/Token/DeleteTrackTokenSnippet.php:169
 #: gemstracker/gemstracker/src/Snippets/Token/EditTrackTokenSnippet.php:111
 #: gemstracker/gemstracker/src/Snippets/Token/PlanRespondentSnippet.php:80
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:259
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:268
 #: gemstracker/gemstracker/src/Snippets/Tracker/Buttons/TokenActionButtonRow.php:56
 msgid "Show track"
 msgstr "Toon traject"
@@ -2510,14 +2510,14 @@ msgid "Export track"
 msgstr "Exporteer traject"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:278
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:90
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:91
 msgid "Correct answers"
 msgstr "Wijzig antwoorden"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:283
 #: gemstracker/gemstracker/src/Model/SurveyCodeBookModel.php:60
 #: gemstracker/gemstracker/src/Repository/TokenRepository.php:261
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:211
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:220
 #: gemstracker/gemstracker/src/Tracker/Engine/StepEngineAbstract.php:844
 #: gemstracker/gemstracker/src/Util/TokenData.php:341
 msgid "Answers"
@@ -2527,17 +2527,17 @@ msgstr "Antwoorden"
 #: gemstracker/gemstracker/src/Snippets/Communication/CommJobExecuteFormSnippet.php:58
 #: gemstracker/gemstracker/src/Snippets/Mail/MailFormSnippet.php:173
 #: gemstracker/gemstracker/src/Snippets/Mail/MailModelFormSnippet.php:135
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:207
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:216
 msgid "Preview"
 msgstr "Preview"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:293
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:268
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:277
 msgid "Token check"
 msgstr "Kenmerk controle"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:298
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:272
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:281
 msgid "(Re)check answers"
 msgstr "(Her)controleer antwoorden"
 
@@ -2561,7 +2561,7 @@ msgid "Activity log"
 msgstr "Activiteiten log"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:372
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:387
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:386
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:360
 msgid "Relations"
 msgstr "Relaties"
@@ -2719,7 +2719,7 @@ msgid "Reception codes"
 msgstr "Ontvangstcodes"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:751
-#: gemstracker/gemstracker/src/Snippets/Respondent/Consent/RespondentConsentFormSnippet.php:104
+#: gemstracker/gemstracker/src/Snippets/Respondent/Consent/RespondentConsentFormSnippet.php:124
 msgid "Consents"
 msgstr "Toestemmingen"
 
@@ -2729,7 +2729,7 @@ msgid "Mail codes"
 msgstr "Mailcode"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:757
-#: gemstracker/gemstracker/src/Model/OrganizationModel.php:395
+#: gemstracker/gemstracker/src/Model/OrganizationModel.php:397
 msgid "Access"
 msgstr "Toegang"
 
@@ -2780,20 +2780,20 @@ msgstr "Controleer alle patiënten"
 #: gemstracker/gemstracker/src/Handlers/Setup/StaffHandler.php:320
 #: gemstracker/gemstracker/src/Handlers/Setup/StaffHandler.php:373
 #: gemstracker/gemstracker/src/Model/LogModel.php:111
-#: gemstracker/gemstracker/src/Model/StaffModel.php:397
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:389
+#: gemstracker/gemstracker/src/Model/StaffModel.php:400
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:388
 #: gemstracker/gemstracker/src/Snippets/Log/LogShowSnippet.php:89
 #: gemstracker/gemstracker/src/Snippets/Tracker/AddTracksSnippet.php:303
 #: gemstracker/gemstracker/src/Snippets/User/EmbeddedUserTestUrlForm.php:91
 #: gemstracker/gemstracker/src/Tracker.php:741
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:65
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:66
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:362
 #: gemstracker/gemstracker/src/Util/Translated.php:523
 msgid "Staff"
 msgstr "Medewerkers"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:914
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:239
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:248
 msgid "Actions"
 msgstr "Acties"
 
@@ -3333,7 +3333,7 @@ msgstr ""
 #: gemstracker/gemstracker/src/Tracker/Engine/TrackEngineAbstract.php:826
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:323
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:230
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:68
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:69
 msgid "Survey"
 msgstr "Vragenlijst"
 
@@ -3364,7 +3364,7 @@ msgstr "Toewijzer"
 #: gemstracker/gemstracker/src/Tracker/Model/RespondentTrackModel.php:160
 #: gemstracker/gemstracker/src/Tracker/Model/RespondentTrackModel.php:210
 #: gemstracker/gemstracker/src/Tracker/Snippets/ShowTrackUsageAbstract.php:140
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:66
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:67
 msgid "Start"
 msgstr "Aanvang"
 
@@ -3544,7 +3544,7 @@ msgid "Unable to authenticate"
 msgstr "Authenticatie mislukt"
 
 #: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:91
-#: gemstracker/gemstracker/src/Model/StaffModel.php:148
+#: gemstracker/gemstracker/src/Model/StaffModel.php:151
 msgid "Username"
 msgstr "Gebruikersnaam"
 
@@ -3822,8 +3822,8 @@ msgstr[1] "uw instellingen"
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:321
 #: gemstracker/gemstracker/src/Repository/TokenRepository.php:644
 #: gemstracker/gemstracker/src/Snippets/Agenda/AppointmentsTableSnippet.php:197
-#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:162
-#: gemstracker/gemstracker/src/Snippets/Agenda/EpisodeTableSnippet.php:98
+#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:164
+#: gemstracker/gemstracker/src/Snippets/Agenda/EpisodeTableSnippet.php:100
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:302
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:209
 #: gemstracker/gemstracker/src/Util/TokenData.php:721
@@ -3836,7 +3836,7 @@ msgstr "Patiënt nr"
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:181
 #: gemstracker/gemstracker/src/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:104
 #: gemstracker/gemstracker/src/Snippets/Respondent/TrafficLightTokenSnippet.php:701
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:67
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:68
 msgid "Start date"
 msgstr "Startdatum"
 
@@ -3939,7 +3939,7 @@ msgid "Planning overview"
 msgstr "Planning overzicht"
 
 #: gemstracker/gemstracker/src/Handlers/Overview/RespondentPlanHandler.php:87
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:597
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:534
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:336
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:410
 #: gemstracker/gemstracker/src/Model/RespondentRelationModel.php:89
@@ -3949,7 +3949,7 @@ msgstr "Geboren op"
 
 #: gemstracker/gemstracker/src/Handlers/Overview/RespondentPlanHandler.php:88
 #: gemstracker/gemstracker/src/Model/LocationModel.php:83
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:602
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:539
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:332
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:431
 msgid "City"
@@ -3966,7 +3966,7 @@ msgstr " van "
 #: gemstracker/gemstracker/src/Snippets/Track/TracksSnippet.php:95
 #: gemstracker/gemstracker/src/Snippets/Tracker/ShowTrackUsageSnippet.php:79
 #: gemstracker/gemstracker/src/Tracker/Model/RespondentTrackModel.php:177
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:60
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:61
 msgid "Progress"
 msgstr "Voortgang"
 
@@ -4169,8 +4169,9 @@ msgstr "Wijzig patiënt nr %s: %s"
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:179
 #: gemstracker/gemstracker/src/Model/Setup/MailCodeModel.php:92
 #: gemstracker/gemstracker/src/Model/Setup/ReceptionCodeModel.php:100
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:388
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:387
 #: gemstracker/gemstracker/src/Snippets/Tracker/AddTracksSnippet.php:300
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:58
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:361
 #: gemstracker/gemstracker/src/Util/Translated.php:523
 msgid "Respondents"
@@ -4444,7 +4445,7 @@ msgstr "(alle filters)"
 #: gemstracker/gemstracker/src/Handlers/Setup/AgendaProcedureHandler.php:179
 #: gemstracker/gemstracker/src/Handlers/Setup/AgendaStaffHandler.php:177
 #: gemstracker/gemstracker/src/Handlers/Setup/LocationHandler.php:179
-#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:132
+#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:134
 msgid "Example appointments"
 msgstr "Voorbeeld afspraken"
 
@@ -4452,7 +4453,7 @@ msgstr "Voorbeeld afspraken"
 #: gemstracker/gemstracker/src/Handlers/Setup/AgendaProcedureHandler.php:188
 #: gemstracker/gemstracker/src/Handlers/Setup/AgendaStaffHandler.php:186
 #: gemstracker/gemstracker/src/Handlers/Setup/LocationHandler.php:188
-#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:142
+#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:144
 msgid "No example appointments found"
 msgstr "Geen voorbeeld afspraken gevonden"
 
@@ -4684,7 +4685,7 @@ msgstr "Kan toegewezen worden aan"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/GroupDiffHandler.php:89
 #: gemstracker/gemstracker/src/Model/GroupModel.php:155
-#: gemstracker/gemstracker/src/Model/StaffModel.php:439
+#: gemstracker/gemstracker/src/Model/StaffModel.php:442
 msgid "Login allowed from IP Ranges"
 msgstr "Toegang toestaan voor IP adres reeksen"
 
@@ -5635,7 +5636,7 @@ msgstr ""
 "Afspraken met deze procedure worden niet geïmporteerd als dit aan staat."
 
 #: gemstracker/gemstracker/src/Model/AgendaStaffModel.php:39
-#: gemstracker/gemstracker/src/Model/StaffModel.php:253
+#: gemstracker/gemstracker/src/Model/StaffModel.php:256
 msgid "Function"
 msgstr "Functie"
 
@@ -5775,11 +5776,11 @@ msgstr "Vertalingen"
 
 #: gemstracker/gemstracker/src/Model/CommTemplateModel.php:156
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:237
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:585
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:522
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:440
-#: gemstracker/gemstracker/src/Model/StaffModel.php:196
-#: gemstracker/gemstracker/src/Model/StaffModel.php:284
-#: gemstracker/gemstracker/src/Model/StaffModel.php:468
+#: gemstracker/gemstracker/src/Model/StaffModel.php:199
+#: gemstracker/gemstracker/src/Model/StaffModel.php:287
+#: gemstracker/gemstracker/src/Model/StaffModel.php:471
 msgid "Language"
 msgstr "Taal"
 
@@ -5959,7 +5960,7 @@ msgstr "Standaard medewerker groep bij het aanmaken van een nieuwe medewerker"
 #: gemstracker/gemstracker/src/Model/GroupModel.php:156
 #: gemstracker/gemstracker/src/Model/GroupModel.php:164
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:300
-#: gemstracker/gemstracker/src/Model/StaffModel.php:440
+#: gemstracker/gemstracker/src/Model/StaffModel.php:443
 msgid ""
 "Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or "
 "10.10.151.1/25"
@@ -5999,14 +6000,14 @@ msgstr ""
 "Het complete web adres voor de route naar de locatie: http://www.domein.enz"
 
 #: gemstracker/gemstracker/src/Model/LocationModel.php:73
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:599
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:536
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:330
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:425
 msgid "Street"
 msgstr "Straat"
 
 #: gemstracker/gemstracker/src/Model/LocationModel.php:77
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:601
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:538
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:331
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:430
 msgid "Zipcode"
@@ -6019,12 +6020,12 @@ msgid "E.g.: 0000 AA"
 msgstr "Voorbeeld: 0000 AA"
 
 #: gemstracker/gemstracker/src/Model/LocationModel.php:84
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:603
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:540
 msgid "Region"
 msgstr "Regio"
 
 #: gemstracker/gemstracker/src/Model/LocationModel.php:86
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:604
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:541
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:432
 msgid "Country"
 msgstr "Land"
@@ -6095,7 +6096,7 @@ msgid "(no respondent)"
 msgstr "(geen patiënt)"
 
 #: gemstracker/gemstracker/src/Model/LogModel.php:101
-#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:106
+#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:108
 #: gemstracker/gemstracker/src/Snippets/Survey/Display/BarChartSnippet.php:204
 #: gemstracker/gemstracker/src/Tracker/Model/FieldMaintenanceModel.php:516
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:495
@@ -6256,7 +6257,7 @@ msgid "Accessible by"
 msgstr "Toegankelijk voor"
 
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:200
-#: gemstracker/gemstracker/src/Model/StaffModel.php:129
+#: gemstracker/gemstracker/src/Model/StaffModel.php:132
 msgid "User Definition"
 msgstr "Gebruikers definitie"
 
@@ -6326,7 +6327,7 @@ msgid "The from field for an sms."
 msgstr "Het vanaf veld voor een sms."
 
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:377
-#: gemstracker/gemstracker/src/Model/StaffModel.php:292
+#: gemstracker/gemstracker/src/Model/StaffModel.php:295
 msgid "Check cron job mail"
 msgstr "Controleer cron opdracht mail"
 
@@ -6338,11 +6339,11 @@ msgstr ""
 "Als ingesteld, zal het organisatie contact een mail krijgen als de cron "
 "opdracht niet op tijd uitgevoerd wordt."
 
-#: gemstracker/gemstracker/src/Model/OrganizationModel.php:418
+#: gemstracker/gemstracker/src/Model/OrganizationModel.php:420
 msgid "Can access"
 msgstr "Toegang tot"
 
-#: gemstracker/gemstracker/src/Model/OrganizationModel.php:442
+#: gemstracker/gemstracker/src/Model/OrganizationModel.php:444
 msgid "Interface"
 msgstr "Interface"
 
@@ -6355,79 +6356,79 @@ msgid "New consent"
 msgstr "Nieuwe toestemming"
 
 #: gemstracker/gemstracker/src/Model/Respondent/RespondentConsentLogModel.php:58
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:580
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:517
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:467
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:45
 msgid "Changed by"
 msgstr "Veranderd door"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:251
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:188
 msgid "No organization available to add respondent to."
 msgstr "Geen organisatie beschikbaar om respondent aan toe te voegen."
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:280
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:217
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:375
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:389
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:393
 msgid "Identification"
 msgstr "Identificatie"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:305
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:312
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:242
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:249
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:398
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:403
 msgid "de, ibn, Le, Mac, von, etc..."
 msgstr "de, van der, 't, etc..."
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:319
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:256
 msgid "Should the partner name be place after the family name?"
 msgstr "Moet de partnernaam achter de achternaam staan?"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:337
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:274
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:415
 msgid "Contact information"
 msgstr "Contact informatie"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:351
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:571
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:288
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:508
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:532
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:537
 msgid "Respondent has no e-mail"
 msgstr "Patiënt zonder email"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:363
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:300
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:585
 msgid "With housenumber"
 msgstr "Met huisnummer"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:387
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:324
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:442
 msgid "Settings"
 msgstr "Instellingen"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:396
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:333
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:446
 msgid "Has the respondent signed the informed consent letter?"
 msgstr "Heeft de patiënt het \"informed consent\" formulier ondertekend?"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:516
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:453
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:669
 msgid "Respondent not found in sending organization."
 msgstr "Patiënt niet gevonden in bronorganisatie."
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:523
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:460
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:676
 msgid "Respondent already exists in destination organization."
 msgstr "Patiënt bestaat al in doelorganisatie."
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:527
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:464
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:680
 msgid ""
 "Respondent with requested respondent number already exists in receiving "
 "organization."
 msgstr "Patiënt met gevraagd nummer niet gevonden in doelorganisatie."
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:531
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:468
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:684
 msgid ""
 "Respondent already exists in destination organization, but with different "
@@ -6435,37 +6436,37 @@ msgid ""
 msgstr ""
 "Patiënt bestaat al in doelorganisatie maar heeft daar een ander nummer."
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:555
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:492
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:862
 msgid "Empty this field to remove the SSN"
 msgstr "Leeg dit veld om het SSN te verwijderen"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:566
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:503
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:392
 #: gemstracker/gemstracker/src/Tracker/Model/RespondentTrackModel.php:193
 msgid "Respondent number"
 msgstr "Patiënt nummer"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:568
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:505
 msgid "Physician"
 msgstr "Dokter"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:569
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:506
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:422
 msgid "Treatment"
 msgstr "Behandeling"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:570
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:507
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:325
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:414
 #: gemstracker/gemstracker/src/Model/RespondentRelationModel.php:94
-#: gemstracker/gemstracker/src/Model/StaffModel.php:166
-#: gemstracker/gemstracker/src/Model/StaffModel.php:263
+#: gemstracker/gemstracker/src/Model/StaffModel.php:169
+#: gemstracker/gemstracker/src/Model/StaffModel.php:266
 #: gemstracker/gemstracker/src/Snippets/User/OwnAccountEditAuthSnippet.php:438
 msgid "E-Mail"
 msgstr "Email"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:572
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:509
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:326
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:416
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:543
@@ -6475,7 +6476,7 @@ msgstr "Email"
 msgid "May be mailed"
 msgstr "Mag gemaild worden"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:573
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:510
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:423
 #: gemstracker/gemstracker/src/Model/RespondentRelationModel.php:111
 #: gemstracker/gemstracker/src/Snippets/Survey/SurveyCompareSnippet.php:750
@@ -6484,81 +6485,81 @@ msgstr "Mag gemaild worden"
 msgid "Comments"
 msgstr "Opmerkingen"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:575
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:512
 #: gemstracker/gemstracker/src/Tracker/Model/RespondentTrackModel.php:234
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:391
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:304
 msgid "Reception code"
 msgstr "Ontvangstcode"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:577
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:514
 #: gemstracker/gemstracker/src/Snippets/Respondent/MinimalTableSnippet.php:71
 msgid "Opened on"
 msgstr "Geopend op"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:578
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:515
 msgid "Opened by"
 msgstr "Geopend door"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:581
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:518
 msgid "Created on"
 msgstr "Gecreëerd op"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:582
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:519
 msgid "Created by"
 msgstr "Gecreëerd door"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:584
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:521
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:388
 msgid "SSN"
 msgstr "BSN"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:587
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:524
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:395
 msgid "Initials"
 msgstr "Initialen"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:588
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:525
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:396
 #: gemstracker/gemstracker/src/Model/RespondentRelationModel.php:83
-#: gemstracker/gemstracker/src/Model/StaffModel.php:172
-#: gemstracker/gemstracker/src/Model/StaffModel.php:225
+#: gemstracker/gemstracker/src/Model/StaffModel.php:175
+#: gemstracker/gemstracker/src/Model/StaffModel.php:228
 msgid "First name"
 msgstr "Voornaam"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:589
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:526
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:397
-#: gemstracker/gemstracker/src/Model/StaffModel.php:176
-#: gemstracker/gemstracker/src/Model/StaffModel.php:228
+#: gemstracker/gemstracker/src/Model/StaffModel.php:179
+#: gemstracker/gemstracker/src/Model/StaffModel.php:231
 msgid "Surname prefix"
 msgstr "Tussenvoegsel"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:590
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:527
 msgid "Family name"
 msgstr "Achternaam"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:591
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:528
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:402
 msgid "Partner surname prefix"
 msgstr "Tussenvoegsel partner"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:592
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:529
 msgid "Partner family name"
 msgstr "Achternaam partner"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:593
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:530
 msgid "Partner name after family name"
 msgstr "Achternaam partner na achternaam"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:606
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:607
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:608
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:609
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:543
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:544
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:545
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:546
 #, php-format
 msgid "Phone %s"
 msgstr "Telefoon %s"
 
-#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:717
+#: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:654
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:1075
 msgid ""
 "Respondent already exists in destination, please delete current record "
@@ -6595,8 +6596,8 @@ msgstr "Bekeken op"
 
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:400
 #: gemstracker/gemstracker/src/Model/RespondentRelationModel.php:86
-#: gemstracker/gemstracker/src/Model/StaffModel.php:181
-#: gemstracker/gemstracker/src/Model/StaffModel.php:232
+#: gemstracker/gemstracker/src/Model/StaffModel.php:184
+#: gemstracker/gemstracker/src/Model/StaffModel.php:235
 msgid "Last name"
 msgstr "Achternaam"
 
@@ -6624,7 +6625,7 @@ msgstr ""
 
 #: gemstracker/gemstracker/src/Model/RespondentNlModel.php:43
 #: gemstracker/gemstracker/src/Model/RespondentNlModel.php:44
-#: gemstracker/gemstracker/src/Model/StaffModel.php:229
+#: gemstracker/gemstracker/src/Model/StaffModel.php:232
 msgid "de, van der, 't, etc..."
 msgstr "de, van der, 't, etc..."
 
@@ -6892,88 +6893,88 @@ msgstr "Overschrijf bestaande toestemming"
 msgid "Remove the consent from already answered surveys."
 msgstr "Verwijder \"informed consent\" van reeds beantwoorde vragenlijsten."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:161
+#: gemstracker/gemstracker/src/Model/StaffModel.php:164
 msgid "Login Name"
 msgstr "Login Naam"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:192
-#: gemstracker/gemstracker/src/Model/StaffModel.php:270
+#: gemstracker/gemstracker/src/Model/StaffModel.php:195
+#: gemstracker/gemstracker/src/Model/StaffModel.php:273
 #: gemstracker/gemstracker/src/Snippets/User/OwnAccountEditAuthSnippet.php:448
 msgid "Mobile phone"
 msgstr "Mobiel nummer"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:277
-#: gemstracker/gemstracker/src/Model/StaffModel.php:373
+#: gemstracker/gemstracker/src/Model/StaffModel.php:280
+#: gemstracker/gemstracker/src/Model/StaffModel.php:376
 msgid "Primary group"
 msgstr "Primaire groep"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:293
+#: gemstracker/gemstracker/src/Model/StaffModel.php:296
 msgid ""
 "If checked the user will be mailed when the cron job does not run on time."
 msgstr ""
 "Als ingesteld, zal de medewerker een mail krijgen als de cron opdracht niet "
 "op tijd uitgevoerd wordt."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:306
-#: gemstracker/gemstracker/src/Model/StaffModel.php:357
+#: gemstracker/gemstracker/src/Model/StaffModel.php:309
+#: gemstracker/gemstracker/src/Model/StaffModel.php:360
 msgid "Can login"
 msgstr "Kan inloggen"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:307
+#: gemstracker/gemstracker/src/Model/StaffModel.php:310
 msgid "Users can only login when this box is checked."
 msgstr "Gebruikers kunnen alleen inloggen als dit is aangevinkt."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:313
+#: gemstracker/gemstracker/src/Model/StaffModel.php:316
 msgid "Authenticator TFA"
 msgstr "Authenticatie via twee factoren"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:352
+#: gemstracker/gemstracker/src/Model/StaffModel.php:355
 msgid "A description what this user is for."
 msgstr "Een uitleg waar dit account voor is."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:359
+#: gemstracker/gemstracker/src/Model/StaffModel.php:362
 msgid "System users can only be used when this box is checked."
 msgstr "Systeemaccounts kunnen alleen gebruikt worden als dit is aangevinkt."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:366
+#: gemstracker/gemstracker/src/Model/StaffModel.php:369
 msgid "The type of system user."
 msgstr "Het soort systeemaccount."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:375
+#: gemstracker/gemstracker/src/Model/StaffModel.php:378
 msgid "The group of the system user."
 msgstr "De groep van dit systeemaccount."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:380
+#: gemstracker/gemstracker/src/Model/StaffModel.php:383
 msgid "Logout on survey"
 msgstr "Log uit bij beantwoorden vragenlijst"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:381
+#: gemstracker/gemstracker/src/Model/StaffModel.php:384
 msgid "If checked the user will logoff when answering a survey."
 msgstr ""
 "Indien actief, dan logt de gebruiker uit voor het beantwoorden van een "
 "vragenlijst."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:387
+#: gemstracker/gemstracker/src/Model/StaffModel.php:390
 msgid "Logout on survey."
 msgstr "Log uit bij beantwoorden vragenlijst."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:395
+#: gemstracker/gemstracker/src/Model/StaffModel.php:398
 msgid "(user primary group)"
 msgstr "(gebruik primaire groep)"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:405
+#: gemstracker/gemstracker/src/Model/StaffModel.php:408
 msgid "Used group"
 msgstr "Gebruikte groep"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:406
+#: gemstracker/gemstracker/src/Model/StaffModel.php:409
 msgid "The group the deferred user should be changed to"
 msgstr "De groep die (altijd) gebruikt wordt voor de gedelegeerde gebruiker"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:411
+#: gemstracker/gemstracker/src/Model/StaffModel.php:414
 msgid "Can create users"
 msgstr "Mag medewerker aanmaken"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:412
+#: gemstracker/gemstracker/src/Model/StaffModel.php:415
 msgid ""
 "If the asked for user does not exist, can this embedded user create that "
 "user? If it cannot the authentication will fail."
@@ -6981,64 +6982,64 @@ msgstr ""
 "Als de gebruiker niet bestaat, mag een nieuwe gebruiker aangemaakt worden? "
 "Zo niet dan mislukt de login."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:418
+#: gemstracker/gemstracker/src/Model/StaffModel.php:421
 msgid "Authentication"
 msgstr "Authenticatie"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:420
+#: gemstracker/gemstracker/src/Model/StaffModel.php:423
 msgid "The authentication method used to authenticate the embedded user."
 msgstr "De authenticatie methode gebruikt voor het delegerende account."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:425
+#: gemstracker/gemstracker/src/Model/StaffModel.php:428
 msgid "Deferred user loader"
 msgstr "Gedelegeerde gebruiker lader"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:427
+#: gemstracker/gemstracker/src/Model/StaffModel.php:430
 msgid "The method used to load an embedded user."
 msgstr "De methode om een gedelegeerde gebruiker te laden."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:432
+#: gemstracker/gemstracker/src/Model/StaffModel.php:435
 msgid "Redirect method"
 msgstr "Doorstuurmethode"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:434
+#: gemstracker/gemstracker/src/Model/StaffModel.php:437
 msgid "The page the user is redirected to after successful login."
 msgstr "De pagina die de gebruiker krijgt na login."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:448
+#: gemstracker/gemstracker/src/Model/StaffModel.php:451
 msgid "Layout"
 msgstr "Layout"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:449
+#: gemstracker/gemstracker/src/Model/StaffModel.php:452
 msgid "The layout frame used."
 msgstr "De layout die gebruikte wordt."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:454
+#: gemstracker/gemstracker/src/Model/StaffModel.php:457
 msgid "Style"
 msgstr "Stijl"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:455
-#: gemstracker/gemstracker/src/Model/StaffModel.php:461
+#: gemstracker/gemstracker/src/Model/StaffModel.php:458
+#: gemstracker/gemstracker/src/Model/StaffModel.php:464
 msgid "The display style used."
 msgstr "De gebruikte weergavestijl."
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:459
+#: gemstracker/gemstracker/src/Model/StaffModel.php:462
 msgid "Crumbs display"
 msgstr "Kruimelspoor weergave"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:473
+#: gemstracker/gemstracker/src/Model/StaffModel.php:476
 msgid "Secret key"
 msgstr "Geheime sleutel"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:474
+#: gemstracker/gemstracker/src/Model/StaffModel.php:477
 msgid "Key used for authentication"
 msgstr "Sleutel gebruikt voor authenticatie"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:529
+#: gemstracker/gemstracker/src/Model/StaffModel.php:532
 msgid "Embedded (EPD) login user"
 msgstr "Embedded (EPD) login account"
 
-#: gemstracker/gemstracker/src/Model/StaffModel.php:530
+#: gemstracker/gemstracker/src/Model/StaffModel.php:533
 msgid "Guest - for answering surveys at the hospital"
 msgstr "Gast - om vragenlijsten in te vullen aan de balie"
 
@@ -7270,58 +7271,58 @@ msgstr "Kan PDF conversie (%s) niet starten: \"%s\""
 msgid "Manual"
 msgstr "Handleiding"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:76
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:75
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:195
 msgid "Disabled"
 msgstr "Uitgeschakeld"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:77
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:76
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:196
 msgid "Automatic"
 msgstr "Automatisch"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:78
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:77
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:197
 #: gemstracker/gemstracker/src/Util/Translated.php:392
 msgid "Manually"
 msgstr "Handmatig"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:310
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:309
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:283
 msgid "First mail"
 msgstr "Eerste email"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:311
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:310
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:284
 msgid "Reminder after first email"
 msgstr "Herinnering na eerste email"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:312
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:311
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:285
 msgid "Before expiration"
 msgstr "Voor vervaldatum"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:313
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:312
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:286
 msgid "Reminder before expiration"
 msgstr "Herinnering voor vervaldatum"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:324
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:323
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:297
 msgid "Use organizational from address"
 msgstr "Gebruik vanaf adres van organisatie"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:327
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:326
 #, php-format
 msgid "Use site address"
 msgstr "Gebruik adres van de site"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:330
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:329
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:303
 msgid "Use the 'By staff member' address"
 msgstr "Gebruik 'Door medewerker' adres"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:331
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:330
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:181
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:310
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:373
@@ -7330,55 +7331,55 @@ msgstr "Gebruik 'Door medewerker' adres"
 msgid "Other"
 msgstr "Anders"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:343
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:342
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:344
 msgid "Answerer (only)"
 msgstr "(Alleen) de patiënt/relatie"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:344
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:343
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:345
 msgid "Answerer or fallback if no email"
 msgstr "Patiënt/relatie, anders uitwijkadres"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:345
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:344
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:346
 msgid "Fallback (only)"
 msgstr "(Alleen) het uitwijkadres"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:358
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:357
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:317
 msgid "Send multiple messages per respondent, one for each checked token."
 msgstr "Verstuur meerdere berichten per patiënt, één per gekozen kenmerk."
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:359
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:358
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:318
 msgid "Send one message per respondent, mark all checked tokens as sent."
 msgstr ""
 "Verstuur één bericht per patiënt, zet alle gekozen kenmerken op verzonden."
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:360
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:359
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:319
 msgid "Send one message per respondent, mark only mailed tokens as sent."
 msgstr ""
 "Verstuur één bericht per patiënt, zet alleen de verzonden kenmerken op "
 "verzonden."
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:372
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:371
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:331
 msgid "Multiple messages"
 msgstr "Meerdere berichten"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:373
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:372
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:332
 msgid "One message, mark all"
 msgstr "Eén bericht, markeer alles"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:374
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:373
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:333
 msgid "One message"
 msgstr "Eén bericht"
 
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:386
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:385
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:359
 msgid "Respondents and Relations"
 msgstr "Patiënten en Relaties"
@@ -7987,7 +7988,7 @@ msgid "No appointments found."
 msgstr "Geen afspraken gevonden."
 
 #: gemstracker/gemstracker/src/Snippets/Agenda/AppointmentsTableSnippet.php:191
-#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:158
+#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:160
 msgid "Time"
 msgstr "Tijd"
 
@@ -8004,11 +8005,11 @@ msgstr "Geen gekoppelde afspraken gevonden."
 msgid "(all locations)"
 msgstr "(alle locaties)"
 
-#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:92
+#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:94
 msgid "Show appointment"
 msgstr "Toon afspraak"
 
-#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:95
+#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:97
 #: gemstracker/gemstracker/src/Snippets/Token/PlanRespondentSnippet.php:72
 #: gemstracker/gemstracker/src/Snippets/Tracker/Buttons/TokenActionButtonRow.php:54
 #: gemstracker/gemstracker/src/Snippets/Tracker/Buttons/TrackActionButtonRow.php:62
@@ -8017,12 +8018,12 @@ msgstr "Toon afspraak"
 msgid "Show respondent"
 msgstr "Toon patiënt"
 
-#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:144
-#: gemstracker/gemstracker/src/Snippets/Agenda/EpisodeTableSnippet.php:78
+#: gemstracker/gemstracker/src/Snippets/Agenda/CalendarTableSnippet.php:146
+#: gemstracker/gemstracker/src/Snippets/Agenda/EpisodeTableSnippet.php:80
 msgid "Filter is inactive"
 msgstr "Filter is inactief"
 
-#: gemstracker/gemstracker/src/Snippets/Agenda/EpisodeTableSnippet.php:67
+#: gemstracker/gemstracker/src/Snippets/Agenda/EpisodeTableSnippet.php:69
 msgid "Example episodes"
 msgstr "Voorbeeld episodes"
 
@@ -8238,7 +8239,6 @@ msgid "from"
 msgstr "vanaf"
 
 #: gemstracker/gemstracker/src/Snippets/AutosearchFormSnippet.php:257
-#: gemstracker/gemstracker/src/Snippets/Survey/Display/FullAnswerToggleSnippet.php:54
 msgid "Toggle"
 msgstr "Toggle"
 
@@ -8875,7 +8875,7 @@ msgstr "Fout tijdens het lezen van bestand '%s'."
 #: gemstracker/gemstracker/src/Snippets/FormSnippetAbstract.php:88
 #: gemstracker/gemstracker/src/Snippets/Mail/MailModelFormSnippet.php:260
 #: gemstracker/gemstracker/src/Snippets/ModelFormSnippetAbstract.php:120
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:62
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:63
 #: magnafacta/MUtil/src/MUtil/Snippets/FormSnippetAbstract.php:221
 #: magnafacta/MUtil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:278
 #: magnafacta/zalt-html/src/Snippets/Zend/ZendFormSnippetTrait.php:84
@@ -9350,7 +9350,7 @@ msgstr "Organisatie van patiënt wijzigen"
 msgid "ERROR: Tracks not moved!"
 msgstr "FOUT: Traject niet verplaatst!"
 
-#: gemstracker/gemstracker/src/Snippets/Respondent/Consent/RespondentConsentFormSnippet.php:115
+#: gemstracker/gemstracker/src/Snippets/Respondent/Consent/RespondentConsentFormSnippet.php:135
 msgid "consent"
 msgid_plural "consents"
 msgstr[0] "toestemming"
@@ -9493,6 +9493,7 @@ msgid "Respondent relation cannot be contacted"
 msgstr "De relatie van de patiënt kan niet bereikt worden"
 
 #: gemstracker/gemstracker/src/Snippets/Respondent/TokenEmailSnippet.php:94
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:147
 msgid "This token cannot be E-mailed"
 msgstr "Dit kenmerk kan (nog) niet ge-emailed worden"
 
@@ -9821,6 +9822,14 @@ msgstr "Geen gegevens gevonden"
 msgid "Print"
 msgstr "Afdrukken"
 
+#: gemstracker/gemstracker/src/Snippets/Survey/Display/FullAnswerToggleSnippet.php:62
+msgid "Show only scores"
+msgstr "Toon alleen scores"
+
+#: gemstracker/gemstracker/src/Snippets/Survey/Display/FullAnswerToggleSnippet.php:62
+msgid "Show all answers"
+msgstr "Alle antwoorden tonen"
+
 #: gemstracker/gemstracker/src/Snippets/Survey/SurveyCompareSnippet.php:112
 msgid "Survey replace"
 msgstr "Vragenlijst vervangen"
@@ -10085,14 +10094,14 @@ msgstr "Dit kenmerk heeft geen voorbeantwoordings actie."
 
 #: gemstracker/gemstracker/src/Snippets/Token/DeleteTrackTokenSnippet.php:161
 #: gemstracker/gemstracker/src/Snippets/Token/EditTrackTokenSnippet.php:103
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:251
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:64
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:260
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:65
 msgid "Show patient"
 msgstr "Toon patiënt"
 
 #: gemstracker/gemstracker/src/Snippets/Token/DeleteTrackTokenSnippet.php:165
 #: gemstracker/gemstracker/src/Snippets/Token/EditTrackTokenSnippet.php:107
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:255
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:264
 #: gemstracker/gemstracker/src/Snippets/Tracker/Buttons/TokenActionButtonRow.php:55
 #: gemstracker/gemstracker/src/Snippets/Tracker/Buttons/TrackActionButtonRow.php:64
 msgid "Show tracks"
@@ -10100,7 +10109,7 @@ msgstr "Toon trajecten"
 
 #: gemstracker/gemstracker/src/Snippets/Token/DeleteTrackTokenSnippet.php:176
 #: gemstracker/gemstracker/src/Snippets/Token/EditTrackTokenSnippet.php:118
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:467
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:476
 #: gemstracker/gemstracker/src/Snippets/Tracker/Buttons/TokenActionButtonRow.php:57
 msgid "Show token"
 msgstr "Toon kenmerk"
@@ -10223,27 +10232,31 @@ msgstr "Geen geldige kenmerken gevonden"
 msgid "Create new track"
 msgstr "Maak nieuw traject aan"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:103
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:104
 msgid "Undelete"
 msgstr "Herstel"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:140
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:142
 msgid "E-mail now!"
 msgstr "Email nu!"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:167
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:146
+msgid "This token is for a staff member and cannot be E-mailed"
+msgstr "Deze token is voor een medewerker  en kan niet worden gemaild"
+
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:176
 msgid "Token copied from"
 msgstr "Kenmerk vervanger van"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:174
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:183
 msgid "Token copied to"
 msgstr "Kenmerk vervangen door"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:198
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:207
 msgid "Take"
 msgstr "Vul in"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:216
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:225
 msgid "Answer export"
 msgstr "Exporteer antwoord"
 
@@ -11537,7 +11550,7 @@ msgid "Organization specific round"
 msgstr "Organisatiespecifieke ronde"
 
 #: gemstracker/gemstracker/src/Tracker/Field/AppointmentField.php:319
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:72
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:73
 #: gemstracker/gemstracker/src/Util/Translated.php:416
 msgid "Unknown"
 msgstr "Onbekend"
@@ -12157,11 +12170,11 @@ msgstr "Na veranderde velden"
 msgid "Dear %s"
 msgstr "Beste %s"
 
-#: gemstracker/gemstracker/src/Tracker/RespondentTrack.php:785
+#: gemstracker/gemstracker/src/Tracker/RespondentTrack.php:780
 msgid "Track stopped"
 msgstr "Traject gestopt"
 
-#: gemstracker/gemstracker/src/Tracker/RespondentTrack.php:788
+#: gemstracker/gemstracker/src/Tracker/RespondentTrack.php:783
 msgid "Track completed"
 msgstr "Traject afgerond"
 
@@ -12866,19 +12879,19 @@ msgstr "%s met chart"
 msgid "Show all tokens for this survey in this track type"
 msgstr "Toon alle antwoorden voor deze vragenlijst in dit traject type"
 
-#: gemstracker/gemstracker/src/Tracker/TrackEvent/Survey/Display/ByValue.php:66
+#: gemstracker/gemstracker/src/Tracker/TrackEvent/Survey/Display/ByValue.php:67
 msgid "Show the highest answer first."
 msgstr "Toon het hoogste antwoord eerst."
 
-#: gemstracker/gemstracker/src/Tracker/TrackEvent/Survey/Display/CompactFullToggle.php:111
+#: gemstracker/gemstracker/src/Tracker/TrackEvent/Survey/Display/CompactFullToggle.php:119
 msgid "Display only the questions whose code starts with `score`."
 msgstr "Alleen vragen tonen waarvan de code met 'score' begint."
 
-#: gemstracker/gemstracker/src/Tracker/TrackEvent/Survey/Display/OnlyAnswered.php:104
+#: gemstracker/gemstracker/src/Tracker/TrackEvent/Survey/Display/OnlyAnswered.php:106
 msgid "Display only the questions with an answer."
 msgstr "Alleen beantwoorde vragen tonen."
 
-#: gemstracker/gemstracker/src/Tracker/TrackEvent/Survey/Display/Reverse.php:52
+#: gemstracker/gemstracker/src/Tracker/TrackEvent/Survey/Display/Reverse.php:54
 msgid "Reverse the question order."
 msgstr "Draai de vraag volgorde om."
 
@@ -12894,7 +12907,7 @@ msgstr "Toon alleen de antwoorden voor dit kenmerk"
 msgid "Show all tokens for this survey in the track"
 msgstr "Toon alle antwoorden voor deze vragenlijst in dit traject"
 
-#: gemstracker/gemstracker/src/Tracker/TrackEvent/Survey/Display/YesOnTop.php:81
+#: gemstracker/gemstracker/src/Tracker/TrackEvent/Survey/Display/YesOnTop.php:83
 msgid "Yes answers on top."
 msgstr "Ja antwoorden bovenaan."
 
@@ -12918,31 +12931,31 @@ msgstr "Toegevoegd door"
 msgid "Birthdate"
 msgstr "Geboortedatum"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:58
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:59
 msgid "Patients"
 msgstr "enPatiënt"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:59
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:60
 msgid "Phone number"
 msgstr "Telefoonnummer"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:61
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:62
 msgid "Row"
 msgstr "Rij"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:71
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:72
 msgid "Track info"
 msgstr "Traject informatie"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:73
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:74
 msgid "Variables"
 msgstr "Variabelen"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:81
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:82
 msgid "Delete patient"
 msgstr "Patiënt verwijderen"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:82
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:83
 msgid "Undelete patient"
 msgstr "Herstel verwijderde patiënt"
 
@@ -14525,9 +14538,6 @@ msgstr[1] "%d items opgeslagen!"
 
 #~ msgid "Undelete!"
 #~ msgstr "Herstel!"
-
-#~ msgid "Check all answers"
-#~ msgstr "Controleer alles op antwoorden"
 
 #~ msgid "Print PDF"
 #~ msgstr "Print PDF"
