@@ -65,7 +65,7 @@ class MultiselectField extends FieldAbstract
         if (is_array($currentValue)){
             $values = $currentValue;
         } else {
-            $values = explode(parent::FIELD_SEP, trim($currentValue, parent::FIELD_SEP));
+            $values = explode(parent::FIELD_SEP, trim($currentValue ?? '', parent::FIELD_SEP));
         }
         $output = [];
         foreach ($values as $value) {
