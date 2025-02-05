@@ -54,7 +54,7 @@ class MultiselectField extends FieldAbstract
     /**
      * Calculation the field info display for this type
      *
-     * @param string|array $currentValue The current value
+     * @param string|array|null $currentValue The current value
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
