@@ -76,7 +76,7 @@ class EditTrackSnippet extends EditTrackSnippetAbstract
             $this->formData['gr2t_id_organization'] = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2);
         }
         if (! isset($this->formData['gr2t_id_respondent_track'])) {
-            $this->formData['gr2t_id_organization'] = $this->requestInfo->getParam(Model::RESPONDENT_TRACK);
+            $this->formData['gr2t_id_respondent_track'] = $this->requestInfo->getParam(Model::RESPONDENT_TRACK);
         }
 //        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->formData, true) . "\n", FILE_APPEND);
 

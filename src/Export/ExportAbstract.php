@@ -180,7 +180,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Target\TargetAbstract impleme
             File::ensureDir($exportTempDir);
         }
 
-        $tempFilename       = $exportTempDir . 'export-' . md5(time() . rand());
+        $tempFilename       = $exportTempDir . '/export-' . md5(time() . rand());
         $this->tempFilename = $tempFilename;
         $basename           = $this->cleanupName($this->dataModel->getName());
         $filename           = $basename;
