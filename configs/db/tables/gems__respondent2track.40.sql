@@ -5,7 +5,7 @@ CREATE TABLE if not exists gems__respondent2track (
         gr2t_id_user                bigint unsigned not null references gems__respondents (grs_id_user),
         gr2t_id_track               bigint unsigned not null references gems__tracks (gtr_id_track),
 
-        gr2t_track_info             varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
+        gr2t_track_info             varchar(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',
         gr2t_start_date             datetime null,
         gr2t_end_date               datetime null,
         gr2t_end_date_manual        boolean not null default 0,
