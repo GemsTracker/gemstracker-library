@@ -12,6 +12,7 @@
 namespace Gems\User;
 
 use Gems\Cache\HelperAdapter;
+use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
 use Gems\Exception\AuthenticationException;
 use Gems\Hydrator\NamingStrategy\PrefixedUnderscoreNamingStrategy;
@@ -115,9 +116,10 @@ class UserLoader
         protected readonly ProjectOverloader $projectOverloader,
         protected readonly PasswordChecker $passwordChecker,
         protected readonly HelperAdapter $cache,
-        protected readonly array $config,
+        protected readonly ConfigAccessor $configAccessor,
     )
     {
+        $config = $this->configAccessor->getArray();
         $this->allowLoginOnOtherOrganization = $config['auth']['allowLoginOnOtherOrganization'] ?? false;
         $this->allowLoginOnAnyOrganization = $config['auth']['allowLoginOnAnyOrganization'] ?? false;
         $this->allowLoginOnWithoutOrganization = $config['auth']['allowLoginOnWithoutOrganization'] ?? false;
@@ -228,7 +230,7 @@ class UserLoader
             self::USER_RADIUS => $this->translator->_('Radius storage'),
         ];
 
-        if (isset($this->config['ldap'])) {
+        if ($this->configAccessor->hasLdap()) {
             $output[self::USER_LDAP] = $this->translator->_('LDAP');
         }
         asort($output);
@@ -338,7 +340,13 @@ class UserLoader
         }
 
         if (! isset($organizations[$organizationId])) {
-            $organizations[$organizationId] = $this->projectOverloader->create('User\\Organization', $organizationId, $this->getSiteUrls(), $this->getAvailableStaffDefinitions());
+            $organizations[$organizationId] = $this->projectOverloader->create(
+                'User\\Organization',
+                $organizationId,
+                $this->getSiteUrls(),
+                $this->getAvailableStaffDefinitions(),
+                $this->configAccessor->getAfterTrackChangeDefaultRoute(),
+            );
         }
 
         return $organizations[$organizationId];
@@ -373,11 +381,7 @@ class UserLoader
             return $sites;
         }
 
-        if (isset($this->config['sites']['allowed'])) {
-            $sites = array_column($this->config['sites']['allowed'], 'url');
-        } else {
-            $sites = [];
-        }
+        $sites = $this->configAccessor->getAllowedSites();
 
         return $sites;
     }

@@ -1420,6 +1420,16 @@ class Token
         return $this->_gemsData['token_status'];
     }
 
+    public function getStatusRoute(): string
+    {
+        if ($this->isCompleted()) {
+            return 'respondent.tracks.token.answer';
+        } elseif ($this->isCurrentlyValid() && $this->getSurvey()->isTakenByStaff()) {
+            return 'ask.take';
+        }
+        return 'respondent.tracks.token.show';
+    }
+
     /**
      *
      * @return \Gems\Tracker\Survey

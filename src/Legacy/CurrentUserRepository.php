@@ -149,7 +149,7 @@ class CurrentUserRepository
         return UserLoader::UNKNOWN_USER_ID;
     }
 
-    protected function getUserLoader(): UserLoader
+    public function getUserLoader(): UserLoader
     {
         if (!$this->userLoader instanceof UserLoader) {
             $container =$this->loader->getContainer();

@@ -2,6 +2,7 @@
 
 namespace Gems\Repository;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\User\Organization;
@@ -33,6 +34,7 @@ class OrganizationRepository
 
     public function __construct(
         protected readonly CachedResultFetcher $cachedResultFetcher,
+        protected readonly ConfigAccessor $configAccessor,
         protected readonly ProjectOverloader $projectOverloader,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly UtilDbHelper $utilDbHelper,
@@ -47,7 +49,9 @@ class OrganizationRepository
                 'User\\Organization',
                 static::SYSTEM_NO_ORG,
                 $this->getSiteUrls(),
-                $this->userLoader->getAvailableStaffDefinitions());
+                $this->userLoader->getAvailableStaffDefinitions(),
+                $this->configAccessor->getAfterTrackChangeDefaultRoute(),
+            );
         }
         return $this->noOrgOrganization;
     }
@@ -63,6 +67,7 @@ class OrganizationRepository
                 $organizationId,
                 $this->getSiteUrls(),
                 $this->userLoader->getAvailableStaffDefinitions(),
+                $this->configAccessor->getAfterTrackChangeDefaultRoute(),
             );
         }
         return $this->organizations[$organizationId];

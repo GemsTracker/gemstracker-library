@@ -122,6 +122,7 @@ class Organization extends CachedArrayTargetAbstract
         $id,
         protected readonly array $sites,
         protected readonly array $allowedProjectUserClasses,
+        protected readonly string $defaultTrackChangeRoute,
     )
     {
         parent::__construct($id);
@@ -220,6 +221,11 @@ class Organization extends CachedArrayTargetAbstract
         } else {
             return $default;
         }
+    }
+
+    public function getAfterTrackChangeRoute(): string
+    {
+        return $this->get('gor_track_change_route', $this->defaultTrackChangeRoute);
     }
 
     /**

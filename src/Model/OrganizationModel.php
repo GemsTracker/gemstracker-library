@@ -229,6 +229,11 @@ class OrganizationModel extends GemsJoinModel
             'multiOptions' => $empty + $this->screenLoader->listTokenAskScreens(),
         ]);
 
+        $this->metaModel->setIfExists('gor_track_change_route', [
+            'label' => $this->_('After track change screen'),
+            'multiOptions' => $this->getAfterTrackChangeRoutes(),
+        ]);
+
         $this->metaModel->setIfExists('gor_resp_change_event', [
             'label' => $this->_('Respondent change event'),
             'multiOptions' => $this->trackEvents->listRespondentChangedEvents(),
@@ -469,6 +474,10 @@ class OrganizationModel extends GemsJoinModel
             'default' => 'Gems\\Screens\\Token\\Ask\\ProjectDefaultAsk',
             'elementClass' => 'Radio',
         ]);
+        $this->metaModel->setIfExists('gor_track_change_route', [
+            'default' => $this->configAccessor->getAfterTrackChangeDefaultRoute(),
+            'elementClass' => 'Radio',
+        ]);
 
         $this->metaModel->setIfExists('gor_resp_change_event', [
             'order' => $this->metaModel->getOrder('gor_user_class') + 1000,
@@ -490,5 +499,13 @@ class OrganizationModel extends GemsJoinModel
         $this->metaModelLoader->addDatabaseTranslations($this->metaModel, true);
 
         return $this;
+    }
+
+    public function getAfterTrackChangeRoutes(): array
+    {
+        return [
+            'respondent.tracks.show' => $this->_('Show track'),
+            'respondent.show' => $this->_('Show patient'),
+            ];
     }
 }

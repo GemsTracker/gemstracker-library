@@ -7,9 +7,9 @@ class Survey
     public function __invoke(): array
     {
         return [
-            'ask' => $this->getAskSettings(),
-
-            /* Optional default TrackId */
+            'ask'    => $this->getAskSettings(),
+            'tracks' => $this->getTrackSettings(),
+             /* Optional default TrackId */
             //'defaultTrackId' => 700
 
         ];
@@ -58,6 +58,14 @@ class Survey
             'limesurvey' => [
                 'tokenUrlStart' => 'index.php',
             ],
+        ];
+    }
+
+    protected function getTrackSettings(): array
+    {
+        return [
+            'afterChangeRoute' => 'respondent.tracks.show',
+            // 'afterChangeRoute' => 'respondent.show',
         ];
     }
 }

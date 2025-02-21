@@ -34,15 +34,27 @@ class ConfigAccessor
             set_time_limit($mimimumTime);
         }
     }
-
-    public function getArray(): array
+    public function getAfterTrackChangeDefaultRoute(): string
     {
-        return $this->config;
+        return $this->config['survey']['tracks']['afterChangeRoute'] ?? 'respondent.tracks.show';
+    }
+
+    public function getAllowedSites(): array
+    {
+        if (isset($this->config['sites'], $this->config['sites']['allowed'])) {
+            return array_column($this->config['sites']['allowed'], 'url');
+        }
+        return [];
     }
 
     public function getAppName(): string
     {
         return $this->config['app']['name'] ?? 'GemsTracker';
+    }
+
+    public function getArray(): array
+    {
+        return $this->config;
     }
 
     public function getDefaultLocale(): string
@@ -68,6 +80,14 @@ class ConfigAccessor
         }
 
         return $output;
+    }
+
+    public function hasLdap(): bool
+    {
+        if (isset($this->config['ldap'])) {
+            return (bool) $this->config['ldap'];
+        }
+        return false;
     }
 
     public function hasTFAMethod(string $method): bool

@@ -6,7 +6,7 @@ class Organization extends \Gems\User\Organization
 {
     public function __construct(array $sites, ?array $data = null)
     {
-        parent::__construct(new FakeCachedDbTranslationRepository(), 0, $sites, []);
+        parent::__construct(new FakeCachedDbTranslationRepository(), 0, $sites, [], 'respondent.tracks.show');
         if ($data !== null) {
             $this->_data = $data;
             return;

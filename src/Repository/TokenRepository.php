@@ -13,6 +13,7 @@ use Mezzio\Router\Exception\RuntimeException;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\AElement;
 use Zalt\Html\HtmlElement;
+use Zalt\Html\HtmlInterface;
 use Zalt\Late\Late;
 use Zalt\Late\LateCall;
 use Zalt\Late\LateInterface;
@@ -534,14 +535,16 @@ class TokenRepository
      * @param string $result
      * @return \Zalt\Html\HtmlElement
      */
-    public function getTokenStatusLink(MenuSnippetHelper $helper, string $tokenId, int $respondentTrackId, string $tokenStatus, string $patientNr, int $organizationId, string $roundDescr, string $surveyName, string $result): ?HtmlElement
+    public function getTokenStatusLink(MenuSnippetHelper $helper, string $tokenId, mixed $respondentTrackId, string $tokenStatus, string $patientNr, mixed $organizationId, string $roundDescr, string $surveyName, ?string $result): ?HtmlElement
     {
         if ($tokenId) {
-            $href = $helper->getRouteUrl('respondent.tracks.token.show', [
+            $token = $this->tracker->getToken($tokenId);
+
+            $href = $helper->getRouteUrl($token->getStatusRoute(), [
                 MetaModelInterface::REQUEST_ID  => $tokenId,
-                Model::RESPONDENT_TRACK => $respondentTrackId,
+                Model::RESPONDENT_TRACK         => (int) $respondentTrackId,
                 MetaModelInterface::REQUEST_ID1 => $patientNr,
-                MetaModelInterface::REQUEST_ID2 => $organizationId,
+                MetaModelInterface::REQUEST_ID2 => (int)  $organizationId,
             ]);
 
             if (! $href) {
@@ -564,34 +567,21 @@ class TokenRepository
      */
     public function getTokenStatusLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper): LateCall
     {
-        if (! $this->currentUser->hasPrivilege('pr.respondent.track.token.show')) {
-            return $this->getTokenStatusShowForBridge($bridge, $helper);
+        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.token.show')) {
+           return $this->getTokenStatusShowForBridge($bridge, $helper);
         }
 
-        /*return Late::method($this, 'getTokenStatusLink',
+        return Late::method($this, 'getTokenStatusLink',
             $helper,
-            $bridge->getLate('gto_id_token'), $bridge->getLate('token_status'),
-            $bridge->getLate('gr2o_patient_nr'), $bridge->getLate('gto_round_description'),
-            $bridge->getLate('gsu_survey_name'), $bridge->getLate('gto_result')
-        );*/
-
-        $url = $helper->getLateRouteUrl('respondent.track.token.show', [
-            'gto_id_token' => $bridge->getLate('gr2o_patient_nr'),
-            Model::ID_TYPE => 'token',
-        ]);
-
-        $link = Late::iff($url,
-            Html::create('a', $url),
-            Html::create('span'));
-
-        $link->append($this->getStatusIcon($bridge->getLate('token_status')));
-        $link->setAttrib('title', Late::method($this, 'getTokenStatusTitle',
-            $bridge->getLate('gto_id_token'), $bridge->getLate('token_status'),
-            $bridge->getLate('gr2o_patient_nr'), $bridge->getLate('gto_round_description'),
-            $bridge->getLate('gsu_survey_name'), $bridge->getLate('gto_result')
-        ));
-
-        return $link;
+            $bridge->getLate('gto_id_token'),
+            $bridge->getLate('gto_id_respondent_track'),
+            $bridge->getLate('token_status'),
+            $bridge->getLate('gr2o_patient_nr'),
+            $bridge->getLate('gr2o_id_organization'),
+            $bridge->getLate('gto_round_description'),
+            $bridge->getLate('gsu_survey_name'),
+            $bridge->getLate('gto_result'),
+        );
     }
 
     /**
@@ -631,7 +621,7 @@ class TokenRepository
      * @param string $result
      * @return string
      */
-    public function getTokenStatusTitle(string $tokenId, string $tokenStatus, string $patientNr, string $roundDescr, string $surveyName, string $result): string
+    public function getTokenStatusTitle(string $tokenId, string $tokenStatus, string $patientNr, string $roundDescr, string $surveyName, ?string $result): string
     {
         $title = sprintf($this->translator->_('Token %s: %s'), strtoupper($tokenId), $this->getStatusDescription($tokenStatus));
         if ($roundDescr) {

@@ -21,6 +21,7 @@ use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
+use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -42,6 +43,13 @@ use Zalt\SnippetsLoader\SnippetOptions;
 class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
 {
     protected string $afterSaveRoutePart = 'show-track';
+
+    /**
+     * Optional, required when creating or loader should be set
+     *
+     * @var int The user ID of the one doing the changing
+     */
+    protected int $currentUserId;
 
     protected RespondentTrackModel|null $model;
 
@@ -94,12 +102,7 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
      */
     protected $trackId;
 
-    /**
-     * Optional, required when creating or loader should be set
-     *
-     * @var int The user ID of the one doing the changing
-     */
-    protected int $currentUserId;
+    protected readonly UserLoader $userLoader;
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -115,6 +118,7 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger,  $auditLog, $menuHelper);
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
+        $this->userLoader    = $currentUserRepository->getUserLoader();
     }
 
     protected function createModel(): RespondentTrackModel
@@ -226,7 +230,7 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
                 $this->trackEngine = $this->tracker->getTrackEngine($this->trackId);
             }
 
-            if (! ($this->trackEngine && $this->patientId && $this->organizationId && $this->currentUserId)) {
+            if (! (isset($this->trackEngine) && $this->patientId && $this->organizationId && $this->currentUserId)) {
                 throw new \Gems\Exception\Coding('Missing parameter for ' . __CLASS__  .
                         ': could not find data for editing a respondent track nor the track engine, patientId and organizationId needed for creating one.');
             }
@@ -271,5 +275,33 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
             ]);
         }
         return $this->formData;
+    }
+
+    protected function setAfterSaveRoute()
+    {
+        if (! $this->afterSaveRouteUrl) {
+            $organization = $this->userLoader->getOrganization($this->formData['gr2t_id_organization']);
+
+            if ($organization->exists()) {
+                $route = $organization->getAfterTrackChangeRoute();
+                file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $route . "\n", FILE_APPEND);
+
+            } else {
+                $route = $this->menuHelper->getRelatedRoute($this->afterSaveRoutePart);
+            }
+            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' . $route . "\n", FILE_APPEND);
+            $keys   = $this->getModel()->getMetaModel()->getKeys();
+            $params = $this->requestInfo->getRequestMatchedParams();
+            foreach ($keys as $key => $field) {
+                if (isset($this->formData[$field]) && (strlen((string) $this->formData[$field]) > 0)) {
+                    $params[$key] = $this->formData[$field];
+                } elseif (! isset($params[$key])) {
+                    $params[$key] = null;
+                }
+            }
+
+            $this->afterSaveRouteUrl = $this->menuHelper->routeHelper->getRouteUrl($route, $params);
+        }
+        parent::setAfterSaveRoute();
     }
 }

@@ -30,6 +30,7 @@ use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
