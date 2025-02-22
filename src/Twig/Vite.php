@@ -73,6 +73,15 @@ class Vite extends AbstractExtension
             }
         }
 
+        $manifestLocation = $assetDir . '/.vite/manifest.json';
+        if (is_file($manifestLocation)) {
+            $rawManifest = file_get_contents($manifestLocation);
+            $manifest = json_decode($rawManifest, true);
+            if ($manifest) {
+                return $manifest;
+            }
+        }
+
         throw new Exception("Vite manifest not found at: {$manifestLocation}");
     }
 

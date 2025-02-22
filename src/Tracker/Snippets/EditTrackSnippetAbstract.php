@@ -230,7 +230,7 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
                 $this->trackEngine = $this->tracker->getTrackEngine($this->trackId);
             }
 
-            if (! (isset($this->trackEngine) && $this->patientId && $this->organizationId && $this->currentUserId)) {
+            if (! ($this->patientId && $this->organizationId && $this->currentUserId)) {
                 throw new \Gems\Exception\Coding('Missing parameter for ' . __CLASS__  .
                         ': could not find data for editing a respondent track nor the track engine, patientId and organizationId needed for creating one.');
             }

@@ -117,3 +117,10 @@ _("'%localPart%' is no valid local part for email address '%value%'");
 _("'%value%' exceeds the allowed length");
 */
 
+// TWIF
+_('Back to login');
+_('Enter your token...');
+_('Please enter your organization and your username or e-mail address.');
+_('Request reset');
+_('Request password reset');
+_('We will then send you an e-mail with a link. The link will bring you to a page where you can set a new password of your choice.');
