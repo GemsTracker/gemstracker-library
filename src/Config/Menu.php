@@ -17,6 +17,7 @@ class Menu
 
     public function __construct(
         protected readonly TranslatorInterface $translator,
+        private readonly array $config,
     ) {
         $this->translate = $this->translator;
     }
@@ -1817,12 +1818,12 @@ class Menu
             'children' => [
                 [
                     'name' => 'contact.about',
-                    'label' => $this->translator->trans('About'),
+                    'label' => sprintf($this->translator->trans('About %s'), ($this->config['app']['name'] ?? $this->translator->trans('this site'))),
                     'type' => 'route-link-item',
                 ],
                 [
                     'name' => 'contact.gems',
-                    'label' => $this->translator->trans('Gems'),
+                    'label' => $this->translator->trans('About GemsTracker'),
                     'type' => 'route-link-item',
                 ],
                 [

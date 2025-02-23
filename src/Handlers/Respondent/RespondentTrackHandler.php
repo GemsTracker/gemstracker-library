@@ -72,7 +72,6 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
     protected array $deleteParameters = [
         'addCurrentParent'   => true,
         'addCurrentSiblings' => true,
-        'formTitle'          => null,
         'requestUndelete'    => false,
         'respondentTrack'    => 'getRespondentTrack',
         'respondentTrackId'  => 'getRespondentTrackId',
@@ -303,6 +302,11 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
     public function getRespondentTrackId(): ?int
     {
         return (int)$this->request->getAttribute(\Gems\Model::RESPONDENT_TRACK);
+    }
+
+    public function getTopic(int $count = 1): string
+    {
+        return $this->plural('track', 'tracks', $count);
     }
 
     /**
