@@ -13,19 +13,21 @@ declare(strict_types=1);
 
 namespace Gems\Tracker\Model;
 
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model as GemsModel;
 use Gems\Model\GemsMaskedModel;
 use Gems\Model\MetaModelLoader;
+use Gems\Model\Transform\OrganizationAccessTransformer;
 use Gems\Repository\MailRepository;
+use Gems\Repository\OrganizationRepository;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
 use MUtil\Model;
-use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
-use Gems\Legacy\CurrentUserRepository;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
@@ -71,6 +73,7 @@ class RespondentTrackModel extends GemsMaskedModel
         protected readonly Translated $translatedUtil,
         protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly MailRepository $mailRepository,
+        protected readonly OrganizationRepository $organizationRepository,
     ) {
         parent::__construct(
             'gems__respondent2track',
@@ -133,6 +136,8 @@ class RespondentTrackModel extends GemsMaskedModel
             "CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))",
             'respondent_name'
         );
+
+        $this->metaModel->addTransformer(new OrganizationAccessTransformer($this->organizationRepository));
     }
 
     /**
