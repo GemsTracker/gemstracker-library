@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Gems\Tracker\Model;
 
-use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Db\ResultFetcher;
@@ -137,7 +136,7 @@ class RespondentTrackModel extends GemsMaskedModel
             'respondent_name'
         );
 
-        $this->metaModel->addTransformer(new OrganizationAccessTransformer($this->organizationRepository));
+        $this->metaModel->addTransformer(new OrganizationAccessTransformer($this->organizationRepository, 'gr2t_id_organization'));
     }
 
     /**
@@ -152,7 +151,7 @@ class RespondentTrackModel extends GemsMaskedModel
         $this->metaModel->setKeys([
             \Gems\Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
             MetaModelInterface::REQUEST_ID1     => 'gr2o_patient_nr',
-            MetaModelInterface::REQUEST_ID2 => 'gr2o_id_organization',
+            MetaModelInterface::REQUEST_ID2 => 'gr2t_id_organization',
         ]);
 
         $this->metaModel->set('gtr_track_name', ['label' => $this->_('Track')]);
