@@ -13984,22 +13984,19 @@ msgstr "Een wachtwoord:"
 #: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:9
 msgid "You have been inactive for a while. You will be logged out shortly."
 msgstr ""
+"U bent een tijd inactief geweest. U wordt over een aantal minuten uitgelogd."
 
 #: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:14
-#, fuzzy
-#| msgid "You are not logged in"
 msgid "Stay logged in"
-msgstr "U bent niet ingelogd"
+msgstr "Blijf ingelogd"
 
 #: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:15
 msgid "Ignore"
-msgstr ""
+msgstr "Negeer"
 
 #: gemstracker/gemstracker/templates/layout/auth-info.html.twig:5
-#, fuzzy
-#| msgid "Logon"
 msgid "Logout"
-msgstr "Login"
+msgstr "Uitloggen"
 
 #: gemstracker/gemstracker/templates/layout/auth-info.html.twig:7
 msgid "You are not logged in"

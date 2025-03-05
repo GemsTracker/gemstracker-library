@@ -217,10 +217,8 @@ msgstr "Enter your token..."
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:123
 #: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:5
-#, fuzzy
-#| msgid "Please enter your organization and your username or e-mail address. "
 msgid "Please enter your organization and your username or e-mail address."
-msgstr "Please enter your organization and your username or e-mail address. "
+msgstr "Please enter your organization and your username or e-mail address."
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:124
 #: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:25
@@ -13826,23 +13824,19 @@ msgstr "A password:"
 
 #: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:9
 msgid "You have been inactive for a while. You will be logged out shortly."
-msgstr ""
+msgstr "You have been inactive for a while. You will be logged out shortly."
 
 #: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:14
-#, fuzzy
-#| msgid "You are not logged in"
 msgid "Stay logged in"
-msgstr "You are not logged in"
+msgstr "Stay logged in"
 
 #: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:15
 msgid "Ignore"
-msgstr ""
+msgstr "Ignore"
 
 #: gemstracker/gemstracker/templates/layout/auth-info.html.twig:5
-#, fuzzy
-#| msgid "Logon"
 msgid "Logout"
-msgstr "Logon"
+msgstr "Logout"
 
 #: gemstracker/gemstracker/templates/layout/auth-info.html.twig:7
 msgid "You are not logged in"
