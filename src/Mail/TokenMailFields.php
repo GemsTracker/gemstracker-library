@@ -2,10 +2,10 @@
 
 namespace Gems\Mail;
 
+use DateTimeInterface;
 use Gems\Db\ResultFetcher;
 use Gems\Tracker\Token;
 use Gems\Tracker\Token\LaminasTokenSelect;
-use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Zalt\Base\TranslatorInterface;
 
@@ -56,6 +56,9 @@ class TokenMailFields extends RespondentMailFields
             $key = 'track_' . $code;
             if (is_array($data)) {
                 $data = implode(' ', $data);
+            }
+            if ($data instanceof DateTimeInterface) {
+                $data = $data->format('d-m-Y');
             }
             $mailFields[$key] = $data;
         }
