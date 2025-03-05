@@ -117,10 +117,18 @@ _("'%localPart%' is no valid local part for email address '%value%'");
 _("'%value%' exceeds the allowed length");
 */
 
-// TWIF
+// TWIG
 _('Back to login');
 _('Enter your token...');
 _('Please enter your organization and your username or e-mail address.');
 _('Request reset');
 _('Request password reset');
 _('We will then send you an e-mail with a link. The link will bring you to a page where you can set a new password of your choice.');
+_('Password rules');
+_('A password %s.');
+_('A password:');
+_('You have been inactive for a while. You will be logged out shortly.');
+_('Stay logged in');
+_('Ignore');
+_('Logout');
+_('You are not logged in');
