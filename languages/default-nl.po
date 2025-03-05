@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-23 20:07+0100\n"
+"POT-Creation-Date: 2025-03-05 10:49+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Roel van Meer <roel.van.meer@peercode.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Source-Language: en\n"
 "X-Poedit-SourceCharset: ISO-8859-1\n"
 "X-Poedit-Basepath: ../../..\n"
-"X-Poedit-KeywordsList: plural:1,2;_:1;trans:1\n"
+"X-Poedit-KeywordsList: plural:1,2;_:1;trans:1;trans\n"
 "X-Generator: Poedit 3.5\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker/src\n"
 "X-Poedit-SearchPath-1: gemstracker/gemstracker/templates\n"
@@ -211,26 +211,32 @@ msgid "'%value%' is not greater than '%min%'"
 msgstr "'%value%' is niet groter dan '%min%'"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:121
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:28
 msgid "Back to login"
 msgstr "Terug naar de login"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:122
+#: gemstracker/gemstracker/templates/gems/login.html.twig:33
 msgid "Enter your token..."
 msgstr "Voer uw kenmerk in..."
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:123
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:5
 msgid "Please enter your organization and your username or e-mail address."
 msgstr "Kies uw organisatie en voer of uw email adres of uw gebruikersnaam in."
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:124
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:25
 msgid "Request reset"
 msgstr "Vraag aan"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:125
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:4
 msgid "Request password reset"
 msgstr "Wachtwoord vergeten?"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:126
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:6
 msgid ""
 "We will then send you an e-mail with a link. The link will bring you to a "
 "page where you can set a new password of your choice."
@@ -1032,6 +1038,7 @@ msgstr "Foutieve invoer"
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:308
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:215
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:57
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:12
 msgid "Organization"
 msgstr "Organisatie"
 
@@ -2293,6 +2300,7 @@ msgid "Login"
 msgstr "Inloggen"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:110
+#: gemstracker/gemstracker/templates/gems/login.html.twig:30
 msgid "Lost password"
 msgstr "Wachtwoord vergeten"
 
@@ -3447,8 +3455,8 @@ msgid ""
 msgstr ""
 "Pak de gedownloade zip uit en open het .sps bestand.\n"
 "Wijzig regel 8 zodat het volledige pad voor het .dat bestaat staat:\n"
-"    /FILE=\"bestandnaam.dat\"  ==>  /FILE=\"c:\\downloads\\bestandsnaam."
-"dat\"\n"
+"    /FILE=\"bestandnaam.dat\"  ==>  /FILE=\"c:\\downloads\\bestandsnaam.dat"
+"\"\n"
 "Kies Run/All en al je data zou zichtbaar moeten zijn."
 
 #: gemstracker/gemstracker/src/Export/StreamingExcelExport.php:412
@@ -3563,6 +3571,7 @@ msgstr "Verkeerd wachtwoord."
 
 #: gemstracker/gemstracker/src/Handlers/Auth/ChangePasswordHandler.php:94
 #: gemstracker/gemstracker/src/Handlers/Auth/ResetPasswordChangeHandler.php:103
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:36
 msgid "New password"
 msgstr "Nieuw wachtwoord"
 
@@ -3581,6 +3590,7 @@ msgstr "Authenticatie mislukt"
 
 #: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:91
 #: gemstracker/gemstracker/src/Model/StaffModel.php:151
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:21
 msgid "Username"
 msgstr "Gebruikersnaam"
 
@@ -3642,10 +3652,10 @@ msgstr "Wachtwoord wijziging aangevraagd"
 msgid ""
 "Dear {{greeting}},<br><br><br>A new password was requested for your "
 "<strong>{{organization}}</strong> account on the <strong>{{project}}</"
-"strong> site, please click within {{reset_in_hours}} hours on <a "
-"href=\"{{reset_url}}\">this link</a> to enter the password of your choice."
-"<br><br><br>{{organization_signature}}<br><br><a "
-"href=\"{{reset_url}}\">{{reset_url}}</a><br>"
+"strong> site, please click within {{reset_in_hours}} hours on <a href="
+"\"{{reset_url}}\">this link</a> to enter the password of your choice."
+"<br><br><br>{{organization_signature}}<br><br><a href="
+"\"{{reset_url}}\">{{reset_url}}</a><br>"
 msgstr ""
 "Geachte {{greeting}},\n"
 "\n"
@@ -6192,6 +6202,7 @@ msgstr "Inlognaam"
 #: gemstracker/gemstracker/src/Model/TrackBuilder/SourceModel.php:125
 #: gemstracker/gemstracker/src/Model/TrackBuilder/SourceModel.php:130
 #: gemstracker/gemstracker/src/User/RadiusUserDefinition.php:168
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:44
 msgid "Repeat password"
 msgstr "Herhaal wachtwoord"
 
@@ -8922,6 +8933,7 @@ msgstr "Fout tijdens het lezen van bestand '%s'."
 #: magnafacta/MUtil/src/MUtil/Snippets/FormSnippetAbstract.php:221
 #: magnafacta/MUtil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:278
 #: magnafacta/zalt-html/src/Snippets/Zend/ZendFormSnippetTrait.php:84
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:51
 msgid "Save"
 msgstr "Opslaan"
 
@@ -10521,8 +10533,8 @@ msgstr[1] "%d vragenlijsten toegevoegd"
 #: gemstracker/gemstracker/src/Snippets/Tracker/InsertSurveySnippet.php:357
 #, php-format
 msgid ""
-"The last round containing answers for surveys in the same user group is "
-"\"%s\"."
+"The last round containing answers for surveys in the same user group is \"%s"
+"\"."
 msgstr ""
 "De laatste ronde met antwoorden en een vragenlijst in dezelfde "
 "gebruikersgroep is \"%s\"."
@@ -10848,6 +10860,7 @@ msgstr ""
 "telefoonnummer stuurden"
 
 #: gemstracker/gemstracker/src/Snippets/User/OwnAccountEditAuthSnippet.php:455
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:9
 msgid "Current password"
 msgstr "Huidig wachtwoord"
 
@@ -11349,8 +11362,8 @@ msgstr "%d van %d vragen veranderd."
 #, php-format
 msgid "Save failed for survey %s, question %s, option \"%s\" => \"%s\": %s"
 msgstr ""
-"Opslaan mislukt foor vragenlijst %s, vraag %s, antwoord optie \"%s\" => "
-"\"%s\": %s"
+"Opslaan mislukt foor vragenlijst %s, vraag %s, antwoord optie \"%s\" => \"%s"
+"\": %s"
 
 #: gemstracker/gemstracker/src/Task/Tracker/RefreshQuestion.php:140
 #, php-format
@@ -13955,6 +13968,40 @@ msgid_plural "%d items saved!"
 msgstr[0] "%d item opgeslagen!"
 msgstr[1] "%d items opgeslagen!"
 
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:19
+msgid "Password rules"
+msgstr "Wachtwoord regels"
+
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:22
+#, php-format
+msgid "A password %s."
+msgstr "Een wachtwoord %s."
+
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:24
+msgid "A password:"
+msgstr "Een wachtwoord:"
+
+#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:9
+msgid "You have been inactive for a while. You will be logged out shortly."
+msgstr ""
+"U bent een tijd inactief geweest. U wordt over een aantal minuten uitgelogd."
+
+#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:14
+msgid "Stay logged in"
+msgstr "Blijf ingelogd"
+
+#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:15
+msgid "Ignore"
+msgstr "Negeer"
+
+#: gemstracker/gemstracker/templates/layout/auth-info.html.twig:5
+msgid "Logout"
+msgstr "Uitloggen"
+
+#: gemstracker/gemstracker/templates/layout/auth-info.html.twig:7
+msgid "You are not logged in"
+msgstr "U bent niet ingelogd"
+
 #~ msgid "About"
 #~ msgstr "Over"
 
@@ -13969,7 +14016,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgstr[0] "website adres"
 #~ msgstr[1] "website adressen"
 
-#, php-format
 #~ msgid "Automatic new site registration has been blocked since %s."
 #~ msgstr ""
 #~ "Automatische nieuwe website registratie worden sinds %s geblokkeerd."
@@ -14112,7 +14158,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Site setup information"
 #~ msgstr "Website inrichting informatie"
 
-#, php-format
 #~ msgid "The url <b>%s</b> is used as fall-back for all organizations."
 #~ msgstr ""
 #~ "Het webadres <b>%s</b> is in gebruik als uitwijk adres voor alle "
@@ -14134,11 +14179,9 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgstr ""
 #~ "Verander twee factor authenticatie methode naar SMS en verstuur een email"
 
-#, php-format
 #~ msgid "Added url %s to sites."
 #~ msgstr "Webadres %s toegevoegd aan websites."
 
-#, php-format
 #~ msgid "%d organization added to %s"
 #~ msgid_plural "%d organizations added to %s"
 #~ msgstr[0] "%d organisatie toegevoegd aan %s"
@@ -14181,11 +14224,9 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Preferred url"
 #~ msgstr "Voorkeurs url"
 
-#, php-format
 #~ msgid "View creation statement: %s"
 #~ msgstr "View aanmaak opdracht: %s"
 
-#, php-format
 #~ msgid "Try adding rights using this statement: %s"
 #~ msgstr "Probeer rechten toe te voegen middels dit commando: %s"
 
@@ -14195,7 +14236,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Your birthday"
 #~ msgstr "Uw geboortedatum"
 
-#, php-format
 #~ msgid "%s is not correct."
 #~ msgstr "%s is onjuist."
 
@@ -14255,21 +14295,18 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Automatic messaging"
 #~ msgstr "Automatische berichten"
 
-#, php-format
 #~ msgid "Unknown respondent %s."
 #~ msgstr "Onbekende patiënt %s."
 
 #~ msgid "Delete or stop respondent"
 #~ msgstr "Verwijder of stop patiënt"
 
-#, php-format
 #~ msgid "%d to "
 #~ msgstr "%d naar"
 
 #~ msgid "Activate"
 #~ msgstr "Activeer"
 
-#, php-format
 #~ msgid "This condition has been used %s time."
 #~ msgid_plural "This condition has been used %s times."
 #~ msgstr[0] "Deze voorwaarde is al %s keer gebruikt."
@@ -14282,31 +14319,25 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "(select a status)"
 #~ msgstr "(selecteer een status)"
 
-#, php-format
 #~ msgid "One %s activated!"
 #~ msgstr "Een %s geactiveerd!"
 
 # this is niet te vertalen dus invullen 'subject' achterwege gelaten
-#, php-format
 #~ msgid "Do you want to activate this %s?"
 #~ msgstr "Wilt u doorgaan met activeren %s?"
 
-#, php-format
 #~ msgid "Undelete %s!"
 #~ msgstr "Herstel %s!"
 
-#, php-format
 #~ msgid "Delete %s!"
 #~ msgstr "Verwijder %s!"
 
-#, php-format
 #~ msgid "Add %s track to this respondent"
 #~ msgstr "%s traject toewijzen aan deze patiënt"
 
 #~ msgid "Add a track to this respondent"
 #~ msgstr "Traject toewijzen aan deze patiënt"
 
-#, php-format
 #~ msgid "This track has been started %s time."
 #~ msgid_plural "This track has been started %s times."
 #~ msgstr[0] "Dit traject is  %s keer gestart."
@@ -14329,18 +14360,15 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Please contact system administration"
 #~ msgstr "Neem contact op met systeembeheer"
 
-#, php-format
 #~ msgid "%s %s can not be sent because no email address is available."
 #~ msgstr "%s %s kan niet worden verstuurd omdat een e-mailadres ontbreekt."
 
-#, php-format
 #~ msgid "Would be sent: %s %s to %s using %s as sender"
 #~ msgstr "Te verzenden: %s %s naar %s met %s als afzender"
 
 #~ msgid "Prepare recheck"
 #~ msgstr "Hercontrole voorbereiden"
 
-#, php-format
 #~ msgid "%s record updated due to sorting."
 #~ msgid_plural "%s records updated due to sorting."
 #~ msgstr[0] "%s record bijgewerkt door sorteren."
@@ -14355,22 +14383,18 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Ok"
 #~ msgstr "Ok"
 
-#, php-format
 #~ msgid "%2$u %1$s deleted"
 #~ msgstr "%2$u %1$s verwijderd"
 
-#, php-format
 #~ msgid "Unknown %s requested"
 #~ msgstr "Onjuist %s verzoek"
 
-#, php-format
 #~ msgid "New %1$s..."
 #~ msgstr "Nieuwe %1$s..."
 
 #~ msgid "No changes to save."
 #~ msgstr "Geen verandering om op te slaan."
 
-#, php-format
 #~ msgid "Unknown %s."
 #~ msgstr "%s is onbekend."
 
@@ -14386,7 +14410,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Or contact"
 #~ msgstr "Of neem contact op met"
 
-#, php-format
 #~ msgid "Access to the %s/%s page is not allowed for your current group: %s."
 #~ msgstr "U heeft geen toegang tot de %s/%s pagina. Uw huidige groep is: %s."
 
@@ -14402,7 +14425,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "We received your password reset request."
 #~ msgstr "We hebben uw verzoek voor een nieuw wachtwoord ontvangen."
 
-#, php-format
 #~ msgid "Welcome to %s"
 #~ msgstr "Welkom bij %s"
 
@@ -14412,11 +14434,9 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Department"
 #~ msgstr "Afdeling"
 
-#, php-format
 #~ msgid "Login successful, welcome %s."
 #~ msgstr "Login in orde, welkom %s."
 
-#, php-format
 #~ msgid "Good bye: %s."
 #~ msgstr "Tot ziens: %s."
 
@@ -14459,15 +14479,12 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "How many track definitions use this survey?"
 #~ msgstr "Hoeveel trajecten gebruiken deze vragenlijst?"
 
-#, php-format
 #~ msgid "Two factor key cleared for user %s"
 #~ msgstr "Twee factor sleutel gewist voor gebruiker %s"
 
-#, php-format
 #~ msgid "Token answers: %s"
 #~ msgstr "Kenmerk antwoorden: %s"
 
-#, php-format
 #~ msgid "Checking all surveys of respondent %s, %s for answers."
 #~ msgstr "Controleer alle vragenlijsten van patiënt %s, %s op antwoorden."
 
@@ -14475,20 +14492,16 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgstr ""
 #~ "Deze opdracht controleert alle kenmerken van deze patiënt op antwoorden."
 
-#, php-format
 #~ msgid "Checking round assignments for all tracks of respondent %s, %s."
 #~ msgstr ""
 #~ "Controleren ronde toewijzingen voor alle trajecten van patiënt %s, %s."
 
-#, php-format
 #~ msgid "Tracks assigned to %s: %s"
 #~ msgstr "Trajecten toegewezen aan patiënt nr: %s: %s"
 
-#, php-format
 #~ msgid "%s track overview"
 #~ msgstr "%s traject overzicht"
 
-#, php-format
 #~ msgid "Recalculating fields for all tracks of respondent %s, %s."
 #~ msgstr "Herbereken de trajectvelden van alle trajecten van patiënt %s, %s."
 
@@ -14537,7 +14550,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "OpenRosa"
 #~ msgstr "OpenRosa"
 
-#, php-format
 #~ msgid "Stand-alone privilege: %s"
 #~ msgstr "Zelfstandig privilege: %s"
 
@@ -14700,7 +14712,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Deactivate condition"
 #~ msgstr "Voorwaarde deactiveren"
 
-#, php-format
 #~ msgid "Are you sure you want to delete '%s'?"
 #~ msgstr "Weet u zeker dat u '%s' wil verwijderen?"
 
@@ -14710,7 +14721,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Check code"
 #~ msgstr "Controle code"
 
-#, php-format
 #~ msgid "%s to retry sending the message"
 #~ msgstr "%s om opnieuw het bericht te versturen"
 
@@ -14749,7 +14759,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "You are not allowed to change this password."
 #~ msgstr "U mag dit wachtwoord niet wijzigen."
 
-#, php-format
 #~ msgid "Reset password for: %s"
 #~ msgstr "Verander het wachtwoord voor: %s"
 
@@ -14765,17 +14774,14 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Two factor authentication not active!"
 #~ msgstr "Twee factor authenticatie staat niet op actief!"
 
-#, php-format
 #~ msgid "Would send %d e-mails with template %s, and update %d tokens."
 #~ msgstr ""
 #~ "Totaal %d te versturen e-mails met template %s en %d te markeren "
 #~ "kenmerken."
 
-#, php-format
 #~ msgid "Sent %d e-mails with template %s, updated %d tokens."
 #~ msgstr "%d emails verzonden met  %s, %d kenmerken bijgewerkt."
 
-#, php-format
 #~ msgid ""
 #~ "%d error(s) occurred while creating mails for template %s. Check error "
 #~ "log for details."
@@ -14783,19 +14789,15 @@ msgstr[1] "%d items opgeslagen!"
 #~ "%d fout(en) tijdens het maken van emails voor  %s. Kijk in het error log "
 #~ "voor de details."
 
-#, php-format
 #~ msgid "%s track engines cannot be converted to %s track engines."
 #~ msgstr "Traject type %s kan niet geconverteerd worden naar %s."
 
-#, php-format
 #~ msgid "Copied track, including %s round(s) and %s field(s)."
 #~ msgstr "Traject gekopieerd, inclusief %s ronde(s) en %s veld(en)."
 
-#, php-format
 #~ msgid "%d: %s - %s"
 #~ msgstr "%d: %s - %s"
 
-#, php-format
 #~ msgid "%d: %s"
 #~ msgstr "%d: %s"
 
@@ -14805,7 +14807,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Export file generated."
 #~ msgstr "Het exportbestand staat klaar."
 
-#, php-format
 #~ msgid ""
 #~ "Click here if the download does not start automatically in %d second:"
 #~ msgid_plural ""
@@ -14815,7 +14816,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgstr[1] ""
 #~ "Klik hier als de download niet automatisch start binnen %d seconden:"
 
-#, php-format
 #~ msgid ""
 #~ "Respondent %s does not yet exist, please enter the respondent data now!"
 #~ msgstr "Patiënt %s is nog geen deelnemer, u kan nu de patiënt aanmaken!"
@@ -14827,16 +14827,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgstr ""
 #~ "Indien een wachtwoord niet aan de regels voldoet, moet een nieuw "
 #~ "wachtwoord gekozen worden bij de eerste login."
-
-#~ msgid "Password rules"
-#~ msgstr "Wachtwoord regels"
-
-#, php-format
-#~ msgid "A password %s."
-#~ msgstr "Een wachtwoord %s."
-
-#~ msgid "A password:"
-#~ msgstr "Een wachtwoord:"
 
 #~ msgid "Caps Lock seems to be on!"
 #~ msgstr "De Caps Lock toets lijkt aan te staan!"
@@ -14864,22 +14854,18 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Over 2 days"
 #~ msgstr "Overmorgen"
 
-#, php-format
 #~ msgid "Over %d days"
 #~ msgstr "Over %d dagen"
 
-#, php-format
 #~ msgid "%d days ago"
 #~ msgstr "%d dagen terug"
 
 #~ msgid "Illegal request parameter"
 #~ msgstr "Ongeldig parameter verzoek"
 
-#, php-format
 #~ msgid "Illegal character %s in parameter name."
 #~ msgstr "Ongeldig teken %s in parameternaam."
 
-#, php-format
 #~ msgid ""
 #~ "Illegal parameter value containing the text \"%s\" after a %s character."
 #~ msgstr "Ongeldig parameter waarde met de tekst \"%s\" na een %s teken."
@@ -14887,14 +14873,9 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid " > "
 #~ msgstr " > "
 
-#, php-format
 #~ msgid "You are logged in as %s"
 #~ msgstr "Ingelogd als %s"
 
-#~ msgid "You are not logged in"
-#~ msgstr "U bent niet ingelogd"
-
-#, php-format
 #~ msgid "User: %s"
 #~ msgstr "Login: %s"
 
@@ -14929,33 +14910,27 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "FormID"
 #~ msgstr "FormID"
 
-#, php-format
 #~ msgid "File not found: %s"
 #~ msgstr "Bestand %s niet gevonden"
 
-#, php-format
 #~ msgid "Could not read form definition for form %s"
 #~ msgstr "Kon de formulierdefinitie van formulier %s niet inlezen"
 
-#, php-format
 #~ msgid "Response is for a different formId: %s <-> %s"
 #~ msgstr "Antwoord is voor een andere formId: %s <-> %s"
 
-#, php-format
 #~ msgid "Directory %s not found and unable to create"
 #~ msgstr "Folder %s werd niet gevonden en kon niet worden aangemaakt"
 
 #~ msgid "Date and time"
 #~ msgstr "Datum en tijd"
 
-#, php-format
 #~ msgid ""
 #~ "The '%s' survey is no longer active. The survey was removed from OpenRosa!"
 #~ msgstr ""
 #~ "De vragenlijst '%s' is niet meer actief. De vragenlijst is verwijderd uit "
 #~ "OpenRosa!"
 
-#, php-format
 #~ msgid ""
 #~ "The '%s' survey is no longer active. The survey XML file was removed from "
 #~ "its directory!"
@@ -14963,7 +14938,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ "De vragenlijst '%s' is niet meer actief. Het vragenlijst XML bestand is "
 #~ "verwijderd uit de directory!"
 
-#, php-format
 #~ msgid "Updated the '%s' survey."
 #~ msgstr "De vragenlijst '%s' is bijgewerkt."
 
@@ -14991,9 +14965,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "slowest answer"
 #~ msgstr "meest langzame antwoord"
 
-#~ msgid "Logon"
-#~ msgstr "Login"
-
 #, fuzzy
 #~| msgid "Column Identifiers"
 #~ msgid "Method identifier"
@@ -15011,7 +14982,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgid "Login url's"
 #~ msgstr "Organisatie login"
 
-#, php-format
 #~ msgid ""
 #~ "Always switch to this organization when %s is accessed from one of these "
 #~ "space separated url's. The first url is used for mails."
@@ -15020,7 +14990,6 @@ msgstr[1] "%d items opgeslagen!"
 #~ "één van deze door spatie gescheiden url's. De eerste url wordt gebruikt "
 #~ "voor emails."
 
-#, php-format
 #~ msgid "A new random two factor key was saved for %s."
 #~ msgstr "Een nieuwe twee factor sleutel is opgeslagen voor %s."
 
@@ -15190,8 +15159,8 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgstr ""
 #~ "Pak de gedownloade zip uit en open het .sps bestand.\n"
 #~ "Wijzig regel 8 zodat het volledige pad voor het .dat bestaat staat:\n"
-#~ "   /FILE=\"bestandnaam.dat\" ==> /FILE=\"c:\\downloads\\bestandsnaam."
-#~ "dat\"\n"
+#~ "   /FILE=\"bestandnaam.dat\" ==> /FILE=\"c:\\downloads\\bestandsnaam.dat"
+#~ "\"\n"
 #~ "Kies Run/All en al je data zou zichtbaar moeten zijn."
 
 #~ msgid ""
@@ -15472,10 +15441,9 @@ msgstr[1] "%d items opgeslagen!"
 #~ "path to your data file. Then choose Run -> All to execute the syntax."
 #~ msgstr ""
 #~ "Na het downloaden kunt u het bestand uitpakken en krijgt u een syntax en "
-#~ "een databestand. Open de syntax met SPSS en wijzig de regel /"
-#~ "FILE=\"filename.dat\" zodat het volledige pad naar het databestand er "
-#~ "voor komt te staan. Vervolgens kiest u Run -> All om de syntax uit te "
-#~ "voeren."
+#~ "een databestand. Open de syntax met SPSS en wijzig de regel /FILE="
+#~ "\"filename.dat\" zodat het volledige pad naar het databestand er voor "
+#~ "komt te staan. Vervolgens kiest u Run -> All om de syntax uit te voeren."
 
 #~ msgid "Deprecated"
 #~ msgstr "Deprecated"
