@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-05 10:46+0100\n"
+"POT-Creation-Date: 2025-03-05 10:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Roel van Meer <roel.van.meer@peercode.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Source-Language: en\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../../..\n"
-"X-Poedit-KeywordsList: plural:1,2;trans:1;_:1\n"
+"X-Poedit-KeywordsList: plural:1,2;trans:1;_:1;trans\n"
 "X-Generator: Poedit 3.5\n"
 "X-Poedit-SearchPath-0: gemstracker/gemstracker/src\n"
 "X-Poedit-SearchPath-1: gemstracker/gemstracker/templates\n"
@@ -206,28 +206,34 @@ msgid "'%value%' is not greater than '%min%'"
 msgstr "'%value%' is not greater than '%min%'"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:121
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:28
 msgid "Back to login"
 msgstr "Back to login"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:122
+#: gemstracker/gemstracker/templates/gems/login.html.twig:33
 msgid "Enter your token..."
 msgstr "Enter your token..."
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:123
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:5
 #, fuzzy
 #| msgid "Please enter your organization and your username or e-mail address. "
 msgid "Please enter your organization and your username or e-mail address."
 msgstr "Please enter your organization and your username or e-mail address. "
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:124
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:25
 msgid "Request reset"
 msgstr "Request reset"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:125
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:4
 msgid "Request password reset"
 msgstr "Request password reset"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:126
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:6
 msgid ""
 "We will then send you an e-mail with a link. The link will bring you to a "
 "page where you can set a new password of your choice."
@@ -1025,6 +1031,7 @@ msgstr "Erroneous input"
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:308
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:215
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:57
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:12
 msgid "Organization"
 msgstr "Organization"
 
@@ -2271,6 +2278,7 @@ msgid "Login"
 msgstr "Login"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:110
+#: gemstracker/gemstracker/templates/gems/login.html.twig:30
 msgid "Lost password"
 msgstr "Lost password"
 
@@ -3539,6 +3547,7 @@ msgstr "Wrong password."
 
 #: gemstracker/gemstracker/src/Handlers/Auth/ChangePasswordHandler.php:94
 #: gemstracker/gemstracker/src/Handlers/Auth/ResetPasswordChangeHandler.php:103
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:36
 msgid "New password"
 msgstr "New password"
 
@@ -3557,6 +3566,7 @@ msgstr "Unable to authenticate"
 
 #: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:91
 #: gemstracker/gemstracker/src/Model/StaffModel.php:151
+#: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:21
 msgid "Username"
 msgstr "Username"
 
@@ -6114,6 +6124,7 @@ msgstr "User ID"
 #: gemstracker/gemstracker/src/Model/TrackBuilder/SourceModel.php:125
 #: gemstracker/gemstracker/src/Model/TrackBuilder/SourceModel.php:130
 #: gemstracker/gemstracker/src/User/RadiusUserDefinition.php:168
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:44
 msgid "Repeat password"
 msgstr "Repeat password"
 
@@ -8826,6 +8837,7 @@ msgstr "Error retrieving file '%s'."
 #: magnafacta/MUtil/src/MUtil/Snippets/FormSnippetAbstract.php:221
 #: magnafacta/MUtil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:278
 #: magnafacta/zalt-html/src/Snippets/Zend/ZendFormSnippetTrait.php:84
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:51
 msgid "Save"
 msgstr "Save"
 
@@ -10721,6 +10733,7 @@ msgstr ""
 "An error occurred while sending the verification code to your mobile number"
 
 #: gemstracker/gemstracker/src/Snippets/User/OwnAccountEditAuthSnippet.php:455
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:9
 msgid "Current password"
 msgstr "Current password"
 
@@ -13798,6 +13811,43 @@ msgid_plural "%d items saved!"
 msgstr[0] "%d item saved!"
 msgstr[1] "%d items saved!"
 
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:19
+msgid "Password rules"
+msgstr "Password rules"
+
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:22
+#, php-format
+msgid "A password %s."
+msgstr "A password %s."
+
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:24
+msgid "A password:"
+msgstr "A password:"
+
+#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:9
+msgid "You have been inactive for a while. You will be logged out shortly."
+msgstr ""
+
+#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:14
+#, fuzzy
+#| msgid "You are not logged in"
+msgid "Stay logged in"
+msgstr "You are not logged in"
+
+#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:15
+msgid "Ignore"
+msgstr ""
+
+#: gemstracker/gemstracker/templates/layout/auth-info.html.twig:5
+#, fuzzy
+#| msgid "Logon"
+msgid "Logout"
+msgstr "Logon"
+
+#: gemstracker/gemstracker/templates/layout/auth-info.html.twig:7
+msgid "You are not logged in"
+msgstr "You are not logged in"
+
 #~ msgid "About"
 #~ msgstr "About"
 
@@ -14632,15 +14682,6 @@ msgstr[1] "%d items saved!"
 #~ msgstr ""
 #~ "Choose a non-compliant password to force a password change at login."
 
-#~ msgid "Password rules"
-#~ msgstr "Password rules"
-
-#~ msgid "A password %s."
-#~ msgstr "A password %s."
-
-#~ msgid "A password:"
-#~ msgstr "A password:"
-
 #~ msgid "Caps Lock seems to be on!"
 #~ msgstr "Caps Lock seems to be on!"
 
@@ -14689,9 +14730,6 @@ msgstr[1] "%d items saved!"
 
 #~ msgid "You are logged in as %s"
 #~ msgstr "You are logged in as %s"
-
-#~ msgid "You are not logged in"
-#~ msgstr "You are not logged in"
 
 #~ msgid "User: %s"
 #~ msgstr "User: %s"
@@ -14756,9 +14794,6 @@ msgstr[1] "%d items saved!"
 
 #~ msgid "Updated the '%s' survey."
 #~ msgstr "Updated the '%s' survey."
-
-#~ msgid "Logon"
-#~ msgstr "Logon"
 
 #~ msgid "Servers"
 #~ msgstr "Servers"
