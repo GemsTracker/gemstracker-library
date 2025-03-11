@@ -165,7 +165,7 @@ interface TrackEngineInterface
     /**
      * Returns the field definition for the track enige.
      *
-     * @return FieldsDefinition;
+     * @return FieldsDefinition
      */
     public function getFieldsDefinition(): FieldsDefinition;
 
