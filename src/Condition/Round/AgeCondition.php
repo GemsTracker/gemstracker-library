@@ -51,7 +51,7 @@ class AgeCondition extends RoundConditionAbstract
      */
     public function getHelp(): string
     {
-        return $this->_("Track will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");
+        return $this->_("Round will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");
     }
 
     /**
