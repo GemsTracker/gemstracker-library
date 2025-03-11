@@ -617,7 +617,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      * @param string $tokenId
      * @param string $tokenStatus
      * @param string $patientNr
-     * @param string $roundDescr
+     * @param ?string $roundDescr
      * @param string $surveyName
      * @param string $result
      * @return \MUtil\Html\AElement
