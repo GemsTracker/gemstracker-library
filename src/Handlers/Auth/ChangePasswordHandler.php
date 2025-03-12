@@ -62,7 +62,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
         if ($request->getMethod() !== 'POST') {
             $data = [
                 'ask_old' => true,
-                'rules' => $this->passwordChecker->reportPasswordWeakness($user, null, true),
+                'rules' => $this->passwordChecker->reportPasswordWeakness($user, null, false),
                 'validationMessenger' => $this->validationMessenger,
             ];
 
