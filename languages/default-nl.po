@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-05 10:49+0100\n"
+"POT-Creation-Date: 2025-03-11 14:19+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Roel van Meer <roel.van.meer@peercode.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -243,6 +243,48 @@ msgid ""
 msgstr ""
 "Vervolgens sturen wij u een email met een link. De link verwijst naar een "
 "pagina waar u een zelfgekozen wachtwoord in kan voeren."
+
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:127
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:19
+msgid "Password rules"
+msgstr "Wachtwoord regels"
+
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:128
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:22
+#, php-format
+msgid "A password %s."
+msgstr "Een wachtwoord %s."
+
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:129
+#: gemstracker/gemstracker/templates/gems/change-password.html.twig:24
+msgid "A password:"
+msgstr "Een wachtwoord:"
+
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:130
+#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:9
+msgid "You have been inactive for a while. You will be logged out shortly."
+msgstr ""
+"U bent een tijd inactief geweest. U wordt over een aantal minuten uitgelogd."
+
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:131
+#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:14
+msgid "Stay logged in"
+msgstr "Blijf ingelogd"
+
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:132
+#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:15
+msgid "Ignore"
+msgstr "Negeer"
+
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:133
+#: gemstracker/gemstracker/templates/layout/auth-info.html.twig:5
+msgid "Logout"
+msgstr "Uitloggen"
+
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:134
+#: gemstracker/gemstracker/templates/layout/auth-info.html.twig:7
+msgid "You are not logged in"
+msgstr "U bent niet ingelogd"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/ReceptionCodeTranslations.php:13
 #: gemstracker/gemstracker/src/Model/Setup/ReceptionCodeModel.php:117
@@ -1882,11 +1924,11 @@ msgstr "Traject"
 
 #: gemstracker/gemstracker/src/Condition/Round/AgeCondition.php:54
 msgid ""
-"Track will be valid when respondent is:\n"
+"Round will be valid when respondent is:\n"
 " - At least minimum age\n"
 " - But no older than maximum age"
 msgstr ""
-"Traject is geldig als de patiënt:\n"
+"Ronde is geldig als de patiënt:\n"
 " - Ten minste minimum leeftijd is\n"
 " - Niet ouder is dan maximumleeftijd"
 
@@ -2108,11 +2150,11 @@ msgstr "Is leeg"
 
 #: gemstracker/gemstracker/src/Condition/Round/TrackFieldCondition.php:54
 msgid ""
-"First pick a trackfield that has a code. Then choose your comparison "
-"operator and specify the needed parameters."
+"Round will be valid if the raw value of the selected track field matches the "
+"configured criteria."
 msgstr ""
-"Kies eerst een trajectveld met een code. Kies dan je vergelijkingstype en "
-"kies de nodige parameters."
+"Ronde is geldig als de ruwe waarde van het trajectveld voldoet aan de "
+"opgegeven criteria."
 
 #: gemstracker/gemstracker/src/Condition/Round/TrackFieldCondition.php:63
 #: gemstracker/gemstracker/src/Condition/Round/TrackFieldCondition.php:92
@@ -2128,6 +2170,18 @@ msgstr "Traject heeft geen veld met code `%s`."
 #, php-format
 msgid "Field `%s`"
 msgstr "Veld `%s`"
+
+#: gemstracker/gemstracker/src/Condition/Round/TrackFieldDisplayCondition.php:27
+msgid ""
+"Round will be valid if the display value of the selected track field matches "
+"the configured criteria."
+msgstr ""
+"Ronde is geldig als de getoonde waarde van het trajectveld voldoet aan de "
+"opgegeven criteria."
+
+#: gemstracker/gemstracker/src/Condition/Round/TrackFieldDisplayCondition.php:32
+msgid "Track field display value"
+msgstr "Traject veld getoonde waarde"
 
 #: gemstracker/gemstracker/src/Condition/Track/AgeCondition.php:51
 msgid ""
@@ -5533,7 +5587,7 @@ msgid_plural "%d surveys"
 msgstr[0] "%d vragenlijst"
 msgstr[1] "%d vragenlijsten"
 
-#: gemstracker/gemstracker/src/Mail/TokenMailFields.php:81
+#: gemstracker/gemstracker/src/Mail/TokenMailFields.php:84
 msgid "Undefined relation"
 msgstr "Ongedefiniëerde relatie"
 
@@ -13968,39 +14022,12 @@ msgid_plural "%d items saved!"
 msgstr[0] "%d item opgeslagen!"
 msgstr[1] "%d items opgeslagen!"
 
-#: gemstracker/gemstracker/templates/gems/change-password.html.twig:19
-msgid "Password rules"
-msgstr "Wachtwoord regels"
-
-#: gemstracker/gemstracker/templates/gems/change-password.html.twig:22
-#, php-format
-msgid "A password %s."
-msgstr "Een wachtwoord %s."
-
-#: gemstracker/gemstracker/templates/gems/change-password.html.twig:24
-msgid "A password:"
-msgstr "Een wachtwoord:"
-
-#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:9
-msgid "You have been inactive for a while. You will be logged out shortly."
-msgstr ""
-"U bent een tijd inactief geweest. U wordt over een aantal minuten uitgelogd."
-
-#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:14
-msgid "Stay logged in"
-msgstr "Blijf ingelogd"
-
-#: gemstracker/gemstracker/templates/layout/auth-idle-checker.html.twig:15
-msgid "Ignore"
-msgstr "Negeer"
-
-#: gemstracker/gemstracker/templates/layout/auth-info.html.twig:5
-msgid "Logout"
-msgstr "Uitloggen"
-
-#: gemstracker/gemstracker/templates/layout/auth-info.html.twig:7
-msgid "You are not logged in"
-msgstr "U bent niet ingelogd"
+#~ msgid ""
+#~ "First pick a trackfield that has a code. Then choose your comparison "
+#~ "operator and specify the needed parameters."
+#~ msgstr ""
+#~ "Kies eerst een trajectveld met een code. Kies dan je vergelijkingstype en "
+#~ "kies de nodige parameters."
 
 #~ msgid "About"
 #~ msgstr "Over"

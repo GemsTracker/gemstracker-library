@@ -51,7 +51,7 @@ class TrackFieldCondition extends RoundConditionAbstract
 
     public function getHelp(): string
     {
-        return $this->_("First pick a trackfield that has a code. Then choose your comparison operator and specify the needed parameters.");
+        return $this->_("Round will be valid if the raw value of the selected track field matches the configured criteria.");
     }
 
     public function getModelFields(array $context, bool $new): array
