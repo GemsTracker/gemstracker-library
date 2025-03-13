@@ -2,6 +2,9 @@
 
 namespace Gems\Locale;
 
+use Zalt\Base\SymfonyTranslator;
+use Zalt\Base\TranslatorInterface;
+
 class Locale
 {
     private array $config;
@@ -9,6 +12,8 @@ class Locale
     private string $currentLanguage;
 
     private bool $isDefaultLanguage;
+
+    private ?TranslatorInterface $translator = null;
 
     public function __construct(array $config)
     {
@@ -57,6 +62,11 @@ class Locale
         return $this->isDefaultLanguage;
     }
 
+    public function setTranslator(TranslatorInterface $translator): void
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @param string $currentLanguage
      */
@@ -66,5 +76,9 @@ class Locale
         \setlocale(LC_ALL, $currentLanguage);
         $this->currentLanguage = $currentLanguage;
         $this->isDefaultLanguage = false;
+
+        if ($this->translator instanceof SymfonyTranslator) {
+            $this->translator->setLocale($currentLanguage);
+        }
     }
 }

@@ -35,6 +35,8 @@ class TranslationFactory implements FactoryInterface
 
         $translator = $this->getTranslator($language);
 
+        $this->locale->setTranslator($translator);
+
         return $translator;
     }
 
