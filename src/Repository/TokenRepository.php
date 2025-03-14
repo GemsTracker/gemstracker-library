@@ -557,7 +557,7 @@ class TokenRepository
         }
 
         $link->append($this->getStatusIcon($tokenStatus));
-        $link->setAttrib('title', $this->getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result));
+        $link->setAttrib('title', $this->getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr ?? '', $surveyName, $result));
 
         return $link;
     }
