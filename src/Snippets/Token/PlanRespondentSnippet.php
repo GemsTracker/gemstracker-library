@@ -86,10 +86,19 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         // Row with dates and patient data
         $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
         $bridge->addSortable('gr2o_patient_nr');
-        $bridge->addSortable('respondent_name')->colspan = 2;
+        $span = $bridge->addSortable('respondent_name');
 
-        $bridge->addSortable('grs_birthday');
-        $bridge->addMultiSort('grs_city', array($respondentButton));
+        if ($metaModel->has('grs_birthday')) {
+            $bridge->addSortable('grs_birthday');
+            $span->colspan = 2;
+        } else {
+            $span->colspan = 3;
+        }
+        if ($metaModel->has('grs_city')) {
+            $bridge->addMultiSort('grs_city', array($respondentButton));
+        } elseif ($respondentButton) {
+            $bridge->addMultiSort(array($respondentButton));
+        }
 
         $metaModel->set('gr2t_track_info', ['tableDisplay' => 'small']);
 

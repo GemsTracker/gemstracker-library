@@ -84,8 +84,8 @@ class RespondentPlanHandler extends TokenSearchHandlerAbstract
         $model = parent::createModel($detailed, $action);
 
         $metaModel = $model->getMetaModel();
-        $metaModel->set('grs_birthday', 'label', $this->_('Birthday'));
-        $metaModel->set('grs_city', 'label', $this->_('City'));
+        $metaModel->setIfExists('grs_birthday', 'label', $this->_('Birthday'));
+        $metaModel->setIfExists('grs_city', 'label', $this->_('City'));
 
         $model->addColumn("CONCAT(gr2t_completed, '" . $this->_(' of ') . "', gr2t_count)", 'track_progress');
         $metaModel->set('track_progress', 'label', $this->_('Progress'));

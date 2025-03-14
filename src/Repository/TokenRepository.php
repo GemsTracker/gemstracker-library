@@ -530,12 +530,12 @@ class TokenRepository
      * @param string $tokenId
      * @param string $tokenStatus
      * @param string $patientNr
-     * @param string $roundDescr
+     * @param ?string $roundDescr
      * @param string $surveyName
      * @param string $result
      * @return \Zalt\Html\HtmlElement
      */
-    public function getTokenStatusLink(MenuSnippetHelper $helper, string $tokenId, mixed $respondentTrackId, string $tokenStatus, string $patientNr, mixed $organizationId, string $roundDescr, string $surveyName, ?string $result): ?HtmlElement
+    public function getTokenStatusLink(MenuSnippetHelper $helper, string $tokenId, mixed $respondentTrackId, string $tokenStatus, string $patientNr, mixed $organizationId, ?string $roundDescr, string $surveyName, ?string $result): ?HtmlElement
     {
         if ($tokenId) {
             $token = $this->tracker->getToken($tokenId);
