@@ -16,9 +16,9 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Tracker\Respondent;
 use Gems\User\User;
-use MUtil\Model;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\TabSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -39,7 +39,9 @@ class MultiOrganizationTab extends TabSnippetAbstract
 
     protected ?string $linkClass = 'nav-link';
 
-    protected ?string $parameterKey = Model::REQUEST_ID2;
+    protected ?string $parameterKey = MetaModelInterface::REQUEST_ID2;
+
+    protected array $tabIdNumbers = [];
 
     protected string $tabClass = 'tab nav-item';
 
@@ -61,6 +63,9 @@ class MultiOrganizationTab extends TabSnippetAbstract
 
         $params = $this->requestInfo->getRequestMatchedParams();
         $params[$this->parameterKey] = $currentTab;
+        if (isset($this->tabIdNumbers[$currentTab])) {
+            $params[MetaModelInterface::REQUEST_ID1] = $this->tabIdNumbers[$currentTab];
+        }
 
         return $this->routeHelper->getRouteUrl($routeName, $params, $this->requestInfo->getRequestQueryParams());
     }
@@ -75,8 +80,8 @@ class MultiOrganizationTab extends TabSnippetAbstract
         $this->defaultTab = (string) $this->currentUser->getCurrentOrganizationId();
 
         $queryParams = $this->requestInfo->getRequestQueryParams();
-        if (isset($queryParams[Model::REQUEST_ID2])) {
-            $organizationId = $queryParams[Model::REQUEST_ID2];
+        if (isset($queryParams[MetaModelInterface::REQUEST_ID2])) {
+            $organizationId = $queryParams[MetaModelInterface::REQUEST_ID2];
             $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
             $this->currentTab = $organizationId;
         }
@@ -91,6 +96,7 @@ class MultiOrganizationTab extends TabSnippetAbstract
         
         foreach ($allowedOrgs as $orgId => $name) {
             if (isset($existingOrgs[$orgId])) {
+                $this->tabIdNumbers[$orgId] = $existingOrgs[$orgId];
                 $tabs[$orgId] = $name;
             }
         }

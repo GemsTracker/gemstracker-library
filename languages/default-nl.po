@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-11 14:19+0100\n"
+"POT-Creation-Date: 2025-03-14 18:57+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Roel van Meer <roel.van.meer@peercode.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -421,7 +421,7 @@ msgstr "Volgorde"
 #: gemstracker/gemstracker/src/Model/LocationModel.php:37
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:108
 #: gemstracker/gemstracker/src/Tracker/Model/FieldMaintenanceModel.php:519
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:53
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:54
 msgid "Location"
 msgstr "Locatie"
 
@@ -489,7 +489,7 @@ msgstr "Weet u het heel erg zeker?"
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:114
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:118
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:137
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:75
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:77
 #: gemstracker/gemstracker/src/Util/Translated.php:488
 #: magnafacta/MUtil/src/MUtil/Snippets/ModelConfirmDataChangeSnippetAbstract.php:255
 #: magnafacta/MUtil/src/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:237
@@ -509,7 +509,7 @@ msgstr "Ja"
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:115
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:119
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:138
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:56
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:57
 #: gemstracker/gemstracker/src/Util/ReceptionCodeLibrary.php:199
 #: gemstracker/gemstracker/src/Util/ReceptionCodeLibrary.php:244
 #: gemstracker/gemstracker/src/Util/Translated.php:488
@@ -957,7 +957,7 @@ msgstr "Hoogste niveau"
 #: gemstracker/gemstracker/src/Tracker/Model/SurveyMaintenanceModel.php:260
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:224
 #: gemstracker/gemstracker/src/Tracker/Snippets/ShowTrackUsageAbstract.php:135
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:49
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:50
 msgid "Description"
 msgstr "Omschrijving"
 
@@ -1079,7 +1079,7 @@ msgstr "Foutieve invoer"
 #: gemstracker/gemstracker/src/Snippets/User/EmbeddedUserTestUrlForm.php:82
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:308
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:215
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:57
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:58
 #: gemstracker/gemstracker/templates/gems/request-password-reset.html.twig:12
 msgid "Organization"
 msgstr "Organisatie"
@@ -1918,7 +1918,7 @@ msgstr "Ronde"
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:221
 #: gemstracker/gemstracker/src/Tracker/Model/TrackModel.php:173
 #: gemstracker/gemstracker/src/Tracker/Snippets/ShowTrackUsageAbstract.php:133
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:70
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:72
 msgid "Track"
 msgstr "Traject"
 
@@ -2060,7 +2060,7 @@ msgstr "Vergelijkings type"
 #: gemstracker/gemstracker/src/Model/RespondentRelationModel.php:77
 #: gemstracker/gemstracker/src/Model/StaffModel.php:189
 #: gemstracker/gemstracker/src/Model/StaffModel.php:260
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:52
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:53
 msgid "Gender"
 msgstr "Geslacht"
 
@@ -2439,7 +2439,7 @@ msgstr "Nieuw"
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentTableSnippetAbstract.php:165
 #: gemstracker/gemstracker/src/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:110
 #: gemstracker/gemstracker/src/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:112
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:64
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:66
 #: gemstracker/gemstracker/src/User/Mask/AddressMasker.php:70
 #: gemstracker/gemstracker/src/User/Mask/AnyMasker.php:62
 #: gemstracker/gemstracker/src/Util/TokenData.php:562
@@ -2482,7 +2482,7 @@ msgstr "Toon"
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentTableSnippetAbstract.php:180
 #: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:456
 #: gemstracker/gemstracker/src/Tracker/Snippets/ShowRoundSnippetAbstract.php:182
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:50
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:51
 msgid "Edit"
 msgstr "Wijzig"
 
@@ -2563,7 +2563,7 @@ msgstr "Controleer alle rondes"
 #: gemstracker/gemstracker/src/Model/Setup/ReceptionCodeModel.php:106
 #: gemstracker/gemstracker/src/Snippets/Tracker/AddTracksSnippet.php:306
 #: gemstracker/gemstracker/src/Tracker.php:739
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:71
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:73
 msgid "Tracks"
 msgstr "Trajecten"
 
@@ -2877,7 +2877,7 @@ msgstr "Controleer alle patiënten"
 #: gemstracker/gemstracker/src/Snippets/Tracker/AddTracksSnippet.php:303
 #: gemstracker/gemstracker/src/Snippets/User/EmbeddedUserTestUrlForm.php:91
 #: gemstracker/gemstracker/src/Tracker.php:741
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:66
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:68
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:362
 #: gemstracker/gemstracker/src/Util/Translated.php:523
 msgid "Staff"
@@ -3431,7 +3431,7 @@ msgstr ""
 #: gemstracker/gemstracker/src/Tracker/Engine/TrackEngineAbstract.php:826
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:323
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:230
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:69
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:71
 msgid "Survey"
 msgstr "Vragenlijst"
 
@@ -3462,7 +3462,7 @@ msgstr "Toewijzer"
 #: gemstracker/gemstracker/src/Tracker/Model/RespondentTrackModel.php:160
 #: gemstracker/gemstracker/src/Tracker/Model/RespondentTrackModel.php:210
 #: gemstracker/gemstracker/src/Tracker/Snippets/ShowTrackUsageAbstract.php:140
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:67
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:69
 msgid "Start"
 msgstr "Aanvang"
 
@@ -3509,8 +3509,8 @@ msgid ""
 msgstr ""
 "Pak de gedownloade zip uit en open het .sps bestand.\n"
 "Wijzig regel 8 zodat het volledige pad voor het .dat bestaat staat:\n"
-"    /FILE=\"bestandnaam.dat\"  ==>  /FILE=\"c:\\downloads\\bestandsnaam.dat"
-"\"\n"
+"    /FILE=\"bestandnaam.dat\"  ==>  /FILE=\"c:\\downloads\\bestandsnaam."
+"dat\"\n"
 "Kies Run/All en al je data zou zichtbaar moeten zijn."
 
 #: gemstracker/gemstracker/src/Export/StreamingExcelExport.php:412
@@ -3706,10 +3706,10 @@ msgstr "Wachtwoord wijziging aangevraagd"
 msgid ""
 "Dear {{greeting}},<br><br><br>A new password was requested for your "
 "<strong>{{organization}}</strong> account on the <strong>{{project}}</"
-"strong> site, please click within {{reset_in_hours}} hours on <a href="
-"\"{{reset_url}}\">this link</a> to enter the password of your choice."
-"<br><br><br>{{organization_signature}}<br><br><a href="
-"\"{{reset_url}}\">{{reset_url}}</a><br>"
+"strong> site, please click within {{reset_in_hours}} hours on <a "
+"href=\"{{reset_url}}\">this link</a> to enter the password of your choice."
+"<br><br><br>{{organization_signature}}<br><br><a "
+"href=\"{{reset_url}}\">{{reset_url}}</a><br>"
 msgstr ""
 "Geachte {{greeting}},\n"
 "\n"
@@ -3936,7 +3936,7 @@ msgstr "Patiënt nr"
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:181
 #: gemstracker/gemstracker/src/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:104
 #: gemstracker/gemstracker/src/Snippets/Respondent/TrafficLightTokenSnippet.php:701
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:68
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:70
 msgid "Start date"
 msgstr "Startdatum"
 
@@ -4067,7 +4067,7 @@ msgstr " van "
 #: gemstracker/gemstracker/src/Snippets/Track/TracksSnippet.php:95
 #: gemstracker/gemstracker/src/Snippets/Tracker/ShowTrackUsageSnippet.php:79
 #: gemstracker/gemstracker/src/Tracker/Model/RespondentTrackModel.php:177
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:61
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:62
 msgid "Progress"
 msgstr "Voortgang"
 
@@ -4084,7 +4084,7 @@ msgstr "Beantwoord"
 
 #: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:139
 #: gemstracker/gemstracker/src/Snippets/Token/TokenTabsSnippet.php:64
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:55
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:56
 msgid "Missed"
 msgstr "Gemist"
 
@@ -4272,7 +4272,7 @@ msgstr "Wijzig patiënt nr %s: %s"
 #: gemstracker/gemstracker/src/Model/Setup/ReceptionCodeModel.php:100
 #: gemstracker/gemstracker/src/Repository/CommJobRepository.php:387
 #: gemstracker/gemstracker/src/Snippets/Tracker/AddTracksSnippet.php:300
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:58
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:59
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:361
 #: gemstracker/gemstracker/src/Util/Translated.php:523
 msgid "Respondents"
@@ -6457,7 +6457,7 @@ msgstr "Interface"
 #: gemstracker/gemstracker/src/Snippets/Token/DeleteTrackTokenSnippet.php:161
 #: gemstracker/gemstracker/src/Snippets/Token/EditTrackTokenSnippet.php:103
 #: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:260
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:65
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:67
 msgid "Show patient"
 msgstr "Toon patiënt"
 
@@ -8983,7 +8983,7 @@ msgstr "Fout tijdens het lezen van bestand '%s'."
 #: gemstracker/gemstracker/src/Snippets/FormSnippetAbstract.php:88
 #: gemstracker/gemstracker/src/Snippets/Mail/MailModelFormSnippet.php:260
 #: gemstracker/gemstracker/src/Snippets/ModelFormSnippetAbstract.php:120
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:63
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:65
 #: magnafacta/MUtil/src/MUtil/Snippets/FormSnippetAbstract.php:221
 #: magnafacta/MUtil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:278
 #: magnafacta/zalt-html/src/Snippets/Zend/ZendFormSnippetTrait.php:84
@@ -9611,6 +9611,7 @@ msgid "May not be mailed"
 msgstr "Mag niet gemaild worden"
 
 #: gemstracker/gemstracker/src/Snippets/Respondent/TrafficLightTokenSnippet.php:246
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:49
 msgid "Delete track!"
 msgstr "Verwijder traject!"
 
@@ -10587,8 +10588,8 @@ msgstr[1] "%d vragenlijsten toegevoegd"
 #: gemstracker/gemstracker/src/Snippets/Tracker/InsertSurveySnippet.php:357
 #, php-format
 msgid ""
-"The last round containing answers for surveys in the same user group is \"%s"
-"\"."
+"The last round containing answers for surveys in the same user group is "
+"\"%s\"."
 msgstr ""
 "De laatste ronde met antwoorden en een vragenlijst in dezelfde "
 "gebruikersgroep is \"%s\"."
@@ -11416,8 +11417,8 @@ msgstr "%d van %d vragen veranderd."
 #, php-format
 msgid "Save failed for survey %s, question %s, option \"%s\" => \"%s\": %s"
 msgstr ""
-"Opslaan mislukt foor vragenlijst %s, vraag %s, antwoord optie \"%s\" => \"%s"
-"\": %s"
+"Opslaan mislukt foor vragenlijst %s, vraag %s, antwoord optie \"%s\" => "
+"\"%s\": %s"
 
 #: gemstracker/gemstracker/src/Task/Tracker/RefreshQuestion.php:140
 #, php-format
@@ -11653,7 +11654,7 @@ msgid "Organization specific round"
 msgstr "Organisatiespecifieke ronde"
 
 #: gemstracker/gemstracker/src/Tracker/Field/AppointmentField.php:319
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:73
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:75
 #: gemstracker/gemstracker/src/Util/Translated.php:416
 msgid "Unknown"
 msgstr "Onbekend"
@@ -12808,13 +12809,13 @@ msgid "Decrease"
 msgstr "Afnemend"
 
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:128
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:51
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:52
 #: gemstracker/gemstracker/src/Util/Translated.php:416
 msgid "Female"
 msgstr "Vrouw"
 
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:129
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:54
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:55
 #: gemstracker/gemstracker/src/Util/Translated.php:416
 msgid "Male"
 msgstr "Man"
@@ -13034,31 +13035,35 @@ msgstr "Toegevoegd door"
 msgid "Birthdate"
 msgstr "Geboortedatum"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:59
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:60
 msgid "Patients"
 msgstr "enPatiënt"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:60
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:61
 msgid "Phone number"
 msgstr "Telefoonnummer"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:62
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:63
+msgid "Restore track!"
+msgstr "Herstel traject!"
+
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:64
 msgid "Row"
 msgstr "Rij"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:72
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:74
 msgid "Track info"
 msgstr "Traject informatie"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:74
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:76
 msgid "Variables"
 msgstr "Variabelen"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:82
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:84
 msgid "Delete patient"
 msgstr "Patiënt verwijderen"
 
-#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:83
+#: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:85
 msgid "Undelete patient"
 msgstr "Herstel verwijderde patiënt"
 
@@ -15186,8 +15191,8 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgstr ""
 #~ "Pak de gedownloade zip uit en open het .sps bestand.\n"
 #~ "Wijzig regel 8 zodat het volledige pad voor het .dat bestaat staat:\n"
-#~ "   /FILE=\"bestandnaam.dat\" ==> /FILE=\"c:\\downloads\\bestandsnaam.dat"
-#~ "\"\n"
+#~ "   /FILE=\"bestandnaam.dat\" ==> /FILE=\"c:\\downloads\\bestandsnaam."
+#~ "dat\"\n"
 #~ "Kies Run/All en al je data zou zichtbaar moeten zijn."
 
 #~ msgid ""
@@ -15468,9 +15473,10 @@ msgstr[1] "%d items opgeslagen!"
 #~ "path to your data file. Then choose Run -> All to execute the syntax."
 #~ msgstr ""
 #~ "Na het downloaden kunt u het bestand uitpakken en krijgt u een syntax en "
-#~ "een databestand. Open de syntax met SPSS en wijzig de regel /FILE="
-#~ "\"filename.dat\" zodat het volledige pad naar het databestand er voor "
-#~ "komt te staan. Vervolgens kiest u Run -> All om de syntax uit te voeren."
+#~ "een databestand. Open de syntax met SPSS en wijzig de regel /"
+#~ "FILE=\"filename.dat\" zodat het volledige pad naar het databestand er "
+#~ "voor komt te staan. Vervolgens kiest u Run -> All om de syntax uit te "
+#~ "voeren."
 
 #~ msgid "Deprecated"
 #~ msgstr "Deprecated"
