@@ -30,7 +30,6 @@ use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\Translation\Translator;
 use Zalt\Base\SymfonyTranslator;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;

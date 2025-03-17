@@ -16,8 +16,8 @@ use Gems\Handlers\GemsHandler;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
+use Gems\Repository\ConsentRepository;
 use Gems\Repository\ReceptionCodeRepository;
-use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
@@ -69,10 +69,10 @@ class ConsentPlanHandler extends GemsHandler
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected readonly ResultFetcher $resultFetcher,
-        protected ReceptionCodeRepository $receptionCodeRepository,
-        protected RespondentRepository $respondentRepository,
+        protected readonly ConsentRepository $consentRepository,
         protected readonly CurrentUserRepository $currentUserRepository,
+        protected readonly ReceptionCodeRepository $receptionCodeRepository,
+        protected readonly ResultFetcher $resultFetcher,
     ) {
         parent::__construct($responder, $metaModelLoader, $translate, $cache);
     }
@@ -91,11 +91,11 @@ class ConsentPlanHandler extends GemsHandler
             $fields[$month] = new Expression("MONTH(gr2o_created)");
         }
 
-        $consents = $this->respondentRepository->getRespondentConsents();
+        $consents = $this->consentRepository->getConsents();
         $deleteds = $this->receptionCodeRepository->getRespondentDeletionCodes();
         $sql      = "SUM(CASE WHEN grc_success = 1 AND gr2o_consent = '%s' THEN 1 ELSE 0 END)";
         foreach ($consents as $consent => $translated) {
-            $fields[$consent] = new Expression(sprintf($sql, $consent));
+            $fields[$translated] = new Expression(sprintf($sql, $consent));
         }
         $fields[$this->_('Total OK')] = new Expression("SUM(CASE WHEN grc_success = 1 THEN 1 ELSE 0 END)");
 

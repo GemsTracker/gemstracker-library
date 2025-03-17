@@ -105,6 +105,14 @@ class ConsentRepository
     }
 
     /**
+     * @return array<string, string> Untranslated value => Translated value
+     */
+    public function getConsents(): array
+    {
+        return array_column($this->getUserConsents(), 'gco_description', 'untranslated_description');
+    }
+
+    /**
      * Get the code for an unknwon user consent
      *
      * This is de consent description from gems__consents, not the consentCODE
@@ -116,6 +124,9 @@ class ConsentRepository
         return 'Unknown';
     }
 
+    /**
+     * @return array<int, array> Array containing: untranslated_description, gco_description, gco_code, gco_order
+     */
     public function getUserConsents(): array
     {
         $select = $this->cachedResultFetcher->getSelect('gems__consents');
