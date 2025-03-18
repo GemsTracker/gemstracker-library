@@ -61,10 +61,10 @@ class OtherFieldValuesDependency extends DependencyAbstract
     /**
      * This formatFunction is needed because the options are not set before the concatenated row
      *
-     * @param string $value
+     * @param string|array $value
      * @return string
      */
-    public function formatValues(string $value): string
+    public function formatValues(string|array $value): string
     {
         $options = $this->getOptions();
         if (is_array($value)) {
