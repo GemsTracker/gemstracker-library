@@ -15,12 +15,16 @@ use Gems\Audit\AuditLog;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Model;
+use Gems\Model\Type\GemsDateType;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;
+use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\Survey;
+use Gems\Tracker\Token;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
 use Zalt\Base\RequestInfo;
@@ -100,10 +104,12 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
      */
     protected bool $insertMultipleSurveys = true;
 
+    protected ?RespondentTrack $respondentTrack = null;
+
     /**
      * Required
      *
-     * @var array of \Gems\Tracker\RespondentTrack Respondent Track
+     * @var array<RespondentTrack> of \Gems\Tracker\ Respondent Track
      */
     protected array $respondentTracks = [];
 
@@ -122,7 +128,7 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
     /**
      * The newly create token
      *
-     * @var array of \Gems\Tracker\Token
+     * @var array<Token> of \Gems\Tracker\Token
      */
     protected array $tokens = [];
 
@@ -579,7 +585,18 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
                     if ($survey instanceof Survey) {
                         // Just use the date of the first select survey
                         // No theory about this, will usually be 6 months
-                        $this->formData['gto_valid_until'] = $survey->getInsertDateUntil($this->formData['gto_valid_from']);
+                        if ($this->formData['gto_valid_from'] instanceof \DateTimeInterface) {
+                            $dateUntil = $this->formData['gto_valid_until'];
+                        } else {
+                            $dateUntil = GemsDateType::toDate(
+                                $this->formData['gto_valid_from'],
+                                $metaModel->get('gto_valid_from', 'storageFormat'),
+                                $metaModel->get('gto_valid_from', 'dateFormat'),
+                                true);;
+                        }
+                        if ($dateUntil) {
+                            $this->formData['gto_valid_until'] = $survey->getInsertDateUntil($dateUntil);
+                        }
                         break;
                     }
                 }
@@ -694,5 +711,27 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
 
         // Communicate with the user
         return $changed;
+    }
+
+    protected function setAfterSaveRoute()
+    {
+        switch (count($this->tokens)) {
+            case 0:
+                break;
+
+            case 1:
+                $token = reset($this->tokens);
+                $urlParams = $token->getMenuUrlParameters();
+                $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.token.show', $urlParams);
+                break;
+
+            default:
+                if ($this->respondentTrack) {
+                    $params[Model::RESPONDENT_TRACK] = $this->respondentTrack->getRespondentTrackId();
+                    $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.show', $params + $this->requestInfo->getParams());
+                }
+        }
+
+        parent::setAfterSaveRoute();
     }
 }

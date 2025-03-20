@@ -87,11 +87,7 @@ class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
     }
 
     /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @inheritDoc
      */
     public function getHtmlOutput()
     {
