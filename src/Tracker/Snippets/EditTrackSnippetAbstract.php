@@ -284,7 +284,6 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
 
             if ($organization->exists()) {
                 $route = $organization->getAfterTrackChangeRoute();
-                file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $route . "\n", FILE_APPEND);
 
             } else {
                 $route = $this->menuHelper->getRelatedRoute($this->afterSaveRoutePart);
