@@ -23,6 +23,7 @@ use Gems\Repository\OrganizationRepository;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Respondent\TokenEmailSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Token;
@@ -126,6 +127,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
     protected array $emailSnippets = [
         ContentTitleSnippet::class,
         TokenEmailSnippet::class,
+        CurrentButtonRowSnippet::class,
     ];
 
     /**

@@ -13,6 +13,7 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\CommTemplateModel;
+use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Vue\CreateEditSnippet;
 use MUtil\Model\ModelAbstract;
@@ -40,8 +41,19 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
     public array $cacheTags = ['commTemplates'];
 
     protected array $createEditSnippets = [
+        ContentTitleSnippet::class,
         CreateEditSnippet::class,
         CurrentButtonRowSnippet::class,
+    ];
+
+    protected array $createParameters = [
+        'addCurrentSiblings' => true,
+        'contentTitle' => 'getCreateTitle',
+    ];
+
+    protected array $editParameters = [
+        'addCurrentSiblings' => true,
+        'contentTitle' => 'getEditTitle',
     ];
 
     protected array $defaultParameters = [

@@ -816,7 +816,7 @@ class Route
                     'check-token',
                     'check-token-answers',
                 ],
-                postRoutes: array_merge($this->defaultPostRoutes, ['correct', 'undelete']),
+                postRoutes: array_merge($this->defaultPostRoutes, ['correct', 'email', 'undelete']),
                 parentParameters: [
                     'id1',
                     'id2',
