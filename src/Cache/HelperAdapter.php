@@ -33,6 +33,11 @@ class HelperAdapter extends TagAwareAdapter
         return preg_replace('([^a-zA-Z0-9_])', '_', $cacheId);
     }
 
+    public function hasCacheItem(string $key): bool
+    {
+        return $this->getItem($key)->isHit();
+    }
+
     public function getCacheItem(string $key): mixed
     {
         $item = $this->getItem($key);
