@@ -8,6 +8,7 @@ namespace Gems\Cache;
 
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
@@ -42,6 +43,10 @@ class CacheFactory
                 $options = $config['options'] ?? [];
                 $client = MemcachedAdapter::createConnection($dsn, $options);
                 $cache = new MemcachedAdapter($client, $namespace, $defaultLifetime);
+                break;
+
+            case 'apcu':
+                $cache = new ApcuAdapter($namespace, $defaultLifetime);
                 break;
 
             case 'file':
