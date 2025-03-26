@@ -8,9 +8,11 @@ use Gems\Model\Transform\EmailToTransformer;
 use Gems\Repository\CommJobRepository;
 use Gems\Repository\CommRepository;
 use Gems\Tracker;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
+use Zalt\Snippets\MessageableSnippetAbstract;
 
 class EmailTokenModel extends GemsJoinModel
 {
@@ -18,10 +20,11 @@ class EmailTokenModel extends GemsJoinModel
         MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translator,
-        protected CommJobRepository $commJobRepository,
-        protected CommRepository $commRepository,
-        protected Tracker $tracker,
         CurrentUserRepository $currentUserRepository,
+        protected readonly CommJobRepository $commJobRepository,
+        protected readonly CommRepository $commRepository,
+        protected readonly Tracker $tracker,
+        protected readonly MaskRepository $maskRepository,
     ) {
         parent::__construct('gems__tokens', $metaModelLoader, $sqlRunner, $translator, 'emailTokenModel');
 
@@ -114,10 +117,12 @@ class EmailTokenModel extends GemsJoinModel
 
     public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
+        $this->maskRepository->disableMaskRepository();
         if (!isset($newValues['gto_id_token'])) {
             throw new \Exception('Missing token ID');
         }
         $token = $this->tracker->getToken($newValues['gto_id_token']);
+        $token->refresh();
 
         if (!$token->isMailable()) {
             throw new \Exception('Token cannot be mailed. Receiver disabled email');
@@ -131,9 +136,10 @@ class EmailTokenModel extends GemsJoinModel
         $body = $newValues['body'] ?? null;
 
         if ($this->commRepository->sendTokenEmail($token, $templateId, $from, $fromName, $to, $subject, $body)) {
+            $this->maskRepository->enableMaskRepository();
             return $newValues;
         }
 
-        throw new \Exception('Sending token email failed');
+        throw new \Exception('Sending token email failed: ' . $this->commRepository->lastException->getMessage());
     }
 }

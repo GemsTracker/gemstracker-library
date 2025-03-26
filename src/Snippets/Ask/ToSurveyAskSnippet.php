@@ -28,6 +28,8 @@ use Zalt\Snippets\MessageableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
+ * Snippet called when we ant to start answering in LimeSurvey
+ *
  * @package    Gems
  * @subpackage Snippets\Ask
  * @since      Class available since version 1.0
@@ -89,8 +91,12 @@ class ToSurveyAskSnippet extends MessageableSnippetAbstract
     {
         // If this snippet is called for an already answered token something went wrong so we return to a general token page
         if ($this->token->isCompleted()) {
-            $this->messenger->addMessages([$this->_('Thank you for completing the survey')]);
-            $url = $this->menuSnippetHelper->getRelatedRouteUrl('index');
+            if ($this->currentUser && $this->currentUser->isActive()) {
+                $url = $this->tokenHelper->getDefaultReturnUrl($this->token);
+            } else {
+                $this->messenger->addMessages([$this->_('Thank you for completing the survey')]);
+                $url = $this->menuSnippetHelper->getRelatedRouteUrl('index');
+            }
 
             return new RedirectResponse($url);
         }
@@ -101,11 +107,14 @@ class ToSurveyAskSnippet extends MessageableSnippetAbstract
         }
 
         $returnUrl = $this->checkReturnUrl($this->tokenHelper->getReturnUrl($this->request, $this->token));
-        $url  = $this->token->getUrl(
+        $url       = $this->token->getUrl(
             $this->currentUser ? $this->locale->getLanguage() : $this->token->getRespondentLanguage(),
             $this->currentUser instanceof User ? $this->currentUser->getUserId() : $this->token->getRespondentId(),
             $returnUrl
         );
+//        echo $returnUrl . "<br/>\n";
+//        echo $url . "\n";
+//        die();
 
         return new RedirectResponse($url);
     }
