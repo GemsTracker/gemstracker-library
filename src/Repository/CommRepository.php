@@ -16,7 +16,7 @@ use Symfony\Component\Mime\Email;
 
 class CommRepository
 {
-    public ?Exception $lastException = null;
+    public ?TransportExceptionInterface $lastException = null;
 
     public function __construct(
         protected readonly CommunicationRepository $communicationRepository,

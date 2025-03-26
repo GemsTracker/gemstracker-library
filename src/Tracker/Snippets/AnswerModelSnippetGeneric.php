@@ -292,7 +292,14 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
     protected function addButtons(HtmlElement $html)
     {
         $buttonDiv = $html->buttonDiv();
-        $buttonDiv->actionLink(array(), $this->_('Close'), array('class' => 'windowCloseButton'));
+
+        $params = $this->token->getMenuUrlParameters();
+        if ($params) {
+            $buttonDiv->actionLink($this->menuHelper->getRouteUrl('respondent.show', $params), $this->_('Show respondent'));
+            $buttonDiv->actionLink($this->menuHelper->getRouteUrl('respondent.tracks.show', $params), $this->_('Show track'));
+            $buttonDiv->actionLink($this->menuHelper->getRouteUrl('respondent.tracks.token.show', $params), $this->_('Show token'));
+        }
+        // $buttonDiv->actionLink(array(), $this->_('Close'), array('class' => 'windowCloseButton'));
         $buttonDiv->actionLink(array(), $this->_('Print'), array('class' => 'windowPrintButton'));
     }
 
