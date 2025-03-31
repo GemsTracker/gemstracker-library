@@ -10,6 +10,10 @@ CREATE TABLE if not exists gems__organizations (
 
         gor_sites                   varchar(255)   CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
 
+        -- deprecated as of 1.9.1
+        -- gor_url_base                varchar(1270) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        -- end deprecated
+
         gor_task                    varchar(50)   CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
 
         gor_provider_id             varchar(10)   CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
