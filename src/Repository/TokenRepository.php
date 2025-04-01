@@ -8,6 +8,7 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Tracker;
 use Gems\User\User;
+use Gems\Util\Translated;
 use Laminas\Db\Sql\Predicate\Expression;
 use Mezzio\Router\Exception\RuntimeException;
 use Zalt\Base\TranslatorInterface;
@@ -25,8 +26,9 @@ class TokenRepository
     protected User|null $currentUser;
 
     public function __construct(
-        protected Tracker $tracker,
+        protected readonly Tracker $tracker,
         protected TranslatorInterface $translator,
+        protected Translated $translated,
         CurrentUserRepository $currentUserRepository)
     {
         $this->currentUser = $currentUserRepository->getCurrentUser();
@@ -329,6 +331,8 @@ class TokenRepository
 
             return $this->getTokenCopyLink($tokenId, $tokenStatus, $memberType);
         }
+
+        return null;
     }
 
     /**
@@ -609,6 +613,60 @@ class TokenRepository
     public function getTokenStatusShowForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper): LateCall
     {
         return Late::method($this, 'getStatusIcon', $bridge->getLate('token_status'));
+    }
+
+    public function getTokenStatusShort(string $tokenStatus, mixed $completionTime, mixed $validFrom, mixed $validUntil): string
+    {
+        $displayFormat = $this->translated->dateTimeFormatString;
+
+        switch ($tokenStatus) {
+            case 'A': // Answered
+                if ($completionTime) {
+                    if (! $completionTime instanceof \DateTimeInterface) {
+                        $completionTime = \DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $completionTime);
+                    }
+                    if ($completionTime instanceof \DateTimeInterface) {
+                        return sprintf($this->translator->_('Completed on %s'), $completionTime->format($displayFormat));
+                    }
+                }
+
+            case 'O': // Open
+            case 'P': // Partial
+                if (null === $validUntil) {
+                    return $this->translator->_('Does not expire');
+                }
+                if (! $validUntil instanceof \DateTimeInterface) {
+                    $validUntil = \DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $validUntil);
+                }
+                if ($validUntil instanceof \DateTimeInterface) {
+                    return sprintf($this->translator->_('Open until %s'), $validUntil->format($displayFormat));
+                }
+
+            case 'M': // Missed
+            case 'I': // Incomplete
+                if ($validUntil) {
+                    if (! $validUntil instanceof \DateTimeInterface) {
+                        $validUntil = \DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $validUntil);
+                    }
+                    if ($validUntil instanceof \DateTimeInterface) {
+                        return sprintf($this->translator->_('Missed since %s'), $validUntil->format($displayFormat));
+                    }
+                }
+
+            case 'W': //Waiting
+                if ($validFrom) {
+                    if (! $validFrom instanceof \DateTimeInterface) {
+                        $validFrom = \DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $completionTime);
+                    }
+                    if ($validFrom instanceof \DateTimeInterface) {
+                        return sprintf($this->translator->_('Valid from %s'), $validFrom->format($displayFormat));
+                    }
+                }
+
+            default:
+                return $this->getStatusDescription($tokenStatus);
+        }
+
     }
 
     /**
