@@ -102,9 +102,9 @@ class AutoConfigurator
         return $this->autoconfigConfig;
     }
 
-    protected function getAutoconfigFilename(): string
+    public function getAutoconfigFilename(): ?string
     {
-        return $this->config['autoconfig']['cache_path'];
+        return $this->config['autoconfig']['cache_path'] ?? null;
     }
 
     protected function getClassnameFromFile(SplFileInfo $file): ?string
@@ -253,5 +253,14 @@ class AutoConfigurator
     {
         $filename = $this->getAutoconfigFilename();
         file_put_contents($filename, '<?php return ' . var_export($this->autoconfigConfig, true) . ';');
+    }
+
+    public function clearAutoConfigConfig(): bool
+    {
+        $filename = $this->getAutoconfigFilename();
+        if ($filename && file_exists($filename)) {
+            return unlink($filename);
+        }
+        return false;
     }
 }
