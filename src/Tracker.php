@@ -455,8 +455,6 @@ class Tracker implements TrackerInterface
                 'gr2t_id_organization' => $organizationId,
             ]);
 
-
-
         if (!is_null($order)) {
             $select->order($order);
         }
