@@ -65,7 +65,7 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
             $survey = $this->tracker->getSurveyBySourceId($sourceSurveyId, $sourceId);
         }
 
-        if (! $survey->isActive()) {
+        if (! $survey->isActiveInSource()) {
             return;
         }
 

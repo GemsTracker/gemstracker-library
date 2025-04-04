@@ -27,7 +27,7 @@ class PhoneNumberFormatter
 
     public function __invoke($value)
     {
-        return $this->format($value);
+        return $value ? $this->format($value) : $value;
     }
 
     public function format($value)
