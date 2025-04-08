@@ -14,6 +14,7 @@ use Laminas\Db\ResultSet\ResultSetInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Loader\Exception\LoadException;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\Data\DataReaderInterface;
 
 class DbExportRepository
 {
@@ -27,16 +28,16 @@ class DbExportRepository
         protected readonly ModelContainer $modelContainer,
     )
     {}
-    public function insertDbPart(ModelExportPart $part): void
+    public function insertDbPart(DataReaderInterface $model, ModelExportPart $part): void
     {
         if ($part->part === 1) {
-            $this->addHeaderToExportData($part);
+            $this->addHeaderToExportData($model, $part);
         }
-        $data = $this->exportRepository->getRowData($part);
-        $this->addDataToExportData($part, $data);
+        $data = $this->exportRepository->getRowData($model, $part);
+        $this->addDataToExportData($model, $part, $data);
     }
 
-    protected function addDataToExportData(ModelExportPart $part, array $data): void
+    protected function addDataToExportData(DataReaderInterface $model, ModelExportPart $part, array $data): void
     {
         $i = (($part->part - 1) * $part->itemCount) + 1;
         foreach($data as $row) {
@@ -45,12 +46,12 @@ class DbExportRepository
         }
     }
 
-    protected function addHeaderToExportData(ModelExportPart $part): void
+    protected function addHeaderToExportData(DataReaderInterface $model, ModelExportPart $part): void
     {
        if (!$this->hasHeader($part)) {
            return;
        }
-       $header = $this->exportRepository->getHeaders($part);
+       $header = $this->exportRepository->getHeaders($model, $part);
        $this->addRowToExportData($part, 0, $header);
     }
 

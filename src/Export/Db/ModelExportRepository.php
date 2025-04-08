@@ -28,12 +28,8 @@ class ModelExportRepository
     )
     {}
 
-    public function getHeaders(ModelExportPart $part): array
+    public function getHeaders(DataReaderInterface $model, ModelExportPart $part): array
     {
-        /**
-         * @var DataReaderInterface $model
-         */
-        $model = $this->modelContainer->get($part->modelClassName);
         $metaModel = $model->getMetaModel();
         $labeledColumns = $this->getLabeledColumns($metaModel);
 
@@ -66,12 +62,8 @@ class ModelExportRepository
 
         return $metaModel->getMeta('labeledColumns');
     }
-    public function getRowData(ModelExportPart $part): array
+    public function getRowData(DataReaderInterface $model, ModelExportPart $part): array
     {
-        /**
-         * @var DataReaderInterface $model
-         */
-        $model = $this->modelContainer->get($part->modelClassName, $part->applyFunctions);
         $data = $model->loadPage($part->part, $part->itemCount, $part->filter);
 
         $exportClass = $this->projectOverloader->getContainer()->get($part->exportType);

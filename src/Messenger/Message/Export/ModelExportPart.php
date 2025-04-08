@@ -3,6 +3,7 @@
 namespace Gems\Messenger\Message\Export;
 
 use Gems\Export\ExportSettings\ExportSettingsInterface;
+use Zalt\Model\Data\DataReaderInterface;
 
 class ModelExportPart
 {
@@ -11,7 +12,6 @@ class ModelExportPart
         public readonly string $filename,
         public readonly string $exportType,
         public readonly int $userId,
-        public readonly string $modelClassName,
         public readonly array $applyFunctions,
         public readonly array $columnOrder,
         public readonly array $filter = [],
