@@ -31,12 +31,13 @@ class InitDbExport extends TaskAbstract
     )
     {
         $batch = $this->getBatch();
-        $modelFilter = $batch->getSessionVariable('modelFilter') ?? [];
+        $modelFilter = $batch->getVariable('searchFilter') ?? [];
 
         $exportId = $batch->getId() . (new \DateTimeImmutable())->format('YmdHis');
         $batch->setSessionVariable('exportId', $exportId);
 
-        $model = $this->getModel($modelName);
+        $model = $batch->getVariable('model') ?? $this->getModel($modelName);
+
         $postData['model'] = $model;
         $totalRows  = $model->loadCount($modelFilter);
 
@@ -56,7 +57,6 @@ class InitDbExport extends TaskAbstract
                 filename: $this->getExportFileName($model, $exportType),
                 exportType: $exportType,
                 userId: $batch->getVariable(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE),
-                modelClassName: $modelName,
                 applyFunctions: $modelApplyFunctions,
                 columnOrder: $columnOrder,
                 filter: $modelFilter,
