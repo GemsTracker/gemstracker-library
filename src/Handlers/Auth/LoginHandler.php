@@ -15,7 +15,7 @@ use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
-use Gems\Site\SiteUtil;
+use Gems\Repository\OrganizationRepository;
 use Gems\User\PasswordChecker;
 use Gems\User\User;
 use Gems\User\UserLoader;
@@ -52,8 +52,8 @@ class LoginHandler implements RequestHandlerInterface
         private readonly LayoutRenderer $layoutRenderer,
         private readonly LoginThrottleBuilder $loginThrottleBuilder,
         private readonly Monitor $monitor,
+        private readonly OrganizationRepository $organizationRepository,
         private readonly PasswordChecker $passwordChecker,
-        private readonly SiteUtil $siteUtil,
         private readonly TranslatorInterface $translator,
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
@@ -72,8 +72,7 @@ class LoginHandler implements RequestHandlerInterface
         $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
         $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
-        $siteUrl = $this->siteUtil->getSiteByFullUrl((string)$request->getUri());
-        $this->organizations = $siteUrl ? $this->siteUtil->getNamedOrganizationsFromSiteUrl($siteUrl) : [];
+        $this->organizations = $this->organizationRepository->getOrganizationsForLogin();
 
         if ($request->getMethod() === 'POST') {
             return $this->handlePost($request);

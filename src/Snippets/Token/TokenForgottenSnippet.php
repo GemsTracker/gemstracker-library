@@ -11,14 +11,15 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Audit\AuditLog;
 use Gems\Communication\CommunicationRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\CommJobRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
-use Gems\Snippets\ZendFormSnippetAbstract;
-use Gems\Tracker;
+use Gems\Snippets\FormSnippetAbstract;
 use Symfony\Component\Mime\Address;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -32,9 +33,11 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8
  */
-class TokenForgottenSnippet extends ZendFormSnippetAbstract
+class TokenForgottenSnippet extends FormSnippetAbstract
 {
     protected ?string $clientIp = null;
+
+    protected int $layoutFixedWidth = 20;
 
     /**
      * The field name for the organization element.
@@ -61,15 +64,16 @@ class TokenForgottenSnippet extends ZendFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        AuditLog $auditLog,
+        MenuSnippetHelper $menuHelper,
         protected CurrentUserRepository $currentUserRepository,
-        protected Tracker $tracker,
         protected OrganizationRepository $organizationRepository,
         protected ResultFetcher $resultFetcher,
         protected RespondentRepository $respondentRepository,
         protected CommunicationRepository $communicationRepository,
         protected CommJobRepository $commJobRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
 
     /**
@@ -136,7 +140,6 @@ class TokenForgottenSnippet extends ZendFormSnippetAbstract
                 ->setAttrib('size', 30)
                 ->setRequired(true)
                 ->addValidator('SimpleEmail');
-                //->addValidator($this->tracker->getTokenValidator($this->clientIp));
 
         return $element;
     }
@@ -236,9 +239,9 @@ class TokenForgottenSnippet extends ZendFormSnippetAbstract
 
                 if ($respondent->exists && $respondent->canBeMailed()) {
 
-                    $sentTokens = $this->commJobRepository->sendAllCommunications($respondent->getId(), $respondent->getOrganizationId());
+                    $sentTokens = $this->commJobRepository->sendAllCommunications($respondent->getId(), $respondent->getOrganizationId(), true);
                     $sent = count($sentTokens);
-                    // \MUtil\EchoOut\EchoOut::track($sent, $batch->getCounter('jobs_started'), $userData);
+                    // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): xx ' .  print_r($sentTokens, true) . "\n", FILE_APPEND);
                 }
                 if (0 === $sent) {
                     // Try to sent a "nothingToSend" mail

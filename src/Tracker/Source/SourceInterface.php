@@ -118,6 +118,8 @@ interface SourceInterface
      */
     public function getId(): int;
 
+    public function getName(): string;
+
     /**
      * Returns an array of arrays with the structure:
      *      question => string,

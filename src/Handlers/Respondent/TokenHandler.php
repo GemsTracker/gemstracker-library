@@ -18,16 +18,20 @@ use Gems\Handlers\Overview\TokenSearchHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\MetaModelLoader;
+use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Respondent\TokenEmailSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Token;
 use Mezzio\Session\SessionMiddleware;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -123,6 +127,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
     protected array $emailSnippets = [
         ContentTitleSnippet::class,
         TokenEmailSnippet::class,
+        CurrentButtonRowSnippet::class,
     ];
 
     /**
@@ -246,14 +251,30 @@ class TokenHandler extends TokenSearchHandlerAbstract
         return $batchRunner->getResponse($this->request);
     }
 
+    public function createModel(bool $detailed, string $action): DataReaderInterface
+    {
+        $model = parent::createModel($detailed, $action);
+        $metaModel = $model->getMetaModel();
+
+        $metaModel->addMap(MetaModelInterface::REQUEST_ID1, 'gr2o_patient_nr');
+        $metaModel->addMap(MetaModelInterface::REQUEST_ID2, 'gr2o_id_organization');
+
+        $metaModel->set('gto_id_respondent', ['elementClass' => 'None']);
+        $metaModel->addTransformer(new FixedValueTransformer(['gto_id_respondent' => $this->getRespondentId()]));
+
+        return $model;
+    }
+
     /**
      * Action for correcting answers
      */
     public function correctAction()
     {
-        $this->deleteParameters = $this->correctParameters + $this->deleteParameters;
+        $this->deleteParameters = $this->correctParameters + $this->deleteParameters + $this->defaultTokenParameters;
+        $this->deleteSnippets   = $this->getToken()->getCorrectSnippetNames();
+        $this->deleteParameters['requestUndelete'] = false;
 
-        $this->deleteAction();
+        parent::deleteAction();
     }
 
     /**
@@ -283,7 +304,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
      * Email the user
      */
     public function emailAction()
-    {
+    {//
         if ($this->emailSnippets) {
             $params = $this->_processParameters($this->emailParameters + $this->defaultTokenParameters);
             $params['submitLabel'] = $this->translate->_('Send email');
@@ -351,6 +372,17 @@ class TokenHandler extends TokenSearchHandlerAbstract
         }
 
         return $data;
+    }
+
+    public function getSurveyId(): int
+    {
+        $token = $this->getToken();
+
+        if ($token->exists) {
+            return $token->getSurveyId();
+        }
+
+        return 0;
     }
 
     public function getToken()

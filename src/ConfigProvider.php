@@ -404,6 +404,7 @@ class ConfigProvider
                 // Logs
                 'LegacyLogger' => MonologFactory::class,
                 'embeddedLoginLog' => MonologFactory::class,
+                'commJobErrorLog' => MonologFactory::class,
 
                 // Cache
                 \Symfony\Component\Cache\Adapter\AdapterInterface::class => CacheFactory::class,
@@ -615,6 +616,17 @@ class ConfigProvider
                     ],
                 ],
             ],
+            'commJobErrorLog' => [
+                'writers' => [
+                    'stream' => [
+                        'name' => 'stream',
+                        'priority' => LogLevel::DEBUG,
+                        'options' => [
+                            'stream' => 'data/logs/cron-error.log',
+                        ],
+                    ],
+                ],
+            ],
             'embeddedLoginLog' => [
                 'writers' => [
                     'stream' => [
@@ -673,7 +685,6 @@ class ConfigProvider
             MetaModelInterface::TYPE_DATETIME => GemsDateTimeType::class,
             MetaModelInterface::TYPE_TIME => GemsTimeType::class,
         ];
-        $settings['translateDatabaseFields'] = true;
 
         foreach ($settings['bridges'] as $name => $className) {
             \MUtil\Model::setDefaultBridge($name, $className);
@@ -985,7 +996,7 @@ class ConfigProvider
         return [
             'template' => 'gems::vue',
             'resource' => 'resource/js/gems-vue.js',
-            'style' => 'resource/js/gems-vue.css',
+            // 'style' => 'resource/css/gems-vue.css',
         ];
     }
 }

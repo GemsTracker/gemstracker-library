@@ -40,6 +40,7 @@ class SupplementaryPrivileges
             'pr.export.gender-age' => $this->translator->trans('Grant right to export gender and age information with survey answers.'),
             'pr.staff.see.all' => $this->translator->trans('Display all organizations in staff overview.'),
             'pr.group.switch' => $this->translator->trans('Grant right to switch groups.'),
+            'pr.project.questions' => $this->translator->trans('Show questions with token.'),
             'pr.token.mail.freetext' => $this->translator->trans('Grant right to send free text (i.e. non-template) email messages.'),
             'pr.systemuser.seepwd' => $this->translator->trans('Grant right to see password of system users (without editing right).'),
             'pr.embed.login' => $this->translator->trans('Grant right for access to embedded login page.'),

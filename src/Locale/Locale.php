@@ -2,13 +2,18 @@
 
 namespace Gems\Locale;
 
-use MUtil\Model;
+use Zalt\Base\SymfonyTranslator;
+use Zalt\Base\TranslatorInterface;
 
 class Locale
 {
     private array $config;
 
     private string $currentLanguage;
+
+    private bool $isDefaultLanguage;
+
+    private ?TranslatorInterface $translator = null;
 
     public function __construct(array $config)
     {
@@ -17,6 +22,7 @@ class Locale
         }
 
         $this->setCurrentLanguage($this->getDefaultLanguage());
+        $this->isDefaultLanguage = true;
     }
 
     public function getAvailableLanguages(): array
@@ -51,38 +57,14 @@ class Locale
         return $this->getCurrentLanguage();
     }
 
-//    public function getModelTypeDefaults($language = null): array
-//    {
-//        if ($language === null) {
-//            $language = $this->getCurrentLanguage();
-//        }
-//
-//        $typeDefaults = [
-//            'lang' => $language,
-//        ];
-//
-//        if (isset($this->config['defaultTypes'])) {
-//            $typeDefaults = $this->config['defaultTypes'];
-//        }
-//
-//        if (isset($this->config['localeTypes'][$language])) {
-//            foreach($this->config['localeTypes'][$language] as $modelType => $settings) {
-//                foreach($settings as $settingName => $value) {
-//                    $typeDefaults[$modelType][$settingName] = $value;
-//                }
-//            }
-//        }
-//
-//        foreach($typeDefaults as $modelType=>$settings) {
-//            $typeDefaults[$modelType]['lang'] = $language;
-//        }
-//
-//        return $typeDefaults;
-//    }
-
     public function isCurrentLanguageDefault(): bool
     {
-        return ($this->currentLanguage === $this->getDefaultLanguage());
+        return $this->isDefaultLanguage;
+    }
+
+    public function setTranslator(TranslatorInterface $translator): void
+    {
+        $this->translator = $translator;
     }
 
     /**
@@ -91,6 +73,12 @@ class Locale
     public function setCurrentLanguage(string $currentLanguage): void
     {
         \Locale::setDefault($currentLanguage);
+        \setlocale(LC_ALL, $currentLanguage);
         $this->currentLanguage = $currentLanguage;
+        $this->isDefaultLanguage = false;
+
+        if ($this->translator instanceof SymfonyTranslator) {
+            $this->translator->setLocale($currentLanguage);
+        }
     }
 }

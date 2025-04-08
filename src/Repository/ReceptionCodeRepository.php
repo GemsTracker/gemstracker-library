@@ -119,7 +119,14 @@ class ReceptionCodeRepository
     public function getAllReceptionCodes(): array
     {
         $select = $this->cachedResultFetcher->getSelect('gems__reception_codes');
-        return $this->cachedResultFetcher->fetchAll(static::class . 'allReceptionCodes', $select, null, $this->cacheTags);
+        return array_map(function($item) {
+            if (empty($item['grc_description'])) {
+                $item['grc_description'] = $item['grc_id_reception_code'];
+            }
+            return $item;
+        },
+            $this->cachedResultFetcher->fetchAll(static::class . 'allReceptionCodes', $select, null, $this->cacheTags)
+        );
     }
 
     public function getReceptionCode(string $code): ReceptionCode
@@ -233,7 +240,7 @@ class ReceptionCodeRepository
         $allReceptionCodes = $this->getAllActiveReceptionCodes();
 
         $filteredCodes = array_filter($allReceptionCodes, function ($row) {
-            return $row[self::SURVEY_TYPE_FIELD] == 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
+            return $row[self::SURVEY_TYPE_FIELD] != 0 && $row[self::SUCCESS_FIELD] == 0 && $row[self::REDO_FIELD] == 0;
         });
 
         return array_column($filteredCodes, 'grc_description', 'grc_id_reception_code');

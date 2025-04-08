@@ -12,6 +12,8 @@ namespace Gems\Tracker\TrackEvent\Survey\Display;
 
 use Gems\Tracker\Token;
 use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -30,6 +32,11 @@ class CompactFullToggle extends SurveyAnswerFilterAbstract
 
      public array $includeStarts = ['score'];
 
+    public function __construct(TranslatorInterface $translator)
+    {
+        parent::__construct($translator);
+    }
+
     /**
      * This function is called in addBrowseTableColumns() to filter the names displayed
      * by AnswerModelSnippetGeneric.
@@ -39,9 +46,10 @@ class CompactFullToggle extends SurveyAnswerFilterAbstract
      * @param TableBridge $bridge
      * @param DataReaderInterface $model
      * @param array $currentNames The current names in use (allows chaining)
+     * @param RequestInfo $requestInfo
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(TableBridge $bridge, DataReaderInterface $model, array $currentNames): array
+    public function filterAnswers(TableBridge $bridge, DataReaderInterface $model, array $currentNames, RequestInfo $requestInfo): array
     {
 
         $repeater = $model->loadRepeatable();
@@ -49,14 +57,14 @@ class CompactFullToggle extends SurveyAnswerFilterAbstract
         $table->setRepeater($repeater);
 
         // Filter unless option 'fullanswers' is true, can be set as get or post var.
-        $requestFullAnswers = \Zend_Controller_Front::getInstance()->getRequest()->getParam('fullanswers', false);
+        $requestFullAnswers = (int) $requestInfo->getParam('fullanswers', 0);
         if (! $repeater->__start()) {
             return $currentNames;
         }
 
         $keys = array();
         $metaModel = $model->getMetaModel();
-        if ($requestFullAnswers !== false) {
+        if ($requestFullAnswers === 1) {
             // No filtering
             return $metaModel->getItemsOrdered();
 

@@ -13,11 +13,25 @@ class FolderModel extends ArrayModelAbstract
 {
     protected Finder $finder;
 
+    protected array $allowedContentMimeTypes = [
+        'text/plain',
+        'text/css',
+        'text/csv',
+        'text/html',
+        'text/xml',
+        'application/json',
+        'application/sql',
+    ];
+
+    protected int $maxContentSize = 5 * 1024 * 1024;
+
     public function __construct(
         MetamodelInterface $metaModel,
         protected readonly string|Finder $dir,
         readonly bool $recursive = false,
         readonly bool $followSymlinks = false,
+        array|null $allowedContentMimeTypes = null,
+        int|null $maxContentSize = null,
     )
     {
         parent::__construct($metaModel);
@@ -53,7 +67,20 @@ class FolderModel extends ArrayModelAbstract
         ]);
 
         $this->metaModel->setKeys(['urlpath']);
-        $this->metaModel->addTransformer(new FileInfoTransformer( (is_string($dir) ? $dir : '') ));
+
+        if (!is_null($allowedContentMimeTypes)) {
+            $this->allowedContentMimeTypes = $allowedContentMimeTypes;
+        }
+        if (!is_null($maxContentSize)) {
+            $this->maxContentSize = $maxContentSize;
+        }
+
+        $this->addFileInfoTransformer((is_string($dir) ? $dir : ''));
+    }
+
+    protected function addFileInfoTransformer(string $dir): void
+    {
+        $this->metaModel->addTransformer(new FileInfoTransformer($dir, $this->allowedContentMimeTypes, $this->maxContentSize));
     }
 
     protected function getFinder(string|Finder $dir, $recursive, $followSymlinks): Finder

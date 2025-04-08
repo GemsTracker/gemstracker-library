@@ -51,7 +51,7 @@ class AuditLog
         'gor_id_organization', 'gul_id_organization'
     ];
 
-    protected ServerRequestInterface $request;
+    protected ?ServerRequestInterface $request = null;
 
     protected array $respondentIdFields = [
         'grs_id_user', 'gr2o_id_user', 'gr2t_id_user', 'gap_id_user', 'gec_id_user', 'gto_id_respondent', 'grr_id_respondent'
@@ -176,11 +176,10 @@ class AuditLog
 
     protected function getCurrentOrganizationId(): int
     {
-        $this->getCurrentUser();
-        if ($this->user) {
-            return $this->user->getCurrentOrganizationId();
-        }
         if (isset($this->request)) {
+            if ($this->request->getAttribute(MetaModelInterface::REQUEST_ID2)) {
+                return $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
+            }
             $organizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
             if ($organizationId !== null) {
                 return $organizationId;
@@ -189,6 +188,11 @@ class AuditLog
             if ($currentUser instanceof User) {
                 return $currentUser->getCurrentOrganizationId();
             }
+        }
+
+        $this->getCurrentUser();
+        if ($this->user) {
+            return $this->user->getCurrentOrganizationId();
         }
 
         return 0;

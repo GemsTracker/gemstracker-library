@@ -51,7 +51,7 @@ class AgeCondition extends RoundConditionAbstract
      */
     public function getHelp(): string
     {
-        return $this->_("Track will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");
+        return $this->_("Round will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");
     }
 
     /**
@@ -120,18 +120,18 @@ class AgeCondition extends RoundConditionAbstract
         $ageUnit = $this->_data['gcon_condition_text2'];
 
         $validFrom = $token->getValidFrom();
-        if (!is_null($validFrom)) {
-            $respondent = $token->getRespondent();
-            $months = false;
-            if ($ageUnit == 'M') {
-                $months = true;
-            }
-            $age = $respondent->getAge($validFrom, $months);
-            $comparator = $this->getActiveComparator();
-            return $comparator->isValid($age);
+        if (null === $validFrom) {
+            $validFrom = new \DateTimeImmutable();
         }
 
-        return true;
+        $respondent = $token->getRespondent();
+        $months = false;
+        if ($ageUnit == 'M') {
+            $months = true;
+        }
+        $age = $respondent->getAge($validFrom, $months);
+        $comparator = $this->getActiveComparator();
+        return $comparator->isValid($age);
     }
 
     /**

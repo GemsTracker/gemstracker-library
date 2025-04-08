@@ -9,6 +9,7 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
@@ -49,6 +50,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        ConfigAccessor $configAccessor,
         MenuSnippetHelper $menuSnippetHelper,
         MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
@@ -63,6 +65,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
             $snippetOptions,
             $requestInfo,
             $translate,
+            $configAccessor,
             $menuSnippetHelper,
             $metaModelLoader,
             $resultFetcher,

@@ -24,6 +24,7 @@ use Gems\User\User;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
+use Zalt\Late\Late;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
@@ -136,8 +137,16 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
     protected function addContactBlock(ThreeColumnTableBridge $bridge)
     {
         // E-MAIL
-        $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.email', $this->token->getMenuUrlParameters());
-        $buttons = Html::actionLink($url, $this->_('E-mail now!'));
+        if ($this->token->isMailable()) {
+            $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.email', $this->token->getMenuUrlParameters());
+            $buttons = Html::actionLink($url, $this->_('E-mail now!'));
+        } else {
+            $buttons = Late::iff(
+                Late::comp($bridge->getLate('ggp_member_type'), '==', 'staff'),
+                Html::actionDisabled($this->_('This token is for a staff member and cannot be E-mailed')),
+                Html::actionDisabled($this->_('This token cannot be E-mailed'))
+            );
+        }
 
         $bridge->addWithThird('gto_mail_sent_date', 'gto_mail_sent_num', $buttons);
 

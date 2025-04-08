@@ -7,6 +7,8 @@ namespace Gems\Handlers\Respondent;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Exception;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
+use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Export\RespondentExportSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -30,6 +32,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class RespondentTrackHandler extends RespondentChildHandlerAbstract
@@ -69,7 +72,6 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
     protected array $deleteParameters = [
         'addCurrentParent'   => true,
         'addCurrentSiblings' => true,
-        'formTitle'          => null,
         'requestUndelete'    => false,
         'respondentTrack'    => 'getRespondentTrack',
         'respondentTrackId'  => 'getRespondentTrackId',
@@ -191,7 +193,6 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
 
     protected function createModel(bool $detailed, string $action): RespondentTrackModel
     {
-        $apply = true;
         $model = $this->tracker->getRespondentTrackModel();
         if ($detailed) {
             $engine = $this->getTrackEngine();
@@ -202,14 +203,33 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
                     $model->applyDetailSettings($engine);
                     break;
 
+                case 'edit':
+                    $model->applyEditSettings($engine);
+                    $metaModel = $model->getMetaModel();
+                    $metaModel->addTransformer(new FixedValueTransformer([
+                        'gr2t_id_user' => $this->getRespondentId(),
+                        'gr2t_id_organization' => $this->request->getAttribute(MetaModelInterface::REQUEST_ID2),
+                        'gr2t_id_respondent_track' => $this->request->getAttribute(Model::RESPONDENT_TRACK),
+                    ]));
+                    break;
+
+                case 'create':
+                    $model->applyEditSettings($engine);
+                    $metaModel = $model->getMetaModel();
+                    $metaModel->addTransformer(new FixedValueTransformer([
+                        'gr2t_id_user' => $this->getRespondentId(),
+                        'gr2t_id_organization' => $this->request->getAttribute(MetaModelInterface::REQUEST_ID2),
+                        'gr2t_id_track' => $this->request->getAttribute(Model::TRACK_ID),
+                    ]));
+                    break;
+
                 default:
                     $model->applyEditSettings($engine);
                     break;
             }
 
             $apply = false;
-        }
-        if ($apply) {
+        } else {
             $model->applyBrowseSettings();
         }
 
@@ -282,6 +302,11 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
     public function getRespondentTrackId(): ?int
     {
         return (int)$this->request->getAttribute(\Gems\Model::RESPONDENT_TRACK);
+    }
+
+    public function getTopic(int $count = 1): string
+    {
+        return $this->plural('track', 'tracks', $count);
     }
 
     /**
@@ -400,12 +425,8 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
      */
     public function undeleteAction()
     {
-        if ($this->deleteSnippets) {
-            $this->deleteParameters['requestUndelete'] = true;
+        $this->deleteParameters['requestUndelete'] = true;
 
-            $params = $this->_processParameters($this->deleteParameters);
-
-            $this->addSnippets($this->deleteSnippets, $params);
-        }
+        parent::deleteAction();
     }
 }

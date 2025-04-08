@@ -15,6 +15,8 @@ use Gems\Audit\AuditLog;
 use Gems\Html;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Generic\ButtonRowTrait;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Psr\Http\Message\ResponseInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Raw;
@@ -23,6 +25,7 @@ use Zalt\Model\Bridge\FormBridgeAbstract;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\DataWriterInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\Model\Exception\MetaModelException;
 use Zalt\Snippets\Zend\ZendModelFormSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -49,6 +52,8 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     use AuditLogDataCleanupTrait;
     use ButtonRowTrait;
     use TopicCallableTrait;
+
+    public const KEEP_VALUE_FOR_SAVE = 'keepForSave';
 
     protected string $afterSaveRoutePart = 'show';
 
@@ -83,6 +88,8 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      * @var int
      */
     protected int $layoutFixedWidth = 0;
+
+    protected ResponseInterface|null $response = null;
 
     /**
      * When true a tabbed form is used.
@@ -253,6 +260,17 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     }
 
     /**
+     * After validation we clean the form data to remove all
+     * entries that do not have elements in the form (and
+     * this filters the data as well).
+     */
+    public function cleanFormData()
+    {
+        $columns = $this->getModel()->getMetaModel()->getCol(static::KEEP_VALUE_FOR_SAVE);
+        $this->formData = $this->_form->getValues() + array_intersect_key($this->formData, $columns);
+    }
+
+    /**
      * Creates an empty form. Allows overruling in sub-classes.
      *
      * @param mixed $options
@@ -315,6 +333,11 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
         return $htmlDiv;
     }
 
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
+    }
+
     /**
      * Retrieve the header title to display
      *
@@ -329,6 +352,17 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
         } else {
             return sprintf($this->_('Edit %s'), $this->getTopic());
         }
+    }
+
+    public function hasHtmlOutput(): bool
+    {
+        try {
+            return parent::hasHtmlOutput();
+        } catch(MetaModelException) {
+            $this->setNotFound();
+        }
+
+        return false;
     }
 
     protected function logChanges(int $changes): void
@@ -362,5 +396,12 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
             $this->afterSaveRouteUrl = $this->menuHelper->routeHelper->getRouteUrl($route, $params);
         }
         parent::setAfterSaveRoute();
+    }
+
+    protected function setNotFound(): void
+    {
+        $this->response = new HtmlResponse(sprintf(
+            $this->_('%s not found!'),
+            ucfirst($this->getTopic(1))), 404);
     }
 }

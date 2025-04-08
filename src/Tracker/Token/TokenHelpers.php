@@ -2,21 +2,54 @@
 
 namespace Gems\Tracker\Token;
 
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
-use Gems\Site\SiteUtil;
+use Gems\Repository\OrganizationRepository;
 use Gems\Tracker\Token;
-use MUtil\Model;
+use Gems\User\User;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\BaseDir;
 
 class TokenHelpers
 {
+    protected readonly ?User $currentUser;
+
     public function __construct(
-        protected RouteHelper $routeHelper,
-        protected SiteUtil $siteUtil,
-        protected array $config,
+        CurrentUserRepository $currentUserRepository,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly RouteHelper $routeHelper,
+        protected readonly array $config,
     )
-    {}
+    {
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+
+    /**
+     * @param Token $token
+     * @return string The url to return to after LimeSurvey ask/return when nothing else has been specified
+     */
+    public function getDefaultReturnUrl(Token $token): string
+    {
+        if ($this->currentUser && $this->currentUser->isActive() && (! $this->currentUser->isLogoutOnSurvey())) {
+            $route = 'respondent.show';
+        } else {
+            $route = 'ask.forward';
+        }
+
+        $baseUrl = $token->getOrganization()->getPreferredSiteUrl();
+        $baseDir = BaseDir::getBaseDir();
+        if ($baseDir && str_ends_with($baseUrl, $baseUrl)) {
+            $baseUrl = substr($baseUrl, 0, -strlen($baseDir));
+        }
+
+        return $baseUrl . $this->routeHelper->getRouteUrl($route, $token->getMenuUrlParameters());
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param Token $token
+     * @return string The url to return to after LimeSurvey forwarded to ask/return checking for a return parameter or the HTTP_REFERER
+     */
     public function getReturnUrl(ServerRequestInterface $request, Token $token): string
     {
         $queryParams = $request->getQueryParams();
@@ -27,23 +60,25 @@ class TokenHelpers
             }
         }
 
-        $serverParams = $request->getServerParams();
-        if (isset($serverParams['HTTP_REFERER'])) {
-            return $serverParams['HTTP_REFERER'];
+        // Check referrer only when logged in!
+        if ($this->currentUser && $this->currentUser->isActive()) {
+            $serverParams = $request->getServerParams();
+            if (isset($serverParams['HTTP_REFERER']) && $this->isValidReturnUrl($serverParams['HTTP_REFERER'])) {
+                return $serverParams['HTTP_REFERER'];
+            }
         }
 
-        $baseUrl = $token->getOrganization()->getPreferredSiteUrl();
-        $baseDir = BaseDir::getBaseDir();
-        if ($baseDir && str_ends_with($baseUrl, $baseUrl)) {
-            $baseUrl = substr($baseUrl, 0, -strlen($baseDir));
-        }
-
-        return $baseUrl . $this->routeHelper->getRouteUrl('ask.forward', [Model::REQUEST_ID => $token->getTokenId()]);
+        return $this->getDefaultReturnUrl($token);
     }
 
     public function isValidReturnUrl($url): bool
     {
-        if ($this->siteUtil->isAllowedUrl($url)) {
+        // Prevent eternal loop as /ask/return/ the url called by LimeSurvey and is looking for the forward url
+        if (str_contains($url, '/ask/return/')) {
+            return false;
+        }
+
+        if ($this->organizationRepository->isAllowedUrl($url)) {
             return true;
         }
 

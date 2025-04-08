@@ -17,7 +17,7 @@ class HelperAdapter extends TagAwareAdapter
      *
      * @param array<int, string> $plainKeyParts Array of strings to include in the cache
      *                                          key as is, so we still know what's what.
-     * @param ...$args All other arguments provided to the original caching function.
+     * @param ...$args mixed All other arguments provided to the original caching function.
      * @return string A unique string that can be used as a cache key.
      */
     public static function createCacheKey(array $plainKeyParts, ...$args): string
@@ -31,6 +31,11 @@ class HelperAdapter extends TagAwareAdapter
     public static function cleanupForCacheId(string $cacheId): string
     {
         return preg_replace('([^a-zA-Z0-9_])', '_', $cacheId);
+    }
+
+    public function hasCacheItem(string $key): bool
+    {
+        return $this->getItem($key)->isHit();
     }
 
     public function getCacheItem(string $key): mixed

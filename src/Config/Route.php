@@ -394,7 +394,7 @@ class Route
             ),
             ...$this->createSnippetRoutes(
                 baseName: 'ask',
-                controllerClass: \Gems\Handlers\AskHandler::class,
+                controllerClass: \Gems\Handlers\AskLegacyHandler::class, // Should later be changed to AskHandler
                 basePrivilege: false,
                 pages: [
                     'index',
@@ -816,7 +816,7 @@ class Route
                     'check-token',
                     'check-token-answers',
                 ],
-                postRoutes: array_merge($this->defaultPostRoutes, ['correct', 'undelete']),
+                postRoutes: array_merge($this->defaultPostRoutes, ['correct', 'email', 'undelete']),
                 parentParameters: [
                     'id1',
                     'id2',
@@ -1351,6 +1351,7 @@ class Route
                     'edit',
                     'check-all',
                     'answer-imports',
+                    'attributes',
                     'check',
                     'answer-import',
                     //'export-codebook',
@@ -1359,6 +1360,7 @@ class Route
                     ...$this->defaultParameterRoutes,
                     'check',
                     'answer-import',
+                    'attributes',
                     'export-codebook',
                 ],
             ),

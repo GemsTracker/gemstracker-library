@@ -30,6 +30,7 @@ use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -197,7 +198,7 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
                 $model = $event->getModel();
                 $answerNames = $event->getCurrentNames();
 
-                $answerNames = $answerFilter->filterAnswers($bridge, $model, $answerNames);
+                $answerNames = $answerFilter->filterAnswers($bridge, $model, $answerNames, $this->requestInfo);
 
                 $event->setCurrentNames($answerNames);
             };
@@ -291,7 +292,14 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
     protected function addButtons(HtmlElement $html)
     {
         $buttonDiv = $html->buttonDiv();
-        $buttonDiv->actionLink(array(), $this->_('Close'), array('class' => 'windowCloseButton'));
+
+        $params = $this->token->getMenuUrlParameters();
+        if ($params) {
+            $buttonDiv->actionLink($this->menuHelper->getRouteUrl('respondent.show', $params), $this->_('Show respondent'));
+            $buttonDiv->actionLink($this->menuHelper->getRouteUrl('respondent.tracks.show', $params), $this->_('Show track'));
+            $buttonDiv->actionLink($this->menuHelper->getRouteUrl('respondent.tracks.token.show', $params), $this->_('Show token'));
+        }
+        // $buttonDiv->actionLink(array(), $this->_('Close'), array('class' => 'windowCloseButton'));
         $buttonDiv->actionLink(array(), $this->_('Print'), array('class' => 'windowPrintButton'));
     }
 

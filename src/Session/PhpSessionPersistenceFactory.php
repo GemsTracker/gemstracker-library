@@ -22,7 +22,7 @@ class PhpSessionPersistenceFactory implements FactoryInterface
 
         $cookieName     = $persistenceConfig['cookie_name'] ?? ini_get('session.name') ?? 'PHPSESSION';
         $cookieDomain   = $persistenceConfig['cookie_domain'] ?? ini_get('session.cookie_domain');
-        $cookiePath     = $persistenceConfig['cookie_path'] ?? BaseDir::getBaseDir(); // ini_get('session.cookie_path');
+        $cookiePath     = $persistenceConfig['cookie_path'] ?? BaseDir::getBaseDir() . '/'; // ini_get('session.cookie_path');
         $cookieSecure   = $persistenceConfig['cookie_secure'] ?? filter_var(
             ini_get('session.cookie_secure'),
             FILTER_VALIDATE_BOOLEAN,

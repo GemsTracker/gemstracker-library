@@ -18,11 +18,7 @@ class DbTranslationRepository
     )
     {
         $this->language = $locale->getLanguage();
-        $defaultLocale = $config['locale']['default'] ?? null;
-        $configEnabled = $config['translations']['databaseFields'] ?? false;
-        if ($this->language !== $defaultLocale && $configEnabled) {
-            $this->translationsEnabled = true;
-        }
+        $this->translationsEnabled = $config['model']['translateDatabaseFields'] ?? false;
     }
 
     public function fetchTranslatedRow(string $tableName, string $keyField, mixed $keyValue): array|null
@@ -40,43 +36,59 @@ class DbTranslationRepository
     /**
      * @param string $tableName
      * @param string $keyValue
-     * @param array $data
+     * @param array $row
      * @return array
      */
-    public function translateTable(string $tableName, string $keyValue, array $data): array
+    public function translateRow(string $tableName, string $keyValue, array $row): array
     {
-        if (!$this->translationsEnabled) {
-            return $data;
-        }
-
         $tSelect = $this->resultFetcher->getSelect('gems__translations');
         $tSelect->columns(['gtrs_field', 'gtrs_translation'])
             ->where([
                 'gtrs_table' => $tableName,
                 'gtrs_keys' => $keyValue,
                 'gtrs_iso_lang' => $this->language,
-                new Expression('LENGTH(gtrs_translation) > 0')
+                'LENGTH(gtrs_translation) > 0'
             ]);
 
         try {
             $translations = $this->resultFetcher->fetchPairs($tSelect);
-            // \MUtil\EchoOut\EchoOut::track($tSelect->__toString(), $translations);
         } catch (\Exception $sme) {
             // Ignore: as can be setup error
             $translations = [];
-            \MUtil\EchoOut\EchoOut::r("Translations table required, but does not exist.");
+            dump("Translations table required, but does not exist.");
             error_log($sme->getMessage());
         }
 
         if ($translations) {
-            foreach ($data as $item => $value) {
+            foreach ($row as $item => $value) {
                 if (isset($translations[$item])) {
                     // Set value to the translation
-                    $data[$item] = $translations[$item];
+                    $row[$item] = $translations[$item];
                 }
             }
         }
 
+        return $row;
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $keyField
+     * @param array $data
+     * @return array<int, array>
+     */
+    public function translateTable(string $tableName, string $keyField, array $data): array
+    {
+        if (!$this->translationsEnabled) {
+            return $data;
+        }
+
+        foreach ($data as &$row) {
+            $key = $row[$keyField] ?? false;
+            if ($key) {
+                $row = $this->translateRow($tableName, $key, $row);
+            }
+        }
         return $data;
     }
 

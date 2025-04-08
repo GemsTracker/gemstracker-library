@@ -6,7 +6,6 @@ use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\OrganizationRepository;
-use Gems\Site\SiteUrl;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\ServerRequest;
@@ -80,14 +79,6 @@ class CurrentOrganizationMiddleware implements MiddlewareInterface
             }
 
             return $baseOrganizationId;
-        }
-
-        $siteUrl = $request->getAttribute(SiteGateMiddleware::SITE_URL_ATTRIBUTE);
-        if ($siteUrl instanceof SiteUrl && $siteUrl->getFirstOrganizationId()) {
-            if ($currentOrganizationId && in_array($currentOrganizationId, $siteUrl->getOrganizations())) {
-                return $currentOrganizationId;
-            }
-            return $siteUrl->getFirstOrganizationId();
         }
 
         return UserLoader::SYSTEM_NO_ORG;

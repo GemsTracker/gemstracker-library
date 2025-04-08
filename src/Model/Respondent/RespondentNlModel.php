@@ -66,6 +66,9 @@ class RespondentNlModel extends RespondentModel
             'description' => $this->_('E.g.: 0000 AA'),
             'filters[postcode]' => PostcodeFilter::class,
         ]);
-    }
 
+        $this->metaModel->set('grs_iso_country', [
+            'default' => 'NL',
+        ]);
+    }
 }

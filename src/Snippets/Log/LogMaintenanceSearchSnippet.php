@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Log;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
@@ -37,13 +38,14 @@ class LogMaintenanceSearchSnippet extends AutosearchFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        ConfigAccessor $configAccessor,
         MenuSnippetHelper $menuSnippetHelper,
         MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
         StatusMessengerInterface $messenger,
         protected Translated $translatedUtil,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $configAccessor, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger);
     }
 
     /**

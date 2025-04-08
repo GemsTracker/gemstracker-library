@@ -26,4 +26,10 @@ class InsertableQuestionnaireModel extends QuestionnaireModel
 
         $this->metaModel->addTransformer(new QuestionnaireInsertableOrganizationTransformer());
     }
+
+    protected function checkFilter(mixed $filter): array
+    {
+        $filter['gsu_insertable'] = 1;
+        return parent::checkFilter($filter);
+    }
 }

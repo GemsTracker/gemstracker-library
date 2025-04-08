@@ -13,7 +13,7 @@ namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Audit\AuditLog;
 use Gems\Batch\BatchRunnerLoader;
-use Gems\Db\ResultFetcher;
+use Gems\Config\ConfigAccessor;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
@@ -26,12 +26,10 @@ use Gems\Util\Translated;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
 use MUtil\Legacy\RequestHelper;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
-use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
  * Controller for Source maintenance
@@ -80,15 +78,14 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         CurrentUserRepository $currentUserRepository,
-        protected Tracker $tracker,
-        protected BatchRunnerLoader $batchRunnerLoader,
-        protected ResultFetcher $resultFetcher,
-        protected RouteHelper $routeHelper,
-        protected Translated $translatedUtil,
-        protected AuditLog $accesslog,
-        protected ValueEncryptor $valueEncryptor,
+        protected readonly AuditLog $accesslog,
+        protected readonly BatchRunnerLoader $batchRunnerLoader,
+        protected readonly ConfigAccessor $configAccessor,
+        protected readonly Tracker $tracker,
+        protected readonly RouteHelper $routeHelper,
         protected readonly SourceModel $sourceModel,
-
+        protected readonly Translated $translatedUtil,
+        protected readonly ValueEncryptor $valueEncryptor,
     ) {
         parent::__construct($responder, $translate, $cache);
 
@@ -113,16 +110,17 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function attributesAction()
     {
-        $sourceId = $this->getSourceId();
+        $this->configAccessor->extendBatchLoadTime();
 
+        $sourceId = $this->getSourceId();
         $where    = ['gsu_id_source' => $sourceId];
 
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where);
+        $batch   = $this->tracker->refreshTokenAttributes($session, 'attributeCheckSource' . $sourceId, $where);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
-            $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
+            $this->tracker->getSource($sourceId)->getName());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($title);
@@ -142,8 +140,10 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function attributesAllAction()
     {
+        $this->configAccessor->extendBatchLoadTime();
+
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheckAll');
+        $batch   = $this->tracker->refreshTokenAttributes($session, 'attributeCheckAll');
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = $this->_('Refreshing token attributes for all sources.');
@@ -166,6 +166,8 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function checkAction()
     {
+        $this->configAccessor->extendBatchLoadTime();
+
         $sourceId = $this->getSourceId();
 
         $batch = $this->tracker->recalculateTokens(
@@ -177,8 +179,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Checking all surveys in the %s source for answers.'),
-            $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
-
+            $this->tracker->getSource($sourceId)->getName());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($title);
@@ -199,6 +200,8 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function checkAllAction()
     {
+        $this->configAccessor->extendBatchLoadTime();
+
         $batch = $this->tracker->recalculateTokens(
             $this->request->getAttribute(SessionInterface::class),
             'surveyCheckAll',
@@ -283,6 +286,8 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function pingAction()
     {
+        $this->configAccessor->extendBatchLoadTime();
+
         $source = $this->getSourceById();
 
         /**
@@ -318,15 +323,16 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function synchronizeAction()
     {
+        $this->configAccessor->extendBatchLoadTime();
+
         $sourceId = $this->getSourceId();
 
         $session = $this->request->getAttribute(SessionInterface::class);
-
-        $batch = $this->tracker->synchronizeSources($session, $sourceId);
+        $batch   = $this->tracker->synchronizeSources($session, $sourceId);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Synchronize the %s source.'),
-            $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
+            $this->tracker->getSource($sourceId)->getName());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($title);
@@ -346,8 +352,10 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function synchronizeAllAction()
     {
+        $this->configAccessor->extendBatchLoadTime();
+
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->synchronizeSources($session);
+        $batch   = $this->tracker->synchronizeSources($session);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batch->minimalStepDurationMs = 3000;

@@ -177,7 +177,7 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
     /**
      *
      * @return \Gems\Screens\EditScreenInterface
-     */
+     * /
     public function getRespondentEditScreen()
     {
         if ($this->_respondentEditScreen || (! $this->_get('ggp_respondent_edit'))) {
@@ -193,7 +193,7 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
     /**
      *
      * @return \Gems\Screens\ShowScreenInterface
-     */
+     * /
     public function getRespondentShowScreen()
     {
         if ($this->_respondentShowScreen || (! $this->_get('ggp_respondent_show'))) {

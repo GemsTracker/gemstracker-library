@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Gems\Snippets;
 
+use Laminas\Diactoros\Response\HtmlResponse;
+use Psr\Http\Message\ResponseInterface;
+use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\Model\MetaModelInterface;
 
 /**
@@ -22,8 +25,12 @@ use Zalt\Model\MetaModelInterface;
 abstract class ModelDetailTableSnippetAbstract extends \Zalt\Snippets\ModelDetailTableSnippetAbstract
 {
     use TopicCallableTrait;
+
+    protected $bridgeMode = BridgeInterface::MODE_SINGLE_ROW;
     
     protected $class = 'displayer table';
+
+    protected ResponseInterface|null $response;
     
     public function getHtmlOutput()
     {
@@ -47,5 +54,31 @@ abstract class ModelDetailTableSnippetAbstract extends \Zalt\Snippets\ModelDetai
             $this->_('%s not found!'),
             ucfirst($this->getTopic(1))
         );
+    }
+
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
+    }
+
+    public function hasHtmlOutput(): bool
+    {
+        if ($this->bridgeMode === BridgeInterface::MODE_SINGLE_ROW) {
+            $bridge = $this->getModel()->getBridgeFor($this->bridgeClass);
+            $row = $bridge->getRow();
+            if (empty($row)) {
+                $this->setNotFound();
+                return false;
+            }
+        }
+
+        return parent::hasHtmlOutput();
+    }
+
+    protected function setNotFound(): void
+    {
+        $this->response = new HtmlResponse(sprintf(
+            $this->_('%s not found!'),
+            ucfirst($this->getTopic(1))), 404);
     }
 }

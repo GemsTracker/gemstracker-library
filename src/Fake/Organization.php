@@ -4,9 +4,9 @@ namespace Gems\Fake;
 
 class Organization extends \Gems\User\Organization
 {
-    public function __construct(?array $data = null)
+    public function __construct(array $sites, ?array $data = null)
     {
-        parent::__construct(0, []);
+        parent::__construct(new FakeCachedDbTranslationRepository(), 0, $sites, [], 'respondent.tracks.show');
         if ($data !== null) {
             $this->_data = $data;
             return;

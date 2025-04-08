@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Tracker\Model\Dependency\ValuesMaintenanceDependency;
 use MUtil\Model\Type\ConcatenatedRow;
 
 /**
@@ -44,12 +45,57 @@ class MultiselectField extends FieldAbstract
     protected function addModelSettings(array &$settings): void
     {
         $concatter = new ConcatenatedRow(parent::FIELD_SEP, $this->displaySeparator, $this->padSeperators);
-        $multiKeys = explode(parent::FIELD_SEP, (string)$this->fieldDefinition['gtf_field_value_keys']);
-        $multi     = explode(parent::FIELD_SEP, (string)$this->fieldDefinition['gtf_field_values']);
         $settings  = $concatter->getSettings() + $settings;
 
         $settings['elementClass'] = 'MultiCheckbox';
-        $settings['multiOptions'] = array_combine($multiKeys, $multi);
+        $settings['multiOptions'] = $this->getMultiOptions();
+    }
+
+    /**
+     * Calculation the field info display for this type
+     *
+     * @param string|array|null $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function calculateFieldInfo($currentValue, array $fieldData): mixed
+    {
+        $options = $this->getMultiOptions();
+
+        if (is_array($currentValue)){
+            $values = $currentValue;
+        } else {
+            $values = explode(parent::FIELD_SEP, trim($currentValue ?? '', parent::FIELD_SEP));
+        }
+        $output = [];
+        foreach ($values as $value) {
+            if (isset($options[$value])) {
+                $output[] = $options[$value];
+            } else {
+                $output[] = $value;
+            }
+        }
+        if ($output) {
+            return implode($this->displaySeparator, $output);
+        }
+        return null;
+    }
+
+    protected function getMultiOptions()
+    {
+        $multiKeys = [];
+        if (!empty($this->fieldDefinition['gtf_field_value_keys'])) {
+            $multiKeys = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_value_keys']);
+        }
+        $multi = [];
+        if (!empty($this->fieldDefinition['gtf_field_values'])) {
+            $multi = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_values']);
+        }
+
+        if ($multiKeys) {
+            return ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
+        }
+        return ValuesMaintenanceDependency::combineKeyValues($multi, $multi);
     }
 
     /**

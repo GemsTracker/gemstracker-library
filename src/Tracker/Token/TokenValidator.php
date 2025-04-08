@@ -5,8 +5,8 @@ namespace Gems\Tracker\Token;
 use Gems\Repository\TokenAttemptsRepository;
 use Gems\Tracker;
 use Laminas\Validator\ValidatorInterface;
-use MUtil\Translate\Translator;
 use DateTimeImmutable;
+use Zalt\Base\TranslatorInterface;
 
 class TokenValidator implements ValidatorInterface
 {
@@ -17,7 +17,7 @@ class TokenValidator implements ValidatorInterface
     public function __construct(
         protected TokenAttemptsRepository $tokenAttemptsRepository,
         protected Tracker $tracker,
-        protected Translator $translator,
+        protected TranslatorInterface $translator,
     )
     {}
 

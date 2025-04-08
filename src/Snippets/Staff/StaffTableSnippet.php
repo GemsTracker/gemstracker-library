@@ -94,7 +94,7 @@ class StaffTableSnippet extends ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {

@@ -242,11 +242,11 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
         if (! $this->afterSaveRouteUrl) {
             if ($this->_replacementToken) {
                 $urlParams = $this->_replacementToken->getMenuUrlParameters();
+                $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.token.show', $urlParams);
             } else {
                 $urlParams = $this->token->getMenuUrlParameters();
+                $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.show', $urlParams);
             }
-
-            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.show', $urlParams);
         }
 
         parent::setAfterSaveRoute();
@@ -297,12 +297,11 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
                 // Create a link for the old token
                 $oldToken = strtoupper($this->token->getTokenId());
 
-                $url = $this->menuHelper->getRouteUrl('respondent.tracks.show', $this->token->getMenuUrlParameters());
-                if ($url) {
-                    // \MUtil\EchoOut\EchoOut::track($oldToken);
-                    $link = Html::create('a', $url, $oldToken);
-                }
-
+//                $url = $this->menuHelper->getRouteUrl('respondent.tracks.token.show', $this->token->getMenuUrlParameters());
+//                if ($url) {
+//                    $link = Html::create('a', $url, $oldToken);
+//                }
+//
                 // Tell what the user what happened
                 $this->addMessage(sprintf(
                         $this->_('Created this token %s as replacement for token %s.'),

@@ -79,6 +79,10 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
      */
     protected function addCheckedValue($key, $value, $keepAnswer = true)
     {
+        if ($value instanceof \DateTimeInterface) {
+            $value = $value->format('Y-m-d H:i:s');
+        }
+
         if (is_null($value) || ! (strlen($value) && $key && is_scalar($key))) {
             // Do not set if no value or no key or not a correct key
             return;
@@ -255,10 +259,10 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
     }
     
     /**
-     * @param $key The key of a set value
+     * @param string $key The key of a set value
      * @return false|mixed The value set or used in answers
      */
-    protected function getValue($key)
+    protected function getValue(string $key)
     {
         $akey = $this->checkOutputKey($key);
         if ($akey && isset($this->_output[$akey])) {

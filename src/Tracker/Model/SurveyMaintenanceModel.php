@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\SurveyModelSetEvent;
 use Gems\Legacy\CurrentUserRepository;
@@ -68,9 +69,9 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
         protected readonly MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
-        protected readonly AccessRepository $accessRepository,
-        protected readonly array $config,
         CurrentUserRepository $currentUserRepository,
+        protected readonly AccessRepository $accessRepository,
+        protected readonly ConfigAccessor $configAccessor,
         protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly Locale $locale,
         protected readonly OrganizationRepository $organizationRepository,
@@ -94,7 +95,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
     public function applyAction(SnippetActionInterface $action): void
     {
         if ($action->isDetailed()) {
-            $hideSetting = ['elementClass' => 'Hidden', 'label' => ''];
+            $hideSetting = ['elementClass' => 'None', 'label' => ''];
 
             /**
              *
@@ -185,7 +186,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
         }
 
         if ($action->isEditing()) {
-            if (true || $this->currentUser->hasPrivilege('pr.survey-maintenance.answer-groups')) {
+            if ($this->currentUser->hasPrivilege('pr.survey-maintenance.answer-groups')) {
                 $this->metaModel->addDependency(CanEditDependency::class, 'gsu_answers_by_group', ['gsu_answer_groups']);
             } else {
                 $this->metaModel->setMulti(['gsu_answers_by_group', 'gsu_answer_groups', 'gsu_allow_export'], ['readonly' => 'readonly', 'disabled' => 'disabled']);
@@ -208,11 +209,8 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
                 'required' => false,
                 'validators[pdf]' => \MUtil\Validator\Pdf::class,
             ]);
-
-//             $this->metaModelLoader->addDatabaseTranslationEditFields($this->metaModel);
-        } else {
-            $this->metaModelLoader->addDatabaseTranslations($this->metaModel);
         }
+        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $action->isDetailed());
 
         $event = new SurveyModelSetEvent($this, $action->isDetailed(), $action->isEditing());
         $this->eventDispatcher->dispatch($event, SurveyModelSetEvent::class);
@@ -290,12 +288,8 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
                 'formatFunction', [$this, 'formatWarnings']
                 );
 
-        $message = $this->_('Active');
-        if (isset($this->config['app']['name'])) {
-            $message = sprintf($this->_('Active in %s'), $this->config['app']['name']);
-        }
         $this->metaModel->set('gsu_active', [
-            'label' => $message,
+            'label' => sprintf($this->_('Active in %s'), $this->configAccessor->getAppName()),
             'elementClass' => 'Checkbox',
             'multiOptions' => $yesNo,
             RequireOtherFieldValidator::$otherField => 'gsu_id_primary_group',
@@ -400,7 +394,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
     public function calculateDuration($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
         // Calculation of duration can be disabled in config.
-        if (isset($this->config['survey']['details']['duration']) && $this->config['survey']['details']['duration'] === false) {
+        if (! $this->configAccessor->isSurveyDurationCalculationEnabled()) {
             return $this->_('Calculation disabled');
         }
         $surveyId = isset($context['gsu_id_survey']) ? $context['gsu_id_survey'] : false;
@@ -482,7 +476,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
     public function calculateTrackCount($value, $isNew = false, $name = null, array $context = [], $isPost = false)
     {
         // Calculation of usage can be disabled in config.
-        if (isset($this->config['survey']['details']['usage']) && $this->config['survey']['details']['usage'] === false) {
+        if (! $this->configAccessor->isSurveyUsageCalculationEnabled()) {
             return $this->_('Calculation disabled');
         }
         $surveyId = isset($context['gsu_id_survey']) ? $context['gsu_id_survey'] : false;
@@ -517,7 +511,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
     public function calculateTrackUsage($value, $isNew = false, $name = null, array $context = [], $isPost = false)
     {
         // Calculation of usage can be disabled in config.
-        if (isset($this->config['survey']['details']['usage']) && $this->config['survey']['details']['usage'] === false) {
+        if (! $this->configAccessor->isSurveyUsageCalculationEnabled()) {
             return $this->_('Calculation disabled');
         }
         $surveyId = isset($context['gsu_id_survey']) ? $context['gsu_id_survey'] : false;

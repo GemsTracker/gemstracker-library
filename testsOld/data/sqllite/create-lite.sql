@@ -1372,33 +1372,6 @@ UPDATE ignore gems__rounds SET gro_id_round = 0 WHERE gro_survey_name = 'Dummy f
 DELETE FROM gems__rounds WHERE gro_id_round != 0 AND gro_survey_name = 'Dummy for inserted surveys';
 
 
-CREATE TABLE gems__sites (
-    gsi_id                      INTEGER not null ,
-
-    gsi_url                     varchar(255) not null,
-    gsi_order                   INTEGER not null default 100,
-
-    gsi_select_organizations    TINYINT(1) not null default 0,
-    gsi_organizations           varchar(255) not null default '||',
-
-    gsi_style                   varchar(15)  not null default 'gems',
-    gsi_style_fixed             TINYINT(1) not null default 0,
-
-    gsi_iso_lang                char(2) not null default 'en',
-    
-    gsi_active                  TINYINT(1) not null default 1,
-    gsi_blocked                 TINYINT(1) not null default 0,
-
-    gsi_changed                 TEXT not null default current_timestamp,
-    gsi_changed_by              INTEGER not null,
-    gsi_created                 TEXT not null,
-    gsi_created_by              INTEGER not null,
-
-    PRIMARY KEY (gsi_id),
-    UNIQUE (gsi_url)        
-)
-;
-
 CREATE TABLE gems__sources (
         gso_id_source       int(10) NOT NULL ,
         gso_source_name     varchar(40) NOT NULL,

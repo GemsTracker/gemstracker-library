@@ -189,6 +189,7 @@ class RespondentRepository
     /**
      *
      * @return array
+     * @deprecated since 2025-03-13 because not translated unser consentRepository->getConsents() instead
      */
     public function getRespondentConsents(): array
     {

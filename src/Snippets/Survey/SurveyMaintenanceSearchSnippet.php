@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Survey;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
@@ -42,6 +43,7 @@ class SurveyMaintenanceSearchSnippet extends AutosearchFormSnippet
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         Translator $translate,
+        ConfigAccessor $configAccessor,
         MenuSnippetHelper $menuSnippetHelper,
         MetaModelLoader $metaModelLoader,
         ResultFetcher $resultFetcher,
@@ -54,7 +56,7 @@ class SurveyMaintenanceSearchSnippet extends AutosearchFormSnippet
         protected AccessRepository $accessRepository,
 
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $configAccessor, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger);
     }
 
     /**

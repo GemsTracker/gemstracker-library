@@ -18,6 +18,7 @@ use Gems\Communication\CommunicationRepository;
 use Gems\Mail\TokenMailer;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Tracker\Token;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Mime\Address;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -49,6 +50,10 @@ class ShowTokenLoopAbstract extends TranslatableSnippetAbstract
      * General date format
      */
     protected string $dateFormat = 'j M Y';
+
+    protected string $redirectUrl = '';
+
+    protected ?ResponseInterface $response = null;
 
     /**
      * Switch for showing the duration.
@@ -329,6 +334,16 @@ class ShowTokenLoopAbstract extends TranslatableSnippetAbstract
     protected function getHeaderLabel()
     {
         return $this->_('Token');
+    }
+
+    public function getRedirectRoute(): ?string
+    {
+        return $this->redirectUrl;
+    }
+
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
     }
 
     /**

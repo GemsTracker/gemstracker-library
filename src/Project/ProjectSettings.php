@@ -62,7 +62,7 @@ class ProjectSettings extends \ArrayObject
     {
         parent::__construct($config, \ArrayObject::ARRAY_AS_PROPS);
 
-        $this->offsetSet('multiLocale', $this->offsetExists('locales') && (count($this->offsetGet('locales')) > 1));
+        $this->offsetSet('multiLocale', isset($this['locale'], $this['locale']['availableLocales']) && (count($this['locale']['availableLocales']) > 1));
     }
 
     /**
@@ -259,7 +259,7 @@ class ProjectSettings extends \ArrayObject
      * Array of hosts allowed to post data to this project
      *
      * @return array
-     * @deprecated since version 1.9.1, is stored in gems__sites
+     * @deprecated since version 2 use OrganizationRepository
      */
     public function getAllowedHosts()
     {
@@ -375,21 +375,6 @@ class ProjectSettings extends \ArrayObject
         }
 
         return false;
-    }
-
-    /**
-     * The site url during command line actions
-     *
-     * @return string
-     * @deprecated since version 1.9.1, is stored in gems__sites
-     */
-    public function getConsoleUrl()
-    {
-        if ($this->offsetExists('console') && isset($this->console['url'])) {
-            return trim($this->console['url']);
-        }
-
-        return 'localhost';
     }
 
     /**
@@ -1286,9 +1271,9 @@ class ProjectSettings extends \ArrayObject
      */
     public function translateDatabaseFields()
     {
-        return isset($this['multiLocale'], $this['translate'], $this['translate']['databasefields']) &&
+        return isset($this['multiLocale'], $this['mdoel'], $this['model']['translateDatabaseFields']) &&
             $this['multiLocale'] &&
-            (1 == $this['translate']['databasefields']);
+            $this['model']['translateDatabaseFields'];
     }
 
     /**

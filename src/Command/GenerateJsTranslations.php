@@ -33,7 +33,7 @@ class GenerateJsTranslations extends Command
             foreach($availableLanguages as $language) {
                 $translations = $translationClass($language);
                 $translationCount = $this->countTranslations($translations);
-                $filename = rtrim($translationPath, '/') . '/' . $language . '.test.json';
+                $filename = rtrim($translationPath, '/') . '/' . $language . '.json';
                 file_put_contents($filename, json_encode($translations, JSON_PRETTY_PRINT));
                 $output->writeln(sprintf('Created %s translation file \'%s\' with %d base translations', $language, $filename, $translationCount));
             }

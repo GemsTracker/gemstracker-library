@@ -5,9 +5,8 @@ namespace Gems\Repository;
 use Gems\Db\CachedResultFetcher;
 use Gems\Exception\ConsentCreateException;
 use Gems\Translate\CachedDbTranslationRepository;
-use Gems\Translate\DbTranslationRepository;
 use Gems\Util\ConsentCode;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 class ConsentRepository
 {
@@ -19,7 +18,7 @@ class ConsentRepository
 
     public function __construct(
         protected readonly CachedResultFetcher $cachedResultFetcher,
-        protected readonly Translator $translator,
+        protected readonly TranslatorInterface $translator,
         protected readonly CachedDbTranslationRepository $dbTranslationRepository,
         readonly array $config
     )
@@ -106,6 +105,14 @@ class ConsentRepository
     }
 
     /**
+     * @return array<string, string> Untranslated value => Translated value
+     */
+    public function getConsents(): array
+    {
+        return array_column($this->getUserConsents(), 'gco_description', 'untranslated_description');
+    }
+
+    /**
      * Get the code for an unknwon user consent
      *
      * This is de consent description from gems__consents, not the consentCODE
@@ -117,10 +124,13 @@ class ConsentRepository
         return 'Unknown';
     }
 
+    /**
+     * @return array<int, array> Array containing: untranslated_description, gco_description, gco_code, gco_order
+     */
     public function getUserConsents(): array
     {
         $select = $this->cachedResultFetcher->getSelect('gems__consents');
-        $select->columns(['gco_description', 'gco_code', 'gco_order'])
+        $select->columns(['gco_description AS untranslated_description', 'gco_description', 'gco_code', 'gco_order'])
             ->order(['gco_order']);
 
         $result = $this->cachedResultFetcher->fetchAll(__FUNCTION__, $select, null, $this->cacheTags);
@@ -130,7 +140,16 @@ class ConsentRepository
     public function getUserConsentOptions(): array
     {
         $userConsents = $this->getUserConsents();
+        $consentValues = array_column($userConsents, 'gco_description', 'untranslated_description');
+        if ($this->config['model']['translateDatabaseFields'] ?? false) {
+            return $consentValues;
+        }
 
-        return array_column($userConsents, 'gco_description', 'gco_description');
+        // If NOT tranlated from the database, the use normal translations
+        $output       = [];
+        foreach ($consentValues as $key => $value) {
+            $output[$key] = $this->translator->_($value);
+        }
+        return $output;
     }
 }

@@ -72,12 +72,13 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         'addCurrentChildren' => true,
         'addCurrentParent'   => true,
         'addCurrentSiblings' => true,
-        'onlyUsedElements'   => true,
         'afterSaveRoutePart' => 'edit-auth',
-        'currentUser'        => 'getCurrentUser',
-        'request'            => 'getRequest',
         'csrfName'           => 'getCsrfTokenName',
         'csrfToken'          => 'getCsrfToken',
+        'currentUser'        => 'getCurrentUser',
+        'formTitle'          => 'getEditAuthTitle',
+        'onlyUsedElements'   => true,
+        'request'            => 'getRequest',
     ];
 
     /**
@@ -184,7 +185,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     public function createModel(bool $detailed, string $action): DataReaderInterface
     {
@@ -223,6 +224,11 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     public function getRequest(): ServerRequestInterface
     {
         return $this->request;
+    }
+
+    public function getEditAuthTitle()
+    {
+        return $this->_('Edit your authentication settings');
     }
 
     /**

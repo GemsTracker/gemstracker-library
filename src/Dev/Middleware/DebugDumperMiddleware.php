@@ -2,7 +2,9 @@
 
 namespace Gems\Dev\Middleware;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Dev\VarDumper\ContextProvider\SourceContextProvider;
+use Gems\Dev\VarDumper\FileDumper;
 use Gems\Dev\VarDumper\HtmlDumper;
 use Gems\Dev\VarDumper\ContextualizedDumper;
 use Laminas\Diactoros\Response\HtmlResponse;
@@ -18,6 +20,10 @@ use Symfony\Component\VarDumper\VarDumper;
 
 class DebugDumperMiddleware implements MiddlewareInterface
 {
+    public function __construct(
+        public readonly ConfigAccessor $configAccessor,
+    )
+    { }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -27,12 +33,20 @@ class DebugDumperMiddleware implements MiddlewareInterface
 
         if (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true)) {
 
-            $output = fopen('php://memory', 'r+b');
+            $dumpFile = $this->configAccessor->getDumpFile();
+            if ($dumpFile) {
+                $htmlDumper = new FileDumper($dumpFile);
+                $htmlDumper->setDisplayOptions([
+                    'fileLinkFormat' => '%f - %l',
+                ]);
+            } else {
+                $output = fopen('php://memory', 'r+b');
 
-            $htmlDumper = new HtmlDumper($output);
-            $htmlDumper->setDisplayOptions([
-                'fileLinkFormat' => '%f - %l',
-            ]);
+                $htmlDumper = new HtmlDumper($output);
+                $htmlDumper->setDisplayOptions([
+                    'fileLinkFormat' => '%f - %l',
+                ]);
+            }
             $dumper = new ContextualizedDumper($htmlDumper, [new SourceContextProvider()]);
             VarDumper::setHandler(function ($var) use ($cloner, &$dumper) {
                 $dumper->dump($cloner->cloneVar($var));

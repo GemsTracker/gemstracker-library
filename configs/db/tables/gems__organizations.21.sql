@@ -10,6 +10,10 @@ CREATE TABLE if not exists gems__organizations (
 
         gor_sites                   varchar(255)   CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
 
+        -- deprecated as of 1.9.1
+        -- gor_url_base                varchar(1270) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        -- end deprecated
+
         gor_task                    varchar(50)   CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
 
         gor_provider_id             varchar(10)   CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
@@ -29,6 +33,7 @@ CREATE TABLE if not exists gems__organizations (
         gor_respondent_subscribe    varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default '',
         gor_respondent_unsubscribe  varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' default '',
         gor_token_ask               varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null default null,
+        gor_track_change_route      varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 
         gor_style                   varchar(32)  CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null default 'gems',
         gor_resp_change_event       varchar(128) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci',

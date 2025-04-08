@@ -11,7 +11,6 @@
 
 namespace Gems\Handlers\Setup;
 
-use Gems\Actions\ProjectSettings;
 use Gems\Handlers\BrowseChangeUsageHandler;
 use Gems\Model\Setup\ReceptionCodeModel;
 use Gems\Model\Setup\ReceptionCodeUsageCounter;

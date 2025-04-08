@@ -237,7 +237,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
             if ($this->sessionNamespace->has('new_phone') && $this->sessionNamespace->get('new_phone')['phone'] !== '') {
                 $phoneSession = $this->sessionNamespace->get('new_phone');
 
-                $newPhoneSecret = $formData['new_phone_secret'] ?: '';
+                $newPhoneSecret = $formData['new_phone_secret'] ?? '';
                 if ($newPhoneSecret !== $phoneSession['secret']) {
                     $phoneSession['attempts']++;
                     if ($phoneSession['attempts'] >= self::MAX_ATTEMPTS) {
@@ -311,7 +311,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
         $language = $this->communicationRepository->getCommunicationLanguage($this->currentUser->getLocale());
         $templateId = $this->communicationRepository->getConfirmChangeEmailTemplate($organization);
 
-        $variables = $this->communicationRepository->getUserMailFields($this->currentUser, $language);
+        $variables = $this->communicationRepository->getUserPasswordMailFields($this->currentUser, $language);
         $variables += [
             'confirmation_code' => $code,
         ];
@@ -349,7 +349,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
         $language = $this->communicationRepository->getCommunicationLanguage($this->currentUser->getLocale());
         $templateId = $this->communicationRepository->getConfirmChangePhoneTemplate($organization);
 
-        $variables = $this->communicationRepository->getUserMailFields($this->currentUser, $language);
+        $variables = $this->communicationRepository->getUserPasswordMailFields($this->currentUser, $language);
         $variables += [
             'confirmation_code' => $code,
         ];

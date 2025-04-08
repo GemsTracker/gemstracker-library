@@ -16,6 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\GemsJoinModel;
 use Gems\Model\MaskedModelTrait;
 use Gems\Model\MetaModelLoader;
+use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\ConsentRepository;
 use Gems\Repository\OrganizationRepository;
@@ -113,11 +114,12 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         protected readonly StaffRepository $staffRepository,
         protected readonly Translated $translatedUtil,
         protected readonly GemsUserIdGenerator $gemsUserIdGenerator,
+        protected readonly RespondentModelOptions $respondentModelOptions,
         protected readonly array $config,
     )
     {
-        $this->currentUser    = $currentUserRepository->getCurrentUser();
-        $this->currentUserId = $currentUserRepository->getCurrentUserId();
+        $this->currentUser           = $currentUserRepository->getCurrentUser();
+        $this->currentUserId         = $currentUserRepository->getCurrentUserId();
         $this->currentOrganizationId = $currentUserRepository->getCurrentOrganizationId();
 
         $this->maskRepository = $maskRepository;
@@ -138,75 +140,18 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->addColumn('CASE WHEN gr2o_email IS NULL OR LENGTH(TRIM(gr2o_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
 
         $this->applySettings();
-    }
 
-    /**
-     * Add the respondent name as a caclulated field to the model
-     * @param MetaModelInterface $metaModel
-     * @param string $label
-     */
-    public static function addNameToModel(MetaModelInterface $metaModel, $label)
-    {
-        $nameExpr['familyLast'] = "COALESCE(grs_last_name, '-')";
-        $fieldList[] = 'grs_last_name';
-
-        if ($metaModel->has('grs_partner_last_name')) {
-            $nameExpr['partnerSep'] = "' - '";
-            if ($metaModel->has('grs_partner_surname_prefix')) {
-                $nameExpr['partnerPrefix'] = "COALESCE(CONCAT(' ', grs_partner_surname_prefix), '')";
-                $fieldList[] = 'grs_partner_surname_prefix';
-            }
-
-            $nameExpr['partnerLast'] = "COALESCE(CONCAT(' ', grs_partner_last_name), '')";
-            $fieldList[] = 'grs_partner_last_name';
-        }
-        $nameExpr['lastFirstSep'] = "', '";
-
-        if ($metaModel->has('grs_first_name')) {
-            if ($metaModel->has('grs_initials_name')) {
-                $nameExpr['firstName']  = "COALESCE(grs_first_name, grs_initials_name, '')";
-                $fieldList[] = 'grs_first_name';
-                $fieldList[] = 'grs_initials_name';
-            } else {
-                $nameExpr['firstName']  = "COALESCE(grs_first_name, '')";
-                $fieldList[] = 'grs_first_name';
-            }
-        } elseif ($metaModel->has('grs_initials_name')) {
-            $nameExpr['firstName']  = "COALESCE(grs_initials_name, '')";
-            $fieldList[] = 'grs_initials_name';
-        }
-        if ($metaModel->has('grs_surname_prefix')) {
-            $nameExpr['familyPrefix']  = "COALESCE(CONCAT(' ', grs_surname_prefix), '')";
-            $fieldList[] = 'grs_surname_prefix';
-        }
-
-        if ($metaModel->has('grs_partner_name_after') && $metaModel->has('grs_partner_last_name')) {
-            $fieldList[] = 'grs_partner_name_after';
-
-            $lastPrefix = isset($nameExpr['familyPrefix']) ? $nameExpr['familyPrefix'] . ', ' : '';
-            $partnerPrefix = isset($nameExpr['partnerPrefix']) ? ', ' . $nameExpr['partnerPrefix'] : '';
-
-            $columnExpr = "CASE 
-                WHEN grs_partner_name_after = 0 AND grs_partner_name_after IS NOT NULL THEN
-                    CONCAT(grs_partner_last_name, ' - ', $lastPrefix grs_last_name, " . $nameExpr['lastFirstSep'] . ', ' . $nameExpr['firstName'] .  "$partnerPrefix)
-                ELSE 
-                    CONCAT(" . implode(', ', $nameExpr) . ") 
-                END";
-        } else {
-            $columnExpr = "CONCAT(" . implode(', ', $nameExpr) . ")";
-        }
-
-
-        $metaModel->set('name', [
-            'label' => $label,
-            'column_expression' => $columnExpr,
-            'fieldlist' => $fieldList,
-        ]);
+        $metaModelLoader->addDatabaseTranslations($this->metaModel, false);
     }
 
     public function applyAction(SnippetActionInterface $action): void
     {
-        if (! $action->isDetailed()) {
+        if ($action->isDetailed()) {
+            $this->metaModel->addTransformer(new FixedValueTransformer([
+                'gr2o_opened' => new \DateTimeImmutable(),
+                'gr2o_opened_by' => $this->currentUserId,
+            ]));
+        } else {
             if (! $this->joinStore->hasTable('gems__organizations')) {
                 $this->addTable('gems__organizations', array('gr2o_id_organization' => 'gor_id_organization'));
                 $options = $this->metaModel->get('gr2o_id_organization');
@@ -220,12 +165,33 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
                 $this->metaModel->set('grs_ssn', ['autoSubmit' => 'blur']);
             }
 
-            $organizationSettings['default'] = $this->currentOrganizationId;
-
-            if ($this->currentUser === null || count($this->currentUser->getAllowedOrganizations()) == 1) {
-                $organizationSettings['elementClass'] = 'Exhibitor';
+            // If we're creating a new respondent, we only allow organizations
+            // that accept new respondents.
+            if ($this->currentUser instanceof User) {
+                if ($action instanceof EditActionAbstract && $action->createData) {
+                    $respondentOrganizations = $this->currentUser->getNewRespondentOrganizations();
+                } else {
+                    $respondentOrganizations = $this->currentUser->getRespondentOrganizations();
+                }
             } else {
-                $organizationSettings['multiOptions']  = $this->currentUser->getRespondentOrganizations();
+                $respondentOrganizations = $this->organizationRepository->getOrganizationsOpenToRespondents();
+            }
+
+            // If our current organization is not in the list of organizations we
+            // can use for the respondent, we'll default to the first organization.
+            if (isset($respondentOrganizations[$this->currentOrganizationId])) {
+                $organizationSettings['default'] = $this->currentOrganizationId;
+            } else {
+                if (count($respondentOrganizations) > 0) {
+                    $organizationSettings['default'] = array_keys($respondentOrganizations)[0];
+                } else {
+                    throw new \Gems\Exception($this->_('No organization available to add respondent to.'));
+                }
+            }
+
+            $organizationSettings['multiOptions'] = $respondentOrganizations;
+            if ($this->currentUser === null || count($respondentOrganizations) == 1) {
+                $organizationSettings['elementClass'] = 'Exhibitor';
             }
             $this->setIfExists('gr2o_id_organization', $organizationSettings);
 
@@ -258,7 +224,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'validator[uniquePatientnr]' => new ModelUniqueValidator('gr2o_patient_nr', 'gr2o_id_organization')
         ]);
         $this->metaModel->set('grs_id_user', [
-            'elementClass' => 'Hidden',
+            'elementClass' => 'None',
         ]);
         // $this->metaModel->setSaveWhenNew('grs_id_user');
         $this->metaModel->setAutoSave('grs_id_user');
@@ -266,7 +232,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         // NAME
         if (isset($this->_labels['name']) && $this->_labels['name']) {
-            self::addNameToModel($this->metaModel, $this->_labels['name']);
+            $this->respondentModelOptions->addNameToModel($this->metaModel, $this->_labels['name']);
         }
         $this->setIfExists('grs_initials_name');
         $this->setIfExists('grs_first_name', [
@@ -331,6 +297,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $this->communicationRepository->getRespondentMailCodes(),
             ]);
         $this->setIfExists('grs_address_1', [
+            'description' => $this->_('With housenumber'),
             'filters[ucfirst]' => RequireOneCapsFilter::class,
         ]);
         $this->setIfExists('grs_address_2');
@@ -391,7 +358,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         $this->setIfExists('gr2o_opened_by', [
             'default' => $this->currentUserId,
-            'elementClass' => 'Hidden',  // Has little use to show: is usually editor, but otherwise is set to null during save
+            'elementClass' => 'None',  // Has little use to show: is usually editor, but otherwise is set to null during save
             'multiOptions' => $changers
         ]);
         $this->setIfExists('gr2o_changed', [
@@ -699,6 +666,11 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 //        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($filter, true) . "\n", FILE_APPEND);
 
         $newValues = $this->checkIds($newValues);
+
+        if (isset($filter[MetaModelInterface::REQUEST_ID1], $filter[MetaModelInterface::REQUEST_ID2]) && (! isset($newValues['gr2o_id_user']))) {
+            $newValues['gr2o_id_user'] = $this->respondentRepository->getRespondentId($filter[MetaModelInterface::REQUEST_ID1], (int) $filter[MetaModelInterface::REQUEST_ID2]);
+            $newValues['grs_id_user']  = $newValues['gr2o_id_user'];
+        }
 
         $output = parent::save($newValues, $filter, $saveTables);
 

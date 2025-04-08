@@ -150,7 +150,7 @@ class ProjectSurveysHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
         return [
             10 => ['gsu_survey_name', $br, 'used_external_description', $br, 'gsu_survey_description'],
             20 => ['gsu_id_primary_group', $br, 'gsu_survey_languages'],
-            30 => ['track_count', 'gsu_insertable']
+            30 => ['track_count', $br, 'gsu_insertable']
         ];
     }
 

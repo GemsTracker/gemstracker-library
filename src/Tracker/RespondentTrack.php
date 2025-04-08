@@ -112,12 +112,8 @@ class RespondentTrack
         'gems__tracks' => 'gtr_id_track',
     ];
 
-    /**
-     *
-     * @param mixed $respTracksData Track Id or array containing reps2track record
-     */
     public function __construct(
-        array|int $respTracksData,
+        array|int $respTrackData,
         protected readonly Tracker $tracker,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly EventDispatcherInterface $event,
@@ -132,13 +128,12 @@ class RespondentTrack
         protected readonly int $currentUserId,
     )
     {
-        if (is_array($respTracksData)) {
-            $this->_respTrackData = $respTracksData;
-            $this->_respTrackId   = (int)$respTracksData['gr2t_id_respondent_track'];
-            $this->_respTrackData = $this->dbTranslationRepository->translateTables($this->_tablesForTranslations, $this->_respTrackData);
-            $this->_respTrackData = $this->maskRepository->applyMaskToRow($this->_respTrackData);
+        if (is_array($respTrackData)) {
+            $this->_respTrackData = $respTrackData;
+            $this->_respTrackId   = (int)$respTrackData['gr2t_id_respondent_track'];
+            $this->refresh($respTrackData);
         } else {
-            $this->_respTrackId = (int)$respTracksData;
+            $this->_respTrackId = (int)$respTrackData;
             $this->refresh();
         }
     }
@@ -703,7 +698,7 @@ class RespondentTrack
             $results[$fieldCode] = $value;
             $field               = $fieldDef->getFieldByCode($fieldCode);
             if (!is_null($field)) {
-                $results[$fieldCode] = $field->calculateFieldInfo($value, $this->_fieldData);
+                $results[$fieldCode] = $field->calculateFieldValue($value, $this->_fieldData, $this->_respTrackData);
             }
         }
 
@@ -1479,12 +1474,14 @@ class RespondentTrack
     public function refresh(?array $gemsData = null): self
     {
         if (is_array($gemsData)) {
-            $this->_respTrackData = $this->dbTranslationRepository->translateTables($this->_tablesForTranslations, $gemsData) + $this->_respTrackData;
+            $data = [$gemsData];
         } else {
             $select = $this->resultFetcher->getSelect('gems__respondent2track')->where(['gr2t_id_respondent_track' => $this->_respTrackId]);
-            $result = $this->resultFetcher->fetchRow($select);
-            $this->_respTrackData = $this->dbTranslationRepository->translateTables($this->_tablesForTranslations, $result);
+            $select->limit(1);
+            $data   = $this->resultFetcher->fetchAll($select);
         }
+        $data = $this->dbTranslationRepository->translateTables($this->_tablesForTranslations, $data);
+        $this->_respTrackData = reset($data) + $this->_respTrackData;
 
         if ($this->_respTrackData) {
             $this->_respTrackData = $this->maskRepository->applyMaskToRow($this->_respTrackData);

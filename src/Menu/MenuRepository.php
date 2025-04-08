@@ -47,7 +47,7 @@ class MenuRepository
     public function getMenuConfig(): array
     {
         if ($this->menuConfig === null) {
-            $menuConfig = new \Gems\Config\Menu($this->translator);
+            $menuConfig = new \Gems\Config\Menu($this->translator, $this->config);
             $items = $menuConfig->getItems();
 
             $event = new MenuBuildItemsEvent($items);

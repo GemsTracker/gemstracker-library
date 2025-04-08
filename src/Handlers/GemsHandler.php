@@ -197,6 +197,8 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
             $data = $this->request->getQueryParams();
             $data += $this->request->getParsedBody();
 
+            $routeParams = $this->requestInfo->getRequestMatchedParams();
+
             if (isset($data[self::AUTOSEARCH_RESET]) && $data[self::AUTOSEARCH_RESET]) {
                 // Clean up values
                 $sessionData = [];
@@ -215,6 +217,9 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
             // value.
             $tmp = [];
             foreach ($data as $k => $v) {
+                if (isset($routeParams[$k])) {
+                    continue;
+                }
                 if (is_array($v) || strlen($v) || array_key_exists($k, $defaults)) {
                     $tmp[$k] = $v;
                 }

@@ -38,6 +38,11 @@ class SurveyModel extends GemsJoinModel
         $modelName = Str::camel(Str::alphaNum($this->survey->getName(), true));
         parent::__construct('gems__tokens', $metaModelLoader, $sqlRunner, $translate, $modelName, $savable);
 
+        $this->addTable('gems__respondent2org', [
+            'gto_id_respondent'   => 'gr2o_id_user',
+            'gto_id_organization' => 'gr2o_id_organization'
+        ]);
+
         $this->addTable('gems__reception_codes', [
             'gto_reception_code' => 'grc_id_reception_code'
         ]);

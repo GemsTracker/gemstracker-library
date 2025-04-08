@@ -25,7 +25,6 @@ use Gems\Screens\ProcessModelInterface;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Respondent\DeleteRespondentSnippet;
 use Gems\Snippets\Respondent\RespondentDetailsSnippet;
-use Gems\Snippets\Respondent\TrafficLightTokenSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\User\Mask\MaskRepository;
 use Psr\Cache\CacheItemPoolInterface;
@@ -177,7 +176,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $deleteParameters = [
-        'baseUrl' => 'getItemUrlArray',
         'formTitle' => null,
         'forOtherOrgs' => 'getOtherOrgs',
         // 'respondentData' => 'getRespondentData',
@@ -333,9 +331,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     public function changeConsentAction(): void
     {
-        /** @var RespondentModel $respondentModel */
-        $respondentModel = $this->getModel();
-        $respondentModel->makeConsentEditable();
 
         if ($this->enableScreens) {
             $edit = false;
@@ -345,12 +340,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 $edit = $org->getRespondentEditScreen();
             }
 
-            if (!$edit) {
-                $group = $this->currentUser->getGroup();
-                if ($group) {
-                    $edit = $group->getRespondentEditScreen();
-                }
-            }
+//            if (!$edit) {
+//                $group = $this->currentUser->getGroup();
+//                if ($group) {
+//                    $edit = $group->getRespondentEditScreen();
+//                }
+//            }
 
             if ($edit) {
                 if ($edit instanceof ProcessModelInterface) {
@@ -368,6 +363,10 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 }
             }
         }
+        /** @var RespondentModel $respondentModel */
+        $respondentModel = $this->getModel();
+        $respondentModel->makeConsentEditable();
+
         if ($this->changeConsentSnippets) {
             $params = $this->_processParameters(
                 $this->changeConsentParameters +
@@ -413,12 +412,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 $edit = $org->getRespondentEditScreen();
             }
 
-            if (!$edit) {
-                $group = $this->currentUser->getGroup();
-                if ($group) {
-                    $edit = $group->getRespondentEditScreen();
-                }
-            }
+//            if (!$edit) {
+//                $group = $this->currentUser->getGroup();
+//                if ($group) {
+//                    $edit = $group->getRespondentEditScreen();
+//                }
+//            }
 
             if ($edit) {
                 if ($edit instanceof ProcessModelInterface) {
@@ -480,12 +479,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 $edit = $org->getRespondentEditScreen();
             }
 
-            if (!$edit) {
-                $group = $this->currentUser->getGroup();
-                if ($group) {
-                    $edit = $group->getRespondentEditScreen();
-                }
-            }
+//            if (!$edit) {
+//                $group = $this->currentUser->getGroup();
+//                if ($group) {
+//                    $edit = $group->getRespondentEditScreen();
+//                }
+//            }
 
             if ($edit) {
                 if ($edit instanceof ProcessModelInterface) {
@@ -599,24 +598,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     public function getIndexTitle(): string
     {
         return $this->_('Respondents');
-    }
-
-    /**
-     * Return the array with items that should be used to find this item
-     *
-     * @return array
-     */
-    public function getItemUrlArray(): array
-    {
-        $queryParams = $this->request->getQueryParams();
-        $patientNr = isset($queryParams[Model::REQUEST_ID1]) ? $queryParams[Model::REQUEST_ID1] : null;
-        $organizationId = isset($queryParams[Model::REQUEST_ID2]) ? $queryParams[Model::REQUEST_ID2] : null;
-        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
-
-        return [
-            Model::REQUEST_ID1 => $patientNr,
-            Model::REQUEST_ID2 => $organizationId,
-        ];
     }
 
     /**
@@ -857,12 +838,12 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                 $show = $org->getRespondentShowScreen();
             }
 
-            if (!$show) {
-                $group = $this->currentUser->getGroup();
-                if ($group) {
-                    $show = $group->getRespondentShowScreen();
-                }
-            }
+//            if (!$show) {
+//                $group = $this->currentUser->getGroup();
+//                if ($group) {
+//                    $show = $group->getRespondentShowScreen();
+//                }
+//            }
 
             if ($show) {
                 if ($show instanceof ProcessModelInterface) {

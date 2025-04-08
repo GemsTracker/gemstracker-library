@@ -11,8 +11,10 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Model;
 use Gems\Tracker\Snippets\EditTrackSnippetAbstract;
 use Mezzio\Session\SessionInterface;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -70,6 +72,13 @@ class EditTrackSnippet extends EditTrackSnippetAbstract
             // before the data is saved (the fields them
             $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->formData);
         }
+        if (! isset($this->formData['gr2t_id_organization'])) {
+            $this->formData['gr2t_id_organization'] = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2);
+        }
+        if (! isset($this->formData['gr2t_id_respondent_track'])) {
+            $this->formData['gr2t_id_respondent_track'] = $this->requestInfo->getParam(Model::RESPONDENT_TRACK);
+        }
+//        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->formData, true) . "\n", FILE_APPEND);
 
         // Perform the save
         $model          = $this->getModel();

@@ -12,13 +12,6 @@ use Zalt\SnippetsLoader\SnippetOptions;
 abstract class TabSnippetAbstract extends SnippetAbstract
 {
     /**
-     * Optional standard url parts
-     *
-     * @var array
-     */
-    protected array $baseUrl = [];
-
-    /**
      * Shortfix to add class attribute
      *
      * @var string
@@ -27,13 +20,13 @@ abstract class TabSnippetAbstract extends SnippetAbstract
 
     /**
      *
-     * @var string Id of the current tab
+     * @var ?string Id of the current tab
      */
     protected ?string $currentTab = null;
 
     /**
      *
-     * @var string Id of default tab
+     * @var ?string Id of default tab
      */
     protected ?string $defaultTab = null;
 
@@ -43,13 +36,6 @@ abstract class TabSnippetAbstract extends SnippetAbstract
      * @var boolean
      */
     protected bool $displaySingleTab = false;
-
-    /**
-     * Default href parameter values
-     *
-     * @var array
-     */
-    protected array $href = [];
 
     /**
      *
@@ -73,7 +59,7 @@ abstract class TabSnippetAbstract extends SnippetAbstract
     /**
      * Sets the default and current tab and returns the current
      *
-     * @return string The current tab
+     * @return ?string The current tab
      */
     public function getCurrentTab(): ?string
     {
@@ -114,11 +100,6 @@ abstract class TabSnippetAbstract extends SnippetAbstract
         if ($tabs && ($this->displaySingleTab || count($tabs) > 1)) {
             // Set the correct parameters
             $this->getCurrentTab();
-
-            // Let loose
-            if (is_array($this->baseUrl)) {
-                $this->href = $this->href + $this->baseUrl;
-            }
 
             $tabRow = Html::create()->ul();
 
@@ -167,7 +148,7 @@ abstract class TabSnippetAbstract extends SnippetAbstract
             return array($paramKey => $tabId);
         }
 
-        return array();
+        return [];
     }
 
     /**

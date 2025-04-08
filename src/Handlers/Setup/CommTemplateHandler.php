@@ -13,6 +13,7 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\CommTemplateModel;
+use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Vue\CreateEditSnippet;
 use MUtil\Model\ModelAbstract;
@@ -40,28 +41,25 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
     public array $cacheTags = ['commTemplates'];
 
     protected array $createEditSnippets = [
+        ContentTitleSnippet::class,
         CreateEditSnippet::class,
         CurrentButtonRowSnippet::class,
+    ];
+
+    protected array $createParameters = [
+        'addCurrentSiblings' => true,
+        'contentTitle' => 'getCreateTitle',
+    ];
+
+    protected array $editParameters = [
+        'addCurrentSiblings' => true,
+        'contentTitle' => 'getEditTitle',
     ];
 
     protected array $defaultParameters = [
         'dataResource' => 'commTemplate',
         'dataEndpoint' => 'comm-template',
     ];
-
-    /**
-     * The snippets used for the create and edit actions.
-     *
-     * @var mixed String or array of snippets name
-     */
-    //protected array $createEditSnippets = ['Mail\\MailModelFormSnippet'];
-
-    /**
-     * The snippets used for the show action
-     *
-     * @var mixed String or array of snippets name
-     */
-    //protected array $showSnippets = ['Mail\\CommTemplateShowSnippet'];
 
     public function __construct(
         SnippetResponderInterface $responder,

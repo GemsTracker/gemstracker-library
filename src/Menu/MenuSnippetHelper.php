@@ -296,11 +296,11 @@ class MenuSnippetHelper
         return null;
     }
 
-    public function getRouteUrl(?string $route, array $params = []): ?string
+    public function getRouteUrl(?string $route, array $params = [], array $queryParams = []): ?string
     {
         if ($route) {
             try {
-                return $this->routeHelper->getRouteUrlOnMatch($route, $params);
+                return $this->routeHelper->getRouteUrlOnMatch($route, $params, $queryParams);
             } catch (MenuItemNotFoundException $minfe) { }
         }
         return null;

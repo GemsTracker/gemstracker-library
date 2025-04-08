@@ -42,6 +42,7 @@ class TrackFieldCondition extends RoundConditionAbstract
             ConditionLoader::COMPARATOR_BETWEEN   => $this->_('Between'),
             ConditionLoader::COMPARATOR_CONTAINS  => $this->_('Contains'),
             ConditionLoader::COMPARATOR_IN        => $this->_('In (..|..)'),
+            ConditionLoader::COMPARATOR_ISEMPTY   => $this->_('Is Empty'),
         ];
         natsort($comparators);
 
@@ -50,7 +51,7 @@ class TrackFieldCondition extends RoundConditionAbstract
 
     public function getHelp(): string
     {
-        return $this->_("First pick a trackfield that has a code. Then choose your comparison operator and specify the needed parameters.");
+        return $this->_("Round will be valid if the raw value of the selected track field matches the configured criteria.");
     }
 
     public function getModelFields(array $context, bool $new): array
@@ -60,7 +61,7 @@ class TrackFieldCondition extends RoundConditionAbstract
 
         $result = [
             'gcon_condition_text1' => ['label' => $this->_('Track field'), 'elementClass' => 'select', 'multiOptions' => $fields],
-            'gcon_condition_text2' => ['label' => $this->_('Comparison operator'), 'elementClass' => 'select', 'multiOptions' => $comparators],
+            'gcon_condition_text2' => ['label' => $this->_('Comparison operator'), 'elementClass' => 'select', 'multiOptions' => $comparators, 'autoSubmit' => true,],
             'gcon_condition_text3' => ['elementClass' => 'Hidden', 'value' => ''],
             'gcon_condition_text4' => ['elementClass' => 'Hidden', 'value' => ''],
         ];

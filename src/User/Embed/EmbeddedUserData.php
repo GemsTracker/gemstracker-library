@@ -5,6 +5,7 @@ namespace Gems\User\Embed;
 use Gems\Db\ResultFetcher;
 use Gems\Encryption\ValueEncryptor;
 use Gems\User\User;
+use Gems\Util\IpAddress;
 
 /**
  * @template T
@@ -34,6 +35,11 @@ class EmbeddedUserData extends \ArrayObject
     public function canCreateUser(): bool
     {
         return (bool) $this->offsetGet('gsus_create_user');
+    }
+
+    public function getAllowedIPRanges(): string|null
+    {
+        return $this->offsetGet('gsus_allowed_ip_ranges');
     }
 
     /**
@@ -150,6 +156,20 @@ class EmbeddedUserData extends \ArrayObject
         throw new \Exception('No deferred user loader found');
     }
 
+    public function isAllowedIpForLogin(?string $ipAddress): bool
+    {
+        if (empty($ipAddress)) {
+            return false;
+        }
+
+        // Check group list
+        if (!IpAddress::isAllowed($ipAddress, $this->getAllowedIPRanges() ?? '')) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Load and set the embedded user data. triggered only when
      * embedded data is requested
@@ -175,6 +195,7 @@ class EmbeddedUserData extends \ArrayObject
                 'gsus_deferred_user_loader' => null,
                 'gsus_deferred_user_group'  => null,
                 'gsus_redirect'             => null,
+                'gsus_allowed_ip_ranges'    => null,
                 'gsus_deferred_user_layout' => null,
                 ];
         }

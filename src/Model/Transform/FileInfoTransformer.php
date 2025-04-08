@@ -3,16 +3,22 @@
 namespace Gems\Model\Transform;
 
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Mime\MimeTypes;
 use Zalt\Late\Late;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Transform\ModelTransformerAbstract;
 
 class FileInfoTransformer extends ModelTransformerAbstract
 {
+
+
     public function __construct(
         protected readonly string $startPath = '',
+        protected readonly array|null $allowedContentMimeTypes = null,
+        protected int|null $maxContentSize = null,
     )
-    {}
+    {
+    }
 
     public function transformLoad(MetaModelInterface $model, array $data, $new = false, $isPostData = false): array
     {
@@ -32,7 +38,7 @@ class FileInfoTransformer extends ModelTransformerAbstract
                 'path'      => $file->getPath(),
                 'filename'  => $file->getFilename(),
                 'extension' => $file->getExtension(),
-                'content'   => Late::call('file_get_contents', $file->getRealPath()),
+                'content'   => Late::call([$this, 'getContent'], $file),
                 'size'      => $file->getSize(),
                 'changed'   => (new \DateTimeImmutable())->setTimestamp($file->getMTime()),
             ];
@@ -48,5 +54,21 @@ class FileInfoTransformer extends ModelTransformerAbstract
     public function fromNameToUrlSave(string $filename): string
     {
         return str_replace(['\\', '/', '.'], ['|', '|', '%2E'], $filename);
+    }
+
+    public function getContent(SplFileInfo $file): string|null
+    {
+        $mimeTypes = new MimeTypes();
+        $mimeType = $mimeTypes->guessMimeType($file->getRealPath());
+
+        if (is_int($this->maxContentSize) && $file->getSize() > $this->maxContentSize) {
+            return null;
+        }
+
+        if (is_array($this->allowedContentMimeTypes) && !in_array($mimeType, $this->allowedContentMimeTypes)) {
+            return null;
+        }
+
+        return $file->getContents();
     }
 }

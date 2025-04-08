@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Tracker\Model\Dependency\ValuesMaintenanceDependency;
 use Gems\Util\Translated;
 
 /**
@@ -38,11 +39,37 @@ class SelectField extends FieldAbstract
             $empty = $this->translatedUtil->getEmptyDropdownArray();
         }
 
-        $multiKeys = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_value_keys']);
-        $multi = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_values']);
-
-
         $settings['elementClass'] = 'Select';
-        $settings['multiOptions'] = $empty + array_combine($multiKeys, $multi);
+        $settings['multiOptions'] = $empty + $this->getMultiOptions();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function calculateFieldInfo($currentValue, array $fieldData): mixed
+    {
+        $options = $this->getMultiOptions();
+
+        if (isset($options[$currentValue])) {
+            return $options[$currentValue];
+        }
+        return $currentValue;
+    }
+
+    protected function getMultiOptions()
+    {
+        $multiKeys = [];
+        if (!empty($this->fieldDefinition['gtf_field_value_keys'])) {
+            $multiKeys = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_value_keys']);
+        }
+        $multi = [];
+        if (!empty($this->fieldDefinition['gtf_field_values'])) {
+            $multi = explode(parent::FIELD_SEP, $this->fieldDefinition['gtf_field_values']);
+        }
+
+        if ($multiKeys) {
+            return ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
+        }
+        return ValuesMaintenanceDependency::combineKeyValues($multi, $multi);
     }
 }

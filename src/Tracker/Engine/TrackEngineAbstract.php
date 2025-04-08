@@ -121,7 +121,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
         $fieldsDefinition = $this->overloader->create('Tracker\\Engine\\FieldsDefinition', $this->_trackId, $this->overloader);
         $this->_fieldsDefinition = $fieldsDefinition;
 
-        $this->_trackData = $this->dbTranslationRepository->translateTable('gems__tracks', $this->_trackId, $this->_trackData);
+        $this->_trackData = $this->dbTranslationRepository->translateRow('gems__tracks', $this->_trackId, $this->_trackData);
 
         $this->_ensureRounds();
     }

@@ -6,7 +6,7 @@ use Laminas\Stdlib\ArrayUtils\MergeReplaceKey;
 
 trait RouteGroupTrait
 {
-    public function routeGroup(array $groupOptions, array $routes): array
+    public function routeGroup(array $groupOptions, array $routes, bool $privileges = true): array
     {
         foreach ($routes as $i => $route) {
             if (isset($groupOptions['path'])) {
@@ -32,6 +32,10 @@ trait RouteGroupTrait
                     $groupOptions['options'],
                     $route['options'] ?? []
                 );
+            }
+
+            if (! $privileges) {
+                unset($route['options']['privilege']);
             }
 
             $routes[$i] = $route;

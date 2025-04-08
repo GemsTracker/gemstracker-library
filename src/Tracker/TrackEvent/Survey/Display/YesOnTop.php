@@ -12,6 +12,7 @@
 namespace Gems\Tracker\TrackEvent\Survey\Display;
 
 use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -34,14 +35,15 @@ class YesOnTop extends SurveyAnswerFilterAbstract
      * This function is called in addBrowseTableColumns() to filter the names displayed
      * by AnswerModelSnippetGeneric.
      *
-     * @see AnswerModelSnippetGeneric
-     *
      * @param TableBridge $bridge
      * @param DataReaderInterface $model
      * @param array $currentNames The current names in use (allows chaining)
+     * @param RequestInfo $requestInfo
      * @return array Of the names of labels that should be shown
+     *@see AnswerModelSnippetGeneric
+     *
      */
-    public function filterAnswers(TableBridge $bridge, DataReaderInterface $model, array $currentNames): array
+    public function filterAnswers(TableBridge $bridge, DataReaderInterface $model, array $currentNames, RequestInfo $requestInfo): array
     {
         if (! $this->token->isCompleted()) {
             return $currentNames;

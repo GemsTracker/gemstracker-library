@@ -106,7 +106,7 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
             $html->p(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurvey()->getExternalName()), ['class' => 'info']);
         } else {
             if ($welcome = $org->getWelcome()) {
-                $html->p(['class' => 'info'])->raw(str_replace(["\n"], ["\n<br/>"], $welcome), );
+                $html->p(['class' => 'info'])->raw(nl2br($welcome));
             }
         }
 
@@ -171,7 +171,7 @@ class ShowAllOpenSnippet extends ShowTokenLoopAbstract
         if ($sig = $org->getSignature()) {
             $p = $html->p(['class' => 'info']);
             $p->br();
-            $p->append($sig);
+            $p->raw(nl2br($sig));
         }
         return $html;
     }

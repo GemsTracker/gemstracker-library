@@ -29,13 +29,11 @@ use Gems\Repository\SurveyRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Screens\ScreenLoader;
-use Gems\Site\SiteUtil;
 use Gems\Tracker\TrackEvents;
 use Gems\User\Embed\EmbedLoader;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\PasswordChecker;
 use Gems\User\UserLoader;
-use Gems\Util\ConsentUtil;
 use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Permissions\Acl\Acl;
@@ -108,8 +106,7 @@ class LegacyConfigProvider
                 'LegacyPdf' => Pdf::class,
                 'LegacyProject' => \Gems\Project\ProjectSettings::class,
                 'LegacyScreenLoader' => ScreenLoader::class,
-                'LegacySiteUtil' => SiteUtil::class,
-                'LegacySourceRepository' => SourceRepository::class,
+                 'LegacySourceRepository' => SourceRepository::class,
                 'LegacyStaffRepository' => StaffRepository::class,
                 'LegacySurveyRepository' => SurveyRepository::class,
                 'LegacyTokenRepository' => TokenRepository::class,

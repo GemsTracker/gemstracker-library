@@ -280,6 +280,11 @@ abstract class SourceAbstract implements SourceInterface
         return $this->_sourceData['gso_id_source'];
     }
 
+    public function getName(): string
+    {
+        return $this->_sourceData['gso_source_name'];
+    }
+
     /**
      * Returns the record-count for a given filter
      *

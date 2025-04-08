@@ -219,7 +219,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
     {
         if ($itemData['org_specific_round'] == 0) {
             $model->set('organizations', [
-               'elementClass' => 'hidden',
+               'elementClass' => 'None',
             ]);
         }
     }

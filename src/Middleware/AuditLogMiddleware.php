@@ -10,10 +10,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AuditLogMiddleware implements MiddlewareInterface
 {
-    public const AUDIT_LOG_DATA = 'auditLogData';
-    public const AUDIT_LOG_MESSAGES = 'auditLogMessage';
-    public const RESPONDENT_ID_ATTRIBUTE = 'respondentId';
-
+    public const AUDIT_LOG_ID = 'auditLogId';
 
     public function __construct(
         protected AuditLog $auditLog,
@@ -22,7 +19,11 @@ class AuditLogMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $log = $this->auditLog->registerRequest($request);
+        $logId = $this->auditLog->registerRequest($request);
+
+        if ($logId) {
+            $request->withAttribute(static::AUDIT_LOG_ID, $logId);
+        }
 
         $response = $handler->handle($request);
         // Check if log should be updated

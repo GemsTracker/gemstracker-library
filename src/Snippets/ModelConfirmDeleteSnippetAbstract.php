@@ -13,12 +13,16 @@ namespace Gems\Snippets;
 use Gems\Audit\AuditLog;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Usage\UsageCounterInterface;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Psr\Http\Message\ResponseInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Message\MessengerInterface;
+use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\DeleteModeEnum;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -54,6 +58,8 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
     protected string $deleteRoute = 'index';
 
     protected string $formClass = 'form-row';
+
+    protected ResponseInterface|null $response = null;
 
     protected UsageCounterInterface $usageCounter;
 
@@ -154,6 +160,10 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
 
     public function getHtmlOutput()
     {
+        if (! $this->onEmpty) {
+            $this->onEmpty = $this->getOnEmpty();
+        }
+
         $html = $this->getHtmlSequence();
 
         $html->append($this->getTitleElement());
@@ -174,6 +184,21 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
             DeleteModeEnum::Activate => $this->getActivationMessage(),
             DeleteModeEnum::Block => '',
         };
+    }
+
+    public function getOnEmpty(): mixed
+    {
+        if ($this->requestInfo->getParam(MetaModelInterface::REQUEST_ID)) {
+            return sprintf(
+                $this->_('%s "%s" not found!'),
+                ucfirst($this->getTopic(1)),
+                $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID)
+            );
+        }
+        return sprintf(
+            $this->_('%s not found!'),
+            ucfirst($this->getTopic(1))
+        );
     }
 
     protected function getQuestion(): string
@@ -215,6 +240,25 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
         };
     }
 
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
+    }
+
+    public function hasHtmlOutput(): bool
+    {
+        if ($this->bridgeMode === BridgeInterface::MODE_SINGLE_ROW) {
+            $bridge = $this->getModel()->getBridgeFor($this->bridgeClass);
+            $row = $bridge->getRow();
+            if (empty($row)) {
+                $this->setNotFound();
+                return false;
+            }
+        }
+
+        return parent::hasHtmlOutput();
+    }
+
     public function isActionConfirmed() : bool
     {
         if (parent::isActionConfirmed()) {
@@ -241,5 +285,12 @@ abstract class ModelConfirmDeleteSnippetAbstract extends \Zalt\Snippets\ModelCon
             case DeleteModeEnum::Block:
                 // Do nothing
         }
+    }
+
+    protected function setNotFound(): void
+    {
+        $this->response = new HtmlResponse(sprintf(
+            $this->_('%s not found!'),
+            ucfirst($this->getTopic(1))), 404);
     }
 }

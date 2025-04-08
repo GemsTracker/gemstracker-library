@@ -52,6 +52,11 @@ class Vite extends AbstractExtension
                 throw new Exception("Resource {$resourceName} not found.");
             }
             $tags[] = $this->makeTag($tagDir . $manifest[$resourceName]['file']);
+            if (isset($manifest[$resourceName]['css'])) {
+                foreach($manifest[$resourceName]['css'] as $style) {
+                    $tags[] = $this->makeTag($tagDir . $style);
+                }
+            }
         }
         return join("\n", $tags);
     }
@@ -60,6 +65,15 @@ class Vite extends AbstractExtension
     {
         $manifestLocation = $assetDir . '/manifest.json';
 
+        if (is_file($manifestLocation)) {
+            $rawManifest = file_get_contents($manifestLocation);
+            $manifest = json_decode($rawManifest, true);
+            if ($manifest) {
+                return $manifest;
+            }
+        }
+
+        $manifestLocation = $assetDir . '/.vite/manifest.json';
         if (is_file($manifestLocation)) {
             $rawManifest = file_get_contents($manifestLocation);
             $manifest = json_decode($rawManifest, true);

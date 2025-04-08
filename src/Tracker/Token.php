@@ -150,6 +150,10 @@ class Token
 
     protected LoggerInterface $logger;
 
+    protected bool $nextUnansweredInSameOrg = false;
+
+    protected array $nextUnansweredSort = ['gto_valid_from', 'gto_round_order'];
+
     /**
      * The size of the result field, calculated from meta data when null,
      * but can be set by project specific class to fixed value
@@ -290,7 +294,7 @@ class Token
             foreach ($values as $key => $val) {
                 $echo .= $key . ': ' . $this->_gemsData[$key] . ' => ' . $val . "\n";
             }
-            dump('Updated values for ' . $this->_tokenId, $echo);
+            // dump('Updated values for ' . $this->_tokenId, $echo);
         }
 
         $defaults = [
@@ -463,7 +467,7 @@ class Token
                     $result += self::COMPLETION_EVENTCHANGE;
 
                     if (Tracker::$verbose) {
-                        dump('Source values for ' . $this->_tokenId . ' changed by event.', $changed);
+                        // dump('Source values for ' . $this->_tokenId . ' changed by event.', $changed);
                     }
                 }
 
@@ -481,7 +485,7 @@ class Token
                         $stringObject = new UnicodeString((string)$rawAnswers[$resultField]);
                         $values['gto_result'] = $stringObject
                             ->normalize() // Normalize characters including whitespaces
-                            ->truncate($this->_getResultFieldLength()) // Chunk of text that is too long
+                            ->truncate($this->_getResultFieldLength() - 1) // Chunk of text that is too long
                             ->toString();
                     }
                 }
@@ -821,6 +825,22 @@ class Token
     }
 
     /**
+     * Returns an array of snippet names that can be used to delete this token.
+     *
+     * @return array of strings
+     */
+    public function getCorrectSnippetNames(): array
+    {
+        if (!$this->exists) {
+            return ['Token\\TokenNotFoundSnippet'];
+        }
+        if (!$this->isCompleted()) {
+            return ['Token\\TokenNotCompletedSnippet'];
+        }
+        return $this->getTrackEngine()->getTokenDeleteSnippetNames($this);
+    }
+
+    /**
      *
      * @return ?int Duration
      */
@@ -951,17 +971,18 @@ class Token
                 // ->andConsents
                 ->andRounds([])
                 ->andSurveys([])
-                ->forRespondent($this->getRespondentId())
+                ->forRespondent($this->getRespondentId(), $this->nextUnansweredInSameOrg ? $this->getOrganizationId() : null)
                 ->forGroupId($this->getSurvey()->getGroupId())
                 ->onlySucces()
                 ->onlyValid()
                 ->forWhere([
                     'gsu_active' => 1,
-                    '(gro_active = 1 OR gro_active IS NULL)',
+                    'gro_active' => 1,
                 ])
-                ->order(['gto_valid_from', 'gto_round_order']);
+                ->order($this->nextUnansweredSort);
 
         $this->_addRelation($tokenSelect);
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): sql: ' . $tokenSelect->getSelect()->getSqlString($this->resultFetcher->getPlatform()) . "\n", FILE_APPEND);
 
         if ($tokenData = $tokenSelect->fetchRow()) {
             return $this->tracker->getToken($tokenData);
@@ -1292,9 +1313,9 @@ class Token
     /**
      * The full return url for a redirect
      *
-     * @return string
+     * @return ?string
      */
-    public function getReturnUrl(): string
+    public function getReturnUrl(): ?string
     {
         return $this->_gemsData['gto_return_url'];
     }
@@ -1397,6 +1418,16 @@ class Token
     public function getStatusCode(): string
     {
         return $this->_gemsData['token_status'];
+    }
+
+    public function getStatusRoute(): string
+    {
+        if ($this->isCompleted()) {
+            return 'respondent.tracks.token.answer';
+        } elseif ($this->isCurrentlyValid() && $this->getSurvey()->isTakenByStaff()) {
+            return 'ask.take';
+        }
+        return 'respondent.tracks.token.show';
     }
 
     /**
@@ -1666,7 +1697,7 @@ class Token
             $this->setRawAnswers($changed);
 
             if (Tracker::$verbose) {
-                dump('Source values for ' . $this->_tokenId . ' changed by event.', $changed);
+                // dump('Source values for ' . $this->_tokenId . ' changed by event.', $changed);
             }
         }
 
@@ -2076,7 +2107,7 @@ class Token
             $stringObject = new UnicodeString((string)$answers[$resultField]);
             $resultValue = $stringObject
                 ->normalize() // Normalize characters including whitespaces
-                ->truncate($this->_getResultFieldLength()) // Chunk of text that is too long
+                ->truncate($this->_getResultFieldLength() - 1) // Chunk of text that is too long
                 ->toString();
 
             $values = [

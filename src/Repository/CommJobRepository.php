@@ -11,10 +11,10 @@ use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\Exception;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Log\Loggers;
 use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SetCommJobTokenAsSent;
 use Gems\Tracker;
-use Laminas\Db\Adapter\Exception\InvalidQueryException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\TranslatorInterface;
 
@@ -30,17 +30,22 @@ class CommJobRepository
 
     protected string $tokensInMessengerQueueKey = 'messenger.queue.comm-job.tokens';
 
-    public function __construct(
-        protected CachedResultFetcher $cachedResultFetcher,
-        protected HelperAdapter $cache,
-        protected TranslatorInterface $translator,
-        protected Tracker $tracker,
-        protected MailJobMessenger $mailJobMessenger,
-        protected SmsJobMessenger $smsJobMessenger,
-        protected CommunicationRepository $communicationRepository,
-        protected MessageBusInterface $messageBus,
-        CurrentUserRepository $currentUserRepository,
+    protected array $unansweredSort = [
+        'gto_valid_from' => SORT_ASC,
+        'gto_round_order' => SORT_ASC,
+        ];
 
+    public function __construct(
+        protected readonly CachedResultFetcher $cachedResultFetcher,
+        protected readonly HelperAdapter $cache,
+        protected readonly TranslatorInterface $translator,
+        protected readonly Tracker $tracker,
+        protected readonly MailJobMessenger $mailJobMessenger,
+        protected readonly SmsJobMessenger $smsJobMessenger,
+        protected readonly CommunicationRepository $communicationRepository,
+        protected readonly MessageBusInterface $messageBus,
+        CurrentUserRepository $currentUserRepository,
+        protected readonly Loggers $loggers,
     )
     {
         $this->resultFetcher = $this->cachedResultFetcher->getResultFetcher();
@@ -613,7 +618,7 @@ class CommJobRepository
         // Fix for #680: token with the valid from the longest in the past should be the
         // used as first token and when multiple rounds start at the same date the
         // lowest round order should be used.
-        $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
+        $model->setSort($this->unansweredSort);
 
         // Prevent out of memory errors, only load the tokenid
         $metaModel = $model->getMetaModel();
@@ -628,7 +633,7 @@ class CommJobRepository
      * @throws Exception
      * @throws Exception\Coding
      */
-    public function getSendableTokens(int $commJobId, ?int $respondentId = null, ?int $organizationId = null): array
+    public function getSendableTokens(int $commJobId, ?int $respondentId = null, ?int $organizationId = null, $forceSent = false): array
     {
         $jobData = $this->getJob($commJobId);
 
@@ -636,7 +641,7 @@ class CommJobRepository
             throw new Exception('Mail job not found!');
         }
 
-        $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId);
+        $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId, $forceSent);
 
         $sendTokenList = [];
         $incrementWithoutSendingList = [];
@@ -700,12 +705,20 @@ class CommJobRepository
             throw new Exception('Mail job not found!');
         }
 
+        $cronErrorLog = $this->loggers->getLogger('commJobErrorLog');
+
         $reload = true;
         while ($reload) {
             $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId, $forced);
-            $reload   = false;
-            foreach($tokenIds as $tokenData) {
-                $reload = $this->checkTokenCompletion($tokenData['gto_id_token']);
+            $reload = false;
+            foreach ($tokenIds as $tokenData) {
+                try {
+                    if ($this->checkTokenCompletion($tokenData['gto_id_token'])) {
+                        $reload = true;
+                    }
+                } catch (\Exception $e) {
+                    $cronErrorLog->error($e->getMessage(), $e->getTrace());
+                }
             }
         }
 
@@ -751,37 +764,15 @@ class CommJobRepository
         return $output;
     }
 
-    protected function checkTokenCompletion(string $tokenId, $retry = 0): bool
+    protected function checkTokenCompletion(string $tokenId): bool
     {
-        $maxRetries = 5;
-        $token = null;
-        try {
-            $token = $this->tracker->getToken($tokenId);
-            if ($token->inSource()) {
-                if ($token->checkTokenCompletion($this->currentUserId)) {
-                    // Completion may change the result of the initial query
-                    return true;
-                }
-            }
-        } catch(InvalidQueryException $e) {
-            if (str_contains($e->getMessage(), 'MySQL server has gone away') && $retry <= $maxRetries) {
-                sleep(5);
-                if ($token) {
-                    $sourceConnection = $token->getSurvey()->getSource()->getSourceDatabase()->getDriver(
-                    )->getConnection();
-                    $sourceConnection->disconnect();
-                    $sourceConnection->connect();
-                }
-                $connection = $this->cachedResultFetcher->getAdapter()->getDriver()->getConnection();
-                $connection->disconnect();
-                $connection->connect();
-
-                return $this->checkTokenCompletion($tokenId, $retry+1);
-            } else {
-                throw new InvalidQueryException(sprintf('%s with %d retries', $e->getMessage(), $retry), $e->getCode(), $e);
+        $token = $this->tracker->getToken($tokenId);
+        if ($token->inSource()) {
+            if ($token->checkTokenCompletion($this->currentUserId)) {
+                // Completion may change the result of the initial query
+                return true;
             }
         }
-
         return false;
     }
 
@@ -794,12 +785,12 @@ class CommJobRepository
         return false;
     }
 
-    public function sendAllCommunications(?int $respondentId = null, ?int $organizationId = null)
+    public function sendAllCommunications(?int $respondentId = null, ?int $organizationId = null, $forceSent = false)
     {
         $jobs = $this->getActiveJobs();
         $processedTokens = [];
         foreach($jobs as $job) {
-            $sendableTokens = $this->getSendableTokens($job['gcj_id_job'], $respondentId, $organizationId);
+            $sendableTokens = $this->getSendableTokens($job['gcj_id_job'], $respondentId, $organizationId, $forceSent);
 
             foreach ($sendableTokens['send'] as $sendableTokenId) {
                 if (!in_array($sendableTokenId, $processedTokens)) {

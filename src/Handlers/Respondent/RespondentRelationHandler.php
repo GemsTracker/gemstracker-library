@@ -14,11 +14,13 @@ namespace Gems\Handlers\Respondent;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
-use Gems\Model\Transform\RespondentIdTransformer;
+use Gems\Model\RespondentRelationModel;
+use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Repository\RespondentRepository;
 use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -56,20 +58,22 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
 
     protected function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $respondent = $this->getRespondent();
-
         /* @var RespondentRelationModel $relationModel */
         $relationModel = $this->modelLoader->getRespondentRelationModel();
-
-        $relationModel->set('gr2o_patient_nr', 'default', $respondent->getPatientNumber());
-        $relationModel->set('gr2o_id_organization', 'default', $respondent->getOrganizationId());
-        $relationModel->addTransformer(new RespondentIdTransformer($respondent->getId(), 'grr_id_respondent'));
 
         if ($detailed) {
             $relationModel->applyDetailSettings();
         } else {
             $relationModel->applyBrowseSettings();
         }
+
+        $metaModel = $relationModel->getMetaModel();
+        $metaModel->addTransformer(new FixedValueTransformer([
+            'grr_id_respondent' => $this->getRespondentId(),
+            'grr_id_organization' => $this->request->getAttribute(MetaModelInterface::REQUEST_ID2),
+        ]));
+
+        $metaModel->setMulti(['grr_id', 'grr_id_user', 'grr_id_organization', 'gr2o_id_organization', 'gr2o_patient_nr'], ['elementClass' => 'None']);
 
         return $relationModel;
     }

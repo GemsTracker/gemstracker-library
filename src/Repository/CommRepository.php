@@ -3,6 +3,7 @@
 namespace Gems\Repository;
 
 use Gems\Communication\CommunicationRepository;
+use Gems\Communication\Exception;
 use Gems\Event\Application\TokenEventMailFailed;
 use Gems\Event\Application\TokenEventMailSent;
 use Gems\Exception\MailException;
@@ -15,6 +16,8 @@ use Symfony\Component\Mime\Email;
 
 class CommRepository
 {
+    public ?TransportExceptionInterface $lastException = null;
+
     public function __construct(
         protected readonly CommunicationRepository $communicationRepository,
         protected readonly CurrentUserRepository $currentUserRepository,
@@ -62,6 +65,7 @@ class CommRepository
         try {
             $mailer->send($email);
         } catch(TransportExceptionInterface $exception) {
+            $this->lastException = $exception;
             $event = new TokenEventMailFailed($exception, $email, $token, $currentUserId, $job);
             $this->event->dispatch($event, $event::NAME);
 

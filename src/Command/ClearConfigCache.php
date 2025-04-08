@@ -23,6 +23,10 @@ class ClearConfigCache extends Command
     {
         if ($this->configCacheFileLocation && file_exists($this->configCacheFileLocation)) {
             unlink($this->configCacheFileLocation);
+            if (file_exists($this->configCacheFileLocation)) {
+                $output->writeln("<comment>Config cache at '$this->configCacheFileLocation' was NOT cleared!</comment>");
+                return static::FAILURE;
+            }
             $output->writeln("<info>Config cache at '$this->configCacheFileLocation' has been cleared</info>");
             return static::SUCCESS;
         }

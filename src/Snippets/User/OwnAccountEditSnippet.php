@@ -27,6 +27,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -49,11 +50,9 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
 
     protected User $currentUser;
 
-    protected ModelAbstract $model;
+    protected DataReaderInterface $model;
 
     protected ServerRequestInterface $request;
-
-    private ?ResponseInterface $response = null;
 
     public function __construct(
         SnippetOptions $snippetOptions,
