@@ -50,6 +50,8 @@ class ExportBatchSnippet extends SnippetAbstract
 
     protected string $formTitle = '';
 
+    public array|bool $searchFilter = false;
+
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
@@ -75,6 +77,7 @@ class ExportBatchSnippet extends SnippetAbstract
         $model = $this->model;
 
         $batch->setVariable('model', $model);
+        $batch->setVariable('searchFilter', $this->searchFilter);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $post = $this->requestInfo->getRequestPostParams();
