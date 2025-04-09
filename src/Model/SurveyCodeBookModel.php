@@ -38,11 +38,11 @@ class SurveyCodeBookModel extends PlaceholderModel
         protected readonly Locale $locale,
     ) {
 
-        $data   = $this->getData($this->surveyId);
         $survey = $this->tracker->getSurvey($this->surveyId);
         $name   = $this->cleanupName($survey->getName()) . '-code-book';
 
-        parent::__construct($metaModelLoader, $translator, $name, [], $data);
+        parent::__construct($metaModelLoader, $translator, $name, [], []);
+        $this->data  = $this->getData($this->surveyId);
 
         $this->metaModel->set('id', [
             'label' => $this->translator->_('Survey ID')
