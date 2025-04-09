@@ -53,6 +53,13 @@ class PrefillAnswers extends FillBirthDayGender
      */
     protected function processOutput(Token $token): void
     {
+        // DTF TrackField part
+        $this->log("Setting DTF track fields");
+        $fields = $this->getDisplayTrackFieldValues($token->getRespondentTrack());
+        foreach ($fields as $code => $value) {
+            $this->addCheckedValue('dtf' . $code, $value);
+        }
+
         // TF TrackField part
         $this->log("Setting TF track fields");
         $fields = $this->getTrackFieldValues($token->getRespondentTrack());

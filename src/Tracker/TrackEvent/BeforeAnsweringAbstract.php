@@ -13,6 +13,7 @@ namespace Gems\Tracker\TrackEvent;
 
 use Gems\Locale\Locale;
 use Gems\Tracker\Mock\TokenReadonly;
+use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\Token;
 use MUtil\Model;
 use Zalt\Base\TranslatorInterface;
@@ -235,23 +236,47 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
 
     /**
      * Returns the track field VALUES as apposed to the DISPLAY VALUES returned by $respondentTrack->getCodeFields()
-     *
-     * @param array $requests
-     * @return array
      */
-    public function getTrackFieldValues(\Gems\Tracker\RespondentTrack $respondentTrack)
+    public function getDisplayTrackFieldValues(RespondentTrack $respondentTrack)
     {
-        $fieldCode2Label = $respondentTrack->getCodeFields();
+        $fieldDefinition = $respondentTrack->getTrackEngine()->getFieldsDefinition();
+        $fieldCode2Label = $fieldDefinition->getFieldCodes();
+        $rawFieldData    = $respondentTrack->getFieldData();    // Date (time) fields are unprocessed here
+
+        $results         = [];
+
+        foreach ($fieldCode2Label as $fieldKey => $fieldCode) {
+            if ($fieldCode === null) {
+                continue;
+            }
+            $field = $fieldDefinition->getField($fieldKey);
+            if (array_key_exists($fieldCode, $rawFieldData)) {
+                $results[$fieldCode] = $field->calculateFieldInfo($rawFieldData[$fieldCode], $rawFieldData);
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Returns the track field VALUES as apposed to the DISPLAY VALUES returned by $respondentTrack->getCodeFields()
+     */
+    public function getTrackFieldValues(RespondentTrack $respondentTrack)
+    {
+        $fieldCode2Label = $respondentTrack->getTrackEngine()->getFieldCodes();
         $rawFieldData    = $respondentTrack->getFieldData();    // Date (time) fields are unprocessed here
         $results         = [];
 
-        foreach ($fieldCode2Label as $key => $value) {
-            if (array_key_exists($key, $rawFieldData)) {
+        foreach ($fieldCode2Label as $fieldKey => $fieldCode) {
+            if ($fieldCode === null) {
+                continue;
+            }
+            if (array_key_exists($fieldCode, $rawFieldData)) {
+                $results[$fieldCode] = $rawFieldData[$fieldCode];
                 // If it is a date(/time) field export it in ISO format
-                if ($rawFieldData[$key] instanceof \DateTimeInterface) {
-                    $value = $rawFieldData[$key]->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat'));
+                if ($rawFieldData[$fieldCode] instanceof \DateTimeInterface) {
+                    $results[$fieldCode] = $rawFieldData[$fieldCode]->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat'));
                 }
-                $results[$key] = $value;
             }
         }
 
