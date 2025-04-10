@@ -2,19 +2,9 @@
 
 namespace Gems\Export\Db;
 
-use DateTimeInterface;
-use Gems\Db\ResultFetcher;
-use Gems\Export\ExportSettings\CsvExportSettings;
-use Gems\Export\ExportSettings\ExcelExportSettings;
 use Gems\Export\Type\ExportInterface;
-use Gems\Html;
 use Gems\Messenger\Message\Export\ModelExportPart;
-use Zalt\Html\AElement;
-use Zalt\Html\ElementInterface;
-use Zalt\Html\HtmlInterface;
-use Zalt\Html\Sequence;
-use Zalt\Late\Late;
-use Zalt\Late\LateInterface;
+use Psr\Container\ContainerInterface;
 use Zalt\Loader\Exception\LoadException;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
@@ -23,13 +13,13 @@ use Zalt\Model\MetaModelInterface;
 class ModelExportRepository
 {
     public function __construct(
-        protected readonly ModelContainer $modelContainer,
         protected ProjectOverloader $projectOverloader,
     )
     {}
 
-    public function getHeaders(DataReaderInterface $model, ModelExportPart $part): array
+    public function getHeaders(ContainerInterface $modelContainer, ModelExportPart $part): array
     {
+        $model = $this->getModel($modelContainer, $part);
         $metaModel = $model->getMetaModel();
         $labeledColumns = $this->getLabeledColumns($metaModel);
 
@@ -62,8 +52,9 @@ class ModelExportRepository
 
         return $metaModel->getMeta('labeledColumns');
     }
-    public function getRowData(DataReaderInterface $model, ModelExportPart $part): array
+    public function getRowData(ContainerInterface $modelContainer, ModelExportPart $part): array
     {
+        $model = $this->getModel($modelContainer, $part);
         $data = $model->loadPage($part->part, $part->itemCount, $part->filter);
 
         $exportClass = $this->projectOverloader->getContainer()->get($part->exportType);
@@ -87,4 +78,15 @@ class ModelExportRepository
         }
     }
 
+    private function getModel(ContainerInterface $modelContainer, ModelExportPart $part): DataReaderInterface
+    {
+        $model = $modelContainer->get($part->modelIdentifier, $part->post, $part->applyFunctions);
+        foreach($part->exportSettings as $exportSetting) {
+            if (method_exists($model, $exportSetting)) {
+                $model->$exportSetting();
+            }
+        }
+
+        return $model;
+    }
 }

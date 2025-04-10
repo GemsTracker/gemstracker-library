@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\Export;
+namespace Gems\Export\Db;
 
 use Gems\Exception;
 use Gems\Export\Exception\ExportException;
@@ -11,12 +11,13 @@ use Gems\Tracker;
 use Gems\Tracker\Model\AddTrackFieldsByCodeTransformer;
 use Gems\Tracker\Survey;
 use Gems\Tracker\SurveyModel;
+use Psr\Container\ContainerInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
 
-class AnswerModelFactory
+class AnswerModelContainer implements ContainerInterface
 {
     protected array $models = [];
 
@@ -29,7 +30,7 @@ class AnswerModelFactory
     ) {
     }
 
-    public function getModel(array $filter, array $data): SurveyModel
+    public function get(string $id, array $filter = [], array $applyFunctions = []): SurveyModel
     {
         if (!isset($filter['gto_id_survey'])) {
             throw new ExportException('No Survey ID specified');
@@ -40,11 +41,23 @@ class AnswerModelFactory
             return $this->models[$hash];
         }
 
-        $this->models[$hash] = $this->createModel($filter, $data);
+        $model = $this->createModel($filter);
+        foreach($applyFunctions as $applyFunction) {
+            if (method_exists($model, $applyFunction)) {
+                $model->$applyFunction();
+            }
+        }
+
+        $this->models[$hash] = $model;
         return $this->models[$hash];
     }
 
-    protected function createModel(array $filter, array $data): SurveyModel
+    public function has(string $id): bool
+    {
+        return true;
+    }
+
+    protected function createModel(array $filter): SurveyModel
     {
         $survey = $this->tracker->getSurvey($filter['gto_id_survey']);
         $language = $this->locale->getLanguage();
@@ -55,6 +68,14 @@ class AnswerModelFactory
         $model = $survey->getAnswerModel($language);
         $metaModel = $model->getMetaModel();
 
+        $data = [];
+        foreach ($filter as $field => $value) {
+            if (! (is_int($field) || $metaModel->has($field))) {
+                $data[$field] = $value;
+                unset($filter[$field]);
+            }
+        }
+
         // Reset labels and order
         foreach ($metaModel->getItemNames() as $itemName) {
             $metaModel->remove($itemName, 'label');
@@ -62,15 +83,10 @@ class AnswerModelFactory
         $metaModel->resetOrder();
 
         $prefixes = [];
-        $test0 = $metaModel->getCol('label');
         $this->addDefaultFieldsToExportModel($model, $data, $prefixes);
-        $test1 = $metaModel->getCol('label');
         $this->addNestedFieldsToExportModel($model, $data, $prefixes);
-        $test2 = $metaModel->getCol('label');
-        //$this->addSurveySourceAttributesToExportModel($model, $survey, $data, $prefixes);
-        $test3 = $metaModel->getCol('label');
+
         $this->addSurveyAnswersToExportModel($model, $survey, $data, $prefixes);
-        $test4 = $metaModel->getCol('label');
 
         $prefixes['D'] = array_diff(
             $metaModel->getColNames('label'),

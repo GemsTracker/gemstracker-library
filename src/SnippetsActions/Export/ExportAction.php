@@ -16,6 +16,7 @@ use Gems\Snippets\Export\ExportFormSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\ButtonRowActiontrait;
 use Gems\Task\ExportRunnerBatch;
+use Psr\Container\ContainerInterface;
 
 /**
  * @package    Gems
@@ -62,6 +63,10 @@ class ExportAction extends BrowseFilteredAction
     public string $formTitle = '';
 
     public array $modelApplyFunctions = [];
+
+    public ContainerInterface|null $modelContainer = null;
+
+    public array $postData = [];
 
     public bool $sensitiveData = true;
 

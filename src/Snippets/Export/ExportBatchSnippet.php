@@ -13,13 +13,18 @@ namespace Gems\Snippets\Export;
 
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Batch\BatchRunnerLoader;
+use Gems\Export\Db\AnswerModelContainer;
+use Gems\Export\Db\ModelContainer;
 use Gems\Export\Db\ModelExportRepository;
+use Gems\Export\Db\SurveyModelContainer;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\Task\Export\InitDbExport;
+use Gems\Tracker\SurveyModel;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\RequestInfo;
@@ -46,7 +51,11 @@ class ExportBatchSnippet extends SnippetAbstract
      */
     protected DataReaderInterface $model;
 
-    public $modelApplyFunctions = [];
+    public array $modelApplyFunctions = [];
+
+    protected ContainerInterface|null $modelContainer = null;
+
+    protected string|int|null $modelIdentifier = null;
 
     protected string $formTitle = '';
 
@@ -55,7 +64,6 @@ class ExportBatchSnippet extends SnippetAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        TranslatorInterface $translate,
         protected Loader $loader,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected ExportAction $exportAction,
@@ -64,8 +72,15 @@ class ExportBatchSnippet extends SnippetAbstract
         protected SessionInterface $session,
         protected ServerRequestInterface $request,
         protected readonly ModelExportRepository $exportRepository,
+        ModelContainer $modelContainer,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate);
+        parent::__construct($snippetOptions, $requestInfo);
+        if ($this->modelContainer === null) {
+            $this->modelContainer = $modelContainer;
+        }
+        if ($this->modelIdentifier === null) {
+            $this->modelIdentifier = $this->model::class;
+        }
     }
 
     public function getResponse(): ?ResponseInterface
@@ -74,13 +89,19 @@ class ExportBatchSnippet extends SnippetAbstract
             return null;
         }
         $batch = $this->exportAction->batch;
-        $model = $this->model;
 
-        $batch->setVariable('model', $model);
+        if ($this->model instanceof SurveyModel) {
+            $surveyId = $this->model->getSurvey()->getSurveyId();
+            $this->modelIdentifier = $surveyId;
+        }
+
+        $batch->setVariable('modelContainer', $this->modelContainer);
         $batch->setVariable('searchFilter', $this->searchFilter);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $post = $this->requestInfo->getRequestPostParams();
+
+
         $jobInfo = [];
 
         $currentUserId = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE);
@@ -106,12 +127,7 @@ class ExportBatchSnippet extends SnippetAbstract
 
                 $batch->setSessionVariable('files', []);
 
-                $modelFilter = [];
-                if ($this->exportAction->batch->hasSessionVariable('modelFilter')) {
-                    $modelFilter = $this->exportAction->batch->getSessionVariable('modelFilter');
-                }
-
-                $batch->addTask(InitDbExport::class, $this->model::class, $post, $modelFilter, $this->modelApplyFunctions, $type);
+                $batch->addTask(InitDbExport::class, $this->modelIdentifier, $this->searchFilter, $this->modelApplyFunctions, $type);
                 //$batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);
 
                 $batch->autoStart = true;

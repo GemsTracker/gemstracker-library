@@ -17,37 +17,33 @@ use Zalt\Model\MetaModelInterface;
 
 class InitDbExport extends TaskAbstract
 {
-    protected ModelContainer|null $modelContainer = null;
-
     protected ProjectOverloader|null $overLoader = null;
 
     public function execute(
-        string $modelName = null,
+        string|int $modelIdentifier = null,
         array $postData = [],
-        array $modelFilter = [],
         array $modelApplyFunctions = [],
         string $exportType = null,
         int $rowsPerBatch = 500
     )
     {
         $batch = $this->getBatch();
-        $modelFilter = $batch->getVariable('searchFilter') ?? [];
 
         $exportId = $batch->getId() . (new \DateTimeImmutable())->format('YmdHis');
         $batch->setSessionVariable('exportId', $exportId);
+        /**
+         * @var ModelContainer $modelContainer
+         */
+        $modelContainer = $batch->getVariable('modelContainer');
+        $model = $modelContainer->get($modelIdentifier, $postData, $modelApplyFunctions);
 
-        $model = $batch->getVariable('model') ?? $this->getModel($modelName);
+        $modelFilter = $this->getFilterFromPostData($postData, $model->getMetaModel());
 
-        $postData['model'] = $model;
         $totalRows  = $model->loadCount($modelFilter);
 
         $columnOrder = $this->getColumnOrder($model->getMetaModel());
 
         $totalTasks = ceil($totalRows / $rowsPerBatch);
-
-        $exportSettings = $this->getExportOptions($exportType, $postData);
-        $exportSettings['sourceModel'] = $modelName;
-        $exportSettings['applyFunctions'] = $modelApplyFunctions;
 
         $batch->getStack()->registerAllowedClass(ModelExportPart::class);
 
@@ -57,13 +53,15 @@ class InitDbExport extends TaskAbstract
                 filename: $this->getExportFileName($model, $exportType),
                 exportType: $exportType,
                 userId: $batch->getVariable(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE),
+                modelIdentifier: 'x',
                 applyFunctions: $modelApplyFunctions,
                 columnOrder: $columnOrder,
                 filter: $modelFilter,
+                post: $postData,
                 itemCount: $rowsPerBatch,
                 part: $i+1,
                 totalRows: $totalRows,
-                exportSettings: $exportSettings,
+                exportSettings: [],
             );
             $batch->addTask(DbExportPart::class, $modelExportPart);
         }
@@ -109,5 +107,24 @@ class InitDbExport extends TaskAbstract
         }
 
         return $this->modelContainer->get($modelName);
+    }
+
+    protected function getFilterFromPostData(array $filter, MetaModelInterface $metaModel): array
+    {
+        // Change key filters to field name filters
+        $keys = $metaModel->getKeys();
+        foreach ($keys as $key => $field) {
+            if (isset($filter[$key]) && $key !== $field) {
+                $filter[$field] = $filter[$key];
+                unset($filter[$key]);
+            }
+        }
+
+        foreach ($filter as $field => $value) {
+            if (! (is_int($field) || $metaModel->has($field))) {
+                unset($filter[$field]);
+            }
+        }
+        return $filter;
     }
 }

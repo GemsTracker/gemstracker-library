@@ -2,7 +2,7 @@
 
 namespace Gems\Handlers\Export;
 
-use Gems\Export\AnswerModelFactory;
+use Gems\Export\Db\AnswerModelContainer;
 use Gems\Handlers\BrowseChangeHandler;
 use Gems\Model\PlaceholderModel;
 use Gems\Repository\PeriodSelectRepository;
@@ -32,7 +32,7 @@ class ExportSurveyHandler extends BrowseChangeHandler
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected readonly AnswerModelFactory $answerModelFactory,
+        protected readonly AnswerModelContainer $answerModelContainer,
         protected readonly PeriodSelectRepository $periodSelectRepository,
     ) {
         parent::__construct($responder, $metaModelLoader, $translate, $cache);
@@ -99,29 +99,12 @@ class ExportSurveyHandler extends BrowseChangeHandler
         }
 
         $searchFilter =  $this->getSearchFilter();
-        $searchData = $this->getSearchData();
         if ($action instanceof BrowseFilteredAction && $searchFilter && isset($searchFilter['gto_id_survey'])) {
-            $action->model = $this->answerModelFactory->getModel($searchFilter, $searchData);
-            $action->searchFilter = $this->cleanUpFilter($action->searchFilter, $action->model->getMetaModel());
-        }
-    }
-
-    protected function cleanUpFilter(array $filter, MetaModelInterface $metaModel): array
-    {
-        // Change key filters to field name filters
-        $keys = $metaModel->getKeys();
-        foreach ($keys as $key => $field) {
-            if (isset($filter[$key]) && $key !== $field) {
-                $filter[$field] = $filter[$key];
-                unset($filter[$key]);
-            }
+            $action->model = $this->answerModelContainer->get($searchFilter['gto_id_survey'], $searchFilter);
         }
 
-        foreach ($filter as $field => $value) {
-            if (! (is_int($field) || $metaModel->has($field))) {
-                unset($filter[$field]);
-            }
+        if ($action instanceof ExportAction) {
+            $action->modelContainer = $this->answerModelContainer;
         }
-        return $filter;
     }
 }

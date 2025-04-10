@@ -16,7 +16,7 @@ class ModelContainer implements ContainerInterface
     {}
 
 
-    public function get(string $id, array $applyFunctions = []): DataReaderInterface
+    public function get(string $id, array $modelFilter = [], array $applyFunctions = []): DataReaderInterface
     {
         if (isset($this->models[$id])) {
             return $this->models[$id];

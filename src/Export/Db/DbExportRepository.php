@@ -11,6 +11,7 @@ use Gems\Export\Type\StreamableInterface;
 use Gems\Messenger\Message\Export\ModelExportPart;
 use Gems\Response\DownloadResponse;
 use Laminas\Db\ResultSet\ResultSetInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Loader\Exception\LoadException;
 use Zalt\Loader\ProjectOverloader;
@@ -28,16 +29,16 @@ class DbExportRepository
         protected readonly ModelContainer $modelContainer,
     )
     {}
-    public function insertDbPart(DataReaderInterface $model, ModelExportPart $part): void
+    public function insertDbPart(ContainerInterface $modelContainer, ModelExportPart $part): void
     {
         if ($part->part === 1) {
-            $this->addHeaderToExportData($model, $part);
+            $this->addHeaderToExportData($modelContainer, $part);
         }
-        $data = $this->exportRepository->getRowData($model, $part);
-        $this->addDataToExportData($model, $part, $data);
+        $data = $this->exportRepository->getRowData($modelContainer, $part);
+        $this->addDataToExportData($modelContainer, $part, $data);
     }
 
-    protected function addDataToExportData(DataReaderInterface $model, ModelExportPart $part, array $data): void
+    protected function addDataToExportData(ContainerInterface $modelContainer, ModelExportPart $part, array $data): void
     {
         $i = (($part->part - 1) * $part->itemCount) + 1;
         foreach($data as $row) {
@@ -46,12 +47,12 @@ class DbExportRepository
         }
     }
 
-    protected function addHeaderToExportData(DataReaderInterface $model, ModelExportPart $part): void
+    protected function addHeaderToExportData(ContainerInterface $modelContainer, ModelExportPart $part): void
     {
        if (!$this->hasHeader($part)) {
            return;
        }
-       $header = $this->exportRepository->getHeaders($model, $part);
+       $header = $this->exportRepository->getHeaders($modelContainer, $part);
        $this->addRowToExportData($part, 0, $header);
     }
 
@@ -89,7 +90,11 @@ class DbExportRepository
         $exportTypeClassName = $firstRow['gfex_export_type'];
         $exportType = $this->loader->getContainer()->get($exportTypeClassName);
         $fileName = $firstRow['gfex_file_name'];
-        $exportSettings = json_decode($firstRow['gfex_export_settings'], true) ?? [];
+        $exportSettings = [];
+        if ($firstRow['gfex_export_settings']) {
+            $exportSettings = json_decode($firstRow['gfex_export_settings'], true) ?? [];
+        }
+
         if ($exportType instanceof ModelResultSettingsInterface && isset($exportSettings['sourceModel'])) {
             $applyFunctions = $exportSettings['applyFunctions'] ?? [];
             $model = $this->modelContainer->get($exportSettings['sourceModel'], $applyFunctions);

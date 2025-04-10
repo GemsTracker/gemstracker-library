@@ -14,7 +14,7 @@ class DbExportPart extends TaskAbstract
     public function execute(ModelExportPart|array|null $exportPart = null)
     {
         $batch = $this->getBatch();
-        $model = $batch->getVariable('model');
+        $modelContainer = $batch->getVariable('modelContainer');
         /**
          * @var DbExportRepository $dbExportRepository
          */
@@ -22,6 +22,6 @@ class DbExportPart extends TaskAbstract
         if (is_array($exportPart)) {
             $exportPart = new ModelExportPart(...$exportPart);
         }
-        $dbExportRepository->insertDbPart($model, $exportPart);
+        $dbExportRepository->insertDbPart($modelContainer, $exportPart);
     }
 }
