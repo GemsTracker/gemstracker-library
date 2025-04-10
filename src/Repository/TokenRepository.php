@@ -656,7 +656,7 @@ class TokenRepository
             case 'W': //Waiting
                 if ($validFrom) {
                     if (! $validFrom instanceof \DateTimeInterface) {
-                        $validFrom = \DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $completionTime);
+                        $validFrom = \DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $validFrom);
                     }
                     if ($validFrom instanceof \DateTimeInterface) {
                         return sprintf($this->translator->_('Valid from %s'), $validFrom->format($displayFormat));
