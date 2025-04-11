@@ -72,7 +72,7 @@ class ExportBatchSnippet extends SnippetAbstract
         protected SessionInterface $session,
         protected ServerRequestInterface $request,
         protected readonly ModelExportRepository $exportRepository,
-        ModelContainer $modelContainer,
+        ContainerInterface $modelContainer,
     ) {
         parent::__construct($snippetOptions, $requestInfo);
         if ($this->modelContainer === null) {
