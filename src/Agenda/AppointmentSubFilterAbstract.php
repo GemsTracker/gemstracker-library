@@ -80,7 +80,7 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
                 $preferAppBalance = 0;
 
                 foreach($filterIds as $filterId) {
-                    if ($this->filterRepository->hasFilterAsSub($filterId, $this->id)) {
+                    if ($this->filterRepository->hasFilterAsSub((int)$filterId, $this->id)) {
                         throw new \RuntimeException(sprintf('Filter (%d) "%s" Cannot be loaded because filter %d already has it as its sub', $this->id, $this->getName(), $filterId));
                     }
                     $filterObject = $this->filterRepository->getFilter($filterId);
