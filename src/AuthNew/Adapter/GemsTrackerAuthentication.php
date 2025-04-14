@@ -75,7 +75,7 @@ class GemsTrackerAuthentication implements AuthenticationAdapterInterface
 
         $passwordHash = $row['gup_password'];
 
-        if (!password_verify($this->password, $passwordHash)) {
+        if (!password_verify($this->password, $passwordHash ?? '')) {
             return $this->makeResult(AuthenticationResult::FAILURE);
         }
 

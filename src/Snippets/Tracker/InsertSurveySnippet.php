@@ -22,6 +22,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;
+use Gems\Tracker\Respondent;
 use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\Survey;
 use Gems\Tracker\Token;
@@ -98,6 +99,8 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
         'gto_valid_until',
         'gto_comment',
     ];
+
+    protected ?Respondent $respondent;
 
     /**
      * @var bool Allow selection of more than one survey
