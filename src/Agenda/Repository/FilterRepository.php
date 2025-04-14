@@ -2,7 +2,11 @@
 
 namespace Gems\Agenda\Repository;
 
+use Gems\Agenda\Filter\AndAppointmentFilter;
 use Gems\Agenda\Filter\AppointmentFilterInterface;
+use Gems\Agenda\Filter\OrAppointmentFilter;
+use Gems\Agenda\Filter\XandAppointmentFilter;
+use Gems\Agenda\Filter\XorAppointmentFilter;
 use Gems\Cache\HelperAdapter;
 use Gems\Db\CachedResultFetcher;
 use Zalt\Loader\Exception\LoadException;
@@ -13,6 +17,14 @@ class FilterRepository
     protected array $cacheTags = [
         'appointment_filters',
     ];
+
+    protected array $subFilterClasses = [
+        'AndAppointmentFilter',
+        'OrAppointmentFilter',
+        'XandAppointmentFilter',
+        'XorAppointmentFilter',
+    ];
+
     public function __construct(
         protected readonly HelperAdapter $cache,
         protected readonly CachedResultFetcher $cachedResultFetcher,
@@ -54,30 +66,34 @@ class FilterRepository
 
     public function getFilter(int $filterId): AppointmentFilterInterface|null
     {
-        $filters = $this->getAllFilterData();
-        foreach($filters as $filter) {
-            if ($filter['gaf_id'] === $filterId) {
-                return $this->getFilterFromData($filter);
-            }
+        $filterData = $this->getFilterData($filterId);
+        if ($filterData) {
+            return $this->getFilterFromData($filterData);
         }
         return null;
     }
 
-    public function getAllActiveFilterData(int|null $organizationId = null): array
+    public function getFilterData(int $filterId): array|null
+    {
+        $filters = array_column($this->getAllFilterData(), null, 'gaf_id');
+        if (isset($filters[$filterId])) {
+            return $filters[$filterId];
+        }
+        return null;
+    }
+
+    public function getAllActiveFilterData(): array
     {
         $allFilters = $this->getAllFilterData();
 
-        return array_filter($allFilters, function($filter) use ($organizationId) {
-            if ($organizationId) {
-                return ($filter['gaf_active']) && $filter['gaf_id_organization'] == $organizationId;
-            }
+        return array_filter($allFilters, function($filter) {
             return (bool)$filter['gaf_active'];
         });
     }
 
-    public function getAllActiveFilters(int|null $organizationId = null): array
+    public function getAllActiveFilters(): array
     {
-        $allActiveFilterData = $this->getAllActiveFilterData($organizationId);
+        $allActiveFilterData = $this->getAllActiveFilterData();
 
         $filters = [];
         foreach($allActiveFilterData as $filter) {
@@ -94,9 +110,9 @@ class FilterRepository
         return $this->cachedResultFetcher->fetchAll('allAppointmentFilters', $sql, null, $this->cacheTags);
     }
 
-    public function getAllFilterOptions(int|null $organizationId = null): array
+    public function getAllFilterOptions(): array
     {
-        $allActiveFilterData = $this->getAllActiveFilterData($organizationId);
+        $allActiveFilterData = $this->getAllActiveFilterData();
 
         $filterOptions = [];
         foreach($allActiveFilterData as $filterData) {
@@ -104,5 +120,23 @@ class FilterRepository
         }
 
         return $filterOptions;
+    }
+
+    public function hasFilterAsSub(int $filterId, int $subFilterId): bool
+    {
+        $allFilterData = array_column($this->getAllFilterData(), null, 'gaf_id');
+        if (isset($allFilterData[$filterId])) {
+            $targetFilterData = $allFilterData[$filterId];
+            if (in_array($targetFilterData['gaf_class'], $this->subFilterClasses)) {
+                for ($i = 1; $i <= 4; $i++) {
+                    $targetSubFilterId = $targetFilterData['gaf_filter_text'.$i] ?? null;
+                    if ($targetSubFilterId === $subFilterId) {
+                        return true;
+                    }
+                    return $this->hasFilterAsSub($targetSubFilterId, $subFilterId);
+                }
+            }
+        }
+        return false;
     }
 }

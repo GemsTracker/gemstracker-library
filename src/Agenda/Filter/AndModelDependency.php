@@ -13,6 +13,7 @@ namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\Agenda;
 use Gems\Agenda\FilterModelDependencyAbstract;
+use Gems\Agenda\Repository\FilterRepository;
 use Gems\Agenda\SubFilterDependencyInterface;
 use Gems\Html;
 use Gems\Menu\RouteHelper;
@@ -42,12 +43,12 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
 
     public function __construct(
         TranslatorInterface $translate,
-        protected Agenda $agenda,
-        protected RouteHelper $routeHelper,
-        protected Translated $translatedUtil,
+        protected readonly FilterRepository $filterRepository,
+        protected readonly RouteHelper $routeHelper,
+        protected readonly Translated $translatedUtil,
     )
     {
-        $this->_filters = $this->translatedUtil->getEmptyDropdownArray() + $this->agenda->getFilterList();
+        $this->_filters = $this->translatedUtil->getEmptyDropdownArray() + $this->filterRepository->getAllFilterOptions();
 
         parent::__construct($translate);
     }
