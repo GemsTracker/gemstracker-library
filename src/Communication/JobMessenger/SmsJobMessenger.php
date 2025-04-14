@@ -3,6 +3,7 @@
 namespace Gems\Communication\JobMessenger;
 
 use Gems\Communication\Http\SmsClientInterface;
+use Gems\Communication\Http\SpryngSmsClient;
 use Gems\Event\Application\TokenEventCommunicationFailed;
 use Gems\Event\Application\TokenEventCommunicationSent;
 use Gems\Exception\ClientException;
@@ -127,21 +128,22 @@ class SmsJobMessenger implements JobMessengerInterface
 
     public function sendCommunication(array $job, Token $token, bool $preview): ?bool
     {
-        $clientId = 'sms';
-        if (isset($job['gcm_method_identifier'])) {
-            $clientId = $job['gcm_method_identifier'];
-        }
+        $clientId = $job['gcm_method_identifier'] ?? null;
         $smsClient = $this->communicationRepository->getSmsClient($clientId);
 
         if (!($smsClient instanceof SmsClientInterface)) {
             throw new Exception(sprintf('No Sms Client with id %s found', $clientId));
         }
 
-        $number = $this->getPhoneNumber($job, $token, $token);
+        $number = $this->getPhoneNumber($job, $token, true);
         $message = $this->getMessage($job, $token);
         $from = $this->getFrom($job, $token);
         $phoneNumberFilter = new DutchPhonenumberFilter();
         $filteredNumber = $phoneNumberFilter->filter($number);
+
+        if (!$filteredNumber) {
+            return false;
+        }
 
         try {
 

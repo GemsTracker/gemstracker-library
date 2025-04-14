@@ -305,7 +305,7 @@ class CommunicationRepository
      * @return SmsClientInterface
      * @throws \Gems\Exception|
      */
-    public function getSmsClient($clientId='sms')
+    public function getSmsClient($clientId=SmsClientInterface::class): SmsClientInterface
     {
         if (!$this->smsClient) {
 
@@ -352,7 +352,7 @@ class CommunicationRepository
             return $template['gct_name'];
         }
 
-        return '(unknwon template)';
+        return '(unknown template)';
     }
 
     public function getTokenMailFields(Token $token, string $language = null): array
