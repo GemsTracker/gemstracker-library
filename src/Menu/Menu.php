@@ -8,6 +8,8 @@ use Mezzio\Template\TemplateRendererInterface;
 
 class Menu extends MenuNode
 {
+    protected bool $horizontal = false;
+
     /** @var MenuItem[] */
     private array $items = [];
 
@@ -47,19 +49,47 @@ class Menu extends MenuNode
         }
     }
 
+    public function find(string $name): MenuItem
+    {
+        return $this->items[$name] ?? throw new MenuItemNotFoundException($name);
+    }
+
+    /**
+     * @param string|null $prefix
+     * @param MenuNode[] $children
+     * @return string[][]
+     */
+    private function gatherRouteLabelsByPrivilege(?string $prefix, array $children): array
+    {
+        return array_reduce($children, function (array $carry, MenuItem $child) use ($prefix) {
+            $route = $this->routeHelper->getUncheckedRoute($child->name);
+
+            $newPrefix = ($prefix ? $prefix . ' -> ' : '') . ($child->getLabel() ?: $route['name']);
+
+            if (isset($route['options']['privilege'])) {
+                $carry[$route['options']['privilege']][] = $newPrefix;
+            }
+
+            return array_merge($carry, $this->gatherRouteLabelsByPrivilege($newPrefix, $child->children));
+        }, []);
+    }
+
     protected function getMenu(): Menu
     {
         return $this;
     }
 
-    public function registerItem(string $name, MenuItem $menuItem)
+    /**
+     * @return string[][]
+     */
+    public function getRouteLabelsByPrivilege(): array
     {
-        $this->items[$name] = $menuItem;
+        return $this->gatherRouteLabelsByPrivilege(null, $this->children);
     }
 
-    public function find(string $name): MenuItem
+    public function isHorizontal(): bool
     {
-        return $this->items[$name] ?? throw new MenuItemNotFoundException($name);
+        return $this->horizontal;
     }
 
     /**
@@ -84,6 +114,11 @@ class Menu extends MenuNode
         $item->openPath($routeResult->getMatchedParams());
     }
 
+    public function registerItem(string $name, MenuItem $menuItem)
+    {
+        $this->items[$name] = $menuItem;
+    }
+
     public function renderNode(): string
     {
         foreach ($this->children as $child) {
@@ -95,36 +130,34 @@ class Menu extends MenuNode
         ]);
     }
 
+    public function renderMainRow(): string
+    {
+        foreach ($this->children as $child) {
+            $child->open([]);
+        }
+
+        return $this->templateRenderer->render('menu::main-menu-row', [
+            'children' => $this->children,
+        ]);
+    }
+
     public function renderMenu(): string
     {
+        if ($this->isHorizontal()) {
+            foreach ($this->children as $child) {
+                if ($child->isActive()) {
+                    return $this->templateRenderer->render('menu::main-menu', [
+                        'children' => $child->children,
+                    ]);
+                }
+            }
+
+        }
         return $this->renderNode();
     }
 
-    /**
-     * @return string[][]
-     */
-    public function getRouteLabelsByPrivilege(): array
+    public function setHorizontal(bool $horizontal): void
     {
-        return $this->gatherRouteLabelsByPrivilege(null, $this->children);
-    }
-
-    /**
-     * @param string|null $prefix
-     * @param MenuNode[] $children
-     * @return string[][]
-     */
-    private function gatherRouteLabelsByPrivilege(?string $prefix, array $children): array
-    {
-        return array_reduce($children, function (array $carry, MenuItem $child) use ($prefix) {
-            $route = $this->routeHelper->getUncheckedRoute($child->name);
-
-            $newPrefix = ($prefix ? $prefix . ' -> ' : '') . ($child->getLabel() ?: $route['name']);
-
-            if (isset($route['options']['privilege'])) {
-                $carry[$route['options']['privilege']][] = $newPrefix;
-            }
-
-            return array_merge($carry, $this->gatherRouteLabelsByPrivilege($newPrefix, $child->children));
-        }, []);
+        $this->horizontal = $horizontal;
     }
 }

@@ -827,6 +827,8 @@ class ConfigProvider
                     'X-Content-Type-Options' => 'nosniff',
                     'X-Frame-Options' => 'deny',
                 ],
+                // How to overwrite security settings in project
+                // 'default' => null,
                 'default' => [
                     'Content-Security-Policy' => 'default-src \'self\'',
                     'Feature-Policy' => 'camera \'none\'; microphone \'none\'; autoplay \'none\'',

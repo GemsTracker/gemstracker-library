@@ -841,10 +841,6 @@ class LimeSurvey3m00Database extends SourceAbstract
                         //'surveyls_language' =>  $language,
                     ]);
                 $sql->prepareStatementForSqlObject($update)->execute();
-
-                if (Tracker::$verbose) {
-                    \MUtil\EchoOut\EchoOut::r("From $currentUrl\n to $newUrl", "Changed return url for $language version of $surveyId.");
-                }
             }
         }
 

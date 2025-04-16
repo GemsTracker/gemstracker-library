@@ -26,6 +26,11 @@
         </div>
     </header>
 
+    {% if mainMenu is defined and mainMenu.isHorizontal() %}
+        <div id="main-menu" role="navigation">
+            {{ mainMenu.renderMainRow()|raw }}
+        </div>
+    {% endif %}
     <div class="content">
         {% if mainMenu is defined %}
         <div id="menu" role="navigation">

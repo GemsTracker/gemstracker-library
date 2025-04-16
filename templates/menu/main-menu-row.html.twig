@@ -1,0 +1,7 @@
+{% if children is not empty %}
+    <ul class="main-menu-children navigation nav nav-stacked flex-row">
+        {% for child in children %}
+            {{ child.renderNode()|raw }}
+        {% endfor %}
+    </ul>
+{% endif %}
