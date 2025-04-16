@@ -20,16 +20,25 @@ class SecurityHeadersMiddleware implements MiddlewareInterface
         }
     }
 
+    protected function applyHeadersToResponse(ResponseInterface $response, array $headers): ResponseInterface
+    {
+        foreach($headers as $name => $value) {
+            $response = $response->withHeader($name, $value);
+        }
+        return $response;
+    }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response  = $handler->handle($request);
 
         foreach($this->config as $responseClass => $headers) {
             if ($response instanceof $responseClass) {
-                foreach($headers as $name => $value) {
-                    $response = $response->withHeader($name, $value);
-                }
+                return $this->applyHeadersToResponse($response, $headers);
             }
+        }
+        if (isset($this->config['default']) && $this->config['default']) {
+            return $this->applyHeadersToResponse($response, $this->config['default']);
         }
 
         return $response;
