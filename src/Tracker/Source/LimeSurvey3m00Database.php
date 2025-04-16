@@ -806,13 +806,11 @@ class LimeSurvey3m00Database extends SourceAbstract
             FROM $lsSurveys INNER JOIN $lsSurvLang
                 ON sid = surveyls_survey_id
              WHERE sid = ?
-                AND surveyls_language = ?
-                AND active='Y'
-             LIMIT 1";
-        $currentUrl = $lsResultFetcher->fetchOne($sql, [$sourceSurveyId, $language]);
+                AND active='Y'";
+        $currentUrls = $lsResultFetcher->fetchCol($sql, [$sourceSurveyId, $language]);
 
         // No field was returned
-        if (null === $currentUrl) {
+        if (empty($currentUrls)) {
             throw new SurveyNotFoundException(sprintf('The survey with id %d for token %s does not exist.', $surveyId, $tokenId) . ' ' . sprintf('The Lime Survey id is %s', $sourceSurveyId));
         }
 
@@ -825,9 +823,11 @@ class LimeSurvey3m00Database extends SourceAbstract
             // If not, then this url might change regularly, but things will remain working as the
             // final url shown is dependent by the token level return url stored in the token table.
             $newUrl = $this->_getReturnURI($token->getOrganization());
-
+            $incorrectUrls = array_filter($currentUrls, function($url) use ($newUrl) {
+                return $url !== $newUrl;
+            });
             // Make sure the url is set correctly in surveyor.
-            if ($currentUrl != $newUrl) {
+            if (count($incorrectUrls)) {
 
                 //$where = $lsDb->quoteInto('surveyls_survey_id = ? AND ', $sourceSurveyId) .
                 //    $lsDb->quoteInto('surveyls_language = ?', $language);
@@ -838,7 +838,7 @@ class LimeSurvey3m00Database extends SourceAbstract
                         'surveyls_url' => $newUrl,
                     ])->where([
                         'surveyls_survey_id' => $sourceSurveyId,
-                        'surveyls_language' =>  $language,
+                        //'surveyls_language' =>  $language,
                     ]);
                 $sql->prepareStatementForSqlObject($update)->execute();
 
