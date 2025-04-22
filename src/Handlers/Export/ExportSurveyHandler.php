@@ -13,7 +13,6 @@ use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\SnippetsActions\SnippetActionInterface;
@@ -25,6 +24,13 @@ class ExportSurveyHandler extends BrowseChangeHandler
         'autofilter' => BrowseFilteredAction::class,
         'index'      => BrowseSearchAction::class,
         'export'     => ExportAction::class,
+    ];
+
+    protected bool $multi = false;
+
+    protected array $exportStartSnippets = [
+        ContentTitleSnippet::class,
+        SurveyExportSearchFormSnippet::class,
     ];
 
     public function __construct(
@@ -88,23 +94,27 @@ class ExportSurveyHandler extends BrowseChangeHandler
 
     public function prepareAction(SnippetActionInterface $action): void
     {
-
-
         parent::prepareAction($action);
         if ($action instanceof BrowseSearchAction) {
-            $action->setStartSnippets([
-                ContentTitleSnippet::class,
-                SurveyExportSearchFormSnippet::class,
-            ]);
+            $action->setStartSnippets($this->exportStartSnippets);
         }
 
         $searchFilter =  $this->getSearchFilter();
         if ($action instanceof BrowseFilteredAction && $searchFilter && isset($searchFilter['gto_id_survey'])) {
-            $action->model = $this->answerModelContainer->get($searchFilter['gto_id_survey'], $searchFilter);
+            if ($this->multi) {
+                if (!$action instanceof ExportAction) {
+                    $action->setSnippets([]);
+                }
+            } else {
+                $action->model = $this->answerModelContainer->get($searchFilter['gto_id_survey'], $searchFilter);
+            }
         }
 
         if ($action instanceof ExportAction) {
             $action->modelContainer = $this->answerModelContainer;
+            if ($searchFilter && isset($searchFilter['gto_id_survey'])) {
+                $action->modelIdentifier = $searchFilter['gto_id_survey'];
+            }
         }
     }
 }
