@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Gems\SnippetsActions\Export;
 
 use Gems\Snippets\Export\ExportBatchSnippet;
-use Gems\Snippets\Export\ExportDownloadSnippet;
+use Gems\Snippets\Export\ExportDownloadStepSnippet;
 use Gems\Snippets\Export\ExportFormSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\ButtonRowActiontrait;
@@ -38,8 +38,8 @@ class ExportAction extends BrowseFilteredAction
     protected array $_snippets = [
         ExportFormSnippet::class,
         ExportBatchSnippet::class,
-        ExportDownloadSnippet::class,
-        ];
+        ExportDownloadStepSnippet::class,
+    ];
 
     /**
      * @var ExportRunnerBatch Set in ExportFormSnippet->hasHtmlOutput()
@@ -65,6 +65,8 @@ class ExportAction extends BrowseFilteredAction
     public array $modelApplyFunctions = [];
 
     public ContainerInterface|null $modelContainer = null;
+
+    public string|int|array|null $modelIdentifier = null;
 
     public array $postData = [];
 

@@ -29,13 +29,19 @@ class InitDbExport extends TaskAbstract
     {
         $batch = $this->getBatch();
 
-        $exportId = $batch->getId() . (new \DateTimeImmutable())->format('YmdHis');
-        $batch->setSessionVariable('exportId', $exportId);
         /**
          * @var ModelContainer $modelContainer
          */
         $modelContainer = $batch->getVariable('modelContainer');
         $model = $modelContainer->get($modelIdentifier, $postData, $modelApplyFunctions);
+
+        $exportId = $model->getName() . (new \DateTimeImmutable())->format('YmdHis');
+
+        $currentExportIds = $batch->getVariable('exportIds') ?? [];
+        if (!in_array($exportId, $currentExportIds)) {
+            $currentExportIds[] = $exportId;
+            $batch->setSessionVariable('exportIds', $currentExportIds);
+        }
 
         $modelFilter = $this->getFilterFromPostData($postData, $model->getMetaModel());
 
@@ -53,7 +59,7 @@ class InitDbExport extends TaskAbstract
                 filename: $this->getExportFileName($model, $exportType),
                 exportType: $exportType,
                 userId: $batch->getVariable(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE),
-                modelIdentifier: 'x',
+                modelIdentifier: $modelIdentifier,
                 applyFunctions: $modelApplyFunctions,
                 columnOrder: $columnOrder,
                 filter: $modelFilter,
@@ -81,7 +87,7 @@ class InitDbExport extends TaskAbstract
         $now = new \DateTimeImmutable();
         $nameParts = [
             $model->getName(),
-            $now->format('Ymdhis'),
+            $now->format('YmdHis'),
         ];
 
         if (defined("$exportTypeClass::EXTENSION")) {

@@ -55,7 +55,7 @@ class ExportBatchSnippet extends SnippetAbstract
 
     protected ContainerInterface|null $modelContainer = null;
 
-    protected string|int|null $modelIdentifier = null;
+    protected string|int|array|null $modelIdentifier = null;
 
     protected string $formTitle = '';
 
@@ -90,11 +90,6 @@ class ExportBatchSnippet extends SnippetAbstract
         }
         $batch = $this->exportAction->batch;
 
-        if ($this->model instanceof SurveyModel) {
-            $surveyId = $this->model->getSurvey()->getSurveyId();
-            $this->modelIdentifier = $surveyId;
-        }
-
         $batch->setVariable('modelContainer', $this->modelContainer);
         $batch->setVariable('searchFilter', $this->searchFilter);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
@@ -127,7 +122,15 @@ class ExportBatchSnippet extends SnippetAbstract
 
                 $batch->setSessionVariable('files', []);
 
-                $batch->addTask(InitDbExport::class, $this->modelIdentifier, $this->searchFilter, $this->modelApplyFunctions, $type);
+                foreach((array)$this->modelIdentifier as $modelIdentifier) {
+                    $batch->addTask(
+                        InitDbExport::class,
+                        $modelIdentifier,
+                        $this->searchFilter,
+                        $this->modelApplyFunctions,
+                        $type
+                    );
+                }
                 //$batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);
 
                 $batch->autoStart = true;

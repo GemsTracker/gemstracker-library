@@ -2,6 +2,8 @@
 
 namespace Gems\Config;
 
+use Gems\Handlers\Export\ExportDownloadsHandler;
+use Gems\Handlers\Export\ExportMultiSurveyHandler;
 use Gems\Handlers\Export\ExportSurveyHandler;
 use Gems\Handlers\Setup\CommJobHandler;
 use Gems\Handlers\Setup\ConsentHandler;
@@ -93,6 +95,16 @@ class Menu
                     controllerClass: ExportSurveyHandler::class,
                     name: 'export.survey',
                     label: $this->translator->trans('Export survey'),
+                ),
+                $this->createMenuForHandler(
+                    controllerClass: ExportMultiSurveyHandler::class,
+                    name: 'export.multi-survey',
+                    label: $this->translator->trans('Export multiple surveys'),
+                ),
+                $this->createMenuForHandler(
+                    controllerClass: ExportDownloadsHandler::class,
+                    name: 'export.downloads',
+                    label: $this->translator->trans('Export downloads'),
                 )
             ],
         ];

@@ -235,7 +235,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
         return $elements;
     }
 
-    protected function getRoundsForExport(int|null $trackId = null, int|null $surveyId = null): array
+    protected function getRoundsForExport(int|null $trackId = null, int|array|null $surveyId = null): array
     {
         // Read some data from tables, initialize defaults...
         // Fetch all round descriptions
@@ -246,11 +246,11 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
         $select->where->isNotNull('gto_round_description')->notEqualTo('gto_round_description', '');
 
         if (!empty($trackId)) {
-            $select->where(['gto_id_track', $trackId]);
+            $select->where(['gto_id_track' => $trackId]);
         }
 
         if (!empty($surveyId)) {
-            $select->where(['gto_id_survey', $surveyId]);
+            $select->where(['gto_id_survey' => $surveyId]);
         }
 
         return $this->resultFetcher->fetchPairs($select);

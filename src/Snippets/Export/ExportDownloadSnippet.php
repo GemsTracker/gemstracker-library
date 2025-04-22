@@ -12,20 +12,18 @@
 namespace Gems\Snippets\Export;
 
 use Gems\Export\Db\DbExportRepository;
+use Gems\Export\Db\FileExportDownloadModel;
 use Gems\Export\Exception\ExportException;
 use Gems\Export\Export;
-use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\SnippetsActions\Export\ExportAction;
-use Mezzio\Session\SessionInterface;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Snippets\ModelTableSnippet;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\MessageTrait;
-use Zalt\Message\MessengerInterface;
-use Zalt\Model\Data\FullDataInterface;
-use Zalt\Snippets\ModelSnippetAbstract;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -37,17 +35,13 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 24-sep-2014 18:26:00
  */
-class ExportDownloadSnippet extends ModelSnippetAbstract
+class ExportDownloadSnippet extends ModelTableSnippet
 {
     use MessageTrait;
 
     protected int $currentUserId;
 
-    /**
-     *
-     * @var \MUtil\Model\ModelAbstract
-     */
-    protected $model;
+    protected array $menuEditRoutes = ['delete'];
 
     protected ?ResponseInterface $response;
 
@@ -56,24 +50,20 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
-        MessengerInterface $messenger,
-        protected ExportAction $exportAction,
-        protected ProjectOverloader $overLoader,
-        protected SessionInterface $session,
+        protected readonly FileExportDownloadModel $fileExportDownloadModel,
         protected readonly DbExportRepository $dbExportRepository,
-        readonly CurrentUserRepository $currentUserRepository,
         protected readonly Export $export,
+        CurrentUserRepository $currentUserRepository,
     ) {
-        $this->messenger = $messenger;
-        $this->currentUserId = $this->currentUserRepository->getCurrentUserId();
-
-        parent::__construct($snippetOptions, $requestInfo, $translate);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
-    protected function createModel(): FullDataInterface
+    protected function createModel(): DataReaderInterface
     {
-        return $this->model;
+        return $this->fileExportDownloadModel;
     }
 
     public function getResponse(): ?ResponseInterface
@@ -85,32 +75,40 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
         return null;
     }
 
-    public function getHtmlOutput()
-    {
-        $this->addMessage($this->_('Download no longer available.'));
-
-        return Html::actionLink([$this->requestInfo->getBasePath()] + ['step' => ExportAction::STEP_RESET], $this->_('Reset'));
-    }
-
     public function hasHtmlOutput(): bool
     {
-        if (($this->exportAction->step !== ExportAction::STEP_DOWNLOAD) || (! isset($this->exportAction->batch))) {
-            return false;
-        }
-        // $batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
-        $batch = $this->exportAction->batch;
-        $exportId = $batch->getSessionVariable('exportId');
+        $currentExportId = $this->requestInfo->getParam('exportId');
 
-        try {
-            $this->response = $this->dbExportRepository->exportFile($exportId, $this->currentUserId, $this->export->streamOnly($this->sensitiveData));
-            if ($this->response === null) {
-                die;
+        if ($currentExportId) {
+            try {
+                $this->response = $this->dbExportRepository->exportFile(
+                    $currentExportId,
+                    $this->currentUserId,
+                    $this->export->streamOnly($this->sensitiveData)
+                );
+                if ($this->response === null) {
+                    die;
+                }
+                return false;
+            } catch (ExportException) {
             }
-            return false;
-        } catch(ExportException) {
-
         }
 
-        return true;
+        return parent::hasHtmlOutput();
+    }
+
+    protected function getShowUrls(TableBridge $bridge, array $keys): array
+    {
+        $queryParams = [
+            ...$this->requestInfo->getRequestQueryParams(),
+            'exportId' => $bridge->getLate('gfex_export_id'),
+        ];
+
+        $downloadLink = $this->menuHelper->getLateRouteUrl($this->menuHelper->getCurrentRoute(), $keys, $bridge, false, $queryParams);
+        $downloadLink['label'] = $this->_('Download');
+
+        return [
+            $downloadLink,
+        ];
     }
 }
