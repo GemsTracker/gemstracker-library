@@ -2,11 +2,7 @@
 
 namespace Gems\Agenda\Repository;
 
-use Gems\Agenda\Filter\AndAppointmentFilter;
 use Gems\Agenda\Filter\AppointmentFilterInterface;
-use Gems\Agenda\Filter\OrAppointmentFilter;
-use Gems\Agenda\Filter\XandAppointmentFilter;
-use Gems\Agenda\Filter\XorAppointmentFilter;
 use Gems\Cache\HelperAdapter;
 use Gems\Db\CachedResultFetcher;
 use Zalt\Loader\Exception\LoadException;
@@ -16,6 +12,8 @@ class FilterRepository
 {
     protected array $cacheTags = [
         'appointment_filters',
+        'activity',
+        'activities',
     ];
 
     protected array $subFilterClasses = [
