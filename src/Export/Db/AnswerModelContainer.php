@@ -36,12 +36,12 @@ class AnswerModelContainer implements ContainerInterface
             throw new ExportException('No Survey ID specified');
         }
 
-        $hash = md5(json_encode($filter));
+        $hash = $id . '_' . md5(json_encode($filter));
         if (isset($this->models[$hash])) {
             return $this->models[$hash];
         }
 
-        $model = $this->createModel($filter);
+        $model = $this->createModel((int)$id, $filter);
         foreach($applyFunctions as $applyFunction) {
             if (method_exists($model, $applyFunction)) {
                 $model->$applyFunction();
@@ -57,9 +57,9 @@ class AnswerModelContainer implements ContainerInterface
         return true;
     }
 
-    protected function createModel(array $filter): SurveyModel
+    protected function createModel(int $id, array $filter): SurveyModel
     {
-        $survey = $this->tracker->getSurvey($filter['gto_id_survey']);
+        $survey = $this->tracker->getSurvey($id);
         $language = $this->locale->getLanguage();
 
         /**
