@@ -23,6 +23,9 @@ class SecurityHeadersMiddleware implements MiddlewareInterface
     protected function applyHeadersToResponse(ResponseInterface $response, array $headers): ResponseInterface
     {
         foreach($headers as $name => $value) {
+            if ($value === null) {
+                continue;
+            }
             $response = $response->withHeader($name, $value);
         }
         return $response;
