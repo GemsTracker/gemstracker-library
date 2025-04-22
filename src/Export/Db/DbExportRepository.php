@@ -11,6 +11,7 @@ use Gems\Export\Type\StreamableInterface;
 use Gems\Messenger\Message\Export\ModelExportPart;
 use Gems\Response\DownloadResponse;
 use Laminas\Db\ResultSet\ResultSetInterface;
+use Laminas\Db\Sql\Expression;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Loader\Exception\LoadException;
@@ -20,6 +21,8 @@ use Zalt\Model\Data\DataReaderInterface;
 class DbExportRepository
 {
     public const EXPORT_DB = 'gems__file_exports';
+
+    private array $availableDownloads = [];
 
     public function __construct(
         protected readonly ModelExportRepository $exportRepository,
@@ -75,7 +78,7 @@ class DbExportRepository
         $this->resultFetcher->insertIntoTable(static::EXPORT_DB, $data);
     }
 
-    protected function clearExportData(string $exportId, int $userId): void
+    public function clearExportData(string $exportId, int $userId): void
     {
         $this->resultFetcher->deleteFromTable(static::EXPORT_DB, ['gfex_export_id' => $exportId, 'gfex_id_user' => $userId]);
     }
@@ -120,6 +123,26 @@ class DbExportRepository
         }
 
         throw new ExportException(sprintf('No valid download option available in type %s', $exportTypeClassName));
+    }
+
+    public function getAvailableDownloads(int $userId): array
+    {
+        if (!isset($this->availableDownloads[$userId])) {
+            $select = $this->resultFetcher->getSelect('gems__file_exports');
+            $select->columns([
+                'gfex_export_id',
+                'gfex_file_name',
+                'gfex_created' => new Expression('MIN(gfex_created)'),
+            ])->where([
+                'gfex_id_user' => $userId,
+            ])->group([
+                'gfex_export_id',
+                'gfex_file_name',
+            ]);
+            $this->availableDownloads[$userId] = $this->resultFetcher->fetchAll($select);
+        }
+
+        return $this->availableDownloads[$userId];
     }
 
     protected function getExportHeader(string $exportId, int $userId): array|null
