@@ -11,6 +11,7 @@ use Laminas\Stdlib\ArrayUtils\MergeReplaceKey;
 use Zalt\SnippetsActions\NoCsrfInterface;
 use Zalt\SnippetsActions\ParameterActionInterface;
 use Zalt\SnippetsActions\PostActionInterface;
+use Zalt\SnippetsHandler\ActionNotSnippetActionException;
 
 trait ModelSnippetActionRouteHelpers
 {
@@ -184,9 +185,32 @@ trait ModelSnippetActionRouteHelpers
         string $controllerClass,
         ?string $basePath = null): array
     {
+        if (! (property_exists($controllerClass, 'actions') && property_exists($controllerClass, 'parameters'))) {
+            throw new ActionNotSnippetActionException("Class $controllerClass does not have static actions and parameters properties!");
+        }
+
         // Set basic variables for all routes
+        $parentParameters = [];
         if ($basePath === null) {
-            $basePath = '/' . str_replace('.', '/', $baseName);
+            $baseParts = explode('.', $baseName);
+            if (count($baseParts) > 1) {
+                $childDef = array_pop($baseParts);
+            } else {
+                $childDef = false;
+            }
+            $basePath = '/' . implode( '/', $baseParts);
+
+            $parentParameters = [];
+            if (property_exists($controllerClass, 'parentParameters')) {
+                $parentParameters = $controllerClass::$parentParameters;
+                foreach ($parentParameters as $parameterName => $parameterRegex) {
+                    $basePath .= '/{' . $parameterName . ':'. $parameterRegex . '}';
+                }
+            }
+
+            if ($childDef !== false) {
+                $basePath .= '/' . $childDef;
+            }
         }
 
         $basePrivilege = 'pr.' . $baseName;
@@ -204,10 +228,10 @@ trait ModelSnippetActionRouteHelpers
             $combinedParameters[] = '{' . $parameterName . ':'. $parameterRegex . '}';
         }
 
-        $parentParameters = [];
-        if (property_exists($controllerClass, 'parentParameters')) {
-            $parentParameters = $controllerClass::$parentParameters;
-        }
+//        $parentParameters = [];
+//        if (property_exists($controllerClass, 'parentParameters')) {
+//            $parentParameters = $controllerClass::$parentParameters;
+//        }
 
         $parameterString = join('/', $combinedParameters);
         $optionalParameters = null;
@@ -239,7 +263,7 @@ trait ModelSnippetActionRouteHelpers
                     'controller'  => $controllerClass,
                     'privilege'   => $basePrivilege . '.' . $pagePrivilege,
                 ],
-                'params'          => $parentParameters,
+                'params'          => array_keys($parentParameters),
                 'path'            => $basePath . '/' . $pageName,
             ];
 

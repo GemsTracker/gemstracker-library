@@ -194,12 +194,22 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected bool $enableScreens = true;
 
+    public array $exportParameters = [
+        'addCurrentParent' => true,
+        'csrfName'         => 'getCsrfTokenName',
+        'csrfToken'        => 'getCsrfToken',
+        'respondent'       => 'getRespondent',  // Sets menu
+        ];
+
     /**
      * The snippets used for the export action.
      *
      * @var mixed String or array of snippets name
      */
-    public array $exportSnippets = ['Respondent\\RespondentDetailsSnippet'];
+    public array $exportSnippets = [
+        'Respondent\\Export\\RespondentExportFormSnippet',
+        'Respondent\\Export\\RespondentExportOutputSnippet',
+        ];
 
     /**
      * Array of the actions that use the model in form version.
@@ -508,10 +518,14 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     public function exportArchiveAction()
     {
-        $params = $this->_processParameters(['addCurrentParent' => false] + $this->showParameters);
+        $params = $this->_processParameters($this->exportParameters + $this->showParameters);
+
+        $params['formTitle'] = $this->_('Export respondent archive');
 
         $this->addSnippets($this->exportSnippets, $params);
+        return;
 
+        /*
         $this->html->h2($this->_('Export respondent archive'));
 
         //Now show the export form
@@ -543,7 +557,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
             }
 
             $export->render($patients, $group, $format);
-        }
+        } // */
     }
 
     public function getBrowseColumns(): bool|array

@@ -147,6 +147,35 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                         [
+                            'name' => 'respondent.relations.index',
+                            'label' => $this->translator->trans('Relations'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'respondent.relations.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'respondent.relations.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'respondent.relations.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.relations.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
                             'name' => 'respondent.delete',
                             'label' => $this->translator->trans('Delete'),
                             'type' => 'route-link-item',
@@ -345,6 +374,11 @@ class Menu
                             ],
                         ],
                         [
+                            'name' => 'respondent.export-archive',
+                            'label' => $this->translator->trans('Dossier Export'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
                             'name' => 'respondent.communication-log.index',
                             'label' => $this->translator->trans('Communication log'),
                             'type' => 'route-link-item',
@@ -365,35 +399,6 @@ class Menu
                                     'name' => 'respondent.activity-log.show',
                                     'label' => $this->translator->trans('Show'),
                                     'type' => 'route-link-item',
-                                ],
-                            ],
-                        ],
-                        [
-                            'name' => 'respondent.relations.index',
-                            'label' => $this->translator->trans('Relations'),
-                            'type' => 'route-link-item',
-                            'children' => [
-                                [
-                                    'name' => 'respondent.relations.create',
-                                    'label' => $this->translator->trans('New'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
-                                    'name' => 'respondent.relations.show',
-                                    'label' => $this->translator->trans('Show'),
-                                    'type' => 'route-link-item',
-                                    'children' => [
-                                        [
-                                            'name' => 'respondent.relations.edit',
-                                            'label' => $this->translator->trans('Edit'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'respondent.relations.delete',
-                                            'label' => $this->translator->trans('Delete'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                    ],
                                 ],
                             ],
                         ],

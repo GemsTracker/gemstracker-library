@@ -95,6 +95,7 @@
         "monolog/monolog": "^3.0.0",
         "nesbot/carbon": "^2.66",
         "openspout/openspout": "^4.0",
+        "phpoffice/phpword": "v1.3.*",
         "psr/http-message": "^1.0.1",
         "psr/http-server-handler": "^1.0.1",
         "psr/http-server-middleware": "^1.0.1",
