@@ -25,7 +25,6 @@ class NotFoundHandler implements RequestHandlerInterface
         private readonly LayoutRenderer $layoutRenderer,
         private readonly ?TemplateRendererInterface $renderer = null,
         private readonly string $template = self::TEMPLATE_DEFAULT,
-        private readonly string $layout = self::LAYOUT_DEFAULT,
     ) {
     }
 
