@@ -10,12 +10,16 @@ use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Mezzio\Handler\NotFoundHandler as BaseNotFoundHandler;
+
+use Psr\Http\Server\RequestHandlerInterface;
 
 use function sprintf;
 
-class NotFoundHandler extends BaseNotFoundHandler
+class NotFoundHandler implements RequestHandlerInterface
 {
+    public const TEMPLATE_DEFAULT = 'error::404';
+    public const LAYOUT_DEFAULT   = 'layout::default';
+
     public function __construct(
         private readonly ResponseFactoryInterface $responseFactory,
         private readonly LayoutRenderer $layoutRenderer,
@@ -23,7 +27,6 @@ class NotFoundHandler extends BaseNotFoundHandler
         private readonly string $template = self::TEMPLATE_DEFAULT,
         private readonly string $layout = self::LAYOUT_DEFAULT,
     ) {
-        parent::__construct($responseFactory, $this->renderer, $this->template, $this->layout);
     }
 
     /**
@@ -68,5 +71,10 @@ class NotFoundHandler extends BaseNotFoundHandler
         );
 
         return $response;
+    }
+
+    public function getResponseFactory(): ResponseFactoryInterface
+    {
+        return $this->responseFactory;
     }
 }
