@@ -103,7 +103,7 @@
         "symfony/cache": "^6.1.2",
         "symfony/console": "^6.1",
         "symfony/doctrine-messenger": "^6.1",
-        "symfony/event-dispatcher": "^5.4.9",
+        "symfony/event-dispatcher": "^6.4",
         "symfony/finder": "^6.1",
         "symfony/html-sanitizer": "^6.1",
         "symfony/intl": "^6.1",
@@ -122,7 +122,6 @@
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "1.*",
         "phpunit/phpunit": "^10.5.0",
-        "symfony/yaml": "^6.1",
         "vimeo/psalm": "^5.0@dev"
     },
     "autoload-dev": {
