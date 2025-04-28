@@ -43,8 +43,9 @@ class RespondentExportRepository
      * Clean DOM object for Word export
      *
      * @param \DOMDocument $dom
+     * @return \DOMDocument
      */
-    public function cleanDom(\DOMDocument $dom)
+    public function cleanDom(\DOMDocument $dom): \DOMDocument
     {
         // add border attributes to tables
         foreach ($dom->getElementsByTagName('table') as $tablenode) {
