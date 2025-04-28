@@ -13,6 +13,7 @@ namespace Gems\Snippets\Respondent\Export;
 use Gems\Repository\RespondentExportRepository;
 use Gems\Tracker;
 use Gems\Tracker\Respondent;
+use Gems\Tracker\Token;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -27,6 +28,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class RespondentExportOutputSnippet extends TranslatableSnippetAbstract
 {
+    protected ?Token $filterToken = null;
+
     protected string $reportFooter = 'Respondent\\Export\\ReportFooterSnippet';
 
     protected string $reportHeader = 'Respondent\\Export\\ReportHeaderSnippet';
@@ -56,9 +59,18 @@ class RespondentExportOutputSnippet extends TranslatableSnippetAbstract
         $html->append($this->snippetLoader->getSnippet($this->reportHeader));
         $html->append($this->snippetLoader->getSnippet($this->respondentSnippet, ['respondent' => $this->respondent]));
 
-        $respTracks = $this->tracker->getRespondentTracks($this->respondent->getId(), $this->respondent->getOrganizationId());
+        if ($this->filterToken) {
+            $respTracks = [$this->filterToken->getRespondentTrack()];
+        } else {
+            $respTracks = $this->tracker->getRespondentTracks($this->respondent->getId(), $this->respondent->getOrganizationId());
+        }
+        $params = [
+            'filterToken' => $this->filterToken,
+            'respondent'  => $this->respondent,
+        ];
         foreach ($respTracks as $respTrack) {
-            $html->raw($this->snippetLoader->getSnippet($this->trackSnippet, ['respondent' => $this->respondent, 'respondentTrack' => $respTrack])->render());
+            $params['respondentTrack'] = $respTrack;
+            $html->append($this->snippetLoader->getSnippet($this->trackSnippet, $params));
         }
         $html->append($this->snippetLoader->getSnippet($this->reportFooter));
 
@@ -68,7 +80,11 @@ class RespondentExportOutputSnippet extends TranslatableSnippetAbstract
     public function getResponse(): ?ResponseInterface
     {
         if ($this->requestInfo->isPost()) {
-            $filebasename = 'respondent-export-' . $this->respondent->getId();
+            if ($this->filterToken) {
+                $filebasename = 'token-export-' . $this->filterToken->getTokenId();
+            } else {
+                $filebasename = 'respondent-export-' . $this->respondent->getId();
+            }
             $this->exportRepository->getFileResponse($this->getHtmlOutput(), $filebasename, $this->requestInfo->getRequestPostParams());
         }
         return null;

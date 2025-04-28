@@ -12,9 +12,12 @@ namespace Gems\Snippets\Respondent\Export;
 
 use Gems\Audit\AuditLog;
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\MetaModelLoader;
+use Gems\Model\Respondent\RespondentModel;
 use Gems\Repository\RespondentExportRepository;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker\Respondent;
+use Gems\Tracker\Token;
 use Mezzio\Session\SessionInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -30,6 +33,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class RespondentExportFormSnippet extends ModelFormSnippetAbstract
 {
+    protected ?Token $filterToken = null;
+
     /**
      *
      * @var \Gems\Model\Respondent\RespondentModel
@@ -54,6 +59,7 @@ class RespondentExportFormSnippet extends ModelFormSnippetAbstract
         MessengerInterface $messenger,
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
+        protected readonly MetaModelLoader $metaModelLoader,
         protected readonly RespondentExportRepository $exportRepository,
         protected readonly SessionInterface $session,
         protected readonly SnippetLoader $snippetLoader,
@@ -63,6 +69,14 @@ class RespondentExportFormSnippet extends ModelFormSnippetAbstract
 
         $this->createData = true;
         $this->saveLabel = $this->_('Export');
+
+        if (! $this->model instanceof RespondentModel) {
+            /**
+             * @var RespondentModel $model
+             */
+            $model = $this->metaModelLoader->createModel(RespondentModel::class);
+            $this->model = $model;
+        }
     }
 
     /**
@@ -81,7 +95,7 @@ class RespondentExportFormSnippet extends ModelFormSnippetAbstract
 
     protected function createModel(): DataReaderInterface
     {
-        return $this->exportRepository->getModel($this->session);
+        return $this->exportRepository->getModel($this->session, ! $this->filterToken);
     }
 
     public function getHtmlOutput()

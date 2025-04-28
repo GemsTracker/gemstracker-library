@@ -523,41 +523,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         $params['formTitle'] = $this->_('Export respondent archive');
 
         $this->addSnippets($this->exportSnippets, $params);
-        return;
-
-        /*
-        $this->html->h2($this->_('Export respondent archive'));
-
-        //Now show the export form
-        $export = $this->loader->getRespondentExport();
-        $form = $export->getForm();
-        $div = $this->html->div(['id' => 'mainform']);
-        $div[] = $form;
-
-        $params = $this->request->getQueryParams() + $this->request->getParsedBody();
-
-        $form->populate($params);
-
-        if ($this->requestInfo->isPost()) {
-            $respondent = $this->getRespondent();
-            $patients = [
-                [
-                    'gr2o_id_organization' => $respondent->getOrganizationId(),
-                    'gr2o_patient_nr' => $respondent->getPatientNumber()
-                ]
-            ];
-
-            $group = null;
-            if (isset($params['group'])) {
-                $group = $params['group'];
-            }
-            $format = null;
-            if (isset($params['format'])) {
-                $format = $params['format'];
-            }
-
-            $export->render($patients, $group, $format);
-        } // */
     }
 
     public function getBrowseColumns(): bool|array

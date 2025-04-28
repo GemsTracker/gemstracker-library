@@ -31,6 +31,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class TrackSnippet extends TranslatableSnippetAbstract
 {
+    protected ?Token $filterToken = null;
+
     protected bool $groupSurveys = false;
 
     protected Respondent $respondent;
@@ -93,9 +95,9 @@ class TrackSnippet extends TranslatableSnippetAbstract
         $bridge = $this->respondentTrackModel->getBridgeFor('itemTable', array('class' => 'browser table copy-to-clipboard-before'));
         $bridge->setRepeater(Late::repeat([$trackData]));
         /** @phpstan-ignore-next-line */
-        $table->th($this->_('Track information'), array('colspan' => 2));
+        $bridge->th($this->_('Track information'), array('colspan' => 2));
         /** @phpstan-ignore-next-line */
-        $table->setColumnCount(1);
+        $bridge->setColumnCount(1);
         foreach($metaModel->getItemsOrdered() as $name) {
             if ($label = $metaModel->get($name, 'label')) {
                 /** @phpstan-ignore-next-line */
@@ -111,14 +113,18 @@ class TrackSnippet extends TranslatableSnippetAbstract
         $html->br();
 
         $surveys = [];
-        $token  = $this->respondentTrack->getFirstToken();
-        if ($token) {
+        if ($this->filterToken) {
+            $tokens = [$this->filterToken];
+        } else {
+            $tokens = $this->respondentTrack->getTokens();
+        }
+        if ($tokens) {
             $table = $this->getTokenTable();
             $html[] = $table;
             $html->br();
 
             $count = 0;
-            while ($token) {
+            foreach ($tokens as $token) {
                 $this->addTokenToTable($table, $token);
 
                 if ($token->isCompleted()) {
@@ -128,8 +134,6 @@ class TrackSnippet extends TranslatableSnippetAbstract
                         $html->append($this->snippetLoader->getSnippet($this->tokenExportSnippet, ['token' => $token]));
                     }
                 }
-
-                $token = $token->getNextToken();
             }
         }
 

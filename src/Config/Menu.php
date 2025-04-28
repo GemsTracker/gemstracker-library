@@ -333,6 +333,11 @@ class Menu
                                                     'type' => 'alias',
                                                     'alias' => 'respondent.tracks.token',
                                                 ],
+                                                [
+                                                    'name' => 'respondent.tracks.token.answer-export',
+                                                    'type' => 'alias',
+                                                    'alias' => 'respondent.tracks.token',
+                                                ],
                                             ],
                                         ],
                                     ],

@@ -91,8 +91,8 @@ class RespondentExportRepository
             $formats = $this->getFormats();
         }
 
-        // return array_key_last($formats);
-        return array_key_first($formats);
+        return array_key_last($formats);
+        // return array_key_first($formats);
     }
 
     public function getFileResponse(HtmlInterface $html, string $filebasename, array $formData): ?ResponseInterface
@@ -100,6 +100,9 @@ class RespondentExportRepository
         $content = $html->render();
         if ('word' == ($formData['format'] ?? '')) {
             return $this->getWordResponse($content, $filebasename);
+        }
+        if ('pdf' == ($formData['format'] ?? '')) {
+            return $this->getPdfResponse($content, $filebasename);
         }
 
         return null;
@@ -110,14 +113,16 @@ class RespondentExportRepository
         $output['html'] = $this->_('HTML');
 
         if (class_exists(PhpWord::class)) {
-            $output['pdf'] = $this->_('PDF');
+            if (class_exists(\Dompdf\Dompdf::class)) {
+                $output['pdf'] = $this->_('PDF');
+            }
             $output['word'] = $this->_('Word');
         }
 
         return $output;
     }
 
-    public function getModel(SessionInterface $session): SessionModel
+    public function getModel(SessionInterface $session, bool $addGroup = true): SessionModel
     {
         /**
          * @var SessionModel $model
@@ -125,11 +130,14 @@ class RespondentExportRepository
         $model = $this->metaModelLoader->createModel(SessionModel::class, 'respondentExport', $session);
 
         $metaModel = $model->getMetaModel();
-        $metaModel->set('group', [
-            'label' => $this->_('Group surveys'),
-            'default' => true,
-            'elementClass' => 'Checkbox',
+
+        if ($addGroup) {
+            $metaModel->set('group', [
+                'label' => $this->_('Group surveys'),
+                'default' => true,
+                'elementClass' => 'Checkbox',
             ]);
+        }
 
         $formats = $this->getFormats();
         $metaModel->set('format', [
@@ -144,11 +152,16 @@ class RespondentExportRepository
 
     public function getPdfResponse(string $content, $filebasename): ?ResponseInterface
     {
+        Settings::setPdfRendererPath('vendor/dompdf/dompdf');
+        Settings::setPdfRendererName('DomPDF');
+
         $word   = $this->getWordDocument($content);
         $writer = IOFactory::createWriter($word, 'PDF');
 
+        header("Content-Description: PDF download");
         header("Content-Type: application/pdf");
-        header('Content-Disposition: inline; filename="'.$filebasename.'.pdf"');
+        header('Content-Disposition: attachment; filename="'.$filebasename.'.pdf"');
+        header('Content-Transfer-Encoding: binary');
         header('Cache-Control: private, max-age=0, must-revalidate');
         header('Pragma: public');
         $writer->save("php://output");
@@ -173,8 +186,10 @@ class RespondentExportRepository
         $word   = $this->getWordDocument($content);
         $writer = IOFactory::createWriter($word, 'Word2007');
 
+        header("Content-Description: Word download");
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment;filename="' . $filebasename . '.docx"');
+        header('Content-Transfer-Encoding: binary');
         header('Cache-Control: private, max-age=0, must-revalidate');
         header('Pragma: public');
         $writer->save("php://output");
