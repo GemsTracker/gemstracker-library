@@ -4,6 +4,7 @@ namespace Gems\Config;
 
 use Gems\Api\Handlers\PingHandler;
 use Gems\Api\RestModelConfigProviderAbstract;
+use Gems\Communication\Handler\TestCommunicationEmailHandler;
 use Gems\Handlers\Api\CommFieldsHandler;
 use Gems\Handlers\Api\Respondent\OtherPatientNumbersHandler;
 use Gems\Middleware\LocaleMiddleware;
@@ -162,6 +163,13 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                 name: 'comm-fields',
                 path: 'comm-fields/{target:[a-zA-Z0-9-_]+}[/{id:[a-zA-Z0-9-_]+}[/{organizationId:\d+}]]',
                 handler: CommFieldsHandler::class,
+            ),
+
+            ...$this->createRoute(
+                name: 'test-communication-email',
+                path: 'test-communication-email',
+                handler: TestCommunicationEmailHandler::class,
+                allowedMethods: ['POST'],
             ),
 
             ...$this->createRoute(

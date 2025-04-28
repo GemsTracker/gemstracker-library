@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gems\Handlers;
+namespace Gems\Request;
 
 use Gems\Exception\SymfonyValidatorException;
 use Mezzio\Router\RouteResult;

@@ -20,7 +20,8 @@ class TestCommunicationEmailParams
         #[NotBlank]
         public readonly string $body,
         #[NotBlank]
-        public readonly array $context,
+        public readonly string|int $context,
+        public readonly int|null $organizationId = null,
     )
     {}
 }
