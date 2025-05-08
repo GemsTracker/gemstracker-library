@@ -194,12 +194,22 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected bool $enableScreens = true;
 
+    public array $exportParameters = [
+        'addCurrentParent' => true,
+        'csrfName'         => 'getCsrfTokenName',
+        'csrfToken'        => 'getCsrfToken',
+        'respondent'       => 'getRespondent',  // Sets menu
+        ];
+
     /**
      * The snippets used for the export action.
      *
      * @var mixed String or array of snippets name
      */
-    public array $exportSnippets = ['Respondent\\RespondentDetailsSnippet'];
+    public array $exportSnippets = [
+        'Respondent\\Export\\RespondentExportFormSnippet',
+        'Respondent\\Export\\RespondentExportOutputSnippet',
+        ];
 
     /**
      * Array of the actions that use the model in form version.
@@ -508,42 +518,11 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     public function exportArchiveAction()
     {
-        $params = $this->_processParameters(['addCurrentParent' => false] + $this->showParameters);
+        $params = $this->_processParameters($this->exportParameters + $this->showParameters);
+
+        $params['formTitle'] = $this->_('Export respondent archive');
 
         $this->addSnippets($this->exportSnippets, $params);
-
-        $this->html->h2($this->_('Export respondent archive'));
-
-        //Now show the export form
-        $export = $this->loader->getRespondentExport();
-        $form = $export->getForm();
-        $div = $this->html->div(['id' => 'mainform']);
-        $div[] = $form;
-
-        $params = $this->request->getQueryParams() + $this->request->getParsedBody();
-
-        $form->populate($params);
-
-        if ($this->requestInfo->isPost()) {
-            $respondent = $this->getRespondent();
-            $patients = [
-                [
-                    'gr2o_id_organization' => $respondent->getOrganizationId(),
-                    'gr2o_patient_nr' => $respondent->getPatientNumber()
-                ]
-            ];
-
-            $group = null;
-            if (isset($params['group'])) {
-                $group = $params['group'];
-            }
-            $format = null;
-            if (isset($params['format'])) {
-                $format = $params['format'];
-            }
-
-            $export->render($patients, $group, $format);
-        }
     }
 
     public function getBrowseColumns(): bool|array

@@ -6,7 +6,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Snippets\Export;
+namespace Gems\Snippets\Respondent\Export;
 
 /**
  * Footer for html/pdf export of a respondent
@@ -17,14 +17,9 @@ namespace Gems\Snippets\Export;
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class ReportFooterSnippet extends \MUtil\Snippets\SnippetAbstract
+class ReportFooterSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
-    /**
-     * @var \Gems\Loader
-     */
-    public $loader;
-
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         $html = $this->getHtmlSequence();
 

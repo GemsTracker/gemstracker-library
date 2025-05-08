@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers;
 
+use Gems\Audit\AuditLog;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\Menu\RouteHelper;
@@ -89,6 +90,7 @@ class AskHandler extends SnippetHandler
         SnippetResponderInterface $responder,
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
+        protected readonly AuditLog $auditLog,
         protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly Locale $locale,
         protected readonly MaintenanceLock $maintenanceLock,
@@ -114,7 +116,10 @@ class AskHandler extends SnippetHandler
 //        }
 
         if ($tokenExists) {
-            // CHeck if there is no user
+            $message = sprintf('Returning from token %s.', $this->tokenId);
+            $this->auditLog->registerRequest($request, [$message], true);
+
+            // Check if there is no user
             if (! $this->currentUserRepository->hasCurrentUserId()) {
                 $language = $this->token->getRespondentLanguage();
                 if ($this->locale->isCurrentLanguageDefault() && $this->locale->getLanguage() !== $language) {
@@ -128,21 +133,32 @@ class AskHandler extends SnippetHandler
             }
 
             // Always check here first for tokens to process
-            $this->tracker->processCompletedTokens(
+            if ($this->tracker->processCompletedTokens(
                 $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
                 $this->token->getRespondentId(),
                 $this->token->getChangedBy(),
                 $this->token->getOrganizationId(),
-                );
-            $this->token->refresh();
+                )) {
+
+                $message = sprintf('Processed token %s succesfully.', $this->tokenId);
+                $this->token->refresh();
+            } else {
+                $message = sprintf('Nothing to do for token %s.', $this->tokenId);
+            }
+            $this->auditLog->registerRequest($request, [$message], true);
 
         } elseif ($this->tokenId) {
-            $messenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-            // There is a token but is incorrect
-            $messenger->addMessage(sprintf(
+            $this->auditLog->logChange($request, sprintf('Handling non existing token %s.', $this->tokenId), ['id' => $this->tokenId], $this->token->getRespondentId());
+
+            $message = sprintf(
                 $this->_('The token %s does not exist (any more).'),
                 strtoupper($this->tokenId)
-            ));
+            );
+            $this->auditLog->registerRequest($request, [$message], false);
+
+            $messenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+            // There is a token but is incorrect
+            $messenger->addMessage($message);
 
             return new RedirectResponse($this->routeHelper->getRouteUrl('ask.index'));
         }

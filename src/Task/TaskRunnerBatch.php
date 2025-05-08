@@ -9,6 +9,8 @@
 
 namespace Gems\Task;
 
+use Exception;
+use MUtil\Batch\BatchAbstract;
 use MUtil\Task\TaskBatch;
 use Zalt\Html\UrlArrayAttribute;
 
@@ -71,6 +73,12 @@ class TaskRunnerBatch extends TaskBatch
         $output['restart-url'] = $this->getUrl($this->progressParameterRestartValue);
 
         return $output;
+    }
+
+    public function addException(Exception $e): \MUtil\Batch\BatchAbstract
+    {
+        error_log($e->getMessage());
+        return parent::addException($e);
     }
 
     public function getExtraParams(): array
