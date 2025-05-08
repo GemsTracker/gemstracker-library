@@ -41,7 +41,7 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
     protected $_pdf;
 
     /**
-     * @var \PhpOffice\PhpWord
+     * @var \PhpOffice\PhpWord\PhpWord
      */
     protected $_word;
 
@@ -676,7 +676,7 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
             }
 
             $content = $this->prepareWordExport($content);
-            file_put_contents('D:\temp\wordExport.html', $content);
+            // file_put_contents('D:\temp\wordExport.html', $content);
 
             $section = $this->_word->addSection();
             \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);

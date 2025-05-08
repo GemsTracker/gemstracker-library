@@ -16,9 +16,9 @@
 >
 <div id="container" class="container-fluid">
     <header>
-        <div class="logo {{ current_organization_code ?? '' }}"></div>
+        <div class="logo {{ current_organization_code ?? '' }} no-print"></div>
         <div class="application-title">{{ include('@layout/application-title.html.twig') }}</div>
-        <div class="tools">
+        <div class="tools no-print">
             {{ include('@layout/organization-switcher.html.twig') }}
             {{ include('@layout/group-switcher.html.twig') }}
             {{ include('@layout/auth-info.html.twig') }}
@@ -27,13 +27,13 @@
     </header>
 
     {% if mainMenu is defined and mainMenu.isHorizontal() %}
-        <div id="main-menu" role="navigation">
+        <div id="main-menu" role="navigation no-print">
             {{ mainMenu.renderMainRow()|raw }}
         </div>
     {% endif %}
     <div class="content">
         {% if mainMenu is defined %}
-        <div id="menu" role="navigation">
+        <div id="menu" class="no-print" role="navigation">
             {{ mainMenu.renderMenu()|raw }}
         </div>
         {% endif %}
@@ -53,7 +53,7 @@
 {% if idle_check %}
     {{ include('@layout/auth-idle-checker.html.twig') }}
 {% endif %}
-<div id="menu-bar">
+<div id="menu-bar" class="no-print">
     <button id="menu-toggle">
         <span class="material-symbols-outlined">menu</span>
     </button>

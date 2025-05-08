@@ -56,16 +56,23 @@ class TokenHandler extends TokenSearchHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $answerExportParameters = [
-        'formTitle' => 'getTokenTitle',
-        'hideGroup' => true,
+        'addCurrentParent' => true,
+        'csrfName'         => 'getCsrfTokenName',
+        'csrfToken'        => 'getCsrfToken',
+        'formTitle'        => 'getTokenTitle',
+        'respondent'       => 'getRespondent',  // Sets menu
+        'filterToken'      => 'getToken',
     ];
 
-    protected array $answerExportSnippets = ['Export\\RespondentExportSnippet'];
+    protected array $answerExportSnippets = [
+        'Respondent\\Export\\RespondentExportFormSnippet',
+        'Respondent\\Export\\RespondentExportOutputSnippet',
+        ];
 
     /**
      * The snippets used for the autofilter action.
      *
-     * @var mixed String or array of snippets name
+     * @var array String or array of snippets name
      */
     protected array $autofilterSnippets = ['Token\\RespondentPlanTokenSnippet'];
 

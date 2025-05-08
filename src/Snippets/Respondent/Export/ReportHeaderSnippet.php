@@ -6,7 +6,13 @@
  * @license    New BSD License
  */
 
-namespace Gems\Snippets\Export;
+namespace Gems\Snippets\Respondent\Export;
+
+use Gems\Legacy\CurrentUserRepository;
+use Gems\User\User;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Header for html/pdf export of a respondent
@@ -17,19 +23,20 @@ namespace Gems\Snippets\Export;
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class ReportHeaderSnippet extends \MUtil\Snippets\SnippetAbstract
+class ReportHeaderSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\User\Organization
-     */
-    protected $currentOrganization;
+    protected User $currentUser;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
@@ -47,7 +54,7 @@ class ReportHeaderSnippet extends \MUtil\Snippets\SnippetAbstract
         $tr->td(date('Y-m-d H:i:s'));
         $tr = $table->tr();
         $tr->th($this->_('Organization'));
-        $tr->td($this->currentOrganization->getName());
+        $tr->td($this->currentUser->getCurrentOrganization()->getName());
 
         $html->br();
 

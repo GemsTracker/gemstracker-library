@@ -3,6 +3,7 @@
 namespace Gems\Communication\Http;
 
 use Gems\Exception\ClientException;
+use Gems\Helper\Env;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 
@@ -69,7 +70,7 @@ class SpryngSmsClient extends ApiKeyClient implements SmsClientInterface
             $originator = $this->defaultOriginator;
         }
 
-        $reference = sprintf('%s: %s', $this->config['app']['name'], $this->config['env']);
+        $reference = $this->config['reference'] ?? sprintf('GemsTracker: %s', \Gems\Helper\Env::get('APP_ENV'));
 
         $message = [
             'encoding' => 'auto',
@@ -93,7 +94,7 @@ class SpryngSmsClient extends ApiKeyClient implements SmsClientInterface
             'json' => $message,
         ];
 
-        $response = $this->request('POST', '', $options, true);
+        $response = $this->request('POST', 'messages', $options, true);
 
         return $this->handleResponse($response);
     }

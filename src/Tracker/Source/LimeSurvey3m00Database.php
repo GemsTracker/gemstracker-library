@@ -807,7 +807,7 @@ class LimeSurvey3m00Database extends SourceAbstract
                 ON sid = surveyls_survey_id
              WHERE sid = ?
                 AND active='Y'";
-        $currentUrls = $lsResultFetcher->fetchCol($sql, [$sourceSurveyId, $language]);
+        $currentUrls = $lsResultFetcher->fetchCol($sql, [$sourceSurveyId]);
 
         // No field was returned
         if (empty($currentUrls)) {
