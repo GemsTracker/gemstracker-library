@@ -20,7 +20,7 @@ class MapRequest
     {
     }
 
-    public function mapRequestBody(ServerRequestInterface $request, string $dtoClassName): object|null
+    public function mapRequestBody(ServerRequestInterface $request, string $dtoClassName, bool $allowExtraAttributes = true): object|null
     {
         $rawBody = $request->getBody()->getContents();
         if (empty($rawBody)) {
@@ -35,7 +35,7 @@ class MapRequest
                 [
                     // 'groups' => ['post'], // Apply specific groups if needed
                     // Disallow extra fields not defined in the DTO
-                    'allow_extra_attributes' => false,
+                    'allow_extra_attributes' => $allowExtraAttributes,
                 ]
             );
         } catch (SerializerExceptionInterface $e) {
@@ -50,14 +50,14 @@ class MapRequest
         return $dto;
     }
 
-    public function mapRequestQuery(ServerRequestInterface $request, string $dtoClassName): object
+    public function mapRequestQuery(ServerRequestInterface $request, string $dtoClassName, bool $allowExtraAttributes = true): object
     {
         $queryParams = $request->getQueryParams();
 
-        return $this->mapDtoFromArray($queryParams, $dtoClassName);
+        return $this->mapDtoFromArray($queryParams, $dtoClassName, $allowExtraAttributes);
     }
 
-    public function mapAllParams(ServerRequestInterface $request, string $dtoClassName): object
+    public function mapAllParams(ServerRequestInterface $request, string $dtoClassName, bool $allowExtraAttributes = true): object
     {
         $queryParams = $request->getQueryParams();
 
@@ -67,17 +67,17 @@ class MapRequest
 
         $mergedData = array_merge($queryParams, $bodyParams, $routeParams);
 
-        return $this->mapDtoFromArray($mergedData, $dtoClassName);
+        return $this->mapDtoFromArray($mergedData, $dtoClassName, $allowExtraAttributes);
     }
 
-    private function mapDtoFromArray(array $data, string $dtoClassName): object
+    private function mapDtoFromArray(array $data, string $dtoClassName, bool $allowExtraAttributes = true): object
     {
 
         // Optional context for denormalization
         $context = [
             // 'groups' => ['query'], // Apply specific groups if needed
             // Disallow extra fields not defined in the DTO
-            'allow_extra_attributes' => false,
+            'allow_extra_attributes' => $allowExtraAttributes,
         ];
 
         try {
