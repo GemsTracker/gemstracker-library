@@ -8,13 +8,13 @@ use Gems\Exception\SymfonyValidatorException;
 use Mezzio\Router\RouteResult;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface as SerializerExceptionInterface;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MapRequest
 {
     public function __construct(
-        private readonly SerializerInterface $serializer,
+        private readonly Serializer $serializer,
         private readonly ValidatorInterface $validator,
     )
     {

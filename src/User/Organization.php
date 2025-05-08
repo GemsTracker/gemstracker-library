@@ -285,9 +285,9 @@ class Organization extends CachedArrayTargetAbstract
     /**
      * Get the contact name attribute.
      *
-     * @return string
+     * @return string|null
      */
-    public function getContactName()
+    public function getContactName(): string|null
     {
         return $this->_get('gor_contact_name');
     }
@@ -305,9 +305,9 @@ class Organization extends CachedArrayTargetAbstract
     /**
      * Get the email attribute.
      *
-     * @return string
+     * @return string|null
      */
-    public function getEmail()
+    public function getEmail(): string|null
     {
         return $this->_get('gor_contact_email');
     }

@@ -112,7 +112,7 @@ use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Twig\Environment;
 use Twig\Extension\ExtensionInterface;
@@ -445,7 +445,7 @@ class ConfigProvider
 
                 \Symfony\Component\Mailer\Transport\TransportInterface::class => MailTransportFactory::class,
 
-                SerializerInterface::class => SymfonySerializerFactory::class,
+                Serializer::class => SymfonySerializerFactory::class,
                 ValidatorInterface::class => SymfonyValidatorFactory::class,
 
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
