@@ -122,7 +122,7 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
         $currentUser = $this->currentUserRepository->getCurrentUser();
 
         return [
-            ':test-email' => (int)$currentUser->hasPrivilege('pr.comm.templates.test'),
+            ':test-email' => (int)$currentUser->hasPrivilege('pr.api.test-communication-email'),
         ];
     }
 }
