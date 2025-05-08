@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Communication\Handler;
 
+use Gems\Api\Middleware\ApiAuthenticationMiddleware;
 use Gems\Api\Util\ContentTypeChecker;
 use Gems\Communication\CommFieldsRepository;
 use Gems\Communication\CommunicationRepository;
@@ -11,6 +12,7 @@ use Gems\Event\Application\TokenEventMailFailed;
 use Gems\Event\Application\TokenEventMailSent;
 use Gems\Exception\MailException;
 use Gems\Locale\Locale;
+use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Repository\OrganizationRepository;
 use Gems\Request\MapRequest;
@@ -50,27 +52,30 @@ class TestCommunicationEmailHandler implements RequestHandlerInterface
         }
 
         /**
-         * @var TestCommunicationEmailParams $postObject
+         * @var TestCommunicationEmailRequest $postObject
          */
-        $postObject = $this->mapRequest->mapRequestBody($request, TestCommunicationEmailParams::class);
+        $postObject = $this->mapRequest->mapRequestBody($request, TestCommunicationEmailRequest::class);
 
         /**
          * @var Locale $locale
          */
-        $locale = $this->communicationRepository->getCommunicationLanguage($request->getAttribute(LocaleMiddleware::LOCALE_ATTRIBUTE));
+        $locale = $request->getAttribute(LocaleMiddleware::LOCALE_ATTRIBUTE);
+        $language = $this->communicationRepository->getCommunicationLanguage($locale->getLanguage());;
 
-        $mailFields = $this->commFieldsRepository->getCommFields($postObject->type, $locale->getLanguage(), $postObject->context, $postObject->organizationId);
+        $mailFields = $this->commFieldsRepository->getCommFields($postObject->type, $language, $postObject->context, $postObject->organizationId);
 
         $email = $this->communicationRepository->getNewEmail();
         $email->subject($postObject->subject, $mailFields);
 
-        $fromName = null;
+        $fromName = '';
         $from = $this->config['email']['site'];
         $template = 'default::mail';
-        if ($postObject->organizationId) {
-            $organization = $this->organizationRepository->getOrganization($postObject->organizationId);
+        $organizationId = $postObject->organizationId ?? $request->getAttribute(ApiAuthenticationMiddleware::CURRENT_USER_ORGANIZATION);
+
+        if ($organizationId) {
+            $organization = $this->organizationRepository->getOrganization($organizationId);
             $from = $organization->getEmail() ?? $this->config['email']['site'];
-            $fromName = $organization->getContactName() ?? null;
+            $fromName = $organization->getContactName() ?? '';
             $template = $this->communicationRepository->getTemplate($organization);
         }
 
@@ -89,7 +94,7 @@ class TestCommunicationEmailHandler implements RequestHandlerInterface
         return new EmptyResponse(200);
     }
 
-    protected function getMailFields(TestCommunicationEmailParams $params): array
+    protected function getMailFields(TestCommunicationEmailRequest $params): array
     {
         return [];
     }

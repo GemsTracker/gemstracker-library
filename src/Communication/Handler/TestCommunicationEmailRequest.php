@@ -7,7 +7,7 @@ namespace Gems\Communication\Handler;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class TestCommunicationEmailParams
+class TestCommunicationEmailRequest
 {
     public function __construct(
         #[NotBlank]
@@ -19,8 +19,7 @@ class TestCommunicationEmailParams
         public readonly string $subject,
         #[NotBlank]
         public readonly string $body,
-        #[NotBlank]
-        public readonly string|int $context,
+        public readonly string|int|null $context,
         public readonly int|null $organizationId = null,
     )
     {}
