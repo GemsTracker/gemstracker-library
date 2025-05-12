@@ -21,7 +21,6 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\Metadata\Source\Factory;
 use Laminas\Db\ResultSet\ResultSet;
-use MUtil\Model;
 use MUtil\StringUtil\StringUtil;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
@@ -223,7 +222,6 @@ class LimeSurvey3m00FieldMap
             WHERE g.sid = ? AND g.language = ? AND q.parent_qid = 0
             ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
 
-        // \MUtil\EchoOut\EchoOut::track($sql, $this->sourceSurveyId, $this->language);
         return $this->lsResultFetcher->fetchAll($sql, [$this->sourceSurveyId, $this->language]);
     }
 
@@ -384,7 +382,6 @@ class LimeSurvey3m00FieldMap
             ] + $map;
 
         $this->_fieldMap = $map;
-        // \MUtil\EchoOut\EchoOut::track($map);
     }
 
     protected function _cacheFieldMap(string $cacheId): void
@@ -647,7 +644,7 @@ class LimeSurvey3m00FieldMap
      * Returns
      *
      * @param array $field    Field from _getMap function
-     * @return int Model::TYPE_ constant
+     * @return int MetaModelInterface::TYPE_ constant
      */
     protected function _getType(array $field): int
     {
@@ -655,9 +652,9 @@ class LimeSurvey3m00FieldMap
             case ':':
                 //Get the labels that could apply!
                 if ($this->_getQuestionAttribute($field['qid'], 'multiflexible_checkbox')) {
-                    return Model::TYPE_STRING;
+                    return MetaModelInterface::TYPE_STRING;
                 }
-                return Model::TYPE_NUMERIC;
+                return MetaModelInterface::TYPE_NUMERIC;
                 break;
 
             case '5':
@@ -665,7 +662,7 @@ class LimeSurvey3m00FieldMap
             case 'B':
             case 'K':
             case 'N':
-                return Model::TYPE_NUMERIC;
+                return MetaModelInterface::TYPE_NUMERIC;
 
             case 'D':
                 //date_format
@@ -685,24 +682,24 @@ class LimeSurvey3m00FieldMap
                     }
 
                     if ($date && !$time) {
-                        return Model::TYPE_DATE;
+                        return MetaModelInterface::TYPE_DATE;
                     } elseif (!$date && $time) {
-                        return Model::TYPE_TIME;
+                        return MetaModelInterface::TYPE_TIME;
                     } else {
-                        return Model::TYPE_DATETIME;
+                        return MetaModelInterface::TYPE_DATETIME;
                     }
                 }
-                return Model::TYPE_DATE;
+                return MetaModelInterface::TYPE_DATE;
 
             case 'X':
-                return Model::TYPE_NOVALUE;
+                return MetaModelInterface::TYPE_NOVALUE;
 
             case self::INTERNAL:
                 // Not a limesurvey type, used internally for metadata
-                return Model::TYPE_DATETIME;
+                return MetaModelInterface::TYPE_DATETIME;
 
             default:
-                return Model::TYPE_STRING;
+                return MetaModelInterface::TYPE_STRING;
         }
     }
 
@@ -737,7 +734,7 @@ class LimeSurvey3m00FieldMap
             $tmpres['sourceId']        = $name;
             $tmpres[SqlRunnerInterface::NO_SQL] = true;
 
-            if ($tmpres['type'] === Model::TYPE_DATETIME || $tmpres['type'] === Model::TYPE_DATE || $tmpres['type'] === Model::TYPE_TIME) {
+            if ($tmpres['type'] === MetaModelInterface::TYPE_DATETIME || $tmpres['type'] === MetaModelInterface::TYPE_DATE || $tmpres['type'] === MetaModelInterface::TYPE_TIME) {
                 if ($dateFormats = $this->getDateFormats($name, $tmpres['type'])) {
                     $tmpres = $tmpres + $dateFormats;
                 }
@@ -747,7 +744,7 @@ class LimeSurvey3m00FieldMap
                 $tmpres['multiOptions'] = $options;
 
                 // Limesurvey defines numeric options as string, maybe we can convert it back
-                if ($tmpres['type'] === Model::TYPE_STRING) {
+                if ($tmpres['type'] === MetaModelInterface::TYPE_STRING) {
                     $changeType = true;
                     foreach(array_keys($options) as $key) {
                         // But if we find a numeric = false, we leave as is
@@ -757,21 +754,21 @@ class LimeSurvey3m00FieldMap
                         }
                     }
                     if ($changeType === true) {
-                        $tmpres['type'] = Model::TYPE_NUMERIC;
+                        $tmpres['type'] = MetaModelInterface::TYPE_NUMERIC;
                     }
                 }
             }
 
-            if ($tmpres['type'] === Model::TYPE_NUMERIC && !isset($tmpres['multiOptions'])) {
+            if ($tmpres['type'] === MetaModelInterface::TYPE_NUMERIC && !isset($tmpres['multiOptions'])) {
                 $tmpres['formatFunction'] = array($this, 'handleFloat');
             }
 
             if (isset($field['question'])) {
-                $tmpres['label'] = \MUtil\Html::raw($this->removeMarkup($field['question']));
-                $tmpres['label_raw'] = \MUtil\Html::raw($field['question']);
+                $tmpres['label'] = Html::raw($this->removeMarkup($field['question']));
+                $tmpres['label_raw'] = Html::raw($field['question']);
             }
             if (isset($field['help']) && $field['help']) {
-                $tmpres['description'] = \MUtil\Html::raw($this->removeMarkup($field['help']));
+                $tmpres['description'] = Html::raw($this->removeMarkup($field['help']));
             }
 
             $oldQid = $oldfld['qid'] ?? 0;
@@ -782,10 +779,10 @@ class LimeSurvey3m00FieldMap
                     //$parent = '_' . $name . '_';
                     $parent = $field['title'];
                     $model->set($parent, $tmpres);
-                    $model->set($parent, 'type', Model::TYPE_NOVALUE);
+                    $model->set($parent, 'type', MetaModelInterface::TYPE_NOVALUE);
                 }
                 if (isset($field['sq_question1'])) {
-                    $tmpres['label'] = \MUtil\Html::raw(sprintf(
+                    $tmpres['label'] = Html::raw(sprintf(
                             $this->translate->_('%s: %s'),
                             $this->removeMarkup($field['sq_question']),
                             $this->removeMarkup($field['sq_question1'])
@@ -832,17 +829,17 @@ class LimeSurvey3m00FieldMap
             } elseif ($dataType == 'date') {
                 $tmpres['storageFormat'] = 'Y-m-d';
             }
-        } elseif ($type === Model::TYPE_DATETIME || $type === Model::TYPE_TIME) {
+        } elseif ($type === MetaModelInterface::TYPE_DATETIME || $type === MetaModelInterface::TYPE_TIME) {
             $tmpres['storageFormat'] = 'Y-m-d H:i:s';
-        } elseif ($type === Model::TYPE_DATE) {
+        } elseif ($type === MetaModelInterface::TYPE_DATE) {
             $tmpres['storageFormat'] = 'Y-m-d';
         }
 
-        if ($type === Model::TYPE_DATETIME) {
+        if ($type === MetaModelInterface::TYPE_DATETIME) {
             $tmpres['dateFormat']    = 'd M Y H:i';
-        } elseif ($type === Model::TYPE_DATE) {
+        } elseif ($type === MetaModelInterface::TYPE_DATE) {
             $tmpres['dateFormat']    = 'd M Y';
-        } elseif ($type === Model::TYPE_TIME) {
+        } elseif ($type === MetaModelInterface::TYPE_TIME) {
             $tmpres['dateFormat']    = 'H:i:s';
         }
 
@@ -885,7 +882,6 @@ class LimeSurvey3m00FieldMap
                 continue;
             }
 
-            // \MUtil\EchoOut\EchoOut::track($field);
             $tmpres = [];
             $tmpres['alwaysHidden'] = $field['hidden'];
             $tmpres['class']        = SurveyModel::CLASS_MAIN_QUESTION;
@@ -953,7 +949,6 @@ class LimeSurvey3m00FieldMap
 
             $oldfld = $field;
         }
-        // \MUtil\EchoOut\EchoOut::track($result);
 
         return $result;
     }
@@ -1079,7 +1074,6 @@ class LimeSurvey3m00FieldMap
                 $result[$key] = $value;
             }
         }
-        // \MUtil\EchoOut\EchoOut::track($result);
 
         return $result;
     }
@@ -1104,7 +1098,6 @@ class LimeSurvey3m00FieldMap
                 $result[$key] = $value;
             }
         }
-        // \MUtil\EchoOut\EchoOut::track($result);
 
         return $result;
     }

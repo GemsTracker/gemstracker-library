@@ -85,35 +85,16 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             $fields[] = 'gto_result';
         }
 
-        $items = [
-            [
-                'route' => 'respondent.tracks.token.correct',
-                'label' => $this->_('Correct answers'),
-                'disabled' => !$this->token->isCompleted(),
-            ],
-        ];
-
-        if ($this->token->getReceptionCode()->isSuccess()) {
-            $items[] = [
-                'route' => 'respondent.tracks.token.delete',
-                'label' => $this->_('Delete'),
-            ];
-        } else {
-            $items[] = [
-                'route' => 'respondent.tracks.token.undelete',
-                'label' => $this->_('Undelete'),
-            ];
-        }
-
+        $items   = $this->getCompletionLinks();
         $buttons = [];
         $params  = $this->token->getMenuUrlParameters();
         foreach($items as $item) {
             $url = $this->menuSnippetHelper->getRouteUrl($item['route'], $params);
             if ($url) {
                 if (isset($item['disabled']) && $item['disabled'] === true) {
-                    $buttons[$item['route']] = Html::actionDisabled($item['label']);
+                    $buttons[$item['route']] = Html::actionDisabled($item['label'], ['class' => $item['class'] ?? '']);
                 } else {
-                    $buttons[$item['route']] = Html::actionLink($url, $item['label']);
+                    $buttons[$item['route']] = Html::actionLink($url, $item['label'], ['class' => $item['class'] ?? '']);
                 }
             }
         }
@@ -201,45 +182,20 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             Html::raw($this->tokenRepository->getTokenStatusDescriptionForBridge($bridge))
         );
 
-        $items = [
-            [
-                'route' => 'ask.take',
-                'label' => $this->_('Take'),
-                'disabled' => (!$this->token->getReceptionCode()->isSuccess() || $this->token->isCompleted() || !$this->token->isCurrentlyValid()),
-            ],
-            /*[
-                'route' => 'pdf.show',
-                'label' => $this->_('PDF'),
-            ],*/
-            [
-                'route' => 'respondent.tracks.token.questions',
-                'label' => $this->_('Preview'),
-            ],
-            [
-                'route' => 'respondent.tracks.token.answer',
-                'label' => $this->_('Answers'),
-                'disabled' => !$this->token->isStarted(),
-            ],
-            [
-                'route' => 'respondent.tracks.token.answer-export',
-                'label' => $this->_('Answer export'),
-                'disabled' => !$this->token->isStarted(),
-            ],
-        ];
-
-        $buttons = [];
+        $items     = $this->getActionLinks();
+        $buttons   = [];
         $urlParams = $this->token->getMenuUrlParameters();
         foreach($items as $item) {
             $url = $this->menuSnippetHelper->getRouteUrl($item['route'], $urlParams);
             if ($url) {
                 if (isset($item['disabled']) && $item['disabled'] === true) {
-                    $buttons[$item['route']] = Html::actionDisabled($item['label']);
+                    $buttons[$item['route']] = Html::actionDisabled($item['label'], ['class' => $item['class'] ?? '']);
                     continue;
                 }
                 /**
                  * @var HtmlElement $buttons[$item['route']]
                  */
-                $buttons[$item['route']] = Html::actionLink($url, $item['label']);
+                $buttons[$item['route']] = Html::actionLink($url, $item['label'], ['class' => $item['class'] ?? '']);
             }
         }
 
@@ -250,37 +206,6 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         }
 
         return true;
-    }
-
-    protected function getLastButtonItems(): array
-    {
-        return [
-            [
-                'route' => 'respondent.show',
-                'label' => $this->_('Show patient'),
-            ],
-            [
-                'route' => 'respondent.tracks.index',
-                'label' => $this->_('Show tracks'),
-            ],
-            [
-                'route' => 'respondent.tracks.show',
-                'label' => $this->_('Show track'),
-            ],
-            /*[
-                'route' => 'respondent.tracks.undelete',
-                'label' => $this->_('Undelete!'),
-                'label'
-            ],*/
-            [
-                'route' => 'respondent.tracks.token.check-token',
-                'label' => $this->_('Token check'),
-            ],
-            [
-                'route' => 'respondent.tracks.token.check-token-answers',
-                'label' => $this->_('(Re)check answers'),
-            ],
-        ];
     }
 
     /**
@@ -305,7 +230,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
                     $url .= '?' . http_build_query($item['params']);
                 }
                 $attributes = $item['attributes'] ?? [];
-                $links[$item['route']] = Html::actionLink($url, $item['label'], $attributes);
+                $links[$item['route']] = Html::actionLink($url, $item['label'], $attributes, ['class' => $item['class'] ?? '']);
             }
         }
 
@@ -465,6 +390,91 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         );
 
         return true;
+    }
+
+    public function getActionLinks(): array
+    {
+        return [
+            [
+                'route' => 'ask.take',
+                'label' => $this->_('Take'),
+                'disabled' => (!$this->token->getReceptionCode()->isSuccess() || $this->token->isCompleted() || !$this->token->isCurrentlyValid()),
+            ],
+            /*[
+                'route' => 'pdf.show',
+                'label' => $this->_('PDF'),
+            ],*/
+            [
+                'route' => 'respondent.tracks.token.questions',
+                'label' => $this->_('Preview'),
+            ],
+            [
+                'route' => 'respondent.tracks.token.answer',
+                'label' => $this->_('Answers'),
+                'disabled' => !$this->token->isStarted(),
+            ],
+            [
+                'route' => 'respondent.tracks.token.answer-export',
+                'label' => $this->_('Answer export'),
+                'disabled' => !$this->token->isStarted(),
+            ],
+        ];
+    }
+
+    public function getCompletionLinks(): array
+    {
+        $items = [
+            [
+                'route' => 'respondent.tracks.token.correct',
+                'label' => $this->_('Correct answers'),
+                'disabled' => !$this->token->isCompleted(),
+            ],
+        ];
+
+        if ($this->token->getReceptionCode()->isSuccess()) {
+            $items[] = [
+                'route' => 'respondent.tracks.token.delete',
+                'label' => $this->_('Delete'),
+            ];
+        } else {
+            $items[] = [
+                'route' => 'respondent.tracks.token.undelete',
+                'label' => $this->_('Undelete'),
+            ];
+        }
+
+        return $items;
+    }
+
+    protected function getLastButtonItems(): array
+    {
+        return [
+            [
+                'route' => 'respondent.show',
+                'label' => $this->_('Show patient'),
+            ],
+            [
+                'route' => 'respondent.tracks.index',
+                'label' => $this->_('Show tracks'),
+            ],
+            [
+                'route' => 'respondent.tracks.show',
+                'label' => $this->_('Show track'),
+            ],
+            /*[
+                'route' => 'respondent.tracks.undelete',
+                'label' => $this->_('Undelete!'),
+                'label'
+            ],*/
+            [
+                'route' => 'respondent.tracks.token.check-token',
+                'label' => $this->_('Token check'),
+            ],
+            [
+                'route' => 'respondent.tracks.token.check-token-answers',
+                'label' => $this->_('(Re)check answers'),
+            ],
+        ];
     }
 
     /**
