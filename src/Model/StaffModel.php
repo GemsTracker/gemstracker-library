@@ -221,7 +221,6 @@ class StaffModel extends GemsJoinModel
         $this->_addLoginSettings($editing);
 
         if ($detailed) {
-
             $this->metaModel->set('gsf_id_user', [ModelFormSnippet::KEEP_VALUE_FOR_SAVE => true]);
             $this->metaModel->set('gul_id_user', [ModelFormSnippet::KEEP_VALUE_FOR_SAVE => true]);
             $this->metaModel->set('gsf_first_name', [
@@ -314,9 +313,11 @@ class StaffModel extends GemsJoinModel
 
         $this->metaModel->setIfExists('has_authenticator_tfa', [
             'label' => $this->_('Authenticator TFA'),
-            'elementClass' => 'Exhibitor',
+            'default' => $this->configAccessor->getDefaultTfaRequired(),
+            'elementClass' => 'Checkbox',
             'multiOptions' => $yesNo,
         ]);
+
 
         $organizations = $this->currentUser->getAllowedOrganizations();
         if (1 == count($organizations)) {

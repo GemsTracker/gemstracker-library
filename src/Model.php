@@ -196,7 +196,7 @@ class Model
         if ($metaModel->has('gul_two_factor_key')) {
             $model->addColumn(
                 new Expression("CASE
-                        WHEN gul_two_factor_key LIKE 'AuthenticatorTotp%' THEN 1
+                        WHEN gul_two_factor_key LIKE '%otp:%' THEN 1
                         ELSE 0 END"),
                 'has_authenticator_tfa'
             );

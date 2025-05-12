@@ -9,9 +9,13 @@
 namespace Gems\Snippets\Staff;
 
 use Gems\Audit\AuditLog;
+use Gems\AuthTfa\OtpMethodBuilder;
+use Gems\Config\ConfigAccessor;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippet;
+use Gems\User\User;
+use Gems\User\UserLoader;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
@@ -46,7 +50,9 @@ class StaffCreateEditSnippet extends ModelFormSnippet
         AuditLog $auditLog,
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
-        private readonly Loader $loader,
+        protected readonly ConfigAccessor $configAccessor,
+        protected readonly UserLoader $userLoader,
+        protected readonly OtpMethodBuilder $otpMethodBuilder,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
     }
@@ -123,11 +129,38 @@ class StaffCreateEditSnippet extends ModelFormSnippet
 
         $output = parent::saveData();
 
-        if (! $this->isStaff) {
+        if ($this->isStaff) {
+            $user = $this->userLoader->getUserByStaffId($this->formData['gsf_id_user']);
+            if ($user instanceof User) {
+                if ($this->formData['has_authenticator_tfa']) {
+                    if (! ($this->formData['gul_two_factor_key'] ?? false)) {
+                        if ($this->formData['gsf_phone_1'] && $this->configAccessor->hasTFAMethod('SmsHotp')) {
+                            $this->otpMethodBuilder->setOtpMethod($user, 'SmsHotp');
+                            return 1;
+                        }
+                        if ($this->formData['gsf_email']) {
+                            $this->otpMethodBuilder->setOtpMethod($user, 'MailHotp');
+                            return 1;
+                        }
+                        $this->addMessage($this->_('Could not set Two Factor Authentication as no e-mail was specified.'));
+                    }
+                } else {
+                    if ($this->formData['gul_two_factor_key'] ?? false) {
+                        if ($this->configAccessor->canTfaBeDisabled()) {
+                            $user->clearTwoFactorKey();
+                            $this->addMessage($this->_('Removed Two Factor Authentication!'));
+                            return 1;
+                        } else {
+                            $this->addMessage($this->_('Two factor authentication cannot be removed.'));
+                        }
+                    }
+                }
+            }
+        } else {
             if (isset($this->formData['gul_two_factor_key'], $this->formData['gsf_id_user']) &&
                     $this->formData['gul_two_factor_key']) {
 
-                $user = $this->loader->getUserLoader()->getUserByStaffId($this->formData['gsf_id_user']);
+                $user = $this->userLoader->getUserByStaffId($this->formData['gsf_id_user']);
 
                 if ($user->canSetPassword()) {
                     $this->addMessage(sprintf($this->_('Password saved for: %s'), $user->getLoginName()));

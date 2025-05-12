@@ -22,6 +22,11 @@ class ConfigAccessor
     )
     { }
 
+    public function canTfaBeDisabled(): bool
+    {
+        return $this->config['twofactor']['allowAuthenticatorRemoval'] ?? false;
+    }
+
     /**
      * Extends the execution time for the application
      *
@@ -60,6 +65,11 @@ class ConfigAccessor
     public function getDefaultLocale(): string
     {
         return $this->config['locale']['default'] ?? 'en';
+    }
+
+    public function getDefaultTfaRequired(): bool
+    {
+        return $this->config['twofactor']['requireAuthenticatorTotp'] ?? true;
     }
 
     public function getDumpFile():? string

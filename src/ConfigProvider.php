@@ -910,6 +910,7 @@ class ConfigProvider
                     'maxVerifyOtpAttempts' => 5,
                 ],
             ],
+            'allowAuthenticatorRemoval' => false,
             'requireAuthenticatorTotp' => true, // TODO: Only `true` has been implemented
         ];
     }
