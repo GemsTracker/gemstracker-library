@@ -63,8 +63,8 @@ class CsvExportAbstract extends ExportAbstract implements ExportSettingsGenerato
         $elements = [];
         $element = $form->createElement('multiCheckbox', 'format');
         if ($element instanceof \Zend_Form_Element_MultiCheckbox) {
-            $element->setLabel($this->translator->_('CSV options'))
-                ->setMultiOptions(array(
+            $element->setLabel($this->translator->_('CSV options'));
+            $element->setMultiOptions(array(
                     'addHeader' => $this->translator->_('Add headers with column names'),
                     'formatVariable' => $this->translator->_('Export labels instead of field names'),
                     'formatAnswer' => $this->translator->_('Format answers')
@@ -74,13 +74,12 @@ class CsvExportAbstract extends ExportAbstract implements ExportSettingsGenerato
             $elements['format'] = $element;
         }
 
-
         $delimiterOptions = array_combine($this->delimiterOptions, $this->delimiterOptions);
 
         $element = $form->createElement('select', 'delimiter');
         if ($element instanceof \Zend_Form_Element_Select) {
-            $element->setLabel($this->translator->_('Delimiter'))
-                ->setMultiOptions($delimiterOptions)
+            $element->setLabel($this->translator->_('Delimiter'));
+            $element->setMultiOptions($delimiterOptions)
                 ->setBelongsTo($this->getName());
             $elements['delimiter'] = $element;
         }
