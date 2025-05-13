@@ -34,10 +34,10 @@ abstract class ExportAbstract implements ExportInterface
      *
      * https://www.owasp.org/index.php/CSV_Injection
      *
-     * @param string $input
+     * @param string|null $input
      * @return string
      */
-    protected function filterCsvInjection(string $input): string
+    protected function filterCsvInjection(string|null $input): string
     {
         // Try to prevent csv injection
         $dangers = ['=', '+', '-', '@'];
@@ -64,9 +64,8 @@ abstract class ExportAbstract implements ExportInterface
     protected function filterHtml(mixed $result): string|int|null
     {
         if ($result instanceof ElementInterface && !($result instanceof Sequence)) {
-            if ($result instanceof AElement) {
-                $href = $result->href;
-                $result = $href;
+            if ($result instanceof AElement && property_exists($result, 'href')) {
+                $result = $result->href;
             } elseif ($result->count() > 0) {
                 $result = $result[0];
             }
@@ -184,7 +183,7 @@ abstract class ExportAbstract implements ExportInterface
                 }
 
                 if ($result instanceof DateTimeInterface) {
-                    $result = $this->filterDateFormat($result, 'Y-m-d H:i:s', $columnName);
+                    $result = $this->filterDateFormat($result, 'Y-m-d H:i:s', $columnName, $exportSettings);
                 }
 
                 $result = $this->filterHtml($result);

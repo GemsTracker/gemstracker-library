@@ -2,6 +2,7 @@
 
 namespace Gems\Export\Type;
 
+use Iterator;
 use OpenSpout\Common\Entity\Row;
 use ZipArchive;
 use Gems\Export\Db\DataExtractorInterface;
@@ -25,7 +26,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
 
     protected array $modelFilterAttributes = ['formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay'];
 
-    protected function addRows(WriterInterface $writer, iterable $iterator, DataExtractorInterface $extractor): void
+    protected function addRows(WriterInterface $writer, Iterator $iterator, DataExtractorInterface $extractor): void
     {
         while ($row = $iterator->current()) {
             $data = $extractor->extractData($row);
@@ -103,7 +104,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
     }
 
     public function downloadFile(
-        iterable $iterator,
+        Iterator $iterator,
         DataExtractorInterface $extractor,
         string $exportId,
         string $fileName,

@@ -34,11 +34,6 @@ class Export
         'AnswerExportModelSource' => 'Answers',
     ];
 
-    /**
-     *
-     * @param ProjectOverloader $container A container acting as source fro \MUtil\Registry\Source
-     * @param array $dirs The directories where to look for requested classes
-     */
     public function __construct(
         protected readonly ProjectOverloader $projectOverloader,
         protected readonly array $config,

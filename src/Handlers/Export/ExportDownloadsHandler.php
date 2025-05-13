@@ -8,6 +8,7 @@ use Gems\Export\Db\FileExportDownloadModel;
 use Gems\Handlers\BrowseChangeHandler;
 use Gems\Handlers\GemsHandler;
 use Gems\Snippets\Export\ExportDownloadSnippet;
+use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Delete\DeleteAction;
 use Gems\SnippetsActions\Show\ShowAction;
@@ -15,7 +16,6 @@ use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\MetaModelLoader;
-use Zalt\SnippetsActions\Browse\BrowseTableAction;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -47,7 +47,7 @@ class ExportDownloadsHandler extends BrowseChangeHandler
     public function prepareAction(SnippetActionInterface $action): void
     {
         parent::prepareAction($action);
-        if ($action instanceof BrowseTableAction) {
+        if ($action instanceof BrowseFilteredAction) {
             $action->setSnippets([ExportDownloadSnippet::class]);
             $action->menuEditRoutes = ['delete'];
         }

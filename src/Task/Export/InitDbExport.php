@@ -106,15 +106,6 @@ class InitDbExport extends TaskAbstract
         return null;
     }
 
-    protected function getModel(string $modelName): DataReaderInterface
-    {
-        if (!$this->modelContainer) {
-            $this->modelContainer = $this->overLoader->getContainer()->get(ModelContainer::class);
-        }
-
-        return $this->modelContainer->get($modelName);
-    }
-
     protected function getFilterFromPostData(array $filter, MetaModelInterface $metaModel): array
     {
         // Change key filters to field name filters

@@ -2,7 +2,7 @@
 
 namespace Gems\Export\Type;
 
-
+use Iterator;
 use Gems\Export\Db\DataExtractorInterface;
 use Gems\Export\ExportSettings\CsvDelimiter;
 use MUtil\Form;
@@ -17,7 +17,7 @@ class CsvExportAbstract extends ExportAbstract implements ExportSettingsGenerato
 
     public array $delimiterOptions = [',', ';'];
 
-    protected function addRows(WriterInterface $writer, iterable $iterator, DataExtractorInterface $extractor): void
+    protected function addRows(WriterInterface $writer, Iterator $iterator, DataExtractorInterface $extractor): void
     {
         while ($row = $iterator->current()) {
             $data = $extractor->extractData($row);
@@ -27,7 +27,7 @@ class CsvExportAbstract extends ExportAbstract implements ExportSettingsGenerato
     }
 
     public function downloadFile(
-        iterable $iterator,
+        Iterator $iterator,
         DataExtractorInterface $extractor,
         string $exportId,
         string $fileName,
@@ -92,7 +92,7 @@ class CsvExportAbstract extends ExportAbstract implements ExportSettingsGenerato
     }
 
     public function streamResult(
-        iterable $iterator,
+        Iterator $iterator,
         DataExtractorInterface $extractor,
         string $fileName,
         array $exportSettings,

@@ -80,7 +80,12 @@ class ModelExportRepository
 
     private function getModel(ContainerInterface $modelContainer, ModelExportPart $part): DataReaderInterface
     {
-        $model = $modelContainer->get($part->modelIdentifier, $part->post, $part->applyFunctions);
+        if ($modelContainer instanceof ModelContainer) {
+            $model = $modelContainer->get($part->modelIdentifier, $part->post, $part->applyFunctions);
+        } else {
+            $model = $modelContainer->get($part->modelIdentifier);
+        }
+
         foreach($part->exportSettings as $exportSetting) {
             if (method_exists($model, $exportSetting)) {
                 $model->$exportSetting();

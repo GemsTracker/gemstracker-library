@@ -26,9 +26,9 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
         $diff = $endDate->diff($startDate)->format('%a');
 
         if ($endDate < $startDate) {
-            $daysBetween = 25569 - $diff;
+            $daysBetween = 25569 - (int)$diff;
         } else {
-            $daysBetween = 25569 + $diff;
+            $daysBetween = 25569 + (int)$diff;
         }
 
         $seconds = $date->getTimestamp() - $endDate->getTimestamp();
@@ -47,7 +47,7 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
             }
 
             if ($value) {
-                return $this->createExcelDate($value);
+                return (string)$this->createExcelDate($value);
             }
         }
 
@@ -79,6 +79,9 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
      */
     public function getFormElements(Form &$form, array &$data): array
     {
+        /**
+         * @var \Zend_Form_Element_MultiCheckbox $element
+         */
         $element = $form->createElement('multiCheckbox', 'format');
         $element->setLabel($this->translator->_('Excel options'))
             ->setMultiOptions(array(
