@@ -79,20 +79,22 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
      */
     public function getFormElements(Form &$form, array &$data): array
     {
-        /**
-         * @var \Zend_Form_Element_MultiCheckbox $element
-         */
+        $elements = [];
         $element = $form->createElement('multiCheckbox', 'format');
-        $element->setLabel($this->translator->_('Excel options'))
-            ->setMultiOptions(array(
-                'formatVariable'=> $this->translator->_('Export labels instead of field names'),
-                'formatAnswer'  => $this->translator->_('Format answers'),
-                'formatDate'    => $this->translator->_('Format dates as Excel numbers easily convertable to date'),
-                'combineFiles'    => $this->translator->_('Combine multiple files to separate sheets in one excel file'),
-            ))
-            ->setBelongsTo($this->getName())
-            ->setSeparator('');
-        $elements['format'] = $element;
+        if ($element instanceof \Zend_Form_Element_MultiCheckbox) {
+            $element->setLabel($this->translator->_('Excel options'))
+                ->setMultiOptions(array(
+                    'formatVariable' => $this->translator->_('Export labels instead of field names'),
+                    'formatAnswer' => $this->translator->_('Format answers'),
+                    'formatDate' => $this->translator->_('Format dates as Excel numbers easily convertable to date'),
+                    'combineFiles' => $this->translator->_(
+                        'Combine multiple files to separate sheets in one excel file'
+                    ),
+                ))
+                ->setBelongsTo($this->getName())
+                ->setSeparator('');
+            $elements['format'] = $element;
+        }
 
         return $elements;
     }

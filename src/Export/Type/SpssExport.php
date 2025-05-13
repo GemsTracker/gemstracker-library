@@ -181,10 +181,10 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
      * ==>
      * 'This isn''t hard to understand'
      *
-     * @param string $input
+     * @param string|string[]|null $input
      * @return string
      */
-    public function formatString(string $input): string
+    public function formatString(string|array|null $input): string
     {
         if (is_array($input)) {
             $input = join(', ', $input);

@@ -60,24 +60,30 @@ class CsvExportAbstract extends ExportAbstract implements ExportSettingsGenerato
 
     public function getFormElements(Form &$form, array &$data): array
     {
+        $elements = [];
         $element = $form->createElement('multiCheckbox', 'format');
-        $element->setLabel($this->translator->_('CSV options'))
-            ->setMultiOptions(array(
-                'addHeader' => $this->translator->_('Add headers with column names'),
-                'formatVariable' => $this->translator->_('Export labels instead of field names'),
-                'formatAnswer' => $this->translator->_('Format answers')
-            ))
-            ->setBelongsTo($this->getName())
-            ->setSeparator(' ');
-        $elements['format'] = $element;
+        if ($element instanceof \Zend_Form_Element_MultiCheckbox) {
+            $element->setLabel($this->translator->_('CSV options'))
+                ->setMultiOptions(array(
+                    'addHeader' => $this->translator->_('Add headers with column names'),
+                    'formatVariable' => $this->translator->_('Export labels instead of field names'),
+                    'formatAnswer' => $this->translator->_('Format answers')
+                ))
+                ->setBelongsTo($this->getName())
+                ->setSeparator(' ');
+            $elements['format'] = $element;
+        }
+
 
         $delimiterOptions = array_combine($this->delimiterOptions, $this->delimiterOptions);
 
         $element = $form->createElement('select', 'delimiter');
-        $element->setLabel($this->translator->_('Delimiter'))
-            ->setMultiOptions($delimiterOptions)
-            ->setBelongsTo($this->getName());
-        $elements['delimiter'] = $element;
+        if ($element instanceof \Zend_Form_Element_Select) {
+            $element->setLabel($this->translator->_('Delimiter'))
+                ->setMultiOptions($delimiterOptions)
+                ->setBelongsTo($this->getName());
+            $elements['delimiter'] = $element;
+        }
 
         return $elements;
     }

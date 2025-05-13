@@ -10,6 +10,8 @@ use Gems\Export\Type\ModelResultSettingsInterface;
 use Gems\Export\Type\StreamableInterface;
 use Gems\Messenger\Message\Export\ModelExportPart;
 use Gems\Response\DownloadResponse;
+use Laminas\Db\Adapter\Driver\StatementInterface;
+use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\Sql\Expression;
 use Psr\Container\ContainerInterface;
@@ -159,7 +161,7 @@ class DbExportRepository
     }
 
 
-    public function getExportResult(string $exportId, int $userId): ResultSetInterface|null
+    public function getExportResult(string $exportId, int $userId): StatementInterface|ResultSet|null
     {
         $select = $this->unbufferedResultFetcher->getSelect('gems__file_exports')
             ->columns(['gfex_data', 'gfex_file_name', 'gfex_export_type', 'gfex_export_settings', 'gfex_column_order'])
