@@ -37,6 +37,8 @@ use Gems\Factory\MonologFactory;
 use Gems\Factory\PdoFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Factory\ReflectionAbstractFactory;
+use Gems\Factory\SymfonySerializerFactory;
+use Gems\Factory\SymfonyValidatorFactory;
 use Gems\Factory\TwigEnvironmentFactory;
 use Gems\Menu\RouteHelper;
 use Gems\Menu\RouteHelperFactory;
@@ -110,6 +112,8 @@ use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Twig\Environment;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
@@ -440,6 +444,9 @@ class ConfigProvider
                 'messenger.transport.failed' => TransportFactory::class,
 
                 \Symfony\Component\Mailer\Transport\TransportInterface::class => MailTransportFactory::class,
+
+                Serializer::class => SymfonySerializerFactory::class,
+                ValidatorInterface::class => SymfonyValidatorFactory::class,
 
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
                 DebugCommand::class => DebugMessageCommandFactory::class,

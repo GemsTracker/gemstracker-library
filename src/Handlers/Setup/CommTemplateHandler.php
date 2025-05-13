@@ -12,11 +12,11 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\CommTemplateModel;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Vue\CreateEditSnippet;
-use MUtil\Model\ModelAbstract;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
@@ -49,11 +49,13 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $createParameters = [
         'addCurrentSiblings' => true,
         'contentTitle' => 'getCreateTitle',
+        'vueOptions' => 'getVueOptions',
     ];
 
     protected array $editParameters = [
         'addCurrentSiblings' => true,
         'contentTitle' => 'getEditTitle',
+        'vueOptions' => 'getVueOptions',
     ];
 
     protected array $defaultParameters = [
@@ -66,6 +68,7 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected readonly ProjectOverloader $overloader,
+        protected readonly CurrentUserRepository $currentUserRepository,
     )
     {
         parent::__construct($responder, $translate, $cache);
@@ -112,5 +115,14 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
     public function getIndexTitle(): string
     {
         return $this->_('Email templates');
+    }
+
+    public function getVueOptions(): array
+    {
+        $currentUser = $this->currentUserRepository->getCurrentUser();
+
+        return [
+            ':test-email' => (int)$currentUser->hasPrivilege('pr.api.test-communication-email'),
+        ];
     }
 }
