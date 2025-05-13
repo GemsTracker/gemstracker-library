@@ -90,9 +90,9 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
                     'combineFiles' => $this->translator->_(
                         'Combine multiple files to separate sheets in one excel file'
                     ),
-            ])
-                ->setBelongsTo($this->getName())
-                ->setSeparator('');
+            ]);
+            $element->setBelongsTo($this->getName());
+            $element->setSeparator('');
             $elements['format'] = $element;
         }
 

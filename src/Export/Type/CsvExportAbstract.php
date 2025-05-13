@@ -64,13 +64,13 @@ class CsvExportAbstract extends ExportAbstract implements ExportSettingsGenerato
         $element = $form->createElement('multiCheckbox', 'format');
         if ($element instanceof \Zend_Form_Element_MultiCheckbox) {
             $element->setLabel($this->translator->_('CSV options'));
-            $element->setMultiOptions(array(
+            $element->setMultiOptions([
                     'addHeader' => $this->translator->_('Add headers with column names'),
                     'formatVariable' => $this->translator->_('Export labels instead of field names'),
                     'formatAnswer' => $this->translator->_('Format answers')
-                ))
-                ->setBelongsTo($this->getName())
-                ->setSeparator(' ');
+            ]);
+            $element->setBelongsTo($this->getName());
+            $element->setSeparator(' ');
             $elements['format'] = $element;
         }
 
