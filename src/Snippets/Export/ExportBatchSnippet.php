@@ -11,12 +11,20 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Batch\BatchRunnerLoader;
+use Gems\Export\Db\AnswerModelContainer;
+use Gems\Export\Db\ModelContainer;
+use Gems\Export\Db\ModelExportRepository;
+use Gems\Export\Db\SurveyModelContainer;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\SnippetsActions\Export\ExportAction;
+use Gems\Task\Export\InitDbExport;
+use Gems\Tracker\SurveyModel;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\RequestInfo;
@@ -43,12 +51,19 @@ class ExportBatchSnippet extends SnippetAbstract
      */
     protected DataReaderInterface $model;
 
+    public array $modelApplyFunctions = [];
+
+    protected ContainerInterface|null $modelContainer = null;
+
+    protected string|int|array|null $modelIdentifier = null;
+
     protected string $formTitle = '';
+
+    public array|bool $searchFilter = false;
 
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        TranslatorInterface $translate,
         protected Loader $loader,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected ExportAction $exportAction,
@@ -56,8 +71,16 @@ class ExportBatchSnippet extends SnippetAbstract
         protected MenuSnippetHelper $menuHelper,
         protected SessionInterface $session,
         protected ServerRequestInterface $request,
+        protected readonly ModelExportRepository $exportRepository,
+        ContainerInterface $modelContainer,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate);
+        parent::__construct($snippetOptions, $requestInfo);
+        if ($this->modelContainer === null) {
+            $this->modelContainer = $modelContainer;
+        }
+        if ($this->modelIdentifier === null) {
+            $this->modelIdentifier = $this->model::class;
+        }
     }
 
     public function getResponse(): ?ResponseInterface
@@ -66,13 +89,18 @@ class ExportBatchSnippet extends SnippetAbstract
             return null;
         }
         $batch = $this->exportAction->batch;
-        $model = $this->model;
 
-        $batch->setVariable('model', $model);
+        $batch->setVariable('modelContainer', $this->modelContainer);
+        $batch->setVariable('searchFilter', $this->searchFilter);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $post = $this->requestInfo->getRequestPostParams();
+
+
         $jobInfo = [];
+
+        $currentUserId = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE);
+        $batch->setVariable(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE, $currentUserId);
 
         if ($batch->isFinished()) {
             $this->exportAction->step = ExportAction::STEP_DOWNLOAD;
@@ -86,7 +114,7 @@ class ExportBatchSnippet extends SnippetAbstract
                 return new RedirectResponse($batch->restartRedirectUrl);
             }
 
-            $type = $post['type'];
+            $type = $this->exportRepository->getExportTypeClassName($post['type']);
             $batch->setSessionVariable('export_type', $type);
 
             if (!$batch->count()) {
@@ -94,8 +122,16 @@ class ExportBatchSnippet extends SnippetAbstract
 
                 $batch->setSessionVariable('files', []);
 
-                $batch->addTask('Export\\ExportCommand', $type, 'addExport', $post);
-                $batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);
+                foreach((array)$this->modelIdentifier as $modelIdentifier) {
+                    $batch->addTask(
+                        InitDbExport::class,
+                        $modelIdentifier,
+                        $this->searchFilter,
+                        $this->modelApplyFunctions,
+                        $type
+                    );
+                }
+                //$batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);
 
                 $batch->autoStart = true;
             }

@@ -3,8 +3,8 @@
 namespace Gems\Snippets\Export;
 
 use Gems\Audit\AuditLog;
-use Gems\Export;
-use Gems\Export\ExportInterface;
+use Gems\Export\Export;
+use Gems\Export\Type\ExportInterface;
 use Gems\Form;
 use Gems\Html;
 use Gems\Loader;
@@ -36,13 +36,9 @@ class ExportFormSnippet extends FormSnippetAbstract
 
     protected ExportInterface $currentExport;
 
-    /**
-     *
-     * @var \Gems\Export
-     */
-    protected Export $export;
-
     protected bool $processed = false;
+
+    protected bool $sensitiveData;
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -51,14 +47,12 @@ class ExportFormSnippet extends FormSnippetAbstract
         MessengerInterface $messenger,
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
-        Loader $loader,
         protected ExportAction $exportAction,
         private readonly SessionInterface $session,
         private readonly ProjectOverloader $overLoader,
+        protected readonly Export $export,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
-
-        $this->export    = $loader->getExport();
         $this->saveLabel = $this->_('Export');
     }
 
@@ -68,12 +62,20 @@ class ExportFormSnippet extends FormSnippetAbstract
             throw new SnippetException(sprintf("Incorrect form type %s, expected a \gems\Form form!"), get_class($form));
         }
 
-        $form->setAutoSubmit(\MUtil\Html::attrib('href', array('action' => $this->requestInfo->getCurrentAction())), 'export-form', true);
+        $form->setAutoSubmit(Html::attrib('href', array('action' => $this->requestInfo->getCurrentAction())), 'export-form', true);
 
         $element = $form->createElement('select', 'type', [
             'label' => $this->_('Export to'),
-            'multiOptions' => $this->export->getExportClasses(),
+            'multiOptions' => $this->export->getExportClasses($this->sensitiveData),
             'class' => 'auto-submit'
+        ]);
+        $form->addElement($element);
+
+
+        $currentType = $this->requestInfo->getParam('type');
+
+        $element = $form->createElement('hidden', 'previousType', [
+            'value' => $currentType,
         ]);
         $form->addElement($element);
 
@@ -106,7 +108,7 @@ class ExportFormSnippet extends FormSnippetAbstract
     protected function getDefaultFormValues(): array
     {
         $defaults[$this->currentExport->getName()] = $this->currentExport->getDefaultFormValues();
-        $defaults['type'] = $this->export->getDefaultExportClass();
+        $defaults['type'] = $this->currentExport->getName();
 
         return $defaults;
     }
@@ -156,7 +158,6 @@ class ExportFormSnippet extends FormSnippetAbstract
     public function hasHtmlOutput(): bool
     {
         $this->exportAction->batch = new ExportRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
-        $model = $this->getModel();
 
         if (ExportAction::STEP_RESET === $this->requestInfo->getParam('step')) {
             $this->exportAction->batch->reset();
@@ -181,11 +182,16 @@ class ExportFormSnippet extends FormSnippetAbstract
     protected function loadFormData(): array
     {
         $currentType = $this->requestInfo->getParam('type', $this->export->getDefaultExportClass());
+        $previousType = $this->requestInfo->getParam('previousType');
 
-        $this->currentExport = $this->export->getExport($currentType, null, $this->exportAction->batch);
+        $this->currentExport = $this->export->getExport($currentType);
 
         if ($this->isPost()) {
-            $this->formData = $this->loadCsrfData() + $this->requestInfo->getRequestPostParams() + $this->getDefaultFormValues();
+            $this->formData = $this->loadCsrfData() + $this->requestInfo->getRequestPostParams();
+            if ($previousType !== $currentType) {
+                $this->formData = $this->loadCsrfData() + $this->requestInfo->getRequestPostParams() + $this->getDefaultFormValues();
+            }
+            $this->formData['previousType'] = $currentType;
             return $this->formData;
         }
 

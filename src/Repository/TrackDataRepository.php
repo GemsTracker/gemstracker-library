@@ -247,6 +247,22 @@ class TrackDataRepository
         return $this->cachedResultFetcher->fetchPairs($key, $select, null, $this->cacheTags);
     }
 
+    public function getTracksBySurveys(array $surveyIds): array
+    {
+        $select = $this->resultFetcher->getSelect('gems__tracks');
+        $select
+            ->columns(['gtr_id_track', 'gtr_track_name'])
+            ->join('gems__rounds', 'gtr_id_track = gro_id_track', [])
+            ->where([
+                'gro_active' => 1,
+                'gtr_active' => 1,
+                'gro_id_survey' => $surveyIds,
+            ])
+            ->order('gtr_track_name');
+
+        return $this->resultFetcher->fetchPairs($select);
+    }
+
     /**
      * @param array $organizations As $organizationId => $organizationName
      * @return array

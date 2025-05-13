@@ -2,9 +2,10 @@
 
 namespace Gems\Handlers\Export;
 
-use Gems\Export\AnswerModelFactory;
+use Gems\Export\Db\AnswerModelContainer;
 use Gems\Handlers\BrowseChangeHandler;
 use Gems\Model\PlaceholderModel;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\Export\SurveyExportSearchFormSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
@@ -25,12 +26,20 @@ class ExportSurveyHandler extends BrowseChangeHandler
         'export'     => ExportAction::class,
     ];
 
+    protected bool $multi = false;
+
+    protected array $exportStartSnippets = [
+        ContentTitleSnippet::class,
+        SurveyExportSearchFormSnippet::class,
+    ];
+
     public function __construct(
         SnippetResponderInterface $responder,
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected readonly AnswerModelFactory $answerModelFactory,
+        protected readonly AnswerModelContainer $answerModelContainer,
+        protected readonly PeriodSelectRepository $periodSelectRepository,
     ) {
         parent::__construct($responder, $metaModelLoader, $translate, $cache);
     }
@@ -52,20 +61,60 @@ class ExportSurveyHandler extends BrowseChangeHandler
         return $placeholderModel;
     }
 
+    public function getSearchFilter(bool $useSessionReadonly = false): array
+    {
+        $filter = parent::getSearchFilter($useSessionReadonly);
+
+        $filter['gco_code'] = 'consent given';
+        $filter['grc_success'] = 1;
+        $filter[] = 'gto_start_time IS NOT NULL';
+        if (!isset($filter['incomplete']) || !$filter['incomplete']) {
+            $filter[] = 'gto_completion_time IS NOT NULL';
+        }
+
+        if (isset($filter['dateused']) && $filter['dateused']) {
+            $where = $this->periodSelectRepository->createPeriodFilter($filter);
+            if ($where) {
+                $filter[] = $where;
+            }
+        }
+
+        if (isset($filter['ids'])) {
+            $idStrings = $filter['ids'];
+
+            $idArray = preg_split('/[\s,;]+/', $idStrings, -1, PREG_SPLIT_NO_EMPTY);
+
+            if ($idArray) {
+                $filter['gto_id_respondent'] = $idArray;
+            }
+        }
+
+        return $filter;
+    }
+
     public function prepareAction(SnippetActionInterface $action): void
     {
         parent::prepareAction($action);
         if ($action instanceof BrowseSearchAction) {
-            $action->setStartSnippets([
-                ContentTitleSnippet::class,
-                SurveyExportSearchFormSnippet::class,
-            ]);
+            $action->setStartSnippets($this->exportStartSnippets);
         }
 
         $searchFilter =  $this->getSearchFilter();
-        $searchData = $this->getSearchData();
         if ($action instanceof BrowseFilteredAction && $searchFilter && isset($searchFilter['gto_id_survey'])) {
-            $action->model = $this->answerModelFactory->getModel($searchFilter, $searchData);
+            if ($this->multi) {
+                if (!$action instanceof ExportAction) {
+                    $action->setSnippets([]);
+                }
+            } else {
+                $action->model = $this->answerModelContainer->get($searchFilter['gto_id_survey'], $searchFilter);
+            }
+        }
+
+        if ($action instanceof ExportAction) {
+            $action->modelContainer = $this->answerModelContainer;
+            if ($searchFilter && isset($searchFilter['gto_id_survey'])) {
+                $action->modelIdentifier = $searchFilter['gto_id_survey'];
+            }
         }
     }
 }

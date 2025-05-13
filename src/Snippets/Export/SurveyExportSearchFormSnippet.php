@@ -21,6 +21,20 @@ namespace Gems\Snippets\Export;
  */
 class SurveyExportSearchFormSnippet extends SurveyExportSearchFormSnippetAbstract
 {
+    protected function createSurveyElement(array $data): \Zend_Form_Element|array
+    {
+        $roundDescr = $data['gto_round_description'] ?? null;
+        $trackId = $data['gto_id_track'] ?? null;
+
+        $surveys = $this->getSurveysForExport($trackId, $roundDescr);
+
+        return $this->_createSelectElement(
+            'gto_id_survey',
+            $surveys,
+            $this->_('(select a survey)')
+        );
+    }
+
     /**
      * Returns start elements for auto search.
      *
@@ -33,24 +47,22 @@ class SurveyExportSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
     protected function getSurveySelectElements(array $data): array
     {
         // get the current selections
-        $roundDescr = isset($data['gto_round_description']) ? $data['gto_round_description'] : null;
-        $surveyId   = isset($data['gto_id_survey']) ? $data['gto_id_survey'] : null;
-        $trackId    = isset($data['gto_id_track']) ? $data['gto_id_track'] : null;
+        $surveyId   = $data['gto_id_survey'] ?? null;
+        $trackId    = $data['gto_id_track'] ?? null;
 
         // Get the selection data
         $rounds = $this->getRoundsForExport($trackId, $surveyId);
-        $surveys = $this->getSurveysForExport($trackId, $roundDescr);
         if ($surveyId) {
-            $tracks = $this->trackDataRepository->getTracksBySurvey($surveyId);
+            if (is_array($surveyId)) {
+                $tracks = $this->trackDataRepository->getTracksBySurveys($surveyId);
+            } else {
+                $tracks = $this->trackDataRepository->getTracksBySurvey($surveyId);
+            }
+
         } else {
             $tracks = $this->trackDataRepository->getTracksForOrgs($this->currentUserRepository->getCurrentUser()->getRespondentOrganizations());
         }
 
-        $elements['gto_id_survey'] = $this->_createSelectElement(
-            'gto_id_survey',
-            $surveys,
-            $this->_('(select a survey)')
-            );
         $elements['gto_id_track'] = $this->_createSelectElement(
                 'gto_id_track',
                 $tracks,
@@ -61,6 +73,7 @@ class SurveyExportSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
                 [parent::NoRound => $this->_('No round description')] + $rounds,
                 $this->_('(select a round)')
                 );
+        $elements['gto_id_survey'] = $this->createSurveyElement($data);
 
         foreach ($elements as $element) {
             if ($element instanceof \Zend_Form_Element_Multi) {

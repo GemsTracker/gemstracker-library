@@ -59,7 +59,7 @@ class RouteHelper
         return $links;
     }
 
-    public function getLateRouteUrl(string $name, array $paramLateMappings = [], BridgeInterface $bridge = null, $ignoreErrors = false): ?LateCall
+    public function getLateRouteUrl(string $name, array $paramLateMappings = [], BridgeInterface $bridge = null, $ignoreErrors = false, array $queryParams = []): ?LateCall
     {
         $route = $this->getRoute($name);
         if (null === $route) {
@@ -94,9 +94,9 @@ class RouteHelper
             $params = Late::getRa($routeParams);
         }
         IF ($ignoreErrors) {
-            return Late::method($this, 'tryGeneration', $name, $params);
+            return Late::method($this, 'tryGeneration', $name, $params, $queryParams);
         } else {
-            return Late::method($this->urlHelper, 'generate', $name, $params);
+            return Late::method($this->urlHelper, 'generate', $name, $params, $queryParams);
         }
     }
 
@@ -283,10 +283,10 @@ class RouteHelper
         return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource) || $this->disablePrivileges;
     }
 
-    public function tryGeneration(string $name, array $params): string
+    public function tryGeneration(string $name, array $params, array $queryParams = []): string
     {
         try {
-            return $this->urlHelper->generate($name, $params);
+            return $this->urlHelper->generate($name, $params, $queryParams);
         } catch (RuntimeException $re) {
             error_log($re->getMessage());
             return $re->getMessage();

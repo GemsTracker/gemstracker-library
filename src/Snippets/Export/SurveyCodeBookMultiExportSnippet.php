@@ -20,7 +20,7 @@ class SurveyCodeBookMultiExportSnippet extends MultiSurveysSearchFormSnippet
         $elements = $this->getSurveySelectElements($data);
         $elements[] = null;
 
-        $elements = $elements + $this->getExportTypeElements($data);
+        //$elements = $elements + $this->getExportTypeElements($data);
         $elements[] = null;
 
         return $elements;

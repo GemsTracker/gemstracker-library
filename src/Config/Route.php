@@ -18,6 +18,8 @@ use Gems\Handlers\ChangeGroupHandler;
 use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
+use Gems\Handlers\Export\ExportDownloadsHandler;
+use Gems\Handlers\Export\ExportMultiSurveyHandler;
 use Gems\Handlers\Export\ExportSurveyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\LegacyAskRedirectHandler;
@@ -448,6 +450,14 @@ class Route
             ...$this->createHandlerRoute(
                 baseName: 'export.survey',
                 controllerClass: ExportSurveyHandler::class,
+            ),
+            ...$this->createHandlerRoute(
+                baseName: 'export.multi-survey',
+                controllerClass: ExportMultiSurveyHandler::class,
+            ),
+            ...$this->createHandlerRoute(
+                baseName: 'export.downloads',
+                controllerClass: ExportDownloadsHandler::class,
             )
         ];
     }
