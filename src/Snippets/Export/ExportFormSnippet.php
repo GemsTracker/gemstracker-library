@@ -184,7 +184,7 @@ class ExportFormSnippet extends FormSnippetAbstract
         $currentType = $this->requestInfo->getParam('type', $this->export->getDefaultExportClass());
         $previousType = $this->requestInfo->getParam('previousType');
 
-        $this->currentExport = $this->export->getExport($currentType, null, $this->exportAction->batch);
+        $this->currentExport = $this->export->getExport($currentType);
 
         if ($this->isPost()) {
             $this->formData = $this->loadCsrfData() + $this->requestInfo->getRequestPostParams();
