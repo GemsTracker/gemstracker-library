@@ -17,7 +17,7 @@ use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
 
-class AnswerModelContainer implements ContainerInterface
+class AnswerModelContainer extends ModelContainer
 {
     protected array $models = [];
 
