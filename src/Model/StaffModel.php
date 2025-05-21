@@ -19,7 +19,7 @@ use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Model\Type\EncryptedField;
 use Gems\Repository\GroupRepository;
 use Gems\Repository\OrganizationRepository;
-use Gems\Snippets\ModelFormSnippet;
+use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\User\Embed\EmbedLoader;
 use Gems\User\User;
 use Gems\User\UserLoader;
@@ -221,8 +221,8 @@ class StaffModel extends GemsJoinModel
         $this->_addLoginSettings($editing);
 
         if ($detailed) {
-            $this->metaModel->set('gsf_id_user', [ModelFormSnippet::KEEP_VALUE_FOR_SAVE => true]);
-            $this->metaModel->set('gul_id_user', [ModelFormSnippet::KEEP_VALUE_FOR_SAVE => true]);
+            $this->metaModel->set('gsf_id_user', [ModelFormSnippetAbstract::KEEP_VALUE_FOR_SAVE => true]);
+            $this->metaModel->set('gul_id_user', [ModelFormSnippetAbstract::KEEP_VALUE_FOR_SAVE => true]);
             $this->metaModel->set('gsf_first_name', [
                 'label' => $this->_('First name')
             ]);
@@ -351,6 +351,10 @@ class StaffModel extends GemsJoinModel
 
         $this->_addLoginSettings($editing);
 
+        if ($detailed) {
+            $this->metaModel->set('gsf_id_user', [ModelFormSnippetAbstract::KEEP_VALUE_FOR_SAVE => true]);
+            $this->metaModel->set('gul_id_user', [ModelFormSnippetAbstract::KEEP_VALUE_FOR_SAVE => true]);
+        }
         $this->metaModel->set('gsf_last_name', [
             'label' => $this->_('Description'),
             'description' => $this->_('A description what this user is for.'),

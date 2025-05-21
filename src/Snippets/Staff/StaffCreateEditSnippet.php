@@ -11,7 +11,6 @@ namespace Gems\Snippets\Staff;
 use Gems\Audit\AuditLog;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Config\ConfigAccessor;
-use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\User\User;
@@ -103,9 +102,8 @@ class StaffCreateEditSnippet extends ModelFormSnippet
                         $this->afterSaveRoutePart = 'reactivate';
 
                         return;
-                    } else {
-                        //User is active... this is a real duplicate so continue the flow
                     }
+                    //User is active... this is a real duplicate so continue the flow
                 }
             }
         }
