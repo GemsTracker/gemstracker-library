@@ -87,6 +87,9 @@ class CheckTokenCompletion extends \MUtil\Task\TaskAbstract
                     [sprintf("%s was answered", $token->getTokenId())],
                     $token->getRespondentId()
                 );
+
+                // Reload the data
+                $token->refresh();
             }
             if ($result & \Gems\Tracker\Token::COMPLETION_EVENTCHANGE) {
                 $i = $batch->addToCounter('surveyCompletionChanges');

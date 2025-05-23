@@ -974,7 +974,7 @@ class Tracker implements TrackerInterface
      */
     public function processCompletedTokens(SessionInterface|null $session, ?int $respondentId, int|null $userId = null, ?int $orgId = null, bool $quickCheck = false): bool
     {
-        $batch = new TaskRunnerBatch('completed', $this->overLoader, $session);
+        $batch = new TaskRunnerBatch('completed' . time(), $this->overLoader, $session);
 
         if (! $batch->isLoaded()) {
             $this->loadCompletedTokensBatch($batch, $respondentId, $userId, $orgId, $quickCheck);

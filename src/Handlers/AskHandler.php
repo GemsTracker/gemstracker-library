@@ -141,7 +141,6 @@ class AskHandler extends SnippetHandler
                 )) {
 
                 $message = sprintf('Processed token %s succesfully.', $this->tokenId);
-                $this->token->refresh();
             } else {
                 $message = sprintf('Nothing to do for token %s.', $this->tokenId);
             }
