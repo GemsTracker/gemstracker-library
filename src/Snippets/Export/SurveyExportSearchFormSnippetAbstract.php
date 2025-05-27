@@ -267,7 +267,6 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
             ->where([
                 'gso_active' => 1,
                 'gsu_allow_export' => 1,
-
             ])
             ->where('gsu_allow_export = 1')
             ->where(TokenRepository::getShowAnswersExpression($this->currentUserRepository->getCurrentUser()->getGroupId(true)))
@@ -281,7 +280,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
         $addSubSelect = false;
         if ($roundDescription) {
             $addSubSelect = true;
-            $subSelect->where(['gsu_round_description' => $roundDescription]);
+            $subSelect->where(['gto_round_description' => $roundDescription]);
         }
         if ($trackId) {
             $addSubSelect = true;
@@ -289,8 +288,10 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
         }
 
         if ($addSubSelect) {
+            $subSelect->columns(['gto_id_survey']);
             $select->where->in('gsu_id_survey', $subSelect);
         }
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $select->getSqlString($this->resultFetcher->getPlatform()) . "\n", FILE_APPEND);
 
         $result  = $this->resultFetcher->fetchAll($select);
 

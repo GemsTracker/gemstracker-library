@@ -25,8 +25,7 @@ class ExportDownloadStepSnippet extends ExportDownloadSnippet
         DbExportRepository $dbExportRepository,
         Export $export,
         CurrentUserRepository $currentUserRepository,
-        protected readonly ExportAction $exportAction,
-
+        protected ExportAction $exportAction,
     ) {
         parent::__construct(
             $snippetOptions,

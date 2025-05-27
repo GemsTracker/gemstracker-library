@@ -65,7 +65,7 @@ class TokenRepository
     public static function getShowAnswersExpression(int $groupId): Expression
     {
         return new Expression(sprintf(
-            "CASE WHEN gsu_answers_by_group = 0 OR gsu_answer_groups LIKE '%%|%d|%%' THEN 1 ELSE 0 END",
+            "(CASE WHEN gsu_answers_by_group = 0 OR gsu_answer_groups LIKE '%%|%d|%%' THEN 1 ELSE 0 END)",
             $groupId));
     }
 
