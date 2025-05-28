@@ -204,7 +204,18 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                 $sessionData = [];
 
             } else {
-                $data = $data + $sessionData;
+                // When an array value is posted as empty we should not overrule it
+                if ($this->requestInfo->isPost()) {
+                    foreach ($sessionData as $key => $value) {
+                        if (!array_key_exists($key, $data)) {
+                            if (! is_array($value)) {
+                                $data[$key] = $value;
+                            }
+                        }
+                    }
+                } else {
+                    $data = $data + $sessionData;
+                }
             }
 
             // Always remove
@@ -232,15 +243,13 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
             $data = $data + $defaults;
         }
 
-        // \MUtil\EchoOut\EchoOut::track($data, $this->searchSessionId);
-
         // Remove empty strings and nulls HERE as they are not part of
         // the filter itself, but the values should be stored in the session.
         //
         // Remove all empty values (but not arrays) from the filter
         $this->_searchData = array_filter($data, function($i) { return is_array($i) || $i instanceof DateTimeInterface || strlen((string)$i); });
 
-        // \MUtil\EchoOut\EchoOut::track($this->_searchData, $this->searchSessionId);
+        // dump($this->_searchData);
 
         return $this->_searchData;
     }

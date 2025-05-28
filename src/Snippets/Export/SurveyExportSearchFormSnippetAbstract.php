@@ -11,6 +11,7 @@ namespace Gems\Snippets\Export;
 
 use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
+use Gems\Form;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
@@ -72,6 +73,23 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
             $messenger,
             $periodSelectRepository
         );
+    }
+
+    /**
+     * Creates the form itself
+     *
+     * @param array $options
+     * @return Form
+     */
+    protected function createForm(array $options = [])
+    {
+        if (! isset($options['name'])) {
+            $className = get_class($this);
+            $options['name'] = substr($className, strrpos($className, '\\'));
+        }
+
+        $form = new Form($options);
+        return $form;
     }
 
     /**

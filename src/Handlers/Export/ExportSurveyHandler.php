@@ -44,6 +44,11 @@ class ExportSurveyHandler extends BrowseChangeHandler
         parent::__construct($responder, $metaModelLoader, $translate, $cache);
     }
 
+    public function getIndexTitle(): string
+    {
+        return $this->_('Export survey');
+    }
+
     protected function getModel(SnippetActionInterface $action): MetaModellerInterface
     {
         $basicArray = [
@@ -90,6 +95,11 @@ class ExportSurveyHandler extends BrowseChangeHandler
         }
 
         return $filter;
+    }
+
+    public function getTopic(int $count = 1): string
+    {
+        return $this->plural('export survey', 'export surveys', $count);
     }
 
     public function prepareAction(SnippetActionInterface $action): void

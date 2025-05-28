@@ -39,9 +39,19 @@ class ExportDownloadsHandler extends BrowseChangeHandler
         parent::__construct($responder, $metaModelLoader, $translate, $cache);
     }
 
+    public function getIndexTitle(): string
+    {
+        return $this->_('Export downloads');
+    }
+
     protected function getModel(SnippetActionInterface $action): MetaModellerInterface
     {
         return $this->fileExportDownloadModel;
+    }
+
+    public function getTopic(int $count = 1): string
+    {
+        return $this->plural('export download', 'export downloads', $count);
     }
 
     public function prepareAction(SnippetActionInterface $action): void

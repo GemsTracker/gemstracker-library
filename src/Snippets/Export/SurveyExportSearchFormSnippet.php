@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\Html;
+
 /**
  *
  * @package    Gems
