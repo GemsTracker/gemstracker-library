@@ -128,7 +128,8 @@ class ExportBatchSnippet extends SnippetAbstract
                         $modelIdentifier,
                         $this->searchFilter,
                         $this->modelApplyFunctions,
-                        $type
+                        $type,
+                        $post
                     );
                 }
                 //$batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);

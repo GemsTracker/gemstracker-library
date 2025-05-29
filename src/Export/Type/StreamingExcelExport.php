@@ -56,10 +56,12 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
 
     public function getExportSettings(array $postData): array
     {
+        $typeSettings = $this->getTypeExportSettings($postData);
+
         return [
-            'translateHeaders' => isset($postData['formatVariable']) ? (bool) $postData['formatVariable'] : true,
-            'translateValues' => isset($postData['formatAnswer']) ? (bool) $postData['formatAnswer'] : true,
-            'formatDates' => isset($postData['formatDate']) ? (bool) $postData['formatDate'] : true,
+            'translateHeaders' => isset($typeSettings['format']) && in_array('formatVariable', $typeSettings['format']),
+            'translateValues' => isset($typeSettings['format']) && in_array('formatAnswer', $typeSettings['format']),
+            'formatDates' => isset($typeSettings['format']) && in_array('formatDate', $typeSettings['format']),
         ];
     }
 

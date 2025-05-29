@@ -45,11 +45,13 @@ class CsvExportAbstract extends ExportAbstract implements ExportSettingsGenerato
 
     public function getExportSettings(array $postData): array
     {
+        $typeSettings = $this->getTypeExportSettings($postData);
+
         return [
-            'translateHeaders' => isset($postData['formatVariable']) ? (bool) $postData['formatVariable'] : true,
-            'translateValues' => isset($postData['formatAnswer']) ? (bool) $postData['formatAnswer'] : true,
-            'showHeaders' => isset($postData['addHeader']) ? (bool) $postData['addHeader'] : true,
-            'delimiter' => isset($postData['delimiter']) ? CsvDelimiter::from($postData['delimiter']) : CsvDelimiter::SEMICOLON,
+            'translateHeaders' => isset($typeSettings['format']) && in_array('formatVariable', $typeSettings['format']),
+            'translateValues' => isset($typeSettings['format']) && in_array('formatAnswer', $typeSettings['format']),
+            'showHeaders' => isset($typeSettings['format']) && in_array('addHeader', $typeSettings['format']),
+            'delimiter' => isset($typeSettings['delimiter']) ? CsvDelimiter::from($typeSettings['delimiter']) : CsvDelimiter::SEMICOLON,
         ];
     }
 

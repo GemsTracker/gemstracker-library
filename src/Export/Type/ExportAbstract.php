@@ -194,6 +194,15 @@ abstract class ExportAbstract implements ExportInterface
         return $exportRow;
     }
 
+    public function getTypeExportSettings(array $postData): array
+    {
+        $exportTypeName = basename(str_replace('\\', '/', static::class));
+        if (!isset($postData[$exportTypeName])) {
+            return [];
+        }
+        return $postData[$exportTypeName];
+    }
+
     public function getHelpInfo(): array
     {
         return [];

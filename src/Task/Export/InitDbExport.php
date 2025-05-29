@@ -21,9 +21,10 @@ class InitDbExport extends TaskAbstract
 
     public function execute(
         string|int $modelIdentifier = null,
-        array $postData = [],
+        array $searchFilter = [],
         array $modelApplyFunctions = [],
         string $exportType = null,
+        array $postData = [],
         int $rowsPerBatch = 500
     )
     {
@@ -33,7 +34,7 @@ class InitDbExport extends TaskAbstract
          * @var ModelContainer $modelContainer
          */
         $modelContainer = $batch->getVariable('modelContainer');
-        $model = $modelContainer->get($modelIdentifier, $postData, $modelApplyFunctions);
+        $model = $modelContainer->get($modelIdentifier, $searchFilter, $modelApplyFunctions);
 
         $exportId = $model->getName() . (new \DateTimeImmutable())->format('YmdHis');
 
@@ -43,7 +44,7 @@ class InitDbExport extends TaskAbstract
             $batch->setSessionVariable('exportIds', $currentExportIds);
         }
 
-        $modelFilter = $this->getFilterFromPostData($postData, $model->getMetaModel());
+        $modelFilter = $this->getFilterFromPostData($searchFilter, $model->getMetaModel());
 
         $totalRows  = $model->loadCount($modelFilter);
 
@@ -52,6 +53,8 @@ class InitDbExport extends TaskAbstract
         $totalTasks = ceil($totalRows / $rowsPerBatch);
 
         $batch->getStack()->registerAllowedClass(ModelExportPart::class);
+
+        $exportSettings = $this->getExportSettings($exportType, $postData);
 
         for ($i = 0; $i < $totalTasks; $i++) {
             $modelExportPart = new ModelExportPart(
@@ -63,11 +66,11 @@ class InitDbExport extends TaskAbstract
                 applyFunctions: $modelApplyFunctions,
                 columnOrder: $columnOrder,
                 filter: $modelFilter,
-                post: $postData,
+                post: $searchFilter,
                 itemCount: $rowsPerBatch,
                 part: $i+1,
                 totalRows: $totalRows,
-                exportSettings: [],
+                exportSettings: $exportSettings,
             );
             $batch->addTask(DbExportPart::class, $modelExportPart);
         }
@@ -97,13 +100,13 @@ class InitDbExport extends TaskAbstract
         return join('.', $nameParts);
     }
 
-    protected function getExportOptions(string $exportType, array $postData): array|null
+    protected function getExportSettings(string $exportType, array $postData): array
     {
         $type = $this->overLoader->getContainer()->get($exportType);
         if ($type instanceof ExportSettingsGeneratorInterface) {
             return $type->getExportSettings($postData);
         }
-        return null;
+        return [];
     }
 
     protected function getFilterFromPostData(array $filter, MetaModelInterface $metaModel): array
