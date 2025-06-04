@@ -65,7 +65,7 @@ msgid ""
 "'%value%' is not a base 32 string. Only A through Z, 2 to 7 and = at the end "
 "are allowed."
 msgstr ""
-"'%value%' uis geen base 32 string. Alleen hoofdletters A tot en met Z, 2 tot "
+"'%value%' is geen base 32 string. Alleen hoofdletters A tot en met Z, 2 tot "
 "en met 7 en mogelijk = op het einde zijn toegestaan."
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:34
@@ -179,7 +179,7 @@ msgstr ""
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:92
 msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
-msgstr "'%value%' is niet een email address (zoals naam@ergens.nl)."
+msgstr "'%value%' is geen emailadres (zoals naam@ergens.nl)."
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:95
 msgid ""
@@ -526,7 +526,7 @@ msgstr "Database object overzicht"
 msgid "database object"
 msgid_plural "database objects"
 msgstr[0] "database object"
-msgstr[1] "database objects"
+msgstr[1] "database objecten"
 
 #: gemstracker/gemstracker/src/Actions/DatabaseAction.php:359
 #: magnafacta/MUtil/src/MUtil/Snippets/ModelConfirmDataChangeSnippetAbstract.php:159
@@ -693,7 +693,7 @@ msgstr "De gegevens in tabel %s"
 
 #: gemstracker/gemstracker/src/Actions/DatabaseBackupAction.php:63
 msgid "Respondent data"
-msgstr "Patient data"
+msgstr "Patiënt data"
 
 #: gemstracker/gemstracker/src/Actions/DatabaseBackupAction.php:65
 msgid "Export table"
@@ -782,7 +782,7 @@ msgstr "Pad"
 #: gemstracker/gemstracker/src/Actions/LogFileAction.php:87
 #: gemstracker/gemstracker/src/Model.php:381
 msgid "Full name"
-msgstr "Vollledige bestandsnaam"
+msgstr "Volledige bestandsnaam"
 
 #: gemstracker/gemstracker/src/Actions/LogFileAction.php:89
 #: gemstracker/gemstracker/src/Handlers/Setup/LogfileHandler.php:82
@@ -1730,7 +1730,7 @@ msgstr "Installeer een authenticatie app op uw telefoon en scan deze code."
 
 #: gemstracker/gemstracker/src/AuthTfa/Method/AuthenticatorTotp.php:104
 msgid "New TFA key"
-msgstr "Niewe 2 factor authenticatie sleutel"
+msgstr "Nieuwe 2 factor authenticatie sleutel"
 
 #: gemstracker/gemstracker/src/AuthTfa/Method/AuthenticatorTotp.php:109
 msgid "The key corresponding to your new TFA. You can safely ignore it."
@@ -2706,7 +2706,7 @@ msgstr "Per kenmerk"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:524
 msgid "By patient"
-msgstr "Door de patient"
+msgstr "Door de patiënt"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:536
 msgid "Patient status"
@@ -2841,7 +2841,7 @@ msgstr "Rollen"
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:460
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:479
 msgid "Privilege"
-msgstr "Privilége"
+msgstr "Privilege"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:805
 #: gemstracker/gemstracker/src/Config/Menu.php:844
@@ -3215,7 +3215,7 @@ msgstr "Antwoorden opmaken"
 #: gemstracker/gemstracker/src/Export/CsvExport.php:61
 #: gemstracker/gemstracker/src/Export/Type/CsvExportAbstract.php:81
 msgid "Delimiter"
-msgstr "Delimiter"
+msgstr "Scheidingsteken"
 
 #: gemstracker/gemstracker/src/Export/Db/AnswerModelContainer.php:174
 #: gemstracker/gemstracker/src/Export/ModelSource/AnswerExportModelSource.php:107
@@ -4623,7 +4623,7 @@ msgstr "Agenda diagnoses"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/AgendaDiagnosisHandler.php:171
 msgid "(all coding systems)"
-msgstr "(alle coderingsssytemen)"
+msgstr "(alle coderingssytemen)"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/AgendaDiagnosisHandler.php:191
 msgid "No example diagnosis found"
@@ -4865,7 +4865,7 @@ msgstr "Beheer groepen"
 #: gemstracker/gemstracker/src/Handlers/Setup/GroupHandler.php:147
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:387
 msgid "Defined on"
-msgstr "Gedefiniërd op"
+msgstr "Gedefinieerd op"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/GroupHandler.php:161
 msgid "group"
@@ -5164,7 +5164,7 @@ msgstr[1] "ontvangstcodes"
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:164
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:486
 msgid "Privileges"
-msgstr "Priviléges"
+msgstr "Privileges"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleDiffHandler.php:85
 msgid "Resolved privileges"
@@ -5181,7 +5181,7 @@ msgstr ""
 
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:188
 msgid "Inherited privileges"
-msgstr "Geërfde priviléges"
+msgstr "Geërfde privileges"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:198
 msgid "Not allowed"
@@ -5201,7 +5201,7 @@ msgstr ""
 
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:373
 msgid "No privileges found."
-msgstr "Geen priviléges gevonden."
+msgstr "Geen privileges gevonden."
 
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:383
 msgid "Administrative roles"
@@ -5209,11 +5209,11 @@ msgstr "Beheer rollen en rechten"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:485
 msgid "Project privileges"
-msgstr "Project priviléges"
+msgstr "Project privileges"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleHandler.php:490
 msgid "Assigned but nonexistent privileges"
-msgstr "Toegewezen maar niet bestaande priviléges"
+msgstr "Toegewezen maar niet bestaande privileges"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/StaffHandler.php:248
 #: gemstracker/gemstracker/src/Handlers/Setup/StaffHandler.php:262
@@ -5225,7 +5225,7 @@ msgstr "Geen toegang tot pagina"
 #: gemstracker/gemstracker/src/Handlers/Setup/StaffLogHandler.php:85
 #, php-format
 msgid "You have no right to access users from the organization %s."
-msgstr "U heeft geen toegangrecht tot gebruikers van de %s organisatie."
+msgstr "U heeft geen toegang tot gebruikers van de %s organisatie."
 
 #: gemstracker/gemstracker/src/Handlers/Setup/StaffHandler.php:263
 #, php-format
@@ -5263,7 +5263,7 @@ msgstr "Deactiveer systeemaccount %s"
 #: gemstracker/gemstracker/src/Handlers/Setup/SystemUserHandler.php:170
 #, php-format
 msgid "Reactivate system user %s"
-msgstr "Heractiveer stseemaccount %s"
+msgstr "Heractiveer systeemaccount %s"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/SystemUserHandler.php:206
 #, php-format
@@ -5642,7 +5642,7 @@ msgstr[1] "%d vragenlijsten"
 
 #: gemstracker/gemstracker/src/Mail/TokenMailFields.php:84
 msgid "Undefined relation"
-msgstr "Ongedefiniëerde relatie"
+msgstr "Ongedefinieerde relatie"
 
 #: gemstracker/gemstracker/src/Middleware/HandlerCsrfMiddleware.php:59
 msgid "The form has expired, please try again."
@@ -5730,7 +5730,7 @@ msgstr "Een code volgens het coderingssysteem"
 
 #: gemstracker/gemstracker/src/Model/AgendaDiagnosisModel.php:38
 msgid "Description of the diagnosis"
-msgstr "Beschijving van de diagnose"
+msgstr "Beschrijving van de diagnose"
 
 #: gemstracker/gemstracker/src/Model/AgendaDiagnosisModel.php:43
 msgid "Coding system"
@@ -6437,7 +6437,7 @@ msgstr "Kenmerk afname scherm"
 
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:233
 msgid "After track change screen"
-msgstr "Scherm na tajectwijziging"
+msgstr "Scherm na trajectwijziging"
 
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:238
 msgid "Respondent change event"
@@ -6605,7 +6605,7 @@ msgstr ""
 #: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:492
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:862
 msgid "Empty this field to remove the SSN"
-msgstr "Leeg dit veld om het SSN te verwijderen"
+msgstr "Leeg dit veld om het BSN te verwijderen"
 
 #: gemstracker/gemstracker/src/Model/Respondent/RespondentModel.php:503
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:392
@@ -7178,7 +7178,7 @@ msgstr "Layout"
 
 #: gemstracker/gemstracker/src/Model/StaffModel.php:457
 msgid "The layout frame used."
-msgstr "De layout die gebruikte wordt."
+msgstr "De layout die gebruikt wordt."
 
 #: gemstracker/gemstracker/src/Model/StaffModel.php:462
 msgid "Style"
@@ -7779,7 +7779,7 @@ msgstr "Inschrijven voor vragenlijsten bij %s"
 
 #: gemstracker/gemstracker/src/Screens/Respondent/Unsubscribe/EmailOnlyUnsubscribe.php:40
 msgid "Unsubscribe using e-mail address only"
-msgstr "Uitschijven met alleen emailadres"
+msgstr "Uitschrijven met alleen emailadres"
 
 #: gemstracker/gemstracker/src/Screens/Respondent/Unsubscribe/EmailOnlyUnsubscribe.php:51
 #, php-format
@@ -7840,7 +7840,7 @@ msgstr "Toon per dag"
 
 #: gemstracker/gemstracker/src/Selector/DateSelectorAbstract.php:356
 msgid "Show by week"
-msgstr "Toon per weerk"
+msgstr "Toon per week"
 
 #: gemstracker/gemstracker/src/Selector/DateSelectorAbstract.php:357
 msgid "Show by month"
@@ -8847,7 +8847,7 @@ msgstr "Seed %s succesvol uitgevoerd"
 
 #: gemstracker/gemstracker/src/Snippets/Database/RunSqlFormSnippet.php:44
 msgid "Separate multiple commands with semicolons (;)."
-msgstr "Scheidt meerdere commando's met punt-comma's (;)."
+msgstr "Scheidt meerdere commando's met puntkomma's (;)."
 
 #: gemstracker/gemstracker/src/Snippets/Database/RunSqlFormSnippet.php:49
 msgid "Run"
@@ -9062,7 +9062,7 @@ msgstr "Het bestand \"%s\" bestaat niet op de server."
 #: gemstracker/gemstracker/src/Snippets/Import/FileImportSnippet.php:63
 #, php-format
 msgid "The file \"%s\" could not be imported."
-msgstr "Het bestand \"%s\" konniet geïmporteerd worden."
+msgstr "Het bestand \"%s\" kon niet geïmporteerd worden."
 
 #: gemstracker/gemstracker/src/Snippets/InfoSnippet.php:33
 msgid "GemsTracker 2.0"
@@ -9731,7 +9731,7 @@ msgstr "Details"
 #: gemstracker/gemstracker/src/Snippets/Respondent/TrafficLightTokenSnippet.php:832
 #, php-format
 msgid "Copied: %s"
-msgstr "Gekopiëerd: %s"
+msgstr "Gekopieerd: %s"
 
 #: gemstracker/gemstracker/src/Snippets/Respondent/TrafficLightTokenSnippet.php:834
 msgid "Copy"
@@ -10071,11 +10071,11 @@ msgstr ""
 
 #: gemstracker/gemstracker/src/Snippets/Survey/SurveyCompareSnippet.php:381
 msgid "Copy survey answers"
-msgstr "Kopiëer antwoorden"
+msgstr "Kopieer antwoorden"
 
 #: gemstracker/gemstracker/src/Snippets/Survey/SurveyCompareSnippet.php:381
 msgid "Copy all survey answers into the new survey"
-msgstr "Kopiëer alle beantwoorde vragenlijsten naar de nieuwe vragenlijst"
+msgstr "Kopieer alle beantwoorde vragenlijsten naar de nieuwe vragenlijst"
 
 #: gemstracker/gemstracker/src/Snippets/Survey/SurveyCompareSnippet.php:456
 #, php-format
@@ -11302,7 +11302,7 @@ msgstr "Geen gtf_id_order opgegeven voor de organisatie op regel %d."
 #: gemstracker/gemstracker/src/Task/Tracker/Import/CheckTrackFieldImportTask.php:89
 #, php-format
 msgid "Unknown field type \"%s\" specified on line %d."
-msgstr "Onbekend veldtype \"%s\" specified op regel %d."
+msgstr "Onbekend veldtype \"%s\" gespecificeerd op regel %d."
 
 #: gemstracker/gemstracker/src/Task/Tracker/Import/CheckTrackFieldImportTask.php:98
 #, php-format
@@ -12544,7 +12544,7 @@ msgstr "Upload een trajectdefinitiebestand."
 
 #: gemstracker/gemstracker/src/Tracker/Snippets/ImportTrackSnippetAbstract.php:487
 msgid "Merging the tracks."
-msgstr "Trajecten worden gesamengevoegd."
+msgstr "Trajecten worden samengevoegd."
 
 #: gemstracker/gemstracker/src/Tracker/Snippets/ImportTrackSnippetAbstract.php:509
 msgid "Merge errors occurred!"
@@ -12777,7 +12777,7 @@ msgstr ""
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00Database.php:617
 #, php-format
 msgid "Corrected anonymization for survey '%s'"
-msgstr "Anonimizatie gecorrigeerd van vragenlijst '%s'"
+msgstr "Anonimisatie gecorrigeerd van vragenlijst '%s'"
 
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00Database.php:656
 #, php-format
@@ -13107,7 +13107,7 @@ msgstr "Te beantwoorden tot"
 
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:64
 msgid "Patients"
-msgstr "enPatiënt"
+msgstr "Patiënten"
 
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:65
 msgid "Phone number"
@@ -13928,7 +13928,7 @@ msgstr "Als vet"
 #: magnafacta/zalt-html/src/Snippets/ModelImportSnippetAbstract.php:884
 #, php-format
 msgid "A number of length %d, with a precision of %d digits after the period."
-msgstr "Een getal van %d teken, waarvan %d echter de comma."
+msgstr "Een getal van %d teken, waarvan %d echter de komma."
 
 #: magnafacta/MUtil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:801
 #: magnafacta/zalt-html/src/Snippets/ModelImportSnippetAbstract.php:886
@@ -14031,7 +14031,7 @@ msgstr "Wil je dit echt doen?"
 #: magnafacta/MUtil/src/MUtil/Task/File/CopyFileWhenTask.php:61
 #, php-format
 msgid "Copied file to \"%s\"."
-msgstr "Bestand gekopiëerd naar \"%s\"."
+msgstr "Bestand gekopieerd naar \"%s\"."
 
 #: magnafacta/MUtil/src/MUtil/Task/File/CopyFileWhenTask.php:64
 #, php-format
@@ -14401,8 +14401,8 @@ msgstr[1] "%d items opgeslagen!"
 
 #~ msgid "privilege"
 #~ msgid_plural "privileges"
-#~ msgstr[0] "privilége"
-#~ msgstr[1] "priviléges"
+#~ msgstr[0] "privilege"
+#~ msgstr[1] "privileges"
 
 #~ msgid "Export codebooks from multiple surveys"
 #~ msgstr "Exporteer codeboeken van meerdere vragenlijsten"
@@ -15221,7 +15221,7 @@ msgstr[1] "%d items opgeslagen!"
 #~ msgstr "Alle '%s' kenmerken in limesurvey zijn gekopiëerd naar '%s'"
 
 #~ msgid "Copy all survey answers into the new survey in Limesurvey"
-#~ msgstr "Kopiëer alle beantwoorde vragenlijsten naar de nieuwe vragenlijst"
+#~ msgstr "Kopieer alle beantwoorde vragenlijsten naar de nieuwe vragenlijst"
 
 #~ msgid ""
 #~ "Warning! Question not found in target survey. Data will be lost on "
