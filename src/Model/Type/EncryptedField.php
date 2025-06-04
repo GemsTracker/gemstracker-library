@@ -82,8 +82,6 @@ class EncryptedField
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see MetaModelInterface
-     *
      * @param mixed $value The value being saved
      * @param bool $isNew True when a new item is being saved
      * @param string|null $name The name of the current field
@@ -114,8 +112,6 @@ class EncryptedField
     /**
      * A ModelAbstract->setOnSave() function that returns a value
      *
-     * @see \MUtil\Model\ModelAbstract
-     *
      * @param mixed $value The value being saved
      * @param bool $isNew True when a new item is being saved
      * @param string|null $name The name of the current field
@@ -125,7 +121,6 @@ class EncryptedField
     public function saveValue(mixed $value, bool $isNew = false, string|null $name = null, array $context = []): string|null
     {
         if ($value) {
-            // \MUtil\EchoOut\EchoOut::track($value);
             return $this->valueEncryptor->encrypt($value);
         }
         return null;

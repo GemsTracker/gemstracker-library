@@ -21,9 +21,9 @@ class ValueEncryptor
     public function decrypt(string $input, ?string $key = null): string
     {
         $methods = $this->getEncryptionMethods();
+        $method  = reset($methods);
 
-        $base64 = $input;
-        $method = 'AES-256-CBC';
+        $base64  = $input;
         if (':' == $input[0]) {
             list($empty, $methodKey, $base64) = explode(':', $input, 3);
 

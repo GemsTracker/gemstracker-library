@@ -41,7 +41,5 @@ class BrowseFilteredAction extends BrowseTableAction implements NoCsrfInterface
 
     public array $menuShowRoutes = ['show'];
 
-    public MetaModellerInterface $model;
-
     public string $textSearchField;
 }

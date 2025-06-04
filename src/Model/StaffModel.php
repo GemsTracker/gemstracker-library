@@ -343,7 +343,7 @@ class StaffModel extends GemsJoinModel
     {
         $this->addLeftTable('gems__systemuser_setup', [
             'gsf_id_user' => 'gsus_id_user',
-        ]);
+        ], true);
         $this->metaModel->resetOrder();
 
         $editing        = ($action == 'edit') || ($action == 'create');
