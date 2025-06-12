@@ -15,6 +15,7 @@ use Gems\Audit\AuditLog;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\AuthTfa\OtpMethodBuilder;
+use Gems\Config\ConfigAccessor;
 use Gems\Layout\LayoutSettings;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\SessionNamespace;
@@ -51,7 +52,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
         MessengerInterface $messenger,
         AuditLog $auditLog,
         MenuSnippetHelper $menuSnippetHelper,
-        private readonly array $config,
+        private readonly ConfigAccessor $config,
         private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly LayoutSettings $layoutSettings,
     ) {
@@ -105,11 +106,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
      */
     protected function getTwoFactorMethods()
     {
-        $enabledMethods = array_keys($this->config['twofactor']['methods']);
-
-        if ($this->config['twofactor']['requireAuthenticatorTotp']) {
-            $enabledMethods = array_intersect($enabledMethods, ['AuthenticatorTotp']);
-        }
+        $enabledMethods = $this->config->getTFAMethods();
 
         // For now register labels here. Could be added as class method per authenticator at loading all authenticator classes cost
 

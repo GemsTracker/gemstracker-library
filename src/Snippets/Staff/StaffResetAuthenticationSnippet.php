@@ -22,6 +22,7 @@ use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
 use Zalt\Message\StatusMessengerInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -201,16 +202,20 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
             $mailer = $this->communicationRepository->getMailer();
 
             $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
-            $email->subject($mailTexts['subject'], $mailFields);
-            $email->htmlTemplate($template, $mailTexts['body'], $mailFields);
+            if ($mailTexts) {
+                $email->subject($mailTexts['subject'], $mailFields);
+                $email->htmlTemplate($template, $mailTexts['body'], $mailFields);
 
-            $mailer->send($email);
+                $mailer->send($email);
 
-            $this->addMessage($successMessage);
+                $this->addMessage($successMessage);
+            } else {
+                $this->addMessage(sprintf($this->_('Default Reset TFA mail template id %d does not containt translations'), $templateId));
+            }
         }
 
         $this->redirectRoute = $this->menuSnippetHelper->getRouteUrl('setup.access.staff.reset', [
-            \MUtil\Model::REQUEST_ID => intval($this->user->getUserId()),
+            MetaModelInterface::REQUEST_ID => intval($this->user->getUserId()),
         ]);
     }
 }

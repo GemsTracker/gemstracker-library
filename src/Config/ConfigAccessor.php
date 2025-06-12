@@ -92,6 +92,21 @@ class ConfigAccessor
         return $output;
     }
 
+    public function getTFAMethods(): array
+    {
+        $enabledMethods = array_keys($this->config['twofactor']['methods']);
+
+        if ($this->config['twofactor']['requireAuthenticatorTotp']) {
+            $enabledMethods = array_intersect($enabledMethods, ['AuthenticatorTotp']);
+        }
+        foreach ($enabledMethods as $i => $method) {
+            if (! $this->hasTFAMethod($method)) {
+                unset($enabledMethods[$i]);
+            }
+        }
+        return $enabledMethods;
+    }
+
     public function hasLdap(): bool
     {
         if (isset($this->config['ldap'])) {
