@@ -52,7 +52,7 @@ class RouteLinkItem extends MenuItem
 
     public function renderNode(): string
     {
-        if (!$this->isOpen()) {
+        if (! ($this->isOpen() && $this->label)) {
             return '';
         }
 

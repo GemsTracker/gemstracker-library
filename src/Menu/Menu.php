@@ -87,6 +87,11 @@ class Menu extends MenuNode
         return $this->gatherRouteLabelsByPrivilege(null, $this->children);
     }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
     public function isHorizontal(): bool
     {
         return $this->horizontal;

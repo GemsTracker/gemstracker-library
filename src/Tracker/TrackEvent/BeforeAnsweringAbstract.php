@@ -164,6 +164,8 @@ abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInte
      */
     protected function getOutput(): array
     {
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->_log, true) . "\n", FILE_APPEND);
+
         // Wo do not want to output these ever.
         unset($this->_output['datestamp'], $this->_output['id'], $this->_output['startdate'], $this->_output['startlanguage'], $this->_output['submitdate'], $this->_output['token']);
 

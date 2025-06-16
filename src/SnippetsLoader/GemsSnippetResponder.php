@@ -96,7 +96,7 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
 
         $template = $request->getAttribute(LayoutSettings::TEMPLATE_ATTRIBUTE, 'gems::legacy-view');
 
-        $this->layoutSettings->setTemplate( $template);
+        $this->layoutSettings->setTemplate($template);
         $this->snippetLoader->addConstructorVariable(LayoutSettings::class, $this->layoutSettings);
         
         $this->snippetLoader->addConstructorVariable(SessionInterface::class, $request->getAttribute(SessionInterface::class));
