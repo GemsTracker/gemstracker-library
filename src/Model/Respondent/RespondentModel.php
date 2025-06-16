@@ -23,6 +23,7 @@ use Gems\Repository\OrganizationRepository;
 use Gems\Repository\ReceptionCodeRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Repository\StaffRepository;
+use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\SnippetsActions\ApplyLegacyActionInterface;
 use Gems\SnippetsActions\ApplyLegacyActionTrait;
 use Gems\User\GemsUserIdGenerator;
@@ -161,6 +162,9 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             }
         }
         if ($action->isEditing()) {
+            $this->metaModel->set('grs_id_user', ['elementClass' => 'Hidden', ModelFormSnippetAbstract::KEEP_VALUE_FOR_SAVE => true]);
+            $this->metaModel->set('gr2o_id_user', ['elementClass' => 'Hidden', ModelFormSnippetAbstract::KEEP_VALUE_FOR_SAVE => true]);
+
             if ($this->metaModel->has('grs_ssn')) {
                 $this->metaModel->set('grs_ssn', ['autoSubmit' => 'blur']);
             }

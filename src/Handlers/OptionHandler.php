@@ -168,7 +168,6 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        private readonly array $config,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly Model $modelContainer,
         protected LogModel $logModel
@@ -192,7 +191,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         $model = $this->modelContainer->getStaffModel(false);
 
         if ($action !== 'edit-auth') {
-            $model->applyOwnAccountEdit(!$this->config['account']['edit-auth']['enabled']);
+            $model->applyOwnAccountEdit(! $this->currentUserRepository->getCurrentUser()->hasPrivilege('pr.option.edit-auth'));
         }
 
         return $model;

@@ -192,7 +192,12 @@ class StaffModel extends GemsJoinModel
             'separator' => '',
         ]);
         if ($includeAuth) {
-            $this->metaModel->set('gsf_phone_1', ['label', $this->_('Mobile phone')]);
+            $config = $this->configAccessor->getArray();
+            $this->metaModel->set('gsf_phone_1', [
+                'label' => $this->_('Mobile phone'),
+                'validator' => new PhoneNumberValidator($config, $this->translate),
+            ]);
+            $this->metaModel->setOnSave('gsf_phone_1', new PhoneNumberFormatter($config));
         }
 
         $this->metaModel->set('gsf_iso_lang', [

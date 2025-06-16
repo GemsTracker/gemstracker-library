@@ -149,7 +149,7 @@ class RespondentFormSnippet extends ModelFormSnippet
                 }
             }
             foreach ($this->ssnOtherOrgCopyFields as $name) {
-                if (array_key_exists($name, $this->formData) && isset($data[$name]) && !$this->formData[$name]) {
+                if (array_key_exists($name, $this->formData) && isset($data[$name])) {
                     $this->formData[$name] = $data[$name];
                 }
             }

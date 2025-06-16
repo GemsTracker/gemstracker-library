@@ -13,6 +13,7 @@ namespace Gems\Snippets\User;
 
 use Gems\Audit\AuditLog;
 use Gems\Cache\HelperAdapter;
+use Gems\Config\ConfigAccessor;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\LocaleCookie;
 use Gems\Menu\MenuSnippetHelper;
@@ -21,7 +22,6 @@ use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\RedirectResponse;
-use MUtil\Model\ModelAbstract;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\RequestInfo;
@@ -61,17 +61,11 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
         MessengerInterface $messenger,
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
-        private readonly array $config,
         private readonly Model $modelContainer,
         private readonly UserLoader $userLoader,
         private readonly CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
-    }
-
-    public function getResponse(): ?ResponseInterface
-    {
-        return $this->response;
     }
 
     /**
@@ -132,7 +126,7 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
 
         if (! $this->model instanceof \Gems\Model\StaffModel) {
             $this->model = $this->modelContainer->getStaffModel(false);
-            $this->model->applyOwnAccountEdit(!$this->config['account']['edit-auth']['enabled']);
+            $this->model->applyOwnAccountEdit(! $this->currentUser->hasPrivilege('pr.option.edit-auth'));
         }
 
         return $this->model;
@@ -146,6 +140,11 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
     protected function getNotAllowedMessage()
     {
         return $this->_('System account can not be changed.');
+    }
+
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
     }
 
     /**

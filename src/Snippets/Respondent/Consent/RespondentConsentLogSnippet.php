@@ -64,7 +64,7 @@ class RespondentConsentLogSnippet extends ModelTableSnippetAbstract
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
 
-        if ($this->respondent instanceof \Gems\Tracker\Respondent) {
+        if ($this->respondent instanceof \Gems\Tracker\Respondent && $this->respondent->exists) {
             $this->caption = sprintf(
                 $this->_('Consent change log for respondent %s, %s at %s'),
                 $this->respondent->getPatientNumber(),
