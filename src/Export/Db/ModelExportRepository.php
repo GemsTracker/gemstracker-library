@@ -24,7 +24,7 @@ class ModelExportRepository
         $labeledColumns = $this->getLabeledColumns($metaModel);
 
         if ($part->exportSettings && isset($part->exportSettings['translateHeaders']) && !$part->exportSettings['translateHeaders']) {
-            return $labeledColumns;
+            return array_combine($labeledColumns, $labeledColumns);
         }
 
         $columnHeaders = [];
