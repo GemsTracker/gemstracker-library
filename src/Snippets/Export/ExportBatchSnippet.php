@@ -104,6 +104,7 @@ class ExportBatchSnippet extends SnippetAbstract
 
         if ($batch->isFinished()) {
             $this->exportAction->step = ExportAction::STEP_DOWNLOAD;
+            $batch->reset();
             return new RedirectResponse($batch->getDownloadUrl());
         }
 

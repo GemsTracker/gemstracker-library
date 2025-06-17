@@ -44,6 +44,9 @@ class ExportDownloadStepSnippet extends ExportDownloadSnippet
         if (($this->exportAction->step !== ExportAction::STEP_DOWNLOAD) || (! isset($this->exportAction->batch))) {
             return false;
         }
+        if (isset($this->exportAction->batch)) {
+            $this->exportAction->batch->reset();
+        }
         return parent::hasHtmlOutput();
     }
 }
