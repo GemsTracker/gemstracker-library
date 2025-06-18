@@ -44,7 +44,7 @@ class LoadTokensFor extends TaskAbstract
          */
         $select = $batch->getVariable(Select::class);;
         if (! $select instanceof Select) {
-            $batch->setMessage('tokensLoadMsg', $this->_('No select set for token task. ') . $rowTask);
+            $batch->setMessage('tokensLoadMsg', $this->_('No query set for token task. ') . $rowTask);
             return;
         }
         $select->offset($offset)
@@ -56,7 +56,7 @@ class LoadTokensFor extends TaskAbstract
             if (! $offset) {
                 $batch->setMessage('tokensFinishedMsg', $this->_('No tokens to load.'));
             } else {
-                $batch->setMessage('tokensFinishedMsg', sprintf($this->_('Finished after laoding %d tokens.'), $batch->getCounter('tokensLoaded')));
+                $batch->setMessage('tokensFinishedMsg', sprintf($this->_('Finished after loading %d tokens.'), $batch->getCounter('tokensLoaded')));
             }
             return;
         }

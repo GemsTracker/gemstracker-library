@@ -210,7 +210,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
 
                 $this->addMessage($successMessage);
             } else {
-                $this->addMessage(sprintf($this->_('Default Reset TFA mail template id %d does not containt translations'), $templateId));
+                $this->addMessage(sprintf($this->_('Default Reset TFA mail template id %d does not contain translations'), $templateId));
             }
         }
 

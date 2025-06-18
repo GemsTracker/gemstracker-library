@@ -22,6 +22,7 @@ use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Show\ShowAsTableAction;
 use Laminas\Db\Sql\Expression;
 use Psr\Cache\CacheItemPoolInterface;
@@ -50,6 +51,7 @@ class ConsentPlanHandler extends GemsHandler
         'autofilter' => BrowseFilteredAction::class,
         'index'      => BrowseSearchAction::class,
         'show'       => ShowAsTableAction::class,
+        'export'     => ExportAction::class,
     ];
 
     protected DataReaderInterface|null $model = null;

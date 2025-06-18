@@ -604,7 +604,7 @@ class Route
                 pages: [
                     'index',
                     'autofilter',
-                    'export',
+//                    'export',
                     'show',
                 ],
                 parameters: [
