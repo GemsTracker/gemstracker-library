@@ -1636,9 +1636,11 @@ class RespondentTrack
         //
         // The exception is of course when the exiting values must
         // be overwritten, e.g. when cooperation is retracted.
-        if ($code->isForTracks() || $code->isOverwriter()) {
-            $values['gr2t_reception_code'] = $code->getCode();
-        }
+        // if ($code->isForTracks() || $code->isOverwriter()) {
+
+        // Both restoration and the display are not logical when the track does not get the same value.
+        $values['gr2t_reception_code'] = $code->getCode();
+        // }
 
         $values['gr2t_comment'] = $comment;
 
@@ -1660,7 +1662,7 @@ class RespondentTrack
         } elseif (! $code->isSuccess()) {
             // Cascade code to tokens
             foreach ($this->getTokens() as $token) {
-                if ($token->getReceptionCode()->isSuccess()) {
+                if ($token->getReceptionCode()->isSuccess() && (! $token->isCompleted())) {
                     $token->setReceptionCode($code, $comment, $userId);
                 }
             }

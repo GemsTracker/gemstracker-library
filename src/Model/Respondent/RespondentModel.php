@@ -351,6 +351,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $activatingMultiType->applyClass($this->metaModel, 'gr2o_reception_code');
         $this->metaModel->set('gr2o_reception_code', [
             'default' => ReceptionCodeLibrary::RECEPTION_OK,
+            'multiOptions' => $this->receptionCodeRepository->getAllReceptionCodeLabels(),
         ]);
 
         $changers = Late::method($this->staffRepository, 'getStaff');

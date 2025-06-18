@@ -116,6 +116,11 @@ class ReceptionCodeRepository
         });
     }
 
+    public function getAllReceptionCodeLabels(): array
+    {
+        return array_column($this->getAllReceptionCodes(), 'grc_description', 'grc_id_reception_code');
+    }
+
     public function getAllReceptionCodes(): array
     {
         $select = $this->cachedResultFetcher->getSelect('gems__reception_codes');
