@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Gems\Task\Tracker;
 
 use Gems\Db\ResultFetcher;
-use Laminas\Db\Sql\Expression;
 
 /**
  * @package    Gems
@@ -20,17 +19,16 @@ use Laminas\Db\Sql\Expression;
  */
 class LoadTracksFor extends \MUtil\Task\TaskAbstract
 {
-    protected $db;
-
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($maxTrackId = null, array $where =[], $rowTask = null, $userId = null)
+    public function execute($maxTrackId = null, array $where = [], $rowTask = null, $userId = null)
     {
         $batch         = $this->getBatch();
+
         /**
          * @var ResultFetcher $resultFetcher
          */

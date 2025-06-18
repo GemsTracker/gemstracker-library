@@ -42,9 +42,9 @@ class ExportAction extends BrowseFilteredAction
     ];
 
     /**
-     * @var ExportRunnerBatch Set in ExportFormSnippet->hasHtmlOutput()
+     * @var ?ExportRunnerBatch Set in ExportFormSnippet->hasHtmlOutput()
      */
-    public ExportRunnerBatch $batch;
+    public ?ExportRunnerBatch $batch;
 
     /**
      * Field name for crsf protection field.

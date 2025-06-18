@@ -42,6 +42,7 @@ use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Select;
 use Mezzio\Session\SessionInterface;
 use MUtil\Translate\Translator;
 use Zalt\Loader\ProjectOverloader;
@@ -1008,22 +1009,26 @@ class Tracker implements TrackerInterface
     protected function processTokensBatch(SessionInterface $session, $batchId, LaminasTokenSelect $tokenSelect, $userId): TaskRunnerBatch
     {
         $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
+        $batch->setVariable(ResultFetcher::class, $this->resultFetcher);
+        $batch->setVariable(Select::class, $tokenSelect->getSelect());
 
         //Now set the step duration
         $batch->minimalStepDurationMs = 3000;
 
         if (! $batch->isLoaded()) {
-            // Process one row at a time to prevent out of memory errors for really big resultsets.
-            $resultSet = $this->unbufferedResultFetcher->query($tokenSelect->getSelect());
-            if ($resultSet instanceof ResultSet) {
-                while ($resultSet->valid()) {
-                    $tokenData = $resultSet->current();
-                    $tokenId = $tokenData['gto_id_token'];
-                    $batch->setTask('Tracker\\CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
-                    $batch->addToCounter('tokens');
-                    $resultSet->next();
-                }
-            }
+
+            $batch->addTask('Tracker\\LoadTokensFor', 'Tracker\\CheckTokenCompletion', 0, $userId);
+//            // Process one row at a time to prevent out of memory errors for really big resultsets.
+//            $resultSet = $this->unbufferedResultFetcher->query($tokenSelect->getSelect());
+//            if ($resultSet instanceof ResultSet) {
+//                while ($resultSet->valid()) {
+//                    $tokenData = $resultSet->current();
+//                    $tokenId = $tokenData['gto_id_token'];
+//                    $batch->setTask('Tracker\\CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
+//                    $batch->addToCounter('tokens');
+//                    $resultSet->next();
+//                }
+//            }
         }
 
         return $batch;
