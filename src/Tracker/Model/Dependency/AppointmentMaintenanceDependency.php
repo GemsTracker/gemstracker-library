@@ -15,9 +15,8 @@ use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
 use Gems\Menu\RouteHelper;
 use Gems\Util\Translated;
-use Laminas\Filter\Digits;
-use Laminas\Validator\GreaterThan;
-use Laminas\Validator\LessThan;
+use Laminas\Filter\ToInt;
+use Laminas\Validator\NumberComparison;
 use MUtil\Model;
 use MUtil\Validator\IsNot;
 use Zalt\Base\TranslatorInterface;
@@ -155,7 +154,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                 'elementClass'      => 'Text',
                 'required'          => true,
                 // 'size'              => 5, // Causes trouble during save
-                'filters[int]'      => Digits::class,
+                'filters[int]'      => ToInt::class,
                 'validators[isnot]' => new IsNot(0, $this->_('This value may not be zero!')),
             ];
             $output['gtf_min_diff_unit'] = [
@@ -174,18 +173,18 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                     'elementClass'      => 'Text',
                     'required'          => false,
                     // 'size'              => 5, // Causes trouble during save
-                    'filters[int]'      => Digits::class,
+                    'filters[int]'      => ToInt::class,
                 ];
                 if ($context['gtf_min_diff_length'] < 0) {
                     $output['gtf_max_diff_length']['description'] = $this->_(
                             'Must be negative, just like the minimal difference.'
                             );
-                    $output['gtf_max_diff_length']['validators[lt]'] = new LessThan(0);
+                    $output['gtf_max_diff_length']['validators[lt]'] = new NumberComparison(['max' => 0]);
                 } else {
                     $output['gtf_max_diff_length']['description'] = $this->_(
                             'Must be positive, just like the minimal difference.'
                             );
-                    $output['gtf_max_diff_length']['validators[gt]'] = new GreaterThan(0);
+                    $output['gtf_max_diff_length']['validators[gt]'] = new NumberComparison(['min' => 0]);
                 }
                 $output['gtf_max_diff_unit'] = [
                     'label'        => $this->_('Maximum difference unit'),
