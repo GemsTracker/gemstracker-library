@@ -23,6 +23,7 @@ use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessageTrait;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -40,6 +41,8 @@ class ExportDownloadSnippet extends ModelTableSnippet
     use MessageTrait;
 
     protected int $currentUserId;
+
+    protected bool $ignoreFilterForDownload = false;
 
     protected array $menuEditRoutes = ['delete'];
 
@@ -59,6 +62,11 @@ class ExportDownloadSnippet extends ModelTableSnippet
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
+        if ($this->ignoreFilterForDownload) {
+            $this->extraFilter = [];
+            $this->searchData = [];
+            $this->textSearchField = '';
+        }
     }
 
     protected function createModel(): DataReaderInterface
