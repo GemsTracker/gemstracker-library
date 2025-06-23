@@ -459,6 +459,14 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         return sprintf($this->_('Delete %s'), $this->getTopic(1));
     }
 
+    /**
+     * Helper function to get the title for the undelete action.
+     */
+    public function getUndeleteTitle(): string
+    {
+        return sprintf($this->_('Undelete %s'), $this->getTopic(1));
+    }
+
     public function getDynamicSort(): array
     {
         // Get (new) request sort DESC value
