@@ -63,8 +63,8 @@ class ExportDownloadSnippet extends ModelTableSnippet
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
         if ($this->ignoreFilterForDownload) {
-            $this->extraFilter = [];
-            $this->searchData = [];
+            $this->extraFilter     = [];
+            $this->searchFilter    = [];
             $this->textSearchField = '';
         }
     }
