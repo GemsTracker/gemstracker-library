@@ -66,6 +66,10 @@ class ExportDownloadSnippet extends ModelTableSnippet
             $this->extraFilter     = [];
             $this->searchFilter    = [];
             $this->textSearchField = '';
+
+            // Disable links as they all result in a new export
+            $this->browse = false;
+            $this->sortableLinks = false;
         }
     }
 
