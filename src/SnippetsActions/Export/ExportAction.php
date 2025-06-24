@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\SnippetsActions\Export;
 
+use Gems\Export\Db\SingleModelContainer;
 use Gems\Snippets\Export\ExportBatchSnippet;
 use Gems\Snippets\Export\ExportDownloadStepSnippet;
 use Gems\Snippets\Export\ExportFormSnippet;
@@ -17,6 +18,7 @@ use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\ButtonRowActiontrait;
 use Gems\Task\ExportRunnerBatch;
 use Psr\Container\ContainerInterface;
+use Zalt\Model\MetaModellerInterface;
 
 /**
  * @package    Gems
@@ -44,7 +46,7 @@ class ExportAction extends BrowseFilteredAction
     /**
      * @var ExportRunnerBatch Set in ExportFormSnippet->hasHtmlOutput()
      */
-    public ExportRunnerBatch $batch;
+    public ?ExportRunnerBatch $batch;
 
     /**
      * Field name for crsf protection field.
@@ -62,6 +64,11 @@ class ExportAction extends BrowseFilteredAction
 
     public string $formTitle = '';
 
+    /**
+     * @var bool Ignore the filter (for export download snippet)
+     */
+    public bool $ignoreFilterForDownload = false;
+
     public array $modelApplyFunctions = [];
 
     public ContainerInterface|null $modelContainer = null;
@@ -73,4 +80,14 @@ class ExportAction extends BrowseFilteredAction
     public bool $sensitiveData = true;
 
     public string $step = self::STEP_FORM;
+
+    public function setSingleModel(MetaModellerInterface $model): self
+    {
+        if (! $this->modelIdentifier) {
+            $this->modelIdentifier = $model->getName();
+        }
+
+        $this->modelContainer = new SingleModelContainer($model, $this->modelIdentifier);
+        return $this;
+    }
 }

@@ -381,18 +381,21 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
                     $action->textSearchField = $params['textSearchField'];
                 }
                 $action->searchFilter = $this->getSearchFilter(false);
-            }
-        }
 
-        if ($action instanceof ExportAction) {
-            $action->csrfName = $this->getCsrfTokenName();
-            $action->csrfToken = $this->getCsrfToken($action->csrfName);
-            $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
+                if ($action instanceof ExportAction) {
+                    $action->csrfName = $this->getCsrfTokenName();
+                    $action->csrfToken = $this->getCsrfToken($action->csrfName);
+                    $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
+                    $action->ignoreFilterForDownload = true;
+                    $action->modelIdentifier = get_class($this);
+                    $action->setSingleModel($action->model);
 
-            $step = $this->requestInfo->getParam('step');
-            if ($step) {
-                if (ExportAction::STEP_RESET !== $step) {
-                    $action->step = $step;
+                    $step = $this->requestInfo->getParam('step');
+                    if ($step) {
+                        if (ExportAction::STEP_RESET !== $step) {
+                            $action->step = $step;
+                        }
+                    }
                 }
             }
         }

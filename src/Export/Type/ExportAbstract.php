@@ -61,7 +61,7 @@ abstract class ExportAbstract implements ExportInterface
         return null;
     }
 
-    protected function filterHtml(mixed $result): string|int|null
+    protected function filterHtml(mixed $result): string|int|null|float
     {
         if ($result instanceof ElementInterface && !($result instanceof Sequence)) {
             if ($result instanceof AElement && property_exists($result, 'href')) {
@@ -113,7 +113,7 @@ abstract class ExportAbstract implements ExportInterface
         return $result;
     }
 
-    protected function filterMultiOptions(int|string|array|null $result, array $multiOptions, array|null $exportSettings): string|int|null
+    protected function filterMultiOptions(int|string|array|null $result, array $multiOptions, array|null $exportSettings): string|int|null|float
     {
         if ($multiOptions) {
             if ($exportSettings !== null && isset($exportSettings['translateValues']) && $exportSettings['translateValues'] === false) {

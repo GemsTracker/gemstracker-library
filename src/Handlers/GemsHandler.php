@@ -327,7 +327,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
             $action->pageNumber  = $this->getPageNumber();
 
             if ($action instanceof BrowseFilteredAction) {
-                $useSessionReadonly = $action instanceof ExportAction || $action instanceof ImportAction;
+                $useSessionReadonly   = $action instanceof ExportAction || $action instanceof ImportAction;
                 $action->searchFilter = $this->getSearchFilter($useSessionReadonly);
 
                 if ($action instanceof BrowseSearchAction) {
@@ -337,13 +337,17 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                 if ($action instanceof ExportAction) {
                     $action->csrfName = $this->getCsrfTokenName();
                     $action->csrfToken = $this->getCsrfToken($action->csrfName);
+                    $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
+                    $action->ignoreFilterForDownload = true;
+                    $action->modelIdentifier = get_class($this);
+                    $action->setSingleModel($action->model);
+
                     $step = $this->requestInfo->getParam('step');
                     if ($step) {
                         if (ExportAction::STEP_RESET !== $step) {
                             $action->step = $step;
                         }
                     }
-                    $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
                 }
             }
 
