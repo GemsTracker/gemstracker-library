@@ -35,7 +35,8 @@ class SurveyModel extends GemsJoinModel
         bool $savable = true
     ) {
 
-        $modelName = Str::camel(Str::alphaNum($this->survey->getName(), true));
+        // $modelName = Str::camel(Str::alphaNum($this->survey->getName(), true));
+        $modelName = $this->survey->getName();
         parent::__construct('gems__tokens', $metaModelLoader, $sqlRunner, $translate, $modelName, $savable);
 
         $this->addTable('gems__respondent2org', [

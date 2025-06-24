@@ -74,6 +74,11 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
      */
     protected bool $checkForAnswersOnLoad = true;
 
+    protected array $indexParameters = [
+        'addCurrentChildren' => true,
+        'addCurrentSiblings' => true,
+    ];
+
     /**
      * The snippets used for the index action, before those in autofilter
      *

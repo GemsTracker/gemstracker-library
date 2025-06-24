@@ -13,6 +13,7 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Model\CommLogModel;
 use Gems\Model\Type\GemsDateType;
@@ -23,6 +24,7 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Mail\Log\MailLogBrowseSnippet;
 use Gems\Snippets\Mail\Log\MailLogSearchSnippet;
 use Gems\User\Mask\MaskRepository;
+use Gems\User\User;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
@@ -65,6 +67,8 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
         MailLogBrowseSnippet::class,
         ];
 
+    protected User $currentUser;
+
     /**
      * The snippets used for the index action, before those in autofilter
      *
@@ -79,12 +83,15 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
+        CurrentUserRepository $currentUserRepository,
         protected MaskRepository $maskRepository,
         protected ProjectOverloader $overloader,
         protected PeriodSelectRepository $periodSelectRepository,
     )
     {
         parent::__construct($responder, $translate, $cache);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**
@@ -165,6 +172,10 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
     public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
+
+        if (! isset($filter['grco_organization'])) {
+            $filter['grco_organization'] = array_keys($this->currentUser->getAllowedOrganizations());
+        }
 
         $type  = new GemsDateType($this->translate);
         $where = $this->periodSelectRepository->createPeriodFilter($filter, $type->dateFormat, $type->storageFormat, $this->getSearchDefaults());

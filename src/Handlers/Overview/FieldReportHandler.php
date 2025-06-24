@@ -71,6 +71,11 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
      */
     protected $engine;
 
+    protected array $indexParameters = [
+        'addCurrentChildren' => true,
+        'addCurrentSiblings' => true,
+    ];
+
     /**
      * The snippets used for the index action, before those in autofilter
      *
@@ -156,7 +161,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
 
         $this->engine = $this->tracker->getTrackEngine($this->trackId);
 
-        $orgs         = $this->currentUser->getRespondentOrgFilter();
+        $orgs = $filter['gr2t_id_organization'] ?? $this->currentUser->getAllowedOrganizations();
         if (isset($filter['gr2t_id_organization'])) {
             $this->currentUserRepository->assertAccessToOrganizationId($filter['gr2t_id_organization']);
         }

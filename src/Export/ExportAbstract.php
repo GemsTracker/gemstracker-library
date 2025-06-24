@@ -251,7 +251,6 @@ abstract class ExportAbstract extends \Zalt\Loader\Target\TargetAbstract impleme
      */
     protected function cleanupName($filename)
     {
-        $filename = str_replace(array('/', '\\', ':', ' '), '_', $filename);
         // Remove dot if it starts with one
         $filename = trim($filename, '.');
 

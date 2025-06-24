@@ -190,6 +190,10 @@ class ConsentPlanHandler extends GemsHandler
         if ($action instanceof BrowseTableAction) {
             $action->extraFilter['gr2o_id_organization'] = $allowedOrganizationIds;
             $action->browse = false;
+
+            if ($action instanceof BrowseSearchAction) {
+                $action->addCurrentSiblings = true;
+            }
         }
         if ($action instanceof ShowAsTableAction) {
             $organizationId = $this->requestInfo->getParam(Model::REQUEST_ID);

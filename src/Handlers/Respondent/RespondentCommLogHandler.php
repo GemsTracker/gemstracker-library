@@ -34,13 +34,13 @@ class RespondentCommLogHandler extends CommLogHandler
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
+        protected readonly CurrentUserRepository $currentUserRepository,
         MaskRepository $maskRepository,
         ProjectOverloader $overloader,
         PeriodSelectRepository $periodSelectRepository,
-        protected readonly CurrentUserRepository $currentUserRepository,
         protected RespondentRepository $respondentRepository,
     ) {
-        parent::__construct($responder, $translate, $cache, $maskRepository, $overloader, $periodSelectRepository);
+        parent::__construct($responder, $translate, $cache, $currentUserRepository, $maskRepository, $overloader, $periodSelectRepository);
 
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

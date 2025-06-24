@@ -5,12 +5,10 @@ namespace Gems\Task\Export;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Export\Db\ModelExportRepository;
 use Gems\Export\Db\ModelContainer;
-use Gems\Export\ExportSettings\ExportSettingsInterface;
 use Gems\Export\Type\ExportSettingsGeneratorInterface;
-use Gems\Export\Type\StreamingExcelExport;
 use Gems\Messenger\Message\Export\ModelExportPart;
 use MUtil\Task\TaskAbstract;
-use Zalt\Loader\Exception\LoadException;
+use Zalt\File\File;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
@@ -89,7 +87,7 @@ class InitDbExport extends TaskAbstract
     {
         $now = new \DateTimeImmutable();
         $nameParts = [
-            $model->getName(),
+            File::cleanupName(basename($model->getName())),
             $now->format('YmdHis'),
         ];
 

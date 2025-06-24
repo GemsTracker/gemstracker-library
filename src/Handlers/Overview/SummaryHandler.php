@@ -74,6 +74,11 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public User $currentUser;
 
+    protected array $indexParameters = [
+        'addCurrentChildren' => true,
+        'addCurrentSiblings' => true,
+    ];
+
     /**
      * The snippets used for the index action, before those in autofilter
      *

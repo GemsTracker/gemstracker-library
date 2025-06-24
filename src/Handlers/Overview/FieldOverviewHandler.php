@@ -61,6 +61,15 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
     protected $currentUser;
 
     /**
+     *  We don't want the filler to show as it is irrelevant to this overview
+     */
+    protected array $indexParameters = array(
+        'addCurrentChildren' => true,
+        'addCurrentSiblings' => true,
+        'showFiller'    => false
+    );
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -68,13 +77,6 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
     protected array $indexStartSnippets = array(
         ContentTitleSnippet::class,
         ComplianceSearchFormSnippet::class,
-        );
-
-    /**
-     *  We don't want the filler to show as it is irrelevant to this overview
-     */
-    protected array $indexParameters = array(
-        'showFiller'    => false
         );
 
     public function __construct(

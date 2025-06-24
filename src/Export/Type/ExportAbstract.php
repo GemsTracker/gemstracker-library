@@ -113,25 +113,36 @@ abstract class ExportAbstract implements ExportInterface
         return $result;
     }
 
-    protected function filterMultiOptions(int|string|array|null $result, array $multiOptions, array|null $exportSettings): string|int|null|float
+    protected function filterMultiOptions(int|string|array|null $result, array $multiOptions, array|null $exportSettings): mixed
     {
         if ($multiOptions) {
             if ($exportSettings !== null && isset($exportSettings['translateValues']) && $exportSettings['translateValues'] === false) {
                 return $result;
             }
+
+            // Take care of nested multi options
+            $options = [];
+            foreach ($multiOptions as $key => $value) {
+                if (is_array($value)) {
+                    $options = array_merge($options, $value);
+                } else {
+                    $options[$key] = $value;
+                }
+            }
+
             /*
              *  Sometimes a field is an array and will be formatted later on using the
              *  formatFunction -> handle each element in the array.
              */
             if (is_array($result)) {
                 foreach ($result as $key => $value) {
-                    if (array_key_exists($value, $multiOptions)) {
-                        $result[$key] = $multiOptions[$value];
+                    if (array_key_exists($value, $options)) {
+                        $result[$key] = $options[$value];
                     }
                 }
             } else {
-                if (array_key_exists($result, $multiOptions)) {
-                    $result = $multiOptions[$result];
+                if (array_key_exists($result, $options)) {
+                    $result = $options[$result];
                 }
             }
         }

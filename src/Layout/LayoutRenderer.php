@@ -43,8 +43,8 @@ class LayoutRenderer
          * @var User|null $user
          */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-        //if ($user->hasPrivilege('pr.organization-switch')) {
-        if ($user instanceof User /*&& $user->hasPrivilege('pr.organization-switch')*/) {
+
+        if ($user instanceof User && $user->hasPrivilege('pr.organization-switch')) {
             return $user->getAllowedOrganizations();
         }
         return null;

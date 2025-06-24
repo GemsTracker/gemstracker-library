@@ -91,11 +91,13 @@ class MailLogSearchSnippet extends AutosearchInRespondentSnippet
                 $this->_('(all surveys)')
                 );
 
-        $elements[] = $this->_createSelectElement(
+        if (count($organizations) > 1) {
+            $elements[] = $this->_createSelectElement(
                 'grco_organization',
                 $organizations,
                 $this->_('(all organizations)')
-                );
+            );
+        }
 
         return $elements;
     }
