@@ -475,9 +475,11 @@ class Token
                 $this->_gemsData['gto_completion_time'] = $oldCompletionTime;
                 $values['gto_duration_in_sec']          = max($complTime->getTimestamp() - $startTime->getTimestamp(), 0);
 
+                // Make sure the answers are loaded
+                $rawAnswers = $this->getRawAnswers();
+                
                 //If the survey has a resultfield, store it
                 if ($resultField = $survey->getResultField()) {
-                    $rawAnswers = $this->getRawAnswers();
                     if (isset($rawAnswers[$resultField])) {
                         // Cast to string, because that is the way the result is stored in the db
                         // not casting to strings means e.g. float results always result in
@@ -1943,6 +1945,8 @@ class Token
         }
         $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
         $this->exists = isset($this->_gemsData['gto_id_token']);
+
+        $this->_sourceDataRaw = null;
 
         return $this;
     }
