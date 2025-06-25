@@ -2706,7 +2706,7 @@ msgstr "Per kenmerk"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:524
 msgid "By patient"
-msgstr "Door de patiënt"
+msgstr "Per patiënt"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:536
 msgid "Patient status"
