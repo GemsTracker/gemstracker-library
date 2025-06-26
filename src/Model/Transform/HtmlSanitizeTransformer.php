@@ -2,6 +2,7 @@
 
 namespace Gems\Model\Transform;
 
+use Gems\HtmlSanitizer\TwigAttributeSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Symfony\Component\HtmlSanitizer\Reference\W3CReference;
@@ -18,9 +19,12 @@ class HtmlSanitizeTransformer extends ModelTransformerAbstract
      */
     public function __construct(protected array $sanitizeFields)
     {
-        $this->sanitizer = new HtmlSanitizer(
-            (new HtmlSanitizerConfig())->allowSafeElements()
-        );
+        $config = (new HtmlSanitizerConfig())
+            ->allowSafeElements()
+            ->allowRelativeLinks()
+            ->withAttributeSanitizer(new TwigAttributeSanitizer());
+
+        $this->sanitizer = new HtmlSanitizer($config);
     }
 
     public function transformRowBeforeSave(MetaModelInterface $model, array $row)
