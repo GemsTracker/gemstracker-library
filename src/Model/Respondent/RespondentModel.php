@@ -35,6 +35,7 @@ use Gems\Util\PhoneNumberFormatter;
 use Gems\Util\ReceptionCodeLibrary;
 use Gems\Util\Translated;
 use Gems\Validator\OneOf;
+use Laminas\Validator\Regex;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Filter\RequireOneCapsFilter;
@@ -95,6 +96,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
      * Determines the algorithm used to hash the social security number
      */
     public string $hashAlgorithm = 'sha512';
+
+    protected string $patientNumberRegex = '/^[a-zA-Z0-9-_]{3,}$/';
 
     protected int $ssnMode = self::SSN_HASH;
 
@@ -225,7 +228,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             'multiOptions' => $this->organizationRepository->getOrganizationsWithRespondents(),
             ]);
         $this->setIfExists('gr2o_patient_nr', [
-            'validator[uniquePatientnr]' => new ModelUniqueValidator('gr2o_patient_nr', 'gr2o_id_organization')
+            'validator' => $this->getPatientNumberValidator(),
+            'validators[uniquePatientnr]' => new ModelUniqueValidator('gr2o_patient_nr', 'gr2o_id_organization'),
         ]);
         $this->metaModel->set('grs_id_user', [
             'elementClass' => 'None',
@@ -489,6 +493,13 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->maskRepository->enableMaskRepository();
 
         return $result;
+    }
+
+    public function getPatientNumberValidator()
+    {
+        $validator = new Regex($this->patientNumberRegex);
+        $validator->setMessage($this->_('Respondent number contains invalid characters.'), Regex::NOT_MATCH);
+        return $validator;
     }
 
     public function hideSSN($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
