@@ -28,7 +28,7 @@ class Menu extends MenuNode
             $object = match($item['type']) {
                 'route', 'route-link-item' => new RouteLinkItem($item['name'], $item['label']),
                 'container' => new ContainerLinkItem($item['name'], $item['label']),
-                'alias' => new AliasItem($item['name'], $item['alias']),
+                'alias' => new AliasItem($item['name'], $item['alias'], $item['label'] ?? ''),
                 'logged-out-route' => new LoggedOutRouteItem($item['name'], $item['label'], $this->user !== null),
                 default => throw new \Exception('Invalid type: ' . $item['type']),
             };

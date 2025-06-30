@@ -1118,9 +1118,9 @@ class Token
     /**
      * Get the relation object if any
      *
-     * @return \Gems\Model\RespondentRelationInstance
+     * @return \Gems\Model\RespondentRelationInstance|null
      */
-    public function getRelation(): RespondentRelationInstance
+    public function getRelation(): ?RespondentRelationInstance
     {
         if (is_null($this->_relation) || $this->_relation->getRelationId() !== $this->getRelationId()) {
             /**

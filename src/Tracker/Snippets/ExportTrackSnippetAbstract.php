@@ -102,6 +102,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
 
+        $this->layoutAutoWidthFactor = 0;
         $this->cache = $cache;
     }
 

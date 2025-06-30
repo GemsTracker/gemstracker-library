@@ -24,7 +24,6 @@ use Gems\User\User;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
-use Zalt\Late\Late;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
@@ -122,11 +121,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.email', $this->token->getMenuUrlParameters());
             $buttons = Html::actionLink($url, $this->_('E-mail now!'));
         } else {
-            $buttons = Late::iff(
-                Late::comp($bridge->getLate('ggp_member_type'), '==', 'staff'),
-                Html::actionDisabled($this->_('This token is for a staff member and cannot be E-mailed')),
-                Html::actionDisabled($this->_('This token cannot be E-mailed'))
-            );
+            $buttons = Html::actionDisabled($this->getNotMailableMessage());
         }
 
         $bridge->addWithThird('gto_mail_sent_date', 'gto_mail_sent_num', $buttons);
@@ -475,6 +470,58 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
                 'label' => $this->_('(Re)check answers'),
             ],
         ];
+    }
+
+
+    /**
+     * Get info why a token is not mailable
+     *
+     * @return ?string
+     */
+    public function getNotMailableMessage(): ?string
+    {
+        if ($this->token->isMailable()) {
+            return null;
+        }
+
+        $survey = $this->token->getSurvey();
+        if ($survey->isTakenByStaff()) {
+            return $this->_('This token is for a staff member and cannot be E-mailed');
+        }
+
+        $respondent = $this->token->getRespondent();;
+
+        // If we have a relation, return that address
+        if ($this->token->hasRelation()) {
+            $relation = $this->token->getRelation();
+
+            if (! $relation) {
+                return $this->_('This token is for a relation but the relation is not set');;
+            }
+            if (! $relation->isMailable()) {
+                return $this->_('This token is for a relation but the relation is not set to mailable');;
+            }
+
+            $filler = $relation;
+        } else {
+            $filler = $respondent;
+        }
+
+        // It can only be the respondent
+        if (! $respondent->getEmailAddress()) {
+            return $this->_('Respondent does not have an E-mail address');
+        }
+
+
+        if ($this->token->getRespondentTrack()->isMailable()) {
+            return $this->_('The track is set to not mailable');;
+        }
+
+        if ($filler->getMailCode() < $survey->getMailCode()) {
+            return $this->_('The respondent is set to not mailable');;
+        }
+
+        return "Error: token should be mailable!";
     }
 
     /**

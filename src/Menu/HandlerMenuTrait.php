@@ -22,6 +22,17 @@ trait HandlerMenuTrait
 {
     use TranslateableTrait;
 
+    public function createAliasItem(string $name, string $aliasOf, string $label = '')
+    {
+        return [
+            'name'  => $name,
+            'type'  => 'alias',
+            'label' => $label,
+            'alias' => $aliasOf,
+            'parent' => $aliasOf,
+        ];
+    }
+
     /**
      * @param string $controllerClass The Handler class for the menu item
      * @param string $name The start name of the routes

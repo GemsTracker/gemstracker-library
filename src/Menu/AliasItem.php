@@ -12,6 +12,7 @@ class AliasItem extends MenuItem
     public function __construct(
         public readonly string $name,
         public readonly string $alias,
+        public readonly string $label = '',
     ) {
     }
 
@@ -27,7 +28,7 @@ class AliasItem extends MenuItem
 
     public function getLabel(): string
     {
-        return '';
+        return $this->label;
     }
 
     public function renderNode(): string

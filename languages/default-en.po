@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-18 14:56+0200\n"
+"POT-Creation-Date: 2025-06-30 16:18+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Roel van Meer <roel.van.meer@peercode.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -339,10 +339,10 @@ msgstr "Type"
 #: gemstracker/gemstracker/src/Actions/DatabaseBackupAction.php:60
 #: gemstracker/gemstracker/src/Agenda/AppointmentFilterModel.php:103
 #: gemstracker/gemstracker/src/Export/Db/FileExportDownloadModel.php:25
-#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:142
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:127
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:146
-#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:150
+#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:147
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:129
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:151
+#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:155
 #: gemstracker/gemstracker/src/Handlers/Setup/Database/MigrationHandlerAbstract.php:41
 #: gemstracker/gemstracker/src/Handlers/Setup/GroupDiffHandler.php:82
 #: gemstracker/gemstracker/src/Handlers/Setup/RoleDiffHandler.php:81
@@ -416,7 +416,7 @@ msgstr "Location"
 #: gemstracker/gemstracker/src/Model/TrackBuilder/SourceModel.php:77
 #: gemstracker/gemstracker/src/Snippets/Respondent/Export/TrackSnippet.php:151
 #: gemstracker/gemstracker/src/Snippets/Token/CheckTokenEvents.php:81
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:177
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:172
 #: gemstracker/gemstracker/src/Tracker/Snippets/AnswerModelSnippetGeneric.php:161
 msgid "Status"
 msgstr "Status"
@@ -1837,7 +1837,7 @@ msgstr "%s does not equal %s"
 
 #: gemstracker/gemstracker/src/Condition/ConditionLoader.php:211
 #: gemstracker/gemstracker/src/Export/RespondentExport.php:271
-#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:136
+#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:141
 #: gemstracker/gemstracker/src/Model/EmailTokenModel.php:53
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:281
 #: gemstracker/gemstracker/src/Model/TrackBuilder/ChartConfigModel.php:42
@@ -1991,7 +1991,7 @@ msgstr ""
 #: gemstracker/gemstracker/src/Condition/Round/GenderCondition.php:63
 #: gemstracker/gemstracker/src/Condition/Round/GenderCondition.php:103
 #: gemstracker/gemstracker/src/Config/Menu.php:133
-#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:135
+#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:140
 #: gemstracker/gemstracker/src/Model/LogModel.php:117
 #: gemstracker/gemstracker/src/Model/StaffModel.php:411
 #: gemstracker/gemstracker/src/Snippets/Log/LogShowSnippet.php:79
@@ -2269,7 +2269,7 @@ msgstr "Organization one of %s"
 #: gemstracker/gemstracker/src/Snippets/Import/FileImportSnippet.php:67
 #: gemstracker/gemstracker/src/Snippets/Respondent/Export/TrackSnippet.php:150
 #: gemstracker/gemstracker/src/Snippets/Token/CheckTokenEvents.php:77
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:150
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:145
 #: gemstracker/gemstracker/src/Tracker/Engine/StepEngineAbstract.php:853
 #: gemstracker/gemstracker/src/Tracker/Form/AskTokenForm.php:71
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:298
@@ -2304,7 +2304,7 @@ msgstr "Calendar"
 #: gemstracker/gemstracker/src/Config/Menu.php:1019
 #: gemstracker/gemstracker/src/Config/Menu.php:1661
 #: gemstracker/gemstracker/src/Export/RespondentExport.php:563
-#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:83
+#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:94
 #: gemstracker/gemstracker/src/Snippets/Export/ExportFormSnippet.php:56
 #: gemstracker/gemstracker/src/Snippets/Respondent/Export/RespondentExportFormSnippet.php:71
 msgid "Export"
@@ -2403,7 +2403,7 @@ msgstr "New"
 #: gemstracker/gemstracker/src/Config/Menu.php:1686
 #: gemstracker/gemstracker/src/Config/Menu.php:1715
 #: gemstracker/gemstracker/src/Config/Menu.php:1774
-#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:50
+#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:61
 #: gemstracker/gemstracker/src/Repository/TokenRepository.php:471
 #: gemstracker/gemstracker/src/Repository/TokenRepository.php:500
 #: gemstracker/gemstracker/src/Snippets/Agenda/AppointmentsTableSnippet.php:135
@@ -2454,10 +2454,10 @@ msgstr "Show"
 #: gemstracker/gemstracker/src/Config/Menu.php:1651
 #: gemstracker/gemstracker/src/Config/Menu.php:1691
 #: gemstracker/gemstracker/src/Config/Menu.php:1720
-#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:54
+#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:65
 #: gemstracker/gemstracker/src/Snippets/ModelTableSnippetAbstract.php:129
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentTableSnippetAbstract.php:180
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:381
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:376
 #: gemstracker/gemstracker/src/Tracker/Snippets/ShowRoundSnippetAbstract.php:182
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:54
 msgid "Edit"
@@ -2510,11 +2510,11 @@ msgstr "Relations"
 #: gemstracker/gemstracker/src/Config/Menu.php:1656
 #: gemstracker/gemstracker/src/Config/Menu.php:1696
 #: gemstracker/gemstracker/src/Config/Menu.php:1725
-#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:58
+#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:69
 #: gemstracker/gemstracker/src/Model/Dependency/UsageDependency.php:60
 #: gemstracker/gemstracker/src/Snippets/MonitorSnippet.php:109
 #: gemstracker/gemstracker/src/Snippets/Respondent/Relation/TableSnippet.php:80
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:437
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:432
 #: gemstracker/gemstracker/src/Tracker/Snippets/ShowRoundSnippetAbstract.php:186
 msgid "Delete"
 msgstr "Delete"
@@ -2541,7 +2541,7 @@ msgstr "Check all"
 #: gemstracker/gemstracker/src/Config/Menu.php:265
 #: gemstracker/gemstracker/src/Config/Menu.php:564
 #: gemstracker/gemstracker/src/Config/Menu.php:1636
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:188
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:193
 #: gemstracker/gemstracker/src/Model/Setup/MailCodeModel.php:99
 #: gemstracker/gemstracker/src/Model/Setup/ReceptionCodeModel.php:106
 #: gemstracker/gemstracker/src/Snippets/Tracker/AddTracksSnippet.php:306
@@ -2559,7 +2559,7 @@ msgstr "Insert"
 #: gemstracker/gemstracker/src/Snippets/Token/DeleteTrackTokenSnippet.php:169
 #: gemstracker/gemstracker/src/Snippets/Token/EditTrackTokenSnippet.php:111
 #: gemstracker/gemstracker/src/Snippets/Token/PlanRespondentSnippet.php:80
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:462
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:457
 #: gemstracker/gemstracker/src/Snippets/Tracker/Buttons/TokenActionButtonRow.php:56
 #: gemstracker/gemstracker/src/Tracker/Snippets/AnswerModelSnippetGeneric.php:299
 msgid "Show track"
@@ -2585,7 +2585,7 @@ msgid "Export track"
 msgstr "Export track"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:320
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:429
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:424
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:50
 msgid "Correct answers"
 msgstr "Correct answers"
@@ -2593,7 +2593,7 @@ msgstr "Correct answers"
 #: gemstracker/gemstracker/src/Config/Menu.php:325
 #: gemstracker/gemstracker/src/Model/SurveyCodeBookModel.php:60
 #: gemstracker/gemstracker/src/Repository/TokenRepository.php:264
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:413
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:408
 #: gemstracker/gemstracker/src/Tracker/Engine/StepEngineAbstract.php:844
 #: gemstracker/gemstracker/src/Util/TokenData.php:341
 msgid "Answers"
@@ -2603,17 +2603,17 @@ msgstr "Answers"
 #: gemstracker/gemstracker/src/Snippets/Communication/CommJobExecuteFormSnippet.php:58
 #: gemstracker/gemstracker/src/Snippets/Mail/MailFormSnippet.php:173
 #: gemstracker/gemstracker/src/Snippets/Mail/MailModelFormSnippet.php:135
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:409
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:404
 msgid "Preview"
 msgstr "Preview"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:335
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:471
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:466
 msgid "Token check"
 msgstr "Token check"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:340
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:475
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:470
 msgid "(Re)check answers"
 msgstr "(Re)check answers"
 
@@ -2642,7 +2642,7 @@ msgstr "Activity Log"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:426
 #: gemstracker/gemstracker/src/Config/Menu.php:922
-#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:78
+#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:89
 msgid "Import"
 msgstr "Import"
 
@@ -2821,7 +2821,7 @@ msgstr "Privilege"
 #: gemstracker/gemstracker/src/Config/Menu.php:805
 #: gemstracker/gemstracker/src/Config/Menu.php:844
 #: gemstracker/gemstracker/src/Config/Menu.php:1435
-#: gemstracker/gemstracker/src/Snippets/Export/ExportDownloadSnippet.php:108
+#: gemstracker/gemstracker/src/Snippets/Export/ExportDownloadSnippet.php:120
 #: gemstracker/gemstracker/src/Snippets/File/DownloadFileSnippet.php:58
 msgid "Download"
 msgstr "Download"
@@ -2868,7 +2868,7 @@ msgid "Staff"
 msgstr "Staff"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:937
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:204
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:199
 msgid "Actions"
 msgstr "Actions"
 
@@ -3034,7 +3034,7 @@ msgstr[1] "Chart configs"
 #: gemstracker/gemstracker/src/Config/Menu.php:1641
 #: gemstracker/gemstracker/src/Config/Menu.php:1681
 #: gemstracker/gemstracker/src/Config/Menu.php:1710
-#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:46
+#: gemstracker/gemstracker/src/Menu/HandlerMenuTrait.php:57
 msgid "Create"
 msgstr "Create"
 
@@ -3204,7 +3204,7 @@ msgstr "Relation ID"
 
 #: gemstracker/gemstracker/src/Export/Db/AnswerModelContainer.php:190
 #: gemstracker/gemstracker/src/Export/ModelSource/AnswerExportModelSource.php:116
-#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:154
+#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:159
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:244
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentOverviewSnippet.php:145
 #: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:121
@@ -3258,7 +3258,7 @@ msgstr "Start time"
 
 #: gemstracker/gemstracker/src/Export/Db/AnswerModelContainer.php:224
 #: gemstracker/gemstracker/src/Export/ModelSource/AnswerExportModelSource.php:133
-#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:141
+#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:146
 #: gemstracker/gemstracker/src/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:120
 #: gemstracker/gemstracker/src/Snippets/Token/PlanSearchSnippet.php:191
 #: gemstracker/gemstracker/src/Snippets/Tracker/Rounds/RoundsTableSnippet.php:172
@@ -3270,7 +3270,7 @@ msgstr "Valid from"
 
 #: gemstracker/gemstracker/src/Export/Db/AnswerModelContainer.php:227
 #: gemstracker/gemstracker/src/Export/ModelSource/AnswerExportModelSource.php:134
-#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:144
+#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:149
 #: gemstracker/gemstracker/src/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:121
 #: gemstracker/gemstracker/src/Snippets/Token/PlanSearchSnippet.php:192
 #: gemstracker/gemstracker/src/Snippets/Tracker/Rounds/RoundsTableSnippet.php:174
@@ -3324,7 +3324,7 @@ msgid "Created"
 msgstr "Created"
 
 #: gemstracker/gemstracker/src/Export/ModelSource/AnswerExportModelSource.php:502
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:369
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:374
 #: gemstracker/gemstracker/src/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:204
 msgid "Track fields"
 msgstr "Track fields"
@@ -3410,7 +3410,7 @@ msgstr ""
 "Your data is now in a frame called 'data'"
 
 #: gemstracker/gemstracker/src/Export/RespondentExport.php:270
-#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:137
+#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:142
 #: gemstracker/gemstracker/src/Model/CommLogModel.php:177
 #: gemstracker/gemstracker/src/Model/EmailTokenModel.php:58
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:294
@@ -3800,7 +3800,7 @@ msgstr[0] "export survey"
 msgstr[1] "export surveys"
 
 #: gemstracker/gemstracker/src/Handlers/GemsHandler.php:305
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:607
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:610
 #: gemstracker/gemstracker/src/Snippets/TopicCallableTrait.php:42
 #: magnafacta/MUtil/src/MUtil/Snippets/FormSnippetAbstract.php:351
 #: magnafacta/MUtil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:454
@@ -3815,21 +3815,21 @@ msgstr[1] "items"
 msgid "No %s found!"
 msgstr "No %s found!"
 
-#: gemstracker/gemstracker/src/Handlers/GemsHandler.php:346
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:390
+#: gemstracker/gemstracker/src/Handlers/GemsHandler.php:340
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:388
 #, php-format
 msgid "%s export"
 msgstr "%s export"
 
-#: gemstracker/gemstracker/src/Handlers/GemsHandler.php:367
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:583
+#: gemstracker/gemstracker/src/Handlers/GemsHandler.php:371
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:586
 #: gemstracker/gemstracker/src/Handlers/Setup/MaskHandler.php:152
 #, php-format
 msgid "Showing %s"
 msgstr "Showing %s"
 
-#: gemstracker/gemstracker/src/Handlers/GemsHandler.php:371
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:456
+#: gemstracker/gemstracker/src/Handlers/GemsHandler.php:375
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:459
 #, php-format
 msgid "Delete %s"
 msgstr "Delete %s"
@@ -3844,7 +3844,7 @@ msgid_plural "log"
 msgstr[0] "log"
 msgstr[1] "log"
 
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:416
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:419
 #: gemstracker/gemstracker/src/Snippets/FormSnippetAbstract.php:183
 #: gemstracker/gemstracker/src/Snippets/FormSnippetAbstractMUtil.php:232
 #: gemstracker/gemstracker/src/Snippets/ModelFormSnippetAbstract.php:351
@@ -3852,24 +3852,24 @@ msgstr[1] "log"
 msgid "New %s..."
 msgstr "New %s..."
 
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:426
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:429
 #: gemstracker/gemstracker/src/Snippets/ModelConfirmDeleteSnippetAbstract.php:118
 #, php-format
 msgid "Do you want to deactivate this %s?"
 msgstr "Do you want to deactivate this %s?"
 
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:436
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:439
 #, php-format
 msgid "Deactivate %s"
 msgstr "Deactivate %s"
 
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:446
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:449
 #: gemstracker/gemstracker/src/Snippets/ModelConfirmDeleteSnippetAbstract.php:156
 #, php-format
 msgid "Do you want to delete this %s?"
 msgstr "Do you want to delete this %s?"
 
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:480
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:483
 #: gemstracker/gemstracker/src/Snippets/FormSnippetAbstract.php:185
 #: gemstracker/gemstracker/src/Snippets/FormSnippetAbstractMUtil.php:234
 #: gemstracker/gemstracker/src/Snippets/ModelFormSnippetAbstract.php:353
@@ -3877,18 +3877,18 @@ msgstr "Do you want to delete this %s?"
 msgid "Edit %s"
 msgstr "Edit %s"
 
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:528
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:531
 #, php-format
 msgid "No %s found..."
 msgstr "No %s found..."
 
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:538
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:541
 #: gemstracker/gemstracker/src/Snippets/ModelConfirmDeleteSnippetAbstract.php:93
 #, php-format
 msgid "Do you want to reactivate this %s?"
 msgstr "Do you want to reactivate this %s?"
 
-#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:548
+#: gemstracker/gemstracker/src/Handlers/ModelSnippetLegacyHandlerAbstract.php:551
 #, php-format
 msgid "Reactivate %s"
 msgstr "Reactivate %s"
@@ -3923,8 +3923,8 @@ msgid_plural "your setup"
 msgstr[0] "your setup"
 msgstr[1] "your setup"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:136
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:125
+#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:141
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:127
 #: gemstracker/gemstracker/src/Model/CommLogModel.php:150
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:321
 #: gemstracker/gemstracker/src/Repository/TokenRepository.php:692
@@ -3937,8 +3937,8 @@ msgstr[1] "your setup"
 msgid "Respondent nr"
 msgstr "Patient nr"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:144
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:129
+#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:149
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:131
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:143
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:181
 #: gemstracker/gemstracker/src/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:122
@@ -3947,27 +3947,27 @@ msgstr "Patient nr"
 msgid "Start date"
 msgstr "Start date"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:145
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:130
+#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:150
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:132
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:145
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:183
 msgid "End date"
 msgstr "End date"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:155
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:140
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:150
-#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:174
+#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:160
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:142
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:155
+#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:179
 msgid "No track selected..."
 msgstr "No track selected..."
 
-#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:267
+#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:272
 msgid "Compliance"
 msgstr "Compliance"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:303
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:405
-#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:300
+#: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:308
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:410
+#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:305
 #: gemstracker/gemstracker/src/Handlers/Project/ProjectTracksHandler.php:143
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:309
 #: gemstracker/gemstracker/src/Handlers/Respondent/TrackHandler.php:256
@@ -4000,7 +4000,7 @@ msgstr "Dropped"
 
 #: gemstracker/gemstracker/src/Handlers/Overview/ConsentPlanHandler.php:109
 #: gemstracker/gemstracker/src/Handlers/Overview/ConsentPlanHandler.php:149
-#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:141
+#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:146
 #: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackOverviewHandler.php:108
 msgid "Total"
 msgstr "Total"
@@ -4009,35 +4009,35 @@ msgstr "Total"
 msgid "consent per organization"
 msgstr "consent per organization"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:168
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:170
 msgid "Respondent Track fields"
 msgstr "Patient Track fields"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:204
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:206
 msgid "track field"
 msgid_plural "track fields"
 msgstr[0] "track field"
 msgstr[1] "track fields"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:193
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:198
 msgid "Filled"
 msgstr "Filled"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:198
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:203
 msgid "Empty"
 msgstr "Empty"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:203
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:208
 msgid "Unique values"
 msgstr "Unique values"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:229
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:282
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:234
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:287
 #, php-format
 msgid "%d (%d%%)"
 msgstr "%d (%d%%)"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:333
+#: gemstracker/gemstracker/src/Handlers/Overview/FieldReportHandler.php:338
 #, php-format
 msgid "%d (uses per value: %01.2f)"
 msgstr "%d (uses per value: %01.2f)"
@@ -4082,24 +4082,24 @@ msgstr "Progress"
 msgid "Respondent planning"
 msgstr "Patient planning"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:138
+#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:143
 #: gemstracker/gemstracker/src/Repository/TokenRepository.php:50
 #: gemstracker/gemstracker/src/Snippets/Token/PlanSearchSnippet.php:404
 #: gemstracker/gemstracker/src/Util/TokenData.php:135
 msgid "Answered"
 msgstr "Answered"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:139
+#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:144
 #: gemstracker/gemstracker/src/Snippets/Token/TokenTabsSnippet.php:64
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:59
 msgid "Missed"
 msgstr "Missed"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:140
+#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:145
 msgid "Open"
 msgstr "Open"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:187
+#: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:192
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentOverviewSnippet.php:143
 #: gemstracker/gemstracker/src/Snippets/Respondent/TrafficLightTokenSnippet.php:733
 #: gemstracker/gemstracker/src/Snippets/Survey/SurveyCompareSnippet.php:745
@@ -4110,25 +4110,25 @@ msgstr "Summary"
 msgid "Token planning"
 msgstr "Token planning"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:138
+#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:143
 msgid "Round / Details"
 msgstr "Round / Details"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:147
+#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:152
 msgid "Contact date"
 msgstr "Contact date"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:183
+#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:188
 #: gemstracker/gemstracker/src/Handlers/Setup/StaffHandler.php:332
 #, php-format
 msgid "Send mail to: %s"
 msgstr "Send mail to: %s"
 
-#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:190
+#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:195
 msgid "No tokens found."
 msgstr "No tokens found."
 
-#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:330
+#: gemstracker/gemstracker/src/Handlers/Overview/TokenSearchHandlerAbstract.php:335
 #: gemstracker/gemstracker/src/Handlers/Respondent/TokenHandler.php:459
 #: gemstracker/gemstracker/src/Snippets/Token/TokenForgottenSnippet.php:218
 #: gemstracker/gemstracker/src/Tracker/Snippets/EditTokenSnippetAbstract.php:135
@@ -4691,11 +4691,11 @@ msgstr "Message job automatic, can be sent using run or run all"
 msgid "No tokens found for message"
 msgstr "No tokens found for message"
 
-#: gemstracker/gemstracker/src/Handlers/Setup/CommLogHandler.php:119
+#: gemstracker/gemstracker/src/Handlers/Setup/CommLogHandler.php:126
 msgid "Mail Activity Log"
 msgstr "Mail Activity Log"
 
-#: gemstracker/gemstracker/src/Handlers/Setup/CommLogHandler.php:130
+#: gemstracker/gemstracker/src/Handlers/Setup/CommLogHandler.php:137
 msgid "mail activity"
 msgid_plural "mail activities"
 msgstr[0] "mail activity"
@@ -6423,7 +6423,7 @@ msgstr "Interface"
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:508
 #: gemstracker/gemstracker/src/Snippets/Token/DeleteTrackTokenSnippet.php:161
 #: gemstracker/gemstracker/src/Snippets/Token/EditTrackTokenSnippet.php:103
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:454
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:449
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:71
 msgid "Show patient"
 msgstr "Show patient"
@@ -6833,7 +6833,7 @@ msgstr "(all surveys)"
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:300
 #: gemstracker/gemstracker/src/Snippets/Agenda/CalendarSearchSnippet.php:78
 #: gemstracker/gemstracker/src/Snippets/Log/LogSearchSnippet.php:85
-#: gemstracker/gemstracker/src/Snippets/Mail/Log/MailLogSearchSnippet.php:97
+#: gemstracker/gemstracker/src/Snippets/Mail/Log/MailLogSearchSnippet.php:98
 #: gemstracker/gemstracker/src/Snippets/Organization/AutosearchOrganizationSnippet.php:70
 #: gemstracker/gemstracker/src/Snippets/Organization/OrganizationSearchSnippet.php:47
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentSearchSnippet.php:104
@@ -9545,6 +9545,7 @@ msgid "This token has already been completed"
 msgstr "This token has already been completed"
 
 #: gemstracker/gemstracker/src/Snippets/Respondent/TokenEmailSnippet.php:79
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:512
 msgid "Respondent does not have an E-mail address"
 msgstr "Patient does not have an e-mail address"
 
@@ -9558,7 +9559,6 @@ msgid "Respondent relation cannot be contacted"
 msgstr "Patient relation cannot be contacted"
 
 #: gemstracker/gemstracker/src/Snippets/Respondent/TokenEmailSnippet.php:94
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:128
 msgid "This token cannot be E-mailed"
 msgstr "This token cannot be E-mailed"
 
@@ -9766,7 +9766,6 @@ msgstr ""
 
 #: gemstracker/gemstracker/src/Snippets/Staff/StaffResetAuthenticationSnippet.php:213
 #, php-format
-#| msgid "Default Reset TFA mail template id %d does not containt translations"
 msgid "Default Reset TFA mail template id %d does not contain translations"
 msgstr "Default Reset TFA mail template id %d does not contain translations"
 
@@ -10145,7 +10144,7 @@ msgstr "This token has no before answering event."
 
 #: gemstracker/gemstracker/src/Snippets/Token/DeleteTrackTokenSnippet.php:165
 #: gemstracker/gemstracker/src/Snippets/Token/EditTrackTokenSnippet.php:107
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:458
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:453
 #: gemstracker/gemstracker/src/Snippets/Tracker/Buttons/TokenActionButtonRow.php:55
 #: gemstracker/gemstracker/src/Snippets/Tracker/Buttons/TrackActionButtonRow.php:64
 msgid "Show tracks"
@@ -10153,7 +10152,7 @@ msgstr "Show tracks"
 
 #: gemstracker/gemstracker/src/Snippets/Token/DeleteTrackTokenSnippet.php:176
 #: gemstracker/gemstracker/src/Snippets/Token/EditTrackTokenSnippet.php:118
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:486
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:533
 #: gemstracker/gemstracker/src/Snippets/Tracker/Buttons/TokenActionButtonRow.php:57
 #: gemstracker/gemstracker/src/Tracker/Snippets/AnswerModelSnippetGeneric.php:300
 #: gemstracker/gemstracker/src/Translate/JavascriptTranslations.php:72
@@ -10257,7 +10256,7 @@ msgid "Not allowed to email"
 msgstr "Not allowed to email"
 
 #: gemstracker/gemstracker/src/Snippets/Token/PlanTokenSnippet.php:108
-#: gemstracker/gemstracker/src/Snippets/Token/RespondentPlanTokenSnippet.php:82
+#: gemstracker/gemstracker/src/Snippets/Token/RespondentPlanTokenSnippet.php:84
 msgid "Contact moments"
 msgstr "Contact moments"
 
@@ -10278,33 +10277,52 @@ msgstr "No valid tokens found"
 msgid "Create new track"
 msgstr "Create new track"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:123
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:122
 msgid "E-mail now!"
 msgstr "E-mail now!"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:127
-msgid "This token is for a staff member and cannot be E-mailed"
-msgstr "This token is for a staff member and cannot be E-mailed"
-
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:157
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:152
 msgid "Token copied from"
 msgstr "Token copied from"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:164
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:159
 msgid "Token copied to"
 msgstr "Token copied to"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:400
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:395
 msgid "Take"
 msgstr "Take"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:418
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:413
 msgid "Answer export"
 msgstr "Answer export"
 
-#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:442
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:437
 msgid "Undelete"
 msgstr "Undelete"
+
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:489
+msgid "This token is for a staff member and cannot be E-mailed"
+msgstr "This token is for a staff member and cannot be E-mailed"
+
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:499
+msgid "This token is for a relation but the relation is not set"
+msgstr "This token is for a relation but the relation is not set"
+
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:502
+#| msgid "This token is for a staff member and cannot be E-mailed"
+msgid "This token is for a relation but the relation is not set to mailable"
+msgstr "This token is for a relation but the relation is not set to mailable"
+
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:517
+#| msgid "The token %s is currently not useable."
+msgid "The track is set to not mailable"
+msgstr "The track is set to not mailable"
+
+#: gemstracker/gemstracker/src/Snippets/Token/ShowTrackTokenSnippet.php:521
+#| msgid "The respondent to login to."
+msgid "The respondent is set to not mailable"
+msgstr "The patient is set to not mailable"
 
 #: gemstracker/gemstracker/src/Snippets/Token/TokenForgottenSnippet.php:126
 msgid "The email address you use with this organization."
@@ -11628,12 +11646,12 @@ msgstr "No other tracks to select"
 msgid "No linked tracks selected."
 msgstr "No linked tracks selected."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:113
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:112
 #: gemstracker/gemstracker/src/Tracker/Model/FieldMaintenanceModel.php:167
 msgid "The display and processing order of the fields."
 msgstr "The display and processing order of the fields."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:114
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:113
 msgid ""
 "When using automatic filters the fields are ALWAYS filled with appointments "
 "in ascending order."
@@ -11641,15 +11659,15 @@ msgstr ""
 "When using automatic filters the fields are ALWAYS filled with appointments "
 "in ascending order."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:122
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:121
 msgid "Appointment filter"
 msgstr "Appointment filter"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:124
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:123
 msgid "Automatically link an appointment when it passes this filter."
 msgstr "Automatically link an appointment when it passes this filter."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:141
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:140
 #, php-format
 msgid ""
 "Difference with the previous '%s' appointment (order %d), can be negative "
@@ -11658,11 +11676,11 @@ msgstr ""
 "Difference with the previous '%s' appointment (order %d), can be negative "
 "but not zero"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:146
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:145
 msgid "Difference with the track start date, can be negative but not zero"
 msgstr "Difference with the track start date, can be negative but not zero"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:149
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:148
 msgid ""
 "Difference with the previous appointment or track start date, can be "
 "negative but not zero"
@@ -11670,66 +11688,66 @@ msgstr ""
 "Difference with the previous appointment or track start date, can be "
 "negative but not zero"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:153
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:152
 msgid "Minimal time difference"
 msgstr "Minimal time difference"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:159
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:158
 msgid "This value may not be zero!"
 msgstr "This value may not be zero!"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:162
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:161
 msgid "Minimal difference unit"
 msgstr "Minimal difference unit"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:167
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:166
 msgid "Set a maximum time difference"
 msgstr "Set a maximum time difference"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:173
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:172
 msgid "Maximum time difference"
 msgstr "Maximum time difference"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:181
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:180
 msgid "Must be negative, just like the minimal difference."
 msgstr "Must be negative, just like the minimal difference."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:186
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:185
 msgid "Must be positive, just like the minimal difference."
 msgstr "Must be positive, just like the minimal difference."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:191
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:190
 msgid "Maximum difference unit"
 msgstr "Maximum difference unit"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:203
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:202
 msgid "Link unique"
 msgstr "Link unique"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:204
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:203
 msgid "Can one appointment be used in multiple fields?"
 msgstr "Can one appointment be used in multiple fields?"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:207
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:206
 msgid "No: repeatedly linked appointments are allowed."
 msgstr "No: repeatedly linked appointments are allowed."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:208
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:207
 msgid "A track instance may link only one field to a specific appointment."
 msgstr "A track instance may link only one field to a specific appointment."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:209
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:208
 msgid ""
 "All instances of this track may link only once to a specific appointment."
 msgstr ""
 "All instances of this track may link only once to a specific appointment."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:225
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:229
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:224
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:228
 msgid "End date difference"
 msgstr "End date difference"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:226
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:225
 msgid ""
 "Any previous track must be closed and have an end date at least this many "
 "days in the past."
@@ -11737,17 +11755,17 @@ msgstr ""
 "Any previous track must be closed and have an end date at least this many "
 "days in the past."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:230
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:229
 msgid ""
 "Any previous track must have an end date at least this many days in the past."
 msgstr ""
 "Any previous track must have an end date at least this many days in the past."
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:233
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:232
 msgid "Start date difference"
 msgstr "Start date difference"
 
-#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:234
+#: gemstracker/gemstracker/src/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:233
 msgid ""
 "Any previous track must have an start date at least this many days in the "
 "past."
@@ -12105,7 +12123,7 @@ msgid "Survey export code"
 msgstr "Survey export code"
 
 #: gemstracker/gemstracker/src/Tracker/Model/SurveyMaintenanceModel.php:377
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:391
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:392
 msgid "A unique code indentifying this survey during track import"
 msgstr "A unique code indentifying this survey during track import"
 
@@ -12253,24 +12271,24 @@ msgstr "Add track"
 msgid "Cannot be changed after first answered token."
 msgstr "Cannot be changed after first answered token."
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:196
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:197
 msgid "Set the survey export codes"
 msgstr "Set the survey export codes"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:224
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:225
 msgid "Select what to export"
 msgstr "Select what to export"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:242
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:243
 msgid "Creating the export file"
 msgstr "Creating the export file"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:289
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:290
 #: gemstracker/gemstracker/src/Tracker/Snippets/ImportTrackSnippetAbstract.php:588
 msgid "No export code changed"
 msgstr "No export code changed"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:293
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:294
 #: gemstracker/gemstracker/src/Tracker/Snippets/ImportTrackSnippetAbstract.php:592
 #, php-format
 msgid "%d export code changed"
@@ -12278,48 +12296,48 @@ msgid_plural "%d export codes changed"
 msgstr[0] "%d export code changed"
 msgstr[1] "%d export codes changed"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:310
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:311
 msgid "Track export finished"
 msgstr "Track export finished"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:351
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:352
 msgid "Organization export"
 msgstr "Organization export"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:353
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:354
 msgid "Export the organizations for which the track is active"
 msgstr "Export the organizations for which the track is active"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:358
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:359
 msgid "Field export"
 msgstr "Field export"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:363
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:364
 msgid "Check the fields to export"
 msgstr "Check the fields to export"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:370
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:371
 msgid "No fields to export"
 msgstr "No fields to export"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:375
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:376
 msgid "Round export"
 msgstr "Round export"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:383
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:384
 #, php-format
 msgid "%s (inactive)"
 msgstr "%s (inactive)"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:401
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:402
 msgid "Check the rounds to export"
 msgstr "Check the rounds to export"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:408
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:409
 msgid "No rounds to export"
 msgstr "No rounds to export"
 
-#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:541
+#: gemstracker/gemstracker/src/Tracker/Snippets/ExportTrackSnippetAbstract.php:542
 #, php-format
 msgid "%s track export. Step %d of %d."
 msgstr "%s track export. Step %d of %d."
@@ -12793,7 +12811,7 @@ msgstr "Free text (very long)"
 msgid "- %s"
 msgstr "- %s"
 
-#: gemstracker/gemstracker/src/Tracker/Token.php:2184
+#: gemstracker/gemstracker/src/Tracker/Token.php:2188
 #, php-format
 msgid ""
 "%s: Reset number of contact moments because new start date %s is later than "
@@ -16255,9 +16273,6 @@ msgstr[1] "%d items saved!"
 
 #~ msgid "%d %s before"
 #~ msgstr "%d %s before"
-
-#~ msgid "The token %s is currently not useable."
-#~ msgstr "The token %s is currently not useable."
 
 #~ msgid "Follow up date"
 #~ msgstr "Follow up date"

@@ -39,6 +39,8 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
+        $sp = Html::raw(' ');
+
         // Add link to patient to overview
         $href = $this->menuHelper->getRelatedRoute('respondent.show');
         $metaModel = $dataModel->getMetaModel();
@@ -71,7 +73,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
         // $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'))->rowspan = 2;
 
         $metaModel->set('gto_round_description', ['tableDisplay' => 'small']);
-        $bridge->addMultiSort('gsu_survey_name', 'gto_round_description');
+        $bridge->addMultiSort('gsu_survey_name', $sp, 'gto_round_description');
         $bridge->addMultiSort('ggp_name', [$this->createActionButtons($bridge)]);
 
         $tr2 = $bridge->tr();
@@ -82,7 +84,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
         $metaModel->set('gr2t_track_info', ['tableDisplay' => 'small']);
-        $bridge->addMultiSort('gtr_track_name', 'gr2t_track_info');
+        $bridge->addMultiSort('gtr_track_name', $sp, 'gr2t_track_info');
 
         $bridge->addSortable('assigned_by');
     }
