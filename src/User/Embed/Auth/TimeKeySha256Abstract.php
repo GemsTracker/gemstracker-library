@@ -27,7 +27,7 @@ use DateTimeImmutable;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 01-Apr-2020 17:16:20
  */
-class HourKeySha256 extends EmbeddedAuthAbstract
+abstract class TimeKeySha256Abstract extends EmbeddedAuthAbstract
 {
     /**
      * @var bool Show debug code
