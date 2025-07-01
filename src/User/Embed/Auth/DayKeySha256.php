@@ -19,7 +19,7 @@ namespace Gems\User\Embed\Auth;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 01-Apr-2020 17:24:36
  */
-class DayKeySha256 extends HourKeySha256
+class DayKeySha256 extends TimeKeySha256Abstract
 {
     /**
      * Format for date part of key function
@@ -43,5 +43,4 @@ class DayKeySha256 extends HourKeySha256
     {
         return sprintf($this->translator->_('Less safe: Daily valid valid key with %s'), $this->encryptionAlgorithm);
     }
-
 }
