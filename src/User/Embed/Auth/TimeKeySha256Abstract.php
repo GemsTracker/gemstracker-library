@@ -69,14 +69,14 @@ abstract class TimeKeySha256Abstract extends EmbeddedAuthAbstract
      *
      * @var string
      */
-    protected string $keyTimeFormat = 'YmdH';
+    protected string $keyTimeFormat = '';
 
     /**
      * The number of time periods on either side of the current that is allowed
      *
      * @var int
      */
-    protected int $keyTimeValidRange = 1;
+    protected int $keyTimeValidRange = 0;
 
     /**
      * Authenticate embedded user
@@ -165,13 +165,9 @@ abstract class TimeKeySha256Abstract extends EmbeddedAuthAbstract
     }
 
     /**
-     *
      * @return string Something to display as label.
      */
-    public function getLabel(): string
-    {
-        return sprintf($this->translator->_('Hour valid key with %s'), $this->encryptionAlgorithm);
-    }
+    abstract public function getLabel(): string;
 
     /**
      * Generate the \DateInterval constructor
