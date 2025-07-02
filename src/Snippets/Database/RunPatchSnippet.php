@@ -2,11 +2,13 @@
 
 namespace Gems\Snippets\Database;
 
+use Gems\Cache\HelperAdapter;
 use Gems\Db\Migration\PatchRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
+use Zalt\Model\Sql\Laminas\CachedLaminasRunner;
 use Zalt\Snippets\DataReaderGenericModelTrait;
 use Zalt\Snippets\ModelSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -21,6 +23,7 @@ class RunPatchSnippet extends ModelSnippetAbstract
         protected readonly MenuSnippetHelper $menuSnippetHelper,
         protected readonly PatchRepository $patchRepository,
         protected readonly StatusMessengerInterface $statusMessenger,
+        protected readonly HelperAdapter $cache,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate);
@@ -49,6 +52,7 @@ class RunPatchSnippet extends ModelSnippetAbstract
         } catch(\Exception $e) {
             $this->statusMessenger->addError(sprintf($this->translate->_('Error executing patch %s. %s'), $params['name'], $e->getMessage()));
         }
+        $this->cache->invalidateTags([CachedLaminasRunner::TAG]);
     }
 
     public function getRedirectRoute(): ?string

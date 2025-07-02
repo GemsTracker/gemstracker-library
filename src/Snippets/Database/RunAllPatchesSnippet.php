@@ -4,9 +4,11 @@ namespace Gems\Snippets\Database;
 
 use Gems\Db\Migration\PatchRepository;
 use Gems\Menu\MenuSnippetHelper;
+use Gems\Cache\HelperAdapter;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\StatusMessengerInterface;
+use Zalt\Model\Sql\Laminas\CachedLaminasRunner;
 use Zalt\Snippets\DataReaderGenericModelTrait;
 use Zalt\Snippets\ModelSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -22,6 +24,7 @@ class RunAllPatchesSnippet extends ModelSnippetAbstract
         protected readonly MenuSnippetHelper $menuSnippetHelper,
         protected readonly PatchRepository $patchRepository,
         protected readonly StatusMessengerInterface $statusMessenger,
+        protected readonly HelperAdapter $cache,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate);
@@ -55,6 +58,7 @@ class RunAllPatchesSnippet extends ModelSnippetAbstract
                 );
             }
         }
+        $this->cache->invalidateTags([CachedLaminasRunner::TAG]);
     }
 
     public function getRedirectRoute(): ?string
