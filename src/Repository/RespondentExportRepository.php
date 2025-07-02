@@ -212,7 +212,14 @@ class RespondentExportRepository
     public function prepareWordExport($string)
     {
         // convert encoding
-        $string = mb_convert_encoding($string, 'html-entities', 'utf-8');
+        // $string = mb_convert_encoding($string, 'html-entities', 'utf-8');
+        $string = mb_encode_numericentity(
+            htmlspecialchars_decode(
+                htmlentities($string, ENT_NOQUOTES, 'UTF-8', false)
+                ,ENT_NOQUOTES
+            ), [0x80, 0x10FFFF, 0, ~0],
+            'UTF-8'
+        );
 
         // clear scripting
         $string = preg_replace( '@<(script|style|head|header|footer)[^>]*?>.*?</\\1>@si', '', $string );

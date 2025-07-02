@@ -2653,7 +2653,7 @@ msgstr "Vragenlijsten"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:395
 msgid "Dossier Export"
-msgstr "Dossier exporter"
+msgstr "Dossier export"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:400
 #: gemstracker/gemstracker/src/Config/Menu.php:1380

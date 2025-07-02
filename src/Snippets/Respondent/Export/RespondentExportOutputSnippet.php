@@ -83,7 +83,7 @@ class RespondentExportOutputSnippet extends TranslatableSnippetAbstract
             if ($this->filterToken) {
                 $filebasename = 'token-export-' . $this->filterToken->getTokenId();
             } else {
-                $filebasename = 'respondent-export-' . $this->respondent->getId();
+                $filebasename = 'respondent-export-' . $this->respondent->getPatientNumber();
             }
             $this->exportRepository->getFileResponse($this->getHtmlOutput(), $filebasename, $this->requestInfo->getRequestPostParams());
         }

@@ -1212,6 +1212,9 @@ class Route
                     ...$this->defaultPages,
                     'cleanup',
                 ],
+                parameters: [
+                    'id' => '.+',
+                ],
                 parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'cleanup',
