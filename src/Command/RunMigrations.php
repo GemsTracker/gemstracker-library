@@ -2,6 +2,7 @@
 
 namespace Gems\Command;
 
+use Gems\Cache\HelperAdapter;
 use Gems\Db\Migration\MigrationModelFactory;
 use Gems\Db\Migration\PatchRepository;
 use Gems\Db\Migration\SeedRepository;
@@ -14,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Sql\Laminas\CachedLaminasRunner;
 
 #[AsCommand(name: 'db:migrate', description: 'Show and create all migrations')]
 class RunMigrations extends Command
@@ -34,6 +36,7 @@ class RunMigrations extends Command
         protected SeedRepository $seedRepository,
         protected TableRepository $tableRepository,
         protected readonly MigrationModelFactory $migrationModelFactory,
+        protected readonly HelperAdapter $cache,
     )
     {
         parent::__construct();
@@ -116,6 +119,7 @@ class RunMigrations extends Command
 
     protected function runPatches(array $patches, SymfonyStyle $io): bool
     {
+        $ret = true;
         foreach($patches as $patchInfo) {
             try {
                 $this->patchRepository->runPatch($patchInfo);
@@ -125,11 +129,12 @@ class RunMigrations extends Command
                     $io->error(sprintf("While running patch %s for the SQL statement:\n\n%s", $patchInfo['name'], $this->patchRepository->lastSql));
                 }
                 $io->error(sprintf('%s %s failed.. %s', 'Patch', $patchInfo['name'], $e->getMessage()));
-                return false;
+                $ret = false;
             }
         }
+        $this->cache->invalidateTags([CachedLaminasRunner::TAG]);
 
-        return true;
+        return $ret;
     }
 
     protected function runSeeds(array $seeds, SymfonyStyle $io): bool

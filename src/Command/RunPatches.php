@@ -2,6 +2,7 @@
 
 namespace Gems\Command;
 
+use Gems\Cache\HelperAdapter;
 use Gems\Db\Migration\MigrationModelFactory;
 use Gems\Db\Migration\PatchRepository;
 use Gems\Db\Migration\TableRepository;
@@ -11,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Sql\Laminas\CachedLaminasRunner;
 
 #[AsCommand(name: 'db:patch', description: 'Show and run Database patches')]
 class RunPatches extends RunMigrationAbstract
@@ -22,6 +24,7 @@ class RunPatches extends RunMigrationAbstract
         protected TableRepository $tableRepository,
         protected PatchRepository $patchRepository,
         protected readonly MigrationModelFactory $migrationModelFactory,
+        protected readonly HelperAdapter $cache,
     )
     {
         parent::__construct();
@@ -101,7 +104,13 @@ class RunPatches extends RunMigrationAbstract
 
     protected function repositoryRunMigration(array $info): void
     {
-        $this->patchRepository->runPatch($info);
+        try {
+            $this->patchRepository->runPatch($info);
+        } catch (\Throwable $e) {
+            $this->cache->invalidateTags([CachedLaminasRunner::TAG]);
+            throw $e;
+        }
+        $this->cache->invalidateTags([CachedLaminasRunner::TAG]);
     }
 
     protected function setBaseline(InputInterface $input, OutputInterface $output): int
