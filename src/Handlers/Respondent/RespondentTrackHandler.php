@@ -426,6 +426,7 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
     public function undeleteAction()
     {
         $this->deleteParameters['requestUndelete'] = true;
+        $this->deleteParameters['formTitle'] = 'getUndeleteTitle';
 
         parent::deleteAction();
     }
