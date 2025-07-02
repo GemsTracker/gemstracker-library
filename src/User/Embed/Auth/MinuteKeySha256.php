@@ -17,23 +17,23 @@ namespace Gems\User\Embed\Auth;
  * @subpackage User\Embed\Auth
  * @copyright  Copyright (c) 2020, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
- * @since      Class available since version 1.8.8 01-Apr-2020 17:24:36
+ * @since      Class available since version v2.0.47, 01-07-2025
  */
-class DayKeySha256 extends TimeKeySha256Abstract
+class MinuteKeySha256 extends TimeKeySha256Abstract
 {
     /**
      * Format for date part of key function
      *
      * @var string
      */
-    protected string $keyTimeFormat = 'Ymd';
+    protected string $keyTimeFormat = 'YmdHi';
 
     /**
      * The number of time periods on either side of the current that is allowed
      *
      * @var int
      */
-    protected int $keyTimeValidRange = 0;
+    protected int $keyTimeValidRange = 1;
 
     /**
      *
@@ -41,6 +41,6 @@ class DayKeySha256 extends TimeKeySha256Abstract
      */
     public function getLabel(): string
     {
-        return sprintf($this->translator->_('Less safe: Daily valid valid key with %s'), $this->encryptionAlgorithm);
+        return sprintf($this->translator->_('Minute valid key with %s'), $this->encryptionAlgorithm);
     }
 }
