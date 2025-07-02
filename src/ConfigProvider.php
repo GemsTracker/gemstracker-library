@@ -123,7 +123,7 @@ use Zalt\Model\MetaModelConfigProvider;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Sql\Laminas\LaminasRunner;
-use Zalt\Model\Sql\Laminas\LaminasRunnerFactory;
+use Zalt\Model\Sql\Laminas\CachedLaminasRunnerFactory;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\Model\Type\SubModelType;
 use Zalt\SnippetsLoader\SnippetLoader;
@@ -459,7 +459,7 @@ class ConfigProvider
                 // Route / Menu
                 RouteHelper::class => RouteHelperFactory::class,
 
-                LaminasRunner::class => LaminasRunnerFactory::class,
+                LaminasRunner::class => CachedLaminasRunnerFactory::class,
                 GemsMetaModelLoader::class => MetaModelLoaderFactory::class,
 
                 SnippetLoader::class => SnippetLoaderFactory::class,
