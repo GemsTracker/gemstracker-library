@@ -16,7 +16,7 @@ class FileLock extends LockStorageAbstract
     {
         if ($this->isLocked()) {
             $date = new DateTimeImmutable();
-            return $date->setTimestamp(filectime($this->key));
+            return $date->setTimestamp(filemtime($this->key));
         }
         return null;
     }
