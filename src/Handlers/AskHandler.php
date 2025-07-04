@@ -110,59 +110,32 @@ class AskHandler extends SnippetHandler
             return $this->responder->getSnippetsResponse($this->maintenanceModeSnippets, ['token' => $this->token]);
         }
 
-        // Implement later. Not yet in use
-//        if ($request->getAttribute('resumeLater')) {
-//            return $this->responder->getSnippetsResponse($this->resumeLaterSnippets, ['token' => $this->token]);
-//        }
-
         if ($tokenExists) {
-            $message = sprintf('Returning from token %s.', $this->tokenId);
-            $this->auditLog->registerRequest($request, [$message], true);
-
-            // Check if there is no user
-            if (! $this->currentUserRepository->hasCurrentUserId()) {
-                $language = $this->token->getRespondentLanguage();
-                if ($this->locale->isCurrentLanguageDefault() && $this->locale->getLanguage() !== $language) {
-                    $this->addSiteCookie(LocaleMiddleware::LOCALE_ATTRIBUTE, $language);
-                    $this->locale->setCurrentLanguage($language);
-
-                    if ($this->translate instanceof SymfonyTranslator) {
-                        $this->translate->setLocale($language);
-                    }
-                }
-            }
-
-            // Always check here first for tokens to process
-            if ($this->tracker->processCompletedTokens(
-                $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
-                $this->token->getRespondentId(),
-                $this->token->getChangedBy(),
-                $this->token->getOrganizationId(),
-                )) {
-
-                $message = sprintf('Processed token %s succesfully.', $this->tokenId);
-            } else {
-                $message = sprintf('Nothing to do for token %s.', $this->tokenId);
-            }
-            $this->auditLog->registerRequest($request, [$message], true);
+            $this->processToken();
 
         } elseif ($this->tokenId) {
-            $this->auditLog->logChange($request, sprintf('Handling non existing token %s.', $this->tokenId), ['id' => $this->tokenId], $this->token->getRespondentId());
+            return $this->handleNonExistingToken();
 
-            $message = sprintf(
-                $this->_('The token %s does not exist (any more).'),
-                strtoupper($this->tokenId)
-            );
-            $this->auditLog->registerRequest($request, [$message], false);
-
-            $messenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-            // There is a token but is incorrect
-            $messenger->addMessage($message);
-
-            return new RedirectResponse($this->routeHelper->getRouteUrl('ask.index'));
         }
 
         return $this->processResponseCookies(parent::handle($request));
+    }
+
+    protected function handleNonExistingToken(): ResponseInterface
+    {
+        $this->auditLog->logChange($this->request, sprintf('Handling non existing token %s.', $this->tokenId), ['id' => $this->tokenId], $this->token->getRespondentId());
+
+        $message = sprintf(
+            $this->_('The token %s does not exist (any more).'),
+            strtoupper($this->tokenId)
+        );
+        $this->auditLog->registerRequest($this->request, [$message], false);
+
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+        // There is a token but is incorrect
+        $messenger->addMessage($message);
+
+        return new RedirectResponse($this->routeHelper->getRouteUrl('ask.index'));
     }
 
     protected function loadToken(ServerRequestInterface $request): bool
@@ -200,6 +173,55 @@ class AskHandler extends SnippetHandler
             $action->defaultLoopParameters['clientIp'] = $action->clientIp;
 
             $action->defaultLoopSnippets = $this->defaultLoopSnippets;
+        }
+    }
+
+    protected function processToken(): void
+    {
+        // Implement later. Not yet in use
+//        if ($request->getAttribute('resumeLater')) {
+//            return $this->responder->getSnippetsResponse($this->resumeLaterSnippets, ['token' => $this->token]);
+//        }
+
+        $message = sprintf('Returning from token %s.', $this->tokenId);
+        $this->auditLog->registerRequest($this->request, [$message], true);
+
+        // Check if there is no user
+        if (! $this->currentUserRepository->hasCurrentUserId()) {
+            $this->proceessTokenLanguage();
+        }
+
+        // Always check here first for tokens to process
+        $message = $this->proceessTokenCompletion();
+
+        $this->auditLog->registerRequest($this->request, [$message], true);
+    }
+
+    protected function proceessTokenCompletion(): string
+    {
+        if ($this->tracker->processCompletedTokens(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
+            $this->token->getRespondentId(),
+            $this->token->getChangedBy(),
+            $this->token->getOrganizationId(),
+        )) {
+
+            return sprintf('Processed token %s succesfully.', $this->tokenId);
+        }
+
+        return sprintf('Nothing to do for token %s.', $this->tokenId);
+    }
+
+    protected function proceessTokenLanguage(): void
+    {
+        $language = $this->token->getRespondentLanguage();
+        if ($this->locale->isCurrentLanguageDefault() && $this->locale->getLanguage() !== $language) {
+            $this->addSiteCookie(LocaleMiddleware::LOCALE_ATTRIBUTE, $language);
+            $this->locale->setCurrentLanguage($language);
+
+            if ($this->translate instanceof SymfonyTranslator) {
+                $this->translate->setLocale($language);
+            }
         }
     }
 }
