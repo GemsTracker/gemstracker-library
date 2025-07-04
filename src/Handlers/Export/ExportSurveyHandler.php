@@ -4,6 +4,7 @@ namespace Gems\Handlers\Export;
 
 use Gems\Export\Db\AnswerModelContainer;
 use Gems\Handlers\BrowseChangeHandler;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\PlaceholderModel;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\Export\SurveyExportSearchFormSnippet;
@@ -38,6 +39,7 @@ class ExportSurveyHandler extends BrowseChangeHandler
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly AnswerModelContainer $answerModelContainer,
         protected readonly PeriodSelectRepository $periodSelectRepository,
     ) {
@@ -64,6 +66,15 @@ class ExportSurveyHandler extends BrowseChangeHandler
 
         $placeholderModel = new PlaceholderModel($this->metaModelLoader, $this->translate, 'noSurvey', $basicArray);
         return $placeholderModel;
+    }
+
+    public function getSearchDefaults(): array
+    {
+        $defaults = parent::getSearchDefaults();
+
+        $defaults['gto_id_organization'] = array_keys($this->currentUserRepository->getCurrentUser()->getRespondentOrganizations());
+
+        return $defaults;
     }
 
     public function getSearchFilter(bool $useSessionReadonly = false): array
