@@ -3,23 +3,31 @@
 namespace Gems\Handlers;
 
 use Gems\Layout\LayoutRenderer;
+use Gems\Snippets\Generic\CurrentButtonColumnSnippet;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class EmptyHandler implements RequestHandlerInterface
 {
     public function __construct(
-        protected LayoutRenderer $layoutRenderer
+        protected readonly LayoutRenderer $layoutRenderer,
+        protected readonly SnippetResponderInterface $responder,
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $data = [
-            'content' => null,
+        $this->responder->processRequest($request);
+
+        $params = [
+            'addCurrentChildren' => true,
+            'addCurrentParent' => false,
+            'addCurrentSiblings' => false,
         ];
-        return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::legacy-view', $request, $data));
+
+        return $this->responder->getSnippetsResponse([CurrentButtonColumnSnippet::class], $params);
     }
 }
