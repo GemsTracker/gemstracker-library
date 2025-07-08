@@ -212,7 +212,7 @@ abstract class TimeKeySha256Abstract extends EmbeddedAuthAbstract
      * @param User $embeddedUser
      * @return array
      */
-    public function getValidKeys(User $embeddedUser, EmbeddedUserData $embeddedUserData)
+    public function getValidKeys(User $embeddedUser, EmbeddedUserData $embeddedUserData, string $datetime = 'now')
     {
         $keyStart = $this->getKeysStart($embeddedUserData);
         // EchoOut::track($keyStart);
@@ -221,7 +221,7 @@ abstract class TimeKeySha256Abstract extends EmbeddedAuthAbstract
             return [$keyStart];
         }
 
-        $current = new DateTimeImmutable();
+        $current = new DateTimeImmutable($datetime);
         $current = $current->sub(new DateInterval($this->getTimePeriodString($this->keyTimeValidRange)));
         $addDate = new DateInterval($this->getTimePeriodString(1));
         $keys    = [];
