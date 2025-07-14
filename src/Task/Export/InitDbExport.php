@@ -34,7 +34,7 @@ class InitDbExport extends TaskAbstract
         $modelContainer = $batch->getVariable('modelContainer');
         $model = $modelContainer->get($modelIdentifier, $searchFilter, $modelApplyFunctions);
 
-        $exportId = $model->getName() . (new \DateTimeImmutable())->format('YmdHis');
+        $exportId = hash('sha256', $model->getName()) . '-' . (new \DateTimeImmutable())->format('YmdHis');
 
         $currentExportIds = $batch->getVariable('exportIds') ?? [];
         if (!in_array($exportId, $currentExportIds)) {
