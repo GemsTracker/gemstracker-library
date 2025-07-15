@@ -143,6 +143,10 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->addColumn("CASE WHEN grc_success = 1 THEN 0 ELSE 1 END", 'resp_deleted');
         $this->addColumn('CASE WHEN gr2o_email IS NULL OR LENGTH(TRIM(gr2o_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
 
+        if (isset($this->config['respondentModel']['patientNumberRegex'])) {
+            $this->patientNumberRegex = $this->config['respondentModel']['patientNumberRegex'];
+        }
+
         $this->applySettings();
 
         $metaModelLoader->addDatabaseTranslations($this->metaModel, false);

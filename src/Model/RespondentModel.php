@@ -517,7 +517,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                         array('gr2o_patient_nr', 'gr2o_id_organization'),
                         array('gr2o_id_user' => 'grs_id_user', 'gr2o_id_organization')
                         ),
-                'validators[regex]', new \Laminas\Validator\Regex('/^[^\/\\%&]*$/'), // Between start and end no \/%& allowed
+                'validators[regex]', new \Laminas\Validator\Regex('/^[a-zA-Z0-9-_]{3,}$/'), // Between start and end no \/%& allowed
                 'validators[csvinj]', 'NoCsvInjectionChars'
                 );
         $this->set('grs_id_user');

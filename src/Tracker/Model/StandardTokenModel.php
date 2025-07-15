@@ -16,7 +16,6 @@ use DateTimeInterface;
 use Gems\Date\Period;
 use Gems\Model\Type\TokenValidFromType;
 use Gems\Model\Type\TokenValidUntilType;
-use Gems\Tracker\Model\Dependency\TokenModelTimeDependency;
 use Gems\User\User;
 use Gems\Util\Translated;
 use Zalt\Model\MetaModelInterface;

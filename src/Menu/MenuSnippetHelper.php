@@ -176,9 +176,9 @@ class MenuSnippetHelper
 
         if ($this->routeHelper->hasAccessToRoute($route)) {
             $label = $menuItem->getLabel();
-            if (! $label) {
-                dump($route);
-            }
+//            if (! $label) {
+//                dump($route);
+//            }
             $url = $this->routeHelper->getLateRouteUrl($route, $paramLateMappings, $bridge, $ignoreErrors, $queryParams);
             return [
                 'label' => $label,
