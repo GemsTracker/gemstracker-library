@@ -118,21 +118,23 @@ class LimeSurvey4m00FieldMap extends \Gems_Tracker_Source_LimeSurvey2m00FieldMap
             $qtTable = $this->_getQuestionsTranslateTableName();
 
             $sql    = "
-                SELECT q.sid, q.type, q.qid, q.gid, qt.question, q.title, qt.help,
-                    q.other, q.question_order,
-                    g.group_order, gt.group_name, gt.description,
-                    sq.title AS sq_title, sq.question_order, sqt.question AS sq_question, sq.scale_id,
-                    at.value AS hidden,
-                    CASE WHEN q.relevance IS NULL OR q.relevance = '' OR q.relevance = 1 OR NOT EXISTS (SELECT * FROM $cTable AS cn WHERE cn.qid = q.qid) THEN 0 ELSE 1 END AS hasConditon
-                FROM $qTable AS q
-                    JOIN $qtTable AS qt ON q.qid = qt.qid
-                    LEFT JOIN $gTable AS g ON q.sid = g.sid AND q.gid = g.gid
-                    LEFT JOIN $gtTable AS gt ON g.gid = gt.gid AND qt.language=gt.language
-                    LEFT JOIN $qTable AS sq ON q.qid = sq.parent_qid
-                    LEFT JOIN $qtTable AS sqt ON sq.parent_qid = sqt.qid
-                    LEFT JOIN (SELECT * FROM $aTable WHERE attribute = 'hidden' AND (language = ''  OR language IS NULL)) AS at ON q.qid = at.qid
-                WHERE g.sid = ? AND qt.language = ? AND gt.language = ? AND q.parent_qid = 0
-                ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
+            SELECT q.sid, q.type, q.qid, q.gid, qt.question, q.title, qt.help,
+                q.other, q.question_order,
+                g.group_order, gt.group_name, gt.description,
+                sq.title AS sq_title, sq.question_order, sqt.question AS sq_question, sq.scale_id,
+                at.value AS hidden,
+                CASE WHEN q.relevance IS NULL OR q.relevance = '' OR q.relevance = 1 OR NOT EXISTS (SELECT * FROM $cTable AS cn WHERE cn.qid = q.qid) THEN 0 ELSE 1 END AS hasConditon,
+                q.relevance AS relevance,
+                q.mandatory AS required
+            FROM $qTable AS q
+                JOIN $qtTable AS qt ON q.qid = qt.qid
+                LEFT JOIN $gTable AS g ON q.sid = g.sid AND q.gid = g.gid
+                LEFT JOIN $gtTable AS gt ON g.gid = gt.gid AND qt.language=gt.language
+                LEFT JOIN $qTable AS sq ON q.qid = sq.parent_qid
+                LEFT JOIN $qtTable AS sqt ON sq.qid = sqt.qid AND qt.language = sqt.language
+                LEFT JOIN (SELECT * FROM $aTable WHERE attribute = 'hidden' AND (language = ''  OR language IS NULL)) AS at ON q.qid = at.qid
+            WHERE g.sid = ? AND qt.language = ? AND gt.language = ? AND q.parent_qid = 0
+            ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
 
             $rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language, $this->language));
 
