@@ -41,7 +41,7 @@ class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
      */
     public bool $showEndScreen = true;
 
-    protected Token $showToken;
+    protected ?Token $showToken = null;
 
     /**
      * Switch for showing how long the token is valid.
