@@ -89,9 +89,9 @@ class LimeSurvey4m00FieldMap extends \Gems_Tracker_Source_LimeSurvey2m00FieldMap
             $this->_hardAnswers = array();
             if ($rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
                 foreach ($rows as $row) {
-                    $this->_hardAnswers[$row['qid']][$row['scale_id']][$row['code']] = $row['answer'];
+                    $this->_hardAnswers[$row['qid']][$row['scale_id']][$row['code']] = $this->removeMarkup($row['answer']);
                     if ($row['other']=='Y') {
-                        $this->_hardAnswers[$row['qid']][$row['scale_id']]['-oth-'] =  $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
+                        $this->_hardAnswers[$row['qid']][$row['scale_id']]['-oth-'] =  $this->removeMarkup($this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other')));
                     }
                 }
             }
