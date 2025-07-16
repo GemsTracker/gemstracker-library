@@ -107,8 +107,10 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
             foreach (array_filter($calcUsing) as $value) {
                 $appointment = $this->agenda->getAppointment($value);
 
-                if ($appointment->exists) {
+                if ($appointment->exists && $appointment->isActive()) {
                     return $this->getId($appointment);
+                } else {
+                    $currentValue = null;
                 }
             }
         }
