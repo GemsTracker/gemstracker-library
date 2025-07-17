@@ -39,6 +39,10 @@ class SurveyModel extends GemsJoinModel
         $modelName = $this->survey->getName();
         parent::__construct('gems__tokens', $metaModelLoader, $sqlRunner, $translate, $modelName, $savable);
 
+        $this->metaModel->setMeta('surveyId', $this->survey->getSurveyId());
+        $this->metaModel->setMeta('sourceSurveyId', $this->survey->getSourceSurveyId());
+        $this->metaModel->setMeta('exportId', 'survey_'. $this->survey->getSurveyId());
+
         $this->addTable('gems__respondent2org', [
             'gto_id_respondent'   => 'gr2o_id_user',
             'gto_id_organization' => 'gr2o_id_organization'

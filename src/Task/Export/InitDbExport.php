@@ -34,7 +34,7 @@ class InitDbExport extends TaskAbstract
         $modelContainer = $batch->getVariable('modelContainer');
         $model = $modelContainer->get($modelIdentifier, $searchFilter, $modelApplyFunctions);
 
-        $exportId = hash('sha256', $model->getName()) . '-' . (new \DateTimeImmutable())->format('YmdHis');
+        $exportId = $this->getExportId($model) . (new \DateTimeImmutable())->format('YmdHis');
 
         $currentExportIds = $batch->getVariable('exportIds') ?? [];
         if (!in_array($exportId, $currentExportIds)) {
@@ -96,6 +96,29 @@ class InitDbExport extends TaskAbstract
         }
 
         return join('.', $nameParts);
+    }
+    protected function getExportId(DataReaderInterface $model, int $maxSize = 85): string
+    {
+        $exportId = $model->getMetaModel()->getMeta('exportId');
+        if ($exportId && strlen($exportId <= $maxSize)) {
+            return $exportId;
+        }
+
+        if (strlen($model->getName() <= $maxSize)) {
+            return $model->getName();
+        }
+        if ($model->getName() === $model::class) {
+            $parts = explode('\\', $model::class);
+            $last = end($parts);
+            if (strlen($parts[0] . '\\' .  $last) <= $maxSize) {
+                return $parts[0] . '\\' .  $last;
+            }
+            if (strlen($last) <= $maxSize) {
+                return $last;
+            }
+        }
+
+        return hash('sha256', $model->getName()) . '-';
     }
 
     protected function getExportSettings(string $exportType, array $postData): array
