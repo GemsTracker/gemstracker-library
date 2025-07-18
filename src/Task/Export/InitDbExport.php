@@ -3,6 +3,7 @@
 namespace Gems\Task\Export;
 
 use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\Export\Db\DbExportRepository;
 use Gems\Export\Db\ModelExportRepository;
 use Gems\Export\Db\ModelContainer;
 use Gems\Export\Type\ExportSettingsGeneratorInterface;
@@ -48,7 +49,7 @@ class InitDbExport extends TaskAbstract
 
         $columnOrder = $this->getColumnOrder($model->getMetaModel());
 
-        $totalTasks = ceil($totalRows / $rowsPerBatch);
+        $totalTasks = max(ceil($totalRows / $rowsPerBatch), 1);
 
         $batch->getStack()->registerAllowedClass(ModelExportPart::class);
 
@@ -100,11 +101,11 @@ class InitDbExport extends TaskAbstract
     protected function getExportId(DataReaderInterface $model, int $maxSize = 85): string
     {
         $exportId = $model->getMetaModel()->getMeta('exportId');
-        if ($exportId && strlen($exportId <= $maxSize)) {
+        if ($exportId && strlen($exportId) <= $maxSize) {
             return $exportId;
         }
 
-        if (strlen($model->getName() <= $maxSize)) {
+        if (strlen($model->getName()) <= $maxSize) {
             return $model->getName();
         }
         if ($model->getName() === $model::class) {

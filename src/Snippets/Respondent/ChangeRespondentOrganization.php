@@ -149,7 +149,6 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
             'multiOptions' => $availableOrganizations,
             'validators[isnot]' => [IsNot::class, true, [$disabled, $this->_('You cannot change to this organization')]]
             ]);
-        
         if (in_array($this->formData['gr2o_id_organization'], $disabled)) {
             // Selected organization is now unavailable, reset selection
             $this->formData['gr2o_id_organization'] = null;
@@ -159,6 +158,9 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         $disablePatientNumber = array_key_exists($this->formData['gr2o_id_organization'], $existingOrgs);
         if ($disablePatientNumber) {
             $this->formData['gr2o_patient_nr'] = $existingOrgs[$this->formData['gr2o_id_organization']];
+
+            // In this case using an existing patient number is allowed
+            $dataModel->getMetaModel()->remove('gr2o_patient_nr', 'validators[uniquePatientnr]');
         }
         $bridge->addText('gr2o_patient_nr', 'label', $this->_('New respondent nr'),
                 'disabled', $disablePatientNumber ? 'disabled' : null

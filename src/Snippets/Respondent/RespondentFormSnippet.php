@@ -38,7 +38,7 @@ class RespondentFormSnippet extends ModelFormSnippet
      */
     protected array $extraNotLoggedFields = ['__c_1_3_copy__grs_id_user__key_k_0_p_1__', 'calc_email', 'old_gr2o_consent'];
 
-    protected array $ssnOtherOrgCopyFields = ['gr2o_email', 'gr2o_mailable'];
+    protected array $ssnOtherOrgCopyFields = ['gr2o_email', 'gr2o_mailable', 'calc_email'];
 
     /**
      * When true a tabbed form is used.

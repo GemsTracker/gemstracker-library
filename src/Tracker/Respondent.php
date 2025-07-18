@@ -654,6 +654,13 @@ class Respondent
                 $values['gr2o_changed']        = new Expression("CURRENT_TIMESTAMP");
                 $values['gr2o_changed_by']     = $this->currentUserId;
 
+                if ($newCode->isOverwriter()) {
+                    $revokedConsent = $this->consentRepository->getConsentRevoked();
+                    foreach ($this->respondentModel->consentFields as $consentField) {
+                        $values[$consentField] = $revokedConsent;
+                    }
+                }
+
                 // Update though primamry key is prefered
                 $where['gr2o_patient_nr'] = $this->getPatientNumber();
                 $where['gr2o_id_organization'] = $this->getOrganizationId();

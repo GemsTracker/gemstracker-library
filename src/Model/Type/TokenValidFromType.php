@@ -26,11 +26,28 @@ class TokenValidFromType extends MaybeTimeType implements OverwritingTypeInterfa
 
     public function __construct(
         TranslatorInterface $translator,
-        protected TokenRepository $tokenRepository,
     )
     {
         $this->translate = $translator;
 
         $this->description = $this->_('dd-mm-yyyy hh:mm');
+    }
+
+    public function setMaybeTimeValue(string $value): void
+    {
+        $this->maybeTimeValue = $value;
+    }
+
+    public function useTime(bool $useTime = true)
+    {
+        if ($useTime) {
+            $this->dateFormat  = 'd-m-Y H:i';
+            $this->description = $this->_('dd-mm-yyyy hh:mm');
+            $this->editTime = true;
+        } else {
+            $this->dateFormat  = 'd-m-Y';
+            $this->description = $this->_('dd-mm-yyyy');
+            $this->editTime = false;
+        }
     }
 }

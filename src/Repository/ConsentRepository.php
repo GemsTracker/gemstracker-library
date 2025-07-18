@@ -57,21 +57,6 @@ class ConsentRepository
     }
 
     /**
-     * Retrieve the consentCODE to use for rejected responses by the survey system
-     * The mapping of actual consents to consentCODEs is done in the gems__consents table
-     *
-     * @return string Default value is 'do not use'
-     */
-    public function getConsentRejected(): string
-    {
-        if (isset($this->consentConfig['consentRejected'])) {
-            return $this->consentConfig['consentRejected'];
-        }
-
-        return 'do not use';
-    }
-
-    /**
      * Retrieve the array of possible consentCODEs to use for responses by the survey system
      * The mapping of actual consents to consentCODEs is done in the gems__consents table
      *
@@ -110,6 +95,35 @@ class ConsentRepository
     public function getConsents(): array
     {
         return array_column($this->getUserConsents(), 'gco_description', 'untranslated_description');
+    }
+
+    /**
+     * Retrieve the consentCODE to use for rejected responses by the survey system
+     * The mapping of actual consents to consentCODEs is done in the gems__consents table
+     *
+     * @return string Default value is 'do not use'
+     */
+    public function getConsentRejected(): string
+    {
+        if (isset($this->consentConfig['consentRejected'])) {
+            return $this->consentConfig['consentRejected'];
+        }
+
+        return 'do not use';
+    }
+
+    /**
+     * Get the code to use when revoking a consent
+     *
+     * @return string
+     */
+    public function getConsentRevoked(): string
+    {
+        if (isset($this->consentConfig['consentRevoked'])) {
+            return $this->consentConfig['consentRevoked'];
+        }
+
+        return 'No';
     }
 
     /**

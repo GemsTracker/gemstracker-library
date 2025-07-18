@@ -64,6 +64,7 @@ class ExportDownloadSnippet extends ModelTableSnippet
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
         if ($this->ignoreFilterForDownload) {
             $this->extraFilter     = [];
+            $this->extraSort       = ['gfex_created' => SORT_DESC];
             $this->searchFilter    = [];
             $this->textSearchField = '';
 
