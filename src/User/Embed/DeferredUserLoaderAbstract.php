@@ -57,10 +57,12 @@ abstract class DeferredUserLoaderAbstract
             $user->setGroupSession($groupId);
         }
 
-        /*$user->setSessionCrumbs($embeddedUserData->getCrumbOption());
+        /*
+        $user->setSessionCrumbs($embeddedUserData->getCrumbOption());
         $user->setSessionFramed(true);
         $user->setSessionMvcLayout($embeddedUserData->getMvcLayout());
-        $user->setSessionStyle($embeddedUserData->getUserStyle());*/
+        $user->setSessionStyle($embeddedUserData->getUserStyle());
+        // */
     }
 
     /**

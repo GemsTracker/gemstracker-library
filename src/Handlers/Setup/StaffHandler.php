@@ -211,11 +211,9 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
+        CurrentUserRepository $currentUserRepository,
         protected UserLoader $userLoader,
         protected Model $modelLoader,
-        protected readonly CurrentUserRepository $currentUserRepository,
-        private readonly OtpMethodBuilder $otpMethodBuilder,
-        private readonly RouteHelper $routeHelper,
         protected readonly AccessRepository $accessRepository,
     )
     {
@@ -243,13 +241,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
             $user = $this->getSelectedUser();
 
             if ($user) {
-                if (! ($this->currentUser->hasPrivilege('pr.staff.see.all') ||
-                    $this->currentUser->isAllowedOrganization($user->getBaseOrganizationId()))) {
-                    throw new \Gems\Exception($this->_('No access to page'), 403, null, sprintf(
-                        $this->_('You have no right to access users from the organization %s.'),
-                        $user->getBaseOrganization()->getName()
-                    ));
-                }
+                $this->currentUser->assertAccessToOrganizationId($user->getBaseOrganizationId(), null);
 
                 switch ($action) {
                     case 'create':
@@ -359,9 +351,9 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         $filter = parent::getSearchFilter($useRequest);
 
         if (! (isset($filter['gsf_id_organization']) && $filter['gsf_id_organization'])) {
-            $filter['gsf_id_organization'] = $this->currentUserRepository->getAllowedOrganizationIds();
+            $filter['gsf_id_organization'] = $this->currentUser->getAllowedOrganizationIds();
         } else {
-            $this->currentUserRepository->assertAccessToOrganizationId($filter['gsf_id_organization']);
+            $this->currentUser->assertAccessToOrganizationId($filter['gsf_id_organization'], null);
         }
 
         return $filter;

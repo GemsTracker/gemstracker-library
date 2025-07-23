@@ -42,6 +42,21 @@ class OrganizationRepository
     )
     {}
 
+    /**
+     * An array orgId => orgId of the organizations the respondent / orgId combo is allowed to see
+     * the tracks and respondents of.
+     *
+     * Allowes projects to add extra tracks to a respodnent screen
+     *
+     * @param int $respondentId
+     * @param int $organizationId
+     * @return array<int, int>
+     */
+    public function getExtraTokenOrgsFor(int $respondentId, int $organizationId): array
+    {
+        return [$organizationId, $organizationId];
+    }
+
     public function getNoOrganizationOrganization(): Organization
     {
         if (!$this->noOrgOrganization) {

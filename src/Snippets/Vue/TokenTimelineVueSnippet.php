@@ -13,6 +13,7 @@ namespace Gems\Snippets\Vue;
 use Gems\Layout\LayoutSettings;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
+use Gems\User\User;
 use Mezzio\Helper\UrlHelper;
 use Zalt\Base\RequestInfo;
 use Zalt\Model\MetaModelInterface;
@@ -25,6 +26,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class TokenTimelineVueSnippet extends VueSnippetAbstract
 {
+    protected readonly User $currentUser;
+
     protected int $organizationId;
 
     protected string $patientNr;
@@ -36,10 +39,12 @@ class TokenTimelineVueSnippet extends VueSnippetAbstract
         Locale $locale,
         UrlHelper $urlHelper,
         array $config,
-        protected readonly CurrentUserRepository $currentUserRepository,
+        CurrentUserRepository $currentUserRepository,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $locale, $urlHelper, $config);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     protected function getAttributes(): array
@@ -59,7 +64,7 @@ class TokenTimelineVueSnippet extends VueSnippetAbstract
         }
         $this->patientNr = (string) $attributes[MetaModelInterface::REQUEST_ID1];
         $this->organizationId = (int) $attributes[MetaModelInterface::REQUEST_ID2];
-        $this->currentUserRepository->assertAccessToOrganizationId($this->organizationId);
+        $this->currentUser->assertAccessToOrganizationId($this->organizationId, null);
         return parent::hasHtmlOutput();
     }
 }

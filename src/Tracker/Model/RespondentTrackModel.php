@@ -20,6 +20,7 @@ use Gems\Model\MetaModelLoader;
 use Gems\Repository\MailRepository;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\User\Mask\MaskRepository;
+use Gems\User\User;
 use Gems\Util\Translated;
 use MUtil\Model;
 use DateTime;
@@ -55,6 +56,8 @@ use Zalt\Model\Sql\SqlRunnerInterface;
  */
 class RespondentTrackModel extends GemsMaskedModel
 {
+    protected readonly User $currentUser;
+
     /**
      *
      * @var boolean When true the labels of wholly masked items are removed
@@ -69,7 +72,7 @@ class RespondentTrackModel extends GemsMaskedModel
         protected readonly GemsModel $gemsModel,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly Translated $translatedUtil,
-        protected readonly CurrentUserRepository $currentUserRepository,
+        CurrentUserRepository $currentUserRepository,
         protected readonly MailRepository $mailRepository,
     ) {
         parent::__construct(
@@ -82,6 +85,7 @@ class RespondentTrackModel extends GemsMaskedModel
         );
 
         $metaModelLoader->setChangeFields($this->metaModel, 'gr2t');
+        $this->currentUser = $currentUserRepository->getCurrentUser();
 
         $this->addTable('gems__respondents', ['gr2t_id_user' => 'grs_id_user'], false, 'grs');
         $this->addTable(
@@ -348,7 +352,7 @@ class RespondentTrackModel extends GemsMaskedModel
                 $values['gr2t_id_user'] = $filter['gr2t_id_user'];
             }
             if (isset($filter['gr2t_id_organization'])) {
-                $this->currentUserRepository->assertAccessToOrganizationId($filter['gr2t_id_organization']);
+                $this->currentUser->assertAccessToOrganizationId($filter['gr2t_id_organization'], null);
                 $values['gr2t_id_organization'] = $filter['gr2t_id_organization'];
             }
         }

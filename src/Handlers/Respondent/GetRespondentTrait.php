@@ -55,21 +55,16 @@ trait GetRespondentTrait
     public function getRespondent(): Respondent
     {
         if (! $this->_respondent) {
-            $patientNumber  = $this->request->getAttribute(Model::REQUEST_ID1);
-            $organizationId = intval($this->request->getAttribute(Model::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId()));
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
-
+            $patientNumber     = $this->request->getAttribute(Model::REQUEST_ID1);
+            $organizationId    = intval($this->request->getAttribute(Model::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId()));
             $this->_respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
 
             if ((! $this->_respondent->exists) && $patientNumber && $organizationId) {
                 throw new Exception(sprintf($this->getMissingRespondentMessage(), $patientNumber), 404);
             }
 
-            if ($this->_respondent->exists && (! array_key_exists($this->_respondent->getOrganizationId(), $this->currentUser->getAllowedOrganizations()))) {
-                throw new Exception(
-                    $this->_('Inaccessible or unknown organization'),
-                    403, null,
-                    sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->currentUser->getRole()));
+            if ($this->_respondent->exists) {
+                $this->currentUser->assertAccessToOrganizationId($this->_respondent->getOrganizationId(), $this->_respondent->getId());
             }
 
             if ($this->responder instanceof GemsSnippetResponder) {

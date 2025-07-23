@@ -99,11 +99,6 @@ class Respondent
         $this->refresh();
     }
 
-    public function assertAccessFromOrganizationId(User $currentUser, int $organizationId): void
-    {
-        $currentUser->assertAccessToOrganizationId($organizationId);
-    }
-
     /**
      * Can respondent be mailed
      *

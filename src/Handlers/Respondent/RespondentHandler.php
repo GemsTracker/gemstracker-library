@@ -177,7 +177,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $deleteParameters = [
         'formTitle' => null,
-        'forOtherOrgs' => 'getOtherOrgs',
         // 'respondentData' => 'getRespondentData',
         'showButtons' => false,
     ];
@@ -258,7 +257,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $showParameters = [
         'addCurrentParent' => true,
-        'forOtherOrgs' => 'getOtherOrgs',
         'respondent'   => 'getRespondent',  // Sets menu
         // 'respondentData'   => 'getRespondentData',
         '-run-once' => 'openedRespondent',
@@ -275,12 +273,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
-//        'Respondent\\MultiOrganizationTab',
-//        'Respondent\\RespondentDetailsSnippet',
-//        'Tracker\\AddTracksSnippet',
-//        'Respondent\\RoundsTabsSnippet',
-//        'Token\\RoundTokenSnippet',
-//        'Respondent\\TrafficLightTokenSnippet',
         'Vue\\PatientVueSnippet',
     ];
 
@@ -415,7 +407,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
             $edit = false;
 
             $organizationId = $this->request->getAttribute(Model::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId());
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $this->currentUser->assertAccessToOrganizationId($organizationId, null);
             $org = $this->organizationRepository->getOrganization($organizationId);
 
             if ($org) {
@@ -618,7 +610,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
 
         if (isset($data[Model::REQUEST_ID2])) {
             $organizationId = $data[Model::REQUEST_ID2];
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $this->currentUser->assertAccessToOrganizationId($organizationId, null);
             $organizationIds = [intval($organizationId)];
         } else {
             $organizationIds = $this->currentUser->getRespondentOrgFilter();
@@ -775,7 +767,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         $organizationId = null;
         if (isset($routeParams[Model::REQUEST_ID2])) {
             $organizationId = $routeParams[Model::REQUEST_ID2];
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $this->currentUser->assertAccessToOrganizationId($organizationId, null);
         }
         $patientNr = null;
         if (isset($routeParams[Model::REQUEST_ID1])) {

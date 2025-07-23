@@ -83,7 +83,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected readonly CurrentUserRepository $currentUserRepository,
+        CurrentUserRepository $currentUserRepository,
         protected MaskRepository $maskRepository,
         protected PeriodSelectRepository $periodSelectRepository,
         protected TrackDataRepository $trackDataRepository,
@@ -135,7 +135,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
             $this->autofilterParameters['extraFilter']['gr2t_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         } else {
-            $this->currentUserRepository->assertAccessToOrganizationId($filter['gr2t_id_organization']);
+            $this->currentUser->assertAccessToOrganizationId($filter['gr2t_id_organization'], null);
         }
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
             $this->autofilterParameters['extraFilter'][] = DatabaseModelAbstract::WHERE_NONE;
@@ -180,8 +180,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
     public function getSearchDefaults(): array
     {
         if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
-            $orgs = $this->currentUser->getRespondentOrganizations();
-            $this->defaultSearchData['gr2t_id_organization'] = array_keys($orgs);
+            $this->defaultSearchData['gr2t_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
         }
 
         if (!isset($this->defaultSearchData['gr2t_id_track'])) {

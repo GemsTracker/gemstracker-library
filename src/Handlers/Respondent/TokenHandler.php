@@ -179,8 +179,6 @@ class TokenHandler extends TokenSearchHandlerAbstract
         protected BatchRunnerLoader $batchRunnerLoader,
     ) {
         parent::__construct($responder, $translate, $cache, $metaModelLoader, $currentUserRepository, $periodSelectRepository, $tracker);
-
-        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     public function answerAction()
@@ -373,7 +371,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
         // Survey action data
         $data['gto_id_respondent']   = $this->getRespondentId();
         if (isset($data['gto_id_organization'])) {
-            $this->currentUserRepository->assertAccessToOrganizationId($data['gto_id_organization']);
+            $this->currentUser->assertAccessToOrganizationId($data['gto_id_organization'], $data['gto_id_respondent']);
         } else {
             $data['gto_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
         }

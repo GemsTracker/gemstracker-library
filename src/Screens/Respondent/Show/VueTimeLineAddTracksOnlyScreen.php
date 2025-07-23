@@ -27,7 +27,6 @@ class VueTimeLineAddTracksOnlyScreen extends ShowScreenAbstract
     {
         return  [
             'addCurrentParent' => true,
-            'forOtherOrgs' => 'getOtherOrgs',
             'respondent'   => 'getRespondent',  // Sets menu
             '-run-once' => 'openedRespondent',
             'tag' => 'show-respondent',

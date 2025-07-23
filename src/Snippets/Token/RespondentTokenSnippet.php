@@ -12,12 +12,22 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\MetaModelLoader;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\TokenRepository;
 use Gems\Snippets\TokenModelSnippetAbstract;
+use Gems\Tracker;
 use Gems\Tracker\Respondent;
+use Gems\User\Mask\MaskRepository;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
 use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Snippet for showing the all tokens for a single respondent.
@@ -52,13 +62,6 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
     public $browse = true;
 
     /**
-     * When true: show tokens for all organizations, false: only current organization, array => those organizations
-     *
-     * @var mixed boolean or array
-     */
-    protected $forOtherOrgs = false;
-
-    /**
      * The RESPONDENT model, not the token model
      *
      * @var DataReaderInterface
@@ -71,6 +74,22 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
      * @var null|\Gems\Tracker\Respondent
      */
     protected ?Respondent $respondent = null;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        MaskRepository $maskRepository,
+        MetaModelLoader $metaModelLoader,
+        Tracker $tracker,
+        TokenRepository $tokenRepository,
+        protected readonly OrganizationRepository $organizationRepository,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $currentUserRepository, $maskRepository, $metaModelLoader, $tracker, $tokenRepository);
+    }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -139,12 +158,9 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
 
     public function getFilter(MetaModelInterface $metaModel): array
     {
-        $filter['gto_id_respondent']   = $this->respondent->getId();
-        if (is_array($this->forOtherOrgs)) {
-            $filter['gto_id_organization'] = $this->forOtherOrgs;
-        } elseif (true !== $this->forOtherOrgs) {
-            $filter['gto_id_organization'] = $this->respondent->getOrganizationId();
-        }
+        $respondentId = $this->respondent->getId();
+        $filter['gto_id_respondent']   = $respondentId;
+        $filter['gto_id_organization'] = $this->organizationRepository->getExtraTokenOrgsFor($respondentId, $this->respondent->getOrganizationId());;
 
         // Filter for valid track reception codes
         $filter[] = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';

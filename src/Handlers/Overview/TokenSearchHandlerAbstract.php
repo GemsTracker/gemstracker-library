@@ -25,6 +25,7 @@ use Gems\Snippets\Token\PlanTokenSnippet;
 use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\Tracker;
 use Gems\Tracker\Model\TokenModel;
+use Gems\User\User;
 use Mezzio\Session\SessionInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
@@ -74,6 +75,8 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
      */
     protected bool $checkForAnswersOnLoad = true;
 
+    protected User $currentUser;
+
     protected array $indexParameters = [
         'addCurrentChildren' => true,
         'addCurrentSiblings' => true,
@@ -104,11 +107,14 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected MetaModelLoader $metaModelLoader,
-        protected readonly CurrentUserRepository $currentUserRepository,
+        CurrentUserRepository $currentUserRepository,
         protected PeriodSelectRepository $periodSelectRepository,
         protected Tracker $tracker,
     ) {
         parent::__construct($responder, $translate, $cache);
+
+        $this->currentUser   = $currentUserRepository->getCurrentUser();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     /**
@@ -242,7 +248,7 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
             $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
             $filter['gto_id_organization'] = $currentUser->getRespondentOrgFilter();
         } else {
-            $this->currentUserRepository->assertAccessToOrganizationId($filter['gto_id_organization']);
+            $this->currentUser->assertAccessToOrganizationId($filter['gto_id_organization'], null);
         }
         $filter['gsu_active']  = 1;
 

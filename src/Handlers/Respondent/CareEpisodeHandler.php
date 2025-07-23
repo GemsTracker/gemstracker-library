@@ -21,6 +21,7 @@ use Gems\Snippets\Agenda\EpisodeTableSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
 use Psr\Cache\CacheItemPoolInterface;
@@ -179,7 +180,7 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
         $params = $this->requestInfo->getRequestMatchedParams();
         $patientNr = $params[Model::REQUEST_ID1];
         $organizationId = $params[Model::REQUEST_ID2];
-        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+        $this->currentUser->assertAccessToOrganizationId($organizationId, $this->getRespondentId());
 
         return [
             'gr2o_patient_nr' => $patientNr,
@@ -195,19 +196,22 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
     public function getRespondent(): Respondent
     {
         if (! $this->_respondent) {
-            $id = $this->requestInfo->getParam(Model::EPISODE_ID);
-            $patientNr = $this->requestInfo->getParam(Model::REQUEST_ID1);
+            $id             = $this->requestInfo->getParam(Model::EPISODE_ID);
+            $patientNr      = $this->requestInfo->getParam(Model::REQUEST_ID1);
             $organizationId = $this->requestInfo->getParam(Model::REQUEST_ID2);
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+
             if ($id && ! ($patientNr || $organizationId)) {
                 $episode = $this->agenda->getEpisodeOfCare($id);
                 $this->_respondent = $episode->getRespondent();
 
+                $this->currentUser->assertAccessToOrganizationId($organizationId, $this->_respondent->getId());
                 if (! $this->_respondent->exists) {
                     throw new \Gems\Exception($this->_('Unknown respondent.'));
                 }
 
-                // $this->_respondent->applyToMenuSource($this->menu->getParameterSource());
+                if ($this->responder instanceof GemsSnippetResponder) {
+                    $this->_respondent->setMenu($this->responder->getMenuSnippetHelper(), $this->translate);
+                }
             } else {
                 $this->_respondent = parent::getRespondent();
             }
