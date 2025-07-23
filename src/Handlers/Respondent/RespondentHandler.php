@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Respondent;
 
 use Gems\Db\ResultFetcher;
+use Gems\Exception;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
@@ -26,6 +27,7 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Respondent\DeleteRespondentSnippet;
 use Gems\Snippets\Respondent\RespondentDetailsSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
+use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
@@ -569,17 +571,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     public function getIndexTitle(): string
     {
         return $this->_('Respondents');
-    }
-
-    /**
-     * The organizations whose tokens are shown.
-     *
-     * When true: show tokens for all organizations, false: only current organization, array => those organizations
-     * @return array
-     */
-    public function getOtherOrgs(): array
-    {
-        return array_keys($this->organizationRepository->getAllowedOrganizationsFor($this->getRespondent()->getOrganizationId()));
     }
 
     /**

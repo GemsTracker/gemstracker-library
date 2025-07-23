@@ -118,7 +118,7 @@ class User
             return;
         }
         $orgs = $this->getAllowedOrganizations();
-        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $organizationId . ' ' . print_r($orgs, true) . "\n", FILE_APPEND);
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $organizationId . ' ' . print_r($orgs, true) . "\n", FILE_APPEND);
         if (isset($orgs[$organizationId])) {
             return;
         }

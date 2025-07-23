@@ -339,7 +339,7 @@ class AuditLog
 
         $this->getCurrentUser();
         if (isset($this->request)) {
-            $patientNr = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
+            $patientNr      = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
             $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
 
             if ($patientNr !== null && $organizationId !== null) {
@@ -350,7 +350,9 @@ class AuditLog
                 return $respondentId;
             }
 
-            $this->user->assertAccessToOrganizationId($organizationId, null);
+            if (null !== $organizationId) {
+                $this->user->assertAccessToOrganizationId($organizationId, null);
+            }
         }
         return null;
     }

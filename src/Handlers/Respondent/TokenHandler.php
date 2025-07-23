@@ -186,12 +186,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
         $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
 
         $token = $this->getToken();
-        if (! $token->isViewable()) {
-            throw new \Gems\Exception(
-                sprintf($this->_('Inaccessible or unknown token %s'), strtoupper($token->getTokenId())),
-                403, null,
-                sprintf($this->_('Access to this token is not allowed for current role: %s.'), $currentUser->getRole()));
-        }
+        $this->currentUser->assertAccessToOrganizationId($token->getOrganizationId(), $token->getRespondentId());
 
         $snippetNames = $token->getAnswerSnippetNames();
 
@@ -407,12 +402,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
             $token = $this->tracker->getToken($tokenId);
         }
         if ($token && $token->exists) {
-            if (! array_key_exists($token->getOrganizationId(), $currentUser->getAllowedOrganizations())) {
-                throw new Exception(
-                    $this->_('Inaccessible or unknown organization'),
-                    403, null,
-                    sprintf($this->_('Access to this page is not allowed for current role: %s.'), $currentUser->getRole()));
-            }
+            $currentUser->assertAccessToOrganizationId($token->getOrganizationId(), $token->getRespondentId());
 
             return $token;
         }
