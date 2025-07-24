@@ -56,16 +56,16 @@ class StaffModel extends GemsJoinModel
 
     protected User|null $currentUser;
     public function __construct(
-        MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
-        protected readonly CurrentUserRepository $currentUserRepository,
-        protected readonly OrganizationRepository $organizationRepository,
-        protected readonly UserLoader $userLoader,
-        protected readonly Translated $translatedUtil,
         protected readonly ConfigAccessor $configAccessor,
-        protected readonly GroupRepository $groupRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly EmbedLoader $embedLoader,
+        protected readonly GroupRepository $groupRepository,
+        protected readonly MetaModelLoader $metaModelLoader,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly Translated $translatedUtil,
+        protected readonly UserLoader $userLoader,
         protected readonly ValueEncryptor $valueEncryptor,
     ) {
         parent::__construct('gems__staff', $metaModelLoader, $sqlRunner, $translate, 'staff');
@@ -349,6 +349,7 @@ class StaffModel extends GemsJoinModel
         $this->addLeftTable('gems__systemuser_setup', [
             'gsf_id_user' => 'gsus_id_user',
         ], true);
+        $this->metaModelLoader->setChangeFields($this->metaModel, 'gsus');
         $this->metaModel->resetOrder();
 
         $editing        = ($action == 'edit') || ($action == 'create');
