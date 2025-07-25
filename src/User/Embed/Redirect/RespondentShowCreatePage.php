@@ -66,7 +66,8 @@ class RespondentShowCreatePage extends RespondentShowPage
             $this->_('Respondent %s does not yet exist, please enter the respondent data now!'),
             $patientId
         );*/
+        $this->routeName = 'respondent.create';
 
-        return $routeHelper->getRouteUrl('respondent.create', [], [], $deferredUser->getRole());
+        return $routeHelper->getRouteUrl($this->getRedirectRouteName(), [], ['gr2o_patient_nr' => $patientId], $deferredUser->getRole());
     }
 }

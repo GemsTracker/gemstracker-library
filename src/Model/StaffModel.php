@@ -53,19 +53,23 @@ use Zalt\Validator\Model\ModelUniqueValidator;
  */
 class StaffModel extends GemsJoinModel
 {
+    protected string $defaultAuthentication = 'Gems\\User\\Embed\\Auth\\HourKeySha256';
+    protected string $defaultRedirectPage   = 'Gems\\User\\Embed\\Redirect\\RespondentShowPage';
+
+    protected string $defaultUserLoader     = 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser';
 
     protected User|null $currentUser;
     public function __construct(
-        MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
-        protected readonly CurrentUserRepository $currentUserRepository,
-        protected readonly OrganizationRepository $organizationRepository,
-        protected readonly UserLoader $userLoader,
-        protected readonly Translated $translatedUtil,
         protected readonly ConfigAccessor $configAccessor,
-        protected readonly GroupRepository $groupRepository,
+        protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly EmbedLoader $embedLoader,
+        protected readonly GroupRepository $groupRepository,
+        protected readonly MetaModelLoader $metaModelLoader,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly Translated $translatedUtil,
+        protected readonly UserLoader $userLoader,
         protected readonly ValueEncryptor $valueEncryptor,
     ) {
         parent::__construct('gems__staff', $metaModelLoader, $sqlRunner, $translate, 'staff');
@@ -349,6 +353,7 @@ class StaffModel extends GemsJoinModel
         $this->addLeftTable('gems__systemuser_setup', [
             'gsf_id_user' => 'gsus_id_user',
         ], true);
+        $this->metaModelLoader->setChangeFields($this->metaModel, 'gsus');
         $this->metaModel->resetOrder();
 
         $editing        = ($action == 'edit') || ($action == 'create');
@@ -429,21 +434,21 @@ class StaffModel extends GemsJoinModel
 
         $this->metaModel->set('gsus_authentication', [
             'label' => $this->_('Authentication'),
-            'default' => 'Gems\\User\\Embed\\Auth\\HourKeySha256',
+            'default' => $this->defaultAuthentication,
             'description' => $this->_('The authentication method used to authenticate the embedded user.'),
             'multiOptions' => $this->embedLoader->listAuthenticators(),
         ]);
 
         $this->metaModel->set('gsus_deferred_user_loader', [
             'label' => $this->_('Deferred user loader'),
-            'default' => 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser',
+            'default' => $this->defaultUserLoader,
             'description' => $this->_('The method used to load an embedded user.'),
             'multiOptions' => $this->embedLoader->listDeferredUserLoaders(),
         ]);
 
         $this->metaModel->set('gsus_redirect', [
             'label' => $this->_('Redirect method'),
-            'default' => 'Gems\\User\\Embed\\Redirect\\RespondentShowPage',
+            'default' => $this->defaultRedirectPage,
             'description' => $this->_('The page the user is redirected to after successful login.'),
             'multiOptions' => $this->embedLoader->listRedirects(),
         ]);
@@ -461,6 +466,12 @@ class StaffModel extends GemsJoinModel
             'label' => $this->_('Layout'),
             'description' => $this->_('The layout frame used.'),
             'multiOptions' => $this->embedLoader->listLayouts(),
+        ]);
+
+        $this->metaModel->set('gsus_deferred_menu_layout', [
+            'label' => $this->_('Menu'),
+            'description' => $this->_('The part of the menu shown.'),
+            'multiOptions' => $this->embedLoader->listMenuOptions(),
         ]);
 
         $this->metaModel->set('gsus_deferred_user_layout', [

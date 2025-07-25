@@ -156,12 +156,28 @@ class EmbedLoader
     public function listLayouts(): array
     {
         $layouts = [
-            '' => $this->translator->_('Do not change layout'),
+            '' => $this->translator->_('Standard layout, used now'),
+            'gems::layout.no-logo.twig' => $this->translator->_('Compact layout, no logo'),
         ];
 
         return $layouts;
     }
 
+    /**
+     * Get an array of menu changes
+     *
+     * @return array
+     */
+    public function listMenuOptions(): array
+    {
+        $layouts = [
+            ''        => $this->translator->_('Show the full menu'),
+            'current' => $this->translator->_('Only the page sub-menu'),
+            'none'    => $this->translator->_('Show no menu'),
+        ];
+
+        return $layouts;
+    }
     /**
      *
      * @return array helpername => string

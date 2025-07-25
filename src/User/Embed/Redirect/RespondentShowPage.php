@@ -30,6 +30,11 @@ use Zalt\Model\MetaModelInterface;
  */
 class RespondentShowPage extends RedirectAbstract
 {
+    /**
+     * @var string|null The name of the initial route page
+     */
+    protected ?string $routeName = 'respondent.show';
+
     public function __construct(
         TranslatorInterface $translator,
         protected readonly RespondentRepository $respondentRepository,
@@ -63,7 +68,7 @@ class RespondentShowPage extends RedirectAbstract
             throw new \Gems\Exception($this->translator->trans('Requested patient nr not found in organization'));
         }
 
-        return $routeHelper->getRouteUrl('respondent.show', [
+        return $routeHelper->getRouteUrl($this->getRedirectRouteName(), [
             MetaModelInterface::REQUEST_ID1 => $patientId,
             MetaModelInterface::REQUEST_ID2 => $orgId,
         ], [], $deferredUser->getRole());

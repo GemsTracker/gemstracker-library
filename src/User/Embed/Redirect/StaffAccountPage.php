@@ -11,11 +11,7 @@
 
 namespace Gems\User\Embed\Redirect;
 
-use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\Embed\RedirectAbstract;
-use Gems\User\User;
-use Laminas\Diactoros\Response\RedirectResponse;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  *
@@ -28,22 +24,16 @@ use Psr\Http\Message\ServerRequestInterface;
 class StaffAccountPage extends RedirectAbstract
 {
     /**
+     * @var string|null The name of the initial route page
+     */
+    protected ?string $routeName = 'option.edit';
+
+    /**
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     public function getLabel(): string
     {
         return $this->translator->_('Staff account setup page');
-    }
-
-    public function getRedirectUrl(
-        ServerRequestInterface $request,
-        DeferredRouteHelper $routeHelper,
-        User $embeddedUser,
-        User $deferredUser,
-        string $patientId,
-        array $organizations,
-    ): RedirectResponse|string|null {
-        return $routeHelper->getRouteUrl('option.edit', [], [], $deferredUser->getRole());
     }
 }

@@ -17,6 +17,7 @@ use Gems\Log\Loggers;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Repository\EmbeddedUserRepository;
 use Gems\User\Embed\DeferredRouteHelper;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -44,14 +45,14 @@ class EmbedLoginHandler implements RequestHandlerInterface
     private int $throttleBlockSeconds;
 
     public function __construct(
-        private readonly TranslatorInterface $translator,
-//        private readonly AuditLog $auditLog,
+        private readonly TranslatorInterface          $translator,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
-        private readonly DeferredRouteHelper $routeHelper,
-        private readonly UserLoader $userLoader,
-        private readonly array $config,
-        HelperAdapter $cacheHelper,
-        Loggers $loggers,
+        private readonly EmbeddedUserRepository       $embeddedUserRepository,
+        private readonly DeferredRouteHelper          $routeHelper,
+        private readonly UserLoader                   $userLoader,
+        private readonly array                        $config,
+        HelperAdapter                                 $cacheHelper,
+        Loggers                                       $loggers,
     ) {
         $this->rateLimiter = new RateLimiter($cacheHelper);
         $this->throttleMaxAttempts = $this->config['embedThrottle']['maxAttempts'] ?? 5;
@@ -62,6 +63,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $this->embeddedUserRepository->setRequest($request);
         $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
         try {
@@ -130,6 +132,8 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
                 if (!$result->isValid() && $result->getCode() !== AuthenticationResult::FAILURE_DEFERRED) {
                     $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
+                } else {
+                    $this->embeddedUserRepository->setPatientNr($input['pid'], (int) $input['org']);
                 }
             }
 
@@ -154,7 +158,6 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 );
 
                 if ($url) {
-
                     if ($url instanceof RedirectResponse) {
                         $this->logInfo(sprintf(
                             "Login for end user: %s, patient: %s successful, redirecting...",

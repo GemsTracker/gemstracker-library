@@ -15,6 +15,7 @@ use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Middleware\MenuMiddleware;
+use Gems\Repository\EmbeddedUserRepository;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -31,14 +32,17 @@ use Zalt\SnippetsLoader\SnippetLoaderInterface;
  */
 class GemsSnippetResponder extends MezzioLaminasSnippetResponder
 {
+    public const DEFAULT_TEMPLATE = 'gems::legacy-view';
+
     // protected LayoutSettings $layoutSettings;
 
     protected MenuSnippetHelper $menuHelper;
     
     public function __construct(
-        SnippetLoaderInterface $snippetLoader,
-        protected LayoutRenderer $layoutRenderer,
-        protected LayoutSettings $layoutSettings,
+        SnippetLoaderInterface                    $snippetLoader,
+        protected readonly EmbeddedUserRepository $embeddedUserRepository,
+        protected readonly LayoutRenderer         $layoutRenderer,
+        protected readonly LayoutSettings         $layoutSettings,
     ) {
         parent::__construct($snippetLoader);
     }
@@ -84,6 +88,8 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
 
     public function processRequest(ServerRequestInterface $request): RequestInfo
     {
+        $this->embeddedUserRepository->checkRequest($request);
+
         $requestInfo = parent::processRequest($request);
 
         $menu = $request->getAttribute(MenuMiddleware::MENU_ATTRIBUTE);
@@ -94,7 +100,11 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
             $this->snippetLoader->addConstructorVariable(MenuSnippetHelper::class, $this->menuHelper);
         }
 
-        $template = $request->getAttribute(LayoutSettings::TEMPLATE_ATTRIBUTE, 'gems::legacy-view');
+        if ($this->embeddedUserRepository->hasEmbeddedData()) {
+            $template = $this->embeddedUserRepository->getTemplate();
+        } else {
+            $template = $request->getAttribute(LayoutSettings::TEMPLATE_ATTRIBUTE, self::DEFAULT_TEMPLATE);
+        }
 
         $this->layoutSettings->setTemplate($template);
         $this->snippetLoader->addConstructorVariable(LayoutSettings::class, $this->layoutSettings);

@@ -26,6 +26,16 @@ use Psr\Http\Message\ServerRequestInterface;
 interface RedirectInterface extends HelperInterface
 {
     /**
+     * @return string|null The base route for the menu
+     */
+    public function getBaseMenuRouteName(): ?string;
+
+    /**
+     * @return string|null redirect route
+     */
+    public function getRedirectRouteName(): ?string;
+
+    /**
      * @return RedirectResponse|string|null redirect route
      */
     public function getRedirectUrl(

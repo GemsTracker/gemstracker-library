@@ -13,6 +13,8 @@ class Menu extends MenuNode
     /** @var MenuItem[] */
     private array $items = [];
 
+    private ?MenuItem $rootItem = null;
+
     public function __construct(
         public readonly TemplateRendererInterface $templateRenderer,
         public readonly RouteHelper $routeHelper,
@@ -148,6 +150,16 @@ class Menu extends MenuNode
 
     public function renderMenu(): string
     {
+        if ($this->rootItem) {
+            if ($this->rootItem->isActive()) {
+                return $this->templateRenderer->render('menu::main-menu', [
+                    'children' => [$this->rootItem],
+                ]);
+            } else {
+                return '';
+            }
+
+        }
         if ($this->isHorizontal()) {
             foreach ($this->children as $child) {
                 if ($child->isActive()) {
@@ -156,7 +168,6 @@ class Menu extends MenuNode
                     ]);
                 }
             }
-
         }
         return $this->renderNode();
     }
@@ -164,5 +175,11 @@ class Menu extends MenuNode
     public function setHorizontal(bool $horizontal): void
     {
         $this->horizontal = $horizontal;
+    }
+
+    public function setMenuRoot(string $name): void
+    {
+        $this->rootItem = $this->find($name);
+        $this->setHorizontal(false);
     }
 }
