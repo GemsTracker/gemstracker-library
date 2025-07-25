@@ -2,6 +2,9 @@
 
 namespace Gems\User\Embed;
 
+use Gems\User\User;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\TranslatorInterface;
 
 abstract class RedirectAbstract implements RedirectInterface
@@ -28,4 +31,14 @@ abstract class RedirectAbstract implements RedirectInterface
     {
         return $this->routeName;
     }
-}
+
+    public function getRedirectUrl(
+        ServerRequestInterface $request,
+        DeferredRouteHelper $routeHelper,
+        User $embeddedUser,
+        User $deferredUser,
+        string $patientId,
+        array $organizations,
+    ): RedirectResponse|string|null {
+        return $routeHelper->getRouteUrl($this->getRedirectRouteName(), [], [], $deferredUser->getRole());
+    }}
