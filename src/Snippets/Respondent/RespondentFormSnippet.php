@@ -102,6 +102,7 @@ class RespondentFormSnippet extends ModelFormSnippet
         $this->formData = parent::loadFormData();
 
         if ($this->createData) {
+            // This can occur when creating a new patient using embedded login
             if (null === $this->formData['gr2o_patient_nr']) {
                 $this->formData['gr2o_patient_nr'] = $this->requestInfo->getParam('gr2o_patient_nr');
             }

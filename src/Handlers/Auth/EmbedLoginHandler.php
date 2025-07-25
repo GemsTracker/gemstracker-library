@@ -132,6 +132,8 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
                 if (!$result->isValid() && $result->getCode() !== AuthenticationResult::FAILURE_DEFERRED) {
                     $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
+                } else {
+                    $this->embeddedUserRepository->setPatientNr($input['pid'], (int) $input['org']);
                 }
             }
 

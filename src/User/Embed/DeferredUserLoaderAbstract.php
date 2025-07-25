@@ -29,8 +29,8 @@ use Zalt\Base\TranslatorInterface;
 abstract class DeferredUserLoaderAbstract
         implements DeferredUserLoaderInterface
 {
-
     protected int $currentOrganizationId;
+
     public function __construct(
         protected readonly EmbeddedUserRepository $embeddedUserRepository,
         protected readonly TranslatorInterface    $translator,
@@ -59,10 +59,6 @@ abstract class DeferredUserLoaderAbstract
         }
 
         $this->embeddedUserRepository->setEmbeddedData($embeddedUserData);
-        /*$user->setSessionCrumbs($embeddedUserData->getCrumbOption());
-        $user->setSessionFramed(true);
-        $user->setSessionMvcLayout($embeddedUserData->getMvcLayout());
-        $user->setSessionStyle($embeddedUserData->getUserStyle());*/
     }
 
     /**

@@ -88,7 +88,7 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
 
     public function processRequest(ServerRequestInterface $request): RequestInfo
     {
-        $this->embeddedUserRepository->setRequest($request);
+        $this->embeddedUserRepository->checkRequest($request);
 
         $requestInfo = parent::processRequest($request);
 

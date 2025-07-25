@@ -10,15 +10,23 @@ declare(strict_types=1);
 
 namespace Gems\Repository;
 
+use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\Db\ResultFetcher;
 use Gems\Event\LayoutParamsEvent;
+use Gems\Exception;
 use Gems\Menu\Menu;
 use Gems\Middleware\MenuMiddleware;
 use Gems\SnippetsLoader\GemsSnippetResponder;
+use Gems\Tracker;
 use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\Embed\EmbedLoader;
+use Gems\User\User;
+use Mezzio\Router\RouteResult;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 
 /**
  * @package    Gems
@@ -35,6 +43,8 @@ class EmbeddedUserRepository implements EventSubscriberInterface
 
     public function __construct(
         protected readonly EmbedLoader $embedLoader,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly TranslatorInterface $translator,
     )
     { }
 
@@ -81,6 +91,37 @@ class EmbeddedUserRepository implements EventSubscriberInterface
         $event->setParams($parameters);
     }
 
+    public function checkRequest(ServerRequestInterface $request): void
+    {
+        $this->setRequest($request);
+
+        if (isset($this->data['patientNr'], $this->data['organizationId'], $this->data['respondentId'])) {
+            if (! $this->data['respondentId']) {
+                // This can happen when a new patient is created
+                $this->updateRespondentId($this->data['patientNr'], $this->data['organizationId']);
+            }
+
+            $params = $request->getQueryParams();
+            $routeResult = $request->getAttribute(RouteResult::class);
+
+            if ($routeResult instanceof RouteResult) {
+                $params = $routeResult->getMatchedParams() + $params;
+            }
+
+            if (isset($params[MetaModelInterface::REQUEST_ID1], $params[MetaModelInterface::REQUEST_ID2])) {
+                if ($this->data['patientNr'] == $params[MetaModelInterface::REQUEST_ID1] && $this->data['organizationId'] == $params[MetaModelInterface::REQUEST_ID2]) {
+                    return;
+                }
+                $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+                if ($user instanceof User) {
+                    $user->assertAccessToOrganizationId($params[MetaModelInterface::REQUEST_ID2]); //, $this->data['respondentId']);
+                }
+
+                throw new Exception(sprintf($this->translator->_('Access allowed only for patient nr %d, not for %s.'), $this->data['patientNr'], $params[MetaModelInterface::REQUEST_ID1]));
+            }
+        }
+    }
+
     public function getEmbeddedData(): array
     {
         return $this->data;
@@ -104,7 +145,17 @@ class EmbeddedUserRepository implements EventSubscriberInterface
 
     public function setEmbeddedData(EmbeddedUserData $embeddedUserData): void
     {
-        $this->session->set(self::SESSION_ID, $embeddedUserData->getArrayCopy());
+        $this->data = $embeddedUserData->getArrayCopy() + $this->data;
+
+        $this->updateSession();
+    }
+
+    public function setPatientNr(string $patientNr, int $organizationId): void
+    {
+        $this->data['patientNr']      = $patientNr;
+        $this->data['organizationId'] = $organizationId;
+
+        $this->updateRespondentId($patientNr, $organizationId);
     }
 
     public function setRequest(ServerRequestInterface $request): void
@@ -118,5 +169,25 @@ class EmbeddedUserRepository implements EventSubscriberInterface
         if ($this->session->has(self::SESSION_ID)) {
             $this->data = $this->session->get(self::SESSION_ID);
         }
+    }
+
+    protected function updateRespondentId($patientNr, int $organizationId): void
+    {
+        $select = $this->resultFetcher->getSelect('gems__respondent2or');
+        $select->columns(['gr2o_id_user'])
+            ->where([
+                'gr2o_patient_nr' => $patientNr,
+                'gr2o_id_organization' => $organizationId,
+            ]);
+
+        $this->data['respondentId'] = $this->resultFetcher->fetchOne($select);
+
+        $this->updateSession();
+    }
+
+
+    protected function updateSession(): void
+    {
+        $this->session->set(self::SESSION_ID, $this->data);
     }
 }
