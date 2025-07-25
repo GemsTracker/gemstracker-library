@@ -15,16 +15,18 @@
         {% endif %}
 >
 <div id="container" class="container-fluid">
-    <header>
-        <div class="logo {{ current_organization_code ?? '' }} no-print"></div>
-        <div class="application-title">{{ include('@layout/application-title.html.twig') }}</div>
-        <div class="tools no-print">
-            {{ include('@layout/organization-switcher.html.twig') }}
-            {{ include('@layout/group-switcher.html.twig') }}
-            {{ include('@layout/auth-info.html.twig') }}
-            {% if locale is defined %}{{ include('@layout/languages.html.twig') }}{% endif %}
-        </div>
-    </header>
+    {% block head %}
+        <header>
+            <div class="logo {{ current_organization_code ?? '' }} no-print"></div>
+            <div class="application-title">{{ include('@layout/application-title.html.twig') }}</div>
+            <div class="tools no-print">
+                {{ include('@layout/organization-switcher.html.twig') }}
+                {{ include('@layout/group-switcher.html.twig') }}
+                {{ include('@layout/auth-info.html.twig') }}
+                {% if locale is defined %}{{ include('@layout/languages.html.twig') }}{% endif %}
+            </div>
+        </header>
+    {% endblock %}
 
     {% if mainMenu is defined and mainMenu.isHorizontal() %}
         <div id="main-menu" role="navigation no-print">
@@ -46,9 +48,11 @@
             </div>
         </div>
     </div>
+    {% block foot %}
     <footer>
         {{ include('@layout/footer.html.twig') }}
     </footer>
+    {% endblock %}
 </div>
 {% if idle_check %}
     {{ include('@layout/auth-idle-checker.html.twig') }}

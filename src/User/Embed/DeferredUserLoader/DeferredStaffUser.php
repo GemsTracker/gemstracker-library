@@ -13,6 +13,7 @@ namespace Gems\User\Embed\DeferredUserLoader;
 
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
+use Gems\Repository\EmbeddedUserRepository;
 use Gems\User\Embed\DeferredUserLoaderAbstract;
 use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\User;
@@ -30,13 +31,14 @@ use Zalt\Base\TranslatorInterface;
 class DeferredStaffUser extends DeferredUserLoaderAbstract
 {
     public function __construct(
-        TranslatorInterface $translator,
-        UserLoader $userLoader,
-        CurrentUserRepository $currentUserRepository,
-        protected Model $modelLoader,
+        EmbeddedUserRepository   $embeddedUserRepository,
+        TranslatorInterface      $translator,
+        UserLoader               $userLoader,
+        CurrentUserRepository    $currentUserRepository,
+        protected readonly Model $modelLoader,
 
     ) {
-        parent::__construct($translator, $userLoader, $currentUserRepository);
+        parent::__construct($embeddedUserRepository, $translator, $userLoader, $currentUserRepository);
     }
 
     /**

@@ -1,0 +1,21 @@
+{% extends '@gems/layout.html.twig' %}
+
+{% block head %}
+    <header>
+        <div class="{{ current_organization_code ?? '' }} no-print"> </div>
+        <div class="application-title">{{ include('@layout/application-title.html.twig') }}</div>
+        <div class="tools no-print">
+            {{ include('@layout/organization-switcher.html.twig') }}
+            {{ include('@layout/group-switcher.html.twig') }}
+            {{ include('@layout/auth-info-only.html.twig') }}
+            {% if locale is defined %}{{ include('@layout/languages.html.twig') }}{% endif %}
+        </div>
+    </header>
+{% endblock %}
+
+{% block content %}
+    {{ content|raw }}
+{% endblock %}
+
+{% block foot %}
+{% endblock %}

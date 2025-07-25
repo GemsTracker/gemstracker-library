@@ -1,0 +1,9 @@
+<div class="login-status">
+    <div class="login">
+        {% if current_identity is defined or current_identity_without_tfa is defined %}
+            {{ (current_identity ?? current_identity_without_tfa).getLoginName() }}
+        {% else %}
+            <a href="{{ url('auth.login') }}">{{ trans('You are not logged in') }}</a>
+        {% endif %}
+    </div>
+</div>

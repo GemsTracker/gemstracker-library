@@ -11,8 +11,8 @@
 
 namespace Gems\User\Embed;
 
-use Gems\Exception;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\EmbeddedUserRepository;
 use Gems\User\Organization;
 use Gems\User\User;
 use Gems\User\UserLoader;
@@ -32,9 +32,10 @@ abstract class DeferredUserLoaderAbstract
 
     protected int $currentOrganizationId;
     public function __construct(
-        protected TranslatorInterface $translator,
-        protected UserLoader $userLoader,
-        CurrentUserRepository $currentUserRepository,
+        protected readonly EmbeddedUserRepository $embeddedUserRepository,
+        protected readonly TranslatorInterface    $translator,
+        protected readonly UserLoader             $userLoader,
+        CurrentUserRepository                     $currentUserRepository,
     )
     {
         $this->currentOrganizationId = $currentUserRepository->getCurrentOrganizationId();
@@ -57,6 +58,7 @@ abstract class DeferredUserLoaderAbstract
             $user->setGroupSession($groupId);
         }
 
+        $this->embeddedUserRepository->setEmbeddedData($embeddedUserData);
         /*$user->setSessionCrumbs($embeddedUserData->getCrumbOption());
         $user->setSessionFramed(true);
         $user->setSessionMvcLayout($embeddedUserData->getMvcLayout());
