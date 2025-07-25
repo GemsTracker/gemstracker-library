@@ -30,34 +30,28 @@ class CurrentUserRepository
         $this->loader = $loader;
     }
 
+    /**
+     * Return a list of allowed organizations for the user, if there is one.
+     *
+     * @return array<int, string>
+     */
+    public function getAllowedOrganizations(): array
+    {
+        $currentUser = $this->getCurrentUser();
+        if (!$currentUser) {
+            return [];
+        }
+        return $currentUser->getAllowedOrganizations();
+    }
 
     /**
-     * Throw an exception if the organization ID is not an allowed organization,
-     * or if there is no logged in user. If the organizationId is null, we allow
-     * access under the assumption that the code will use the currentOrganizationId.
+     * Return a list of allowed organization Ids for the user, if there is one.
      *
-     * @param int|string|array|null $organizationId
-     * @return void If the user has access to the organization
-     * @throws \Gems\Exception If no user is logged in
+     * @return array<int, int>
      */
-    public function assertAccessToOrganizationId(string|int|array|null $organizationId): void
+    public function getAllowedOrganizationIds(): array
     {
-        if (is_null($organizationId) || (! $this->hasCurrentUserId())) {
-            return;
-        } elseif (is_array($organizationId)) {
-            foreach ($organizationId as $id) {
-                $this->assertAccessToOrganizationId($id);
-            }
-            return;
-        }
-
-        $currentUser = $this->getCurrentUser();
-        if ($currentUser) {
-            $currentUser->assertAccessToOrganizationId($organizationId);
-            return;
-        }
-
-        throw new \Gems\Exception('Inaccessible or unknown organization', 403);
+        return array_keys($this->getAllowedOrganizations());
     }
 
     /**
@@ -205,29 +199,5 @@ class CurrentUserRepository
     public function setCurrentUserRole(string $role): void
     {
         $this->role = $role;
-    }
-
-    /**
-     * Return a list of allowed organizations for the user, if there is one.
-     *
-     * @return array<int, string>
-     */
-    public function getAllowedOrganizations(): array
-    {
-        $currentUser = $this->getCurrentUser();
-        if (!$currentUser) {
-            return [];
-        }
-        return $currentUser->getAllowedOrganizations();
-    }
-
-    /**
-     * Return a list of allowed organization Ids for the user, if there is one.
-     *
-     * @return array<int, int>
-     */
-    public function getAllowedOrganizationIds(): array
-    {
-        return array_keys($this->getAllowedOrganizations());
     }
 }

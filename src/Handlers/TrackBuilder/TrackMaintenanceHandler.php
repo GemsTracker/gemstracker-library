@@ -16,7 +16,6 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model\Dependency\ActivationDependency;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
-use Gems\Snippets\ModelTableSnippet;
 use Gems\Snippets\Tracker\TrackMaintenance\TrackMaintenanceSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\Tracker;
@@ -207,13 +206,15 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         Tracker $tracker,
-        protected readonly CurrentUserRepository $currentUserRepository,
+        CurrentUserRepository $currentUserRepository,
         protected readonly BatchRunnerLoader $batchRunnerLoader,
         protected readonly RouteHelper $routeHelper,
         protected readonly TrackModel $trackModel,
         protected readonly TrackUsageCounter $usageCounter,
     ) {
         parent::__construct($responder, $translate, $cache, $tracker);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**
@@ -393,7 +394,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         }
 
         if (isset($filter['org']) && strlen($filter['org'])) {
-            $this->currentUserRepository->assertAccessToOrganizationId($filter['org']);
+            $this->currentUser->assertAccessToOrganizationId($filter['org'], null);
             $filter[] = 'gtr_organizations LIKE "%|' . $filter['org'] . '|%"';
             unset($filter['org']);
         }

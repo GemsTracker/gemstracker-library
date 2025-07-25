@@ -293,9 +293,13 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         $this->addSnippets($this->activeToggleSnippets, $params);
     }
 
-    protected function assertAccessFromOrganization(User $currentUser, int $organizationId): void
+    protected function assertAccessToOrganization(User $currentUser, int $organizationId): void
     {
-        $currentUser->assertAccessToOrganizationId($organizationId);
+        if (method_exists($this, 'getRespondentId')) {
+            $currentUser->assertAccessToOrganizationId($organizationId, $this->getRespondentId());
+        } else {
+            $currentUser->assertAccessToOrganizationId($organizationId, null);
+        }
     }
 
     /**
@@ -629,7 +633,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->currentUserId = $request->getAttribute('userId', $this->currentUserId);
+        $this->currentUserId = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE, $this->currentUserId);
 
         return $this->processResponseCookies(parent::handle($request));
     }
@@ -691,7 +695,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
                      * @var User $currentUser
                      */
                     $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-                    $this->assertAccessFromOrganization($currentUser, $organizationId);
+                    $this->assertAccessToOrganization($currentUser, $organizationId);
                 }
             }
         }

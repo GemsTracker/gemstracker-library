@@ -24,6 +24,7 @@ use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Show\ShowAsTableAction;
+use Gems\User\User;
 use Laminas\Db\Sql\Expression;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
@@ -54,6 +55,8 @@ class ConsentPlanHandler extends GemsHandler
         'export'     => ExportAction::class,
     ];
 
+    protected readonly User $currentUser;
+
     protected DataReaderInterface|null $model = null;
 
     /**
@@ -71,12 +74,14 @@ class ConsentPlanHandler extends GemsHandler
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
+        CurrentUserRepository $currentUserRepository,
         protected readonly ConsentRepository $consentRepository,
-        protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly ReceptionCodeRepository $receptionCodeRepository,
         protected readonly ResultFetcher $resultFetcher,
     ) {
         parent::__construct($responder, $metaModelLoader, $translate, $cache);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**
@@ -185,7 +190,7 @@ class ConsentPlanHandler extends GemsHandler
     {
         parent::prepareAction($action);
 
-        $allowedOrganizationIds = $this->currentUserRepository->getAllowedOrganizationIds();
+        $allowedOrganizationIds = $this->currentUser->getAllowedOrganizationIds();
 
         if ($action instanceof BrowseTableAction) {
             $action->extraFilter['gr2o_id_organization'] = $allowedOrganizationIds;
@@ -197,7 +202,7 @@ class ConsentPlanHandler extends GemsHandler
         }
         if ($action instanceof ShowAsTableAction) {
             $organizationId = $this->requestInfo->getParam(Model::REQUEST_ID);
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $this->currentUser->assertAccessToOrganizationId($organizationId, null);
             $action->extraFilter['gr2o_id_organization'] = $organizationId;
             $action->setSnippets($this->showSnippets);
             $action->menuShowRoutes = [];

@@ -74,16 +74,16 @@ abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerA
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected RespondentRepository $respondentRepository,
-        protected CurrentUserRepository $currentUserRepository,
+        CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($responder, $translate, $cache);
 
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
-    protected function assertAccessFromOrganization(User $currentUser, int $organizationId): void
+    protected function assertAccessToOrganization(User $currentUser, int $organizationId): void
     {
-        $this->getRespondent()->assertAccessFromOrganizationId($currentUser, $organizationId);
+        $this->currentUser->assertAccessToOrganizationId($organizationId, $this->getRespondentId());
     }
 
     protected function setRespondentIdInModel(MetaModelInterface $metaModel, string $respondentField, string|null $organizationField = null): void

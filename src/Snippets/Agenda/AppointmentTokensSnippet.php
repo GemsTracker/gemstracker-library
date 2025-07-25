@@ -16,6 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\MetaModelLoader;
+use Gems\Repository\OrganizationRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
@@ -48,10 +49,11 @@ class AppointmentTokensSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         MetaModelLoader                     $metaModelLoader,
         Tracker                             $tracker,
         TokenRepository                     $tokenRepository,
+        OrganizationRepository              $organizationRepository,
         protected ResultFetcher             $resultFetcher,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $currentUserRepository, $maskRepository, $metaModelLoader, $tracker, $tokenRepository);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $currentUserRepository, $maskRepository, $metaModelLoader, $tracker, $tokenRepository, $organizationRepository);
 
         $this->caption = $this->_("Tokens set by this appointment");
         $this->onEmpty = $this->_("No tokens are set by this appointment");

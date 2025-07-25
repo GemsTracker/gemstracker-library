@@ -163,7 +163,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
             $this->autofilterParameters['extraFilter']['gto_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         } else {
-            $this->currentUserRepository->assertAccessToOrganizationId($filter['gto_id_organization']);
+            $this->currentUser->assertAccessToOrganizationId($filter['gto_id_organization'], null);
         }
 
         if (isset($filter['gto_id_track']) && $filter['gto_id_track']) {
@@ -202,8 +202,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function getSearchDefaults(): array
     {
         if (! isset($this->defaultSearchData['gto_id_organization'])) {
-            $orgs = $this->currentUser->getRespondentOrganizations();
-            $this->defaultSearchData['gto_id_organization'] = array_keys($orgs);
+            $this->defaultSearchData['gto_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
         }
 
         if (!isset($this->defaultSearchData['gto_id_track'])) {

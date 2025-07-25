@@ -414,20 +414,6 @@ class UserLoader
         return $user;
     }
 
-    public function getUserOrNull(string $loginName, int $organizationId): ?User
-    {
-        try {
-            $user = $this->getUser($loginName, $organizationId);
-            if ($user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) {
-                throw new \Exception('Caught no-login user');
-            }
-
-            return $user;
-        } catch (AuthenticationException) {
-            return null;
-        }
-    }
-
     /**
      * Get the user having the reset key specified
      *
@@ -471,20 +457,6 @@ class UserLoader
         }
 
         return $this->getUser($data['gsf_login'], $data['gsf_id_organization']);
-    }
-
-    public function getUserOrNullByStaffId(int $staffId): ?User
-    {
-        try {
-            $user = $this->getUserByStaffId($staffId);
-            if ($user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) {
-                throw new \Exception('Caught no-login user');
-            }
-
-            return $user;
-        } catch (AuthenticationException) {
-            return null;
-        }
     }
 
     /**
@@ -681,6 +653,34 @@ class UserLoader
         $this->cache->setCacheItem($cacheKey, $hydrator);
         $this->userHydrator = $hydrator;
         return $this->userHydrator;
+    }
+
+    public function getUserOrNull(string $loginName, int $organizationId): ?User
+    {
+        try {
+            $user = $this->getUser($loginName, $organizationId);
+            if ($user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) {
+                throw new \Exception('Caught no-login user');
+            }
+
+            return $user;
+        } catch (AuthenticationException) {
+            return null;
+        }
+    }
+
+    public function getUserOrNullByStaffId(int $staffId): ?User
+    {
+        try {
+            $user = $this->getUserByStaffId($staffId);
+            if ($user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) {
+                throw new \Exception('Caught no-login user');
+            }
+
+            return $user;
+        } catch (AuthenticationException) {
+            return null;
+        }
     }
 
     /**

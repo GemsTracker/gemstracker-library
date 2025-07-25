@@ -5,11 +5,13 @@ namespace Gems\Fake;
 use Gems\Db\ResultFetcher;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
+use Gems\Repository\TokenRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\User\StaffUserDefinition;
 use Gems\Util\Translated;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
+use Zalt\Base\TranslatorInterface;
 
 class User extends \Gems\User\User
 {
@@ -29,22 +31,24 @@ class User extends \Gems\User\User
 
     public function __construct(
         StaffUserDefinition $userDefinition,
-        OrganizationRepository $organizationRepository,
         AccessRepository $accessRepository,
-        TrackDataRepository $trackDataRepository,
         Acl $acl,
-        Translated $translatedUtil,
+        OrganizationRepository $organizationRepository,
         ResultFetcher $resultFetcher,
+        TrackDataRepository $trackDataRepository,
+        Translated $translatedUtil,
+        TranslatorInterface $translator,
         protected readonly UrlHelper $urlHelper,
     ) {
         parent::__construct(
             $userDefinition,
-            $organizationRepository,
             $accessRepository,
-            $trackDataRepository,
             $acl,
-            $translatedUtil,
+            $organizationRepository,
             $resultFetcher,
+            $trackDataRepository,
+            $translatedUtil,
+            $translator,
         );
     }
 

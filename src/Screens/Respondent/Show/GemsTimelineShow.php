@@ -30,7 +30,6 @@ class GemsTimelineShow extends ShowScreenAbstract
     public function getParameters(): array
     {
         return [
-            'forOtherOrgs'   => 'getOtherOrgs',
             '-run-once'      => 'openedRespondent',
             ];
     }

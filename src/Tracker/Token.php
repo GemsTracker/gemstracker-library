@@ -1897,22 +1897,6 @@ class Token
 
     /**
      *
-     * @return bool True when this user has the right to view these answers
-     */
-    public function isViewable(): bool
-    {
-        if (is_null($this->currentUser)) {
-            return false;
-        }
-        if (isset($this->_gemsData['show_answers']) && $this->_gemsData['show_answers']) {
-            return $this->currentUser->isAllowedOrganization($this->getOrganizationId());
-        }
-
-        return false;
-    }
-
-    /**
-     *
      * @param array $gemsData Optional, the data refresh with, otherwise refresh from database.
      * @return self (continuation pattern)
      */

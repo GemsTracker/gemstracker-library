@@ -319,9 +319,8 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
             if ($this->maskRepository->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 return sprintf($this->_('Appointments for respondent number %s'), $patientId);
             }
-            $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
-            $respondent = $this->respondentRepository->getRespondent($patientId, $organizationId);
+
+            $respondent = $this->getRespondent();
             return sprintf($this->_('Appointments for respondent number %s: %s'), $patientId, $respondent->getName());
         }
         return $this->getIndexTitle();
@@ -348,7 +347,6 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
             $id = $this->request->getAttribute(Model::APPOINTMENT_ID);
             $patientNr = $this->request->getAttribute(Model::REQUEST_ID1);
             $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
             if ($id && ! ($patientNr || $organizationId)) {
                 $appointment = $this->agenda->getAppointment($id);
                 $this->_respondent = $appointment->getRespondent();
@@ -357,7 +355,10 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
                     throw new \Gems\Exception($this->_('Unknown respondent.'));
                 }
 
-                //$this->_respondent->applyToMenuSource($this->menu->getParameterSource());
+                $this->currentUser->assertAccessToOrganizationId($organizationId, $appointment->getRespondentId());
+                if ($this->responder instanceof GemsSnippetResponder) {
+                    $this->_respondent->setMenu($this->responder->getMenuSnippetHelper(), $this->translate);
+                }
             } else {
                 $this->_respondent = parent::getRespondent();
             }
@@ -402,10 +403,12 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
             }
         } else {
             $this->organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
-            $this->currentUserRepository->assertAccessToOrganizationId($this->organizationId);
 
             if ($patientNr && $this->organizationId) {
                 $this->respondentId = $this->respondentRepository->getRespondentId($patientNr, $this->organizationId);
+                $this->currentUser->assertAccessToOrganizationId($this->organizationId, $this->respondentId);
+            } else {
+                $this->currentUser->assertAccessToOrganizationId($this->organizationId, null);
             }
         }
 

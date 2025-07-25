@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Respondent;
 
 use Gems\Db\ResultFetcher;
+use Gems\Exception;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
@@ -26,6 +27,7 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Respondent\DeleteRespondentSnippet;
 use Gems\Snippets\Respondent\RespondentDetailsSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
+use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
@@ -177,7 +179,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $deleteParameters = [
         'formTitle' => null,
-        'forOtherOrgs' => 'getOtherOrgs',
         // 'respondentData' => 'getRespondentData',
         'showButtons' => false,
     ];
@@ -258,7 +259,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $showParameters = [
         'addCurrentParent' => true,
-        'forOtherOrgs' => 'getOtherOrgs',
         'respondent'   => 'getRespondent',  // Sets menu
         // 'respondentData'   => 'getRespondentData',
         '-run-once' => 'openedRespondent',
@@ -275,12 +275,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
-//        'Respondent\\MultiOrganizationTab',
-//        'Respondent\\RespondentDetailsSnippet',
-//        'Tracker\\AddTracksSnippet',
-//        'Respondent\\RoundsTabsSnippet',
-//        'Token\\RoundTokenSnippet',
-//        'Respondent\\TrafficLightTokenSnippet',
         'Vue\\PatientVueSnippet',
     ];
 
@@ -415,7 +409,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
             $edit = false;
 
             $organizationId = $this->request->getAttribute(Model::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId());
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $this->currentUser->assertAccessToOrganizationId($organizationId, null);
             $org = $this->organizationRepository->getOrganization($organizationId);
 
             if ($org) {
@@ -580,17 +574,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     }
 
     /**
-     * The organizations whose tokens are shown.
-     *
-     * When true: show tokens for all organizations, false: only current organization, array => those organizations
-     * @return array
-     */
-    public function getOtherOrgs(): array
-    {
-        return array_keys($this->organizationRepository->getAllowedOrganizationsFor($this->getRespondent()->getOrganizationId()));
-    }
-
-    /**
      * Retrieve the respondent data in advance
      * (So we don't need to repeat that for every snippet.)
      *
@@ -618,7 +601,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
 
         if (isset($data[Model::REQUEST_ID2])) {
             $organizationId = $data[Model::REQUEST_ID2];
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $this->currentUser->assertAccessToOrganizationId($organizationId, null);
             $organizationIds = [intval($organizationId)];
         } else {
             $organizationIds = $this->currentUser->getRespondentOrgFilter();
@@ -775,7 +758,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         $organizationId = null;
         if (isset($routeParams[Model::REQUEST_ID2])) {
             $organizationId = $routeParams[Model::REQUEST_ID2];
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $this->currentUser->assertAccessToOrganizationId($organizationId, null);
         }
         $patientNr = null;
         if (isset($routeParams[Model::REQUEST_ID1])) {

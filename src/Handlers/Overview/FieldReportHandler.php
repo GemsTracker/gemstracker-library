@@ -118,7 +118,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected readonly CurrentUserRepository $currentUserRepository,
+        CurrentUserRepository $currentUserRepository,
         protected PeriodSelectRepository $periodSelectRepository,
         protected ResultFetcher $resultFetcher,
         protected TrackDataRepository $trackDataRepository,
@@ -161,9 +161,9 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
 
         $this->engine = $this->tracker->getTrackEngine($this->trackId);
 
-        $orgs = $filter['gr2t_id_organization'] ?? $this->currentUser->getAllowedOrganizations();
+        $orgs = $filter['gr2t_id_organization'] ?? $this->currentUser->getAllowedOrganizationIds();
         if (isset($filter['gr2t_id_organization'])) {
-            $this->currentUserRepository->assertAccessToOrganizationId($filter['gr2t_id_organization']);
+            $this->currentUser->assertAccessToOrganizationId($filter['gr2t_id_organization'], null);
         }
         $this->orgWhere = " AND gr2t_id_organization IN (" . implode(", ", $orgs) . ")";
 
@@ -384,8 +384,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
     public function getSearchDefaults(): array
     {
         if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
-            $orgs = $this->currentUser->getRespondentOrganizations();
-            $this->defaultSearchData['gr2t_id_organization'] = array_keys($orgs);
+            $this->defaultSearchData['gr2t_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
         }
         
         if (!isset($this->defaultSearchData['gtf_id_track'])) {

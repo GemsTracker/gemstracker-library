@@ -46,7 +46,7 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected readonly CurrentUserRepository $currentUserRepository,
+        CurrentUserRepository $currentUserRepository,
         protected Model $modelLoader,
         protected RespondentRepository $respondentRepository,
     )
@@ -89,7 +89,7 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $patientNr = $this->request->getAttribute(Model::REQUEST_ID1);
         $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
-        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+        $this->currentUser->assertAccessToOrganizationId($organizationId, $this->getRespondentId());
 
         $this->deleteParameters['resetRoute'] = true;
         $this->deleteParameters['deleteAction'] = 'delete'; // Trick to not get aftersaveroute
@@ -108,7 +108,7 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $patientNr = $this->request->getAttribute(Model::REQUEST_ID1);
         $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
-        $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+        $this->currentUser->assertAccessToOrganizationId($organizationId, $this->getRespondentId());
 
         $this->autofilterParameters['extraFilter'] = [
             'gr2o_patient_nr' => $patientNr,

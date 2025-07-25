@@ -19,6 +19,7 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\User\User;
 use Gems\Util\Translated;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -34,6 +35,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 abstract class AppointmentCheckSnippetAbstract extends \Gems\Snippets\FormSnippetAbstract
 {
+    protected readonly User $currentUser;
+
     /**
      * The form Id used for the save button
      *
@@ -50,13 +53,15 @@ abstract class AppointmentCheckSnippetAbstract extends \Gems\Snippets\FormSnippe
         MessengerInterface $messenger,
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
+        CurrentUserRepository $currentUserRepository,
         protected readonly Agenda $agenda,
         protected readonly Tracker $tracker,
         protected readonly Translated $translatedUtil,
-        protected readonly CurrentUserRepository $currentUserRepository,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**
