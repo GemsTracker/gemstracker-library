@@ -54,7 +54,7 @@ class OrganizationRepository
      */
     public function getExtraTokenOrgsFor(int $respondentId, int $organizationId): array
     {
-        return [$organizationId, $organizationId];
+        return [$organizationId => $organizationId];
     }
 
     public function getNoOrganizationOrganization(): Organization
