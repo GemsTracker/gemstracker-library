@@ -200,7 +200,7 @@ abstract class DateSelectorAbstract
                 if ($intervalInt < 0) {
                     $interval->invert = 1;
                 }
-                $date = $date->setTime(0, 0, 0)->modify('this monday')
+                $date = $date->setTime(0, 0, 0)->modify('monday this week')
                     ->add($interval);
                 $lAdd = new DateInterval('P7D');
                 $lSub = new DateInterval('PT1S');
