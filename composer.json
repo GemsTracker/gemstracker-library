@@ -34,12 +34,15 @@
     "include-path": [
         "src/"
     ],
+    "config": {
+        "sort-packages": true
+    },
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
         "php": ">=8.1.0",
-        "ext-gd": "*",
         "ext-dom": "*",
+        "ext-gd": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-mysqli": "*",
@@ -114,11 +117,11 @@
         "symfony/property-info": "^6.4",
         "symfony/redis-messenger": "^6.4",
         "symfony/serializer": "^6.4",
+        "symfony/string": "^6.4",
         "symfony/translation": "^6.4",
         "symfony/validator": "^6.4",
         "symfony/yaml": "^6.4",
-        "twig/twig": "^3.4",
-        "symfony/string": "^6.4"
+        "twig/twig": "^3.4"
     },
     "require-dev": {
         "dompdf/dompdf":  "3.1.*",
