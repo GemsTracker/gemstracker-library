@@ -790,6 +790,8 @@ class RespondentTrack
      */
     public function getDate(string $fieldName): ?DateTimeInterface
     {
+        $date = false;
+
         if (isset($this->_respTrackData[$fieldName])) {
             $date = $this->_respTrackData[$fieldName];
         } else {
@@ -797,17 +799,17 @@ class RespondentTrack
 
             if (isset($this->_fieldData[$fieldName])) {
                 $date = $this->_fieldData[$fieldName];
+            }
+        }
 
-                if ($this->getTrackEngine()->isAppointmentField($fieldName)) {
-                    $appointment = $this->agenda->getAppointment($date);
-                    if ($appointment->isActive()) {
-                        $date = $appointment->getAdmissionTime();
-                    } else {
-                        $date = false;
-                    }
+        if ($this->getTrackEngine()->isAppointmentField($fieldName)) {
+            $appointmentId = $date;
+            $date = false;
+            if ($appointmentId && is_int($appointmentId)) {
+                $appointment = $this->agenda->getAppointment($appointmentId);
+                if ($appointment->isActive()) {
+                    $date = $appointment->getAdmissionTime();
                 }
-            } else {
-                $date = false;
             }
         }
 
