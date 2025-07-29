@@ -49,7 +49,7 @@ class MultiOrganizationTab extends TabSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
-        protected readonly CurrentUserRepository $currentUserRepository,
+        CurrentUserRepository $currentUserRepository,
         protected ResultFetcher $resultFetcher,
         protected RouteHelper $routeHelper,
     ) {
@@ -77,12 +77,18 @@ class MultiOrganizationTab extends TabSnippetAbstract
      */
     protected function getTabs(): array
     {
+        static $tabs = null;
+
+        if (is_array($tabs)) {
+            return $tabs;
+        }
+
         $this->defaultTab = (string) $this->currentUser->getCurrentOrganizationId();
 
         $queryParams = $this->requestInfo->getRequestQueryParams();
         if (isset($queryParams[MetaModelInterface::REQUEST_ID2])) {
             $organizationId = $queryParams[MetaModelInterface::REQUEST_ID2];
-            $this->currentUserRepository->assertAccessToOrganizationId($organizationId);
+            $this->currentUser->assertAccessToOrganizationId($organizationId, $this->respondent->getId());
             $this->currentTab = $organizationId;
         }
 

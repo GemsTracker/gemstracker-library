@@ -181,11 +181,11 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         MetaModelLoader $metaModelLoader,
         Tracker $tracker,
         TokenRepository $tokenRepository,
-        protected readonly OrganizationRepository $organizationRepository,
+        OrganizationRepository $organizationRepository,
         protected readonly ReceptionCodeRepository $receptionCodeRepository,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $currentUserRepository, $maskRepository, $metaModelLoader, $tracker, $tokenRepository);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $currentUserRepository, $maskRepository, $metaModelLoader, $tracker, $tokenRepository, $organizationRepository);
 
         // Load the display dateformat
         $dateType     = new GemsDateType($this->translate);
@@ -298,34 +298,6 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
 
         return $mailableIcon;
     }
-
-    /**
-     * Initialize the view
-     *
-     * Make sure the needed javascript is loaded
-     *
-     * @param \Zend_View $view
-     * /
-    protected function _initView($view)
-    {
-        $baseUrl = $this->basepath->getBasePath();
-
-        // Make sure we can use jQuery
-        \MUtil\JQuery::enableView($view);
-
-        // Now add the scrollTo plugin so we can scroll to today
-        $view->headScript()->appendFile($baseUrl . '/gems/js/jquery.scrollTo.min.js');
-        $view->headScript()->appendFile($baseUrl . '/gems/js/gems.copyToClipboard.js');
-        
-        /*
-         * And add some initialization:
-         *  - Hide all tokens initially (accessability, when no javascript they should be visible)
-         *  - If there is a day labeled today, scroll to it (prevents errors when not visible)
-         * /
-        $view->headScript()->appendFile($baseUrl . '/gems/js/gems.trafficlight.js');
-        $view->headScript()->appendFile($baseUrl . '/gems/js/gems.verticalExpand.js');
-        $view->headScript()->appendFile($baseUrl . '/gems/js/gems.respondentAnswersModal.js');
-    } // */
 
     /**
      * Copied from \Gems_Token, to save overhead of loading a token just for this check
@@ -593,12 +565,9 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
 
     public function getFilter(MetaModelInterface $metaModel): array
     {
-        $filter['gto_id_respondent']   = $this->respondent->getId();
-        if (is_array($this->forOtherOrgs)) {
-            $filter['gto_id_organization'] = $this->forOtherOrgs;
-        } elseif (true !== $this->forOtherOrgs) {
-            $filter['gto_id_organization'] = $this->respondent->getOrganizationId();
-        }
+        $respondentId = $this->respondent->getId();
+        $filter['gto_id_respondent']   = $respondentId;
+        $filter['gto_id_organization'] = $this->organizationRepository->getExtraTokenOrgsFor($respondentId, $this->respondent->getOrganizationId());;
 
         // Filter for valid track reception codes
         $filter[] = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1) OR (gto_completion_time IS NOT NULL)';

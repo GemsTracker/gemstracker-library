@@ -179,8 +179,6 @@ class TokenHandler extends TokenSearchHandlerAbstract
         protected BatchRunnerLoader $batchRunnerLoader,
     ) {
         parent::__construct($responder, $translate, $cache, $metaModelLoader, $currentUserRepository, $periodSelectRepository, $tracker);
-
-        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     public function answerAction()
@@ -188,12 +186,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
         $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
 
         $token = $this->getToken();
-        if (! $token->isViewable()) {
-            throw new \Gems\Exception(
-                sprintf($this->_('Inaccessible or unknown token %s'), strtoupper($token->getTokenId())),
-                403, null,
-                sprintf($this->_('Access to this token is not allowed for current role: %s.'), $currentUser->getRole()));
-        }
+        $this->currentUser->assertAccessToOrganizationId($token->getOrganizationId(), $token->getRespondentId());
 
         $snippetNames = $token->getAnswerSnippetNames();
 
@@ -373,7 +366,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
         // Survey action data
         $data['gto_id_respondent']   = $this->getRespondentId();
         if (isset($data['gto_id_organization'])) {
-            $this->currentUserRepository->assertAccessToOrganizationId($data['gto_id_organization']);
+            $this->currentUser->assertAccessToOrganizationId($data['gto_id_organization'], $data['gto_id_respondent']);
         } else {
             $data['gto_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
         }
@@ -409,12 +402,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
             $token = $this->tracker->getToken($tokenId);
         }
         if ($token && $token->exists) {
-            if (! array_key_exists($token->getOrganizationId(), $currentUser->getAllowedOrganizations())) {
-                throw new Exception(
-                    $this->_('Inaccessible or unknown organization'),
-                    403, null,
-                    sprintf($this->_('Access to this page is not allowed for current role: %s.'), $currentUser->getRole()));
-            }
+            $currentUser->assertAccessToOrganizationId($token->getOrganizationId(), $token->getRespondentId());
 
             return $token;
         }

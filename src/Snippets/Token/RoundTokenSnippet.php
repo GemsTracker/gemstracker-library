@@ -18,6 +18,7 @@ use Gems\Model;
 use Gems\Model\MetaModelLoader;
 use Gems\Model\Type\GemsDateTimeType;
 use Gems\Model\Type\GemsDateType;
+use Gems\Repository\OrganizationRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\User\Mask\MaskRepository;
@@ -67,10 +68,11 @@ class RoundTokenSnippet extends RespondentTokenSnippet
         MetaModelLoader $metaModelLoader,
         Tracker $tracker,
         TokenRepository $tokenRepository,
+        OrganizationRepository $organizationRepository,
         protected readonly array $config,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $currentUserRepository, $maskRepository, $metaModelLoader, $tracker, $tokenRepository);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $currentUserRepository, $maskRepository, $metaModelLoader, $tracker, $tokenRepository, $organizationRepository);
     }
 
     /**

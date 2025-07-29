@@ -24,6 +24,7 @@ use Gems\Util\Translated;
 use Laminas\Db\Exception\RuntimeException;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Exception\InvalidArgumentException;
+use Zalt\Base\TranslatorInterface;
 
 /**
  * User object that mimmicks the old $this->session behaviour
@@ -91,13 +92,65 @@ class User
 
     public function __construct(
         protected readonly UserDefinitionInterface $userDefinition,
-        protected readonly OrganizationRepository $organizationRepository,
         protected readonly AccessRepository $accessRepository,
-        protected readonly TrackDataRepository $trackDataRepository,
         protected readonly Acl $acl,
-        protected readonly Translated $translatedUtil,
+        protected readonly OrganizationRepository $organizationRepository,
         protected readonly ResultFetcher $resultFetcher,
+        protected readonly TrackDataRepository $trackDataRepository,
+        protected readonly Translated $translatedUtil,
+        protected readonly TranslatorInterface $translator,
     ) {
+    }
+
+    /**
+     * Throw an exception if the organization ID is not an allowed organization.
+     *
+     * @param int|array $organizationId
+     * @return void If the user has access to the organization
+     * @throws \Gems\Exception If the user does not have access to the organization
+     */
+    public function assertAccessToOrganizationId(int|array $organizationId, int|null $respondentId = null): void
+    {
+        if (is_array($organizationId)) {
+            foreach ($organizationId as $orgId) {
+                $this->assertAccessToOrganizationId($orgId, $respondentId);
+            }
+            return;
+        }
+        $orgs = $this->getAllowedOrganizations();
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $organizationId . ' ' . print_r($orgs, true) . "\n", FILE_APPEND);
+        if (isset($orgs[$organizationId])) {
+            return;
+        }
+        if ($respondentId) {
+            $tokenOrgs = $this->organizationRepository->getExtraTokenOrgsFor($respondentId, $organizationId);
+            if (isset($tokenOrgs[$organizationId])) {
+                return;
+            }
+        }
+        throw new \Gems\Exception(
+            $this->translator->_('Inaccessible or unknown organization'),
+            403, null,
+            sprintf($this->translator->_('Access to this page is not allowed for current group: %s.'), $this->getGroup(true)->getName())
+        );
+    }
+
+    /**
+     * Throw an exception if the user doesn't have access to the track.
+     *
+     * @param int|string $trackId
+     * @return void If the user has access to the track
+     * @throws \Gems\Exception If the user does not have access to the track
+     */
+    public function assertAccessToTrackId(int|string $trackId): void
+    {
+        $organizationIds = $this->getAllowedOrganizationIds();
+        // This is cached in the TrackDataRepository.
+        $tracks = $this->trackDataRepository->getActiveTracksForOrgs($organizationIds);
+        if (isset($tracks[$trackId])) {
+            return;
+        }
+        throw new \Gems\Exception('Inaccessible or unknown track', 403);
     }
 
     /**
@@ -401,40 +454,6 @@ class User
             return abs($this->passwordLastChanged->diff(new DateTimeImmutable())->days);
         }
         return 0;
-    }
-
-    /**
-     * Throw an exception if the organization ID is not an allowed organization.
-     *
-     * @param int|string $organizationId
-     * @return void If the user has access to the organization
-     * @throws \Gems\Exception If the user does not have access to the organization
-     */
-    public function assertAccessToOrganizationId(int|string $organizationId): void
-    {
-        $orgs = $this->getAllowedOrganizations();
-        if (isset($orgs[$organizationId])) {
-            return;
-        }
-        throw new \Gems\Exception('Inaccessible or unknown organization', 403);
-    }
-
-    /**
-     * Throw an exception if the user doesn't have access to the track.
-     *
-     * @param int|string $trackId
-     * @return void If the user has access to the track
-     * @throws \Gems\Exception If the user does not have access to the track
-     */
-    public function assertAccessToTrackId(int|string $trackId): void
-    {
-        $organizationIds = $this->getAllowedOrganizationIds();
-        // This is cached in the TrackDataRepository.
-        $tracks = $this->trackDataRepository->getActiveTracksForOrgs($organizationIds);
-        if (isset($tracks[$trackId])) {
-            return;
-        }
-        throw new \Gems\Exception('Inaccessible or unknown track', 403);
     }
 
     /**

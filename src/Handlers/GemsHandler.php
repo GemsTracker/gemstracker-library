@@ -111,9 +111,13 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
         Html::init();
     }
 
-    protected function assertAccessFromOrganization(User $currentUser, int $organizationId): void
+    protected function assertAccessToOrganization(User $currentUser, int $organizationId): void
     {
-        $currentUser->assertAccessToOrganizationId($organizationId);
+        if (method_exists($this, 'getRespondentId')) {
+            $currentUser->assertAccessToOrganizationId($organizationId, $this->getRespondentId());
+        } else {
+            $currentUser->assertAccessToOrganizationId($organizationId, null);
+        }
     }
 
     protected function getAttributeFilters(MetaModellerInterface $model): array
@@ -132,7 +136,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                      * @var User $currentUser
                      */
                     $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-                    $this->assertAccessFromOrganization($currentUser, $organizationId);
+                    $this->assertAccessToOrganization($currentUser, $organizationId);
                 }
             }
         }

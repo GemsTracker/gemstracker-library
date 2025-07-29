@@ -339,14 +339,19 @@ class AuditLog
 
         $this->getCurrentUser();
         if (isset($this->request)) {
-            $patientNr = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
+            $patientNr      = $this->request->getAttribute(MetaModelInterface::REQUEST_ID1);
             $organizationId = $this->request->getAttribute(MetaModelInterface::REQUEST_ID2);
-            if ($this->user && $organizationId !== null) {
-                $this->user->assertAccessToOrganizationId($organizationId);
-            }
 
             if ($patientNr !== null && $organizationId !== null) {
-                return $this->respondentRepository->getRespondentId($patientNr, $organizationId);
+                $respondentId = $this->respondentRepository->getRespondentId($patientNr, $organizationId);
+                if ($this->user && $organizationId !== null) {
+                    $this->user->assertAccessToOrganizationId($organizationId, $respondentId);
+                }
+                return $respondentId;
+            }
+
+            if (null !== $organizationId) {
+                $this->user->assertAccessToOrganizationId($organizationId, null);
             }
         }
         return null;
