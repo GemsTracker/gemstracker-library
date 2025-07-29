@@ -2,7 +2,7 @@ name: Static analysis and Tests
 
 on:
   push:
-    branches: [ "2.x" ]
+    branches: [ "2.x", "dev/*" ]
   pull_request:
     branches: [ "2.x" ]
 
