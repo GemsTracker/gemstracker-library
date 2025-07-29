@@ -99,7 +99,7 @@
         "psr/http-message": "^1.0.1",
         "psr/http-server-handler": "^1.0.1",
         "psr/http-server-middleware": "^1.0.1",
-        "spomky-labs/otphp": "^11.0",
+        "spomky-labs/otphp": "^11.1",
         "symfony/cache": "^6.4",
         "symfony/console": "^6.4",
         "symfony/doctrine-messenger": "^6.4",
