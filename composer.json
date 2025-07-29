@@ -73,6 +73,7 @@
         "laminas/laminas-servicemanager": "^3.11",
         "laminas/laminas-stratigility": "^3.9.0",
         "laminas/laminas-uri": "2.*",
+        "laminas/laminas-validator": "^2.60",
         "league/html-to-markdown": "^5.1",
         "magnafacta/mutil": "^2.0.2",
         "magnafacta/zalt-html": "^1.0.10",
