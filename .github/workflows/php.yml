@@ -49,6 +49,10 @@ jobs:
       run: vendor/bin/phpunit
 
   phpstan:
+    strategy:
+      matrix:
+        stability: [prefer-lowest, prefer-stable]
+      fail-fast: false
 
     runs-on: ubuntu-latest
 
@@ -67,7 +71,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-prefer-stable-
 
       - name: Install dependencies
-        run: COMPOSER_ROOT_VERSION=2.x-dev composer install --prefer-dist --no-progress
+        run: COMPOSER_ROOT_VERSION=2.x-dev composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Run phpstan
         run: vendor/bin/phpstan --no-progress
