@@ -123,11 +123,12 @@ class TokenLibrary
         // Wait till the last nanosecond with creating the token id
         $tokenData['gto_id_token']   = $this->createTokenId();
 
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($tokenData, true) . "\n", FILE_APPEND);
         $table = new TableGateway('gems__tokens', $this->resultFetcher->getAdapter());
         $table->insert($tokenData);
 
         if (Tracker::$verbose) {
-            \MUtil\EchoOut\EchoOut::r($tokenData, 'Created token: ' . $tokenData['gto_id_token']);
+            dump($tokenData, 'Created token: ' . $tokenData['gto_id_token']);
         }
 
         return $tokenData['gto_id_token'];

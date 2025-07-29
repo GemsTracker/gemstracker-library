@@ -114,7 +114,8 @@ class EmbeddedUserRepository implements EventSubscriberInterface
                 }
                 $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
                 if ($user instanceof User) {
-                    $user->assertAccessToOrganizationId($params[MetaModelInterface::REQUEST_ID2]); //, $this->data['respondentId']);
+                    $user->assertAccessToOrganizationId((int) $params[MetaModelInterface::REQUEST_ID2], $this->data['respondentId']);
+                    return;
                 }
 
                 throw new Exception(sprintf($this->translator->_('Access allowed only for patient nr %d, not for %s.'), $this->data['patientNr'], $params[MetaModelInterface::REQUEST_ID1]));
@@ -173,7 +174,7 @@ class EmbeddedUserRepository implements EventSubscriberInterface
 
     protected function updateRespondentId($patientNr, int $organizationId): void
     {
-        $select = $this->resultFetcher->getSelect('gems__respondent2or');
+        $select = $this->resultFetcher->getSelect('gems__respondent2org');
         $select->columns(['gr2o_id_user'])
             ->where([
                 'gr2o_patient_nr' => $patientNr,

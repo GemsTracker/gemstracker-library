@@ -2055,6 +2055,8 @@ class Token
      */
     public function setReceptionCode(ReceptionCode|string $code, string|bool|null $comment, int $userId): int
     {
+        $oldCode = $this->getReceptionCode();
+
         // Make sure it is a ReceptionCode object
         if (! $code instanceof ReceptionCode) {
             $code = $this->receptionCodeRepository->getReceptionCode($code);
@@ -2068,7 +2070,11 @@ class Token
         $changed = $this->_updateToken($values, $userId);
 
         if ($changed) {
-            if ($code->isOverwriter() || (! $code->isSuccess())) {
+            if ($code->isOverwriter() ||
+                (! $code->isSuccess()) ||
+                $oldCode->isOverwriter() ||
+                (! $oldCode->isSuccess())
+            ) {
                 $survey = $this->getSurvey();
 
                 // Update the consent code in the source
