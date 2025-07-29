@@ -121,7 +121,7 @@
         "symfony/translation": "^6.4",
         "symfony/validator": "^6.4",
         "symfony/yaml": "^6.4",
-        "twig/twig": "^3.4"
+        "twig/twig": "^3.9"
     },
     "require-dev": {
         "dompdf/dompdf":  "3.1.*",
