@@ -126,7 +126,7 @@
         "phing/phing": "^2.17.3",
         "phpoffice/phpword": "v1.3.*",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "1.*",
+        "phpstan/phpstan": "^1.12",
         "phpunit/phpunit": "^10.5.0",
         "vimeo/psalm": "^5.0@dev"
     },
