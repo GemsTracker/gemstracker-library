@@ -34,12 +34,15 @@
     "include-path": [
         "src/"
     ],
+    "config": {
+        "sort-packages": true
+    },
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
         "php": ">=8.1.0",
-        "ext-gd": "*",
         "ext-dom": "*",
+        "ext-gd": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-mysqli": "*",
@@ -73,6 +76,7 @@
         "laminas/laminas-servicemanager": "^3.11",
         "laminas/laminas-stratigility": "^3.9.0",
         "laminas/laminas-uri": "2.*",
+        "laminas/laminas-validator": "^2.60",
         "league/html-to-markdown": "^5.1",
         "magnafacta/mutil": "^2.0.2",
         "magnafacta/zalt-html": "^1.0.10",
@@ -99,6 +103,7 @@
         "psr/http-message": "^1.0.1",
         "psr/http-server-handler": "^1.0.1",
         "psr/http-server-middleware": "^1.0.1",
+        "shardj/zf1-future": "^1.23",
         "spomky-labs/otphp": "^11.1",
         "symfony/cache": "^6.4",
         "symfony/console": "^6.4",
@@ -113,11 +118,11 @@
         "symfony/property-info": "^6.4",
         "symfony/redis-messenger": "^6.4",
         "symfony/serializer": "^6.4",
+        "symfony/string": "^6.4",
         "symfony/translation": "^6.4",
         "symfony/validator": "^6.4",
         "symfony/yaml": "^6.4",
-        "twig/twig": "^3.4",
-        "symfony/string": "^6.4"
+        "twig/twig": "^3.9"
     },
     "require-dev": {
         "dompdf/dompdf":  "3.1.*",
@@ -126,7 +131,7 @@
         "phing/phing": "^2.17.3",
         "phpoffice/phpword": "v1.3.*",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "1.*",
+        "phpstan/phpstan": "^1.12",
         "phpunit/phpunit": "^10.5.0",
         "vimeo/psalm": "^5.0@dev"
     },

@@ -2,7 +2,7 @@ name: Static analysis and Tests
 
 on:
   push:
-    branches: [ "2.x" ]
+    branches: [ "2.x", "dev/*" ]
   pull_request:
     branches: [ "2.x" ]
 
@@ -49,23 +49,29 @@ jobs:
       run: vendor/bin/phpunit
 
   phpstan:
+    strategy:
+      matrix:
+        stability: [prefer-lowest, prefer-stable]
+      fail-fast: false
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v4
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-    - name: Install dependencies
-      run: COMPOSER_ROOT_VERSION=2.x-dev composer install --prefer-dist --no-progress
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.stability }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-prefer-stable-
 
-    - name: Run phpstan
-      run: vendor/bin/phpstan --no-progress
+      - name: Install dependencies
+        run: COMPOSER_ROOT_VERSION=2.x-dev composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
+      - name: Run phpstan
+        run: vendor/bin/phpstan --no-progress
