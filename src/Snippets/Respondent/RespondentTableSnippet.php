@@ -91,6 +91,11 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
 
         $model->setIfExists('gr2o_email', 'formatFunction', array(AElement::class, 'ifmail'));
 
+        // Sometimes we disable the name label
+        $model->set('name', [
+            'label' => $this->_('Name'),
+            ]);
+
         $bridge->addMultiSort('name', $br, 'gr2o_email');
     }
 

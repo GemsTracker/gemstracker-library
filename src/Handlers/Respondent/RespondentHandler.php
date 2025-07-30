@@ -691,6 +691,10 @@ class RespondentHandler extends RespondentChildHandlerAbstract
             $filter['show_with_track'] = 1;
         }
 
+        if (! isset($filter['gr2o_id_organization'])) {
+            $filter['gr2o_id_organization'] = $this->currentUser->getAllowedOrganizationIds();
+        }
+
         unset($filter['__active_tracks']);
 
         return $filter;

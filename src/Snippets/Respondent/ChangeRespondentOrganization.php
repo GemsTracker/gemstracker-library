@@ -115,7 +115,7 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
 
 
-        $availableOrganizations = $this->currentUser->getRespondentOrganizations();
+        $availableOrganizations = $this->organizationRepository->getOrganizationsOpenToRespondents();
         $shareOption            = $this->formData['change_method'] == 'share';
         $disabled               = [];
         $existingOrgs           = $this->resultFetcher->fetchPairs($sql, [$this->respondent->getId()]);
