@@ -447,9 +447,17 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
     {
         $route = $this->menuHelper->getRelatedRoute('show');
 
-        $this->redirectRoute = $this->menuHelper->getRouteUrl($route, [
-            MetaModelInterface::REQUEST_ID1 => $this->formData['gr2o_patient_nr'],
-            MetaModelInterface::REQUEST_ID2 => $this->formData['gr2o_id_organization'],
-        ]);
+        if ($this->currentUser->isAllowedOrganization($this->formData['gr2o_id_organization'])) {
+            $this->redirectRoute = $this->menuHelper->getRouteUrl($route, [
+                MetaModelInterface::REQUEST_ID1 => $this->formData['gr2o_patient_nr'],
+                MetaModelInterface::REQUEST_ID2 => $this->formData['gr2o_id_organization'],
+            ]);
+        } else {
+            $this->redirectRoute = $this->menuHelper->getRouteUrl($route, [
+                MetaModelInterface::REQUEST_ID1 => $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID1),
+                MetaModelInterface::REQUEST_ID2 => $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID2),
+            ]);
+        }
+
     }
 }

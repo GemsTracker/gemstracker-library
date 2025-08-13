@@ -174,7 +174,7 @@ class Respondent
     /**
      * Get the birthdate
      *
-     * @return \Gems\Util\ConsentCode
+     * @return null|\Gems\Util\ConsentCode
      */
     public function getConsent()
     {
@@ -649,9 +649,13 @@ class Respondent
                 $values['gr2o_changed']        = new Expression("CURRENT_TIMESTAMP");
                 $values['gr2o_changed_by']     = $this->currentUserId;
 
+                $oldConsents = [];
                 if ($newCode->isOverwriter()) {
                     $revokedConsent = $this->consentRepository->getConsentRevoked();
                     foreach ($this->respondentModel->consentFields as $consentField) {
+                        if (isset($this->_gemsData[$consentField])) {
+                            $oldConsents['old_' . $consentField] = $this->_gemsData[$consentField];
+                        }
                         $values[$consentField] = $revokedConsent;
                     }
                 }
@@ -661,6 +665,7 @@ class Respondent
                 $where['gr2o_id_organization'] = $this->getOrganizationId();
 
                 $this->resultFetcher->updateTable('gems__respondent2org', $values, $where);
+                $this->respondentModel->logConsentChanges($oldConsents + $values + $where);
             }
         }
 

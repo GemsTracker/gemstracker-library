@@ -154,6 +154,11 @@ class ResultFetcher
         return $this->getAdapter()->getDriver()->getLastGeneratedValue();
     }
 
+    public function printSelect(Select $select): string
+    {
+        return $select->getSqlString($this->db->getPlatform());
+    }
+
     public function updateTable(string $tableName, array $values, mixed $where): int
     {
         $table = new TableGateway($tableName, $this->getAdapter());

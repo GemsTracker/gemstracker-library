@@ -169,7 +169,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
             $this->_items = array_merge(
                     $this->hiddenItems,
                     $this->exhibitItems,
-                    array($this->receptionCodeItem),
+                    [$this->receptionCodeItem],
                     $this->editItems
                     );
         }

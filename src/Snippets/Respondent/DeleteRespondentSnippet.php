@@ -90,12 +90,14 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
         CurrentUserRepository $currentUserRepository,
-        protected Model $modelLoader,
-        protected ReceptionCodeRepository $receptionCodeRepository,
+        protected readonly Model $modelLoader,
+        protected readonly RespondentModel $respondentModel,
+        protected readonly ReceptionCodeRepository $receptionCodeRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper, $currentUserRepository);
 
-        $this->requestUndelete = $this->unDelete = $this->isUndeleting();
+        $this->unDelete = $this->isUndeleting();
+        $this->requestUndelete = $this->unDelete;
     }
 
     /**
@@ -123,6 +125,29 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
             return $output;
         }
         return $this->receptionCodeRepository->getRespondentDeletionCodes();
+    }
+
+    /**
+     * Are we undeleting or deleting?
+     *
+     * @return boolean
+     */
+    public function isUndeleting()
+    {
+        if ($this->respondent->getReceptionCode()->isSuccess()) {
+            return false;
+        }
+
+        if (! in_array('restore_tracks', $this->editItems)) {
+            $this->editItems[] = 'restore_tracks';
+            if (!$this->respondent->getConsent()?->canBeUsed()) {
+                foreach ($this->respondentModel->consentFields as $field) {
+                    $this->editItems[] = $field;
+                    $this->editItems[] = 'old_' . $field;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -155,22 +180,6 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
         }
         return $this->formData;
     }
-
-    /**
-     * Are we undeleting or deleting?
-     *
-     * @return boolean
-     */
-    public function isUndeleting()
-    {
-        if ($this->respondent->getReceptionCode()->isSuccess()) {
-            return false;
-        }
-
-        $this->editItems[] = 'restore_tracks';
-        return true;
-    }
-
 
     /**
      * Set what to do when the form is 'finished'.

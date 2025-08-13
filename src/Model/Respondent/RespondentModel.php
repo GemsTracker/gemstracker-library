@@ -397,15 +397,6 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $this->applyMask();
     }
 
-    public function makeConsentEditable(): void
-    {
-        $this->setIfExists('gr2o_consent', [
-            'elementClass' => 'Radio',
-            'multiOptions' => $this->consentRepository->getUserConsentOptions(),
-            'separator' => ' ',
-        ]);
-    }
-
     public function checkIds(array $newValues)
     {
         $id = false;
@@ -492,6 +483,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $toPatient['gr2o_id_organization'] = $toOrgId;
         $toPatient['gr2o_reception_code']  = ReceptionCodeRepository::RECEPTION_OK;
         $result = $this->save($toPatient);
+        $this->logConsentChanges($result, true);
 
         // Now re-enable the mask feature
         $this->maskRepository->enableMaskRepository();
@@ -572,60 +564,53 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         }
     }
 
-    protected function setIfExists(string $name, array $options = []): bool
-    {
-        if ($this->metaModel->has($name)) {
-            if ((!isset($options['label'])) && isset($this->_labels[$name]) && $this->_labels[$name]) {
-                $options['label'] = $this->_labels[$name];
-            }
-            if ($this->currentGroup) {
-                $options['tab'] = $this->currentGroup;
-            }
-            if (isset($options['label']) && $options['label']) {
-                $this->metaModel->set($name, $options);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected function setIfMultiple(array $names, array $options = []): void
-    {
-        foreach ($names as $name) {
-            $this->setIfExists($name, $options);
-        }
-    }
-
     /**
      *
      * @param array $newValues The values to store for a single model item.
+     * @param bool $ignoreOld
      * @return int Number of consent changes logged
      */
-    public function logConsentChanges(array $newValues): int
+    public function logConsentChanges(array $newValues, bool $ignoreOld = false): int
     {
         $logModel = $this->metaModel->getMetaModelLoader()->createModel(RespondentConsentLogModel::class);
 
         $changes = 0;
         foreach ($this->consentFields as $consent) {
             $oldConsent = 'old_' . $consent;
-            if (isset($newValues['gr2o_id_user'], $newValues['gr2o_id_organization'], $newValues[$consent]) &&
-                array_key_exists($oldConsent, $newValues) &&  // Old consent can be empty
-                ($newValues[$consent] != $newValues[$oldConsent]) ) {
 
-                $values['glrc_id_user']         = $newValues['gr2o_id_user'];
-                $values['glrc_id_organization'] = $newValues['gr2o_id_organization'];
-                $values['glrc_consent_field']   = $consent;
-                $values['glrc_old_consent']     = $newValues[$oldConsent];
-                $values['glrc_new_consent']     = $newValues[$consent];
-                $values['glrc_created']         = "CURRENT_TIMESTAMP";
-                $values['glrc_created_by']      = $this->currentUserId;
+            if (isset($newValues['gr2o_id_user'], $newValues['gr2o_id_organization'], $newValues[$consent])) {
+                if ($ignoreOld) {
+                    $goOld = true;
+                } else {
+                    $goOld = array_key_exists($oldConsent, $newValues) &&  // Old consent can be empty
+                        ($newValues[$consent] != $newValues[$oldConsent]);
+                }
 
-                $logModel->save($values);
-                $changes++;
+                if ($goOld) {
+                    $values['glrc_id_user'] = $newValues['gr2o_id_user'];
+                    $values['glrc_id_organization'] = $newValues['gr2o_id_organization'];
+                    $values['glrc_consent_field'] = $consent;
+                    $values['glrc_old_consent'] = $ignoreOld ? null : $newValues[$oldConsent];
+                    $values['glrc_new_consent'] = $newValues[$consent];
+                    $values['glrc_created'] = "CURRENT_TIMESTAMP";
+                    $values['glrc_created_by'] = $this->currentUserId;
+
+                    $logModel->save($values);
+                    $changes++;
+                }
             }
         }
 
         return $changes;
+    }
+
+    public function makeConsentEditable(): void
+    {
+        $this->setIfExists('gr2o_consent', [
+            'elementClass' => 'Radio',
+            'multiOptions' => $this->consentRepository->getUserConsentOptions(),
+            'separator' => ' ',
+        ]);
     }
 
     /**
@@ -667,6 +652,8 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
         if ($filter && empty($patientTo)) {
             $result = $this->save($patientFrom, $filter);
+
+            $this->logConsentChanges($result, true);
         } else {
             // already exists, return current patient
             // we can not delete the other records, maybe mark as inactive or throw an error
@@ -682,19 +669,19 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
 
     public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
-//        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($newValues, true) . "\n", FILE_APPEND);
-//        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($filter, true) . "\n", FILE_APPEND);
-
         $newValues = $this->checkIds($newValues);
 
         if (isset($filter[MetaModelInterface::REQUEST_ID1], $filter[MetaModelInterface::REQUEST_ID2]) && (! isset($newValues['gr2o_id_user']))) {
             $newValues['gr2o_id_user'] = $this->respondentRepository->getRespondentId($filter[MetaModelInterface::REQUEST_ID1], (int) $filter[MetaModelInterface::REQUEST_ID2]);
             $newValues['grs_id_user']  = $newValues['gr2o_id_user'];
+            $ignoreOld = true;
+        } else {
+            $ignoreOld = false;
         }
 
         $output = parent::save($newValues, $filter, $saveTables);
 
-        $this->logConsentChanges($output);
+        $this->logConsentChanges($output, $ignoreOld);
 
         if (isset($output['gr2o_id_organization']) && isset($output['grs_id_user'])) {
             // Tell the organization it has at least one user
@@ -736,6 +723,23 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             }
         }
         return $value;
+    }
+
+    protected function setIfExists(string $name, array $options = []): bool
+    {
+        if ($this->metaModel->has($name)) {
+            if ((!isset($options['label'])) && isset($this->_labels[$name]) && $this->_labels[$name]) {
+                $options['label'] = $this->_labels[$name];
+            }
+            if ($this->currentGroup) {
+                $options['tab'] = $this->currentGroup;
+            }
+            if (isset($options['label']) && $options['label']) {
+                $this->metaModel->set($name, $options);
+                return true;
+            }
+        }
+        return false;
     }
 
     public function setSSN()
