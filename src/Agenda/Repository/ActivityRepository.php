@@ -9,7 +9,11 @@ use Laminas\Db\TableGateway\TableGateway;
 
 class ActivityRepository
 {
-    public array $activitiesCacheTags = ['activity', 'activities'];
+    public array $activitiesCacheTags = [
+        'appointment_filters',
+        'activity',
+        'activities'
+    ];
 
     protected int $currentUserId;
 
