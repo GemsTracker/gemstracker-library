@@ -38,7 +38,7 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gro_condition', 'gro_id_track', 'gro_id_round');
+    protected $_dependentOn = array('gro_condition', 'gro_id_track', 'gro_id_round', 'gro_id_survey');
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -109,7 +109,7 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
                 return [
                     'condition_display' => [
                         'elementClass' => 'Exhibitor',
-                        'value' => sprintf($this->_('Unable to load condition with ID %s'), $context['gro_condition'])
+                        'value' => sprintf($this->_('Unable to load condition with ID %s, error: %s'), $context['gro_condition'], $exc->getMessage())
                     ]
                 ];
             }

@@ -172,6 +172,11 @@ class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbs
             echo "Patient does not exist";
             exit(0);
         }
+        if (null === $raw) {
+            // No patient found
+            echo "Appointment skipped by filter";
+            exit(0);
+        }
         $row    = $translator->validateRowValues($raw, 1);
         $errors = $translator->getRowErrors(1);
 
