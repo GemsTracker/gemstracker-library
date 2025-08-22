@@ -85,7 +85,7 @@ class RepeatLessConditionTest extends DatabaseTestCase
         ];
     }
 
-        public function testLoadCondition()
+    public function testLoadCondition()
     {
         $conditionLoader = $this->container->get(ConditionLoader::class);
         $this->assertInstanceOf(ConditionLoader::class, $conditionLoader);
