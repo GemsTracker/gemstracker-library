@@ -18,5 +18,11 @@ namespace Gems\SnippetsActions\Browse;
  */
 class FileBrowseSearchAction extends BrowseSearchAction
 {
+    /**
+     * Optional extra sort(s)
+     * @var array
+     */
+    public array $extraSort = ['changed' => SORT_DESC];
+
     public array $menuEditRoutes = ['download'];
 }

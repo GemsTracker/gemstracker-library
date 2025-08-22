@@ -12,6 +12,5 @@ class DatabaseTestCase extends TestCase
     use ResultFetcherTrait;
     use DatabaseMigrationsTrait;
     use DatabaseTransactionsTrait;
-    use ResultFetcherTrait;
     use SeedTrait;
 }

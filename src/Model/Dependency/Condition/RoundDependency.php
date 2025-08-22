@@ -43,7 +43,7 @@ class RoundDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected array $_dependentOn = ['gro_condition', 'gro_id_track', 'gro_id_round'];
+    protected array $_dependentOn = ['gro_condition', 'gro_id_track', 'gro_id_round', 'gro_id_survey'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
