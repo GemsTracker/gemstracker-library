@@ -82,7 +82,7 @@ class AppointmentField extends FieldAbstract
      *
      * @var string
      */
-    protected string $appointmentTimeFormat = 'j M Y H:i';
+    protected string $appointmentTimeFormat = 'd-m-Y H:i';
 
     public function __construct(
         int $trackId,
@@ -141,31 +141,13 @@ class AppointmentField extends FieldAbstract
      * @param array $currentValue The current value
      * @param array $fieldData The other known field values
      * @param array $trackData The currently available track data (track id may be empty)
-     * @return mixed the new value
+     * @return string|int|null the new value
      */
-    public function calculateFieldValue(mixed $currentValue, array $fieldData, array $trackData): mixed
+    public function calculateFieldValue(mixed $currentValue, array $fieldData, array $trackData): string|int|null
     {
         if ($currentValue || isset($this->fieldDefinition['gtf_filter_id'])) {
             if ($this->_lastActiveKey && isset($this->fieldDefinition['gtf_filter_id'])) {
-                $fromDate   = false;
-                $lastActive = self::$_lastActiveAppointment[$this->_lastActiveKey];
-
-                if (($lastActive instanceof Appointment) && $lastActive->isActive()) {
-                    $fromDate = $lastActive->getAdmissionTime();
-                }
-
-                if ((! $fromDate) && isset($trackData['gr2t_start_date']) && $trackData['gr2t_start_date']) {
-
-                    if ($trackData['gr2t_start_date'] instanceof DateTimeInterface) {
-                        $fromDate = $trackData['gr2t_start_date'];
-                    } else {
-                        $fromDate = DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $trackData['gr2t_start_date']);
-                    }
-                    // Always use start of the day for start date comparisons
-                    if ($fromDate instanceof DateTimeImmutable) {
-                        $fromDate = $fromDate->setTime(0,0);
-                    }
-                }
+                $fromDate = $this->getFromDate($trackData);
 
                 if ($fromDate instanceof DateTimeInterface) {
                     $select = $this->agenda->createAppointmentSelect(['gap_id_appointment']);
@@ -202,10 +184,9 @@ class AppointmentField extends FieldAbstract
                                 break;
 
                             case 2: // Tracks of this type may link only once to an appointment
+                                $respTrackId = null;
                                 if (isset($trackData['gr2t_id_respondent_track'])) {
                                     $respTrackId = $trackData['gr2t_id_respondent_track'];
-                                } else {
-                                    $respTrackId = null;
                                 }
                                 $select->uniqueForTrackId(
                                         $this->trackId,
@@ -229,12 +210,7 @@ class AppointmentField extends FieldAbstract
             }
 
             if ($this->_lastActiveKey && $currentValue) {
-                $appointment = $this->agenda->getAppointment($currentValue);
-
-                if ($appointment->isActive()) {
-                    self::$_lastActiveAppointment[$this->_lastActiveKey] = $appointment;
-                    self::$_lastActiveAppointmentIds[$this->_lastActiveKey][$currentValue] = $currentValue;
-                }
+                $this->setLastActiveAppointmentFromValue($currentValue);
             }
         }
 
@@ -246,16 +222,15 @@ class AppointmentField extends FieldAbstract
      * Signal the start of a new calculation round (for all fields)
      *
      * @param array $trackData The currently available track data (track id may be empty)
-     * @return \Gems\Tracker\Field\FieldAbstract
+     * @return self
      */
     public function calculationStart(array $trackData): FieldAbstract
     {
+        $this->_lastActiveKey = null;
         if (isset($trackData['gr2t_id_respondent_track'])) {
             $this->_lastActiveKey = $trackData['gr2t_id_respondent_track'];
         } elseif (isset($trackData['gr2t_id_user'], $trackData['gr2t_id_organization'])) {
             $this->_lastActiveKey = $trackData['gr2t_id_user'] . '__' . $trackData['gr2t_id_organization'];
-        } else {
-            $this->_lastActiveKey = false;
         }
         if ($this->_lastActiveKey) {
             self::$_lastActiveAppointment[$this->_lastActiveKey]    = null;
@@ -299,6 +274,34 @@ class AppointmentField extends FieldAbstract
         return $output;
     }
 
+    public function getFromDate(array $trackData): DateTimeInterface|null
+    {
+        $lastActive = self::$_lastActiveAppointment[$this->_lastActiveKey];
+
+        if (($lastActive instanceof Appointment) && $lastActive->isActive()) {
+            $fromDate = $lastActive->getAdmissionTime();
+            return $fromDate->setTime(0,0);
+        }
+
+        if (isset($trackData['gr2t_start_date']) && $trackData['gr2t_start_date']) {
+            $fromDate = $trackData['gr2t_start_date'];
+            if (!$fromDate instanceof DateTimeInterface) {
+                $fromDate = DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $trackData['gr2t_start_date']);
+            }
+
+            // Always use start of the day for start date comparisons
+            if ($fromDate instanceof DateTimeImmutable) {
+                return $fromDate->setTime(0,0);
+            }
+        }
+        return null;
+    }
+
+    public function getLastActiveKey(): string|null
+    {
+        return $this->_lastActiveKey;
+    }
+
     /**
      *
      * @return boolean When this field can be calculated, but also set manually
@@ -308,13 +311,25 @@ class AppointmentField extends FieldAbstract
         return (! $this->isReadOnly()) && $this->fieldDefinition['gtf_filter_id'];
     }
 
+    public function setLastActiveAppointmentFromValue(string|int $appointmentId): void
+    {
+        $appointment = $this->agenda->getAppointment($appointmentId);
+
+        if (!$appointment->isActive()) {
+            return;
+        }
+
+        self::$_lastActiveAppointment[$this->_lastActiveKey] = $appointment;
+        self::$_lastActiveAppointmentIds[$this->_lastActiveKey][$appointmentId] = $appointmentId;
+    }
+
     /**
-     * Dispaly an appoitment as text
+     * Display an appointment as text
      *
-     * @param mixed $value
+     * @param Appointment|string|int|null $value
      * @return string
      */
-    public function showAppointment($value)
+    public function showAppointment(Appointment|string|int|null $value): HtmlElement|string
     {
         if (! $value) {
             return $this->translator->_('Unknown');
