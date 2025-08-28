@@ -23,6 +23,7 @@ use Gems\Tracker;
 use Gems\Util\Translated;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
+use Zalt\Html\HtmlElement;
 use Zalt\Model\MetaModelInterface;
 
 /**
@@ -39,14 +40,14 @@ class AppointmentField extends FieldAbstract
     /**
      * Respondent track fields that this field's settings are dependent on.
      *
-     * @var array Null or an array of respondent track fields.
+     * @var array|null an array of respondent track fields.
      */
     protected array|null $_dependsOn = ['gr2t_id_user', 'gr2t_id_organization'];
 
     /**
      * Model settings for this field that may change depending on the dependsOn fields.
      *
-     * @var array Null or an array of model settings that change for this field
+     * @var array|null an array of model settings that change for this field
      */
     protected array|null $_effecteds = ['multiOptions'];
 
@@ -55,7 +56,7 @@ class AppointmentField extends FieldAbstract
      *
      * Shared among all field instances saving to the same respondent track id
      *
-     * @var array of \Gems\Agenda\Appointment)
+     * @var Appointment[]
      */
     protected static array  $_lastActiveAppointment = [];
 
@@ -72,9 +73,9 @@ class AppointmentField extends FieldAbstract
      * The key for the current calculation to self::$_lastActiveAppointment  and
      * self::$_lastActiveAppointmentIds
      *
-     * @var mixed
+     * @var string|int|null
      */
-    protected $_lastActiveKey;
+    protected string|int|null $_lastActiveKey;
 
     /**
      * The format string for outputting appointments
@@ -280,7 +281,7 @@ class AppointmentField extends FieldAbstract
      *
      * @param array $context The current data this object is dependent on
      * @param boolean $new True when the item is a new record not yet saved
-     * @return array (setting => value)
+     * @return array|null (setting => value)
      */
     public function getDataModelDependencyChanges(array $context, bool $new): array|null
     {

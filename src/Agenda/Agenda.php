@@ -483,7 +483,7 @@ class Agenda
         return $this->overloader->create('Agenda\\EpisodeOfCare', $episodeData);
     }
 
-    public function getEpisodeOfCareData(int $episodeId): array
+    public function getEpisodeOfCareData(int $episodeId): array|null
     {
         $select = $this->resultFetcher->getSelect('gems__episodes_of_care');
         $select->where(['gec_episode_of_care_id' => $episodeId]);

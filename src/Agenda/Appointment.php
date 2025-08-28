@@ -33,28 +33,20 @@ use Zalt\Base\TranslatorInterface;
 class Appointment
 {
     /**
-     *
      * @var int The id of the appointment
      */
     protected int $id;
 
     /**
-     *
      * @var array The gems appointment data
      */
     protected array $data = [];
 
     /**
      * True when the token does exist.
-     *
-     * @var boolean
      */
     public bool $exists = true;
 
-    /**
-     *
-     * @var FilterTracer
-     */
     protected FilterTracer|null $filterTracer = null;
 
     /**
@@ -77,9 +69,7 @@ class Appointment
     }
 
     /**
-     * Return the description of the current ativity
-     *
-     * @return string or null when not found
+     * @return string|null description of the current activity or null when not found
      */
     public function getActivityDescription(): string|null
     {
@@ -93,9 +83,7 @@ class Appointment
     }
 
     /**
-     * Return the id of the current activity
-     *
-     * @return int
+     * @return int|null current activity ID
      */
     public function getActivityId(): int|null
     {
@@ -103,9 +91,7 @@ class Appointment
     }
 
     /**
-     * Return the admission time
-     *
-     * @return ?DateTimeInterface Admission time as a date or null
+     * @return DateTimeInterface|null Admission time as a date or null
      */
     public function getAdmissionTime(): DateTimeInterface|null
     {
@@ -121,9 +107,7 @@ class Appointment
     }
 
     /**
-     * Get the DB id of the attending by person
-     *
-     * @return int
+     * @return int|null DB id of the attending by person
      */
     public function getAttendedById(): int|null
     {
@@ -131,9 +115,7 @@ class Appointment
     }
 
     /**
-     * The cooment to the appointment
-     *
-     * @return string
+     * @return string The comment to the appointment
      */
     public function getComment(): string
     {
@@ -144,8 +126,6 @@ class Appointment
      * Get a general description of this appointment
      *
      * @see \Gems\Agenda->getAppointmentDisplay()
-     *
-     * @return string
      */
     public function getDisplayString(): string
     {
@@ -158,10 +138,6 @@ class Appointment
         return implode($this->translator->_('; '), array_filter($results));
     }
 
-    /**
-     *
-     * @return EpisodeOfCare|null
-     */
     public function getEpisode(): EpisodeOfCare|null
     {
         $episodeId = $this->getEpisodeId();
@@ -173,19 +149,13 @@ class Appointment
         return null;
     }
 
-    /**
-     *
-     * @return int
-     */
     public function getEpisodeId(): int|null
     {
         return $this->data['gap_id_episode'];
     }
 
     /**
-     * Return the appointment id
-     *
-     * @return int
+     * @return int appointment id
      */
     public function getId(): int
     {
@@ -193,9 +163,7 @@ class Appointment
     }
 
     /**
-     * Return the appointment info array
-     *
-     * @return array
+     * @return array appointment info array
      */
     public function getInfo(): array
     {
@@ -211,9 +179,7 @@ class Appointment
     }
 
     /**
-     * Return the description of the current location
-     *
-     * @return string or null when not found
+     * @return string|null Return the description of the current location or null when not found
      */
     public function getLocationDescription(): string|null
     {
@@ -227,27 +193,20 @@ class Appointment
     }
 
     /**
-     * Get the DB id of the location
-     *
-     * @return int
+     * @return int DB id of the location
      */
     public function getLocationId(): int|null
     {
         return $this->data['gap_id_location'];
     }
 
-    /**
-     *
-     * @return int
-     */
     public function getOrganizationId(): int
     {
         return $this->data['gap_id_organization'];
     }
 
     /**
-     *
-     * @return string The respondents patient number
+     * @return string|null The respondents patient number
      */
     public function getPatientNumber(): string|null
     {
@@ -259,9 +218,7 @@ class Appointment
     }
 
     /**
-     * Return the description of the current procedure
-     *
-     * @return string|null or null when not found
+     * Return the description of the current procedure or null when not found
      */
     public function getProcedureDescription(): string|null
     {
@@ -276,8 +233,6 @@ class Appointment
 
     /**
      * Return the id of the current procedure
-     *
-     * @return int
      */
     public function getProcedureId(): int|null
     {
@@ -286,8 +241,6 @@ class Appointment
 
     /**
      * Get the DB id of the referred by person
-     *
-     * @return int
      */
     public function getReferredById(): int|null
     {
@@ -296,8 +249,6 @@ class Appointment
 
     /**
      * Return the respondent object
-     *
-     * @return \Gems\Tracker\Respondent
      */
     public function getRespondent(): Respondent
     {
@@ -310,8 +261,6 @@ class Appointment
 
     /**
      * Return the user / respondent id
-     *
-     * @return int
      */
     public function getRespondentId(): int
     {
@@ -320,8 +269,6 @@ class Appointment
 
     /**
      * The source of the appointment
-     *
-     * @return string
      */
     public function getSource(): string
     {
@@ -330,8 +277,6 @@ class Appointment
 
     /**
      * The source id of the appointment
-     *
-     * @return string
      */
     public function getSourceId(): string|int
     {
