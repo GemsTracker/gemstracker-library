@@ -18,6 +18,8 @@ class TokenEmailSnippet extends CreateEditSnippet
 {
     protected ?string $afterSaveUrl = null;
 
+    protected string $tag = 'token-mail-form';
+
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
