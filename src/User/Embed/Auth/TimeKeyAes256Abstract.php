@@ -235,9 +235,9 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
      *
      * @return string[]
      */
-    public function getValidTimeStamps(): array
+    public function getValidTimeStamps(string $datetime = 'now'): array
     {
-        $current = new \DateTime();
+        $current = new \DateTime($datetime);
         $current->sub(new \DateInterval($this->getTimePeriodString($this->keyTimeValidRange)));
         $addDate = new \DateInterval($this->getTimePeriodString(1));
         $keys    = [];
