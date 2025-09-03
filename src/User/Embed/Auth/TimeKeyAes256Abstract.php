@@ -11,83 +11,97 @@ declare(strict_types=1);
 
 namespace Gems\User\Embed\Auth;
 
+use Gems\Exception\Coding;
 use Gems\User\Embed\EmbeddedAuthAbstract;
-use Gems\User\Embed\UpdatingAuthInterface;
+use Gems\User\Embed\EmbeddedUserData;
+use Gems\User\User;
+use MUtil\EchoOut\EchoOut;
 
 /**
  *
  * @package    Gems
  * @subpackage User\Embed\Auth
- * @since      Class available since version 1.9.2
+ * @since      Class available since version v2.0.54
  */
-class HourKeyAes256 extends EmbeddedAuthAbstract implements UpdatingAuthInterface
+abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
 {
     /**
      * @var array Parameters encrypted in the secret key
      */
-    protected $_params = [];
+    protected array $_params = [];
 
     /**
      * @var bool Show debug code
      */
-    protected $debug = false;
+    protected bool $debug = false;
 
     /**
      * Default key to use when no two factor key was set
      *
      * @var string
      */
-    protected $defaultKey = 'test';
+    protected string $defaultKey = 'test';
 
     /**
      *
-     * @var string Algorithm for the PHP hash() function, E.G. sha256
+     * @var string Algorithm for the encryption function
      */
-    protected $encryptionAlgorithm = 'AES-256-CBC';
+    protected string $encryptionAlgorithm = 'AES-256-CBC';
 
     /**
      *
      * @var boolean When true, apply base64 to encryption output
      */
-    protected $encryptionBase64 = true;
+    protected bool $encryptionBase64 = true;
 
     /**
      * Format for date part of key function
      *
      * @var string
      */
-    protected $keyTimeFormat = 'YmdH';
+    protected string $keyTimeFormat = 'YmdH';
 
     /**
      * The number of time periods on either side of the current that is allowed
      *
      * @var int
      */
-    protected $keyTimeValidRange = 1;
+    protected int $keyTimeValidRange = 0;
 
     /**
      * Authenticate embedded user
      *
-     * @param \Gems_User_User $user
-     * @param $secretKey
+     * @param User $user
+     * @param EmbeddedUserData $embeddedUserData
+     * @param string $secretKey
      * @return bool
      */
-    public function authenticate(\Gems_User_User $user, $secretKey)
+    public function authenticate(User $user, EmbeddedUserData $embeddedUserData, string $secretKey): bool
     {
-        $embedderData = $user->getEmbedderData();
-        
-        $input = $this->decrypt($secretKey, $this->getEncryptionKey($user));
-        
-        if ($input) {
-            \parse_str($input, $this->_params);
-            if (isset($this->_params['chk'])) {
-                return in_array($this->_params['chk'], $this->getValidTimeStamps());
-            } else {
-                return false;
-            }
+        $input = $this->decrypt($this->checkKey($secretKey), $this->getEncryptionKey($embeddedUserData));
+        if ($input == false) {
+            return false;
+        }
+        parse_str($input, $this->_params);
+        if (!isset($this->_params['chk'])) {
+            return false;
+        }
+        return in_array($this->_params['chk'], $this->getValidTimeStamps());
+    }
+
+    /**
+     * @param string $secretKey
+     * @return string
+     */
+    protected function checkKey($secretKey)
+    {
+        if ($this->encryptionBase64) {
+            // Sometimes the plus sign is translated to a space.
+            // Using base64 means there should not be a space in the key 
+            $secretKey = strtr($secretKey, ' ', '+');
         }
         
-        return (boolean) $input;
+        return $secretKey;
     }
 
     /**
@@ -95,9 +109,9 @@ class HourKeyAes256 extends EmbeddedAuthAbstract implements UpdatingAuthInterfac
      *
      * @param string $secretKey String to decrypt
      * @param string $encryptionKey Key to use for decryption
-     * @return string decrypted string of false
+     * @return string decrypted string or false
      */
-    protected function decrypt($secretKey, $encryptionKey)
+    protected function decrypt($secretKey, $encryptionKey): string|false
     {
         if ($this->encryptionBase64) {
             // Sometimes the plus sign is translated to a space.
@@ -118,7 +132,7 @@ class HourKeyAes256 extends EmbeddedAuthAbstract implements UpdatingAuthInterfac
      * @param string $encryptionKey Key used for encryption
      * @return string encrypted string
      */
-    protected function encrypt($keyInput, $encryptionKey)
+    protected function encrypt($keyInput, $encryptionKey): string
     {
         $ivlen = openssl_cipher_iv_length($this->encryptionAlgorithm);
         $iv    = openssl_random_pseudo_bytes($ivlen);
@@ -140,20 +154,20 @@ class HourKeyAes256 extends EmbeddedAuthAbstract implements UpdatingAuthInterfac
     /**
      * Return the authentication string for the user
      *
-     * @param \Gems_User_User $embeddedUser
+     * @param EmbeddedUserData $embeddedUserData
      * @return string Preferably containing %s
      */
-    protected function getEncryptionKey(\Gems_User_User $embeddedUser)
+    protected function getEncryptionKey(EmbeddedUserData $embeddedUserData): string
     {
-        return $embeddedUser->getSecretKey() ?: $this->defaultKey;
+        return $embeddedUserData->getSecretKey() ?: $this->defaultKey;
     }
 
     /**
      *
-     * @param \Gems_User_User $user
+     * @param User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(\Gems_User_User $user)
+    public function getExampleKey(User $user, EmbeddedUserData $embeddedUserData): string
     {
         $url['pid'] = $this->patientNumber;
         // $url['org'] = $this->organizations;
@@ -166,30 +180,17 @@ class HourKeyAes256 extends EmbeddedAuthAbstract implements UpdatingAuthInterfac
             $url['chk'] = \end($stamps) ?: 'key';
         }
         
-        return $this->encrypt(http_build_query(array_filter($url)), $this->getEncryptionKey($user));
+        return $this->encrypt(http_build_query(array_filter($url)), $this->getEncryptionKey($embeddedUserData));
     }
 
     /**
-     * Return the authentication string for the user
-     *
-     * @param \Gems_User_User $embeddedUser
-     * @return string Preferably containing %s
+     * @return string Something to display as label.
      */
-    protected function getKeysStart(\Gems_User_User $embeddedUser)
+    abstract public function getLabel(): string;
+
+    public function getIvLength(): int
     {
-        $key = $embeddedUser->getSecretKey() ?: $this->defaultKey;
-
-        if (! \MUtil_String::contains($key, '%s')) {
-            $key .= '%s';
-        }
-
-        return $key;
-    }
-
-    public function getLabel()
-    {
-        $ivlen = openssl_cipher_iv_length($this->encryptionAlgorithm);
-        return sprintf($this->_('EAS 256 Ecnrypted Url for EPIC with IV length %d.'), $ivlen);
+        return openssl_cipher_iv_length($this->encryptionAlgorithm);
     }
 
     /**
@@ -197,9 +198,9 @@ class HourKeyAes256 extends EmbeddedAuthAbstract implements UpdatingAuthInterfac
      *
      * @param int $i The "start" interval
      * @return string
-     * @throws \Gems_Exception_Coding
+     * @throws \Gems\Exception\Coding
      */
-    protected function getTimePeriodString($i = 1)
+    protected function getTimePeriodString($i = 1): string
     {
         $timeChar = substr($this->keyTimeFormat, -1);
 
@@ -226,15 +227,15 @@ class HourKeyAes256 extends EmbeddedAuthAbstract implements UpdatingAuthInterfac
 
         }
 
-        throw new \Gems_Exception_Coding("Invalid last keyTimeFormat character '$timeChar' set.");
+        throw new Coding("Invalid last keyTimeFormat character '$timeChar' set.");
     }
 
     /**
-     * Return an array of valid key values for this user
+     * Return an array of valid timestamps
      *
-     * @return array
+     * @return string[]
      */
-    public function getValidTimeStamps()
+    public function getValidTimeStamps(): array
     {
         $current = new \DateTime();
         $current->sub(new \DateInterval($this->getTimePeriodString($this->keyTimeValidRange)));
@@ -247,7 +248,7 @@ class HourKeyAes256 extends EmbeddedAuthAbstract implements UpdatingAuthInterfac
         }
 
         if ($this->debug) {
-            \MUtil_Echo::track($keys);
+           EchoOut::track($keys);
         }
         // \MUtil_Echo::track(hash_algos());
 
