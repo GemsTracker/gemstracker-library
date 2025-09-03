@@ -76,23 +76,6 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
     }
 
     /**
-     * Creates the form itself
-     *
-     * @param array $options
-     * @return Form
-     */
-    protected function createForm(array $options = [])
-    {
-        if (! isset($options['name'])) {
-            $className = get_class($this);
-            $options['name'] = substr($className, strrpos($className, '\\'));
-        }
-
-        $form = new Form($options);
-        return $form;
-    }
-
-    /**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.

@@ -79,7 +79,7 @@ class SurveyExportSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
 
         foreach ($elements as $element) {
             if ($element instanceof \Zend_Form_Element_Multi) {
-                $element->setAttrib('class', 'auto-submit');
+                $element->setAttrib('class', 'auto-submit-force');
             }
         }
 

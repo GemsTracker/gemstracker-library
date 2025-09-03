@@ -7,3 +7,4 @@
 /docs/setup/fssort.ini
 .phpunit.cache
 /composer.lock
+/data/logs/php-error.log

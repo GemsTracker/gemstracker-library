@@ -52,7 +52,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      *
      * @var string The id of an element that contains target that should be replaced.
      */
-    protected ?string $containingId = null; // 'autofilter_target';
+    protected ?string $containingId = null;
 
     /**
      * The default search data to use.
