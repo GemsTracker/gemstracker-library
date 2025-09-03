@@ -62,4 +62,63 @@ class TimeKeyAes256AbstractTest extends TestCase
             ]],
         ];
     }
+
+    public function testGetIvLengthReturnsCorrectLength()
+    {
+        $translator = new MockTranslator();
+        $authClass = new TimeKeyAes256($translator);
+
+        $expected = openssl_cipher_iv_length('AES-256-CBC');
+        $this->assertEquals($expected, $authClass->getIvLength());
+    }
+
+    public static function encryptionDataProvider()
+    {
+        return [
+            ['foo', 'bar'],
+        ];
+    }
+
+    /**
+     * @dataProvider encryptionDataProvider
+     */
+    public function testEncryptDecryptString(string $input, string $key)
+    {
+        $translator = new MockTranslator();
+        $authClass = new TimeKeyAes256($translator);
+        $ref = new \ReflectionClass($authClass);
+        $encryptMethod = $ref->getMethod('encrypt');
+        $encryptMethod->setAccessible(true);
+        $decryptMethod = $ref->getMethod('decrypt');
+        $decryptMethod->setAccessible(true);
+        $encrypted = $encryptMethod->invoke($authClass, $input, $key);
+        $decrypted = $decryptMethod->invoke($authClass, $encrypted, $key);
+
+        $this->assertEquals($input, $decrypted);
+    }
+
+    public static function decryptionDataProvider()
+    {
+        return [
+            ['AHdrkbYeV8urgjIYbVA1X0VacnNMYTRvSVhNaHdMdzViaHpydmc9PQ==', 'bar', 'foo'],
+        ];
+    }
+
+    /**
+     * @dataProvider decryptionDataProvider
+     */
+    public function testDecryptEncodedString(string $input, string $key, string $expected)
+    {
+        $translator = new MockTranslator();
+        $authClass = new TimeKeyAes256($translator);
+        $ref = new \ReflectionClass($authClass);
+        $decodeMethod = $ref->getMethod('decode');
+        $decodeMethod->setAccessible(true);
+        $decryptMethod = $ref->getMethod('decrypt');
+        $decryptMethod->setAccessible(true);
+        $decoded = $decodeMethod->invoke($authClass, $input);
+        $decrypted = $decryptMethod->invoke($authClass, $decoded, $key);
+
+        $this->assertEquals($expected, $decrypted);
+    }
 }
