@@ -143,6 +143,8 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $url['pid'] = $this->formData['pid'];
         if ($auth) {
             $embeddedUserData = $this->userLoader->getEmbedderData($this->selectedUser);
+            $auth->setPatientNumber($url['pid']);
+            $auth->setDeferredLogin($url['usr']);
             $url['key'] = $auth->getExampleKey($this->selectedUser, $embeddedUserData);
         }
 
