@@ -22,6 +22,7 @@ use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelTableSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Export\ExportAction;
+use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\User\User;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -54,6 +55,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         'browse'          => true,
         'dynamicSort'     => 'getDynamicSort',
         'extraFilter'     => 'getAttributeFilters',
+        'filterTarget'    => 'getFilterTarget',
         'onEmpty'         => 'getOnEmptyText',
         'pageItems'       => 'getPageItems',
         'pageNumber'      => 'getPageNumber',
@@ -312,6 +314,12 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         // Already done when this value is false
         if ($resetMvc) {
             $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
+
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $layoutSettings = $this->responder->getLayoutSettings();
+                $layoutSettings->disableMenu();
+                $layoutSettings->setTemplate('gems::autofilter');
+            }
         }
 
         parent::autofilterAction($resetMvc);

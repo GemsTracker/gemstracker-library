@@ -47,6 +47,11 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
         parent::__construct($snippetLoader);
     }
 
+    public function getLayoutSettings(): LayoutSettings
+    {
+        return $this->layoutSettings;
+    }
+
     public function getMenuSnippetHelper(): ?MenuSnippetHelper
     {
         if (isset($this->menuHelper)) {

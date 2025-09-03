@@ -49,7 +49,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
      *
      * @var string The id of a div that contains the table.
      */
-    protected $containingId;
+    protected $containingId = 'searchTarget';
 
     /**
      * The default search data to use.
@@ -171,6 +171,15 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
         } else {
             return $table;
         }
+    }
+
+    public function getRequestUrl(): array
+    {
+        $output = parent::getRequestUrl();
+        if (isset($output[0]) && str_ends_with($output[0], '/autofilter')) {
+            $output[0] = substr($output[0], 0, -11);
+        }
+        return $output;
     }
 
     public function getRouteMaps(MetaModelInterface $metaModel): array

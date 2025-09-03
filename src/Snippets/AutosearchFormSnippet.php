@@ -50,7 +50,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
 
     /**
      *
-     * @var string The id of a div that contains target that should be replaced.
+     * @var string The id of an element that contains target that should be replaced.
      */
     protected ?string $containingId = null; // 'autofilter_target';
 
@@ -343,6 +343,8 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
                 $options['class'] .= ' ';
             }
             $options['class'] .= 'auto-submit';
+            $options['auto-submit-target'] = 'searchTarget';
+            $options['auto-submit-url'] = $this->menuSnippetHelper->getRelatedRouteUrl('autofilter');
         }
 
         $form = new Form($options);
@@ -680,3 +682,4 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         return $this->searchData;
     }
 }
+

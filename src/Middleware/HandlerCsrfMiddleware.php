@@ -26,6 +26,9 @@ class HandlerCsrfMiddleware implements MiddlewareInterface
 
     public static function getTokenName(string $controller, string $action)
     {
+        if ('autofilter' === $action) {
+            $action = 'index';
+        }
         return strtolower(strtr(sprintf('__csrf_%s_%s', $controller, str_replace('-', '', $action)), '\\', '_'));
     }
 
@@ -47,7 +50,7 @@ class HandlerCsrfMiddleware implements MiddlewareInterface
             if ($routeResult instanceof RouteResult) {
                 $route = $routeResult->getMatchedRoute();
                 if ($route instanceof Route) {
-                    $options   = $route->getOptions();
+                    $options = $route->getOptions();
                     if (isset($options['controller'], $options['action'])) {
                         $tokenName = self::getTokenName($options['controller'], $options['action']);
                     }

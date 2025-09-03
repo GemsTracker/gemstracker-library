@@ -82,7 +82,7 @@ trait ModelSnippetActionRouteHelpers
                                        ?array $parentParameters = null,
                                        bool $genericImport = false,
                                        bool $genericExport = false,
-                                       array $noCsrfRoutes = ['index']): array
+                                       array $noCsrfRoutes = ['index', 'autofilter']): array
     {
         if ($basePath === null) {
             $basePath = '/' . str_replace('.', '/', $baseName);
@@ -304,7 +304,7 @@ trait ModelSnippetActionRouteHelpers
                                        ?array $parentParameters = null,
                                        bool $genericImport = false,
                                        bool $genericExport = false,
-                                       array $noCsrfRoutes = ['index']): array
+                                       array $noCsrfRoutes = ['index', 'autofilter']): array
     {
         return $this->createBrowseRoutes(
             $baseName, 
