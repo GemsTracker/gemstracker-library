@@ -78,7 +78,7 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
      */
     public function authenticate(User $user, EmbeddedUserData $embeddedUserData, string $secretKey): bool
     {
-        $input = $this->decrypt($this->checkKey($secretKey), $this->getEncryptionKey($embeddedUserData));
+        $input = $this->decrypt($this->decode($secretKey), $this->getEncryptionKey($embeddedUserData));
         if ($input == false) {
             return false;
         }
@@ -90,18 +90,29 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
     }
 
     /**
-     * @param string $secretKey
-     * @return string
+     * Apply base64 encoding if enabled
      */
-    protected function checkKey($secretKey)
+    protected function encode(string $str): string
+    {
+        if ($this->encryptionBase64) {
+            return base64_encode($str);
+        }
+
+        return $str;
+    }
+
+    /**
+     * Apply base64 decoding if enabled
+     */
+    protected function decode(string $str): string
     {
         if ($this->encryptionBase64) {
             // Sometimes the plus sign is translated to a space.
             // Using base64 means there should not be a space in the key 
-            $secretKey = strtr($secretKey, ' ', '+');
+            return base64_decode(strtr($str, ' ', '+'));
         }
-        
-        return $secretKey;
+
+        return $str;
     }
 
     /**
@@ -113,12 +124,6 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
      */
     protected function decrypt($secretKey, $encryptionKey): string|false
     {
-        if ($this->encryptionBase64) {
-            // Sometimes the plus sign is translated to a space.
-            // Using base64 means there should not be a space in the key 
-            $secretKey = base64_decode(strtr($secretKey, ' ', '+'));
-        }
-        
         $ivlen = openssl_cipher_iv_length($this->encryptionAlgorithm);
         $iv    = substr($secretKey, 0, $ivlen);
 
@@ -137,13 +142,7 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
         $ivlen = openssl_cipher_iv_length($this->encryptionAlgorithm);
         $iv    = openssl_random_pseudo_bytes($ivlen);
 
-        $output = $iv . openssl_encrypt($keyInput, $this->encryptionAlgorithm, $encryptionKey, 0, $iv);
-        
-        if ($this->encryptionBase64) {
-            return base64_encode($output);
-        } 
-        
-        return $output;
+        return $iv . openssl_encrypt($keyInput, $this->encryptionAlgorithm, $encryptionKey, 0, $iv);
     }
 
     public function getEmbeddedParams()
@@ -180,7 +179,7 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
             $url['chk'] = \end($stamps) ?: 'key';
         }
         
-        return $this->encrypt(http_build_query(array_filter($url)), $this->getEncryptionKey($embeddedUserData));
+        return $this->encode($this->encrypt(http_build_query(array_filter($url)), $this->getEncryptionKey($embeddedUserData)));
     }
 
     /**
