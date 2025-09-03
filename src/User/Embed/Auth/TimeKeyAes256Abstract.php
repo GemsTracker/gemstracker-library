@@ -26,7 +26,7 @@ use MUtil\EchoOut\EchoOut;
 abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
 {
     /**
-     * @var array Parameters encrypted in the secret key
+     * @var array<string, mixed> Parameters encrypted in the secret key
      */
     protected array $_params = [];
 
@@ -124,8 +124,11 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
      */
     protected function decrypt($secretKey, $encryptionKey): string|false
     {
-        $ivlen = openssl_cipher_iv_length($this->encryptionAlgorithm);
-        $iv    = substr($secretKey, 0, $ivlen);
+        $ivlen = $this->getIvLength();
+        if (strlen($secretKey) <= $ivlen) {
+            return false;
+        }
+        $iv = substr($secretKey, 0, $ivlen);
 
         return openssl_decrypt(substr($secretKey, $ivlen), $this->encryptionAlgorithm, $encryptionKey, 0, $iv);
     }
@@ -139,7 +142,7 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
      */
     protected function encrypt($keyInput, $encryptionKey): string
     {
-        $ivlen = openssl_cipher_iv_length($this->encryptionAlgorithm);
+        $ivlen = $this->getIvLength();
         $iv    = openssl_random_pseudo_bytes($ivlen);
 
         return $iv . openssl_encrypt($keyInput, $this->encryptionAlgorithm, $encryptionKey, 0, $iv);
@@ -189,7 +192,11 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
 
     public function getIvLength(): int
     {
-        return openssl_cipher_iv_length($this->encryptionAlgorithm);
+        $length = openssl_cipher_iv_length($this->encryptionAlgorithm);
+        if ($length == false) {
+            throw new Coding("Unable to get IV length for algorithm {$this->encryptionAlgorithm}");
+        }
+        return $length;
     }
 
     /**
