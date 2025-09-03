@@ -38,4 +38,22 @@ interface EmbeddedAuthInterface extends HelperInterface
      * @return string An optionally working login key
      */
     public function getExampleKey(User $user, EmbeddedUserData $embeddedUserData): string;
+
+    /**
+     *
+     * @param string $value User to defer to after authentication
+     */
+    public function setDeferredLogin(string $value): void;
+
+    /**
+     *
+     * @param array $value Organization or organizations for the user to try to login with
+     */
+    public function setOrganizations(array $value): void;
+
+    /**
+     *
+     * @param string $value Patient id to show afterwards
+     */
+    public function setPatientNumber(string $value): void;
 }
