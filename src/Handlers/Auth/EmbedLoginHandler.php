@@ -132,6 +132,13 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 if (!$result->isValid() && $result->getCode() !== AuthenticationResult::FAILURE_DEFERRED) {
                     $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
                 }
+
+                if (!$result->isValid()) {
+                    $this->logInfo(sprintf(
+                        "Login failed: %s",
+                        implode('; ', $result->getMessages())
+                    ));
+                }
             }
 
             if ($result && $result->isValid()) {
