@@ -81,14 +81,14 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract implements Upd
     {
         $input = $this->decrypt($this->decode($secretKey), $this->getEncryptionKey($embeddedUserData));
         if ($input == false) {
-            return false;
+            return $this->failAuthentication('Decryption or decoding failed');
         }
         parse_str($input, $this->_params);
         if (!isset($this->_params['chk'])) {
-            return false;
+            return $this->failAuthentication('Parameter chk missing');
         }
         if (!in_array($this->_params['chk'], $this->getValidTimeStamps())) {
-            return false;
+            return $this->failAuthentication('Invalid timestamp');
         }
         if (isset($this->_params['usr'])) {
             $this->setDeferredLogin($this->_params['usr']);
@@ -105,7 +105,7 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract implements Upd
         }
         // These should have been set before the authenticate call or updated from the input here.
         if (empty($this->deferredLogin) || empty($this->patientNumber) || empty($this->organizations)) {
-            return false;
+            return $this->failAuthentication('Required embed parameter(s) missing');
         }
         return true;
     }

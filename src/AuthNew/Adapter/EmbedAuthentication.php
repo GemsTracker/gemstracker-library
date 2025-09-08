@@ -54,7 +54,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
         $result = $authClass->authenticate($systemUser, $systemUserData, $this->systemUserSecretKey);
 
         if (!$result) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE, ['Invalid credentials']);
+            return $this->makeFailResult(AuthenticationResult::FAILURE, ['Invalid credentials', $authClass->getErrorMessage()]);
         }
 
         // The patient Id and deferred login name have been extracted from the encrypted key.
