@@ -104,8 +104,9 @@ class EmbedLoginHandler implements RequestHandlerInterface
             }
 
             $this->logInfo(sprintf(
-                "Login user: %s, end user: %s, patient: %s, key: %s",
+                "Login user: %s, organization: %s, end user: %s, patient: %s, key: %s",
                 $input['epd'] ?? 'n/a',
+                $input['org'] ?? 'n/a',
                 $input['usr'] ?? 'n/a',
                 $input['pid'] ?? 'n/a',
                 $logKey
