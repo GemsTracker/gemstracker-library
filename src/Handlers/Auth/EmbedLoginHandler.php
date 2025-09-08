@@ -114,8 +114,6 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
             if (!empty($input['epd'])
                 && !empty($input['key'])
-                && !empty($input['usr'])
-                && !empty($input['pid'])
                 && !empty($input['org'])
                 && ctype_digit($input['org'])
             ) {
@@ -124,8 +122,8 @@ class EmbedLoginHandler implements RequestHandlerInterface
                     $this->userLoader,
                     $input['epd'],
                     $input['key'],
-                    $input['usr'],
-                    $input['pid'],
+                    $input['usr'] ?? '',
+                    $input['pid'] ?? '',
                     (int)$input['org'],
                     $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE)
                 ));
