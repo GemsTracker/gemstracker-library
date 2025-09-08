@@ -17,6 +17,7 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\FormSnippetAbstract;
 use Gems\User\Embed\EmbeddedUserData;
+use Gems\User\Embed\UpdatingAuthInterface;
 use Gems\User\UserLoader;
 use Zalt\Base\BaseDir;
 use Zalt\Base\RequestInfo;
@@ -139,12 +140,14 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
 
         $url['epd'] = $this->selectedUser->getLoginName();
         $url['org'] = $this->formData['org_id'];
-        $url['usr'] = $this->formData['login_id'];
-        $url['pid'] = $this->formData['pid'];
+        if (!$auth instanceof UpdatingAuthInterface) {
+            $url['usr'] = $this->formData['login_id'];
+            $url['pid'] = $this->formData['pid'];
+        }
         if ($auth) {
             $embeddedUserData = $this->userLoader->getEmbedderData($this->selectedUser);
-            $auth->setPatientNumber($url['pid']);
-            $auth->setDeferredLogin($url['usr']);
+            $auth->setPatientNumber($this->formData['pid']);
+            $auth->setDeferredLogin($this->formData['login_id']);
             $url['key'] = $auth->getExampleKey($this->selectedUser, $embeddedUserData);
         }
 
