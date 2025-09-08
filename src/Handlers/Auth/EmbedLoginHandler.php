@@ -130,8 +130,6 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
                 if (!$result->isValid() && $result->getCode() !== AuthenticationResult::FAILURE_DEFERRED) {
                     $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
-                } else {
-                    $this->embeddedUserRepository->setPatientNr($input['pid'], (int) $input['org']);
                 }
             }
 
@@ -139,6 +137,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 /** @var EmbedIdentity $identity */
                 $identity = $result->getIdentity();
 
+                $this->embeddedUserRepository->setPatientNr($identity->getPatientId(), $identity->getOrganizationId());
                 $embeddedUserData = $this->userLoader->getEmbedderData($result->systemUser);
                 $redirector = $embeddedUserData->getRedirector();
 
@@ -159,15 +158,15 @@ class EmbedLoginHandler implements RequestHandlerInterface
                     if ($url instanceof RedirectResponse) {
                         $this->logInfo(sprintf(
                             "Login for end user: %s, patient: %s successful, redirecting...",
-                            $input['usr'],
-                            $input['pid']
+                            $identity->getLoginName(),
+                            $identity->getPatientId()
                         ));
                         $response = $url;
                     } else {
                         $this->logInfo(sprintf(
                             "Login for end user: %s, patient: %s successful, redirecting to: %s",
-                            $input['usr'],
-                            $input['pid'],
+                            $identity->getLoginName(),
+                            $identity->getPatientId(),
                             $url
                         ));
                         $response = new RedirectResponse($url);
@@ -176,7 +175,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
                         $request,
                         $response,
                         CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE,
-                        $input['org']
+                        $identity->getOrganizationId()
                     );
                 }
             }
