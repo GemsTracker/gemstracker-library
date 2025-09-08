@@ -103,6 +103,10 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract implements Upd
                 $this->setOrganizations([$this->_params['org']]);
             }
         }
+        // These should have been set before the authenticate call or updated from the input here.
+        if (empty($this->deferredLogin) || empty($this->patientNumber) || empty($this->organizations)) {
+            return false;
+        }
         return true;
     }
 
