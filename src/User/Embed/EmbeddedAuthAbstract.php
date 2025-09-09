@@ -42,6 +42,12 @@ abstract class EmbeddedAuthAbstract implements EmbeddedAuthInterface
      */
     protected string $patientNumber;
 
+    /**
+     *
+     * @var string Reason for last authentication failure
+     */
+    protected string $errorMessage = '';
+
     public function __construct(
         protected TranslatorInterface $translator
     )
@@ -88,4 +94,35 @@ abstract class EmbeddedAuthAbstract implements EmbeddedAuthInterface
     {
         $this->patientNumber = $value;
     }
+
+    /**
+     *
+     * @return string Reason for last authentication failure
+     */
+    public function getErrorMessage(): string
+    {
+        return $this->errorMessage;
+    }
+
+    /**
+     *
+     * @param string $message Reason for last authentication failure
+     */
+    public function setErrorMessage(string $message): void
+    {
+        $this->errorMessage = $message;
+    }
+
+    /**
+     * Set failure message and fail authentication.
+     * 
+     * @param string $message Reason for authentication failure
+     * @return false Always false
+     */
+    public function failAuthentication(string $message): bool
+    {
+        $this->setErrorMessage($message);
+        return false;
+    }
+
 }

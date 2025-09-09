@@ -5,6 +5,7 @@ namespace Gems\AuthNew\Adapter;
 use Gems\Repository\RespondentRepository;
 use Gems\User\Embed\EmbeddedAuthAbstract;
 use Gems\User\Embed\EmbeddedUserData;
+use Gems\User\Embed\UpdatingAuthInterface;
 use Gems\User\User;
 use Gems\User\UserLoader;
 
@@ -14,8 +15,8 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
         private readonly UserLoader $userLoader,
         private readonly string $systemUserLoginName,
         private readonly string $systemUserSecretKey,
-        private readonly string $deferredLoginName,
-        private readonly string $patientId,
+        private string $deferredLoginName,
+        private string $patientId,
         private readonly int $organizationId,
         private readonly string $ipAddress,
     ) {
@@ -53,7 +54,13 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
         $result = $authClass->authenticate($systemUser, $systemUserData, $this->systemUserSecretKey);
 
         if (!$result) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE, ['Invalid credentials']);
+            return $this->makeFailResult(AuthenticationResult::FAILURE, ['Invalid credentials', $authClass->getErrorMessage()]);
+        }
+
+        // The patient Id and deferred login name have been extracted from the encrypted key.
+        if ($authClass instanceof UpdatingAuthInterface) {
+            $this->patientId = $authClass->getPatientNumber();
+            $this->deferredLoginName = $authClass->getDeferredLogin();
         }
 
         $deferredUser = $systemUserData->getDeferredUser($systemUser, $this->deferredLoginName);

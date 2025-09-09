@@ -104,18 +104,17 @@ class EmbedLoginHandler implements RequestHandlerInterface
             }
 
             $this->logInfo(sprintf(
-                "Login user: %s, end user: %s, patient: %s, key: %s",
-                $input['epd'],
-                $input['usr'],
-                $input['pid'],
+                "Login user: %s, organization: %s, end user: %s, patient: %s, key: %s",
+                $input['epd'] ?? 'n/a',
+                $input['org'] ?? 'n/a',
+                $input['usr'] ?? 'n/a',
+                $input['pid'] ?? 'n/a',
                 $logKey
             ));
             // TODO: org should be an existing organization?
 
             if (!empty($input['epd'])
                 && !empty($input['key'])
-                && !empty($input['usr'])
-                && !empty($input['pid'])
                 && !empty($input['org'])
                 && ctype_digit($input['org'])
             ) {
@@ -124,16 +123,21 @@ class EmbedLoginHandler implements RequestHandlerInterface
                     $this->userLoader,
                     $input['epd'],
                     $input['key'],
-                    $input['usr'],
-                    $input['pid'],
+                    $input['usr'] ?? '',
+                    $input['pid'] ?? '',
                     (int)$input['org'],
                     $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE)
                 ));
 
                 if (!$result->isValid() && $result->getCode() !== AuthenticationResult::FAILURE_DEFERRED) {
                     $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
-                } else {
-                    $this->embeddedUserRepository->setPatientNr($input['pid'], (int) $input['org']);
+                }
+
+                if (!$result->isValid()) {
+                    $this->logInfo(sprintf(
+                        "Login failed: %s",
+                        implode('; ', $result->getMessages())
+                    ));
                 }
             }
 
@@ -141,6 +145,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 /** @var EmbedIdentity $identity */
                 $identity = $result->getIdentity();
 
+                $this->embeddedUserRepository->setPatientNr($identity->getPatientId(), $identity->getOrganizationId());
                 $embeddedUserData = $this->userLoader->getEmbedderData($result->systemUser);
                 $redirector = $embeddedUserData->getRedirector();
 
@@ -161,15 +166,15 @@ class EmbedLoginHandler implements RequestHandlerInterface
                     if ($url instanceof RedirectResponse) {
                         $this->logInfo(sprintf(
                             "Login for end user: %s, patient: %s successful, redirecting...",
-                            $input['usr'],
-                            $input['pid']
+                            $identity->getLoginName(),
+                            $identity->getPatientId()
                         ));
                         $response = $url;
                     } else {
                         $this->logInfo(sprintf(
                             "Login for end user: %s, patient: %s successful, redirecting to: %s",
-                            $input['usr'],
-                            $input['pid'],
+                            $identity->getLoginName(),
+                            $identity->getPatientId(),
                             $url
                         ));
                         $response = new RedirectResponse($url);
@@ -178,7 +183,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
                         $request,
                         $response,
                         CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE,
-                        $input['org']
+                        $identity->getOrganizationId()
                     );
                 }
             }

@@ -14,6 +14,7 @@ namespace Gems\User\Embed\Auth;
 use Gems\Exception\Coding;
 use Gems\User\Embed\EmbeddedAuthAbstract;
 use Gems\User\Embed\EmbeddedUserData;
+use Gems\User\Embed\UpdatingAuthInterface;
 use Gems\User\User;
 use MUtil\EchoOut\EchoOut;
 
@@ -23,7 +24,7 @@ use MUtil\EchoOut\EchoOut;
  * @subpackage User\Embed\Auth
  * @since      Class available since version v2.0.54
  */
-abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
+abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract implements UpdatingAuthInterface
 {
     /**
      * @var array<string, mixed> Parameters encrypted in the secret key
@@ -80,13 +81,33 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
     {
         $input = $this->decrypt($this->decode($secretKey), $this->getEncryptionKey($embeddedUserData));
         if ($input == false) {
-            return false;
+            return $this->failAuthentication('Decryption or decoding failed');
         }
         parse_str($input, $this->_params);
         if (!isset($this->_params['chk'])) {
-            return false;
+            return $this->failAuthentication('Parameter chk missing');
         }
-        return in_array($this->_params['chk'], $this->getValidTimeStamps());
+        if (!in_array($this->_params['chk'], $this->getValidTimeStamps())) {
+            return $this->failAuthentication('Invalid timestamp');
+        }
+        if (isset($this->_params['usr'])) {
+            $this->setDeferredLogin($this->_params['usr']);
+        }
+        if (isset($this->_params['pid'])) {
+            $this->setPatientNumber($this->_params['pid']);
+        }
+        if (isset($this->_params['org'])) {
+            if (is_array($this->_params['org'])) {
+                $this->setOrganizations($this->_params['org']);
+            } else {
+                $this->setOrganizations([$this->_params['org']]);
+            }
+        }
+        // These should have been set before the authenticate call or updated from the input here.
+        if (empty($this->deferredLogin) || empty($this->patientNumber) || empty($this->organizations)) {
+            return $this->failAuthentication('Required embed parameter(s) missing');
+        }
+        return true;
     }
 
     /**
@@ -259,5 +280,32 @@ abstract class TimeKeyAes256Abstract extends EmbeddedAuthAbstract
         // \MUtil_Echo::track(hash_algos());
 
         return $keys;
+    }
+
+    /**
+     *
+     * @return string User to defer to after authentication
+     */
+    public function getDeferredLogin(): string
+    {
+        return $this->deferredLogin;
+    }
+
+    /**
+     *
+     * @return array Organization or organizations for the user to try to login with
+     */
+    public function getOrganizations(): array
+    {
+        return $this->organizations;
+    }
+
+    /**
+     *
+     * @return string Patient id to show afterwards
+     */
+    public function getPatientNumber(): string
+    {
+        return $this->patientNumber;
     }
 }
