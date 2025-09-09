@@ -90,7 +90,6 @@ trait HandlerMenuTrait
             unset($actions['inport']);
         }
         if (isset($actions['export'])) {
-            // At the moment not in the menu
             $parent['children'][] = $this->createMenuItem($name . '.export', $this->_('Export'));
             unset($actions['export']);
         }

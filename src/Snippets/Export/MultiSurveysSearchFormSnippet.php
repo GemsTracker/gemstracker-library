@@ -46,12 +46,14 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippet
 
         $elements = $this->_createMultiCheckBoxElements(
             'gto_id_survey',
-            $surveys['active'] ?? [],
+            $surveys[$this->_('Active')] ?? [],
             '<br/>',
+            null,
+            true
         );
         foreach ($elements as $element) {
             if ($element instanceof \Zend_Form_Element_MultiCheckbox) {
-                $element->setAttrib('class', 'auto-submit');
+                $element->setAttrib('class', 'auto-submit-force');
             }
         }
         array_unshift($elements, null);

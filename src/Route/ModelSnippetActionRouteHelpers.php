@@ -6,6 +6,7 @@ use Gems\Legacy\LegacyController;
 use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LegacyModelMiddleware;
+use Gems\SnippetsActions\PagePrivilegeInterface;
 use Gems\SnippetsLoader\SnippetMiddleware;
 use Laminas\Stdlib\ArrayUtils\MergeReplaceKey;
 use Zalt\SnippetsActions\NoCsrfInterface;
@@ -254,7 +255,11 @@ trait ModelSnippetActionRouteHelpers
             }
             $interfaces = class_implements($actionClass);
 
-            $pagePrivilege = 'autofilter' == $pageName ? 'index' : $pageName;
+            if (isset($interfaces[PagePrivilegeInterface::class])) {
+                $pagePrivilege = $actionClass::getPagePrivilege();
+            } else {
+                $pagePrivilege = $pageName;
+            }
 
             $route = [
                 'allowed_methods' => ['GET'],

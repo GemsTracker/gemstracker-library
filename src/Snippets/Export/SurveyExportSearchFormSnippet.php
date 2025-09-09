@@ -30,11 +30,14 @@ class SurveyExportSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
 
         $surveys = $this->getSurveysForExport($trackId, $roundDescr);
 
-        return $this->_createSelectElement(
+        $element = $this->_createSelectElement(
             'gto_id_survey',
             $surveys,
             $this->_('(select a survey)')
         );
+        $element->setAttrib('class', 'auto-submit-force');
+
+        return $element;
     }
 
     /**
@@ -54,6 +57,7 @@ class SurveyExportSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
 
         // Get the selection data
         $rounds = $this->getRoundsForExport($trackId, $surveyId);
+
         if ($surveyId) {
             if (is_array($surveyId)) {
                 $tracks = $this->trackDataRepository->getTracksBySurveys($surveyId);
@@ -70,19 +74,22 @@ class SurveyExportSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
                 $tracks,
                 $this->_('(select a track)')
                 );
+        $elements['gto_id_track']->setAttrib('class', 'auto-submit-force');
+
        	$elements['gto_round_description'] = $this->_createSelectElement(
                 'gto_round_description',
                 [parent::NoRound => $this->_('No round description')] + $rounds,
                 $this->_('(select a round)')
                 );
-        $elements['gto_id_survey'] = $this->createSurveyElement($data);
+        $elements['gto_round_description']->setAttrib('class', 'auto-submit-force');
 
-        foreach ($elements as $element) {
-            if ($element instanceof \Zend_Form_Element_Multi) {
-                $element->setAttrib('class', 'auto-submit-force');
-            }
-        }
+        $elements['gto_id_survey'] = $this->createSurveyElement($data);
 
         return $elements;
    }
-}
+
+   protected function isExportable(array $data): bool
+   {
+       return isset($data['gto_id_survey']);
+   }
+};

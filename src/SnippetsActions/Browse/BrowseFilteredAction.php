@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gems\SnippetsActions\Browse;
 
 use Gems\Snippets\ModelTableSnippet;
+use Gems\SnippetsActions\PagePrivilegeInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\SnippetsActions\Browse\BrowseTableAction;
 use Zalt\SnippetsActions\NoCsrfInterface;
@@ -22,7 +23,7 @@ use Zalt\SnippetsActions\NoCsrfInterface;
  * @subpackage SnippetsActions
  * @since      Class available since version 1.9.2
  */
-class BrowseFilteredAction extends BrowseTableAction implements NoCsrfInterface
+class BrowseFilteredAction extends BrowseTableAction implements NoCsrfInterface, PagePrivilegeInterface
 {
     protected array $_snippets = [
         ModelTableSnippet::class,
@@ -42,4 +43,9 @@ class BrowseFilteredAction extends BrowseTableAction implements NoCsrfInterface
     public array $menuShowRoutes = ['show'];
 
     public string $textSearchField;
+
+    public static function getPagePrivilege(): string
+    {
+        return 'index';
+    }
 }

@@ -11,7 +11,6 @@ namespace Gems\Snippets\Export;
 
 use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
-use Gems\Form;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\MetaModelLoader;
@@ -36,9 +35,9 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFormSnippet
 {
-    public const SURVEY_ACTIVE          = 'active';
-    public const SURVEY_INACTIVE        = 'inactive';
-    public const SURVEY_SOURCE_INACTIVE = 'source inactive';
+//    public const SURVEY_ACTIVE          = 'Sctive';
+//    public const SURVEY_INACTIVE        = 'inactive';
+//    public const SURVEY_SOURCE_INACTIVE = 'source inactive';
 
 	/**
      * Defines the value used for 'no round description'
@@ -167,6 +166,12 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
             $elements[] = null;
         }
 
+        $elements['export'] = $this->form->createElement('submit', 'export', array('label' => $this->_('Export'), 'class' => 'button larger'));
+        dump($this->menuSnippetHelper->getRelatedRouteUrl('generate'));
+        $elements['export']->setAttrib('formaction', $this->menuSnippetHelper->getRelatedRouteUrl('generate'));
+        if (! $this->isExportable($data)) {
+            $elements['export']->setAttrib('disabled', 'disabled');
+        }
         return $elements;
     }
 
@@ -257,7 +262,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
         return $this->resultFetcher->fetchPairs($select);
     }
 
-    public function getSurveysForExport(int|null $trackId = null, string|null $roundDescription = null, bool $flat = false, bool $keepSourceInactive = false): array
+    public function getSurveysForExport(int|null $trackId = null, string|null $roundDescription = null): array
     {
         // Read some data from tables, initialize defaults...
         $select = $this->resultFetcher->getSelect('gems__surveys');
@@ -300,38 +305,60 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
         if ($result) {
             // And transform to have inactive surveys in gems and source in a
             // different group at the bottom
-            $inactive = $this->_('inactive');
-            $sourceInactive = $this->_('source inactive');
+            //
+            // Not loading the survey objects speeds up this code by two seconds
+            $active = $this->_('Active');
+            $inactive = $this->_('Inactive');
+            $sourceInactive = $this->_('Source inactive');
+            $sources = [];
             foreach ($result as $surveyData) {
-                $survey = $this->tracker->getSurvey($surveyData);
-
                 $id   = $surveyData['gsu_id_survey'];
-                $name = $survey->getName();
-                if (! $survey->isActiveInSource()) {
-                    // Inactive in the source, for LimeSurvey this is a problem!
-                    if ($keepSourceInactive || $survey->getSource()->canExportInactive()) {
-                        if ($flat) {
-                            $surveys[$id] = $name . " ($sourceInactive) ";
-                        } else {
-                            $surveys[self::SURVEY_SOURCE_INACTIVE][$id] = $name;
-                        }
+                $name = $surveyData['gsu_survey_name'];
+
+                if (1 != $surveyData['gsu_surveyor_active'])  {
+                    $sourceId = $surveyData['gsu_id_source'];
+                    if (! isset($sources[$sourceId])) {
+                        $sources[$sourceId] = $this->tracker->getSource($sourceId);
                     }
-                } elseif (!$survey->isActive()) {
-                    if ($flat) {
-                        $surveys[$id] = $name . " ($inactive) ";
-                    } else {
-                        $surveys[self::SURVEY_INACTIVE][$id] = $name;
+                    if ($sources[$sourceId]->canExportInactive()) {
+                        $surveys[$sourceInactive][$id] = $name;
                     }
+                } elseif (1 != $surveyData['gsu_active']) {
+                    $surveys[$inactive][$id] = $name;
                 } else {
-                    if ($flat) {
-                        $surveys[$id] = $name;
-                    } else {
-                        $surveys[self::SURVEY_ACTIVE][$id] = $name;
-                    }
+                    $surveys[$active][$id] = $name;
                 }
             }
+//            foreach ($result as $surveyData) {
+//                $survey = $this->tracker->getSurvey($surveyData);
+//
+//                $id   = $surveyData['gsu_id_survey'];
+//                $name = $survey->getName();
+//                if (! $survey->isActiveInSource()) {
+//                    // Inactive in the source, for LimeSurvey this is a problem!
+//                    if ($keepSourceInactive || $survey->getSource()->canExportInactive()) {
+//                        if ($flat) {
+//                            $surveys[$id] = $name . " ($sourceInactive) ";
+//                        } else {
+//                            $surveys[self::SURVEY_SOURCE_INACTIVE][$id] = $name;
+//                        }
+//                    }
+//                } elseif (!$survey->isActive()) {
+//                    if ($flat) {
+//                        $surveys[$id] = $name . " ($inactive) ";
+//                    } else {
+//                        $surveys[self::SURVEY_INACTIVE][$id] = $name;
+//                    }
+//                } else {
+//                    if ($flat) {
+//                        $surveys[$id] = $name;
+//                    } else {
+//                        $surveys[self::SURVEY_ACTIVE][$id] = $name;
+//                    }
+//                }
+//            }
         }
-
+        ksort($surveys);
         return $surveys;
     }
 
@@ -345,4 +372,6 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
      * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
     abstract protected function getSurveySelectElements(array $data);
+
+    abstract protected function isExportable(array $data): bool;
 }

@@ -12,6 +12,7 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Export\ExportAction;
+use Gems\SnippetsActions\Export\GenerateAction;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\MetaModellerInterface;
@@ -24,7 +25,7 @@ class ExportSurveyHandler extends BrowseChangeHandler
     public static $actions = [
         'autofilter' => BrowseFilteredAction::class,
         'index'      => BrowseSearchAction::class,
-        'export'     => ExportAction::class,
+        'generate'   => GenerateAction::class,
     ];
 
     protected bool $multi = false;

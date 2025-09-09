@@ -95,11 +95,13 @@ class Menu
                     controllerClass: ExportSurveyHandler::class,
                     name: 'export.survey',
                     label: $this->translator->trans('Export survey'),
+                    otherActions: ['generate' => ['type' => 'alias', 'label' => '']],
                 ),
                 $this->createMenuForHandler(
                     controllerClass: ExportMultiSurveyHandler::class,
                     name: 'export.multi-survey',
                     label: $this->translator->trans('Export multiple surveys'),
+                    otherActions: ['generate' => ['type' => 'alias', 'label' => '']],
                 ),
                 $this->createMenuForHandler(
                     controllerClass: ExportDownloadsHandler::class,
