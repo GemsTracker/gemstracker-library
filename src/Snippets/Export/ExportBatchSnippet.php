@@ -14,7 +14,6 @@ namespace Gems\Snippets\Export;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Export\Db\ModelExportRepository;
-use Gems\Export\Db\SurveyModelContainer;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\SnippetsActions\Export\ExportAction;

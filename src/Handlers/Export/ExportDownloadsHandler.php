@@ -23,12 +23,14 @@ class ExportDownloadsHandler extends BrowseChangeHandler
 {
 
     public static $actions = [
-        'index' => BrowseSearchAction::class,
-        'show' => ShowAction::class,
-        'delete' => DeleteAction::class,
+        'autofilter' => BrowseFilteredAction::class,
+        'index'      => BrowseSearchAction::class,
+        'show'       => ShowAction::class,
+        'delete'     => DeleteAction::class,
     ];
 
     public static array $parameters = ['id' => '[a-z0-9A-Z\.-]+',];
+
     public function __construct(
         SnippetResponderInterface $responder,
         MetaModelLoader $metaModelLoader,

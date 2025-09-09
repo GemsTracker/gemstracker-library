@@ -3,7 +3,6 @@
 namespace Gems\Task\Export;
 
 use Gems\AuthNew\AuthenticationMiddleware;
-use Gems\Export\Db\DbExportRepository;
 use Gems\Export\Db\ModelExportRepository;
 use Gems\Export\Db\ModelContainer;
 use Gems\Export\Type\ExportSettingsGeneratorInterface;

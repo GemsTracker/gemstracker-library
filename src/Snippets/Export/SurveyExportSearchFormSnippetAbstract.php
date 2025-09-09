@@ -167,7 +167,6 @@ abstract class SurveyExportSearchFormSnippetAbstract extends AutosearchPeriodFor
         }
 
         $elements['export'] = $this->form->createElement('submit', 'export', array('label' => $this->_('Export'), 'class' => 'button larger'));
-        dump($this->menuSnippetHelper->getRelatedRouteUrl('generate'));
         $elements['export']->setAttrib('formaction', $this->menuSnippetHelper->getRelatedRouteUrl('generate'));
         if (! $this->isExportable($data)) {
             $elements['export']->setAttrib('disabled', 'disabled');

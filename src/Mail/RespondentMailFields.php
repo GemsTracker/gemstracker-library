@@ -17,8 +17,15 @@ class RespondentMailFields extends OrganizationMailFields
     public function getMailFields(string $language = null): array
     {
         $mailFields = parent::getMailFields();
+
+        $patientUrl = sprintf(
+            $this->respondent->getOrganization()->getLoginUrl() . '/respondent/%s/%s',
+            $this->respondent->getPatientNumber(),
+            $this->respondent->getOrganizationId()
+        );
         $mailFields += [
             'patient_nr'    => $this->respondent->getPatientNumber(),
+            'patient_url'   => $patientUrl,
             'dear'          => $this->respondent->getDearGreeting($language),
             'email'         => $this->respondent->getEmailAddress(),
             'phone'         => $this->respondent->getPhonenumber(),

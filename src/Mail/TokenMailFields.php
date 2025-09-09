@@ -28,8 +28,13 @@ class TokenMailFields extends RespondentMailFields
         $organization = $this->token->getOrganization();
         $survey = $this->token->getSurvey();
 
-        $tokenLink = $organization->getLoginUrl() . '/ask/forward/' . $this->token->getTokenId();
-        $askUrl = $organization->getLoginUrl() . '/ask';
+        $tokenLink      = $organization->getLoginUrl() . '/ask/forward/' . $this->token->getTokenId();
+        $tokenLoginLink = $organization->getLoginUrl() . '/respondent/' .
+            $this->token->getPatientNumber() . '/' .
+            $this->token->getOrganizationId() . '/track/' .
+            $this->token->getRespondentTrackId() . '/token/' .
+            $this->token->getTokenId();
+        $askUrl         = $organization->getLoginUrl() . '/ask';
 
         $todoCounts = $this->getTodoCounts();
 
@@ -44,6 +49,8 @@ class TokenMailFields extends RespondentMailFields
             'token' => strtoupper($this->token->getTokenId()),
             'token_from' => $this->token->getValidFrom() instanceof \DateTimeInterface ? $this->token->getValidFrom()->format('Y-m-d') : null,
             'token_link' => '<a href="' . $tokenLink . '">' . $survey->getExternalName() . '</a>',
+            'token_login_link' => '<a href="' . $tokenLoginLink . '">' . $survey->getExternalName() . '</a>',
+            'token_login_url'  => $tokenLoginLink,
             'token_until' => $this->token->getValidUntil() instanceof \DateTimeInterface ? $this->token->getValidUntil()->format('Y-m-d') : null,
             'token_url' => $tokenLink,
             'token_url_input' => $askUrl . 'index/' . $this->token->getTokenId(),

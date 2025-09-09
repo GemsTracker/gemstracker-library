@@ -137,13 +137,14 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
      *
      * @param string $description
      * @return \Gems\Util\ConsentCode
+     * @deprecated Use ConsentRepoositry
      */
     public function getConsent($description)
     {
         static $codes = array();
 
         if (! isset($codes[$description])) {
-            $codes[$description] = $this->_loadClass('consentCode', true, array($description));
+            $codes[$description] = $this->_loadClass('ConsentCode', true, array($description));
         }
 
         return $codes[$description];

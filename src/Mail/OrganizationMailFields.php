@@ -19,6 +19,7 @@ class OrganizationMailFields extends ProjectMailFields
         $mailFields = parent::getMailFields();
         $mailFields += [
             'organization'                 => $this->organization->getName(),
+            'organization_id'              => $this->organization->getId(),
             'organization_location'        => $this->organization->getLocation(),
             'organization_login_url'       => $this->organization->getLoginUrl(),
             'organization_reply_name'      => $this->organization->getContactName(),

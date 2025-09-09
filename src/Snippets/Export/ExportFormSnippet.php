@@ -71,7 +71,6 @@ class ExportFormSnippet extends FormSnippetAbstract
         ]);
         $form->addElement($element);
 
-
         $currentType = $this->requestInfo->getParam('type');
 
         $element = $form->createElement('hidden', 'previousType', [
