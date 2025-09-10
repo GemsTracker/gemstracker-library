@@ -457,36 +457,29 @@ class CommJobRepository
      */
     public function getJobFilter(array $job, ?int $respondentId = null, ?int $organizationId = null, bool $forceSent = false): array
     {
-        // Set up filter
-        $filter = [
-            'gtr_active'          => 1,
-            'gsu_active'          => 1,
-            'grc_success'         => 1,
-            'gto_completion_time' => NULL,
-            'gto_valid_from <= CURRENT_TIMESTAMP',
-            '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
-        ];
+        // The base filter is now implemented via the join to the gems__transient_comm_tokens table.
+        $filter = [];
 
         if ($job['gcj_id_organization']) {
             if ($organizationId && ($organizationId !== $job['gcj_id_organization'])) {
                 // Should never return any data
                 return ['1=0'];
             }
-            $filter['gto_id_organization'] = $job['gcj_id_organization'];
+            $filter['gtct_id_organization'] = $job['gcj_id_organization'];
         } elseif ($organizationId) {
-            $filter['gto_id_organization'] = $organizationId;
+            $filter['gtct_id_organization'] = $organizationId;
         }
         if ($respondentId) {
-            $filter['gto_id_respondent'] = $respondentId;
+            $filter['gtct_id_respondent'] = $respondentId;
         }
         if ($job['gcj_id_track']) {
-            $filter['gto_id_track'] = $job['gcj_id_track'];
+            $filter['gtct_id_track'] = $job['gcj_id_track'];
         }
         if ($job['gcj_round_description']) {
             $this->addRoundsFilter($filter, $job['gcj_round_description'], $job['gcj_id_track']);
         }
         if ($job['gcj_id_survey']) {
-            $filter['gto_id_survey'] = $job['gcj_id_survey'];
+            $filter['gtct_id_survey'] = $job['gcj_id_survey'];
         }
 
         $this->addModeFilter(
