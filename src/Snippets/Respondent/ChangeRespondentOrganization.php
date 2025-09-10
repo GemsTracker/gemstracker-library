@@ -52,6 +52,10 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
     protected User $currentUser;
 
     /**
+     * @var array <int, string> orgid => patientNr
+     */
+    protected readonly array $existingOrgs;
+    /**
      * Only effective if copied
      *
      * @var boolean
@@ -83,7 +87,9 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         protected readonly ResultFetcher $resultFetcher,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
+
         $this->currentUser = $currentUserRepository->getCurrentUser();
+        $this->existingOrgs = $this->resultFetcher->fetchPairs("SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?", [$this->respondent->getId()]);
     }
 
     /**
@@ -112,13 +118,9 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
             'required' => true
             ]);
 
-        $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
-
-
         $availableOrganizations = $this->organizationRepository->getOrganizationsOpenToRespondents();
         $shareOption            = $this->formData['change_method'] == 'share';
         $disabled               = [];
-        $existingOrgs           = $this->resultFetcher->fetchPairs($sql, [$this->respondent->getId()]);
         foreach ($availableOrganizations as $orgId => &$orgName) {
             $orglabel = Html::create('spaced');
             $orglabel->strong($orgName);
@@ -126,11 +128,11 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
                 $disabled[] = $orgId;
                 $orglabel->em($this->_('Is current organization.'));
 
-            } elseif (isset($existingOrgs[$orgId])) {
+            } elseif (isset($this->existingOrgs[$orgId])) {
                 $orglabel->em(sprintf(
-                        $this->_('Exists already with respondent nr %s.'),
-                        $existingOrgs[$orgId]
-                        ));
+                    $this->_('Exists already with respondent nr %s.'),
+                    $this->existingOrgs[$orgId]
+                    ));
 
                 if ($shareOption) {      
                     // Only disable when we just share the patient and he already exists
@@ -155,9 +157,9 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         }
         
         // Only allow to set a patient number when not exists in selected destination organization
-        $disablePatientNumber = array_key_exists($this->formData['gr2o_id_organization'], $existingOrgs);
+        $disablePatientNumber = array_key_exists($this->formData['gr2o_id_organization'], $this->existingOrgs);
         if ($disablePatientNumber) {
-            $this->formData['gr2o_patient_nr'] = $existingOrgs[$this->formData['gr2o_id_organization']];
+            $this->formData['gr2o_patient_nr'] = $this->existingOrgs[$this->formData['gr2o_id_organization']];
 
             // In this case using an existing patient number is allowed
             $dataModel->getMetaModel()->remove('gr2o_patient_nr', 'validators[uniquePatientnr]');
@@ -248,6 +250,11 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         return $this->_('Change organization of respondent');
     }
 
+    public function getTopic($count = 1)
+    {
+        return $this->plural('respondent', 'respondents', $count);
+    }
+
     /**
      * Hook that loads the form data from $_POST or the model
      *
@@ -286,6 +293,7 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         $fromRespId  = $this->respondent->getId();
         $toOrgId     = $this->formData['gr2o_id_organization'];
         $toPatientId = $this->formData['gr2o_patient_nr'];
+        $tracks      = 0;
 
         switch ($this->formData['change_method']) {
             case 'share':
@@ -295,24 +303,35 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
             case 'copy':
                 $this->_changed = $this->saveShare($fromOrgId, $fromPid, $toOrgId, $toPatientId);
                 if ($this->_changed >= 0) {
-                    $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, false);
-                } else {
-                    $this->addMessage($this->_('ERROR: Tracks not moved!'));
+                    $tracks = $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, false);
                 }
                 break;
 
             case 'move':
-                $this->_changed = $this->saveTo($fromOrgId, $fromPid, $toOrgId, $toPatientId);
-                if ($this->_changed >= 0) {
-                    $this->_changed += $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, true);
+                if (isset($this->existingOrgs[$toOrgId])) {
+                    $this->addMessage($this->_('Respondent already exists in destination, please delete current record manually if needed.'));
+                    $this->_changed = 0;
                 } else {
-                    $this->addMessage($this->_('ERROR: Tracks not moved!'));
+                    $this->_changed = $this->saveTo($fromOrgId, $fromPid, $toOrgId, $toPatientId);
+                }
+                if ($this->_changed >= 0) {
+                    $tracks = $this->saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, true);
                 }
                 break;
 
             default:
                 $this->_changed = 0;
 
+        }
+
+        if ($this->_changed >= 0) {
+            if (0 == $tracks) {
+                $this->addMessage($this->_('No tracks to move!'));
+            } else {
+                $this->addMessage(sprintf($this->plural('%d track moved', '%d tracks moved', $tracks), $tracks));
+            }
+        } else {
+            $this->addMessage($this->_('ERROR: Tracks not moved!'));
         }
 
         // Message the save
@@ -326,9 +345,9 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
      * @param int $toOrgId
      * @param string $toPatientId
      * @param boolean $all When true log data and appointments are also moved
-     * @return int 1 If saved
+     * @return int Number of tracks changed
      */
-    protected function saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, $all = false)
+    protected function saveMoveTracks($fromOrgId, $fromRespId, $toOrgId, $toPatientId, $all = false): int
     {
         $tables = array(
             'gems__respondent2track'              => ['gr2t_id_user',      'gr2t_id_organization', true],
@@ -337,8 +356,8 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
             'gems__log_respondent_communications' => ['grco_id_to',        'grco_organization',  $all],
         );
 
-        $changed   = 0;
-        $userId    = $this->currentUser->getUserId();
+        $tracks = 0;
+        $userId = $this->currentUser->getUserId();
 
         foreach ($tables as $tableName => $settings) {
             list($respIdField, $orgIdField, $change) = $settings;
@@ -355,12 +374,15 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
                     $orgIdField => $fromOrgId,
                 ];
 
-                $table = new TableGateway($tableName, $this->resultFetcher->getAdapter());
-                $changed += $table->update($values, $where);
+                $table   = new TableGateway($tableName, $this->resultFetcher->getAdapter());
+                $changes = $table->update($values, $where);
+                if ('gems__respondent2track' == $tableName) {
+                    $tracks = $changes;
+                }
             }
         }
 
-        return $changed;
+        return $tracks;
     }
 
     /**
