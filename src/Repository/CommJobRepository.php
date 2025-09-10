@@ -880,6 +880,7 @@ class CommJobRepository
         $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', [], Select::JOIN_LEFT);
         $select->where($filter);
 
+        // @phpstan-ignore-next-line The phpdoc of insert() is incorrect, it does accept a Select object.
         return $transient_table->insert($select);
     }
 }
