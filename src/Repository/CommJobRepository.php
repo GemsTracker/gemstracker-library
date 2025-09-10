@@ -616,7 +616,7 @@ class CommJobRepository
     {
         $this->prepareTransientTokenSelection();
         $filter = $this->getJobFilter($jobData, $respondentId, $organizationId, $forceSent);
-        $model  = $this->tracker->getTokenModel();
+        $model  = $this->tracker->getTransientCommTokenModel();
 
         // Fix for #680: token with the valid from the longest in the past should be the
         // used as first token and when multiple rounds start at the same date the

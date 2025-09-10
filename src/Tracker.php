@@ -26,6 +26,7 @@ use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\Tracker\Model\StandardTokenModel;
 use Gems\Tracker\Model\TokenModel;
 use Gems\Tracker\Model\TrackModel;
+use Gems\Tracker\Model\TransientCommTokenModel;
 use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\Source\SourceInterface;
 use Gems\Tracker\Survey;
@@ -693,6 +694,16 @@ class Tracker implements TrackerInterface
         }
 
         return $this->_tokenModels[$modelClass];
+    }
+
+    /**
+     * Returns a token model of the specified class with full display information
+     *
+     * @return TransientCommTokenModel
+     */
+    public function getTransientCommTokenModel(): TransientCommTokenModel
+    {
+        return $this->overLoader->create(TransientCommTokenModel::class);
     }
 
     /**
