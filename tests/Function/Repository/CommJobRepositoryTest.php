@@ -55,6 +55,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
         'gems__track_appointments',
         'gems__respondent_relations',
         'gems__staff',
+        'gems__transient_comm_tokens',
     ];
 
     protected array $seeds = [
