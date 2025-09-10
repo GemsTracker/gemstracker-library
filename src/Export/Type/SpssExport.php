@@ -200,7 +200,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
         return [];
     }
 
-    public function getFormElements(Form &$form, array &$data): array
+    public function getFormElements(Form &$form, array &$data, bool $multi = false): array
     {
         return [];
     }

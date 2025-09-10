@@ -2,7 +2,6 @@
 
 namespace Gems\Export\Type;
 
-use Gems\Export\ExportSettings\ExportSettingsInterface;
 use MUtil\Form;
 use Zalt\Model\MetaModelInterface;
 
@@ -17,11 +16,12 @@ interface ExportInterface
 
     /**
      * form elements for extra options for this particular export option
-     * @param  \MUtil\Form $form Current form to add the form elements
-     * @param  array $data current options set in the form
+     * @param \MUtil\Form $form Current form to add the form elements
+     * @param array $data current options set in the form
+     * @param bool $multi True if this concerns multiple exports
      * @return array Form elements
      */
-    public function getFormElements(Form &$form, array &$data): array;
+    public function getFormElements(Form &$form, array &$data, bool $multi = false): array;
 
     public function getHelpInfo(): array;
 

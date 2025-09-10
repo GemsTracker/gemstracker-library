@@ -43,6 +43,10 @@ class InitDbExport extends TaskAbstract
         }
 
         $modelFilter = $this->getFilterFromPostData($searchFilter, $model->getMetaModel());
+        if (isset($modelFilter['gto_id_survey']) && is_array($modelFilter['gto_id_survey'])) {
+            // Make sure we do not export extra rows!
+            $modelFilter['gto_id_survey'] = $modelIdentifier;
+        }
 
         $totalRows  = $model->loadCount($modelFilter);
 

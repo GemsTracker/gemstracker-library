@@ -60,7 +60,7 @@ class CsvExportAbstract extends ExportAbstract implements ExportSettingsGenerato
         return ['format'=> ['addHeader', 'formatVariable', 'formatAnswer'], 'delimiter' => ';'];
     }
 
-    public function getFormElements(Form &$form, array &$data): array
+    public function getFormElements(Form &$form, array &$data, bool $multi = false): array
     {
         $elements = [];
         $element = $form->createElement('multiCheckbox', 'format');
@@ -72,8 +72,9 @@ class CsvExportAbstract extends ExportAbstract implements ExportSettingsGenerato
                     'formatAnswer' => $this->translator->_('Format answers')
             ]);
             $element->setBelongsTo($this->getName());
-            $element->setSeparator(' ');
+            $element->setSeparator('<br/>');
             $elements['format'] = $element;
+
         }
 
         $delimiterOptions = array_combine($this->delimiterOptions, $this->delimiterOptions);

@@ -36,6 +36,8 @@ class ExportFormSnippet extends FormSnippetAbstract
 
     protected ExportInterface $currentExport;
 
+    protected string|int|array|null $modelIdentifier = null;
+
     protected bool $processed = false;
 
     protected bool $sensitiveData;
@@ -78,7 +80,7 @@ class ExportFormSnippet extends FormSnippetAbstract
         ]);
         $form->addElement($element);
 
-        $exportFormElements = $this->currentExport->getFormElements($form, $this->formData);
+        $exportFormElements = $this->currentExport->getFormElements($form, $this->formData, is_array($this->modelIdentifier) && (count($this->modelIdentifier) > 1));
 
         if ($exportFormElements) {
             $form->addElements($exportFormElements);
