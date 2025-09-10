@@ -26,6 +26,10 @@ class CommJobRepository
         'comm-jobs',
     ];
 
+    protected string $cacheTransientCreateKey = 'comm-jobs.transient.create';
+
+    protected int $maxTransientAge = 3600; // in seconds
+
     protected int $currentUserId;
 
     protected ResultFetcher $resultFetcher;
@@ -607,7 +611,10 @@ class CommJobRepository
      */
     public function getTokenData(array $jobData, $respondentId = null, $organizationId = null, $forceSent = false): array
     {
-        $this->prepareTransientTokenSelection();
+        if ($this->getTransientTokenCreateTime() < (time() - $this->maxTransientAge)) {
+            $this->prepareTransientTokenSelection();
+            $this->setTransientTokenCreateTime();
+        }
         $filter = $this->getJobFilter($jobData, $respondentId, $organizationId, $forceSent);
         $model  = $this->tracker->getTransientCommTokenModel();
 
@@ -833,6 +840,16 @@ class CommJobRepository
         });
 
         return $items;
+    }
+
+    private function getTransientTokenCreateTime(): int
+    {
+        return $this->cache->getCacheItem($this->cacheTransientCreateKey) ?? 0;
+    }
+
+    private function setTransientTokenCreateTime(): void
+    {
+        $this->cache->setCacheItem($this->cacheTransientCreateKey, time());
     }
 
     /**
