@@ -113,7 +113,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
                 null,
                 false,
                 [
-                    'gto_id_organization' => 70,
+                    'gtct_id_organization' => 70,
                     'gto_mail_sent_date' => null,
                     [
                         'gto_id_relation' => 0,
@@ -160,7 +160,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
                 70,
                 false,
                 [
-                    'gto_id_organization' => 70,
+                    'gtct_id_organization' => 70,
                     'gto_mail_sent_date' => null,
                     [
                         'gto_id_relation' => 0,
