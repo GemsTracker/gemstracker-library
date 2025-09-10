@@ -179,17 +179,6 @@ class CommJobRepositoryTest extends DatabaseTestCase
         $repository = $this->getRepository();
 
         $result = $repository->getJobFilter($jobSettings, $respondentId, $organizationId, $forceSent);
-        if ($expected != ['1=0']) {
-            $expected = [
-                'gtr_active' => 1,
-                'gsu_active' => 1,
-                'grc_success' => 1,
-                'gto_completion_time' => null,
-                'gto_valid_from <= CURRENT_TIMESTAMP',
-                '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)',
-                ...$expected,
-            ];
-        }
 
         $this->assertEquals($expected, $result);
     }
