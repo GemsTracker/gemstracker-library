@@ -15,6 +15,8 @@ use Gems\Log\Loggers;
 use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SetCommJobTokenAsSent;
 use Gems\Tracker;
+use Laminas\Db\Sql\Select;
+use Laminas\Db\TableGateway\TableGateway;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\TranslatorInterface;
 
@@ -612,6 +614,7 @@ class CommJobRepository
      */
     public function getTokenData(array $jobData, $respondentId = null, $organizationId = null, $forceSent = false): array
     {
+        $this->prepareTransientTokenSelection();
         $filter = $this->getJobFilter($jobData, $respondentId, $organizationId, $forceSent);
         $model  = $this->tracker->getTokenModel();
 
@@ -837,5 +840,36 @@ class CommJobRepository
         });
 
         return $items;
+    }
+
+    /**
+     * Truncate the transient token table and fill it with tokens and part of their data which
+     * are possible candidates for sending communication.
+     *
+     * @return int The number of tokens selected.
+     */
+    private function prepareTransientTokenSelection(): int
+    {
+        $transient_table = new TableGateway('gems__transient_comm_tokens', $this->cachedResultFetcher->getAdapter());
+        $transient_table->delete([]); // Truncate table would have been faster.
+
+        $filter = [
+            'gtr_active'          => 1,
+            'gsu_active'          => 1,
+            'grc_success'         => 1,
+            'gto_completion_time' => NULL,
+            'gto_valid_from <= CURRENT_TIMESTAMP',
+            '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
+        ];
+
+        $token_table = new TableGateway('gems__tokens', $this->cachedResultFetcher->getAdapter());
+        $select = $token_table->getSql()->select();
+        $select->columns(['gto_id_token', 'gto_id_respondent', 'gto_id_organization', 'gto_id_track', 'gto_id_survey']);
+        $select->join('gems__tracks', 'gto_id_track = gtr_id_track', [], Select::JOIN_LEFT);
+        $select->join('gems__surveys', 'gto_id_survey = gsu_id_survey', [], Select::JOIN_LEFT);
+        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', [], Select::JOIN_LEFT);
+        $select->where($filter);
+
+        return $transient_table->insert($select);
     }
 }
