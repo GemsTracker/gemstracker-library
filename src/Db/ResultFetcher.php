@@ -147,7 +147,7 @@ class ResultFetcher
         return $this->db->query($select, $params, $resultSet);
     }
 
-    public function insertIntoTable(string $tableName, array $values): int
+    public function insertIntoTable(string $tableName, array|Select $values): int
     {
         $table = new TableGateway($tableName, $this->getAdapter());
         $table->insert($values);
