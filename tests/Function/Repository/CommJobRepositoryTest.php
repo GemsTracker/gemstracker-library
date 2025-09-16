@@ -115,12 +115,11 @@ class CommJobRepositoryTest extends DatabaseTestCase
                 [
                     'gtct_id_organization' => 70,
                     'gto_mail_sent_date' => null,
-                    [
-                        'gto_id_relation' => 0,
-                        'gto_id_relation IS NULL'
-                    ],
-                    'ggp_member_type != \'staff\'',
-                    'can_email' => 1,
+                    'gto_id_relation IS NULL',
+                    'gr2o_email IS NOT NULL',
+                    'gr2o_email != \'\'',
+                    'gr2o_mailable >= gsu_mail_code',
+                    'ggp_member_type' => 'respondent',
                 ],
             ],
             [
@@ -162,12 +161,60 @@ class CommJobRepositoryTest extends DatabaseTestCase
                 [
                     'gtct_id_organization' => 70,
                     'gto_mail_sent_date' => null,
-                    [
-                        'gto_id_relation' => 0,
-                        'gto_id_relation IS NULL'
-                    ],
-                    'ggp_member_type != \'staff\'',
-                    'can_email' => 1,
+                    'gto_id_relation IS NULL',
+                    'gr2o_email IS NOT NULL',
+                    'gr2o_email != \'\'',
+                    'gr2o_mailable >= gsu_mail_code',
+                    'ggp_member_type' => 'respondent',
+                ],
+            ],
+            [
+                [
+                    'gcj_id_organization' => 70,
+                    'gcj_filter_mode' => 'N',
+                    'gcj_to_method' => 'A',
+                    'gcj_target' => 1,
+                    'gcj_fallback_method' => 'O',
+                    'gcj_id_track' => null,
+                    'gcj_round_description' => null,
+                    'gcj_id_survey' => null,
+                    'gcj_filter_days_between' => 7,
+                    'gcj_filter_max_reminders' => 3,
+                ],
+                null,
+                70,
+                false,
+                [
+                    'gtct_id_organization' => 70,
+                    'gto_mail_sent_date' => null,
+                    'gto_id_relation <> 0',
+                    'grr_email IS NOT NULL',
+                    'grr_email != \'\'',
+                    'grr_mailable >= gsu_mail_code',
+                    'ggp_member_type' => 'respondent',
+                ],
+            ],
+            [
+                [
+                    'gcj_id_organization' => 70,
+                    'gcj_filter_mode' => 'N',
+                    'gcj_to_method' => 'O',
+                    'gcj_target' => 3,
+                    'gcj_fallback_method' => null,
+                    'gcj_id_track' => null,
+                    'gcj_round_description' => null,
+                    'gcj_id_survey' => null,
+                    'gcj_filter_days_between' => 7,
+                    'gcj_filter_max_reminders' => 3,
+                ],
+                null,
+                70,
+                false,
+                [
+                    'gtct_id_organization' => 70,
+                    'gto_mail_sent_date' => null,
+                    'ggp_member_type' => 'staff',
+                    'gor_contact_email IS NOT NULL',
                 ],
             ],
         ];
@@ -178,7 +225,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
     {
         $repository = $this->getRepository();
 
-        $result = $repository->getJobFilter($jobSettings, $respondentId, $organizationId, $forceSent);
+        $result = $repository->getJobFilter($jobSettings, null, $respondentId, $organizationId, $forceSent);
 
         $this->assertEquals($expected, $result);
     }
