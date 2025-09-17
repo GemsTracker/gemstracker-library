@@ -73,6 +73,21 @@ class AppointmentFieldTest extends TestCase
                         $this->createMock(ProcedureRepository::class),
                         $respondentRepository,
                     ),
+                    9876 => new Appointment(
+                        [
+                            'gap_id_appointment' => 9876,
+                            'gap_status' => 'AC',
+                            'gap_admission_time' => '2005-01-15 15:00:00',
+                            'gap_id_user' => 1,
+                            'gap_id_organization' => 70,
+                        ],
+                        $this->getTranslator(),
+                        $agenda,
+                        $this->createMock(ActivityRepository::class),
+                        $this->createMock(LocationRepository::class),
+                        $this->createMock(ProcedureRepository::class),
+                        $this->createMock(RespondentRepository::class),
+                    ),
                     default => new Appointment(
                         [
                             'gap_id_appointment' => 1,
@@ -174,15 +189,41 @@ class AppointmentFieldTest extends TestCase
     {
         $appointmentField = $this->getAppointmentField();
 
-        $valueFromString = $appointmentField->getFromDate(['gr2t_start_date' => '2000-01-01 15:00:00']);
+        // Diff field not set. (default to track start date)
+        $valueFromString = $appointmentField->getFromDate(['gr2t_start_date' => '2000-01-01 15:00:00'], []);
         $this->assertEquals('2000-01-01 00:00:00', $valueFromString->format('Y-m-d H:i:s'));
 
-        $valueFromDateTime = $appointmentField->getFromDate(['gr2t_start_date' => new \DateTimeImmutable('2001-01-01 00:00:00')]);
+        // Diff field not set (default to track start date as DateTime Object)
+        $valueFromDateTime = $appointmentField->getFromDate(['gr2t_start_date' => new \DateTimeImmutable('2001-01-01 00:00:00')], []);
         $this->assertEquals('2001-01-01 00:00:00', $valueFromDateTime->format('Y-m-d H:i:s'));
 
+        // Diff field not set (default to previous field)
         $appointmentField->setLastActiveAppointmentFromValue(1234);
-        $valueFromLastAppointment = $appointmentField->getFromDate(['gr2t_start_date' => '2000-01-01 00:00:00']);
+        $valueFromLastAppointment = $appointmentField->getFromDate(['gr2t_start_date' => '2000-01-01 00:00:00'], ['A__1001' => '9876']);
         $this->assertEquals('2002-01-15 00:00:00', $valueFromLastAppointment->format('Y-m-d H:i:s'));
+
+
+        // Diff field: specific appointment
+        $appointmentField = $this->getAppointmentField(
+            fieldDefinition: [
+                'gtap_diff_target_field' => 'A__1001',
+            ],
+        );
+
+        $appointmentField->setLastActiveAppointmentFromValue(1234);
+        $valueFromLastAppointment = $appointmentField->getFromDate(['gr2t_start_date' => '2000-01-01 00:00:00'], ['A__1001' => 9876]);
+        $this->assertEquals('2005-01-15 00:00:00', $valueFromLastAppointment->format('Y-m-d H:i:s'));
+
+        // Diff field: specifically start, with previous field
+        $appointmentField = $this->getAppointmentField(
+            fieldDefinition: [
+                'gtap_diff_target_field' => 'start',
+            ],
+        );
+
+        $appointmentField->setLastActiveAppointmentFromValue(1234);
+        $valueFromLastAppointment = $appointmentField->getFromDate(['gr2t_start_date' => '2000-01-01 00:00:00'], ['A__1001' => 9876]);
+        $this->assertEquals('2000-01-01 00:00:00', $valueFromLastAppointment->format('Y-m-d H:i:s'));
     }
 
     public function testCalculationStart(): void

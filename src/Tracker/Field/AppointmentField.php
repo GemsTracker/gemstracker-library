@@ -147,7 +147,7 @@ class AppointmentField extends FieldAbstract
     {
         if ($currentValue || isset($this->fieldDefinition['gtf_filter_id'])) {
             if ($this->_lastActiveKey && isset($this->fieldDefinition['gtf_filter_id'])) {
-                $fromDate = $this->getFromDate($trackData);
+                $fromDate = $this->getFromDate($trackData, $fieldData);
 
                 if ($fromDate instanceof DateTimeInterface) {
                     $select = $this->agenda->createAppointmentSelect(['gap_id_appointment']);
@@ -274,12 +274,24 @@ class AppointmentField extends FieldAbstract
         return $output;
     }
 
-    public function getFromDate(array $trackData): DateTimeInterface|null
+    public function getFromDate(array $trackData, array $fieldData = []): DateTimeInterface|null
     {
-        $lastActive = self::$_lastActiveAppointment[$this->_lastActiveKey];
+        // Default is last appointment
+        $targetCheckAppointment = self::$_lastActiveAppointment[$this->_lastActiveKey];
 
-        if (($lastActive instanceof Appointment) && $lastActive->isActive()) {
-            $fromDate = $lastActive->getAdmissionTime();
+        if ($this->fieldDefinition['gtap_diff_target_field'] !== null) {
+            if ($this->fieldDefinition['gtap_diff_target_field'] === 'start') {
+                $targetCheckAppointment = null;
+            }
+            if (isset($fieldData[$this->fieldDefinition['gtap_diff_target_field']])) {
+                $targetCheckAppointment = $this->agenda->getAppointment(
+                    $fieldData[$this->fieldDefinition['gtap_diff_target_field']]
+                );
+            }
+        }
+
+        if (($targetCheckAppointment instanceof Appointment) && $targetCheckAppointment->isActive()) {
+            $fromDate = $targetCheckAppointment->getAdmissionTime();
             return $fromDate->setTime(0,0);
         }
 

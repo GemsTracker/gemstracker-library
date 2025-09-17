@@ -230,6 +230,7 @@ class FieldMaintenanceModel extends UnionModel
         if ($detailed) {
             // Appointment caculcation field
             $this->metaModel->set('gtf_filter_id'); // Set order
+            $this->metaModel->set('gtf_diff_target_field'); // Set order
             $this->metaModel->set('gtf_min_diff_length'); // Set order
             $this->metaModel->set('gtf_min_diff_unit'); // Set order
             $this->metaModel->set('gtf_max_diff_exists', ['multiOptions' => $yesNo]); // Set order
@@ -392,6 +393,9 @@ class FieldMaintenanceModel extends UnionModel
         ]);
 
         $this->metaModel->set('gtf_filter_id', [
+            'elementClass' => 'Hidden'
+        ]);
+        $this->metaModel->set('gtf_diff_target_field', [
             'elementClass' => 'Hidden'
         ]);
         $this->metaModel->set('gtf_min_diff_length', [

@@ -15,6 +15,8 @@ CREATE TABLE if not exists gems__track_appointments (
         gtap_readonly           boolean not null default false,
 
         gtap_filter_id          bigint unsigned null references gems__appointment_filters (gaf_id),
+        gtap_diff_target_field  varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null,
+
         -- deprecated
         gtap_after_next         boolean not null default 1,
         -- deprecated
