@@ -170,7 +170,11 @@ class AppointmentFieldTest extends TestCase
 
     public function testFromDateCalculation(): void
     {
-        $appointmentField = $this->getAppointmentField();
+        $appointmentField = $this->getAppointmentField(
+            fieldDefinition: [
+                'gtf_diff_target_field' => null,
+            ],
+        );
 
         // Diff field not set. (default to track start date)
         $valueFromString = $appointmentField->getFromDate(['gr2t_start_date' => '2000-01-01 15:00:00'], []);
@@ -189,7 +193,7 @@ class AppointmentFieldTest extends TestCase
         // Diff field: specific appointment
         $appointmentField = $this->getAppointmentField(
             fieldDefinition: [
-                'gtap_diff_target_field' => 'A__1001',
+                'gtf_diff_target_field' => 'A__1001',
             ],
         );
 
@@ -200,7 +204,7 @@ class AppointmentFieldTest extends TestCase
         // Diff field: specifically start, with previous field
         $appointmentField = $this->getAppointmentField(
             fieldDefinition: [
-                'gtap_diff_target_field' => 'start',
+                'gtf_diff_target_field' => 'start',
             ],
         );
 
@@ -255,6 +259,9 @@ class AppointmentFieldTest extends TestCase
                 'gtf_filter_id' => 1000,
                 'gtf_min_diff_unit' => 'D',
                 'gtf_min_diff_length' => '1',
+                'gtf_max_diff_exists' => 0,
+                'gtf_uniqueness' => 0,
+                'gtf_diff_target_field' => null,
             ],
             appointmentSelect: $appointmentSelect
         );
@@ -282,6 +289,9 @@ class AppointmentFieldTest extends TestCase
                 'gtf_filter_id' => 1000,
                 'gtf_min_diff_unit' => 'D',
                 'gtf_min_diff_length' => '-1',
+                'gtf_max_diff_exists' => 0,
+                'gtf_uniqueness' => 0,
+                'gtf_diff_target_field' => null,
             ],
             appointmentSelect: $appointmentSelect);
 
@@ -289,6 +299,7 @@ class AppointmentFieldTest extends TestCase
             'gr2t_id_user' => 2000,
             'gr2t_id_organization' => 70,
             'gr2t_start_date' => '2004-01-15 00:00:00',
+            'gtf_max_diff_exists' => 0,
         ]);
 
         $this->assertEquals(2000001, $result);
@@ -315,6 +326,8 @@ class AppointmentFieldTest extends TestCase
                 'gtf_max_diff_exists' => 1,
                 'gtf_max_diff_unit' => 'D',
                 'gtf_max_diff_length' => '2',
+                'gtf_uniqueness' => 0,
+                'gtf_diff_target_field' => null,
             ],
             appointmentSelect: $appointmentSelect
         );
@@ -348,6 +361,8 @@ class AppointmentFieldTest extends TestCase
                 'gtf_min_diff_unit' => 'D',
                 'gtf_min_diff_length' => '1',
                 'gtf_uniqueness' => 1,
+                'gtf_max_diff_exists' => 0,
+                'gtf_diff_target_field' => null,
             ],
             appointmentSelect: $appointmentSelect
         );
@@ -384,6 +399,8 @@ class AppointmentFieldTest extends TestCase
                 'gtf_min_diff_unit' => 'D',
                 'gtf_min_diff_length' => '1',
                 'gtf_uniqueness' => 2,
+                'gtf_max_diff_exists' => 0,
+                'gtf_diff_target_field' => null,
             ],
             appointmentSelect: $appointmentSelect
         );

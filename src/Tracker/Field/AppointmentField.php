@@ -279,13 +279,13 @@ class AppointmentField extends FieldAbstract
         // Default is last appointment
         $targetCheckAppointment = self::$_lastActiveAppointment[$this->_lastActiveKey];
 
-        if ($this->fieldDefinition['gtap_diff_target_field'] !== null) {
-            if ($this->fieldDefinition['gtap_diff_target_field'] === 'start') {
+        if ($this->fieldDefinition['gtf_diff_target_field'] !== null) {
+            if ($this->fieldDefinition['gtf_diff_target_field'] === 'start') {
                 $targetCheckAppointment = null;
             }
-            if (isset($fieldData[$this->fieldDefinition['gtap_diff_target_field']])) {
+            if (isset($fieldData[$this->fieldDefinition['gtf_diff_target_field']])) {
                 $targetCheckAppointment = $this->agenda->getAppointment(
-                    $fieldData[$this->fieldDefinition['gtap_diff_target_field']]
+                    $fieldData[$this->fieldDefinition['gtf_diff_target_field']]
                 );
             }
         }
