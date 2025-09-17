@@ -82,7 +82,7 @@ class AppointmentField extends FieldAbstract
      *
      * @var string
      */
-    protected string $appointmentTimeFormat = 'd-m-Y H:i';
+    protected string $appointmentTimeFormat = 'j M Y H:i';
 
     public function __construct(
         int $trackId,
