@@ -107,7 +107,7 @@ class AppointmentFieldTest extends TestCase
 
         $routeHelper = $this->createMock(RouteHelper::class);
         $routeHelper->method('getRouteUrl')->willReturnCallback(function(string $name, array $params = []) {
-            if (!$name === 'respondent.appointments.show') {
+            if (!($name === 'respondent.appointments.show')) {
                 return null;
             }
             if (isset($params['id1'], $params['id2'], $params['aid'])) {
@@ -128,23 +128,6 @@ class AppointmentFieldTest extends TestCase
         $appointmentField->calculationStart($trackData);
 
         return $appointmentField;
-    }
-
-    private function getAppointment(
-        array $appointmentData = [
-            'gap_id_appointment' => 1,
-        ]
-    ): Appointment
-    {
-        return new Appointment(
-            $appointmentData,
-            $this->getTranslator(),
-            $this->createMock(Agenda::class),
-            $this->createMock(ActivityRepository::class),
-            $this->createMock(LocationRepository::class),
-            $this->createMock(ProcedureRepository::class),
-            $this->createMock(RespondentRepository::class),
-        );
     }
 
     private function getTranslator(): TranslatorInterface
@@ -168,7 +151,7 @@ class AppointmentFieldTest extends TestCase
         $this->assertNull($inactiveAppointment);
 
         $activeAppointment = $appointmentField->calculateFieldInfo(1234, []);
-        $this->assertEquals('15-01-2002 15:00', $activeAppointment);
+        $this->assertEquals('15 Jan 2002 15:00', $activeAppointment);
     }
 
 

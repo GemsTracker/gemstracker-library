@@ -112,7 +112,7 @@ class AppointmentField extends FieldAbstract
     /**
      * Calculation the field info display for this type
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
@@ -292,7 +292,9 @@ class AppointmentField extends FieldAbstract
 
         if (($targetCheckAppointment instanceof Appointment) && $targetCheckAppointment->isActive()) {
             $fromDate = $targetCheckAppointment->getAdmissionTime();
-            return $fromDate->setTime(0,0);
+            if ($fromDate instanceof DateTimeImmutable) {
+                return $fromDate->setTime(0,0);
+            }
         }
 
         if (isset($trackData['gr2t_start_date']) && $trackData['gr2t_start_date']) {
