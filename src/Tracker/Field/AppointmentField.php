@@ -138,7 +138,7 @@ class AppointmentField extends FieldAbstract
     /**
      * Calculate the field value using the current values
      *
-     * @param array $currentValue The current value
+     * @param mixed $currentValue The current value
      * @param array $fieldData The other known field values
      * @param array $trackData The currently available track data (track id may be empty)
      * @return string|int|null the new value
