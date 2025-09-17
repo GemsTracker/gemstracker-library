@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Serializer;
 
 class DatabaseBatchStore implements BatchStoreInterface
 {
-    private const DATETIME_STORAGE_FORMAT = 'Y-m-d hH:i:s';
+    private const DATETIME_STORAGE_FORMAT = 'Y-m-d H:i:s';
 
     public function __construct(
         private readonly ResultFetcher $resultFetcher,
@@ -69,7 +69,7 @@ class DatabaseBatchStore implements BatchStoreInterface
 
     public function isPending(string $batchId): bool
     {
-        return $this->resultFetcher->fetchRow('SELECT count(*) FROM gems__batch WHERE gba_id = ? AND gba_status = ?', [
+        return $this->resultFetcher->fetchOne('SELECT count(*) FROM gems__batch WHERE gba_id = ? AND gba_status = ?', [
             $batchId,
             BatchStatus::PENDING->value,
         ]) > 1;
@@ -77,7 +77,7 @@ class DatabaseBatchStore implements BatchStoreInterface
 
     public function isRunning(string $batchId): bool
     {
-        return $this->resultFetcher->fetchRow('SELECT count(*) FROM gems__batch WHERE gba_id = ? AND gba_status = ?', [
+        return $this->resultFetcher->fetchOne('SELECT count(*) FROM gems__batch WHERE gba_id = ? AND gba_status = ?', [
                 $batchId,
                 BatchStatus::RUNNING->value,
             ]) > 1;
@@ -117,7 +117,7 @@ class DatabaseBatchStore implements BatchStoreInterface
     {
         $this->resultFetcher->updateTable('gems__batch', [
             'gba_status' => BatchStatus::SUCCESS,
-            'gba_completed' => (new DateTimeImmutable())->format(static::DATETIME_STORAGE_FORMAT)
+            'gba_completed' => (new DateTimeImmutable())->format(self::DATETIME_STORAGE_FORMAT)
         ], [
             'gba_id' => $batchId,
             'gba_iteration' => $iteration,
