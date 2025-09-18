@@ -103,9 +103,9 @@ class ResultFetcher
         return $this->db->getPlatform();
     }
 
-    public function getQueryString(SqlInterface $select): string
+    public function getSqlString(SqlInterface $sqlObject): string
     {
-        return $select->getSqlString($this->db->getPlatform());
+        return $sqlObject->getSqlString($this->db->getPlatform());
     }
 
     public function getSelect(null|string|TableIdentifier $table = null): Select
@@ -152,11 +152,6 @@ class ResultFetcher
         $table = new TableGateway($tableName, $this->getAdapter());
         $table->insert($values);
         return $this->getAdapter()->getDriver()->getLastGeneratedValue();
-    }
-
-    public function printSelect(Select $select): string
-    {
-        return $select->getSqlString($this->db->getPlatform());
     }
 
     public function updateTable(string $tableName, array $values, mixed $where): int
