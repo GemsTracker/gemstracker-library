@@ -140,11 +140,9 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
 
         if (! in_array('restore_tracks', $this->editItems)) {
             $this->editItems[] = 'restore_tracks';
-            if (!$this->respondent->getConsent()?->canBeUsed()) {
-                foreach ($this->respondentModel->consentFields as $field) {
-                    $this->editItems[] = $field;
-                    $this->editItems[] = 'old_' . $field;
-                }
+            foreach ($this->respondentModel->consentFields as $field) {
+                $this->editItems[] = $field;
+                $this->editItems[] = 'old_' . $field;
             }
         }
         return true;
