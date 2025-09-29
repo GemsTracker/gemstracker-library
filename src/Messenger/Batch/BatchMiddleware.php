@@ -14,7 +14,6 @@ use Symfony\Component\Messenger\Stamp\HandledStamp;
 class BatchMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly MessengerBatchRepository $batchRepository,
         private readonly ContainerInterface $container,
     )
     {
@@ -28,8 +27,11 @@ class BatchMiddleware implements MiddlewareInterface
             return $stack->next()->handle($envelope, $stack);
         }
 
+        /** @var MessengerBatchRepository $batchRepository */
+        $batchRepository = $this->container->get(MessengerBatchRepository::class);
+
         try {
-            $this->batchRepository->setIterationStatus($stamp->batchId, $stamp->iteration, BatchStatus::RUNNING);
+            $batchRepository->setIterationStatus($stamp->batchId, $stamp->iteration, BatchStatus::RUNNING);
 
             $envelope = $stack->next()->handle($envelope, $stack);
             $handledStamp =$envelope->last(HandledStamp::class);
@@ -40,11 +42,11 @@ class BatchMiddleware implements MiddlewareInterface
                 $message = $result;
             }
 
-            $batch = $this->batchRepository->getBatch($stamp->batchId);
-            $this->batchRepository->setIterationStatus($stamp->batchId, $stamp->iteration, BatchStatus::SUCCESS, $message);
+            $batch = $batchRepository->getBatch($stamp->batchId);
+            $batchRepository->setIterationStatus($stamp->batchId, $stamp->iteration, BatchStatus::SUCCESS, $message);
 
             if ($batch->isChain) {
-                $nextMessage = $this->batchRepository->getBatchIterationMessage($stamp->batchId, $stamp->iteration + 1);
+                $nextMessage = $batchRepository->getBatchIterationMessage($stamp->batchId, $stamp->iteration + 1);
                 if ($nextMessage) {
                     /**
                      * @var MessageBusInterface $messageBus
@@ -58,7 +60,7 @@ class BatchMiddleware implements MiddlewareInterface
 
 
         } catch (\Throwable $e) {
-            $this->batchRepository->setIterationStatus(
+            $batchRepository->setIterationStatus(
                 $stamp->batchId,
                 $stamp->iteration,
                 BatchStatus::FAILED,

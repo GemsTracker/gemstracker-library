@@ -62,7 +62,7 @@ class MessengerFactory implements FactoryInterface
         }
 
         $middleware = [
-            new BatchMiddleware($container->get(MessengerBatchRepository::class), $container),
+            new BatchMiddleware($container),
             new CurrentUserMiddleware($container->get(CurrentUserRepository::class)),
             new AddBusNameStampMiddleware($this->busName),
             new RejectRedeliveredMessageMiddleware(),
