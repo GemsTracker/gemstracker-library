@@ -77,7 +77,7 @@ class DatabaseBatchStore implements BatchStoreInterface
         return $this->resultFetcher->fetchOne('SELECT count(*) FROM gems__batch WHERE gba_id = ? AND gba_status = ?', [
             $batchId,
             BatchStatus::PENDING->value,
-        ]) > 1;
+        ]) > 0;
     }
 
     public function isRunning(string $batchId): bool
@@ -85,7 +85,7 @@ class DatabaseBatchStore implements BatchStoreInterface
         return $this->resultFetcher->fetchOne('SELECT count(*) FROM gems__batch WHERE gba_id = ? AND gba_status = ?', [
                 $batchId,
                 BatchStatus::RUNNING->value,
-            ]) > 1;
+            ]) > 0;
     }
 
     public function save(Batch $batch): void
@@ -118,11 +118,12 @@ class DatabaseBatchStore implements BatchStoreInterface
         return new Serializer($normalizers, $encoders);
     }
 
-    public function setIterationFinished(string $batchId, int $iteration): void
+    public function setIterationFinished(string $batchId, int $iteration, string|null $message = null): void
     {
         $this->resultFetcher->updateTable('gems__batch', [
             'gba_status' => BatchStatus::SUCCESS->value,
-            'gba_completed' => (new DateTimeImmutable())->format(self::DATETIME_STORAGE_FORMAT)
+            'gba_finished' => (new DateTimeImmutable())->format(self::DATETIME_STORAGE_FORMAT),
+            'gba_info' => $message,
         ], [
             'gba_id' => $batchId,
             'gba_iteration' => $iteration,
@@ -138,7 +139,7 @@ class DatabaseBatchStore implements BatchStoreInterface
 
         $this->resultFetcher->updateTable('gems__batch', [
             'gba_status' => $status->value,
-            'gba_completed' => $completed,
+            'gba_finished' => $completed,
             'gba_info' => $message,
         ], [
             'gba_id' => $batchId,

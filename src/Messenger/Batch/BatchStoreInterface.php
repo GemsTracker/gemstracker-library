@@ -8,6 +8,8 @@ interface BatchStoreInterface
     public function exists(string $batchId): bool;
     public function getBatch(string $batchId): Batch|null;
 
+    public function getBatchInfoList(string $batchId): array;
+
     public function getBatchIterationMessage(string $batchId, int $iteration): object|null;
 
     public function isPending(string $batchId): bool;
@@ -16,7 +18,9 @@ interface BatchStoreInterface
 
     public function save(Batch $batch): void;
 
-    public function setIterationFinished(string $batchId, int $iteration): void;
+    public function setIterationFinished(string $batchId, int $iteration, string|null $message = null): void;
+
+    public function setIterationStatus(string $batchId, int $iteration, BatchStatus $status, string|null $message = null): void;
 
 
 
