@@ -722,11 +722,11 @@ class Route
                     'delete',
                 ],
                 postRoutes: [
-                    'autofilter',
                     'check',
                     'create',
                     'edit',
                     'index',
+                    'autofilter',
                     'delete',
                 ],
                 parentParameters: [
@@ -760,6 +760,7 @@ class Route
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [
                     'index',
+                    'autofilter',
                     'show',
                     'edit',
                     'delete',
@@ -787,6 +788,7 @@ class Route
                     'undelete',
                     'edit',
                     'index',
+                    'autofilter',
                 ],
                 parentParameters: [
                     'id1',
@@ -1168,6 +1170,7 @@ class Route
                     'create',
                     'edit',
                     'index',
+                    'autofilter',
                     'show',
                     'active-toggle',
                 ],
@@ -1288,6 +1291,7 @@ class Route
                 controllerClass: \Gems\Handlers\Setup\LogfileHandler::class,
                 pages: [
                     'index',
+                    'autofilter',
                     'download',
                     'show',
                 ],
@@ -1300,6 +1304,7 @@ class Route
                 ],
                 postRoutes: [
                     'index',
+                    'autofilter',
                     'download',
                 ]
             ),
@@ -1425,6 +1430,7 @@ class Route
                 controllerClass: \Gems\Handlers\TrackBuilder\TrackOverviewHandler::class,
                 pages: [
                     'index',
+                    'autofilter',
                 ]
             ),
 

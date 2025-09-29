@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets;
 
+use Zalt\Model\MetaModelInterface;
+
 /**
  *
  *
@@ -34,8 +36,8 @@ class AutosearchInRespondentSnippet extends \Gems\Snippets\AutosearchPeriodFormS
     protected function getAutoSearchElements(array $data)
     {
         $elements = parent::getAutoSearchElements($data);
-        $elements[] = new \Zend_Form_Element_Hidden(\MUtil\Model::REQUEST_ID1);
-        $elements[] = new \Zend_Form_Element_Hidden(\MUtil\Model::REQUEST_ID2);
+        $elements[] = new \Zend_Form_Element_Hidden(MetaModelInterface::REQUEST_ID1);
+        $elements[] = new \Zend_Form_Element_Hidden(MetaModelInterface::REQUEST_ID2);
 
         return $elements;
     }
@@ -51,8 +53,8 @@ class AutosearchInRespondentSnippet extends \Gems\Snippets\AutosearchPeriodFormS
     {
         $neededParams = parent::getFixedParams();
         
-        $neededParams[] = \MUtil\Model::REQUEST_ID1;
-        $neededParams[] = \MUtil\Model::REQUEST_ID2;
+        $neededParams[] = MetaModelInterface::REQUEST_ID1;
+        $neededParams[] = MetaModelInterface::REQUEST_ID2;
         
         return $neededParams;
         

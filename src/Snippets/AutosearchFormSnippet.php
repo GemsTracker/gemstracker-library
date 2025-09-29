@@ -344,7 +344,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
             }
             $options['class'] .= 'auto-submit';
             $options['auto-submit-target'] = 'searchTarget';
-            $options['auto-submit-url'] = $this->menuSnippetHelper->getRelatedRouteUrl('autofilter');
+            $options['auto-submit-url'] = $this->menuSnippetHelper->getRelatedRouteUrl('autofilter') ?? '';
         }
 
         $form = new Form($options);
