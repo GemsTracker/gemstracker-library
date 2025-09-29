@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gems\Messenger\Batch;
 
 use DateTimeImmutable;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Uid\Uuid;
 
@@ -30,9 +31,19 @@ class MessengerBatchRepository
         );
     }
 
+    public function count(string $batchId): int
+    {
+        return $this->batchStore->count($batchId);
+    }
+
     public function getBatch(string $batchId): Batch|null
     {
         return $this->batchStore->getBatch($batchId);
+    }
+
+    public function getBatchInfoList(string $batchId): array
+    {
+        return $this->batchStore->getBatchInfoList($batchId);
     }
 
     public function getBatchIterationMessage(string $batchId, int $iteration): object|null
@@ -42,6 +53,8 @@ class MessengerBatchRepository
 
     public function dispatch(Batch $batch): void
     {
+        $currentCount = $this->batchStore->count($batch->batchId);
+
         $this->batchStore->save($batch);
 
         if (!count($batch->getCurrentMessages())) {
@@ -49,27 +62,35 @@ class MessengerBatchRepository
         }
 
         if (!$batch->isChain) {
-            $this->dispatchMessages($batch->getCurrentMessages());
+            $this->dispatchMessages($batch->getCurrentMessages(), $batch->batchId, $currentCount);
             return;
         }
 
         if ($this->batchStore->isPending($batch->batchId) || !$this->batchStore->isRunning($batch->batchId)) {
             $messages = $batch->getCurrentMessages();
             $firstMessage = reset($messages);
-            $this->messageBus->dispatch($firstMessage);
+            $this->dispatchMessages([$firstMessage], $batch->batchId, $currentCount);
             return;
         }
     }
 
-    private function dispatchMessages(array $messages): void
+    private function dispatchMessages(array $messages, string $batchId, int $iteratorOffset = 0): void
     {
         foreach($messages as $message) {
-            $this->messageBus->dispatch($message);
+            $iteratorOffset++;
+            $this->messageBus->dispatch($message, [
+                new BatchStamp($batchId, $iteratorOffset),
+            ]);
         }
     }
 
     public function setIterationFinished(string $batchId, int $iteration): void
     {
         $this->batchStore->setIterationFinished($batchId, $iteration);
+    }
+
+    public function setIterationStatus(string $batchId, int $iteration, BatchStatus $status, string|null $message = null): void
+    {
+        $this->batchStore->setIterationStatus($batchId, $iteration, $status, $message);
     }
 }

@@ -47,8 +47,13 @@ class DatabaseBatchStore implements BatchStoreInterface
             $data['gba_group'],
             $data['gba_finished'] ? new DateTimeImmutable($data['gba_finished']) : null,
             BatchStatus::from($data['gba_status']),
-            (bool)$data['gba_chain'],
+            (bool)$data['gba_synchronous'],
         );
+    }
+
+    public function getBatchInfoList(string $batchId): array
+    {
+        return $this->resultFetcher->fetchCol('SELECT gba_info FROM gems__batch WHERE gba_id = ? ORDER BY gba_iteration', [$batchId]);
     }
 
     public function getBatchIterationMessage(string $batchId, int $iteration): object|null
@@ -61,7 +66,7 @@ class DatabaseBatchStore implements BatchStoreInterface
 
         $serializer = $this->getSerializer();
         try {
-            return $serializer->deserialize($data['gba_message'], $data['gba_messag_class'], 'json');
+            return $serializer->deserialize($data['gba_message'], $data['gba_message_class'], 'json');
         } catch(Exception $e) {
             return null;
         }
@@ -116,8 +121,25 @@ class DatabaseBatchStore implements BatchStoreInterface
     public function setIterationFinished(string $batchId, int $iteration): void
     {
         $this->resultFetcher->updateTable('gems__batch', [
-            'gba_status' => BatchStatus::SUCCESS,
+            'gba_status' => BatchStatus::SUCCESS->value,
             'gba_completed' => (new DateTimeImmutable())->format(self::DATETIME_STORAGE_FORMAT)
+        ], [
+            'gba_id' => $batchId,
+            'gba_iteration' => $iteration,
+        ]);
+    }
+
+    public function setIterationStatus(string $batchId, int $iteration, BatchStatus $status, string|null $message = null): void
+    {
+        $completed = null;
+        if ($status === BatchStatus::SUCCESS) {
+            $completed = (new DateTimeImmutable())->format(self::DATETIME_STORAGE_FORMAT);
+        }
+
+        $this->resultFetcher->updateTable('gems__batch', [
+            'gba_status' => $status->value,
+            'gba_completed' => $completed,
+            'gba_info' => $message,
         ], [
             'gba_id' => $batchId,
             'gba_iteration' => $iteration,
