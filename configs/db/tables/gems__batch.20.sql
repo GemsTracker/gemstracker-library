@@ -5,7 +5,7 @@ CREATE TABLE if not exists gems__batch (
     gba_name               varchar(64) null,
     gba_group              varchar(64) null,
     gba_status             varchar(64) not null,
-    gba_synchronous        tinyint(64) not null default 0,
+    gba_synchronous        tinyint(1) not null default 0,
 
     gba_message            JSON null,
     gba_message_class      varchar(128) null,
