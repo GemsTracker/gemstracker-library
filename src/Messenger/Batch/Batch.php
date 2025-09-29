@@ -31,6 +31,17 @@ class Batch
     }
 
     /**
+     * @param object[] $messages
+     * @return void
+     */
+    public function addMessages(array $messages): void
+    {
+        foreach ($messages as $message) {
+            $this->addMessage($message);
+        }
+    }
+
+    /**
      * @return object[]
      */
     public function getCurrentMessages(): array
