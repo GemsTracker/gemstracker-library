@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Messenger\Batch;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
@@ -14,7 +15,7 @@ class BatchMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private readonly MessengerBatchRepository $batchRepository,
-        private readonly MessageBusInterface $messageBus,
+        private readonly ContainerInterface $container,
     )
     {
     }
@@ -45,7 +46,11 @@ class BatchMiddleware implements MiddlewareInterface
             if ($batch->isChain) {
                 $nextMessage = $this->batchRepository->getBatchIterationMessage($stamp->batchId, $stamp->iteration + 1);
                 if ($nextMessage) {
-                    $this->messageBus->dispatch($nextMessage, [
+                    /**
+                     * @var MessageBusInterface $messageBus
+                     */
+                    $messageBus = $this->container->get(MessageBusInterface::class);
+                    $messageBus->dispatch($nextMessage, [
                         new BatchStamp($stamp->batchId, $stamp->iteration + 1),
                     ]);
                 }
