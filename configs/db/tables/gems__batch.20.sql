@@ -12,7 +12,7 @@ CREATE TABLE if not exists gems__batch (
 
     gba_info                text null,
 
-    gba_finished           timestamp not null default current_timestamp,
+    gba_finished           timestamp null default current_timestamp,
     gba_created            timestamp not null default current_timestamp,
     gba_changed            timestamp not null default current_timestamp ON UPDATE current_timestamp,
 
