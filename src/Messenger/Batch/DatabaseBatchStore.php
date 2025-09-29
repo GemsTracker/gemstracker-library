@@ -96,6 +96,7 @@ class DatabaseBatchStore implements BatchStoreInterface
             'gba_name' => $batch->name,
             'gba_group' => $batch->group,
             'gba_status' => $batch->status->value,
+            'gba_synchronous' => (int)$batch->isChain,
         ];
 
         $messages = $batch->getCurrentMessages();
