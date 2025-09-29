@@ -63,6 +63,7 @@ class MessengerBatchRepository
 
         if (!$batch->isChain) {
             $this->dispatchMessages($batch->getCurrentMessages(), $batch->batchId, $currentCount);
+            $batch->clearMessages();
             return;
         }
 
@@ -70,6 +71,7 @@ class MessengerBatchRepository
             $messages = $batch->getCurrentMessages();
             $firstMessage = reset($messages);
             $this->dispatchMessages([$firstMessage], $batch->batchId, $currentCount);
+            $batch->clearMessages();
             return;
         }
     }
