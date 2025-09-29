@@ -16,11 +16,11 @@ class Batch
     public function __construct(
         public readonly string $batchId,
         public readonly DateTimeInterface $created,
-        public string|null $name = null,
-        public string|null $group = null,
+        public readonly string|null $name = null,
+        public readonly string|null $group = null,
         public readonly DateTimeInterface|null $finished = null,
         public readonly BatchStatus $status = BatchStatus::PENDING,
-        public bool $isChain = false
+        public readonly bool $isChain = false
     )
     {
     }
