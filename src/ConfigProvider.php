@@ -445,6 +445,8 @@ class ConfigProvider
 
                 \Symfony\Component\Mailer\Transport\TransportInterface::class => MailTransportFactory::class,
 
+                BatchStoreInterface::class => DatabaseBatchStore::class,
+
                 Serializer::class => SymfonySerializerFactory::class,
                 ValidatorInterface::class => SymfonyValidatorFactory::class,
 
