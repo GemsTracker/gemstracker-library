@@ -549,6 +549,7 @@ class CommJobRepository
                     $quotedTargetGroup
                 );
                 $model->addGroups();
+                $model->addRelation();
             }
         }
 
