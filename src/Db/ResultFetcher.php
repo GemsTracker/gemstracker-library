@@ -150,6 +150,7 @@ class ResultFetcher
     public function insertIntoTable(string $tableName, array|Select $values): int
     {
         $table = new TableGateway($tableName, $this->getAdapter());
+        // @phpstan-ignore-next-line The phpdoc of insert() is incorrect, it does accept a Select object.
         $table->insert($values);
         return $this->getAdapter()->getDriver()->getLastGeneratedValue();
     }
