@@ -661,7 +661,7 @@ class CommJobRepository
      */
     public function getTokenData(array $jobData, int|null $respondentId = null, int|null $organizationId = null, bool $forceSent = false): array
     {
-        if ($this->getTransientTokenCreateTime() < (time() - $this->maxTransientAge)) {
+        if ($this->getTransientTokenCreateTime() < (time() - $this->maxTransientAge) || $this->countTransientTokens() === 0) {
             $this->prepareTransientTokenSelection();
             $this->setTransientTokenCreateTime();
         }
@@ -906,6 +906,12 @@ class CommJobRepository
     private function setTransientTokenCreateTime(): void
     {
         $this->cache->setCacheItem($this->cacheTransientCreateKey, time());
+    }
+
+    public function countTransientTokens(): int
+    {
+        $transient_table = new TableGateway('gems__transient_comm_tokens', $this->resultFetcher->getAdapter());
+        return $transient_table->select()->count();
     }
 
     public function truncateTransientTokenSelection(): void
