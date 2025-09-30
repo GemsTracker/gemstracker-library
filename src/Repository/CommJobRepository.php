@@ -941,10 +941,6 @@ class CommJobRepository
             ->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', [])
             ->where($filter);
 
-        $test = $this->resultFetcher->fetchAll($select);
-
-
-        // @phpstan-ignore-next-line The phpdoc of insert() is incorrect, it does accept a Select object.
         return $this->resultFetcher->insertIntoTable('gems__transient_comm_tokens', $select);
     }
 }
