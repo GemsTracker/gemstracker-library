@@ -78,7 +78,8 @@ class RunCommJob extends Command
 
         /** @var MessengerBatchRepository $messengerBatchRepository */
         $messengerBatchRepository = $this->container->get(MessengerBatchRepository::class);
-        $batch = $messengerBatchRepository->createBatch('CommJob', 'CommJob', true);
+        $now = new \DateTimeImmutable();
+        $batch = $messengerBatchRepository->createBatch('CommJob ' . $now->format('Y-m-d H:i:s'), 'CommJob', true);
         foreach($jobs as $jobData) {
             $commJobMessage = new CommJob($jobData);
             $batch->addMessage($commJobMessage);
