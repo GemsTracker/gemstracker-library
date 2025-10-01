@@ -133,16 +133,20 @@ class DatabaseBatchStore implements BatchStoreInterface
 
     public function setIterationStatus(string $batchId, int $iteration, BatchStatus $status, string|null $message = null): void
     {
-        $completed = null;
-        if ($status === BatchStatus::SUCCESS) {
-            $completed = (new DateTimeImmutable())->format(self::DATETIME_STORAGE_FORMAT);
+        $statusInfo = [
+            'gba_status' => $status->value,
+            'gba_info' => $message,
+        ];
+
+        if ($status === BatchStatus::RUNNING) {
+            $statusInfo['gba_started'] = (new DateTimeImmutable())->format(self::DATETIME_STORAGE_FORMAT);
         }
 
-        $this->resultFetcher->updateTable('gems__batch', [
-            'gba_status' => $status->value,
-            'gba_finished' => $completed,
-            'gba_info' => $message,
-        ], [
+        if ($status === BatchStatus::SUCCESS) {
+            $statusInfo['gba_finished'] = (new DateTimeImmutable())->format(self::DATETIME_STORAGE_FORMAT);
+        }
+
+        $this->resultFetcher->updateTable('gems__batch', $statusInfo, [
             'gba_id' => $batchId,
             'gba_iteration' => $iteration,
         ]);
