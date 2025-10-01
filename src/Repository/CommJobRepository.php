@@ -10,13 +10,17 @@ use Gems\Communication\JobMessenger\SmsJobMessenger;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\Exception;
+use Gems\Exception\Coding;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Log\Loggers;
 use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SetCommJobTokenAsSent;
 use Gems\Tracker;
+use Gems\Tracker\Model\TransientCommTokenModel;
+use Laminas\Db\TableGateway\TableGateway;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\MetaModel;
 
 class CommJobRepository
 {
@@ -24,9 +28,11 @@ class CommJobRepository
         'comm-jobs',
     ];
 
-    protected int $currentUserId;
+    protected string $cacheTransientCreateKey = 'comm-jobs.transient.create';
 
-    protected ResultFetcher $resultFetcher;
+    protected int $maxTransientAge = 3600; // in seconds
+
+    protected int $currentUserId;
 
     protected string $tokensInMessengerQueueKey = 'messenger.queue.comm-job.tokens';
 
@@ -36,6 +42,7 @@ class CommJobRepository
         ];
 
     public function __construct(
+        protected readonly ResultFetcher $resultFetcher,
         protected readonly CachedResultFetcher $cachedResultFetcher,
         protected readonly HelperAdapter $cache,
         protected readonly TranslatorInterface $translator,
@@ -48,7 +55,6 @@ class CommJobRepository
         protected readonly Loggers $loggers,
     )
     {
-        $this->resultFetcher = $this->cachedResultFetcher->getResultFetcher();
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
@@ -105,7 +111,7 @@ class CommJobRepository
      * @param string $mode
      * @param int $daysBetween
      * @param int $maxReminders
-     * @param boolean $forceSent Ignore previous sent mails
+     * @param bool $forceSent Ignore previous sent mails
      */
     protected function addModeFilter(array &$filter, string $mode, int $daysBetween, int $maxReminders, bool $forceSent = false): void
     {
@@ -137,11 +143,11 @@ class CommJobRepository
     }
 
     /**
-     * Add the filter for roud descriptions
+     * Add the filter for round descriptions
      *
      * @param array $filter
      * @param string $roundDescription
-     * @param int $trackId
+     * @param int|null $trackId
      */
     protected function addRoundsFilter(array &$filter, string $roundDescription, ?int $trackId = null): void
     {
@@ -163,14 +169,13 @@ class CommJobRepository
     }
 
     /**
-     * Special case: the staff only filter
+     * Special case: the staff-only filter
      *
      * @param array $filter
      * @param string $fallbackMethod
      */
     protected function _addStaffFilter(array &$filter, string $fallbackMethod): void
     {
-        $filter['ggp_member_type'] = 'staff';
         if ('O' == $fallbackMethod) {
             $filter[] = 'gor_contact_email IS NOT NULL';
         }
@@ -184,46 +189,95 @@ class CommJobRepository
      * @param string $toMethod
      * @param string $fallbackMethod
      */
-    protected function addToFilter(array &$filter, int $target, string $toMethod, string $fallbackMethod): void
+    protected function addToFilter(array &$filter, int $target, string $toMethod, string $fallbackMethod, ?TransientCommTokenModel $model): void
     {
+        $memberType = 'respondent';
+
+        $patientFilter = [
+            'gr2o_email IS NOT NULL',
+            'gr2o_email != \'\'',
+            'gr2o_mailable >= gsu_mail_code',
+        ];
+        $relationFilter = [
+            'grr_email IS NOT NULL',
+            'grr_email != \'\'',
+            'grr_mailable >= gsu_mail_code',
+        ];
+        $canEmailFilter = [];
+
         switch ($target) {
             case 3:
                 // Staff
-                $this->_addStaffFilter($filter, $fallbackMethod);
-
+                //$this->_addStaffFilter($filter, $fallbackMethod);
+                $memberType = 'staff';
+                break;
             case 0:
                 // Only relations and respondents
+
+                $canEmailFilter = [
+                    [
+                        $patientFilter,
+                        $relationFilter,
+                    ],
+                ];
+                if ($model) {
+                    $model->addRespondent();
+                    $model->addRelation();
+                }
+
                 break;
 
             case 1:
                 // Only relations
                 $filter[] = 'gto_id_relation <> 0';
+                $canEmailFilter = $relationFilter;
+
+                if ($model) {
+                    $model->addRelation();
+                }
+
                 break;
 
             case 2:
                 // Only respondents
-                $filter[] = ['gto_id_relation' => 0, 'gto_id_relation IS NULL'];
+                $filter[] = 'gto_id_relation IS NULL';
+                $canEmailFilter = $patientFilter;
+
+                if ($model) {
+                    $model->addRespondent();
+                }
+
                 break;
         }
 
-        $filter[] = 'ggp_member_type != \'staff\'';
+        $filter['ggp_member_type'] = $memberType;
 
         switch ($toMethod) {
             case 'A':
-                $filter['can_email'] = 1;
+                $filter = array_merge($filter, $canEmailFilter);
                 break;
             case 'O':
                 if ('O' == $fallbackMethod) {
                     $filter[] = [
-                        'can_email' => 1,
+                        $canEmailFilter,
                         'gor_contact_email IS NOT NULL',
                     ];
+                    if ($model) {
+                        $model->addOrganization();
+                    }
+                }
+                if ($memberType === 'staff') {
+                    $filter[] = 'gor_contact_email IS NOT NULL';
                 }
                 break;
             case 'F':
                 if ('O' == $fallbackMethod) {
                     $filter[] = 'gor_contact_email IS NOT NULL';
+                    if ($model) {
+                        $model->addOrganization();
+                    }
                 }
+
                 break;
         }
     }
@@ -239,6 +293,8 @@ class CommJobRepository
 
         // When not only relation we include groups
 
+        $sqlGroups = null;
+        $sqlRelations = null;
         $params = [];
         if ($target <> 1) {
             $sqlGroups = "SELECT DISTINCT ggp_name
@@ -273,25 +329,17 @@ class CommJobRepository
             }
         }
 
-        switch ($target) {
-            case -1:
-            case 0:
-                $sql = "SELECT ggp_name, ggp_name as label FROM ("
-                    . $sqlGroups .
-                    " UNION ALL " .
-                    $sqlRelations . "
-                ) AS tmpTable";
-                break;
+        $sql = match($target) {
+            -1, 0 => "SELECT ggp_name, ggp_name as label FROM ("
+                . $sqlGroups .
+                " UNION ALL " .
+                $sqlRelations . "
+                ) AS tmpTable",
 
-            case 1:
-                $sql = $sqlRelations;
-                break;
-
-            case 2:
-            case 3:
-                $sql = $sqlGroups;
-                break;
-        }
+            1 => $sqlRelations,
+            2, 3 => $sqlGroups,
+            default => '',
+        };
 
         $sql = $sql . " ORDER BY ggp_name";
 
@@ -323,7 +371,7 @@ class CommJobRepository
         $results['O'] = $this->translator->_('Use organizational from address');
 
         if (isset($this->project->email['site']) && $this->project->email['site']) {
-            $results['S'] = sprintf($this->translator->_('Use site address'));
+            $results['S'] = $this->translator->_('Use site address');
         }
 
         $results['U'] = $this->translator->_("Use the 'By staff member' address");
@@ -333,7 +381,7 @@ class CommJobRepository
     }
 
     /**
-     * Options for standard to address use.
+     * Options for a standard to address use.
      *
      * @return array
      */
@@ -448,43 +496,37 @@ class CommJobRepository
      * Get the filter to use on the tokenmodel when working with a mailjob.
      *
      * @param array $job
-     * @param int $respondentId Optional, get for just one respondent
-     * @param int $organizationId Optional, get for just one organization
-     * @param boolean $forceSent Ignore previous sent mails
+     * @param TransientCommTokenModel|null $model Optional model to enable needed joins
+     * @param int|null $respondentId Optional, get for just one respondent
+     * @param int|null $organizationId Optional, get for just one organization
+     * @param bool $forceSent Ignore previous sent mails
      * @return array
      */
-    public function getJobFilter(array $job, ?int $respondentId = null, ?int $organizationId = null, bool $forceSent = false): array
+    public function getJobFilter(array $job, ?TransientCommTokenModel $model = null, ?int $respondentId = null, ?int $organizationId = null, bool $forceSent = false): array
     {
-        // Set up filter
-        $filter = [
-            'gtr_active'          => 1,
-            'gsu_active'          => 1,
-            'grc_success'         => 1,
-            'gto_completion_time' => NULL,
-            'gto_valid_from <= CURRENT_TIMESTAMP',
-            '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
-        ];
+        // The base filter is now implemented via the join to the gems__transient_comm_tokens table.
+        $filter = [];
 
         if ($job['gcj_id_organization']) {
             if ($organizationId && ($organizationId !== $job['gcj_id_organization'])) {
                 // Should never return any data
                 return ['1=0'];
             }
-            $filter['gto_id_organization'] = $job['gcj_id_organization'];
+            $filter['gtct_id_organization'] = $job['gcj_id_organization'];
         } elseif ($organizationId) {
-            $filter['gto_id_organization'] = $organizationId;
+            $filter['gtct_id_organization'] = $organizationId;
         }
         if ($respondentId) {
-            $filter['gto_id_respondent'] = $respondentId;
+            $filter['gtct_id_respondent'] = $respondentId;
         }
         if ($job['gcj_id_track']) {
-            $filter['gto_id_track'] = $job['gcj_id_track'];
+            $filter['gtct_id_track'] = $job['gcj_id_track'];
         }
         if ($job['gcj_round_description']) {
             $this->addRoundsFilter($filter, $job['gcj_round_description'], $job['gcj_id_track']);
         }
         if ($job['gcj_id_survey']) {
-            $filter['gto_id_survey'] = $job['gcj_id_survey'];
+            $filter['gtct_id_survey'] = $job['gcj_id_survey'];
         }
 
         $this->addModeFilter(
@@ -494,14 +536,21 @@ class CommJobRepository
             intval($job['gcj_filter_max_reminders']),
             $forceSent);
 
-        $this->addToFilter($filter, $job['gcj_target'], $job['gcj_to_method'], (string) $job['gcj_fallback_method']);
+        $this->addToFilter($filter, $job['gcj_target'], $job['gcj_to_method'], (string) $job['gcj_fallback_method'], $model);
 
-        $groups = $this->getAllGroups();
-
-        if (array_key_exists('gcj_target_group', $job) && $job['gcj_target_group'] && in_array($job['gcj_target_group'], $groups)) {
-            $platform = $this->cachedResultFetcher->getAdapter()->getPlatform();
-            $quotedTargetGroup = $platform->quoteValue($job['gcj_target_group']);
-            $filter[] = sprintf('(ggp_name = %s AND gto_id_relationfield IS NULL) or gtf_field_name = %s',$quotedTargetGroup, $quotedTargetGroup);
+        if (array_key_exists('gcj_target_group', $job) && $job['gcj_target_group']) {
+            $groups = $this->getAllGroups();
+            if (in_array($job['gcj_target_group'], $groups)) {
+                $platform = $this->resultFetcher->getAdapter()->getPlatform();
+                $quotedTargetGroup = $platform->quoteValue($job['gcj_target_group']);
+                $filter[] = sprintf(
+                    '(ggp_name = %s AND gto_id_relationfield IS NULL) or gtf_field_name = %s',
+                    $quotedTargetGroup,
+                    $quotedTargetGroup
+                );
+                $model->addGroups();
+                $model->addRelation();
+            }
         }
 
         // \MUtil\EchoOut\EchoOut::track($filter);
@@ -524,7 +573,7 @@ class CommJobRepository
      *
      * @return array job_id => description
      */
-    public function getJobsOverview()
+    public function getJobsOverview(): array
     {
         $jobs = $this->getActiveJobs();
         $bulkFilterOptions = $this->getBulkFilterOptions();
@@ -576,7 +625,7 @@ class CommJobRepository
      * Get the id's for a certain round description
      *
      * @param string $roundDescription
-     * @param int $trackId
+     * @param int|null $trackId
      * @return array Of round id numbers
      */
     protected function getRoundIds(string $roundDescription, ?int $trackId = null): array
@@ -605,15 +654,21 @@ class CommJobRepository
 
     /**
      * @param array $jobData
-     * @param int   $respondentId Optional
-     * @param int   $organizationId Optional
+     * @param int|null   $respondentId Optional
+     * @param int|null   $organizationId Optional
      * @param bool  $forceSent Ignore previous mails
-     * @return mixed
+     * @return array
      */
-    public function getTokenData(array $jobData, $respondentId = null, $organizationId = null, $forceSent = false): array
+    public function getTokenData(array $jobData, int|null $respondentId = null, int|null $organizationId = null, bool $forceSent = false): array
     {
-        $filter = $this->getJobFilter($jobData, $respondentId, $organizationId, $forceSent);
-        $model  = $this->tracker->getTokenModel();
+        if ($this->getTransientTokenCreateTime() < (time() - $this->maxTransientAge) || $this->countTransientTokens() === 0) {
+            $this->prepareTransientTokenSelection();
+            $this->setTransientTokenCreateTime();
+        }
+
+        $model  = $this->tracker->getTransientCommTokenModel();
+        $filter = $this->getJobFilter($jobData, $model, $respondentId, $organizationId, $forceSent);
+
 
         // Fix for #680: token with the valid from the longest in the past should be the
         // used as first token and when multiple rounds start at the same date the
@@ -627,13 +682,17 @@ class CommJobRepository
         return $model->load($filter, null, ['gto_id_token']);
     }
 
+
     /**
      * @param int $commJobId
-     * @return string[][]
+     * @param int|null $respondentId
+     * @param int|null $organizationId
+     * @param bool $forceSent
+     * @return array[]
      * @throws Exception
-     * @throws Exception\Coding
+     * @throws Coding
      */
-    public function getSendableTokens(int $commJobId, ?int $respondentId = null, ?int $organizationId = null, $forceSent = false): array
+    public function getSendableTokens(int $commJobId, ?int $respondentId = null, ?int $organizationId = null, bool $forceSent = false): array
     {
         $jobData = $this->getJob($commJobId);
 
@@ -837,5 +896,58 @@ class CommJobRepository
         });
 
         return $items;
+    }
+
+    private function getTransientTokenCreateTime(): int
+    {
+        return $this->cache->getCacheItem($this->cacheTransientCreateKey) ?? 0;
+    }
+
+    private function setTransientTokenCreateTime(): void
+    {
+        $this->cache->setCacheItem($this->cacheTransientCreateKey, time());
+    }
+
+    public function countTransientTokens(): int
+    {
+        $transient_table = new TableGateway('gems__transient_comm_tokens', $this->resultFetcher->getAdapter());
+        return $transient_table->select()->count();
+    }
+
+    public function truncateTransientTokenSelection(): void
+    {
+        $transient_table = new TableGateway('gems__transient_comm_tokens', $this->resultFetcher->getAdapter());
+        $transient_table->delete([]); // Truncate table would have been faster.
+    }
+
+    /**
+     * Truncate the transient token table and fill it with tokens and part of their data which
+     * are possible candidates for sending communication.
+     *
+     * @return int The number of tokens selected.
+     */
+    private function prepareTransientTokenSelection(): int
+    {
+        $this->truncateTransientTokenSelection();
+
+        $filter = [
+            'gtr_active'          => 1,
+            'gsu_active'          => 1,
+            'grc_success'         => 1,
+            'gto_completion_time IS NULL',
+            'gto_valid_from <= CURRENT_TIMESTAMP',
+            '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)',
+            'gr2t_mailable >= gsu_mail_code',
+        ];
+
+        $select = $this->resultFetcher->getSelect('gems__tokens');
+        $select->columns(['gto_id_token', 'gto_id_respondent', 'gto_id_organization', 'gto_id_track', 'gto_id_survey'])
+            ->join('gems__respondent2track', 'gr2t_id_respondent_track = gto_id_respondent_track', [])
+            ->join('gems__tracks', 'gto_id_track = gtr_id_track', [])
+            ->join('gems__surveys', 'gto_id_survey = gsu_id_survey', [])
+            ->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', [])
+            ->where($filter);
+
+        return $this->resultFetcher->insertIntoTable('gems__transient_comm_tokens', $select);
     }
 }

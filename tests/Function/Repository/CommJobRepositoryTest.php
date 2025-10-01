@@ -55,6 +55,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
         'gems__track_appointments',
         'gems__respondent_relations',
         'gems__staff',
+        'gems__transient_comm_tokens',
     ];
 
     protected array $seeds = [
@@ -112,14 +113,13 @@ class CommJobRepositoryTest extends DatabaseTestCase
                 null,
                 false,
                 [
-                    'gto_id_organization' => 70,
+                    'gtct_id_organization' => 70,
                     'gto_mail_sent_date' => null,
-                    [
-                        'gto_id_relation' => 0,
-                        'gto_id_relation IS NULL'
-                    ],
-                    'ggp_member_type != \'staff\'',
-                    'can_email' => 1,
+                    'gto_id_relation IS NULL',
+                    'gr2o_email IS NOT NULL',
+                    'gr2o_email != \'\'',
+                    'gr2o_mailable >= gsu_mail_code',
+                    'ggp_member_type' => 'respondent',
                 ],
             ],
             [
@@ -159,14 +159,62 @@ class CommJobRepositoryTest extends DatabaseTestCase
                 70,
                 false,
                 [
-                    'gto_id_organization' => 70,
+                    'gtct_id_organization' => 70,
                     'gto_mail_sent_date' => null,
-                    [
-                        'gto_id_relation' => 0,
-                        'gto_id_relation IS NULL'
-                    ],
-                    'ggp_member_type != \'staff\'',
-                    'can_email' => 1,
+                    'gto_id_relation IS NULL',
+                    'gr2o_email IS NOT NULL',
+                    'gr2o_email != \'\'',
+                    'gr2o_mailable >= gsu_mail_code',
+                    'ggp_member_type' => 'respondent',
+                ],
+            ],
+            [
+                [
+                    'gcj_id_organization' => 70,
+                    'gcj_filter_mode' => 'N',
+                    'gcj_to_method' => 'A',
+                    'gcj_target' => 1,
+                    'gcj_fallback_method' => 'O',
+                    'gcj_id_track' => null,
+                    'gcj_round_description' => null,
+                    'gcj_id_survey' => null,
+                    'gcj_filter_days_between' => 7,
+                    'gcj_filter_max_reminders' => 3,
+                ],
+                null,
+                70,
+                false,
+                [
+                    'gtct_id_organization' => 70,
+                    'gto_mail_sent_date' => null,
+                    'gto_id_relation <> 0',
+                    'grr_email IS NOT NULL',
+                    'grr_email != \'\'',
+                    'grr_mailable >= gsu_mail_code',
+                    'ggp_member_type' => 'respondent',
+                ],
+            ],
+            [
+                [
+                    'gcj_id_organization' => 70,
+                    'gcj_filter_mode' => 'N',
+                    'gcj_to_method' => 'O',
+                    'gcj_target' => 3,
+                    'gcj_fallback_method' => null,
+                    'gcj_id_track' => null,
+                    'gcj_round_description' => null,
+                    'gcj_id_survey' => null,
+                    'gcj_filter_days_between' => 7,
+                    'gcj_filter_max_reminders' => 3,
+                ],
+                null,
+                70,
+                false,
+                [
+                    'gtct_id_organization' => 70,
+                    'gto_mail_sent_date' => null,
+                    'ggp_member_type' => 'staff',
+                    'gor_contact_email IS NOT NULL',
                 ],
             ],
         ];
@@ -177,18 +225,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
     {
         $repository = $this->getRepository();
 
-        $result = $repository->getJobFilter($jobSettings, $respondentId, $organizationId, $forceSent);
-        if ($expected != ['1=0']) {
-            $expected = [
-                'gtr_active' => 1,
-                'gsu_active' => 1,
-                'grc_success' => 1,
-                'gto_completion_time' => null,
-                'gto_valid_from <= CURRENT_TIMESTAMP',
-                '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)',
-                ...$expected,
-            ];
-        }
+        $result = $repository->getJobFilter($jobSettings, null, $respondentId, $organizationId, $forceSent);
 
         $this->assertEquals($expected, $result);
     }
