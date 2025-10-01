@@ -79,6 +79,7 @@ class MessengerBatchRepositoryTest extends DatabaseTestCase
         $message = $capturedEnvelopes[0]->getMessage();
         $this->assertEquals('test123', $message->name);
 
+        assert(isset($capturedEnvelopes[1]));
         $stamp = $capturedEnvelopes[1]->last(BatchStamp::class);
         $this->assertInstanceOf(BatchStamp::class, $stamp);
         $this->assertEquals(2, $stamp->iteration);
@@ -147,6 +148,8 @@ class MessengerBatchRepositoryTest extends DatabaseTestCase
         $message = $capturedEnvelopes[0]->getMessage();
         $this->assertEquals('test123', $message->name);
 
+
+        assert(isset($capturedEnvelopes[1]));
         $stamp = $capturedEnvelopes[1]->last(BatchStamp::class);
         $this->assertInstanceOf(BatchStamp::class, $stamp);
         $this->assertEquals(2, $stamp->iteration);
