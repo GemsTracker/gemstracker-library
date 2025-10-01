@@ -50,6 +50,7 @@ class MessengerBatchRepositoryTest extends DatabaseTestCase
     {
         $batchStore = new DatabaseBatchStore($this->resultFetcher);
 
+        /** @var list<Envelope> $capturedEnvelopes */
         $capturedEnvelopes = [];
 
         $messengerBus = $this->createMock(MessageBus::class);
@@ -91,6 +92,7 @@ class MessengerBatchRepositoryTest extends DatabaseTestCase
     {
         $batchStore = new DatabaseBatchStore($this->resultFetcher);
 
+        /** @var list<Envelope> $capturedEnvelopes */
         $capturedEnvelopes = [];
 
         $messengerBus = $this->createMock(MessageBus::class);
@@ -120,6 +122,7 @@ class MessengerBatchRepositoryTest extends DatabaseTestCase
     {
         $batchStore = new DatabaseBatchStore($this->resultFetcher);
 
+        /** @var list<Envelope> $capturedEnvelopes */
         $capturedEnvelopes = [];
 
         $messengerBus = $this->createMock(MessageBus::class);
