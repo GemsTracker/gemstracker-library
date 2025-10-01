@@ -45,11 +45,18 @@ class BatchMiddlewareTest extends DatabaseTestCase
             $messageBus = new MessageBus();
         }
 
-        $container = $this->createMock(ContainerInterface::class);
-        $container->method('get')->with(MessageBusInterface::class)->willReturn($messageBus);
         $repository = $this->getBatchRepository();
-        $container->method('get')->with(MessengerBatchRepository::class)->willReturn($repository);
 
+        $container = $this->createMock(ContainerInterface::class);
+        $container->method('get')->willReturnCallback(function (string $className) use ($messageBus, $repository) {
+            if ($className === MessageBusInterface::class) {
+                return $messageBus;
+            }
+            if ($className === MessengerBatchRepository::class) {
+                return $repository;
+            }
+            return null;
+        });
         return new BatchMiddleware($container);
     }
 
