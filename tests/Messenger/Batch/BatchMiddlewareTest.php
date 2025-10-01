@@ -48,8 +48,9 @@ class BatchMiddlewareTest extends DatabaseTestCase
         $container = $this->createMock(ContainerInterface::class);
         $container->method('get')->with(MessageBusInterface::class)->willReturn($messageBus);
         $repository = $this->getBatchRepository();
+        $container->method('get')->with(MessengerBatchRepository::class)->willReturn($repository);
 
-        return new BatchMiddleware($repository, $container);
+        return new BatchMiddleware($container);
     }
 
     private function getStack(): StackInterface
@@ -180,7 +181,9 @@ class BatchMiddlewareTest extends DatabaseTestCase
 
         $stack = new StackMiddleware($failingMiddleware);
 
-        $middleware = new BatchMiddleware($batchRepository, $this->createStub(ContainerInterface::class));
+        $container = $this->createMock(ContainerInterface::class);
+        $container->method('get')->with(MessengerBatchRepository::class)->willReturn($batchRepository);
+        $middleware = new BatchMiddleware($container);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Error!');
