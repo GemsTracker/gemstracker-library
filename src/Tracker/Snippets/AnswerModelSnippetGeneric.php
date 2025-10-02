@@ -367,8 +367,11 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
                     $this->addHeaderInfo($htmlDiv);
                 }
 
-                $table = parent::getHtmlOutput();
-                $table->setPivot(true, 2, 1);
+                $containedTable = $table = parent::getHtmlOutput();
+                if ($table instanceof HtmlElement) {
+                    $containedTable = $table->getLast();
+                }
+                $containedTable->setPivot(true, 2, 1);
 
                 $this->applyHtmlAttributes($table);
                 $this->class = false;
