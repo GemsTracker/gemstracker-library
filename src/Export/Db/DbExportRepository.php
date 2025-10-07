@@ -151,13 +151,13 @@ class DbExportRepository
     protected function getExportHeader(string $exportId, int $userId): array|null
     {
         $select = $this->resultFetcher->getSelect('gems__file_exports')
-            ->columns(['gfex_data', 'gfex_file_name', 'gfex_schema_name', 'gfex_export_type', 'gfex_export_settings', 'gfex_column_order'])
+            ->columns(['gfex_data', 'gfex_file_name', 'gfex_schema_name', 'gfex_export_type', 'gfex_export_settings', 'gfex_column_order', 'gfex_row_count'])
             ->where([
                 'gfex_export_id' => $exportId,
                 'gfex_id_user' => $userId,
                 'gfex_order' => 0,
             ])
-            ->order('gfex_order');
+            ->order(['gfex_schema_name', 'gfex_order']);
         return $this->resultFetcher->fetchRow($select);
     }
 
@@ -165,12 +165,12 @@ class DbExportRepository
     public function getExportResult(string $exportId, int $userId): StatementInterface|ResultSet|null
     {
         $select = $this->unbufferedResultFetcher->getSelect('gems__file_exports')
-            ->columns(['gfex_data', 'gfex_file_name', 'gfex_schema_name', 'gfex_export_type', 'gfex_export_settings', 'gfex_column_order'])
+            ->columns(['gfex_data', 'gfex_file_name', 'gfex_schema_name', 'gfex_export_type', 'gfex_export_settings', 'gfex_column_order', 'gfex_row_count'])
             ->where([
                 'gfex_export_id' => $exportId,
                 'gfex_id_user' => $userId,
             ])
-            ->order('gfex_order');
+            ->order(['gfex_schema_name', 'gfex_order']);
 
         return $this->unbufferedResultFetcher->query($select);
     }

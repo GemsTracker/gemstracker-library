@@ -23,9 +23,6 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
     {
         $schema = null;
 
-        $totalRows = iterator_count($iterator);
-        $iterator->rewind();
-
         $sheetView = new SheetView();
         $sheetView->setFreezeRow(2);
         $style  = new Style();
@@ -35,16 +32,15 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
             $data = $extractor->extractData($row);
 
             if ($schema !== $row['gfex_schema_name']) {
-                $schema = $row['gfex_schema_name'];
-
-                $autofilter = new AutoFilter(0, 1, count($data), $totalRows + 1);
+                $schema     = $row['gfex_schema_name'];
+                $autofilter = new AutoFilter(0, 1, count($data), ((int) $row['gfex_row_count']) + 1);
 
                 $sheet = $this->getSheetFor($writer, $this->cleanupSchemaName($schema));
                 if ($sheet) {
                     $sheet->setSheetView($sheetView);
                     $sheet->setAutoFilter($autofilter);
                 }
-                
+
                 $writer->addRow(Row::fromValues($data, $style));
             } else {
                 $writer->addRow(Row::fromValues($data));

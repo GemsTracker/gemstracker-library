@@ -117,7 +117,7 @@ class ExportBatchSnippet extends SnippetAbstract
                 $batch->minimalStepDurationMs = 2000;
 
                 $batch->setSessionVariable('files', []);
-                $count = count($this->modelIdentifier);
+                $count = count((array)$this->modelIdentifier);
 
                 foreach((array)$this->modelIdentifier as $modelIdentifier) {
                     $batch->addTask(
