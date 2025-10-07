@@ -23,6 +23,7 @@ class InitDbExport extends TaskAbstract
         array $modelApplyFunctions = [],
         string $exportType = null,
         array $postData = [],
+        int $count = 1,
         int $rowsPerBatch = 500
     )
     {
@@ -58,10 +59,22 @@ class InitDbExport extends TaskAbstract
 
         $exportSettings = $this->getExportSettings($exportType, $postData);
 
+        $exportName = $batch->getSessionVariable('exportName');
+        if ((! $exportName) && method_exists($exportType, 'checkMultifileName')) {
+            $exportName = $exportType::checkMultifileName($exportSettings, $count);
+            $batch->setSessionVariable('exportName', $exportName);
+        }
+        if ($exportName) {
+            $exportId = reset($currentExportIds);
+        } else {
+            $exportName = $this->getExportFileName($model, $exportType);
+        }
+
         for ($i = 0; $i < $totalTasks; $i++) {
             $modelExportPart = new ModelExportPart(
                 exportId: $exportId,
-                filename: $this->getExportFileName($model, $exportType),
+                filename: $exportName,
+                schemaname: $this->getExportSchemaName($model),
                 exportType: $exportType,
                 userId: $batch->getVariable(AuthenticationMiddleware::CURRENT_USER_ID_ATTRIBUTE),
                 modelIdentifier: $modelIdentifier,
@@ -101,6 +114,12 @@ class InitDbExport extends TaskAbstract
 
         return join('.', $nameParts);
     }
+
+    protected function getExportSchemaName(DataReaderInterface $model): string
+    {
+        return File::cleanupName(basename($model->getName()));
+    }
+
     protected function getExportId(DataReaderInterface $model, int $maxSize = 85): string
     {
         $exportId = $model->getMetaModel()->getMeta('exportId');

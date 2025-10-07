@@ -4,15 +4,69 @@ namespace Gems\Export\Type;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use Gems\Export\Db\DataExtractorInterface;
 use MUtil\Form;
-use OpenSpout\Reader\XLSX\Options;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Writer\AutoFilter;
+use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\WriterInterface;
 use OpenSpout\Writer\XLSX\Entity\SheetView;
 use OpenSpout\Writer\XLSX\Writer;
+use Zalt\File\File;
 
 class StreamingExcelExport extends CsvExportAbstract implements DownloadableInterface, StreamableInterface, ExportSettingsGeneratorInterface
 {
     public const EXTENSION = 'xlsx';
+
+    protected function addRows(WriterInterface $writer, \Iterator $iterator, DataExtractorInterface $extractor): void
+    {
+        $schema = null;
+
+        $totalRows = iterator_count($iterator);
+        $iterator->rewind();
+
+        $sheetView = new SheetView();
+        $sheetView->setFreezeRow(2);
+        $style  = new Style();
+        $style->setFontBold();
+
+        while ($row = $iterator->current()) {
+            $data = $extractor->extractData($row);
+
+            if ($schema !== $row['gfex_schema_name']) {
+                $schema = $row['gfex_schema_name'];
+
+                $autofilter = new AutoFilter(0, 1, count($data), $totalRows + 1);
+
+                $sheet = $this->getSheetFor($writer, $this->cleanupSchemaName($schema));
+                if ($sheet) {
+                    $sheet->setSheetView($sheetView);
+                    $sheet->setAutoFilter($autofilter);
+                }
+                
+                $writer->addRow(Row::fromValues($data, $style));
+            } else {
+                $writer->addRow(Row::fromValues($data));
+            }
+            $iterator->next();
+        }
+    }
+
+    public static function checkMultifileName(array $exportSettings, int $count): ?string
+    {
+        if (($count > 1) && isset($exportSettings['combineFiles']) && $exportSettings['combineFiles']) {
+            $now = new \DateTimeImmutable();
+
+            return 'Combined' . $count . 'Export.' . $now->format('YmdHis') . '.' . self::EXTENSION;
+        }
+        return null;
+    }
+
+    public function cleanupSchemaName(string $schemaname): string
+    {
+       return substr(str_replace('  ', ' ', str_replace(['\\', '/', '*', '[', ']', '?', ':', '_'], '', $schemaname)), 0, 31);
+    }
 
     /**
      * Create Excel date stamp from DateTime
@@ -93,10 +147,10 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
                 'formatAnswer' => $this->translator->_('Format answers'),
                 'formatDate' => $this->translator->_('Format dates as Excel numbers easily convertable to date'),
             ];
-//            if ($multi) {
-//                $options['combineFiles'] = $this->translator->_(
-//                    'Combine multiple files to separate sheets in one excel file');
-//            }
+            if ($multi) {
+                $options['combineFiles'] = $this->translator->_(
+                    'Combine multiple files to separate sheets in one excel file');
+            }
 
             $element->setMultiOptions($options);
             $element->setSeparator('<br/>');
@@ -107,16 +161,43 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
         return $elements;
     }
 
+    protected function getSheetFor(WriterInterface $writer, string $sheetName): ?Sheet
+    {
+        $count = 0;
+        if (! $writer instanceof Writer) {
+            return null;
+        }
+
+        foreach ($writer->getSheets() as $sheet) {
+            if ($sheet->getName() === 'Sheet1') {
+                $sheet->setName($sheetName);
+                return $sheet;
+            }
+            if ($sheet->getName() === $sheetName) {
+                // $count++;
+                if (str_ends_with($sheetName, '-' . $count)) {
+                    $sheetName = substr($sheetName, 0, -strlen('-' . $count));
+                    $end = '-' . ++$count;
+                    if (strlen($sheetName) + strlen($end) > 31) {
+                        $sheetName = substr($sheetName, 0, -1);
+                    }
+                    $sheetName = $sheetName . $end;
+                } else {
+                    $sheetName = substr($sheetName, 0, 29) . '-' . ++$count;
+                }
+            }
+        }
+        $sheet = $writer->addNewSheetAndMakeItCurrent();
+        $sheet->setName($sheetName);
+        return $sheet;
+    }
+
     protected function getWriter(array $exportSettings): WriterInterface
     {
-//        $sheetView = new SheetView();
-//        $sheetView->setFreezeRow(2);
-
 //        $options = new Options();
 //        $options->SHOULD_FORMAT_DATES = true;
         $writer = new Writer();
-//        $writer->getCurrentSheet()->setSheetView($sheetView);
-//
+
         return $writer;
     }
 }

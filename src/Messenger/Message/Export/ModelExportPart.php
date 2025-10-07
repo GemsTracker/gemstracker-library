@@ -7,6 +7,7 @@ class ModelExportPart
     public function __construct(
         public readonly string $exportId,
         public readonly string $filename,
+        public readonly string $schemaname,
         public readonly string $exportType,
         public readonly int $userId,
         public readonly string|int $modelIdentifier,
