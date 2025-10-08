@@ -12,9 +12,9 @@ use Zalt\Base\TranslatorInterface;
 class TokenMailFields extends RespondentMailFields
 {
     public function __construct(
-        private readonly Token $token,
-        private readonly TranslatorInterface $translator,
-        private readonly ResultFetcher $resultFetcher,
+        protected readonly Token $token,
+        protected readonly TranslatorInterface $translator,
+        protected readonly ResultFetcher $resultFetcher,
         array $config,
     )
     {

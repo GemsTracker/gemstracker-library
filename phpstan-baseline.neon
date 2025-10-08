@@ -2781,11 +2781,6 @@ parameters:
 			path: src/Mail/RespondentMailFields.php
 
 		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Mail/TokenMailFields.php
-
-		-
 			message: "#^Access to an undefined property Gems\\\\Menu\\\\MenuItem\\:\\:\\$name\\.$#"
 			count: 1
 			path: src/Menu/Menu.php
