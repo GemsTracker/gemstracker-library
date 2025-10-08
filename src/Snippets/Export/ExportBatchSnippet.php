@@ -117,6 +117,7 @@ class ExportBatchSnippet extends SnippetAbstract
                 $batch->minimalStepDurationMs = 2000;
 
                 $batch->setSessionVariable('files', []);
+                $count = count((array)$this->modelIdentifier);
 
                 foreach((array)$this->modelIdentifier as $modelIdentifier) {
                     $batch->addTask(
@@ -125,7 +126,8 @@ class ExportBatchSnippet extends SnippetAbstract
                         $this->searchFilter,
                         $this->modelApplyFunctions,
                         $type,
-                        $post
+                        $post,
+                        $count
                     );
                 }
                 //$batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);
