@@ -502,7 +502,7 @@ class Token
         }
 
         try {
-            if ($this->_updatezToken($values, $userId)) {
+            if ($this->_updateToken($values, $userId)) {
                 // Communicate change
                 $result += self::COMPLETION_DATACHANGE;
             }
