@@ -485,10 +485,10 @@ class Token
                         // not casting to strings means e.g. float results always result in
                         // an update, even when they did not change.
                         $stringObject = new UnicodeString((string)$rawAnswers[$resultField]);
-                        $values['gto_result'] = $stringObject
+                        $values['gto_result'] = mb_strcut($stringObject
                             ->normalize() // Normalize characters including whitespaces
-                            ->truncate($this->_getResultFieldLength() - 1) // Chunk of text that is too long
-                            ->toString();
+                            ->toString(),
+                            0, ($this->_getResultFieldLength() - 1));
                     }
                 }
 
@@ -502,7 +502,7 @@ class Token
         }
 
         try {
-            if ($this->_updateToken($values, $userId)) {
+            if ($this->_updatezToken($values, $userId)) {
                 // Communicate change
                 $result += self::COMPLETION_DATACHANGE;
             }
@@ -2099,10 +2099,10 @@ class Token
         $resultField = $this->getSurvey()->getResultField();
         if (isset($answers[$resultField])) {
             $stringObject = new UnicodeString((string)$answers[$resultField]);
-            $resultValue = $stringObject
+            $resultValue = mb_strcut($stringObject
                 ->normalize() // Normalize characters including whitespaces
-                ->truncate($this->_getResultFieldLength() - 1) // Chunk of text that is too long
-                ->toString();
+                ->toString(),
+                0, ($this->_getResultFieldLength() - 1));
 
             $values = [
                 'gto_result' => $resultValue,
