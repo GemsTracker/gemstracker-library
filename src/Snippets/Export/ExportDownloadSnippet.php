@@ -21,6 +21,7 @@ use Gems\Snippets\ModelTableSnippet;
 use Psr\Http\Message\ResponseInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Late\Late;
 use Zalt\Message\MessageTrait;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
@@ -117,7 +118,14 @@ class ExportDownloadSnippet extends ModelTableSnippet
             'exportId' => $bridge->getLate('gfex_export_id'),
         ];
 
-        $downloadLink = $this->menuHelper->getLateRouteUrl($this->menuHelper->getCurrentRoute(), $keys, $bridge, false, $queryParams);
+        $lateMappings = ['exportId' => 'gfex_export_id'];
+        $bridge->getModel()->getMetaModel()->setMaps($lateMappings);
+        foreach ($this->requestInfo->getRequestMatchedParams() as $name => $value) {
+            // Trick to pass parameter values in a manner where the bridge is not used
+            $lateMappings[$name] = Late::first($value);
+        }
+
+        $downloadLink = $this->menuHelper->getLateRouteUrl($this->menuHelper->getCurrentRoute(), $lateMappings, $bridge, false, $queryParams);
         $downloadLink['label'] = $this->_('Download');
 
         return [
