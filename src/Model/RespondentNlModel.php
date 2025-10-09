@@ -106,7 +106,7 @@ class RespondentNlModel extends \Gems\Model\RespondentModel
                 'filter', BurgerservicenummerFilter::class,
                 'validators[bsn]', $bsn);
 
-        if ($_ENV['APP_ENV'] !== 'production') {
+        if (\Gems\Helper\Env::get('APP_ENV') !== 'production') {
             $num = mt_rand(100000000, 999999999);
 
             while (! $bsn->isValid($num)) {
