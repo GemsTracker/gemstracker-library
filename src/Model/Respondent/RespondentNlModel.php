@@ -27,6 +27,10 @@ class RespondentNlModel extends RespondentModel
     {
         parent::applyAction($action);
 
+        if (\Gems\Helper\Env::get('APP_ENV') === 'production') {
+            return;
+        }
+
         if ($action->isEditing() && $action instanceof EditActionAbstract && $action->createData) {
             if ($this->metaModel->has('grs_ssn')) {
                 $bsn = new BurgerServiceNummer();
