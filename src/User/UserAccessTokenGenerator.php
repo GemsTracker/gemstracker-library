@@ -26,8 +26,6 @@ class UserAccessTokenGenerator
 
     protected readonly CryptKey $privateKey;
 
-
-
     public function __construct(
         protected readonly ClientRepository $clientRepository,
         protected readonly ScopeRepository $scopeRepository,
@@ -40,7 +38,12 @@ class UserAccessTokenGenerator
         $certificates = $keyRepository->getCertificates($config, true);
 
         $privateKey = $certificates['private'] ?? '';
-        $this->privateKey = new CryptKey($privateKey);
+        $keyPermissionsCheck = $config['certificates']['keyPermissionsCheck'] ?? (PHP_OS_FAMILY != 'Windows');
+
+        $this->privateKey = new CryptKey(
+            keyPath: $privateKey,
+            keyPermissionsCheck: $keyPermissionsCheck,
+        );
         $this->oauth2Config = $config['oauth2'] ?? [];
     }
 
