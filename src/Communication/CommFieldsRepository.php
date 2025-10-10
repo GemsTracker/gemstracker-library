@@ -17,12 +17,12 @@ use Zalt\Loader\ProjectOverloader;
 class CommFieldsRepository
 {
     public function __construct(
-        private readonly CommunicationRepository $communicationRepository,
-        private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly RespondentRepository $respondentRepository,
-        private readonly Tracker $tracker,
-        private readonly ProjectOverloader $overloader,
-        private readonly UserLoader $userLoader,
+        protected readonly CommunicationRepository $communicationRepository,
+        protected readonly EventDispatcherInterface $eventDispatcher,
+        protected readonly RespondentRepository $respondentRepository,
+        protected readonly Tracker $tracker,
+        protected readonly ProjectOverloader $overloader,
+        protected readonly UserLoader $userLoader,
     )
     {
     }
