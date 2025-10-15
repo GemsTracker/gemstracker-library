@@ -93,7 +93,7 @@
         "mezzio/mezzio-session-cache": "^1.7",
         "mezzio/mezzio-session-ext": "^1.12 < 1.21",
         "mezzio/mezzio-template": "^2.4.0",
-        "mezzio/mezzio-twigrenderer": "^2.15",
+        "mezzio/mezzio-twigrenderer": "^2.15 < 2.18",
         "middlewares/debugbar": "^2.1",
         "mlocati/ip-lib": "1.*",
         "monolog/monolog": "^3.0.0",
