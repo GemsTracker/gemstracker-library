@@ -42,4 +42,9 @@ class ImportAction extends \Gems\SnippetsActions\Browse\BrowseFilteredAction
      * @var string
      */
     public ?string $csrfToken = null;
+
+    public static function getPagePrivilege(): string
+    {
+        return 'import';
+    }
 }

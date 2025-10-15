@@ -81,6 +81,11 @@ class ExportAction extends BrowseFilteredAction
 
     public string $step = self::STEP_FORM;
 
+    public static function getPagePrivilege(): string
+    {
+        return 'export';
+    }
+
     public function setSingleModel(MetaModellerInterface $model): self
     {
         if (! $this->modelIdentifier) {
