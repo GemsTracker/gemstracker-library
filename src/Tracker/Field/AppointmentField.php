@@ -75,7 +75,7 @@ class AppointmentField extends FieldAbstract
      *
      * @var string|int|null
      */
-    protected string|int|null $_lastActiveKey;
+    protected string|int|null $_lastActiveKey = null;
 
     /**
      * The format string for outputting appointments
@@ -146,6 +146,7 @@ class AppointmentField extends FieldAbstract
     public function calculateFieldValue(mixed $currentValue, array $fieldData, array $trackData): string|int|null
     {
         if ($currentValue || isset($this->fieldDefinition['gtf_filter_id'])) {
+            $this->setDefaultLastActiveKey($trackData);
             if ($this->_lastActiveKey && isset($this->fieldDefinition['gtf_filter_id'])) {
                 $fromDate = $this->getFromDate($trackData, $fieldData);
 
@@ -227,17 +228,30 @@ class AppointmentField extends FieldAbstract
     public function calculationStart(array $trackData): FieldAbstract
     {
         $this->_lastActiveKey = null;
-        if (isset($trackData['gr2t_id_respondent_track'])) {
-            $this->_lastActiveKey = $trackData['gr2t_id_respondent_track'];
-        } elseif (isset($trackData['gr2t_id_user'], $trackData['gr2t_id_organization'])) {
-            $this->_lastActiveKey = $trackData['gr2t_id_user'] . '__' . $trackData['gr2t_id_organization'];
-        }
+        $this->setDefaultLastActiveKey($trackData);
         if ($this->_lastActiveKey) {
             self::$_lastActiveAppointment[$this->_lastActiveKey]    = null;
             self::$_lastActiveAppointmentIds[$this->_lastActiveKey] = [];
         }
 
         return $this;
+    }
+
+    protected function setDefaultLastActiveKey(array $trackData): void
+    {
+        if (isset($trackData['gr2t_id_respondent_track'])) {
+            $this->_lastActiveKey = $trackData['gr2t_id_respondent_track'];
+        } elseif (isset($trackData['gr2t_id_user'], $trackData['gr2t_id_organization'])) {
+            $this->_lastActiveKey = $trackData['gr2t_id_user'] . '__' . $trackData['gr2t_id_organization'];
+        }
+
+        if (!isset(self::$_lastActiveAppointment[$this->_lastActiveKey])) {
+            self::$_lastActiveAppointment[$this->_lastActiveKey] = null;
+        }
+
+        if (!isset(self::$_lastActiveAppointmentIds[$this->_lastActiveKey])) {
+            self::$_lastActiveAppointmentIds[$this->_lastActiveKey] = [];
+        }
     }
 
     /**
