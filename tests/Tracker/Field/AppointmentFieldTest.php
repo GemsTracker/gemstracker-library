@@ -371,7 +371,7 @@ class AppointmentFieldTest extends TestCase
 
         $result = $appointmentField->calculateFieldValue(123, [], [
             'gr2t_id_user' => 2000,
-            'gr2t_id_respondent_track' => 500,
+            'gr2t_id_respondent_track' => 1,
             'gr2t_id_organization' => 70,
             'gr2t_start_date' => '2004-01-15 00:00:00',
         ]);
@@ -390,7 +390,7 @@ class AppointmentFieldTest extends TestCase
             null,
             true
         )->willReturnSelf();
-        $appointmentSelect->expects($this->once())->method('uniqueForTrackId')->with(1, 500, [1234 => 1234])->willReturnSelf();
+        $appointmentSelect->expects($this->once())->method('uniqueForTrackId')->with(1, 1, [1234 => 1234])->willReturnSelf();
         $appointmentSelect->expects($this->once())->method('fetchOne')->willReturn(2000002);
 
         $appointmentField = $this->getAppointmentField(
@@ -409,7 +409,7 @@ class AppointmentFieldTest extends TestCase
 
         $result = $appointmentField->calculateFieldValue(123, [], [
             'gr2t_id_user' => 2000,
-            'gr2t_id_respondent_track' => 500,
+            'gr2t_id_respondent_track' => 1,
             'gr2t_id_organization' => 70,
             'gr2t_start_date' => '2004-01-15 00:00:00',
         ]);
