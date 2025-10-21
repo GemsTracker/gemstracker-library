@@ -6,7 +6,7 @@ CREATE TABLE if not exists gems__comm_messengers (
     gcm_name                    varchar(32) COLLATE 'utf8mb4_unicode_ci' NOT NULL,
     gcm_description             varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL,
 
-    gcm_messenger_identifier    varchar(32) COLLATE 'utf8mb4_unicode_ci' NULL,
+    gcm_messenger_identifier    varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL,
     gcm_active                  tinyint unsigned NOT NULL DEFAULT '1',
 
     gcm_changed                 timestamp not null default current_timestamp on update current_timestamp,
