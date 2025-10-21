@@ -128,7 +128,7 @@ class SmsJobMessenger implements JobMessengerInterface
 
     public function sendCommunication(array $job, Token $token, bool $preview): ?bool
     {
-        $clientId = $job['gcm_method_identifier'] ?? null;
+        $clientId = $job['gcm_messenger_identifier'] ?? SmsClientInterface::class;
         $smsClient = $this->communicationRepository->getSmsClient($clientId);
 
         if (!($smsClient instanceof SmsClientInterface)) {

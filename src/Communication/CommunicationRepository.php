@@ -305,10 +305,9 @@ class CommunicationRepository
      * @return SmsClientInterface
      * @throws \Gems\Exception|
      */
-    public function getSmsClient($clientId=SmsClientInterface::class): SmsClientInterface
+    public function getSmsClient($clientId=SmsClientInterface::class): SmsClientInterface|null
     {
         if (!$this->smsClient) {
-
             if (isset($this->config['sms'][$clientId]['class'])) {
                 $httpClient = $this->getHttpClient($this->config['sms'][$clientId]);
                 if (class_exists($this->config['sms'][$clientId]['class'])) {
