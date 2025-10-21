@@ -29,7 +29,7 @@ class LocationModel extends SqlTableModel
         $this->applySettings();
     }
 
-    private function applySettings(): void
+    protected function applySettings(): void
     {
         $yesNo = $this->translatedUtil->getYesNo();
 
