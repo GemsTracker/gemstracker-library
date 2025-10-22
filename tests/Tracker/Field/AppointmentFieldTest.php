@@ -26,6 +26,7 @@ class AppointmentFieldTest extends TestCase
             'gr2t_id_respondent_track' => 1,
         ],
         LaminasAppointmentSelect|null $appointmentSelect = null,
+        LaminasAppointmentSelect|null $clonedAppointmentSelect = null,
     ): AppointmentField {
         $translator = $this->getTranslator();
 
@@ -115,15 +116,28 @@ class AppointmentFieldTest extends TestCase
             }
         });
 
-        $appointmentField = new AppointmentField(
-            $trackId,
-            $fieldKey,
-            $fieldDefinition,
-            $translator,
-            new Translated($translator),
-            $agenda,
-            $routeHelper,
-        );
+        if ($clonedAppointmentSelect) {
+            $appointmentField = new AppointmentFieldWithClonedSelect(
+                $trackId,
+                $fieldKey,
+                $fieldDefinition,
+                $translator,
+                new Translated($translator),
+                $agenda,
+                $routeHelper,
+                $clonedAppointmentSelect,
+            );
+        } else {
+            $appointmentField = new AppointmentField(
+                $trackId,
+                $fieldKey,
+                $fieldDefinition,
+                $translator,
+                new Translated($translator),
+                $agenda,
+                $routeHelper,
+            );
+        }
 
         $appointmentField->calculationStart($trackData);
 
@@ -415,5 +429,78 @@ class AppointmentFieldTest extends TestCase
         ]);
 
         $this->assertEquals(2000002, $result);
+    }
+
+    public function testReplaceCurrentValueWithNull(): void
+    {
+        $appointmentSelect = $this->createMock(LaminasAppointmentSelect::class);
+        $appointmentSelect->expects($this->once())->method('onlyActive')->willReturnSelf();
+        $appointmentSelect->expects($this->once())->method('forFilterId')->with(1000)->willReturnSelf();
+        $appointmentSelect->expects($this->once())->method('forRespondent')->with(2000, 70)->willReturnSelf();
+        $appointmentSelect->expects($this->once())->method('forPeriod')->with(
+            new \DateTimeImmutable('2004-01-16 00:00:00'),
+            null,
+            true
+        )->willReturnSelf();
+        $appointmentSelect->expects($this->exactly(2))->method('fetchOne')->willReturn(null);
+
+        $appointmentField = $this->getAppointmentField(
+            fieldDefinition: [
+                'gtf_filter_id' => 1000,
+                'gtf_min_diff_unit' => 'D',
+                'gtf_min_diff_length' => '1',
+                'gtf_max_diff_exists' => 0,
+                'gtf_uniqueness' => 0,
+                'gtf_diff_target_field' => null,
+            ],
+            appointmentSelect: $appointmentSelect
+        );
+
+        $result = $appointmentField->calculateFieldValue(123, [], [
+            'gr2t_id_user' => 2000,
+            'gr2t_id_organization' => 70,
+            'gr2t_start_date' => '2004-01-15 00:00:00',
+        ]);
+
+        $this->assertNull($result);
+    }
+
+    public function testCancellationButStillActive(): void
+    {
+        $clonedAppointmentSelect = $this->createMock(LaminasAppointmentSelect::class);
+        $clonedAppointmentSelect->expects($this->never())->method('onlyActive')->willReturnSelf();
+        $clonedAppointmentSelect->expects($this->once())->method('fetchOne')->willReturn(123);
+
+        $appointmentSelect = $this->createMock(LaminasAppointmentSelect::class);
+        $appointmentSelect->expects($this->once())->method('onlyActive')->willReturnSelf();
+        $appointmentSelect->expects($this->once())->method('forFilterId')->with(1000)->willReturnSelf();
+        $appointmentSelect->expects($this->once())->method('forRespondent')->with(2000, 70)->willReturnSelf();
+        $appointmentSelect->expects($this->once())->method('forPeriod')->with(
+            new \DateTimeImmutable('2004-01-16 00:00:00'),
+            null,
+            true
+        )->willReturnSelf();
+        $appointmentSelect->expects($this->once())->method('fetchOne')->willReturn(null);
+
+        $appointmentField = $this->getAppointmentField(
+            fieldDefinition: [
+                'gtf_filter_id' => 1000,
+                'gtf_min_diff_unit' => 'D',
+                'gtf_min_diff_length' => '1',
+                'gtf_max_diff_exists' => 0,
+                'gtf_uniqueness' => 0,
+                'gtf_diff_target_field' => null,
+            ],
+            appointmentSelect: $appointmentSelect,
+            clonedAppointmentSelect: $clonedAppointmentSelect
+        );
+
+        $result = $appointmentField->calculateFieldValue(123, [], [
+            'gr2t_id_user' => 2000,
+            'gr2t_id_organization' => 70,
+            'gr2t_start_date' => '2004-01-15 00:00:00',
+        ]);
+
+        $this->assertEquals(123, $result);
     }
 }

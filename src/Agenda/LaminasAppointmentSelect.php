@@ -131,6 +131,11 @@ class LaminasAppointmentSelect
         return $this->select;
     }
 
+    public function getSqlString(): string
+    {
+        return $this->resultFetcher->getSqlString($this->select);
+    }
+
     /**
      * Select only active agenda items
      *
