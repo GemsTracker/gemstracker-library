@@ -146,7 +146,6 @@ class AppointmentField extends FieldAbstract
     public function calculateFieldValue(mixed $currentValue, array $fieldData, array $trackData): string|int|null
     {
         if ($currentValue || isset($this->fieldDefinition['gtf_filter_id'])) {
-            $this->setDefaultLastActiveKey($trackData);
             if ($this->_lastActiveKey && isset($this->fieldDefinition['gtf_filter_id'])) {
                 $fromDate = $this->getFromDate($trackData, $fieldData);
 
