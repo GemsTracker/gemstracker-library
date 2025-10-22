@@ -202,10 +202,7 @@ class AppointmentField extends FieldAbstract
                     // Query ready
                     // echo "\n" . $select->getSelect()->__toString() . "\n";
                     $newValue = $select->fetchOne();
-
-                    if ($newValue) {
-                        $currentValue = $newValue;
-                    }
+                    $currentValue = $newValue;
                 }
             }
 
