@@ -22,6 +22,7 @@ use Gems\User\Organization;
 use Gems\User\User;
 use Laminas\Db\Sql\Expression;
 use Mezzio\Template\TemplateRendererInterface;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Mailer\Event\MessageEvent;
@@ -53,7 +54,9 @@ class CommunicationRepository
         protected MessageBusInterface $messageBus,
         protected readonly CommFieldRepository $commFieldRepository,
         MailBouncer $mailBouncer,
-        protected array $config)
+        protected array $config,
+        protected ContainerInterface $container,
+    )
     {
         if ($this->eventDispatcher instanceof EventDispatcher) {
             $this->eventDispatcher->addListener(MessageEvent::class, [$this, 'addTransportHeaderToMail']);
@@ -308,17 +311,13 @@ class CommunicationRepository
     public function getSmsClient($clientId=SmsClientInterface::class): SmsClientInterface|null
     {
         if (!$this->smsClient) {
-            if (isset($this->config['sms'][$clientId]['class'])) {
-                $httpClient = $this->getHttpClient($this->config['sms'][$clientId]);
-                if (class_exists($this->config['sms'][$clientId]['class'])) {
-                    $class = $this->config['sms'][$clientId]['class'];
-                    $smsClient = new $class($this->config['sms'][$clientId], $httpClient);
-                }
-                if (!($smsClient instanceof SmsClientInterface)) {
-                    throw new \Gems\Exception('Sms client could not be loaded from config');
-                }
-                $this->smsClient = $smsClient;
+            $clientId = $this->config['sms'][$clientId]['class'] ?? SmsClientInterface::class;
+
+            $smsClient = $this->container->get($clientId);
+            if (!($smsClient instanceof SmsClientInterface)) {
+                throw new \Gems\Exception('Sms client could not be loaded from config');
             }
+            $this->smsClient = $smsClient;
         }
         return $this->smsClient;
     }
