@@ -41,7 +41,7 @@ class CommunicationRepository
     const MAIL_SSL = 1;
     const MAIL_TLS = 2;
 
-    protected Client|null $smsClient = null;
+    protected SmsClientInterface|null $smsClient = null;
 
     public function __construct(
         protected ResultFetcher $resultFetcher,
