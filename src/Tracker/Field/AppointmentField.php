@@ -13,9 +13,9 @@ namespace Gems\Tracker\Field;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-
 use Gems\Agenda\Agenda;
 use Gems\Agenda\Appointment;
+use Gems\Agenda\LaminasAppointmentSelect;
 use Gems\Date\Period;
 use Gems\Menu\RouteHelper;
 use Gems\Model;
@@ -151,8 +151,7 @@ class AppointmentField extends FieldAbstract
 
                 if ($fromDate instanceof DateTimeInterface) {
                     $select = $this->agenda->createAppointmentSelect(['gap_id_appointment']);
-                    $select->onlyActive()
-                            ->forFilterId($this->fieldDefinition['gtf_filter_id'])
+                    $select->forFilterId($this->fieldDefinition['gtf_filter_id'])
                             ->forRespondent($trackData['gr2t_id_user'], $trackData['gr2t_id_organization']);
 
                     $minDate = Period::applyPeriod(
@@ -199,13 +198,17 @@ class AppointmentField extends FieldAbstract
                         }
                     }
 
+                    $cancelledSelect = $this->getCancelledSelect($select, $currentValue);
+                    $select->onlyActive();
+
                     // Query ready
-                    // echo "\n" . $select->getSelect()->__toString() . "\n";
+                    // echo "\n" . $select->getSqlString() . "\n";
                     $newValue = $select->fetchOne();
 
-                    if ($newValue) {
-                        $currentValue = $newValue;
+                    if ($newValue === null && $currentValue !== null) {
+                        $newValue = $cancelledSelect->fetchOne();
                     }
+                    $currentValue = $newValue;
                 }
             }
 
@@ -215,7 +218,6 @@ class AppointmentField extends FieldAbstract
         }
 
         return $currentValue;
-
     }
 
     /**
@@ -251,6 +253,20 @@ class AppointmentField extends FieldAbstract
         if (!isset(self::$_lastActiveAppointmentIds[$this->_lastActiveKey])) {
             self::$_lastActiveAppointmentIds[$this->_lastActiveKey] = [];
         }
+    }
+
+    /**
+     * Cloning done in separate class for easier testing
+     */
+    protected function getCancelledSelect(LaminasAppointmentSelect $select, mixed $currentValue): LaminasAppointmentSelect
+    {
+        $cancelledSelect = clone $select;
+        $cancelledSelect->getSelect()->where([
+            'gap_status' => $this->agenda->getStatusKeysInactive(),
+            'gap_id_appointment' => $currentValue,
+        ]);
+
+        return $cancelledSelect;
     }
 
     /**
