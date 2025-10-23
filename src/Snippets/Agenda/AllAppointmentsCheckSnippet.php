@@ -44,14 +44,14 @@ class AllAppointmentsCheckSnippet extends AppointmentCheckSnippetAbstract
             intval($organizationId),
             $patientNr), true);
 
-        $testOrgs = [];
-        foreach ($apps as $app) {
-            /**
-             * @var Appointment $app
-             */
-            $testOrgs[$app->getOrganizationId()] = $app->getOrganizationId();
-        }
-        $this->currentUser->assertAccessToOrganizationId($testOrgs, null);
+        //$testOrgs = [];
+        //foreach ($apps as $app) {
+        //    /**
+        //     * @var Appointment $app
+        //     */
+        //    $testOrgs[$app->getOrganizationId()] = $app->getOrganizationId();
+        //}
+        $this->currentUser->assertAccessToOrganizationId($organizationId, null);
 
         if ($apps) {
             $table = $seq->table();
