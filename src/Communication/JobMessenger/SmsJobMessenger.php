@@ -147,13 +147,15 @@ class SmsJobMessenger implements JobMessengerInterface
 
         try {
 
-            $smsClient->sendMessage($filteredNumber, $message, $from);
+            if (! $preview) {
+                $smsClient->sendMessage($filteredNumber, $message, $from);
 
-            $event = new TokenEventCommunicationSent($token, $this->currentUserId, $job);
-            $event->setFrom([$from]);
-            $event->setSubject($job['gct_name']);
-            $event->setTo([$filteredNumber]);
-            $this->event->dispatch($event);
+                $event = new TokenEventCommunicationSent($token, $this->currentUserId, $job);
+                $event->setFrom([$from]);
+                $event->setSubject($job['gct_name']);
+                $event->setTo([$filteredNumber]);
+                $this->event->dispatch($event);
+            }
 
         } catch (ClientException $exception) {
 
