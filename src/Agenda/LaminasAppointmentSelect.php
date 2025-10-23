@@ -24,6 +24,11 @@ class LaminasAppointmentSelect
         $this->columns();
     }
 
+    public function __clone(): void
+    {
+        $this->select = clone $this->select;
+    }
+
     public function columns(string|array $fields = '*'): self
     {
         if ($fields === '*') {
