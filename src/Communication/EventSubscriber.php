@@ -15,6 +15,7 @@ use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Mime\Address;
 
 
 class EventSubscriber implements EventSubscriberInterface
@@ -84,11 +85,17 @@ class EventSubscriber implements EventSubscriberInterface
         $logData['grco_topic']        = substr($subject, 0, 120);
 
         $toAddressArray = array_map(function($from) {
-            return $from->getName() . '<'.$from->getAddress().'>';
+            if ($from instanceof Address) {
+                return $from->getName() . '<'.$from->getAddress().'>';
+            }
+            return (string)$from;
         }, $to);
 
         $fromAddressArray = array_map(function($from) {
-           return $from->getName() . '<'.$from->getAddress().'>';
+            if ($from instanceof Address) {
+                return $from->getName() . '<'.$from->getAddress().'>';
+            }
+            return (string)$from;
         }, $from);
 
         $logData['grco_address']      = substr(join(',', $toAddressArray), 0, 120);
