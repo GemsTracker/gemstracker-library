@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\Config\Db\Patches;
 
+use Gems\Db\Migration\DatabaseInfo;
 use Gems\Db\Migration\PatchAbstract;
 
 /**
@@ -19,6 +20,12 @@ use Gems\Db\Migration\PatchAbstract;
  */
 class FileExportSchemaPatch extends PatchAbstract
 {
+    public function __construct(
+        protected readonly DatabaseInfo $databaseInfo,
+    )
+    {
+    }
+
     public function getDescription(): string|null
     {
         return 'Add gfex_schema_name to gems__file_exports';
@@ -31,11 +38,19 @@ class FileExportSchemaPatch extends PatchAbstract
 
     public function down(): array
     {
-        return ["ALTER TABLE gems__file_exports DROP COLUMN gfex_schema_name;"];
+        if ($this->databaseInfo->tableHasColumn('gems__file_exports', 'gfex_schema_name')) {
+            return ["ALTER TABLE gems__file_exports DROP COLUMN gfex_schema_name;"];
+        }
+
+        return [];
     }
 
     public function up(): array
     {
-        return ["ALTER TABLE gems__file_exports ADD gfex_schema_name varchar(128) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null AFTER gfex_file_name;"];
+        if (!$this->databaseInfo->tableHasColumn('gems__file_exports', 'gfex_schema_name')) {
+            return ["ALTER TABLE gems__file_exports ADD gfex_schema_name varchar(128) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' not null AFTER gfex_file_name;"];
+        }
+
+        return [];
     }
 }
