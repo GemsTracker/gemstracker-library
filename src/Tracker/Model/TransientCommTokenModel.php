@@ -13,6 +13,7 @@ namespace Gems\Tracker\Model;
 use Gems\Model\GemsJoinModel;
 use Gems\Model\MetaModelLoader;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Sql\Laminas\Mysql\LaminasMysqlRunner;
 use Zalt\Model\Sql\Laminas\Mysql\StraightJoinModelTrait;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
@@ -31,7 +32,7 @@ class TransientCommTokenModel extends GemsJoinModel
 
     public function __construct(
         MetaModelLoader $metaModelLoader,
-        SqlRunnerInterface $sqlRunner,
+        LaminasMysqlRunner $sqlRunner,
         TranslatorInterface $translate,
     ) {
         parent::__construct('gems__transient_comm_tokens', $metaModelLoader, $sqlRunner, $translate, 'commJobTransientTokenModel', false);
