@@ -13,6 +13,7 @@ namespace Gems\Tracker\Model;
 use Gems\Model\GemsJoinModel;
 use Gems\Model\MetaModelLoader;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Sql\Laminas\Mysql\StraightJoinModelTrait;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
 /**
@@ -22,6 +23,7 @@ use Zalt\Model\Sql\SqlRunnerInterface;
  */
 class TransientCommTokenModel extends GemsJoinModel
 {
+    use StraightJoinModelTrait;
     private bool $hasGroups = true;
     private bool $hasOrganization = false;
     private bool $hasRelation = false;
@@ -34,7 +36,7 @@ class TransientCommTokenModel extends GemsJoinModel
     ) {
         parent::__construct('gems__transient_comm_tokens', $metaModelLoader, $sqlRunner, $translate, 'commJobTransientTokenModel', false);
 
-        $this->addTable('gems__tokens', ['gto_id_token' => 'gtct_id_token']);
+        $this->addStraightTable('gems__tokens',           ['gto_id_token' => 'gtct_id_token']);
         $this->addTable(    'gems__surveys',              ['gto_id_survey' => 'gsu_id_survey']);
         $this->addTable(    'gems__groups',               ['gsu_id_primary_group' => 'ggp_id_group']);
     }
