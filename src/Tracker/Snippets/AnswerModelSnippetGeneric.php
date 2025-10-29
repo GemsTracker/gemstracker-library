@@ -18,6 +18,7 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker;
+use Gems\Tracker\Snippets\AnswerNameFilterInterface;
 use Gems\Tracker\SurveyModel;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
@@ -55,12 +56,12 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
     protected $_fixedSort = array('grc_success' => SORT_DESC, 'gto_round_order' => SORT_ASC, 'gto_valid_from' => SORT_ASC, 'gto_completion_time' => SORT_ASC);
 
     /**
-     * Empty or a \Gems\Tracker\Snippets\AnswerNameFilterInterface object that is
+     * Null or a \Gems\Tracker\Snippets\AnswerNameFilterInterface object that is
      * used to filter the answers that are displayed.
      *
-     * @var \Gems\Tracker\Snippets\AnswerNameFilterInterface
+     * @var AnswerNameFilterInterface|null
      */
-    protected $answerFilter;
+    protected $answerFilter = null;
 
     /**
      * Shortfix to add class attribute
