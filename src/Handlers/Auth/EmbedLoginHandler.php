@@ -73,7 +73,10 @@ class EmbedLoginHandler implements RequestHandlerInterface
             $session = $request->getAttribute(SessionInterface::class);
             $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
-            $input = ($request->getMethod() === 'POST') ? $request->getParsedBody() : $request->getQueryParams();
+            $input = $request->getQueryParams();
+            if ($request->getMethod() === 'POST') {
+                $input = array_merge($input, $request->getParsedBody() ?? []);
+            }
 
             $result = null;
 
