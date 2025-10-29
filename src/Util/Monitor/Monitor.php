@@ -164,23 +164,33 @@ class Monitor
             case 'nl':
                 $subject = "{name} opdracht draait al meer dan {periodHours} uur niet";
                 $messageHtml = "L.S.,
-
+<p>
 De <b>{name}</b> opdracht heeft op {setTime} voor het laatst gedraaid op {fromSite} en zou voor {firstCheck} opnieuw gedraaid moeten hebben.
+</p>
 
+<p>
 Dit is waarschuwing nummer <b>{mailCount}</b>. Controleer s.v.p. wat verkeerd gegaan is.
+</p>
 
-Dit is een automatische waarschuwing.";
+<p>
+Dit is een automatische waarschuwing.
+</p>";
                 break;
 
             default:
                 $subject = "{name} job has not run for over {periodHours} hours";
                 $messageHtml = "L.S.,
-
+<p>
 The <b>{name}</b> job ran at {setTime} for the last time on {fromSite} and should have run again before {firstCheck}.
+</p>
 
+<p>
 This is notice number {mailCount}. Please check what went wrong.
+</p>
 
-This messages was send automatically.";
+<p>
+This message was sent automatically.
+</p>";
                 break;
         }
 
@@ -247,41 +257,61 @@ This messages was send automatically.";
             case 'nl':
                 $initSubject = "{name} is aangezet";
                 $initHtml = "L.S.,
-
+<p>
 De <b>{name}</b> is op {setTime} aangezet op {fromSite}.
+</p>
 
-Zolang dit aan blijft staan kan u regelmatig waarschuwingen krijgen.OrjIn
+<p>
+Zolang dit aan blijft staan kunt u regelmatig waarschuwingen krijgen.
+</p>
 
-Dit is een automatisch bericht.";
+<p>
+Dit is een automatisch bericht.
+</p>";
 
                 $subject = "{name} staat al meer dan {periodHours} uur aan";
                 $messageHtml = "L.S.,
-
+<p>
 De <b>{name}</b> is op {setTime} aangezet op {fromSite} en staat nog steeds aan.
+</p>
 
-Dit is waarschuwing nummer <b>{mailCount}</b>. Controleer s.v.p. of de onderhouds modus nog steeds nodig is.
+<p>
+Dit is waarschuwing nummer <b>{mailCount}</b>. Controleer s.v.p. of de onderhoudsmodus nog steeds nodig is.
+</p>
 
-Dit is een automatische waarschuwing.";
+<p>
+Dit is een automatische waarschuwing.
+</p>";
                 break;
 
             default:
                 $initSubject = "{name} has been turned on";
                 $initHtml = "L.S.,
-
+<p>
 The <b>{name}</b> was activated at {setTime} on {fromSite}.
+</p>
 
+<p>
 As long as maintenance mode is active the system may send you warning messages.
+</p>
 
-This messages was send automatically.";
+<p>
+This message was sent automatically.
+</p>";
 
                 $subject = "{name} has been active for over {periodHours} hours";
                 $messageHtml = "L.S.,
-
+<p>
 The <b>{name}</b> was activated at {setTime} on {fromSite} and is still active.
+</p>
 
+<p>
 This is notice number {mailCount}. Please check whether the maintenance mode is still required.
+</p>
 
-This messages was send automatically.";
+<p>
+This message was sent automatically.
+</p>";
                 break;
 
         }
