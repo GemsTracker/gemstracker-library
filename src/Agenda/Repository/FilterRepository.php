@@ -52,7 +52,7 @@ class FilterRepository
                     $data['gaf_filter_text4']
                 );
 
-                $this->cache->setCacheItem($cacheKey, $filter);
+                $this->cache->setCacheItem($cacheKey, $filter, $this->cacheTags);
 
                 return $filter;
             } catch(LoadException) {
