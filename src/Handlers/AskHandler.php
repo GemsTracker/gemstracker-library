@@ -107,7 +107,7 @@ class AskHandler extends SnippetHandler
 
         $tokenExists = $this->loadToken($request);
         if ($this->maintenanceLock->isLocked()) {
-            return $this->responder->getSnippetsResponse($this->maintenanceModeSnippets, ['token' => $this->token]);
+            return $this->responder->getSnippetsResponse($this->maintenanceModeSnippets, ['token' => $this->token], $this->request);
         }
 
         if ($tokenExists) {
