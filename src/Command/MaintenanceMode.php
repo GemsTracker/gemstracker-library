@@ -3,6 +3,7 @@
 namespace Gems\Command;
 
 use Gems\Util\Lock\MaintenanceLock;
+use Gems\Util\Monitor\Monitor;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'app:maintenance', description: 'Enable or disable maintenance mode')]
 class MaintenanceMode extends Command
 {
-    public function __construct(protected MaintenanceLock $maintenanceLock)
+    public function __construct(protected MaintenanceLock $maintenanceLock, protected readonly Monitor $monitor)
     {
         parent::__construct();
     }
@@ -41,7 +42,7 @@ class MaintenanceMode extends Command
                 $io->warning('Maintenance mode is already ON');
                 return static::SUCCESS;
             }
-            $this->maintenanceLock->lock();
+            $this->monitor->reverseMaintenanceMonitor();
             $io->warning('Maintenance mode has been turned ON');
             return static::SUCCESS;
         }
@@ -50,7 +51,7 @@ class MaintenanceMode extends Command
                 $io->info('Maintenance mode is already OFF');
                 return static::SUCCESS;
             }
-            $this->maintenanceLock->unlock();
+            $this->monitor->reverseMaintenanceMonitor();
             $io->info('Maintenance mode has been turned OFF');
             return static::SUCCESS;
         }
