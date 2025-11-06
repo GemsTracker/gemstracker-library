@@ -13,6 +13,10 @@ abstract class MenuNode
 
     public function add(MenuItem $menuItem, int|string|null $position = null): void
     {
+        if ($key = array_search($menuItem, $this->children, true)) {
+            // Remove from children if exists already
+            unset($this->children[$key]);
+        }
         $menuItem->attachParent($this);
 
         $index = $this->getAddPosition($position);

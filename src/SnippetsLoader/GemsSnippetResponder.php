@@ -34,8 +34,6 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
 {
     public const DEFAULT_TEMPLATE = 'gems::legacy-view';
 
-    // protected LayoutSettings $layoutSettings;
-
     protected MenuSnippetHelper $menuHelper;
     
     public function __construct(
