@@ -11,16 +11,17 @@
 
 namespace Gems\Snippets;
 
+use Gems\Legacy\LegacyFactory;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\Translator\StraightTranslator;
 use Gems\Repository\ImportRepository;
 use Mezzio\Session\SessionInterface;
+use Psr\Container\ContainerInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\MetaModelLoader;
-use Zalt\Model\Translator\ModelTranslatorInterface;
 use Zalt\Snippets\Zend\ZendFormSnippetTrait;
 use Zalt\SnippetsLoader\SnippetOptions;
 

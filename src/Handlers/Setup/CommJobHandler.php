@@ -318,9 +318,19 @@ class CommJobHandler extends BrowseChangeUsageHandler
                         $caption = $this->_('Message job automatic, can be sent using run or run all');
                         break;
                 }
+
+                // Here no transient tokens jopin
+                $baseFilter = [
+                    'gtr_active'          => 1,
+                    'gsu_active'          => 1,
+                    'grc_success'         => 1,
+                    'gto_completion_time' => NULL,
+                    'gto_valid_from <= CURRENT_TIMESTAMP',
+                    '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
+                    ];
                 $action->tokenParams = [
                     'model'           => $this->tracker->getTokenModel(),
-                    'searchFilter'    => $this->commJobRepository->getJobFilter($job),
+                    'searchFilter'    => $baseFilter + $this->commJobRepository->getJobFilter($job),
                     'class'           => 'browser table compliance mailjob' . $class,
                     'caption'         => $caption,
                     'onEmpty'         => $this->_('No tokens found for message'),

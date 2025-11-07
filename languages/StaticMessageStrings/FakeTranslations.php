@@ -41,6 +41,10 @@ _("Should be empty if valid from date is not set.");
 // \MUtil\Validate\Date\DateBefore
 _("Date should be '%dateBefore%' or earlier.");
 
+// InArray
+_("Value is required and can't be empty");
+_('The input is an empty string');
+
 // \MUtil\Validate\Date\IsDate
 _('%value% is not a valid date.');
 
