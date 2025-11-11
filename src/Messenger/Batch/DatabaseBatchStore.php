@@ -7,6 +7,7 @@ namespace Gems\Messenger\Batch;
 use DateTimeImmutable;
 use Exception;
 use Gems\Db\ResultFetcher;
+use Laminas\Db\Sql\Predicate\Predicate;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -34,20 +35,47 @@ class DatabaseBatchStore implements BatchStoreInterface
 
     public function getBatch(string $batchId): Batch|null
     {
-        $data = $this->resultFetcher->fetchRow('SELECT * FROM gems__batch WHERE gba_id = ?', [$batchId]);
+        $query = "
+        SELECT 
+            gba_id,
+            gba_name,
+            gba_group,
+            gba_synchronous,
+            COUNT(*) AS total_items,
+            SUM(CASE WHEN gba_status = 'pending' THEN 1 ELSE 0 END) AS pending_count,
+            SUM(CASE WHEN gba_status = 'running' THEN 1 ELSE 0 END) AS running_count,
+            SUM(CASE WHEN gba_status = 'success' THEN 1 ELSE 0 END) AS success_count,
+            SUM(CASE WHEN gba_status = 'failed' THEN 1 ELSE 0 END) AS failed_count,
+            MIN(gba_created) AS created_at,
+            MAX(gba_finished) AS finished_at
+        FROM gems__batch
+        WHERE gba_id = ?
+        GROUP BY gba_id, gba_name, gba_group, gba_synchronous;
+        ";
+
+        $data = $this->resultFetcher->fetchRow($query, [$batchId]);
 
         if (!$data) {
             return null;
         }
 
+        $finished = null;
+        if ((int)$data['total_items'] === (int)$data['success_count']) {
+            $finished = new DateTimeImmutable($data['finished_at']);
+        }
+
         return new Batch(
-            $data['gba_id'],
-            new DateTimeImmutable($data['gba_created']),
-            $data['gba_name'],
-            $data['gba_group'],
-            $data['gba_finished'] ? new DateTimeImmutable($data['gba_finished']) : null,
-            BatchStatus::from($data['gba_status']),
-            (bool)$data['gba_synchronous'],
+            batchId: $data['gba_id'],
+            created: new DateTimeImmutable($data['created_at']),
+            name: $data['gba_name'],
+            group: $data['gba_group'],
+            isChain: (bool)$data['gba_synchronous'],
+            finished: $finished,
+            totalItems: (int)$data['total_items'],
+            pending: (int)$data['pending_count'],
+            running: (int)$data['running_count'],
+            success: (int)$data['success_count'],
+            failed: (int)$data['failed_count'],
         );
     }
 
@@ -68,11 +96,12 @@ class DatabaseBatchStore implements BatchStoreInterface
         try {
             return $serializer->deserialize($data['gba_message'], $data['gba_message_class'], 'json');
         } catch(Exception $e) {
+            $this->setIterationStatus($batchId, $iteration, BatchStatus::FAILED, $e->getMessage());
             return null;
         }
     }
 
-    public function isPending(string $batchId): bool
+    public function hasPending(string $batchId): bool
     {
         return $this->resultFetcher->fetchOne('SELECT count(*) FROM gems__batch WHERE gba_id = ? AND gba_status = ?', [
             $batchId,
@@ -95,7 +124,7 @@ class DatabaseBatchStore implements BatchStoreInterface
             'gba_created' => $batch->created->format(self::DATETIME_STORAGE_FORMAT),
             'gba_name' => $batch->name,
             'gba_group' => $batch->group,
-            'gba_status' => $batch->status->value,
+            'gba_status' => BatchStatus::PENDING->value,
             'gba_synchronous' => (int)$batch->isChain,
         ];
 
@@ -119,18 +148,6 @@ class DatabaseBatchStore implements BatchStoreInterface
         return new Serializer($normalizers, $encoders);
     }
 
-    public function setIterationFinished(string $batchId, int $iteration, string|null $message = null): void
-    {
-        $this->resultFetcher->updateTable('gems__batch', [
-            'gba_status' => BatchStatus::SUCCESS->value,
-            'gba_finished' => (new DateTimeImmutable())->format(self::DATETIME_STORAGE_FORMAT),
-            'gba_info' => $message,
-        ], [
-            'gba_id' => $batchId,
-            'gba_iteration' => $iteration,
-        ]);
-    }
-
     public function setIterationStatus(string $batchId, int $iteration, BatchStatus $status, string|null $message = null): void
     {
         $statusInfo = [
@@ -149,6 +166,20 @@ class DatabaseBatchStore implements BatchStoreInterface
         $this->resultFetcher->updateTable('gems__batch', $statusInfo, [
             'gba_id' => $batchId,
             'gba_iteration' => $iteration,
+        ]);
+    }
+
+    public function failChain(string $batchId, int $failedIteration): void
+    {
+        $statusInfo = [
+            'gba_status' => BatchStatus::FAILED,
+            'gba_info' => 'Chain failed due to iteration ' . $failedIteration,
+        ];
+
+        $this->resultFetcher->updateTable('gems__batch', $statusInfo, [
+            'gba_id' => $batchId,
+            'gba_status' => BatchStatus::PENDING->value,
+            (new Predicate())->greaterThan('gba_iteration', $failedIteration),
         ]);
     }
 }

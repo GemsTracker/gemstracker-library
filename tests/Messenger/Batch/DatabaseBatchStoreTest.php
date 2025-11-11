@@ -125,7 +125,7 @@ class DatabaseBatchStoreTest extends DatabaseTestCase
         ]);
         $store->save($batch);
 
-        $this->assertTrue($store->isPending($batchId));
+        $this->assertTrue($store->hasPending($batchId));
 
         $store->setIterationStatus($batchId, 1, BatchStatus::RUNNING);
 

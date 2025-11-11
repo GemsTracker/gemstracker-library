@@ -18,9 +18,16 @@ class Batch
         public readonly DateTimeInterface $created,
         public readonly string|null $name = null,
         public readonly string|null $group = null,
+        public readonly bool $isChain = false,
         public readonly DateTimeInterface|null $finished = null,
-        public readonly BatchStatus $status = BatchStatus::PENDING,
-        public readonly bool $isChain = false
+        public readonly int|null $totalItems = null,
+        public readonly int|null $pending = null,
+        public readonly int|null $running = null,
+        public readonly int|null $success = null,
+        public readonly int|null $failed = null,
+
+
+
     )
     {
     }

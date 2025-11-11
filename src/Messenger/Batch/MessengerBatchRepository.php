@@ -55,11 +55,11 @@ class MessengerBatchRepository
     {
         $currentCount = $this->batchStore->count($batch->batchId);
 
-        $this->batchStore->save($batch);
-
         if (!count($batch->getCurrentMessages())) {
             return;
         }
+
+        $this->batchStore->save($batch);
 
         if (!$batch->isChain) {
             $this->dispatchMessages($batch->getCurrentMessages(), $batch->batchId, $currentCount);
@@ -67,7 +67,7 @@ class MessengerBatchRepository
             return;
         }
 
-        if ($this->batchStore->isPending($batch->batchId) || !$this->batchStore->isRunning($batch->batchId)) {
+        if ($this->batchStore->hasPending($batch->batchId) && !$this->batchStore->isRunning($batch->batchId)) {
             $messages = $batch->getCurrentMessages();
             $firstMessage = reset($messages);
             $this->dispatchMessages([$firstMessage], $batch->batchId, $currentCount);
@@ -86,9 +86,14 @@ class MessengerBatchRepository
         }
     }
 
+    public function failChain(string $batchId, int $failedIteration): void
+    {
+        $this->batchStore->failChain($batchId, $failedIteration);
+    }
+
     public function setIterationFinished(string $batchId, int $iteration): void
     {
-        $this->batchStore->setIterationFinished($batchId, $iteration);
+        $this->setIterationStatus($batchId, $iteration, BatchStatus::SUCCESS);
     }
 
     public function setIterationStatus(string $batchId, int $iteration, BatchStatus $status, string|null $message = null): void

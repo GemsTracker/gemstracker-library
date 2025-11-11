@@ -66,6 +66,10 @@ class BatchMiddleware implements MiddlewareInterface
                 BatchStatus::FAILED,
                 $e->getMessage()
             );
+            $batch = $batchRepository->getBatch($stamp->batchId);
+            if ($batch->isChain) {
+                $batchRepository->failChain($stamp->batchId, $stamp->iteration);
+            }
 
             throw $e;
         }
