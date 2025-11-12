@@ -2,6 +2,7 @@
 
 namespace Gems\AuthNew;
 
+use Gems\Config\ConfigAccessor;
 use Gems\User\UserLoader;
 use Mezzio\Session\SessionInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -11,7 +12,7 @@ class AuthenticationServiceBuilder
     public function __construct(
         private readonly UserLoader $userLoader,
         private readonly EventDispatcher $eventDispatcher,
-        private readonly array $config,
+        private readonly ConfigAccessor $config,
     ) {
     }
 

@@ -11,6 +11,7 @@ use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthNew\LoginThrottleBuilder;
+use Gems\Config\ConfigAccessor;
 use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
@@ -57,11 +58,9 @@ class LoginHandler implements RequestHandlerInterface
         private readonly TranslatorInterface $translator,
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
-        readonly array $config,
+        protected readonly ConfigAccessor $config,
     ) {
-        if (isset($config['auth']['loginTemplate'])) {
-            $this->loginTemplate = $config['auth']['loginTemplate'];
-        }
+        $this->loginTemplate = $config->getAuthTemplate();
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -144,6 +143,7 @@ class LoginHandler implements RequestHandlerInterface
 
         /** @var GemsTrackerAuthenticationResult $result */
         $result = $authenticationService->authenticate(new GenericRoutedAuthentication(
+            $this->config,
             $this->userLoader,
             $this->translator,
             $this->db,

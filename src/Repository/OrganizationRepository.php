@@ -301,7 +301,7 @@ class OrganizationRepository
 
     public function getSiteUrls(): array
     {
-        return $this->userLoader->getSiteUrls();
+        return $this->configAccessor->getAllowedSites();
     }
 
     public function isAllowedUrl(string $url): bool

@@ -62,6 +62,11 @@ class ConfigAccessor
         return $this->config;
     }
 
+    public function getAuthTemplate(): string
+    {
+        return $this->config['auth']['loginTemplate'] ?? 'gems::login';
+    }
+
     public function getDefaultLocale(): string
     {
         return $this->config['locale']['default'] ?? 'en';
@@ -77,6 +82,16 @@ class ConfigAccessor
         return $this->config['dump-to'] ?? null;
     }
 
+    public function getHome(): string
+    {
+        return $this->config['interface']['home'] ?? 'auth.login';
+    }
+
+    public function getLdapServers(): array
+    {
+        return $this->config['ldap'] ?? [];
+    }
+
     /**
      * @return array<string, string> locale string => locale description
      */
@@ -90,6 +105,21 @@ class ConfigAccessor
         }
 
         return $output;
+    }
+
+    public function getSessionMaxAwayTime(): int
+    {
+        return (int) $this->config['session']['max_away_time'];
+    }
+
+    public function getSessionMaxIdleTime(): int
+    {
+        return (int) $this->config['session']['max_idle_time'];
+    }
+
+    public function getSessionMaxTotalTime(): int
+    {
+            return (int) $this->config['session']['max_total_time'];
     }
 
     public function getTFAMethods(): array

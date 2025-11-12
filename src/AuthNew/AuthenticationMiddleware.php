@@ -4,6 +4,7 @@ namespace Gems\AuthNew;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\TfaService;
+use Gems\Config\ConfigAccessor;
 use Gems\CookieResponse;
 use Gems\Handlers\ChangeGroupHandler;
 use Gems\Middleware\ClientIpMiddleware;
@@ -34,12 +35,16 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
     protected const CHECK_TFA = true;
 
+    private readonly string $homepage;
+
     public function __construct(
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly UrlHelper $urlHelper,
         private readonly TranslatorInterface $translator,
+        ConfigAccessor $configAccessor,
     ) {
+        $this->homepage = $configAccessor->getHome();
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -56,7 +61,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
         $user = $authenticationService->getLoggedInUser();
 
-        if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid(true, $user)) {
+        if (!$authenticationService->isLoggedIn()) {
+            return $this->redirectWithIntended(null, $request, $this->urlHelper->generate($this->homepage));
+        } elseif (!$authenticationService->checkValid(true, $user)) {
             return $this->redirectWithIntended(null, $request, $this->urlHelper->generate('auth.login'));
         }
 

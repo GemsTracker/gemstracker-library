@@ -7,6 +7,7 @@ use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
 use Gems\AuthNew\Adapter\AuthenticationIdentityType;
 use Gems\AuthNew\Adapter\AuthenticationResult;
 use Gems\AuthNew\Adapter\HasSessionKeyInterface;
+use Gems\Config\ConfigAccessor;
 use Gems\Event\Application\AuthenticatedEvent;
 use Gems\Event\Application\AuthenticationFailedLoginEvent;
 use Gems\User\User;
@@ -20,7 +21,7 @@ class AuthenticationService
         private readonly SessionInterface $session,
         private readonly UserLoader $userLoader,
         private readonly EventDispatcher $eventDispatcher,
-        private readonly array $config,
+        private readonly ConfigAccessor $config,
     ) {
     }
 
@@ -119,9 +120,9 @@ class AuthenticationService
 
         /** @var int $validUntil */
         $validUntil = min(
-            $authData['auth_login_at'] + $this->config['session']['max_total_time'],
-            $authData['auth_last_seen_at'] + $this->config['session']['max_away_time'],
-            $authData['auth_last_active_at'] + $this->config['session']['max_idle_time'],
+            $authData['auth_login_at'] + $this->config->getSessionMaxTotalTime(),
+            $authData['auth_last_seen_at'] + $this->config->getSessionMaxAwayTime(),
+            $authData['auth_last_active_at'] + $this->config->getSessionMaxIdleTime(),
         );
 
         if (time() > $validUntil) {
@@ -151,6 +152,6 @@ class AuthenticationService
             return null;
         }
 
-        return $authData['auth_last_active_at'] + $this->config['session']['max_idle_time'];
+        return $authData['auth_last_active_at'] + $this->config->getSessionMaxIdleTime();
     }
 }
