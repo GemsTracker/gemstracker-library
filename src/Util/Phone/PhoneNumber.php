@@ -5,7 +5,6 @@ namespace Gems\Util\Phone;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberType;
 use libphonenumber\PhoneNumberUtil;
-use phpDocumentor\Reflection\PseudoTypes\StringValue;
 
 class PhoneNumber
 {
@@ -16,7 +15,7 @@ class PhoneNumber
     {
     }
 
-    public function format(int $format = PhoneNumberFormat::E164): StringValue
+    public function format(int $format = PhoneNumberFormat::E164): string
     {
         return $this->phoneUtil->format($this->phoneNumber, $format);
     }
