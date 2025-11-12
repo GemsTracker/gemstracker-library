@@ -12,6 +12,7 @@ use Gems\Communication\CommunicationRepository;
 use Gems\Tracker;
 use Gems\Tracker\Token;
 use Gems\User\Filter\DutchPhonenumberFilter;
+use Gems\Util\Phone\PhoneNumberFactory;
 use League\HTMLToMarkdown\HtmlConverter;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
@@ -29,6 +30,7 @@ class SmsJobMessenger implements JobMessengerInterface
         protected CommunicationRepository $communicationRepository,
         protected TranslatorInterface $translator,
         CurrentUserRepository $currentUserRepository,
+        protected PhoneNumberFactory $phoneNumberFactory,
     )
     {
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
@@ -85,7 +87,7 @@ class SmsJobMessenger implements JobMessengerInterface
         switch ($job['gcj_target']) {
             case '0':
                 if ($canBeMessaged) {
-                    $phoneNumber = $token->getPhonenumber();
+                    $phoneNumber = $token->getRespondent()->getMobilePhoneNumber();
                 }
                 break;
 
@@ -97,7 +99,7 @@ class SmsJobMessenger implements JobMessengerInterface
 
             case '2':
                 if ($canBeMessaged) {
-                    $phoneNumber = $token->getRespondent()->getPhonenumber();
+                    $phoneNumber = $token->getRespondent()->getMobilePhoneNumber();
                 }
                 break;
 
@@ -138,15 +140,18 @@ class SmsJobMessenger implements JobMessengerInterface
         $number = $this->getPhoneNumber($job, $token, true);
         $message = $this->getMessage($job, $token);
         $from = $this->getFrom($job, $token);
-        $phoneNumberFilter = new DutchPhonenumberFilter();
-        $filteredNumber = $phoneNumberFilter->filter($number);
 
-        if (!$filteredNumber) {
+        $phoneNumber = $this->phoneNumberFactory->fromString($number);
+
+        if (!$phoneNumber->isValid()) {
+            return false;
+        }
+        if (!$phoneNumber->isMobile()) {
             return false;
         }
 
+        $filteredNumber = $phoneNumber->format();
         try {
-
             if (! $preview) {
                 $smsClient->sendMessage($filteredNumber, $message, $from);
 
@@ -158,7 +163,6 @@ class SmsJobMessenger implements JobMessengerInterface
             }
 
         } catch (ClientException $exception) {
-
             $smsClient->sendMessage($filteredNumber, $message, $from);
 
             $event = new TokenEventCommunicationFailed($exception, $token, $this->currentUserId, $job);
