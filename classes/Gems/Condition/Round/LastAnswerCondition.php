@@ -58,11 +58,21 @@ class LastAnswerCondition extends RoundConditionAbstract
         return $compators;
     }
 
+    public function getDisplayText()
+    {
+        return $this->_('Last answer in track to question `%s`');
+    }
+
     public function getHelp()
     {
-        return $this->_("Look back from the current survey and find the first answered question");
+        return $this->_("Look back from the current survey and find the first answered question within the track");
     }
-    
+
+    /**
+     * @param string $questionCode
+     * @param \Gems_Tracker_Token $token
+     * @return mixed|string
+     */
     public function getLastAnswer($questionCode, $token)
     {
         $questionCodeUc = strtoupper($questionCode);
@@ -122,7 +132,7 @@ class LastAnswerCondition extends RoundConditionAbstract
 
     public function getName()
     {
-        return $this->_('Previous answer');
+        return $this->_('Previous answer within track');
     }
 
     public function getNotValidReason($conditionId, $context)
@@ -137,7 +147,7 @@ class LastAnswerCondition extends RoundConditionAbstract
         $param1     = $this->_data['gcon_condition_text3'];
         $param2     = $this->_data['gcon_condition_text4'];
 
-        $fieldText  = sprintf($this->_('Last answer to question `%s`'), $field);
+        $fieldText  = sprintf($this->getDisplayText(), $field);
 
         $comparatorDescription = '';
         if (!empty($comparator)) {
@@ -164,8 +174,8 @@ class LastAnswerCondition extends RoundConditionAbstract
     /**
      * Does this track have the fieldcode the condition depends on?
      *
-     * @param type $conditionId
-     * @param type $context
+     * @param int $conditionId
+     * @param array $context
      * @return boolean
      */
     public function isValid($conditionId, $context)

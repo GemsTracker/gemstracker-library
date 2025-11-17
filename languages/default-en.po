@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-26 14:43+0200\n"
+"POT-Creation-Date: 2025-11-17 12:11+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -943,7 +943,7 @@ msgid "Determine gender based on"
 msgstr "Determine gender based on"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:84
-#: classes/Gems/Condition/Round/LastAnswerCondition.php:97
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:107
 #: classes/Gems/Condition/Round/TrackFieldCondition.php:73
 msgid "Comparison operator"
 msgstr "Comparison operator"
@@ -998,10 +998,22 @@ msgid "In (..|..)"
 msgstr "In (..|..)"
 
 #: classes/Gems/Condition/Round/LastAnswerCondition.php:63
-msgid "Look back from the current survey and find the first answered question"
-msgstr "Look back from the current survey and find the first answered question"
+#, php-format
+#| msgid "Last answer to question `%s`"
+msgid "Last answer in track to question `%s`"
+msgstr "Last answer in track to question `%s`"
 
-#: classes/Gems/Condition/Round/LastAnswerCondition.php:96
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:68
+#| msgid ""
+#| "Look back from the current survey and find the first answered question"
+msgid ""
+"Look back from the current survey and find the first answered question "
+"within the track"
+msgstr ""
+"Look back from the current survey and find the first answered question "
+"within the track"
+
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:106
 #: classes/Gems/Model/SurveyCodeBookModel.php:97
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:166
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:610
@@ -1009,19 +1021,35 @@ msgstr "Look back from the current survey and find the first answered question"
 msgid "Question code"
 msgstr "Question code"
 
-#: classes/Gems/Condition/Round/LastAnswerCondition.php:125
-msgid "Previous answer"
-msgstr "Previous answer"
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:135
+msgid "Previous answer within track"
+msgstr "Previous answer within track"
 
-#: classes/Gems/Condition/Round/LastAnswerCondition.php:130
+#: classes/Gems/Condition/Round/LastAnswerCondition.php:140
 #, php-format
 msgid "There is no question with `%s` in this track."
 msgstr "There is no question with `%s` in this track."
 
-#: classes/Gems/Condition/Round/LastAnswerCondition.php:140
+#: classes/Gems/Condition/Round/LastPatientCondition.php:24
 #, php-format
-msgid "Last answer to question `%s`"
-msgstr "Last answer to question `%s`"
+#| msgid "Last answer to question `%s`"
+msgid "Last answer for respondent to question `%s`"
+msgstr "Last answer for patient to question `%s`"
+
+#: classes/Gems/Condition/Round/LastPatientCondition.php:29
+#| msgid ""
+#| "Look back from the current survey and find the first answered question"
+msgid ""
+"Look back from the current survey and find the first answered question for "
+"the respondent"
+msgstr ""
+"Look back from the current survey and find the first answered question for "
+"the patient"
+
+#: classes/Gems/Condition/Round/LastPatientCondition.php:72
+#| msgid "Round is not for respondents"
+msgid "Previous answer for respondent"
+msgstr "Previous answer for patient"
 
 #: classes/Gems/Condition/Round/OrCondition.php:29
 msgid ""
@@ -1041,22 +1069,18 @@ msgstr ""
 "Skip this round if a previous survey was answered within a certain time"
 
 #: classes/Gems/Condition/Round/RepeatLessCondition.php:41
-#| msgid "Surveys in %s track"
 msgid "Same survey in track"
 msgstr "Same survey in track"
 
 #: classes/Gems/Condition/Round/RepeatLessCondition.php:42
-#| msgid "Redo survey"
 msgid "Same survey"
 msgstr "Same survey"
 
 #: classes/Gems/Condition/Round/RepeatLessCondition.php:43
-#| msgid "Surveys in %s track"
 msgid "Same survey code in track"
 msgstr "Same survey code in track"
 
 #: classes/Gems/Condition/Round/RepeatLessCondition.php:44
-#| msgid "Survey code"
 msgid "Same survey code"
 msgstr "Same survey code"
 
@@ -1081,29 +1105,24 @@ msgid "Survey"
 msgstr "Survey"
 
 #: classes/Gems/Condition/Round/RepeatLessCondition.php:56
-#| msgid "Minimal difference unit"
 msgid "Difference unit"
 msgstr "Difference unit"
 
 #: classes/Gems/Condition/Round/RepeatLessCondition.php:62
-#| msgid "Minimal difference unit"
 msgid "Difference units"
 msgstr "Difference units"
 
 #: classes/Gems/Condition/Round/RepeatLessCondition.php:90
-#| msgid "Does not expire"
 msgid "Do not repeat survey"
 msgstr "Do not repeat survey"
 
 #: classes/Gems/Condition/Round/RepeatLessCondition.php:113
 #, php-format
-#| msgid "Survey %s does not exist."
 msgid "Survey %s does not have a survey code."
 msgstr "Survey %s does not have a survey code."
 
 #: classes/Gems/Condition/Round/RepeatLessCondition.php:117
 #: classes/Gems/Condition/Round/RepeatLessCondition.php:161
-#| msgid "Inactive installation."
 msgid "Not active, invalid configuration."
 msgstr "Not active, invalid configuration."
 
@@ -5116,7 +5135,6 @@ msgid "Combine multiple files to separate sheets in one excel file"
 msgstr "Combine multiple files to separate sheets in one excel file"
 
 #: classes/Gems/Export/TextExport.php:45
-#| msgid "Export table"
 msgid "Text Export (tabbed)"
 msgstr "Text Export (tabbed)"
 
@@ -5868,22 +5886,18 @@ msgid "Charts setup"
 msgstr "Charts setup"
 
 #: classes/Gems/Menu/MenuAbstract.php:870
-#| msgid "Settings"
 msgid "Export Settings"
 msgstr "Export Settings"
 
 #: classes/Gems/Menu/MenuAbstract.php:871
-#| msgid "Export survey answers"
 msgid "Export the survey settings"
 msgstr "Export the survey settings"
 
 #: classes/Gems/Menu/MenuAbstract.php:873
-#| msgid "Settings"
 msgid "Import Settings"
 msgstr "Import Settings"
 
 #: classes/Gems/Menu/MenuAbstract.php:874
-#| msgid "Import survey name"
 msgid "Import survey settings"
 msgstr "Import survey settings"
 
@@ -6081,7 +6095,6 @@ msgstr "Switched type"
 
 #: classes/Gems/Model/Dependency/Condition/RoundDependency.php:112
 #, php-format
-#| msgid "Unable to load condition with ID %s"
 msgid "Unable to load condition with ID %s, error: %s"
 msgstr "Unable to load condition with ID %s, error: %s"
 
@@ -8091,7 +8104,6 @@ msgid "The file \"%s\" could not be imported."
 msgstr "The file \"%s\" could not be imported."
 
 #: classes/Gems/Snippets/Import/ImportSurveySettingsSnippet.php:94
-#| msgid "Upload a track definition file."
 msgid "Upload a survey settings file."
 msgstr "Upload a survey settings file."
 
@@ -8106,27 +8118,22 @@ msgid "Check the input visually."
 msgstr "Check the input visually."
 
 #: classes/Gems/Snippets/Import/ImportSurveySettingsSnippet.php:166
-#| msgid "Linked survey name"
 msgid "Link surveys!"
 msgstr "Link surveys!"
 
 #: classes/Gems/Snippets/Import/ImportSurveySettingsSnippet.php:192
-#| msgid "Import result"
 msgid "Saving import result."
 msgstr "Saving import result."
 
 #: classes/Gems/Snippets/Import/ImportSurveySettingsSnippet.php:205
-#| msgid "%d of %d surveys changed."
 msgid "Surveys changed:"
 msgstr "Surveys changed:"
 
 #: classes/Gems/Snippets/Import/ImportSurveySettingsSnippet.php:208
-#| msgid "%d of %d surveys changed."
 msgid "No surveys changed!"
 msgstr "No surveys changed!"
 
 #: classes/Gems/Snippets/Import/ImportSurveySettingsSnippet.php:211
-#| msgid "Survey used"
 msgid "Surveys skipped:"
 msgstr "Surveys skipped:"
 
@@ -8138,18 +8145,14 @@ msgid "Export code %s has an error: %s"
 msgstr "Export code %s has an error: %s"
 
 #: classes/Gems/Snippets/Import/ImportSurveySettingsSnippet.php:286
-#| msgid "View survey"
 msgid "<skip survey>"
 msgstr "<skip survey>"
 
 #: classes/Gems/Snippets/Import/ImportSurveySettingsSnippet.php:323
-#| msgid "A .track.txt file"
 msgid "A .settings.txt file"
 msgstr "A .settings.txt file"
 
 #: classes/Gems/Snippets/Import/ImportSurveySettingsSnippet.php:327
-#| msgid ""
-#| "Import an exported track using a file with the extension \".track.txt\"."
 msgid ""
 "Import exported survey settings using a file with the extension "
 "\".settings.txt\"."
@@ -8159,7 +8162,6 @@ msgstr ""
 
 #: classes/Gems/Snippets/Import/ImportSurveySettingsSnippet.php:387
 #, php-format
-#| msgid "New track import. Step %d of %d."
 msgid "Survey settings import. Step %d of %d."
 msgstr "Survey settings import. Step %d of %d."
 
@@ -8168,7 +8170,6 @@ msgid "(all active)"
 msgstr "(all active)"
 
 #: classes/Gems/Snippets/Location/LocationSearchFormSnippet.php:34
-#| msgid "(all filters)"
 msgid "(all filtered)"
 msgstr "(all filtered)"
 
