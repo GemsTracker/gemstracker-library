@@ -3,9 +3,9 @@
 namespace Gems\Config\Db\Patches\Upgrade2x;
 
 use Gems\Db\Migration\DatabaseInfo;
-use Gems\Db\Migration\PatchInterface;
+use Gems\Db\Migration\PatchAbstract;
 
-class GemsAppointmentInfo implements PatchInterface
+class GemsAppointmentInfo extends PatchAbstract
 {
     public function __construct(
         protected readonly DatabaseInfo $databaseInfo,
