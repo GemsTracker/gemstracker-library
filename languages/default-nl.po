@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-07 14:26+0100\n"
+"POT-Creation-Date: 2025-11-17 12:35+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Roel van Meer <roel.van.meer@peercode.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -44,8 +44,8 @@ msgstr ""
 "Uw account is tijdelijk geblokkeerd. U kunt opnieuw inloggen over %s minuten"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:19
-#: gemstracker/gemstracker/src/AuthNew/Adapter/GenericRoutedAuthentication.php:38
-#: gemstracker/gemstracker/src/AuthNew/AuthenticationMiddleware.php:96
+#: gemstracker/gemstracker/src/AuthNew/Adapter/GenericRoutedAuthentication.php:40
+#: gemstracker/gemstracker/src/AuthNew/AuthenticationMiddleware.php:103
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
@@ -398,7 +398,7 @@ msgstr "Groep"
 #: gemstracker/gemstracker/src/Handlers/Setup/MaskHandler.php:80
 #: gemstracker/gemstracker/src/Model/CommMessengersModel.php:36
 #: gemstracker/gemstracker/src/Model/Setup/ConsentModel.php:78
-#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:586
+#: gemstracker/gemstracker/src/Repository/CommJobRepository.php:588
 #: gemstracker/gemstracker/src/Tracker/Engine/TrackEngineAbstract.php:831
 #: gemstracker/gemstracker/src/Tracker/Model/FieldMaintenanceModel.php:166
 #: gemstracker/gemstracker/src/Util/CommJobsUtil.php:494
@@ -1054,7 +1054,7 @@ msgstr "Foutieve invoer"
 #: gemstracker/gemstracker/src/Agenda/Filter/OrganizationModelDependency.php:108
 #: gemstracker/gemstracker/src/Export/Db/AnswerModelContainer.php:179
 #: gemstracker/gemstracker/src/Export/ModelSource/AnswerExportModelSource.php:109
-#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:90
+#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:89
 #: gemstracker/gemstracker/src/Handlers/Overview/ConsentPlanHandler.php:136
 #: gemstracker/gemstracker/src/Handlers/Setup/MaskHandler.php:92
 #: gemstracker/gemstracker/src/Model/AgendaActivityModel.php:45
@@ -1710,11 +1710,11 @@ msgstr "Verleen recht voor toegang tot delegeerders aanmeldingspagina."
 msgid "Grant right to set answer access to surveys."
 msgstr "Heeft het recht de toegang tot vragenlijsten in te stellen."
 
-#: gemstracker/gemstracker/src/AuthNew/AuthenticationMiddleware.php:114
+#: gemstracker/gemstracker/src/AuthNew/AuthenticationMiddleware.php:121
 msgid "Your password must be changed."
 msgstr "Uw wachtwoord moet veranderd worden."
 
-#: gemstracker/gemstracker/src/AuthNew/AuthenticationMiddleware.php:130
+#: gemstracker/gemstracker/src/AuthNew/AuthenticationMiddleware.php:137
 msgid "Please configure Authenticator TFA to continue."
 msgstr "Stel uw Authenticatie app in om verder te gaan."
 
@@ -2048,7 +2048,7 @@ msgid "Determine gender based on"
 msgstr "Geslacht afhankelijk van"
 
 #: gemstracker/gemstracker/src/Condition/Round/GenderCondition.php:78
-#: gemstracker/gemstracker/src/Condition/Round/LastAnswerCondition.php:87
+#: gemstracker/gemstracker/src/Condition/Round/LastAnswerCondition.php:92
 #: gemstracker/gemstracker/src/Condition/Round/TrackFieldCondition.php:64
 msgid "Comparison operator"
 msgstr "Vergelijkings type"
@@ -2106,10 +2106,19 @@ msgid "In (..|..)"
 msgstr "Meerdere waardes (..|..)"
 
 #: gemstracker/gemstracker/src/Condition/Round/LastAnswerCondition.php:53
-msgid "Look back from the current survey and find the first answered question"
-msgstr "Kijk terug vanaf de huidige vragenlijst en gebruik het eerste antwoord"
+#, php-format
+msgid "Last answer in track to question `%s`"
+msgstr "Laatste antwoord in het traject op de vraag `%s`"
 
-#: gemstracker/gemstracker/src/Condition/Round/LastAnswerCondition.php:86
+#: gemstracker/gemstracker/src/Condition/Round/LastAnswerCondition.php:58
+msgid ""
+"Look back from the current survey and find the first answered question "
+"within the track"
+msgstr ""
+"Kijk terug vanaf de huidige vragenlijst en gebruik het eerste antwoord "
+"binnen het traject"
+
+#: gemstracker/gemstracker/src/Condition/Round/LastAnswerCondition.php:91
 #: gemstracker/gemstracker/src/Model/SurveyCodeBookModel.php:51
 #: gemstracker/gemstracker/src/Snippets/Survey/SurveyCompareSnippet.php:174
 #: gemstracker/gemstracker/src/Snippets/Survey/SurveyCompareSnippet.php:618
@@ -2117,19 +2126,31 @@ msgstr "Kijk terug vanaf de huidige vragenlijst en gebruik het eerste antwoord"
 msgid "Question code"
 msgstr "Vraagcode"
 
-#: gemstracker/gemstracker/src/Condition/Round/LastAnswerCondition.php:115
-msgid "Previous answer"
-msgstr "Vorige antwoord"
-
 #: gemstracker/gemstracker/src/Condition/Round/LastAnswerCondition.php:120
+msgid "Previous answer within track"
+msgstr "Vorige antwoord in het traject"
+
+#: gemstracker/gemstracker/src/Condition/Round/LastAnswerCondition.php:125
 #, php-format
 msgid "There is no question with `%s` in this track."
 msgstr "Er is geen vraag met `%s` in dit traject."
 
-#: gemstracker/gemstracker/src/Condition/Round/LastAnswerCondition.php:130
+#: gemstracker/gemstracker/src/Condition/Round/LastPatientCondition.php:39
 #, php-format
-msgid "Last answer to question `%s`"
-msgstr "Laatste antwoord op de vraag `%s`"
+msgid "Last answer for respondent to question `%s`"
+msgstr "Laatste antwoord voor de patiënt op de vraag `%s`"
+
+#: gemstracker/gemstracker/src/Condition/Round/LastPatientCondition.php:44
+msgid ""
+"Look back from the current survey and find the first answered question for "
+"the respondent"
+msgstr ""
+"Kijk terug vanaf de huidige vragenlijst en gebruik het eerste antwoord voor "
+"de patiënt "
+
+#: gemstracker/gemstracker/src/Condition/Round/LastPatientCondition.php:96
+msgid "Previous answer for respondent"
+msgstr "Vorige antwoord voor de patiënt "
 
 #: gemstracker/gemstracker/src/Condition/Round/OrCondition.php:30
 msgid ""
@@ -2461,7 +2482,7 @@ msgid "Export downloads"
 msgstr "Download exports"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:119
-#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:93
+#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:92
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:169
 msgid "Login"
 msgstr "Inloggen"
@@ -3762,22 +3783,22 @@ msgstr "Te veel login pogingen"
 msgid "Unable to authenticate"
 msgstr "Authenticatie mislukt"
 
-#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:91
+#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:90
 #: gemstracker/gemstracker/src/Model/StaffModel.php:155
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:92
+#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:91
 #: gemstracker/gemstracker/src/Model/MailServerModel.php:62
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:124
+#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:123
 #: gemstracker/gemstracker/src/Handlers/Auth/RequestPasswordResetHandler.php:83
 msgid "Make sure you fill in all fields"
 msgstr "Let op dat alle velden zijn ingevuld"
 
-#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:132
+#: gemstracker/gemstracker/src/Handlers/Auth/LoginHandler.php:131
 msgid "The username is too long"
 msgstr "De gebruikersnaam is te lang"
 
@@ -4812,7 +4833,7 @@ msgid "Message job automatic, can be sent using run or run all"
 msgstr ""
 "Berichtopdracht automatisch, verstuur met `uitvoeren` of `alles uitvoeren`"
 
-#: gemstracker/gemstracker/src/Handlers/Setup/CommJobHandler.php:326
+#: gemstracker/gemstracker/src/Handlers/Setup/CommJobHandler.php:336
 msgid "No tokens found for message"
 msgstr "Geen kenmerken gevonden om te versturen"
 

@@ -48,9 +48,14 @@ class LastAnswerCondition extends RoundConditionAbstract
         return $compators;
     }
 
+    public function getDisplayText(): string
+    {
+        return $this->_('Last answer in track to question `%s`');
+    }
+
     public function getHelp(): string
     {
-        return $this->_("Look back from the current survey and find the first answered question");
+        return $this->_("Look back from the current survey and find the first answered question within the track");
     }
     
     public function getLastAnswer(string $questionCode, Token $token): string
@@ -112,7 +117,7 @@ class LastAnswerCondition extends RoundConditionAbstract
 
     public function getName(): string
     {
-        return $this->_('Previous answer');
+        return $this->_('Previous answer within track');
     }
 
     public function getNotValidReason(int $value, array $context): string
@@ -127,7 +132,7 @@ class LastAnswerCondition extends RoundConditionAbstract
         $param1     = $this->_data['gcon_condition_text3'];
         $param2     = $this->_data['gcon_condition_text4'];
 
-        $fieldText  = sprintf($this->_('Last answer to question `%s`'), $field);
+        $fieldText  = sprintf($this->getDisplayText(), $field);
 
         $comparatorDescription = '';
         if (!empty($comparator)) {
