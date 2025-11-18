@@ -358,7 +358,8 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     {
         try {
             return parent::hasHtmlOutput();
-        } catch(MetaModelException) {
+        } catch(MetaModelException $e) {
+            $this->addMessage($e->getMessage());
             $this->setNotFound();
         }
 

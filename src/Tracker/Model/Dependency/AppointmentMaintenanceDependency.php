@@ -287,6 +287,10 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             return null;
         }
 
+        if (! $raw) {
+            return $value;
+        }
+
         $menuFilterUrl = $this->routeHelper->getRouteUrl('setup.agenda.filter.show', [Model::REQUEST_ID => $raw]);
 
         if (! $menuFilterUrl) {

@@ -95,7 +95,6 @@ class FieldMaintenanceModel extends UnionModel
         $eventDispatcher->dispatch($event, TrackFieldDependencyListEvent::class);
         $this->dependencies = $event->getList();
 
-
         $metaModel = new FieldMaintenanceMetaModel($modelName, $metaModelLoader, $tracker, $this->modelField, $this->dependencies);
         $this->translate = $translator;
         parent::__construct($metaModel, $modelField);
