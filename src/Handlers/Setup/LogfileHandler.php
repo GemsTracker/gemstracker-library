@@ -13,6 +13,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Handlers\GemsHandler;
 use Gems\Model\Ra\FolderModel;
 use Gems\SnippetsActions\Browse\FileBrowseSearchAction;
+use Gems\SnippetsActions\Browse\FileFilteredSearchAction;
 use Gems\SnippetsActions\Download\DownloadFileAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Psr\Cache\CacheItemPoolInterface;
@@ -37,6 +38,7 @@ class LogfileHandler extends GemsHandler
      * @inheritdoc
      */
     public static $actions = [
+        'autofilter' => FileFilteredSearchAction::class,
         'download'   => DownloadFileAction::class,
         'index'      => FileBrowseSearchAction::class,
         'show'       => ShowAction::class,
