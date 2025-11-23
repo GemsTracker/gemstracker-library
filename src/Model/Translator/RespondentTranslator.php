@@ -65,7 +65,9 @@ class RespondentTranslator extends \Gems\Model\Translator\StraightTranslator
             $metaModel->set('grs_gender', 'multiOptions', $options);
         }
 
-        return parent::startImport();
+        parent::startImport();
+
+        return $this;
     }
 
     /**

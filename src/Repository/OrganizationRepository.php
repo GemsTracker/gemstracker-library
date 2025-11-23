@@ -217,7 +217,7 @@ class OrganizationRepository
             ['organizations'],
         );
         $result += $this->utilDbHelper->getSelectPairsCached(
-            __FUNCTION__ . '_1',
+            __FUNCTION__ . '_2',
             "SELECT gor_code, gor_id_organization
                 FROM gems__organizations
                 WHERE gor_code IS NOT NULL",

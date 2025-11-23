@@ -30,18 +30,18 @@ class AnswerModelContainer extends ModelContainer
     ) {
     }
 
-    public function get(string $id, array $filter = [], array $applyFunctions = []): SurveyModel
+    public function get(string $id, array $modelFilter = [], array $applyFunctions = []): SurveyModel
     {
-        if (!isset($filter['gto_id_survey'])) {
+        if (!isset($modelFilter['gto_id_survey'])) {
             throw new ExportException('No Survey ID specified');
         }
 
-        $hash = $id . '_' . md5(json_encode($filter));
+        $hash = $id . '_' . md5(json_encode($modelFilter));
         if (isset($this->models[$hash])) {
             return $this->models[$hash];
         }
 
-        $model = $this->createModel((int)$id, $filter);
+        $model = $this->createModel((int)$id, $modelFilter);
         foreach($applyFunctions as $applyFunction) {
             if (method_exists($model, $applyFunction)) {
                 $model->$applyFunction();
@@ -94,7 +94,8 @@ class AnswerModelContainer extends ModelContainer
             $metaModel->getItemsFor('table', 'gems__respondent2org')
         );
 
-        $this->addExtraDataToExportModel($model, $data, $prefixes);
+        // We need all the input data here
+        $this->addExtraDataToExportModel($model, $filter + $data, $prefixes);
 
         if (isset($data['column_identifiers']) && $data['column_identifiers'] == 1) {
             foreach ($prefixes as $prefix => $prefixCategory) {
@@ -371,7 +372,7 @@ class AnswerModelContainer extends ModelContainer
             $engine = $this->tracker->getTrackEngine($data['gto_id_track']);
             $fieldNames = $engine->getFieldNames();
             if (!empty($fieldNames)) {
-                $engine->addFieldsToModel($model->getMetaModel(), false, 'resptrackid');
+                $engine->addFieldsToModel($model->getMetaModel(), false);
                 $prefixes['TF'] = array_keys($engine->getFieldNames());
             }
         }

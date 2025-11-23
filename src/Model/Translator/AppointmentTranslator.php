@@ -15,6 +15,7 @@ use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
 use Gems\Repository\OrganizationRepository;
 use Zalt\Base\TranslatorInterface;
+use Zalt\Model\Translator\ModelTranslatorInterface;
 
 /**
  *
@@ -97,7 +98,7 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
         );
     }
 
-    public function startImport(): AppointmentTranslator
+    public function startImport(): ModelTranslatorInterface
     {
         if ($this->targetModel instanceof \MUtil\Model\ModelAbstract) {
             // No multiOptions as a new items can be created during import
