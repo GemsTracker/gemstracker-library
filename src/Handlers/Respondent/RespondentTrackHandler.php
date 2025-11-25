@@ -10,7 +10,6 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\Transform\FixedValueTransformer;
 use Gems\Repository\RespondentRepository;
-use Gems\Snippets\Export\RespondentExportSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\Tracker\AvailableTracksSnippet;
@@ -80,12 +79,15 @@ class RespondentTrackHandler extends RespondentChildHandlerAbstract
     ];
 
     protected array $exportParameters = [
-        'formTitle'         => 'getTrackTitle',
-        'respondentTrack'   => 'getRespondentTrack',
+        'csrfName'         => 'getCsrfTokenName',
+        'csrfToken'        => 'getCsrfToken',
+        'formTitle'        => 'getTrackTitle',
+        'respondentTrack'  => 'getRespondentTrack',
     ];
 
     protected array $exportSnippets = [
-        RespondentExportSnippet::class,
+        'Respondent\\Export\\RespondentExportFormSnippet',
+        'Respondent\\Export\\RespondentExportOutputSnippet',
     ];
 
     protected array $deleteSnippets = [

@@ -70,11 +70,13 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
      */
     public function getFieldsTranslations(): array
     {
-        $this->targetModel->setAlias('gas_name_attended_by', 'gap_id_attended_by');
-        $this->targetModel->setAlias('gas_name_referred_by', 'gap_id_referred_by');
-        $this->targetModel->setAlias('gaa_name', 'gap_id_activity');
-        $this->targetModel->setAlias('gapr_name', 'gap_id_procedure');
-        $this->targetModel->setAlias('glo_name', 'gap_id_location');
+        $metaModel = $this->targetModel->getMetaModel();
+
+        $metaModel->setAlias('gas_name_attended_by', 'gap_id_attended_by');
+        $metaModel->setAlias('gas_name_referred_by', 'gap_id_referred_by');
+        $metaModel->setAlias('gaa_name', 'gap_id_activity');
+        $metaModel->setAlias('gapr_name', 'gap_id_procedure');
+        $metaModel->setAlias('glo_name', 'gap_id_location');
 
         return array(
             'gap_patient_nr'      => 'gr2o_patient_nr',

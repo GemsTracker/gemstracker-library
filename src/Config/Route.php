@@ -787,6 +787,7 @@ class Route
                     'delete',
                     'undelete',
                     'edit',
+                    'export',
                     'index',
                     'autofilter',
                 ],

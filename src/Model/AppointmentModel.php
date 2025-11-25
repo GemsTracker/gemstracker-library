@@ -19,7 +19,8 @@ use Gems\Menu\RouteHelper;
 use Gems\Model;
 use Gems\Repository\OrganizationRepository;
 use Gems\User\Mask\MaskRepository;
-use Gems\Util;
+use Gems\User\Organization;
+use Gems\User\User;
 use Gems\Util\Translated;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\HtmlElement;
@@ -48,15 +49,15 @@ class AppointmentModel extends GemsMaskedModel
 
     /**
      *
-     * @var \Gems\User\Organization
+     * @var null|\Gems\User\Organization
      */
-    protected $currentOrganization;
+    protected null|Organization $currentOrganization = null;
 
     /**
      *
-     * @var \Gems\User\User
+     * @var \Gems\User\User|null
      */
-    protected $currentUser;
+    protected null|User $currentUser = null;
 
     /**
      *
@@ -189,7 +190,7 @@ class AppointmentModel extends GemsMaskedModel
             'multiOptions' => $this->agenda->getStatusCodes()
         ]);
 
-        if ($this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
+        if ($this->currentUser && $this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
             $this->metaModel->setIfExists('gap_id_episode', [
                 'label' => $this->_('Episode'),
                 'formatFunction' => [$this, 'showEpisode']
@@ -205,9 +206,7 @@ class AppointmentModel extends GemsMaskedModel
         $this->metaModel->setIfExists('gap_subject', ['label' => $this->_('Subject')]);
 
         $dels = $this->agenda->getStatusKeysInactiveDbQuoted();
-        if ($dels) {
-            $this->addColumn("CASE WHEN gap_status IN ($dels) THEN 'deleted' ELSE '' END ", 'row_class');
-        }
+        $this->addColumn("CASE WHEN gap_status IN ($dels) THEN 'deleted' ELSE '' END ", 'row_class');
 
         $this->applyMask();
 
@@ -244,7 +243,7 @@ class AppointmentModel extends GemsMaskedModel
             'label' => $this->_('Status'),
             'multiOptions' => $this->agenda->getStatusCodes()
         ]);
-        if ($this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
+        if ($this->currentUser && $this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
             $this->metaModel->setIfExists('gap_id_episode', [
                 'label' => $this->_('Episode'),
                 'required' => false
@@ -303,7 +302,14 @@ class AppointmentModel extends GemsMaskedModel
             'elementClass' => 'None',
         ]);
 
-        $this->metaModel->setIfExists('gap_id_organization', ['default' => $orgId ?: $this->currentOrganization->getId()]);
+        if (! $orgId) {
+            if ($this->currentOrganization) {
+                $orgId = $this->currentOrganization->getId();
+            } else {
+                $orgId = null;
+            }
+        }
+        $this->metaModel->setIfExists('gap_id_organization', ['default' => $orgId]);
         $this->metaModel->setIfExists('gap_admission_time', ['elementClass' => 'Date']);
         $this->metaModel->setIfExists('gap_discharge_time', ['elementClass' => 'Date']);
         $this->metaModel->setIfExists('gap_status', ['required' => true]);
@@ -316,7 +322,7 @@ class AppointmentModel extends GemsMaskedModel
         $this->metaModel->setIfExists('gap_id_attended_by', ['multiOptions' => $empty + $this->agenda->getHealthcareStaff($orgId)]);
         $this->metaModel->setIfExists('gap_id_referred_by', ['multiOptions' => $empty + $this->agenda->getHealthcareStaff($orgId)]);
 
-        if ($this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
+        if ($this->currentUser && $this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
             $this->metaModel->setIfExists('gap_id_episode', ['multiOptions' => $empty]);
             $this->metaModel->addDependency(['AppointmentCareEpisodeDependency', $this->agenda, $this->translatedUtil]);
         }
@@ -375,7 +381,7 @@ class AppointmentModel extends GemsMaskedModel
                 $this->_changedTokenCount += $event->getTokensChanged();
             }
         }
-        // \MUtil\EchoOut\EchoOut::track($this->_changedTokenCount);
+        // dump($this->_changedTokenCount);
 
         return $returnValues;
     }
@@ -396,7 +402,7 @@ class AppointmentModel extends GemsMaskedModel
     /**
      * Display the episode
      * @param int $episodeId
-     * @return string
+     * @return HtmlElement|null
      */
     public function showEpisode(int|null $episodeId): HtmlElement|null
     {
@@ -406,12 +412,12 @@ class AppointmentModel extends GemsMaskedModel
         $episode = $this->agenda->getEpisodeOfCare($episodeId);
 
         if (! $episode->exists) {
-            return $episodeId;
+            return Html::create('span', $episodeId, ['class' => 'disabled']);
         }
 
         $url = $this->routeHelper->getRouteUrl('respondent.episodes-of-care.show', [
-            \MUtil\Model::REQUEST_ID1 => $episode->getRespondent()->getPatientNumber(),
-            \MUtil\Model::REQUEST_ID2 => $episode->getOrganizationId(),
+            MetaModelInterface::REQUEST_ID1 => $episode->getRespondent()->getPatientNumber(),
+            MetaModelInterface::REQUEST_ID2 => $episode->getOrganizationId(),
             Model::EPISODE_ID => $episodeId,
         ]);
 

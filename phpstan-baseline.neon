@@ -2866,21 +2866,6 @@ parameters:
 			path: src/Model.php
 
 		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/Model/AppointmentModel.php
-
-		-
-			message: "#^Method Gems\\\\Model\\\\AppointmentModel\\:\\:showEpisode\\(\\) should return Zalt\\\\Html\\\\HtmlElement\\|null but returns int\\<min, \\-1\\>\\|int\\<1, max\\>\\.$#"
-			count: 1
-			path: src/Model/AppointmentModel.php
-
-		-
-			message: "#^PHPDoc tag @return with type string is incompatible with native type Zalt\\\\Html\\\\HtmlElement\\|null\\.$#"
-			count: 1
-			path: src/Model/AppointmentModel.php
-
-		-
 			message: "#^Method Gems\\\\Model\\\\Bridge\\\\GemsFormBridge\\:\\:addToggleCheckboxes\\(\\) should return MUtil\\\\Form\\\\Element\\\\ToggleCheckboxes but returns Gems\\\\Form\\\\Element\\\\ToggleCheckboxes\\.$#"
 			count: 1
 			path: src/Model/Bridge/GemsFormBridge.php

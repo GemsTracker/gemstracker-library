@@ -66,6 +66,11 @@ class CommRepository
             $mailer->send($email);
         } catch(TransportExceptionInterface $exception) {
             $this->lastException = $exception;
+
+            // Make sure this error does not disappear into nowhere
+            error_log($exception->getMessage());
+            // error_log($exception->getTraceAsString());
+
             $event = new TokenEventMailFailed($exception, $email, $token, $currentUserId, $job);
             $this->event->dispatch($event, $event::NAME);
 

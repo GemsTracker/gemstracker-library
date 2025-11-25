@@ -201,6 +201,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         $surveyCodes = [];
         $surveyModel = $this->getSurveyTableModel();
 
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($rounds, true) . "\n", FILE_APPEND);
         foreach ($rounds as $roundId) {
             $round = $this->trackEngine->getRound($roundId);
             $sid   = $round->getSurveyId();
@@ -346,34 +347,37 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         if (! isset($this->exportModel)) {
             $yesNo = $this->translatedUtil->getYesNo();
 
+            /**
+             * @var SessionModel $dataModel
+             */
             $dataModel = $this->metaModelLoader->createModel(SessionModel::class, 'export_for_' . $this->requestInfo->getCurrentController(), $this->session);
-            $model = $dataModel->getMetaModel();
+            $metaModel = $dataModel->getMetaModel();
 
-            $model->set('orgs', 'label', $this->_('Organization export'),
+            $metaModel->set('orgs', 'label', $this->_('Organization export'),
                     'default', 1,
                     'description', $this->_('Export the organizations for which the track is active'),
                     'multiOptions', $yesNo,
                     'required', true,
                     'elementClass', 'Checkbox');
 
-            $model->set('fields', 'label', $this->_('Field export'));
+            $metaModel->set('fields', 'label', $this->_('Field export'));
             $fields = $this->trackEngine->getFieldNames();
             if ($fields) {
-                $model->set('fields',
+                $metaModel->set('fields',
                         'default', array_keys($fields),
                         'description', $this->_('Check the fields to export'),
                         'elementClass', 'MultiCheckbox',
                         'multiOptions', $fields
                         );
             } else {
-                $model->set('fields',
+                $metaModel->set('fields',
                         'elementClass', 'Exhibitor',
                         'value', $this->_('No fields to export')
                         );
             }
 
             $rounds = $this->trackEngine->getRoundDescriptions();
-            $model->set('rounds', 'label', $this->_('Round export'));
+            $metaModel->set('rounds', 'label', $this->_('Round export'));
             if ($rounds) {
                 $defaultRounds = array();
                 foreach ($rounds as $roundId => &$roundDescription) {
@@ -386,7 +390,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
 
                     $survey = $round->getSurvey();
                     if ($survey) {
-                        $model->set(ValidateSurveyExportCode::START_NAME . $survey->getSurveyId(),
+                        $metaModel->set(ValidateSurveyExportCode::START_NAME . $survey->getSurveyId(),
                                 'label', $survey->getName(),
                                 'default', $survey->getExportCode(),
                                 'description', $this->_('A unique code indentifying this survey during track import'),
@@ -397,18 +401,19 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
                                 );
                     }
                 }
-                $model->set('rounds',
+                $metaModel->set('rounds',
                         'default', $defaultRounds,
                         'description', $this->_('Check the rounds to export'),
                         'elementClass', 'MultiCheckbox',
                         'multiOptions', $rounds
                         );
             } else {
-                $model->set('rounds',
+                $metaModel->set('rounds',
                         'elementClass', 'Exhibitor',
                         'value', $this->_('No rounds to export')
                         );
             }
+            $this->_items = $metaModel->getItemsOrdered();
 
             $this->exportModel = $dataModel;
         }
@@ -434,12 +439,6 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         $bridge->addElement($element);
     }
 
-    /**
-     * Performs actual download
-     *
-     * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
-     */
     protected function downloadExportFile()
     {
         // $this->view->layout()->disableLayout();
