@@ -3,7 +3,6 @@
 namespace Gems\Repository;
 
 use Gems\Communication\CommunicationRepository;
-use Gems\Communication\Exception;
 use Gems\Event\Application\TokenEventMailFailed;
 use Gems\Event\Application\TokenEventMailSent;
 use Gems\Exception\MailException;

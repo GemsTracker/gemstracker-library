@@ -149,6 +149,7 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
             }
             if (! isset($row['gap_id_user'])) {
                 // No user no import if still not set
+                $this->addError($key, 'gap_id_user', "No user id found.");
                 return false;
             }
         }
