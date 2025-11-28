@@ -141,6 +141,10 @@ class SmsJobMessenger implements JobMessengerInterface
         $message = $this->getMessage($job, $token);
         $from = $this->getFrom($job, $token);
 
+        if ($number === null) {
+            return false;
+        }
+
         $phoneNumber = $this->phoneNumberFactory->fromString($number);
 
         if (!$phoneNumber->isValid()) {
