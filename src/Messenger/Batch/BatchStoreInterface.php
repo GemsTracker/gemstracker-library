@@ -4,7 +4,10 @@ namespace Gems\Messenger\Batch;
 
 interface BatchStoreInterface
 {
+    public function clearOldBatches(\DateInterval|null $dateInterval = null): void;
+
     public function count(string $batchId): int;
+
     public function exists(string $batchId): bool;
 
     public function failChain(string $batchId, int $failedIteration): void;

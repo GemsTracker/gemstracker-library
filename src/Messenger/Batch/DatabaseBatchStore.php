@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Messenger\Batch;
 
+use DateInterval;
 use DateTimeImmutable;
 use Exception;
 use Gems\Db\ResultFetcher;
@@ -16,10 +17,25 @@ class DatabaseBatchStore implements BatchStoreInterface
 {
     private const DATETIME_STORAGE_FORMAT = 'Y-m-d H:i:s';
 
+    public const TABLE_NAME = 'gems__batch';
+
     public function __construct(
         private readonly ResultFetcher $resultFetcher,
     )
     {
+    }
+
+    public function clearOldBatches(\DateInterval|null $dateInterval = null): void
+    {
+        if ($dateInterval === null) {
+            $dateInterval = new DateInterval('P7D');
+        }
+        $now = new DateTimeImmutable();
+        $targetDate = $now->sub($dateInterval)->setTime(0,0,0);
+
+        $deleteQuery = 'DELETE FROM gems__batch WHERE gba_created < ?';
+
+        $this->resultFetcher->query($deleteQuery, [$targetDate->format('Y-m-d')]);
     }
 
     public function count(string $batchId): int
@@ -182,4 +198,6 @@ class DatabaseBatchStore implements BatchStoreInterface
             (new Predicate())->greaterThan('gba_iteration', $failedIteration),
         ]);
     }
+
+
 }
