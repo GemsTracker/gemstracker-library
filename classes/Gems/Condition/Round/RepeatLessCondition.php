@@ -167,7 +167,7 @@ class RepeatLessCondition extends RoundConditionAbstract
      */
     public function isRoundValid(\Gems_Tracker_Token $token)
     {
-        if (! $token->getValidFrom()) {
+        if (! ($token->getValidFrom() && $token->getCompletionTime())) {
             return true;
         }
 
@@ -244,6 +244,9 @@ class RepeatLessCondition extends RoundConditionAbstract
                 break;
             case 'Y':
                 $compareTime = $previousDate->addYear($unit);
+                break;
+            default:
+                $compareTime = $previousDate;
                 break;
         }
 
