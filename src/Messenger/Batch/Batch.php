@@ -56,6 +56,17 @@ class Batch
         return $this->messages;
     }
 
+    public function getPercent(): float
+    {
+        if (!$this->totalItems) {
+            return 0;
+        }
+        if (!$this->success || $this->success === 0) {
+            return 0;
+        }
+        return $this->success / $this->totalItems;
+    }
+
     public function clearMessages(): void
     {
         $this->messages = [];
