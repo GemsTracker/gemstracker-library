@@ -44,7 +44,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn1(TableBridge $bridge, DataReaderInterface $dataModel)
@@ -77,7 +77,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn2(TableBridge $bridge, DataReaderInterface $dataModel)
@@ -109,7 +109,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn3(TableBridge $bridge, DataReaderInterface $dataModel)
@@ -162,7 +162,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn4(TableBridge $bridge, DataReaderInterface $dataModel)
@@ -203,7 +203,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn5(TableBridge $bridge, DataReaderInterface $dataModel)
