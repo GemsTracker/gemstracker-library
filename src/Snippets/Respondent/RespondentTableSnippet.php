@@ -44,20 +44,20 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn1(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        $model = $dataModel->getMetaModel();
+        $metaModel = $dataModel->getMetaModel();
         $br = Html::create('br');
 
         if (isset($this->searchFilter['grc_success']) && (! $this->searchFilter['grc_success'])) {
-            $model->set('grc_description', 'label', $this->_('Rejection code'));
+            $metaModel->set('grc_description', 'label', $this->_('Rejection code'));
             $column2 = 'grc_description';
 
         } elseif (isset($this->searchFilter[MetaModelInterface::REQUEST_ID2])) {
-            $model->setIfExists('gr2o_opened', 'tableDisplay', 'small');
+            $metaModel->setIfExists('gr2o_opened', 'tableDisplay', 'small');
             $column2 = 'gr2o_opened';
 
         } else {
@@ -77,7 +77,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn2(TableBridge $bridge, DataReaderInterface $dataModel)
@@ -86,13 +86,13 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
             return;
         }
 
-        $model = $dataModel->getMetaModel();
+        $metaModel = $dataModel->getMetaModel();
         $br = Html::create('br');
 
-        $model->setIfExists('gr2o_email', 'formatFunction', array(AElement::class, 'ifmail'));
+        $metaModel->setIfExists('gr2o_email', 'formatFunction', array(AElement::class, 'ifmail'));
 
         // Sometimes we disable the name label
-        $model->set('name', [
+        $metaModel->set('name', [
             'label' => $this->_('Name'),
             ]);
 
@@ -109,19 +109,19 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn3(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        $model = $dataModel->getMetaModel();
+        $metaModel = $dataModel->getMetaModel();
         $br = Html::create('br');
 
         /**
          * @var RespondentModel $dataModel
          */
         if ($dataModel->getJoinStore()->hasTable('gems__respondent2track')) {
-            $track = $this->getTracksLink($bridge, $dataModel->getMetaModel());
+            $track = $this->getTracksLink($bridge, $metaModel);
             $bridge->addMultiSort($track, $br, 'gr2t_track_info');
         } else {
             $maskAddress = $this->maskRepository->isFieldMaskedWhole('grs_address_1');
@@ -162,7 +162,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn4(TableBridge $bridge, DataReaderInterface $dataModel)
@@ -203,7 +203,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn5(TableBridge $bridge, DataReaderInterface $dataModel)
