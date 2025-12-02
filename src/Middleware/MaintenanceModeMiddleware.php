@@ -48,7 +48,7 @@ class MaintenanceModeMiddleware implements MiddlewareInterface
         }
 
         $routeResult = $request->getAttribute(RouteResult::class);
-        if ($routeResult instanceof RouteResult && $routeResult->getMatchedRouteName() === 'auth.login') {
+        if ($routeResult instanceof RouteResult && in_array($routeResult->getMatchedRouteName(), ['auth.login', 'tfa.login'], true)) {
             return $handler->handle($request);
         }
 
