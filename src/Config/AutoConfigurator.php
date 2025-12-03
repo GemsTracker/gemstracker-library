@@ -69,6 +69,13 @@ class AutoConfigurator
                     }
                 }
             }
+            if (isset($settings['interfaceAttribute'])) {
+                foreach($settings['interfaceAttribute'] as $attributeClass => $targetSettings) {
+                    if ($reflector->getAttributes($attributeClass) && $reflector->isInterface()) {
+                        $this->setSettings($reflector, $targetSettings);
+                    }
+                }
+            }
         }
     }
 
