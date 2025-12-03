@@ -798,7 +798,7 @@ class User
      */
     public function isPasswordResetRequired(): bool
     {
-        return $this->passwordResetRequired;
+        return $this->userDefinition->canResetPassword($this) && $this->userDefinition->canSetPassword($this) && $this->passwordResetRequired;
     }
 
     /**

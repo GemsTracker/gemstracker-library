@@ -177,7 +177,7 @@ class RepeatLessCondition extends RoundConditionAbstract
      */
     public function isRoundValid(Token $token): bool
     {
-        if (! $token->getValidFrom()) {
+        if (! ($token->getValidFrom())) {
             return true;
         }
 

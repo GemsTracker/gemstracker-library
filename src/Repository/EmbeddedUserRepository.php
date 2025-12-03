@@ -134,6 +134,7 @@ class EmbeddedUserRepository implements EventSubscriberInterface
             LayoutParamsEvent::class => ['applyToLayoutParamsEvent'],
         ];
     }
+
     public function getTemplate(): string
     {
         return $this->data['gsus_deferred_mvc_layout'] ?? GemsSnippetResponder::DEFAULT_TEMPLATE;

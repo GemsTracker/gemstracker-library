@@ -40,7 +40,6 @@ class LdapAuthentication implements AuthenticationAdapterInterface
 
     private function makeResult(int $code, array $messages = []): AuthenticationResult
     {
-        $identity = null;
         $identity = new GemsTrackerIdentity($this->user->getLoginName(), $this->user->getCurrentOrganizationId());
 
         return new GemsTrackerAuthenticationResult($code, $identity, $messages, $this->user);
@@ -48,11 +47,16 @@ class LdapAuthentication implements AuthenticationAdapterInterface
 
     public function authenticate(): AuthenticationResult
     {
+        // return $this->makeResult(AuthenticationResult::SUCCESS);
         $adapter = new LdapAdapter();
 
         $servers = $this->configAccessor->getLdapServers();
         $result  = null;
         foreach ($servers as $server) {
+            if (isset($server['requireCert']) && (0 == $server['requireCert'])) {
+                \ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, 0);
+            }
+            unset($server['requireCert']);
             $adapter->setOptions([$server]);
 
             if (isset($server['accountDomainNameShort'])) {
@@ -71,6 +75,7 @@ class LdapAuthentication implements AuthenticationAdapterInterface
                 }
             } catch (\Exception $e) {
                 // Server could not be reached
+                error_log($e->getMessage());
             }
         }
         if ($result && !$result->isValid()) {
