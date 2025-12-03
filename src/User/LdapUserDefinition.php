@@ -128,7 +128,10 @@ class LdapUserDefinition extends StaffUserDefinition
         $select->columns([
                     'user_login_id'       => 'gul_id_user',
                     'user_two_factor_key' => 'gul_two_factor_key',
-        ])
+                    'user_otp_count'      =>'gul_otp_count',
+                    'user_otp_requested'  =>'gul_otp_requested',
+                    'user_session_key'    => 'gul_session_key',
+                ])
                 ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', [
                     'user_id'             => 'gsf_id_user',
                     'user_login'          => 'gsf_login',
@@ -142,6 +145,7 @@ class LdapUserDefinition extends StaffUserDefinition
                     'user_logout'         => 'gsf_logout_on_survey',
                     'user_base_org_id'    => 'gsf_id_organization',
                     'user_embedded'       => 'gsf_is_embedded',
+                    'user_phone_number'    => $this->getMobilePhoneField(),
                 ])
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', [
                    'user_role'=>'ggp_role',

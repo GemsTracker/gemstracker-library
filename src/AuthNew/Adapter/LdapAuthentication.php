@@ -47,7 +47,6 @@ class LdapAuthentication implements AuthenticationAdapterInterface
 
     public function authenticate(): AuthenticationResult
     {
-        // return $this->makeResult(AuthenticationResult::SUCCESS);
         $adapter = new LdapAdapter();
 
         $servers = $this->configAccessor->getLdapServers();
