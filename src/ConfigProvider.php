@@ -321,11 +321,8 @@ class ConfigProvider
                 'attribute' => [
                     AsCommand::class => ['config' => 'console.commands'],
                     AsMessageHandler::class => MessageHandlers::class,
-
-                ],
-                'interfaceAttribute' => [
                     AsStreamLogger::class => AutoConfigAttributeLogger::class,
-                ]
+                ],
             ],
         ];
     }

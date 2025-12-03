@@ -21,7 +21,7 @@ class AttributeLoggerFactory implements FactoryInterface
 
         $this->processAttributes($reflection, $logger);
 
-        return $logger;
+        return new $requestedName($logger);
     }
 
     private function getLoggerName(ReflectionClass $reflection): string
