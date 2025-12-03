@@ -40,6 +40,8 @@ use Gems\Factory\ReflectionAbstractFactory;
 use Gems\Factory\SymfonySerializerFactory;
 use Gems\Factory\SymfonyValidatorFactory;
 use Gems\Factory\TwigEnvironmentFactory;
+use Gems\Log\Attribute\AsStreamLogger;
+use Gems\Log\AutoConfigAttributeLogger;
 use Gems\Menu\RouteHelper;
 use Gems\Menu\RouteHelperFactory;
 use Gems\Messenger\MessengerFactory;
@@ -319,6 +321,10 @@ class ConfigProvider
                 'attribute' => [
                     AsCommand::class => ['config' => 'console.commands'],
                     AsMessageHandler::class => MessageHandlers::class,
+
+                ],
+                'interfaceAttribute' => [
+                    AsStreamLogger::class => AutoConfigAttributeLogger::class,
                 ]
             ],
         ];
