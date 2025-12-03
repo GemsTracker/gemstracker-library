@@ -167,7 +167,7 @@ class RepeatLessCondition extends RoundConditionAbstract
      */
     public function isRoundValid(\Gems_Tracker_Token $token)
     {
-        if (! ($token->getValidFrom() && $token->getCompletionTime())) {
+        if (! $token->getValidFrom()) {
             return true;
         }
 
