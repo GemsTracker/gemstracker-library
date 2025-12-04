@@ -394,31 +394,48 @@ class Route
                     'action' => 'to-survey',
                 ],
             ),
+            ...$this->createRoute(
+                name: 'legacyResumeLater',
+                path: '/ask/return/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}/resumeLater/{idc:1}',
+                middleware: [
+                    LegacyAskRedirectHandler::class,
+                ],
+                options: [
+                    'action' => 'resume-later',
+                ],
+                params: [
+                    'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}',
+                    'idc' => '1',
+                ],
+            ),
             ...$this->createSnippetRoutes(
                 baseName: 'ask',
                 controllerClass: \Gems\Handlers\AskLegacyHandler::class, // Should later be changed to AskHandler
                 basePrivilege: false,
                 pages: [
-                    'index',
                     'forward',
+                    'index',
+                    'lost',
+                    'resume-later',
+                    'return',
                     'take',
                     'to-survey',
-                    'return',
-                    'lost',
                 ],
                 parameters: [
                     'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}'
                 ],
                 parameterRoutes: [
                     'forward',
+                    'resume-later',
+                    'return',
                     'take',
                     'to-survey',
-                    'return',
                 ],
                 postRoutes: [
                     ...$this->defaultPostRoutes,
-                    'lost',
                     'forward',
+                    'lost',
+                    'resume-later',
                 ],
                 noCsrfRoutes: ['index', 'lost']
             ),
