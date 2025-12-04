@@ -129,7 +129,7 @@
         "itsgoingd/clockwork": "^5.1",
         "jangregor/phpstan-prophecy": "1.*",
         "phing/phing": "^2.17.3",
-        "phpoffice/phpword": "v1.3.*",
+        "phpoffice/phpword": "v1.4.*",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^1.12",
         "phpunit/phpunit": "^10.5.0",
