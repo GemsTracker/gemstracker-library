@@ -21,6 +21,7 @@ class ConfigRepository
             'username'  => Env::get('DB_USER', $this->config['db']['username'] ?? null),
             'password'  => Env::get('DB_PASS', $this->config['db']['password'] ?? null),
             'database'  => Env::get('DB_NAME', $this->config['db']['database'] ?? null),
+            'charset'  => Env::get('DB_CHARSET', $this->config['db']['charset'] ?? null),
             'options'   => $this->config['db']['options'] ?? [],
         ];
     }
@@ -45,6 +46,7 @@ class ConfigRepository
             'password' => $config['password'],
             'dbname' => $config['database'],
             'driverOptions' => $config['options'],
+            'charset' => $config['charset'],
         ];
     }
 
