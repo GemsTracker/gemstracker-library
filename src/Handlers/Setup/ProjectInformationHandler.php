@@ -258,7 +258,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             unlink($autoConfig);
             $messenger->addSuccess($this->_('Auto config cache has been cleared'));
         }
-        $configCacheFileLocation = $config['config_cache_path'] ?? null;
+        $configCacheFileLocation = $this->config['config_cache_path'] ?? null;
         if ($configCacheFileLocation && file_exists($configCacheFileLocation)) {
             unlink($configCacheFileLocation);
             $messenger->addSuccess($this->_('Config cache has been cleared'));
