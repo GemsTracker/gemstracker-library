@@ -201,7 +201,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      */
     protected function applyDatesValidFor(MetaModelInterface $model, array &$itemData, string $language): bool
     {
-        $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_for_source'], $itemData['gro_valid_for_id'], $language);
+        $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_for_source'], $itemData['gro_valid_for_id'] ? $itemData['gro_valid_for_id'] : null, $language);
 
         if ($itemData['gro_id_round'] == $itemData['gro_valid_for_id']) {
             // Cannot use the valid until of the same round to calculate that valid until

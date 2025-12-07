@@ -268,9 +268,17 @@ class Menu
                             'type' => 'route-link-item',
                             'children' => [
                                 [
-                                    'name' => 'respondent.tracks.survey.insert',
+                                    'name' => 'respondent.tracks.survey.insert-any',
                                     'label' => $this->translator->trans('Insert'),
                                     'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'respondent.tracks.survey.insert',
+                                    'label' => $this->translator->trans('Insert'),
+//                                    'type' => 'route-link-item',
+                                    'type' => 'alias',
+                                    'alias' => 'respondent.tracks.survey.insert-any',
+                                    'parent' => 'respondent.tracks.survey.insert-any',
                                 ],
                                 [
                                     'name' => 'respondent.tracks.create',
