@@ -23,6 +23,7 @@ use Gems\SnippetsActions\Ask\AskInputAction;
 use Gems\SnippetsActions\Ask\AskReturnAction;
 use Gems\SnippetsActions\Ask\ListTokensAction;
 use Gems\SnippetsActions\Ask\LostTokenAction;
+use Gems\SnippetsActions\Ask\ResumeLaterAction;
 use Gems\SnippetsActions\Ask\ToSurveyAction;
 use Gems\Tracker;
 use Gems\Tracker\Token;
@@ -49,12 +50,13 @@ class AskHandler extends SnippetHandler
     use CookieHandlerTrait;
 
     public static $actions = [
-        'forward'   => ListTokensAction::class,
-        'index'     => AskInputAction::class,
-        'lost'      => LostTokenAction::class,
-        'return'    => AskReturnAction::class,
-        'take'      => ToSurveyAction::class,
-        'to-survey' => ToSurveyAction::class,
+        'forward'      => ListTokensAction::class,
+        'index'        => AskInputAction::class,
+        'lost'         => LostTokenAction::class,
+        'resume-later' => ResumeLaterAction::class,
+        'return'       => AskReturnAction::class,
+        'take'         => ToSurveyAction::class,
+        'to-survey'    => ToSurveyAction::class,
     ];
 
     /**

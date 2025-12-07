@@ -164,6 +164,42 @@ class Route
         ];
     }
 
+    protected function createRespondentTrackSnippetRoutes(): array
+    {
+        $output = $this->createSnippetRoutes(
+                    baseName: 'respondent.tracks.survey',
+                    controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
+                    basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
+                    pages: [
+                        'insert',
+                        'view-survey',
+                    ],
+                    parameters: [
+                        Model::SURVEY_ID => '\d+',
+                    ],
+                    parameterRoutes: [
+                        'insert',
+                        'view-survey',
+                    ],
+                    postRoutes: [
+                        'insert',
+                        'insert-any',
+                    ],
+                    parentParameters: [
+                        'id1',
+                        'id2',
+                    ],
+                );
+
+        // Create a copy of the insert route without the last parameter for the 'normal' insert button
+        $output['respondent.tracks.survey.insert-any'] = $output['respondent.tracks.survey.insert'];
+        $output['respondent.tracks.survey.insert-any']['name'] = 'respondent.tracks.survey.insert-any';
+        $output['respondent.tracks.survey.insert-any']['path'] = str_replace('/{si:\d+}', '', $output['respondent.tracks.survey.insert-any']['path']);
+        array_pop($output['respondent.tracks.survey.insert-any']['params']);
+
+        return $output;
+    }
+
     public function getAlwaysAvailableRoutes(): array
     {
         return [
@@ -394,31 +430,48 @@ class Route
                     'action' => 'to-survey',
                 ],
             ),
+            ...$this->createRoute(
+                name: 'legacyResumeLater',
+                path: '/ask/return/{id:[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}}/resumeLater/{idc:1}',
+                middleware: [
+                    LegacyAskRedirectHandler::class,
+                ],
+                options: [
+                    'action' => 'resume-later',
+                ],
+                params: [
+                    'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}',
+                    'idc' => '1',
+                ],
+            ),
             ...$this->createSnippetRoutes(
                 baseName: 'ask',
                 controllerClass: \Gems\Handlers\AskLegacyHandler::class, // Should later be changed to AskHandler
                 basePrivilege: false,
                 pages: [
-                    'index',
                     'forward',
+                    'index',
+                    'lost',
+                    'resume-later',
+                    'return',
                     'take',
                     'to-survey',
-                    'return',
-                    'lost',
                 ],
                 parameters: [
                     'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}'
                 ],
                 parameterRoutes: [
                     'forward',
+                    'resume-later',
+                    'return',
                     'take',
                     'to-survey',
-                    'return',
                 ],
                 postRoutes: [
                     ...$this->defaultPostRoutes,
-                    'lost',
                     'forward',
+                    'lost',
+                    'resume-later',
                 ],
                 noCsrfRoutes: ['index', 'lost']
             ),
@@ -836,29 +889,7 @@ class Route
                     'rt',
                 ],
             ),
-            ...$this->createSnippetRoutes(
-                baseName: 'respondent.tracks.survey',
-                controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
-                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
-                pages: [
-                    'insert',
-                    'view-survey',
-                ],
-                parameters: [
-                    \Gems\Model::SURVEY_ID => '\d+',
-                ],
-                parameterRoutes: [
-                    'insert',
-                    'view-survey',
-                ],
-                postRoutes: [
-                    'insert',
-                ],
-                parentParameters: [
-                    'id1',
-                    'id2',
-                ],
-            ),
+            ...$this->createRespondentTrackSnippetRoutes(),
             ...$this->createSnippetRoutes(
                 baseName: 'respondent.tokens',
                 controllerClass: \Gems\Handlers\Respondent\TokenHandler::class,
