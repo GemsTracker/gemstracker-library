@@ -986,6 +986,8 @@ class Route
                     'changelog-gems',
                     'changelog',
                     'cacheclean',
+                    'configcacheclean',
+                    'autoconfigcacheclean',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.project-information',

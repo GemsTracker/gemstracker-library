@@ -226,6 +226,25 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         }
     }
 
+    public function autoconfigcachecleanAction()
+    {
+        /**
+         * @var StatusMessengerInterface $messenger
+         */
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+
+        $autoConfig = $this->config['autoconfig']['cache_path'] ?? null;
+        if ($autoConfig && file_exists($autoConfig)) {
+            unlink($autoConfig);
+            $messenger->addSuccess($this->_('Auto config cache has been cleared'));
+        }
+        $this->auditLog->registerChanges(['autoconfigcache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
+
+        // Redirect
+        $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
+        return new RedirectResponse($redirectUrl);
+    }
+
     /**
      * Show the project specific change log
      */
@@ -246,23 +265,33 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), $this->config['rootDir'] . 'vendor/gemstracker/gemstracker/CHANGELOG.md', null, 'GemsTracker/gemstracker-library');
     }
 
-    public function cachecleanAction()
+    public function configcachecleanAction()
     {
         /**
          * @var StatusMessengerInterface $messenger
          */
         $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
-        $autoConfig = $this->config['autoconfig']['cache_path'] ?? null;
-        if ($autoConfig && file_exists($autoConfig)) {
-            unlink($autoConfig);
-            $messenger->addSuccess($this->_('Auto config cache has been cleared'));
-        }
         $configCacheFileLocation = $this->config['config_cache_path'] ?? null;
         if ($configCacheFileLocation && file_exists($configCacheFileLocation)) {
             unlink($configCacheFileLocation);
             $messenger->addSuccess($this->_('Config cache has been cleared'));
+        } else {
+            $messenger->addSuccess($this->_('Config cache does not exist'));
         }
+        $this->auditLog->registerChanges(['configcache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
+
+        // Redirect
+        $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
+        return new RedirectResponse($redirectUrl);
+    }
+
+    public function cachecleanAction()
+    {
+        /**
+         * @var StatusMessengerInterface $messenger
+         */
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
         // Doctrine Cache clean
         $this->entityManager->getConfiguration()->getMetadataCache()->clear();
@@ -346,20 +375,10 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
     {
         $this->html->h2($this->_('Project information'));
 
-        $data = $this->_getData();
-
-        /*$request = $this->getRequest();
-        $buttonList = $this->menu->getMenuList();
-        $buttonList->addParameterSources($request)
-            ->addByController($request->getControllerName(), 'maintenance', $label)
-            ->addByController($request->getControllerName(), 'monitor')
-            ->addByController($request->getControllerName(), 'cacheclean');*/
-
+        $buttonList = [];
+        $data       = $this->_getData();
 
         $maintenanceModeUrl = $this->routeHelper->getRouteUrl('setup.project-information.maintenance-mode');
-        $cacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.cacheclean');
-
-        $buttonList = [];
         if ($maintenanceModeUrl) {
             if ($this->maintenanceLock->isLocked()) {
                 $maintenanceLockLabel = $this->_('Turn Maintenance Mode OFF');
@@ -368,11 +387,19 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             }
             $buttonList[] = Html::actionLink($maintenanceModeUrl, $maintenanceLockLabel);
         }
+
+        $cacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.cacheclean');
         if ($cacheCleanUrl) {
             $buttonList[] = Html::actionLink($cacheCleanUrl, $this->_('Clear cache'));
         }
-
-        // $this->html->buttonDiv($buttonList);
+        $configCacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.configcacheclean');
+        if ($configCacheCleanUrl) {
+            $buttonList[] = Html::actionLink($configCacheCleanUrl, $this->_('Clear config cache'));
+        }
+        $autoconfigCacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.autoconfigcacheclean');
+        if ($autoconfigCacheCleanUrl) {
+            $buttonList[] = Html::actionLink($autoconfigCacheCleanUrl, $this->_('Clear auto config cache'));
+        }
 
         $this->_showTable($this->_('Version information'), $data);
 
