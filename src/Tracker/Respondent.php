@@ -94,7 +94,6 @@ class Respondent
     )
     {
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
-        $this->respondentModel->applyStringAction('edit', true);
 
         $this->refresh();
     }
