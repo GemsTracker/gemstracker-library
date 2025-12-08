@@ -275,7 +275,6 @@ class Menu
                                 [
                                     'name' => 'respondent.tracks.survey.insert',
                                     'label' => $this->translator->trans('Insert'),
-//                                    'type' => 'route-link-item',
                                     'type' => 'alias',
                                     'alias' => 'respondent.tracks.survey.insert-any',
                                     'parent' => 'respondent.tracks.survey.insert-any',
@@ -352,11 +351,13 @@ class Menu
                                                 ],
                                                 [
                                                     'name' => 'respondent.tracks.token.email',
+                                                    'label' => $this->translator->trans('Email Token'),
                                                     'type' => 'alias',
                                                     'alias' => 'respondent.tracks.token',
                                                 ],
                                                 [
                                                     'name' => 'respondent.tracks.token.answer-export',
+                                                    'label' => $this->translator->trans('Answer export'),
                                                     'type' => 'alias',
                                                     'alias' => 'respondent.tracks.token',
                                                 ],
@@ -366,11 +367,13 @@ class Menu
                                 ],
                                 [
                                     'name' => 'respondent.tracks.delete',
+                                    'label' => $this->translator->trans('Delete track'),
                                     'type' => 'alias',
                                     'alias' => 'respondent.tracks.show',
                                 ],
                                 [
                                     'name' => 'respondent.tracks.undelete',
+                                    'label' => $this->translator->trans('Undelete track'),
                                     'type' => 'alias',
                                     'alias' => 'respondent.tracks.show',
                                 ],
@@ -613,6 +616,27 @@ class Menu
                             'name' => 'setup.project-information.errors',
                             'label' => $this->translator->trans('Errors'),
                             'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'setup.project-information.cacheclean',
+                            'label' => $this->translator->trans('Clear cache'),
+                            'type' => 'alias',
+                            'alias' => 'setup.project-information.index',
+                            'parent' => 'setup.project-information.index',
+                        ],
+                        [
+                            'name' => 'setup.project-information.configcacheclean',
+                            'label' => $this->translator->trans('Clear config cache'),
+                            'type' => 'alias',
+                            'alias' => 'setup.project-information.index',
+                            'parent' => 'setup.project-information.index',
+                        ],
+                        [
+                            'name' => 'setup.project-information.maintenance-mode',
+                            'label' => $this->translator->trans('Mainenance Mode!'),
+                            'type' => 'alias',
+                            'alias' => 'setup.project-information.index',
+                            'parent' => 'setup.project-information.index',
                         ],
                         [
                             'name' => 'setup.project-information.monitor',
@@ -1296,7 +1320,10 @@ class Menu
                                 'execute-all' => $this->translator->trans('Execute all'),
                                 'monitor' => ['label' => $this->translator->trans('Monitor'), 'type' => 'alias',],
                                 ],
-                            otherShowActions: ['execute' => $this->translator->trans('Execute'),],
+                            otherShowActions: [
+                                'execute' => $this->translator->trans('Execute'),
+                                'lock' => $this->translator->trans('Lock jobs'),
+                                ],
                         ),
                         [
                             'name' => 'setup.communication.messenger.index',

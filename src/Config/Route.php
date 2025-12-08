@@ -570,7 +570,7 @@ class Route
             ...$this->createSnippetRoutes(
                 baseName: 'calendar',
                 controllerClass: CalendarHandler::class,
-                // pages: ['index', 'autofilter'],
+                pages: ['index', 'autofilter'],
                 parameters: [Model::APPOINTMENT_ID =>  '\d+',],
                 genericExport: true,
             ),
@@ -977,17 +977,16 @@ class Route
                 controllerClass: \Gems\Handlers\Setup\ProjectInformationHandler::class,
                 pages: [
                     'index',
+                    'cacheclean',
+//                    'changelog-gems',
+//                    'changelog',
+                    'configcacheclean',
                     'errors',
                     'monitor',
                     'php',
                     'php-errors',
                     'project',
                     'session',
-                    'changelog-gems',
-                    'changelog',
-                    'cacheclean',
-                    'configcacheclean',
-                    'autoconfigcacheclean',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.project-information',
@@ -1076,6 +1075,17 @@ class Route
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.communication.log',
                 controllerClass: \Gems\Handlers\Setup\CommLogHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show'
+                ],
+                parameters: [
+                    \Gems\Model::LOG_ITEM_ID => '\d+',
+                ],
+                parameterRoutes: [
+                    'show',
+                ],
             ),
 
             ...$this->createRoute(

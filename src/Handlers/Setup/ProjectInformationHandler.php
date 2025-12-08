@@ -226,28 +226,9 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         }
     }
 
-    public function autoconfigcachecleanAction()
-    {
-        /**
-         * @var StatusMessengerInterface $messenger
-         */
-        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-
-        $autoConfig = $this->config['autoconfig']['cache_path'] ?? null;
-        if ($autoConfig && file_exists($autoConfig)) {
-            unlink($autoConfig);
-            $messenger->addSuccess($this->_('Auto config cache has been cleared'));
-        }
-        $this->auditLog->registerChanges(['autoconfigcache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
-
-        // Redirect
-        $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
-        return new RedirectResponse($redirectUrl);
-    }
-
     /**
      * Show the project specific change log
-     */
+     * /
     public function changelogAction()
     {
         if (file_exists($this->config['rootDir'] . '/CHANGELOG.md')) {
@@ -255,36 +236,15 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         } else {
             $this->_showText(sprintf($this->_('Changelog %s'), $this->projectSettings->getName()), $this->config['rootDir'] . '/changelog.txt');
         }
-    }
+    } // */
 
     /**
      * Show the GemsTracker change log
-     */
+     * /
     public function changelogGemsAction()
     {
         $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), $this->config['rootDir'] . 'vendor/gemstracker/gemstracker/CHANGELOG.md', null, 'GemsTracker/gemstracker-library');
-    }
-
-    public function configcachecleanAction()
-    {
-        /**
-         * @var StatusMessengerInterface $messenger
-         */
-        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-
-        $configCacheFileLocation = $this->config['config_cache_path'] ?? null;
-        if ($configCacheFileLocation && file_exists($configCacheFileLocation)) {
-            unlink($configCacheFileLocation);
-            $messenger->addSuccess($this->_('Config cache has been cleared'));
-        } else {
-            $messenger->addSuccess($this->_('Config cache does not exist'));
-        }
-        $this->auditLog->registerChanges(['configcache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
-
-        // Redirect
-        $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
-        return new RedirectResponse($redirectUrl);
-    }
+    } // */
 
     public function cachecleanAction()
     {
@@ -302,6 +262,32 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $messenger->addSuccess($this->_('Data cache cleaned'));
 
         $this->auditLog->registerChanges(['cache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
+
+        // Redirect
+        $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
+        return new RedirectResponse($redirectUrl);
+    }
+
+    public function configcachecleanAction()
+    {
+        /**
+         * @var StatusMessengerInterface $messenger
+         */
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+
+        $autoConfig = $this->config['autoconfig']['cache_path'] ?? null;
+        if ($autoConfig && file_exists($autoConfig)) {
+            unlink($autoConfig);
+            $messenger->addSuccess($this->_('Auto config cache has been cleared'));
+        }
+        $this->auditLog->registerChanges(['autoconfigcache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
+
+        $configCacheFileLocation = $this->config['config_cache_path'] ?? null;
+        if ($configCacheFileLocation && file_exists($configCacheFileLocation)) {
+            unlink($configCacheFileLocation);
+            $messenger->addSuccess($this->_('Config cache has been cleared'));
+        }
+        $this->auditLog->registerChanges(['configcache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
 
         // Redirect
         $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
@@ -395,10 +381,6 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $configCacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.configcacheclean');
         if ($configCacheCleanUrl) {
             $buttonList[] = Html::actionLink($configCacheCleanUrl, $this->_('Clear config cache'));
-        }
-        $autoconfigCacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.autoconfigcacheclean');
-        if ($autoconfigCacheCleanUrl) {
-            $buttonList[] = Html::actionLink($autoconfigCacheCleanUrl, $this->_('Clear auto config cache'));
         }
 
         $this->_showTable($this->_('Version information'), $data);
