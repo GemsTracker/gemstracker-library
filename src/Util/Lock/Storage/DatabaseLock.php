@@ -2,49 +2,78 @@
 
 namespace Gems\Util\Lock\Storage;
 
+use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
-use Laminas\Db\TableGateway\TableGateway;
 
 class DatabaseLock extends LockStorageAbstract
 {
-    protected int $currentUserId;
+    protected readonly int $currentUserId;
 
-    public function __construct(protected ResultFetcher $resultFetcher, CurrentUserRepository $currentUserRepository)
+    public function __construct(
+        protected readonly ResultFetcher $resultFetcher,
+        CurrentUserRepository $currentUserRepository,
+    )
     {
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
+    }
+
+    protected function calculateExpiresAt(DateInterval|int|null $expiresAfter=null): DateTimeInterface|null
+    {
+        if ($expiresAfter === null) {
+            return null;
+        }
+        if (is_int($expiresAfter)) {
+            $expiresAfter = new DateInterval("PT{$expiresAfter}S");
+        }
+
+        return (new DateTimeImmutable())->add($expiresAfter);
     }
 
     public function isLocked(): bool
     {
         $result = $this->getLockSetting();
-        if ($result) {
-            return (bool) $result;
+        if (!$result) {
+            return false;
         }
-        return false;
+        if ((int)$result['glock_is_locked'] === 0) {
+            return false;
+        }
+        if ($result['glock_locked_until'] === null) {
+            return true;
+        }
+
+        $expiresAt = new DateTimeImmutable($result['glock_locked_until']);
+        if ($expiresAt <= new DateTimeImmutable()) {
+            $this->unlock();
+            return false;
+        }
+
+        return true;
     }
 
-    protected function getLockSetting(): ?string
+    protected function getLockSetting(): ?array
     {
-        $select = $this->resultFetcher->getSelect('gems__settings');
+        $select = $this->resultFetcher->getSelect('gems__locks');
         $select->columns([
-            'gst_value',
+            'glock_is_locked',
+            'glock_locked_until',
         ])->where([
-            'gst_key' => $this->key,
+            'glock_key' => $this->key,
         ]);
-        return $this->resultFetcher->fetchOne($select);
+        return $this->resultFetcher->fetchRow($select);
     }
 
     public function getLockTime(): ?DateTimeInterface
     {
-        $select = $this->resultFetcher->getSelect('gems__settings');
+        $select = $this->resultFetcher->getSelect('gems__locks');
         $select->columns([
-            'gst_created',
+            'glock_changed',
         ])->where([
-            'gst_key' => $this->key,
-            'gst_value' => 1,
+            'glock_key' => $this->key,
+            'glock_is_locked' => 1,
         ]);
         $result = $this->resultFetcher->fetchOne($select);
         if ($result) {
@@ -61,53 +90,37 @@ class DatabaseLock extends LockStorageAbstract
         return false;
     }
 
-    public function lock(): void
+    public function lock(DateInterval|int|null $expiresAfter=null): void
     {
-        $table = new TableGateway('gems__settings', $this->resultFetcher->getAdapter());
-        $now = new DateTimeImmutable();
+        $lockedUntil = $this->calculateExpiresAt($expiresAfter);
 
-        if ($this->hasLockSetting()) {
-            $table->update([
-                'gst_value' => 1,
-                'gst_changed' => $now->format('Y-m-d H:i'),
-                'gst_changed_by' => $this->currentUserId,
-            ],
-                [
-                    'gst_key' => $this->key
-                ]);
-        }
-        $table->insert([
-            'gst_key' => $this->key,
-            'gst_value' => 1,
-            'gst_changed' => $now->format('Y-m-d H:i'),
-            'gst_changed_by' => $this->currentUserId,
-            'gst_created' => $now->format('Y-m-d H:i'),
-            'gst_created_by' => $this->currentUserId,
+        $query = 'INSERT INTO gems__locks (glock_key, glock_is_locked, glock_locked_until, glock_changed_by, glock_created_by)
+            VALUES (?, 1, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                glock_is_locked = 1,
+                glock_locked_until = ?,
+                glock_changed_by = ?';
+
+
+        $lockUntilFormatted = $lockedUntil->format('Y-m-d H:i:s');
+
+        $this->resultFetcher->query($query, [
+            $this->key,
+            $lockUntilFormatted,
+            $this->currentUserId,
+            $this->currentUserId,
+            $lockUntilFormatted,
+            $this->currentUserId,
         ]);
     }
 
     public function unlock(): void
     {
-        $table = new TableGateway('gems__settings', $this->resultFetcher->getAdapter());
-        $now = new DateTimeImmutable();
-
-        if ($this->hasLockSetting()) {
-            $table->update([
-                'gst_value' => 0,
-                'gst_changed' => $now->format('Y-m-d H:i'),
-                'gst_changed_by' => $this->currentUserId,
-            ],
-                [
-                    'gst_key' => $this->key
-                ]);
-        }
-        $table->insert([
-            'gst_key' => $this->key,
-            'gst_value' => 0,
-            'gst_changed' => $now->format('Y-m-d H:i'),
-            'gst_changed_by' => $this->currentUserId,
-            'gst_created' => $now->format('Y-m-d H:i'),
-            'gst_created_by' => $this->currentUserId,
+        $this->resultFetcher->updateTable('gems__locks', [
+            'glock_is_locked' => 0,
+        ],
+        [
+            'glock_key' => $this->key
         ]);
     }
 }

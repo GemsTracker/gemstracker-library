@@ -2,6 +2,7 @@
 
 namespace Gems\Util\Lock\Storage;
 
+use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Cache\HelperAdapter;
@@ -36,13 +37,13 @@ class CacheLock extends LockStorageAbstract
         return null;
     }
 
-    public function lock(): void
+    public function lock(DateInterval|int|null $expiresAfter=null): void
     {
         $lockInfo = [
             'enabled' => true,
             'startTime' => new DateTimeImmutable(),
         ];
-        $this->cache->setCacheItem($this->key, $lockInfo);
+        $this->cache->setCacheItem($this->key, $lockInfo, null, $expiresAfter);
     }
 
     public function setKey(string $key): void
