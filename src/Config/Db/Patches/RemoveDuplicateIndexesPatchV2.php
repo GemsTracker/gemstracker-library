@@ -5,7 +5,7 @@ namespace Gems\Config\Db\Patches;
 use Gems\Db\Migration\DatabaseInfo;
 use Gems\Db\Migration\PatchAbstract;
 
-class RemoveDuplicateIndexesPatch extends PatchAbstract
+class RemoveDuplicateIndexesPatchV2 extends PatchAbstract
 {
     public function __construct(
         protected array $config,
@@ -20,7 +20,7 @@ class RemoveDuplicateIndexesPatch extends PatchAbstract
 
     public function getOrder(): int
     {
-        return 20251203000000;
+        return 20251209000000;
     }
 
     public function up(): array
@@ -34,8 +34,8 @@ class RemoveDuplicateIndexesPatch extends PatchAbstract
         //         `gls_name` varchar(64) character set utf8mb4 collate utf8mb4_unicode_ci not null
         // To remove this duplicate index, execute:
         // ALTER TABLE `gems__log_setup` DROP INDEX `gls_name_2`;
-        if ($this->databaseInfo->tableHasConstraint('gems__log_setup', 'gls_name_2')
-            && $this->databaseInfo->tableHasConstraint('gems__log_setup', 'gls_name')) {
+        if ($this->databaseInfo->tableHasIndex('gems__log_setup', 'gls_name_2')
+            && $this->databaseInfo->tableHasIndex('gems__log_setup', 'gls_name')) {
             $statements[] = 'ALTER TABLE gems__log_setup DROP INDEX gls_name_2';
         }
         // Uniqueness of gpl_level ignored because PRIMARY is a duplicate constraint
@@ -47,7 +47,7 @@ class RemoveDuplicateIndexesPatch extends PatchAbstract
         //         `gpl_level` int unsigned not null
         // To remove this duplicate index, execute:
         // ALTER TABLE `gems__patch_levels` DROP INDEX `gpl_level`;
-        if ($this->databaseInfo->tableHasConstraint('gems__patch_levels', 'gpl_level')) {
+        if ($this->databaseInfo->tableHasIndex('gems__patch_levels', 'gpl_level')) {
             $statements[] = 'ALTER TABLE gems__patch_levels DROP INDEX gpl_level';
         }
         // grr_id_respondent_staff is a duplicate of grr_id_respondent
@@ -59,8 +59,8 @@ class RemoveDuplicateIndexesPatch extends PatchAbstract
         //         `grr_id_staff` bigint unsigned default null
         // To remove this duplicate index, execute:
         // ALTER TABLE `gemstracker_acc`.`gems__respondent_relations` DROP INDEX `grr_id_respondent_staff`;
-        if ($this->databaseInfo->tableHasConstraint('gems__respondent_relations', 'grr_id_respondent_staff')
-            && $this->databaseInfo->tableHasConstraint('gems__respondent_relations', 'grr_id_respondent')) {
+        if ($this->databaseInfo->tableHasIndex('gems__respondent_relations', 'grr_id_respondent_staff')
+            && $this->databaseInfo->tableHasIndex('gems__respondent_relations', 'grr_id_respondent')) {
             $statements[] = 'ALTER TABLE gems__respondent_relations DROP INDEX grr_id_respondent_staff';
         }
         // gtr_track_name_2 is a duplicate of gtr_track_name
@@ -71,8 +71,8 @@ class RemoveDuplicateIndexesPatch extends PatchAbstract
         //         `gtr_track_name` varchar(40) character set utf8mb4 collate utf8mb4_unicode_ci not null
         // To remove this duplicate index, execute:
         // ALTER TABLE `gemstracker_acc`.`gems__tracks` DROP INDEX `gtr_track_name_2`;
-        if ($this->databaseInfo->tableHasConstraint('gems__tracks', 'gtr_track_name_2')
-            && $this->databaseInfo->tableHasConstraint('gems__tracks', 'gtr_track_name')) {
+        if ($this->databaseInfo->tableHasIndex('gems__tracks', 'gtr_track_name_2')
+            && $this->databaseInfo->tableHasIndex('gems__tracks', 'gtr_track_name')) {
             $statements[] = 'ALTER TABLE gems__tracks DROP INDEX gtr_track_name_2';
         }
         return $statements;
