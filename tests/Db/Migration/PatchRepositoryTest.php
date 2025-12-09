@@ -215,40 +215,80 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
         $resultFetcher = new ResultFetcher($adapter);
         $result = $resultFetcher->fetchAll('DESCRIBE test__table');
 
-        $expected = [
-            [
-                'Field' => 'tt_id',
-                'Type' => 'bigint unsigned',
-                'Null' => 'NO',
-                'Key' => 'PRI',
-                'Default' => null,
-                'Extra' => 'auto_increment',
-            ],
-            [
-                'Field' => 'tt_description',
-                'Type' => 'varchar(255)',
-                'Null' => 'YES',
-                'Key' => null,
-                'Default' => null,
-                'Extra' => null,
-            ],
-            [
-                'Field' => 'tt_created',
-                'Type' => 'timestamp',
-                'Null' => 'NO',
-                'Key' => '',
-                'Default' => 'CURRENT_TIMESTAMP',
-                'Extra' => 'DEFAULT_GENERATED',
-            ],
-            [
-                'Field' => 'tt_name',
-                'Type' => 'varchar(255)',
-                'Null' => 'YES',
-                'Key' => '',
-                'Default' => null,
-                'Extra' => '',
-            ],
-        ];
+        // The output differs between mysql and mariadb.
+        $version = $adapter->getDriver()->getConnection()->getResource()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+
+        if (stripos($version, 'mariadb') !== false) {
+            $expected = [
+                [
+                    'Field' => 'tt_id',
+                    'Type' => 'bigint(20) unsigned',
+                    'Null' => 'NO',
+                    'Key' => 'PRI',
+                    'Default' => null,
+                    'Extra' => 'auto_increment',
+                ],
+                [
+                    'Field' => 'tt_description',
+                    'Type' => 'varchar(255)',
+                    'Null' => 'YES',
+                    'Key' => null,
+                    'Default' => null,
+                    'Extra' => null,
+                ],
+                [
+                    'Field' => 'tt_created',
+                    'Type' => 'timestamp',
+                    'Null' => 'NO',
+                    'Key' => '',
+                    'Default' => 'current_timestamp()',
+                    'Extra' => '',
+                ],
+                [
+                    'Field' => 'tt_name',
+                    'Type' => 'varchar(255)',
+                    'Null' => 'YES',
+                    'Key' => '',
+                    'Default' => null,
+                    'Extra' => '',
+                ],
+            ];
+        } else {
+            $expected = [
+                [
+                    'Field' => 'tt_id',
+                    'Type' => 'bigint unsigned',
+                    'Null' => 'NO',
+                    'Key' => 'PRI',
+                    'Default' => null,
+                    'Extra' => 'auto_increment',
+                ],
+                [
+                    'Field' => 'tt_description',
+                    'Type' => 'varchar(255)',
+                    'Null' => 'YES',
+                    'Key' => null,
+                    'Default' => null,
+                    'Extra' => null,
+                ],
+                [
+                    'Field' => 'tt_created',
+                    'Type' => 'timestamp',
+                    'Null' => 'NO',
+                    'Key' => '',
+                    'Default' => 'CURRENT_TIMESTAMP',
+                    'Extra' => 'DEFAULT_GENERATED',
+                ],
+                [
+                    'Field' => 'tt_name',
+                    'Type' => 'varchar(255)',
+                    'Null' => 'YES',
+                    'Key' => '',
+                    'Default' => null,
+                    'Extra' => '',
+                ],
+            ];
+        }
 
         $this->assertEquals($expected, $result);
     }
@@ -280,32 +320,66 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
         $resultFetcher = new ResultFetcher($adapter);
         $result = $resultFetcher->fetchAll('DESCRIBE test__table');
 
-        $expected = [
-            [
-                'Field' => 'tt_id',
-                'Type' => 'bigint unsigned',
-                'Null' => 'NO',
-                'Key' => 'PRI',
-                'Default' => null,
-                'Extra' => 'auto_increment',
-            ],
-            [
-                'Field' => 'tt_description',
-                'Type' => 'varchar(255)',
-                'Null' => 'YES',
-                'Key' => null,
-                'Default' => null,
-                'Extra' => null,
-            ],
-            [
-                'Field' => 'tt_created',
-                'Type' => 'timestamp',
-                'Null' => 'NO',
-                'Key' => '',
-                'Default' => 'CURRENT_TIMESTAMP',
-                'Extra' => 'DEFAULT_GENERATED',
-            ],
-        ];
+
+
+        // The output differs between mysql and mariadb.
+        $version = $adapter->getDriver()->getConnection()->getResource()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+
+        if (stripos($version, 'mariadb') !== false) {
+            $expected = [
+                [
+                    'Field' => 'tt_id',
+                    'Type' => 'bigint(20) unsigned',
+                    'Null' => 'NO',
+                    'Key' => 'PRI',
+                    'Default' => null,
+                    'Extra' => 'auto_increment',
+                ],
+                [
+                    'Field' => 'tt_description',
+                    'Type' => 'varchar(255)',
+                    'Null' => 'YES',
+                    'Key' => null,
+                    'Default' => null,
+                    'Extra' => null,
+                ],
+                [
+                    'Field' => 'tt_created',
+                    'Type' => 'timestamp',
+                    'Null' => 'NO',
+                    'Key' => '',
+                    'Default' => 'current_timestamp()',
+                    'Extra' => '',
+                ],
+            ];
+        } else {
+            $expected = [
+                [
+                    'Field' => 'tt_id',
+                    'Type' => 'bigint unsigned',
+                    'Null' => 'NO',
+                    'Key' => 'PRI',
+                    'Default' => null,
+                    'Extra' => 'auto_increment',
+                ],
+                [
+                    'Field' => 'tt_description',
+                    'Type' => 'varchar(255)',
+                    'Null' => 'YES',
+                    'Key' => null,
+                    'Default' => null,
+                    'Extra' => null,
+                ],
+                [
+                    'Field' => 'tt_created',
+                    'Type' => 'timestamp',
+                    'Null' => 'NO',
+                    'Key' => '',
+                    'Default' => 'CURRENT_TIMESTAMP',
+                    'Extra' => 'DEFAULT_GENERATED',
+                ],
+            ];
+        }
 
         $this->assertEquals($expected, $result);
     }
