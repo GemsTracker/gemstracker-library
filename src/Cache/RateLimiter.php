@@ -28,7 +28,7 @@ class RateLimiter
     public function attempts(string $key): int
     {
         if ($this->cache->hasItem($key)) {
-            return $this->cache->getCacheItem($key);
+            return $this->cache->getCacheItem($key) ?? 0;
         }
         return 0;
     }
