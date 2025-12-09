@@ -5,6 +5,7 @@ namespace Gems\Snippets\Vue;
 use Gems\Html;
 use Gems\Layout\LayoutSettings;
 use Gems\Locale\Locale;
+use Gems\Menu\MenuSnippetHelper;
 use Mezzio\Helper\UrlHelper;
 use Zalt\Base\RequestInfo;
 use Zalt\Snippets\SnippetAbstract;
@@ -25,6 +26,7 @@ class VueSnippetAbstract extends SnippetAbstract
         RequestInfo $requestInfo,
         protected readonly LayoutSettings $layoutSettings,
         protected readonly Locale $locale,
+        protected readonly MenuSnippetHelper $menuSnippetHelper,
         protected readonly UrlHelper $urlHelper,
         array $config,
     )

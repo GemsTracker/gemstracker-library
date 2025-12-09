@@ -21,6 +21,8 @@ class CreateEditSnippet extends VueSnippetAbstract
 
     protected ?string $submitLabel = null;
 
+    protected ?string $abortAction = 'index';
+
     protected string $tag = 'gems-form';
 
     protected function getAttributes(): array
@@ -37,6 +39,10 @@ class CreateEditSnippet extends VueSnippetAbstract
         if ($this->submitLabel) {
             $attributes['submit-label'] = $this->submitLabel;
         }
+
+	if ($this->abortAction) {
+            $attributes['cancel-url'] = $this->menuSnippetHelper->getRelatedRouteUrl($this->abortAction);
+	}
 
         return $attributes;
     }

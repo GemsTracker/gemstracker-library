@@ -5,6 +5,7 @@ namespace Gems\Snippets\Vue;
 use Gems\Layout\LayoutSettings;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\User\User;
 use Mezzio\Helper\UrlHelper;
 use Zalt\Base\RequestInfo;
@@ -24,11 +25,12 @@ class PatientVueSnippet extends VueSnippetAbstract
         RequestInfo $requestInfo,
         LayoutSettings $layoutSettings,
         Locale $locale,
+        MenuSnippetHelper $menuSnippetHelper,
         UrlHelper $urlHelper,
         array $config,
         CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $locale, $urlHelper, $config);
+        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $locale, $menuSnippetHelper, $urlHelper, $config);
 
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
