@@ -17,6 +17,7 @@ use Gems\Config\ConfigAccessor;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
@@ -206,9 +207,13 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
                 $email->subject($mailTexts['subject'], $mailFields);
                 $email->htmlTemplate($template, $mailTexts['body'], $mailFields);
 
-                $mailer->send($email);
+               try {
+                  $mailer->send($email);
 
-                $this->addMessage($successMessage);
+                  $this->addMessage($successMessage);
+               } catch(TransportExceptionInterface $e) {
+                  $this->statusMessenger->addError($this->_('Mail could not be sent, the error message was: ' . $e->getMessage()));
+               }
             } else {
                 $this->addMessage(sprintf($this->_('Default Reset TFA mail template id %d does not contain translations'), $templateId));
             }
