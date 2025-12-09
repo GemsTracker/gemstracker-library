@@ -19,12 +19,29 @@ class CurrentUserMiddleware implements MiddlewareInterface
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
+        $this->setCurrentUser($envelope);
+
+        return $stack->next()->handle($envelope, $stack);
+    }
+
+    private function setCurrentUser(Envelope $envelope): void
+    {
+        /** @var CurrentUserStamp $userStamp */
+        $userStamp = $envelope->last(CurrentUserStamp::class);
+        if ($userStamp) {
+            if ($userStamp->userId) {
+                $this->currentUserRepository->setCurrentUserId($userStamp->userId);
+            }
+            if ($userStamp->username && $userStamp->organizationId) {
+                $this->currentUserRepository->setCurrentUserCredentials($userStamp->username, $userStamp->organizationId);
+            }
+            return;
+        }
+
         $message = $envelope->getMessage();
         if ($message instanceof CurrentUserMessage && $this->currentUserRepository->getCurrentLoginName() === null) {
             $this->currentUserRepository->setCurrentUserCredentials($message->getUserName(), $message->getOrganizationId());
             $this->currentUserRepository->getCurrentUser();
         }
-
-        return $stack->next()->handle($envelope, $stack);
     }
 }
