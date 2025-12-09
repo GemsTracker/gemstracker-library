@@ -26,7 +26,7 @@ class CurrentUserMiddleware implements MiddlewareInterface
 
     private function setCurrentUser(Envelope $envelope): void
     {
-        /** @var CurrentUserStamp $userStamp */
+        /** @var ?CurrentUserStamp $userStamp */
         $userStamp = $envelope->last(CurrentUserStamp::class);
         if ($userStamp) {
             if ($userStamp->userId) {
