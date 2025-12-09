@@ -258,6 +258,8 @@ class CommJobRepositoryTest extends DatabaseTestCase
         $this->resultFetcher->query('UPDATE gems__comm_jobs SET gcj_process_method = \'M\' WHERE gcj_id_job = 800');
         $tokens = $repository->getSendableTokens(800);
 
+        sort($tokens['send']);
+
         $expected = [
             'send' => [
                 '1234-abcd',
