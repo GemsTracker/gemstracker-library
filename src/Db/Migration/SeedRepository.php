@@ -298,7 +298,7 @@ class SeedRepository extends MigrationRepositoryAbstract
         return $data;
     }
 
-    public function runSeed(array $seedInfo)
+    public function runSeed(array $seedInfo, bool $foreignKeyChecks = true): void
     {
         if (!isset($seedInfo['db'], $seedInfo['data']) || empty($seedInfo['data'])) {
             throw new \Exception('Not enough info to run seed');
@@ -323,6 +323,9 @@ class SeedRepository extends MigrationRepositoryAbstract
                 $connection->beginTransaction();
                 $localTransaction = true;
             }
+            if ($foreignKeyChecks === false) {
+                $resultFetcher->query('SET foreign_key_checks = 0');
+            }
             foreach($seedInfo['data'] as $seedTable => $seedRows) {
                 $sqlQueries = $this->getQueriesFromRows($adapter, $seedTable, $this->resolveReferences($seedRows, $generatedValues));
 
@@ -335,6 +338,9 @@ class SeedRepository extends MigrationRepositoryAbstract
             }
 
             if ($localTransaction) {
+                if ($foreignKeyChecks === false) {
+                    $resultFetcher->query('SET foreign_key_checks = 1');
+                }
                 $connection->commit();
             }
 

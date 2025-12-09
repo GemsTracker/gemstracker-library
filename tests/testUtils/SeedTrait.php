@@ -44,7 +44,7 @@ trait SeedTrait
         $seedRepository = $this->getSeedRepository();
         foreach ($seeds as $seed) {
             $info = $seedRepository->getSeedInfo($seed);
-            $seedRepository->runSeed($info);
+            $seedRepository->runSeed($info, false);
         }
     }
 
