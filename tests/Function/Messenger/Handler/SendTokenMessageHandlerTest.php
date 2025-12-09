@@ -56,6 +56,11 @@ class SendTokenMessageHandlerTest extends DatabaseTestCase
         'gems__translations',
         'gems__mail_servers',
         'gems__log_respondent_communications',
+        'gems__sources',
+        'gems__user_ids',
+        'gems__conditions',
+        'gems__appointment_filters',
+        'gems__staff',
     ];
 
     protected array $seeds = [

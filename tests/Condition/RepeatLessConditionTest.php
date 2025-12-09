@@ -51,6 +51,7 @@ class RepeatLessConditionTest extends DatabaseTestCase
         'gems__tracks',
         'gems__track_appointments',
         'gems__track_fields',
+        'gems__appointment_filters',
         'gems__sources',
         'gems__surveys',
         'gems__conditions',
@@ -59,6 +60,8 @@ class RepeatLessConditionTest extends DatabaseTestCase
         'gems__respondent2track',
         'gems__tokens',
         'gems__translations',
+        'gems__mail_codes',
+        'gems__user_ids',
     ];
 
     protected array $seeds = [
