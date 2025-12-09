@@ -871,6 +871,47 @@ class ConfigProvider
         ];
     }
 
+    protected function getStyleSettings()
+    {
+        return 'gems.scss';
+    }
+
+    /**
+     * Returns the supplementary privileges defined by this module
+     *
+     * @return mixed[]
+     */
+    protected function getSupplementaryPrivileges(): array
+    {
+        return [
+            'pr.organization-switch' => new UntranslatedString('Grant access to all organization.'),
+            'pr.plan.mail-as-application' => new UntranslatedString('Grant right to impersonate the site when mailing.'),
+            'pr.respondent.multiorg' => new UntranslatedString('Display multiple organizations in respondent overview.'),
+            'pr.episodes.rawdata' => new UntranslatedString('Display raw data in Episodes of Care.'),
+            'pr.respondent.result' => new UntranslatedString('Display results in token overviews.'),
+            'pr.respondent.select-on-track' => new UntranslatedString('Grant checkboxes to select respondents on track status in respondent overview.'),
+            'pr.respondent.show-deleted' => new UntranslatedString('Grant checkbox to view deleted respondents in respondent overview.'),
+            'pr.respondent.who' => new UntranslatedString('Display staff member name in token overviews.'),
+            'pr.staff.edit.all' => new UntranslatedString('Grant right to edit staff members from all organizations.'),
+            'pr.export.add-resp-nr' => new UntranslatedString('Grant right to export respondent numbers with survey answers.'),
+            'pr.export.gender-age' => new UntranslatedString('Grant right to export gender and age information with survey answers.'),
+            'pr.staff.see.all' => new UntranslatedString('Display all organizations in staff overview.'),
+            'pr.group.switch' => new UntranslatedString('Grant right to switch groups.'),
+            'pr.token.mail.freetext' => new UntranslatedString('Grant right to send free text (i.e. non-template) email messages.'),
+            'pr.systemuser.seepwd' => new UntranslatedString('Grant right to see password of system users (without editing right).'),
+            'pr.embed.login' => new UntranslatedString('Grant right for access to embedded login page.'),
+            'pr.survey-maintenance.answer-groups' => new UntranslatedString('Grant right to set answer access to surveys.'),
+            'pr.maintenance.maintenance-mode' => new UntranslatedString('Enable, disable and stay online during maintenance mode'),
+        ];
+    }
+
+    protected function getSurveySettings()
+    {
+        $surveys = new Survey();
+
+        return $surveys();
+    }
+
     protected function getTemplates(): array
     {
         return [
@@ -961,47 +1002,6 @@ class ConfigProvider
                 'gems-female' => [dirname(__DIR__) . '/languages/gender/female'],
             ],
         ];
-    }
-
-    protected function getStyleSettings()
-    {
-        return 'gems.scss';
-    }
-
-    /**
-     * Returns the supplementary privileges defined by this module
-     *
-     * @return mixed[]
-     */
-    protected function getSupplementaryPrivileges(): array
-    {
-        return [
-            'pr.organization-switch' => new UntranslatedString('Grant access to all organization.'),
-            'pr.plan.mail-as-application' => new UntranslatedString('Grant right to impersonate the site when mailing.'),
-            'pr.respondent.multiorg' => new UntranslatedString('Display multiple organizations in respondent overview.'),
-            'pr.episodes.rawdata' => new UntranslatedString('Display raw data in Episodes of Care.'),
-            'pr.respondent.result' => new UntranslatedString('Display results in token overviews.'),
-            'pr.respondent.select-on-track' => new UntranslatedString('Grant checkboxes to select respondents on track status in respondent overview.'),
-            'pr.respondent.show-deleted' => new UntranslatedString('Grant checkbox to view deleted respondents in respondent overview.'),
-            'pr.respondent.who' => new UntranslatedString('Display staff member name in token overviews.'),
-            'pr.staff.edit.all' => new UntranslatedString('Grant right to edit staff members from all organizations.'),
-            'pr.export.add-resp-nr' => new UntranslatedString('Grant right to export respondent numbers with survey answers.'),
-            'pr.export.gender-age' => new UntranslatedString('Grant right to export gender and age information with survey answers.'),
-            'pr.staff.see.all' => new UntranslatedString('Display all organizations in staff overview.'),
-            'pr.group.switch' => new UntranslatedString('Grant right to switch groups.'),
-            'pr.token.mail.freetext' => new UntranslatedString('Grant right to send free text (i.e. non-template) email messages.'),
-            'pr.systemuser.seepwd' => new UntranslatedString('Grant right to see password of system users (without editing right).'),
-            'pr.embed.login' => new UntranslatedString('Grant right for access to embedded login page.'),
-            'pr.survey-maintenance.answer-groups' => new UntranslatedString('Grant right to set answer access to surveys.'),
-            'pr.maintenance.maintenance-mode' => new UntranslatedString('Enable, disable and stay online during maintenance mode'),
-        ];
-    }
-
-    protected function getSurveySettings()
-    {
-        $surveys = new Survey();
-
-        return $surveys();
     }
 
     public function getVueSettings(): array

@@ -11,6 +11,7 @@
 
 namespace Gems\Handlers\Setup;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Gems\Audit\AuditLog;
 use Gems\Cache\HelperAdapter;
 use Gems\ConfigProvider;
@@ -93,6 +94,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         protected RouteHelper $routeHelper,
         protected UrlHelper $urlHelper,
         protected Versions $versions,
+        protected readonly EntityManagerInterface $entityManager,
         protected readonly ResultFetcher $resultFetcher,
         protected readonly array $config,
     )
@@ -226,7 +228,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 
     /**
      * Show the project specific change log
-     */
+     * /
     public function changelogAction()
     {
         if (file_exists($this->config['rootDir'] . '/CHANGELOG.md')) {
@@ -234,32 +236,62 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         } else {
             $this->_showText(sprintf($this->_('Changelog %s'), $this->projectSettings->getName()), $this->config['rootDir'] . '/changelog.txt');
         }
-    }
+    } // */
 
     /**
      * Show the GemsTracker change log
-     */
+     * /
     public function changelogGemsAction()
     {
         $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), $this->config['rootDir'] . 'vendor/gemstracker/gemstracker/CHANGELOG.md', null, 'GemsTracker/gemstracker-library');
+    } // */
+
+    public function cachecleanAction()
+    {
+        /**
+         * @var StatusMessengerInterface $messenger
+         */
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+
+        // Doctrine Cache clean
+        $this->entityManager->getConfiguration()->getMetadataCache()->clear();
+        $this->entityManager->getConfiguration()->getQueryCache()->clear();
+        $this->entityManager->getConfiguration()->getResultCache()->clear();
+
+        $this->cache->clear();
+        $messenger->addSuccess($this->_('Data cache cleaned'));
+
+        $this->auditLog->registerChanges(['cache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
+
+        // Redirect
+        $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
+        return new RedirectResponse($redirectUrl);
     }
 
-    protected function getLogFile(string $loggerName): ?string
+    public function configcachecleanAction()
     {
-        $logger = $this->loggers->getLogger($loggerName);
+        /**
+         * @var StatusMessengerInterface $messenger
+         */
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
-        if ($logger instanceof Logger) {
-            $handlers = $logger->getHandlers();
-            foreach($handlers as $handler) {
-                if ($handler instanceof StreamHandler) {
-                    $url = $handler->getUrl();
-                    if ($url !== null && is_readable($url)) {
-                        return $url;
-                    }
-                }
-            }
+        $autoConfig = $this->config['autoconfig']['cache_path'] ?? null;
+        if ($autoConfig && file_exists($autoConfig)) {
+            unlink($autoConfig);
+            $messenger->addSuccess($this->_('Auto config cache has been cleared'));
         }
-        return null;
+        $this->auditLog->registerChanges(['autoconfigcache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
+
+        $configCacheFileLocation = $this->config['config_cache_path'] ?? null;
+        if ($configCacheFileLocation && file_exists($configCacheFileLocation)) {
+            unlink($configCacheFileLocation);
+            $messenger->addSuccess($this->_('Config cache has been cleared'));
+        }
+        $this->auditLog->registerChanges(['configcache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
+
+        // Redirect
+        $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
+        return new RedirectResponse($redirectUrl);
     }
 
     public function errorsAction()
@@ -307,24 +339,32 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         );
     }
 
+    protected function getLogFile(string $loggerName): ?string
+    {
+        $logger = $this->loggers->getLogger($loggerName);
+
+        if ($logger instanceof Logger) {
+            $handlers = $logger->getHandlers();
+            foreach($handlers as $handler) {
+                if ($handler instanceof StreamHandler) {
+                    $url = $handler->getUrl();
+                    if ($url !== null && is_readable($url)) {
+                        return $url;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public function indexAction()
     {
         $this->html->h2($this->_('Project information'));
 
-        $data = $this->_getData();
-
-        /*$request = $this->getRequest();
-        $buttonList = $this->menu->getMenuList();
-        $buttonList->addParameterSources($request)
-            ->addByController($request->getControllerName(), 'maintenance', $label)
-            ->addByController($request->getControllerName(), 'monitor')
-            ->addByController($request->getControllerName(), 'cacheclean');*/
-
+        $buttonList = [];
+        $data       = $this->_getData();
 
         $maintenanceModeUrl = $this->routeHelper->getRouteUrl('setup.project-information.maintenance-mode');
-        $cacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.cacheclean');
-
-        $buttonList = [];
         if ($maintenanceModeUrl) {
             if ($this->maintenanceLock->isLocked()) {
                 $maintenanceLockLabel = $this->_('Turn Maintenance Mode OFF');
@@ -333,11 +373,15 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             }
             $buttonList[] = Html::actionLink($maintenanceModeUrl, $maintenanceLockLabel);
         }
+
+        $cacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.cacheclean');
         if ($cacheCleanUrl) {
             $buttonList[] = Html::actionLink($cacheCleanUrl, $this->_('Clear cache'));
         }
-
-        // $this->html->buttonDiv($buttonList);
+        $configCacheCleanUrl = $this->routeHelper->getRouteUrl('setup.project-information.configcacheclean');
+        if ($configCacheCleanUrl) {
+            $buttonList[] = Html::actionLink($configCacheCleanUrl, $this->_('Clear config cache'));
+        }
 
         $this->_showTable($this->_('Version information'), $data);
 
@@ -370,22 +414,6 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 
             $this->addSnippets($this->monitorSnippets, $params);
         }
-    }
-
-    public function cachecleanAction()
-    {
-        $this->cache->clear();
-        /**
-         * @var StatusMessengerInterface $messenger
-         */
-        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-        $messenger->addSuccess($this->_('Cache cleaned'));
-
-         $this->auditLog->registerChanges(['cache' => 'cleaned'], logId:  $this->auditLog->getLastLogId());
-
-        // Redirect
-        $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
-        return new RedirectResponse($redirectUrl);
     }
 
     public function phpAction()
