@@ -120,7 +120,16 @@ class InitDbExport extends TaskAbstract
         return File::cleanupName(basename($model->getName()));
     }
 
+    /**
+     * Return the exportID. Note that this ID will be used as URL parameter.
+     */
     protected function getExportId(DataReaderInterface $model, int $maxSize = 85): string
+    {
+        $exportId = $this->getRawExportId($model, $maxSize);
+        return preg_replace('/[^A-Za-z0-9\-]/', '-', $exportId);
+    }
+
+    protected function getRawExportId(DataReaderInterface $model, int $maxSize = 85): string
     {
         $exportId = $model->getMetaModel()->getMeta('exportId');
         if ($exportId && strlen($exportId) <= $maxSize) {
@@ -133,8 +142,8 @@ class InitDbExport extends TaskAbstract
         if ($model->getName() === $model::class) {
             $parts = explode('\\', $model::class);
             $last = end($parts);
-            if (strlen($parts[0] . '\\' .  $last) <= $maxSize) {
-                return $parts[0] . '\\' .  $last;
+            if (strlen($parts[0] . '-' .  $last) <= $maxSize) {
+                return $parts[0] . '-' .  $last;
             }
             if (strlen($last) <= $maxSize) {
                 return $last;
