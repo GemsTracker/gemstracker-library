@@ -52,15 +52,17 @@ class TokenSnippet extends TranslatableSnippetAbstract
     {
         $html = $this->getHtmlSequence();
 
-        $params = array(
-            'token'          => $this->token,
-            'tokenId'        => $this->token->getTokenId(),
+        $params = [
+            'containingId'   => null,
+            'htmlExport'     => true,
+            'grouped'        => $this->groupSurveys,
             'showHeaders'    => false,
             'showButtons'    => false,
             'showSelected'   => false,
             'showTakeButton' => false,
-            'htmlExport'     => true,
-            'grouped'        => $this->groupSurveys);
+            'token'          => $this->token,
+            'tokenId'        => $this->token->getTokenId(),
+        ];
 
         $snippets = $this->token->getAnswerSnippetNames();
 

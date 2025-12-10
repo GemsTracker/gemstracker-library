@@ -29,6 +29,7 @@ use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
+use Zalt\Html\TableElement;
 use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
@@ -369,10 +370,12 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
                 }
 
                 $containedTable = $table = parent::getHtmlOutput();
-                if ($table instanceof HtmlElement) {
+                if ($table instanceof HtmlElement && (! $table instanceof TableElement)) {
                     $containedTable = $table->getLast();
                 }
-                $containedTable->setPivot(true, 2, 1);
+                if ($containedTable instanceof TableElement) {
+                    $containedTable->setPivot(true, 2, 1);
+                }
 
                 $this->applyHtmlAttributes($table);
                 $this->class = false;
