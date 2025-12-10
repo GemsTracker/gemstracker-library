@@ -164,6 +164,10 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
             return null;
         }
 
+        if (empty($sheetName)) {
+            $sheetName = 'Sheet';
+        }
+
         foreach ($writer->getSheets() as $sheet) {
             if ($sheet->getName() === 'Sheet1') {
                 $sheet->setName($sheetName);
