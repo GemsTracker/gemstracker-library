@@ -61,7 +61,7 @@ class StreamingExcelExport extends CsvExportAbstract implements DownloadableInte
 
     public function cleanupSchemaName(string $schemaname): string
     {
-       return substr(str_replace('  ', ' ', str_replace(['\\', '/', '*', '[', ']', '?', ':', '_'], '', $schemaname)), 0, 31);
+       return trim(substr(str_replace('  ', ' ', str_replace(['\\', '/', '*', '[', ']', '?', ':', '_'], '', $schemaname)), 0, 31));
     }
 
     /**
