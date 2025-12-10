@@ -633,7 +633,7 @@ class Menu
                         ],
                         [
                             'name' => 'setup.project-information.maintenance-mode',
-                            'label' => $this->translator->trans('Mainenance Mode!'),
+                            'label' => $this->translator->trans('Maintenance Mode!'),
                             'type' => 'alias',
                             'alias' => 'setup.project-information.index',
                             'parent' => 'setup.project-information.index',
