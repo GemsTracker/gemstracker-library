@@ -2,6 +2,7 @@
 
 namespace Gems\Util\Lock;
 
+use DateInterval;
 use DateTimeInterface;
 use Gems\Util\Lock\Storage\FileLock;
 use Gems\Util\Lock\Storage\LockStorageAbstract;
@@ -33,9 +34,9 @@ abstract class VariableLockAbstract implements LockInterface
         return $this->lockStorage->getLockTime();
     }
 
-    public function lock(): void
+    public function lock(DateInterval|int|null $expiresAfter=null): void
     {
-        $this->lockStorage->lock();
+        $this->lockStorage->lock($expiresAfter);
     }
 
     public function unlock(): void

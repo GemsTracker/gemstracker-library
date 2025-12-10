@@ -2,6 +2,7 @@
 
 namespace Gems\Util\Lock;
 
+use DateInterval;
 use DateTimeInterface;
 
 interface LockInterface
@@ -10,7 +11,11 @@ interface LockInterface
 
     public function getLockTime(): ?DateTimeInterface;
 
-    public function lock(): void;
+    /**
+     * @param DateInterval|int|null $expiresAfter date interval or number of seconds
+     * @return void
+     */
+    public function lock(DateInterval|int|null $expiresAfter=null): void;
 
     public function unlock(): void;
 }

@@ -2,14 +2,40 @@
 
 namespace Gems\Util\Lock\Storage;
 
+use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 
 class FileLock extends LockStorageAbstract
 {
+    private function calculateExpiresAt(DateInterval|int|null $expiresAfter): int
+    {
+        if ($expiresAfter === null) {
+            return 0;
+        }
+        if (is_int($expiresAfter)) {
+            return time() + $expiresAfter;
+        }
+        return (new DateTimeImmutable())->add($expiresAfter)->getTimestamp();
+    }
+
     public function isLocked(): bool
     {
-        return file_exists($this->key);
+        if (!file_exists($this->key)) {
+            return false;
+        }
+
+        $expiresAt = file_get_contents($this->key);
+        if ($expiresAt === false || $expiresAt === '') {
+            return true;
+        }
+
+        if (time() >= (int)$expiresAt) {
+            $this->unlock();
+            return false;
+        }
+
+        return true;
     }
 
     public function getLockTime(): ?DateTimeInterface
@@ -21,14 +47,15 @@ class FileLock extends LockStorageAbstract
         return null;
     }
 
-    public function lock(): void
+    public function lock(DateInterval|int|null $expiresAfter=null): void
     {
-        touch($this->key);
+        $expiresAt = $this->calculateExpiresAt($expiresAfter);
+        file_put_contents($this->key, (string)$expiresAt);
     }
 
     public function unlock(): void
     {
-        if ($this->isLocked()) {
+        if (file_exists($this->key)) {
             unlink($this->key);
         }
     }
