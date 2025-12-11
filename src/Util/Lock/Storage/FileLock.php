@@ -49,8 +49,12 @@ class FileLock extends LockStorageAbstract
 
     public function lock(DateInterval|int|null $expiresAfter=null): void
     {
-        $expiresAt = $this->calculateExpiresAt($expiresAfter);
-        file_put_contents($this->key, (string)$expiresAt);
+        if ($expiresAfter) {
+            $expiresAt = $this->calculateExpiresAt($expiresAfter);
+            file_put_contents($this->key, (string)$expiresAt);
+        } else {
+            touch($this->key);
+        }
     }
 
     public function unlock(): void
