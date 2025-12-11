@@ -12,11 +12,11 @@
 namespace Gems\Model;
 
 use Gems\Menu\RouteHelper;
+use Gems\Model;
 use Gems\Repository\CommJobRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\User\Group;
-use MUtil\Model;
 use Zalt\Html\AElement;
 use Zalt\Html\Html;
 
@@ -141,6 +141,8 @@ class CommLogModel extends HiddenOrganizationModel
         }
 
         $this->resetOrder();
+        
+        $this->setKeys([Model::LOG_ITEM_ID => 'grco_id_action']);
 
         $this->set('grco_created',    [
             'label' => $this->_('Date sent'),

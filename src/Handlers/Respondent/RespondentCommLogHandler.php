@@ -51,7 +51,6 @@ class RespondentCommLogHandler extends CommLogHandler
          * @var CommLogModel $model
          */
         $model = parent::createModel($detailed, $action);
-        $model->setKeys([Model::LOG_ITEM_ID => 'grco_id_action']);
 
         $model->addMap(Model::REQUEST_ID1, 'gr2o_patient_nr');
         $model->addMap(Model::REQUEST_ID2, 'gr2o_id_organization');

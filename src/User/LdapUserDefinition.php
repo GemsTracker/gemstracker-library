@@ -108,7 +108,7 @@ class LdapUserDefinition extends StaffUserDefinition
      */
     public function getPasswordResetKey(\Gems\User\User $user): string
     {
-        throw new Exception('Ldap adapter cannot create reset key');
+        throw new UserPasswordResetException('Ldap adapter cannot create reset key');
     }
 
     /**

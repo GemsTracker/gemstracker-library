@@ -185,7 +185,7 @@ class RadiusUserDefinition extends StaffUserDefinition implements UserDefinition
      */
     public function getPasswordResetKey(\Gems\User\User $user): string
     {
-        throw new Exception('Radius cannot reset password');
+        throw new UserPasswordResetException('Radius cannot reset password');
     }
 
     /**
