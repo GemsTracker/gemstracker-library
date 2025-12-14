@@ -11,6 +11,10 @@
 
 namespace Gems\Task\Respondent;
 
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\RespondentRepository;
+use Gems\Tracker\TrackEvents;
+
 /**
  *
  * @package    Gems
@@ -22,11 +26,6 @@ namespace Gems\Task\Respondent;
 class UpdateRespondentTask extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems\Loader
-     */
-    public $loader;
-
-    /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
      * The parameters should be optional and failing to provide them should be handled by
@@ -34,16 +33,29 @@ class UpdateRespondentTask extends \MUtil\Task\TaskAbstract
      */
     public function execute($respId = null, $orgId = null)
     {
-        $batch = $this->getBatch();
-        $org   = $this->loader->getOrganization($orgId);
+        $batch                  = $this->getBatch();
+        /**
+         * @var OrganizationRepository $organizationRepository
+         */
+        $organizationRepository = $batch->getVariable('organizationRepository');
+        /**
+         * @var RespondentRepository $respondentRepository
+         */
+        $respondentRepository   = $batch->getVariable('respondentRepository');
+        /**
+         * @var TrackEvents $trackEvents
+         */
+        $trackEvents            = $batch->getVariable('trackEvents');
+
+        $org                    = $organizationRepository->getOrganization($orgId);
 
         $changeEventClass = $org->getRespondentChangeEventClass();
 
         if ($changeEventClass) {
-            $event = $this->loader->getEvents()->loadRespondentChangedEvent($changeEventClass);
+            $event = $trackEvents->loadRespondentChangedEvent($changeEventClass);
 
             if ($event) {
-                $respondent = $this->loader->getRespondent(null, $orgId, $respId);
+                $respondent = $respondentRepository->getRespondent(null, $orgId, $respId);
 
                 $batch->addToCounter('respondentsChecked');
                 if ($respondent->getReceptionCode()->isSuccess() &&

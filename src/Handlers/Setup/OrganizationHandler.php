@@ -17,8 +17,11 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model;
 use Gems\Model\OrganizationModel;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\RespondentRepository;
 use Gems\Repository\TemplateRepository;
 use Gems\Task\TaskRunnerBatch;
+use Gems\Tracker\TrackEvents;
 use Gems\User\UserLoader;
 use Laminas\Db\Sql\Select;
 use Mezzio\Session\SessionInterface;
@@ -80,12 +83,15 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
-        protected UserLoader $userLoader,
-        protected Model $modelLoader,
-        protected BatchRunnerLoader $batchRunnerLoader,
-        protected ProjectOverloader $overLoader,
-        protected ResultFetcher $resultFetcher,
-        protected TemplateRepository $templateRepository,
+        protected readonly UserLoader $userLoader,
+        protected readonly Model $modelLoader,
+        protected readonly BatchRunnerLoader $batchRunnerLoader,
+        protected readonly OrganizationRepository $organizationRepository,
+        protected readonly ProjectOverloader $overLoader,
+        protected readonly RespondentRepository $respondentRepository,
+        protected readonly ResultFetcher $resultFetcher,
+        protected readonly TemplateRepository $templateRepository,
+        protected readonly TrackEvents $trackEvents,
     )
     {
         parent::__construct($responder, $translate, $cache);
@@ -99,6 +105,10 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
         $session = $this->request->getAttribute(SessionInterface::class);
         $batch = new TaskRunnerBatch('orgCheckAll', $this->overLoader, $session);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
+
+        $batch->setVariable('organizationRepository', $this->organizationRepository);
+        $batch->setVariable('respondentRepository', $this->respondentRepository);
+        $batch->setVariable('trackEvents', $this->trackEvents);
 
         if (! $batch->isLoaded()) {
 
@@ -156,12 +166,16 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
             $batch = new TaskRunnerBatch('orgCheckAll', $this->overLoader, $session);
             $batch->setBaseUrl($this->requestInfo->getBasePath());
 
+            $batch->setVariable('organizationRepository', $this->organizationRepository);
+            $batch->setVariable('respondentRepository', $this->respondentRepository);
+            $batch->setVariable('trackEvents', $this->trackEvents);
+
             if (! $batch->isLoaded()) {
 
                 $select = $this->getCheckOrgSelect();
                 $select->where(['gr2o_id_organization' => $orgId]);
 
-                $respIds = $this->resultFetcher->fetchCol($select, $orgId);
+                $respIds = $this->resultFetcher->fetchCol($select);
 
                 foreach ($respIds as $respId) {
                     $batch->addTask('Respondent\\UpdateRespondentTask', $respId, $orgId);
@@ -216,7 +230,7 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
     protected function getCheckOrgSelect(): Select
     {
         $select = $this->resultFetcher->getSelect('gems__respondent2org');
-        $select->join('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code')
+        $select->join('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', [])
             ->columns(['gr2o_id_user', 'gr2o_id_organization'])
             ->where([
                 'grc_success' => 1,

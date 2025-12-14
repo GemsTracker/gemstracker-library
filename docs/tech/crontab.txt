@@ -2,3 +2,4 @@
 
 0 7 * * * cd /srv/webapps/project-dir && php -f bin/console -- comm-job:run > data/logs/cron-07.log 2>> data/logs/cron-error.log
 0 19 * * * cd /srv/webapps/project-dir && php -f bin/console -- comm-job:run > data/logs/cron-19.log 2>> data/logs/cron-error.log
+w

@@ -56,7 +56,7 @@ use Zalt\Model\Sql\SqlRunnerInterface;
  */
 class RespondentTrackModel extends GemsMaskedModel
 {
-    protected readonly User $currentUser;
+    protected readonly ?User $currentUser;
 
     /**
      *
@@ -352,7 +352,7 @@ class RespondentTrackModel extends GemsMaskedModel
                 $values['gr2t_id_user'] = $filter['gr2t_id_user'];
             }
             if (isset($filter['gr2t_id_organization'])) {
-                $this->currentUser->assertAccessToOrganizationId($filter['gr2t_id_organization'], null);
+                $this->currentUser?->assertAccessToOrganizationId($filter['gr2t_id_organization'], null);
                 $values['gr2t_id_organization'] = $filter['gr2t_id_organization'];
             }
         }
