@@ -39,10 +39,6 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
             return $this->makeFailResult(AuthenticationResult::FAILURE, ['No user data']);
         }
 
-        if (!$systemUserData->isAllowedIpForLogin($this->ipAddress)) {
-            return $this->makeFailResult(AuthenticationResult::DISALLOWED_IP, ['You are not allowed to login from this location.'], ['You are not allowed to login from this location.']);
-        }
-
         $authClass = $systemUserData->getAuthenticator();
         if (!$authClass instanceof EmbeddedAuthAbstract) {
             return $this->makeFailResult(AuthenticationResult::FAILURE, ['No authenticator']);
@@ -55,6 +51,12 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
 
         if (!$result) {
             return $this->makeFailResult(AuthenticationResult::FAILURE, ['Invalid credentials', $authClass->getErrorMessage()]);
+        }
+
+        // From here on we can provide a detailed fail reason.
+
+        if (!$systemUserData->isAllowedIpForLogin($this->ipAddress)) {
+            return $this->makeFailResult(AuthenticationResult::DISALLOWED_IP, ['You are not allowed to login from this location.'], ['You are not allowed to login from this location.']);
         }
 
         // The patient Id and deferred login name have been extracted from the encrypted key.
