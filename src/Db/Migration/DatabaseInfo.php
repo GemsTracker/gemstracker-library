@@ -18,6 +18,14 @@ class DatabaseInfo
         $this->metaData = Factory::createSourceFromAdapter($this->adapter);
     }
 
+    /**
+     * Expose metaData for testing purposes only.
+     */
+    public function getMetaData(): MetadataInterface
+    {
+        return $this->metaData;
+    }
+
     public function getForeignKeyName(string $tableName, string $referencingColumn, string $referencedTable, string $referencedColumn): string|null
     {
         $constraints = $this->metaData->getConstraints($tableName);
@@ -67,5 +75,36 @@ class DatabaseInfo
     public function tableHasForeignKey(string $tableName, string $referencingColumn, string $referencedTable, string $referencedColumn): bool
     {
         return is_string($this->getForeignKeyName($tableName, $referencingColumn, $referencedTable, $referencedColumn));
+    }
+
+    /**
+     * Checks if an index with the given name exists on the table.
+     */
+    public function tableHasIndex(string $tableName, string $indexName): bool
+    {
+        $sql = "SELECT COUNT(*) AS cnt FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ?";
+        $results = $this->adapter->query($sql, [$tableName, $indexName]);
+        $row = $results->current();
+        return isset($row['cnt']) && $row['cnt'] > 0;
+    }
+
+    /**
+     * Checks if an index exists on the table for the given column(s).
+     * @param string $tableName
+     * @param array|string $columns
+     * @return bool
+     */
+    public function tableHasIndexOnColumns(string $tableName, array|string $columns): bool
+    {
+        $columns = (array) $columns;
+        $sql = "SELECT index_name, GROUP_CONCAT(column_name ORDER BY seq_in_index) AS cols FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = ? GROUP BY index_name";
+        $results = $this->adapter->query($sql, [$tableName]);
+        $columnsStr = implode(',', $columns);
+        foreach ($results as $row) {
+            if ($row['cols'] === $columnsStr) {
+                return true;
+            }
+        }
+        return false;
     }
 }
