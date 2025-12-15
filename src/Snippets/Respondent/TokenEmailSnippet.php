@@ -25,14 +25,14 @@ class TokenEmailSnippet extends CreateEditSnippet
         RequestInfo $requestInfo,
         LayoutSettings $layoutSettings,
         Locale $locale,
+        MenuSnippetHelper $menuSnippetHelper,
         UrlHelper $urlHelper,
         array $config,
         protected Tracker $tracker,
         protected TranslatorInterface $translator,
         protected StatusMessengerInterface $messenger,
-        protected MenuSnippetHelper $menuSnippetHelper,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $locale, $urlHelper, $config);
+        parent::__construct($snippetOptions, $requestInfo, $layoutSettings, $locale, $menuSnippetHelper, $urlHelper, $config);
     }
 
     public function getRedirectRoute(): ?string
