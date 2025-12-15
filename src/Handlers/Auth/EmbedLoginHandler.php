@@ -206,8 +206,20 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 'usedInput' => $input,
                 'result' => $messages,
             ], 401);*/
+            $publicMessages = [];
+            if ($result instanceof EmbedAuthenticationResult) {
+                $publicMessages = $result->publicMessages;
+            }
+            $error = $this->translator->_("Unable to authenticate");
+            if (!empty($publicMessages)) {
+                $error .= ': ';
+                foreach ($publicMessages as $message) {
+                    $error .= $this->translator->_($message) . ' ';
+                }
+            }
+
             $this->logInfo("Unable to authenticate");
-            $this->statusMessenger->addError($this->translator->_("Unable to authenticate"));
+            $this->statusMessenger->addError($error);
         } catch (\Exception $e) {
             $this->logInfo($e->getMessage());
             $this->statusMessenger->addError($e->getMessage());

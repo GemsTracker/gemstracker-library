@@ -22,9 +22,9 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
     ) {
     }
 
-    private function makeFailResult(int $code, array $messages = []): AuthenticationResult
+    private function makeFailResult(int $code, array $messages = [], array $publicMessages = []): AuthenticationResult
     {
-        return new EmbedAuthenticationResult($code, null, $messages);
+        return new EmbedAuthenticationResult($code, null, $messages, $publicMessages);
     }
 
     public function authenticate(): AuthenticationResult
@@ -81,6 +81,6 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
             $deferredUser->getBaseOrganizationId(),
         );
 
-        return new EmbedAuthenticationResult(AuthenticationResult::SUCCESS, $identity, [], $systemUser, $deferredUser);
+        return new EmbedAuthenticationResult(AuthenticationResult::SUCCESS, $identity, [], [], $systemUser, $deferredUser);
     }
 }
