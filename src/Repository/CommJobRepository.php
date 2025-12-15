@@ -670,7 +670,6 @@ class CommJobRepository
 
         $model  = $this->tracker->getTransientCommTokenModel();
         $filter = $this->getJobFilter($jobData, $model, $respondentId, $organizationId, $forceSent);
-        $model->addRound();
 
         // Prevent out of memory errors, only load the tokenid
         $metaModel = $model->getMetaModel();

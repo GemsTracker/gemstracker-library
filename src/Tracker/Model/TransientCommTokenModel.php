@@ -80,7 +80,7 @@ class TransientCommTokenModel extends GemsJoinModel
     {
         if (!$this->hasRound) {
             $this->addTable('gems__rounds', ['gto_id_round' => 'gro_id_round']);
-            $this->hasRoundR = true;
+            $this->hasRound = true;
         }
     }
 }
