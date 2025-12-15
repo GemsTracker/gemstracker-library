@@ -670,18 +670,13 @@ class CommJobRepository
 
         $model  = $this->tracker->getTransientCommTokenModel();
         $filter = $this->getJobFilter($jobData, $model, $respondentId, $organizationId, $forceSent);
-
-
-        // Fix for #680: token with the valid from the longest in the past should be the
-        // used as first token and when multiple rounds start at the same date the
-        // lowest round order should be used.
-        $model->setSort($this->unansweredSort);
+        $model->addRound();
 
         // Prevent out of memory errors, only load the tokenid
         $metaModel = $model->getMetaModel();
         $metaModel->disableOnLoad();
 
-        return $model->load($filter, null, ['gto_id_token']);
+        return $model->load($filter, $this->unansweredSort, ['gto_id_token']);
     }
 
 

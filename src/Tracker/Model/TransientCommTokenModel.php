@@ -30,6 +30,8 @@ class TransientCommTokenModel extends GemsJoinModel
     private bool $hasRelation = false;
     private bool $hasRespondent = false;
 
+    private bool $hasRound = false;
+
     public function __construct(
         MetaModelLoader $metaModelLoader,
         LaminasMysqlRunner $sqlRunner,
@@ -57,6 +59,15 @@ class TransientCommTokenModel extends GemsJoinModel
         }
     }
 
+    public function addRelation(): void
+    {
+        if (!$this->hasRelation) {
+            $this->addLeftTable('gems__track_fields',         ['gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"']);       // Add relation fields
+            $this->addLeftTable('gems__respondent_relations', ['gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent']); // Add relation
+            $this->hasRelation = true;
+        }
+    }
+
     public function addRespondent(): void
     {
         if (!$this->hasRespondent) {
@@ -65,12 +76,11 @@ class TransientCommTokenModel extends GemsJoinModel
         }
     }
 
-    public function addRelation(): void
+    public function addRound(): void
     {
-        if (!$this->hasRelation) {
-            $this->addLeftTable('gems__track_fields',         ['gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"']);       // Add relation fields
-            $this->addLeftTable('gems__respondent_relations', ['gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent']); // Add relation
-            $this->hasRelation = true;
+        if (!$this->hasRound) {
+            $this->addTable('gems__rounds', ['gto_id_round' => 'gro_id_round']);
+            $this->hasRoundR = true;
         }
     }
 }
