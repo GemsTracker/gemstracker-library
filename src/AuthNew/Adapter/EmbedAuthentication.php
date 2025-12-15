@@ -40,7 +40,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
         }
 
         if (!$systemUserData->isAllowedIpForLogin($this->ipAddress)) {
-            return $this->makeFailResult(AuthenticationResult::DISALLOWED_IP, ['You are not allowed to login from this location.']);
+            return $this->makeFailResult(AuthenticationResult::DISALLOWED_IP, ['You are not allowed to login from this location.'], ['You are not allowed to login from this location.']);
         }
 
         $authClass = $systemUserData->getAuthenticator();
@@ -65,7 +65,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
 
         $deferredUser = $systemUserData->getDeferredUser($systemUser, $this->deferredLoginName);
         if (!$deferredUser instanceof User || !$deferredUser->isActive()) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE_DEFERRED, ['No deferred user']);
+            return $this->makeFailResult(AuthenticationResult::FAILURE_DEFERRED, ['No deferred user'], ['Account not found or inactive.']);
         }
 
         /*$respondent = $this->respondentRepository->getPatient($this->patientId, $systemUser->getCurrentOrganizationId());
