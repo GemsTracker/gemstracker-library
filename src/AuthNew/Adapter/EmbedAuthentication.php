@@ -22,9 +22,9 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
     ) {
     }
 
-    private function makeFailResult(int $code, array $messages = []): AuthenticationResult
+    private function makeFailResult(int $code, array $messages = [], array $publicMessages = []): AuthenticationResult
     {
-        return new EmbedAuthenticationResult($code, null, $messages);
+        return new EmbedAuthenticationResult($code, null, $messages, $publicMessages);
     }
 
     public function authenticate(): AuthenticationResult
@@ -37,10 +37,6 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
         $systemUserData = $this->userLoader->getEmbedderData($systemUser);
         if (! $systemUserData instanceof EmbeddedUserData) {
             return $this->makeFailResult(AuthenticationResult::FAILURE, ['No user data']);
-        }
-
-        if (!$systemUserData->isAllowedIpForLogin($this->ipAddress)) {
-            return $this->makeFailResult(AuthenticationResult::DISALLOWED_IP, ['You are not allowed to login from this location.']);
         }
 
         $authClass = $systemUserData->getAuthenticator();
@@ -57,6 +53,12 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
             return $this->makeFailResult(AuthenticationResult::FAILURE, ['Invalid credentials', $authClass->getErrorMessage()]);
         }
 
+        // From here on we can provide a detailed fail reason.
+
+        if (!$systemUserData->isAllowedIpForLogin($this->ipAddress)) {
+            return $this->makeFailResult(AuthenticationResult::DISALLOWED_IP, ['You are not allowed to login from this location.'], ['You are not allowed to login from this location.']);
+        }
+
         // The patient Id and deferred login name have been extracted from the encrypted key.
         if ($authClass instanceof UpdatingAuthInterface) {
             $this->patientId = $authClass->getPatientNumber();
@@ -65,7 +67,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
 
         $deferredUser = $systemUserData->getDeferredUser($systemUser, $this->deferredLoginName);
         if (!$deferredUser instanceof User || !$deferredUser->isActive()) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE_DEFERRED, ['No deferred user']);
+            return $this->makeFailResult(AuthenticationResult::FAILURE_DEFERRED, ['No deferred user'], ['Account not found or inactive.']);
         }
 
         /*$respondent = $this->respondentRepository->getPatient($this->patientId, $systemUser->getCurrentOrganizationId());
@@ -81,6 +83,6 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
             $deferredUser->getBaseOrganizationId(),
         );
 
-        return new EmbedAuthenticationResult(AuthenticationResult::SUCCESS, $identity, [], $systemUser, $deferredUser);
+        return new EmbedAuthenticationResult(AuthenticationResult::SUCCESS, $identity, [], [], $systemUser, $deferredUser);
     }
 }

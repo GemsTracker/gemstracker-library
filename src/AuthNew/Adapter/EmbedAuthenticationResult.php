@@ -10,6 +10,7 @@ class EmbedAuthenticationResult extends AuthenticationResult
         int $code,
         ?EmbedIdentity $identity,
         array $messages = [],
+        public readonly array $publicMessages = [],
         public readonly ?User $systemUser = null,
         public readonly ?User $deferredUser = null,
     ) {

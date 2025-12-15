@@ -24,6 +24,10 @@ _("One or more IPs are illegal.");
 // \Gems\Validate\OneOf
 _("Either '%description%' or '%fieldDescription%' must be entered.");
 
+// \Gems\AuthNew\Adapter\EmbedAuthentication
+_("You are not allowed to login from this location.");
+_("Account not found or inactive.");
+
 // \Gems\Validate\ValidateSurveyExportCode
 _('A duplicate export code matching \'%value%\' was found.');
 
