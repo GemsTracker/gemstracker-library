@@ -79,12 +79,20 @@ class TableRepository extends MigrationRepositoryAbstract
     public function createTables(array $tableNames): void
     {
         $allTables = $this->getInfo();
-        foreach($tableNames as $tableName) {
-            if (!isset($allTables[$tableName])) {
-                throw new MigrationException(sprintf('Table %s does not exist', $tableName));
+        foreach(array_keys($allTables) as $tableName) {
+            if (!in_array($tableName, $tableNames)) {
+                continue;
             }
             $this->createTable($allTables[$tableName]);
+            $key = array_search($tableName, $tableNames, true);
+            if ($key !== false) {
+                unset($tableNames[$key]);
+            }
         }
+        if (count($tableNames) === 0) {
+            return;
+        }
+        throw new MigrationException(sprintf('Table definition not found for: %s', implode(', ', $tableNames)));
     }
 
     protected function getGroupName(string $name): ?string
@@ -169,7 +177,13 @@ class TableRepository extends MigrationRepositoryAbstract
             }
         }
 
-        return $tables + $tableInfoFromFiles;
+        // Combine tables and reorder by 'order' key
+        $combined = $tables + $tableInfoFromFiles;
+        uasort($combined, function($a, $b) {
+            return ($a['order'] ?? 0) <=> ($b['order'] ?? 0);
+        });
+
+        return $combined;
     }
 
     public function getTableInfoFromFiles(): array

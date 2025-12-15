@@ -56,6 +56,9 @@ class CommJobRepositoryTest extends DatabaseTestCase
         'gems__respondent_relations',
         'gems__staff',
         'gems__transient_comm_tokens',
+        'gems__user_ids',
+        'gems__conditions',
+        'gems__appointment_filters',
     ];
 
     protected array $seeds = [
@@ -254,6 +257,8 @@ class CommJobRepositoryTest extends DatabaseTestCase
         $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
         $this->resultFetcher->query('UPDATE gems__comm_jobs SET gcj_process_method = \'M\' WHERE gcj_id_job = 800');
         $tokens = $repository->getSendableTokens(800);
+
+        sort($tokens['send']);
 
         $expected = [
             'send' => [

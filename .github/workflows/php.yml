@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        database: ["mysql:8.0"]
+        database: ["mysql:8.0", "mariadb:10.6"]
 
     services:
       mysql:

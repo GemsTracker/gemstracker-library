@@ -318,7 +318,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
         $seedInfo = $repository->getInfo();
 
         foreach($seedInfo as $seed) {
-            $repository->runSeed($seed);
+            $repository->runSeed($seed, false);
         }
 
         $db = $this->getTestDatabase();
@@ -377,7 +377,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
         $seeds = $model->load(['status' => 'new']);
 
         foreach($seeds as $seed) {
-            $repository->runSeed($seed);
+            $repository->runSeed($seed, false);
         }
 
         $db = $this->getTestDatabase();
