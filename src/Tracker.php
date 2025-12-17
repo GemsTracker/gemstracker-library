@@ -1124,27 +1124,26 @@ class Tracker implements TrackerInterface
     {
         $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
 
+        $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
+        $tokenSelect->andReceptionCodes([])
+            ->andRespondents([])
+            ->andRespondentOrganizations([])
+            ->andConsents([]);
+        if ($where) {
+            $tokenSelect->forWhere($where);
+        }
+        //Only select surveys that are active in the source
+        $tokenSelect->andSurveys([]);
+        $tokenSelect->forWhere(['gsu_surveyor_active' => 1]);
+
+        $batch->setVariable(ResultFetcher::class, $this->resultFetcher);
+        $batch->setVariable(Select::class, $tokenSelect->getSelect());
+
+        //Now set the step duration
+        $batch->minimalStepDurationMs = 3000;
+
         if (! $batch->isLoaded()) {
-
-            $tokenSelect = new LaminasTokenSelect($this->resultFetcher);
-            $tokenSelect->columns(['gto_id_token'])
-                        ->andSurveys([])
-                        ->forWhere(['gsu_surveyor_active' => 1,
-                                    'gto_in_source' => 1]);
-
-            if ($where) {
-                // Add all connections for filtering, but select only surveys that are active in the source
-                $tokenSelect->andReceptionCodes([])
-                        ->andRespondents([])
-                        ->andRespondentOrganizations([])
-                        ->andConsents([])
-                        ->forWhere($where);
-            }
-
-            $tokens = $tokenSelect->fetchAll();
-            foreach ($tokens as $token) {
-                $batch->addTask('Tracker\\RefreshTokenAttributes', $token['gto_id_token']);
-            }
+            $batch->addTask('Tracker\\LoadTokensFor', 'Tracker\\RefreshTokenAttributes', 0, $this->currentUserId);
         }
 
         return $batch;
