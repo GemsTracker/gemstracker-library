@@ -181,13 +181,15 @@ class RespondentRepository
          * @var Respondent $newResp
          */
         $newResp = $this->overLoader->create('Tracker\\Respondent', $patientId, $organizationId, $respondentId);
-        $patientId = $newResp->getPatientNumber();
+        if ($newResp->exists && (! $patientId)) {
+            $patientId = $newResp->getPatientNumber();
+        }
 
-        if (! isset($this->respondents[$organizationId][$patientId])) {
+        if ($patientId && ! isset($this->respondents[$organizationId][$patientId])) {
             $this->respondents[$organizationId][$patientId] = $newResp;
         }
 
-        return $this->respondents[$organizationId][$patientId];
+        return $this->respondents[$organizationId][$patientId] ?? $newResp;
     }
     
     /**
