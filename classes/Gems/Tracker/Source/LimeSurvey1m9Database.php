@@ -549,7 +549,11 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $lsDb->query("UPDATE " . $this->_getSurveysTableName() . " SET `" . $this->_anonymizedField . "` = 'N' WHERE sid = ?;", $sourceSurveyId);
                     $messages[] = sprintf($this->_("Corrected anonymization for survey '%s'"), $surveyor_title);
 
-                    $lsDb->query("ALTER TABLE " . $this->_getSurveyTableName($sourceSurveyId) . " ADD `token` varchar(36) default NULL;");
+                    try {
+                        $lsDb->query("ALTER TABLE " . $this->_getSurveyTableName($sourceSurveyId) . " ADD `token` varchar(36) default NULL;");
+                    } catch (Zend_Db_Exception $e) {
+                        $messages[] = $e->getMessage();
+                    }
             }
 
             // DATESTAMP

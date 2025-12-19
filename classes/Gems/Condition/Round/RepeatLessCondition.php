@@ -250,7 +250,7 @@ class RepeatLessCondition extends RoundConditionAbstract
                 break;
         }
 
-        return $compareTime->getTimestamp() <= $token->getCompletionTime()->getTimestamp();
+        return $compareTime->getTimestamp() <= $token->getValidFrom()->getTimestamp();
     }
 
     /**
