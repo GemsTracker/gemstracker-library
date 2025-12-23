@@ -29,6 +29,7 @@ use Gems\Handlers\Respondent\FindTokenHandler;
 use Gems\Handlers\Setup\Database\PatchHandler;
 use Gems\Handlers\Setup\Database\SeedHandler;
 use Gems\Handlers\Setup\Database\TableHandler;
+use Gems\Handlers\Setup\Messenger\MessageListHandler;
 use Gems\Handlers\Setup\QueueMessageCountHandler;
 use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\AuditLogMiddleware;
@@ -1362,6 +1363,9 @@ class Route
             ),
             ...$this->createHandlerRoute(baseName: 'setup.queue.messageCount',
                 controllerClass: QueueMessageCountHandler::class,
+            ),
+            ...$this->createHandlerRoute(baseName: 'setup.queue.messageList',
+                controllerClass: MessageListHandler::class,
             ),
 
         ];

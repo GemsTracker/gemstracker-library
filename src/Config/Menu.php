@@ -8,6 +8,7 @@ use Gems\Handlers\Export\ExportSurveyHandler;
 use Gems\Handlers\Setup\CommJobHandler;
 use Gems\Handlers\Setup\ConsentHandler;
 use Gems\Handlers\Setup\MailCodeHandler;
+use Gems\Handlers\Setup\Messenger\MessageListHandler;
 use Gems\Handlers\Setup\QueueMessageCountHandler;
 use Gems\Handlers\Setup\ReceptionCodeHandler;
 use Gems\Menu\HandlerMenuTrait;
@@ -797,6 +798,7 @@ class Menu
                     'type' => 'container',
                     'children' => [
                         $this->createMenuForHandler(QueueMessageCountHandler::class, 'setup.queue.messageCount', $this->translator->_('Message count')),
+                        $this->createMenuForHandler(MessageListHandler::class, 'setup.queue.messageList', $this->translator->_('Message list')),
                     ]
                 ],
                 [
