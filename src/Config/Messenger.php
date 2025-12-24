@@ -41,10 +41,12 @@ class Messenger
                     'messengerBus' => 'messenger.bus.default',
                 ],
                 'messenger.transport.doctrine' => [
+                    'name' => 'default',
                     'dsn' => 'doctrine://default',
                     'entityManager' => EntityManagerInterface::class,
                 ],
                 'messenger.transport.failed' => [
+                    'name' => 'failed',
                     'dsn' => 'doctrine://default?queue_name=failed',
                     'entityManager' => EntityManagerInterface::class,
                 ],

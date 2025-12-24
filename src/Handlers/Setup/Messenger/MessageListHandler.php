@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Setup\Messenger;
 
+use Carbon\Carbon;
 use Gems\Handlers\GemsHandler;
 use Gems\Model\Setup\MessageListModel;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Messenger\MessageListSearchSnippet;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Psr\Cache\CacheItemPoolInterface;
@@ -46,7 +49,19 @@ class MessageListHandler extends GemsHandler
     {
         if ($action instanceof BrowseTableAction) {
             $action->trackUsage = false;
-            $action->addToSort(['created_at' => SORT_DESC]);
+            $action->addToSort(['available_at' => SORT_DESC]);
+        }
+        if ($action instanceof BrowseSearchAction) {
+            $action->setStartSnippets([
+                ContentTitleSnippet::class,
+                MessageListSearchSnippet::class,
+            ]);
+
+            $carbon = new Carbon();
+            $oneMonthAgo = $carbon->subMonth();
+            $startOfDay = $oneMonthAgo->startOfDay();
+            $this->defaultSearchData['datefrom'] = $startOfDay;
+            $this->defaultSearchData['dateused'] = 'available_at';
         }
 
         parent::prepareAction($action);

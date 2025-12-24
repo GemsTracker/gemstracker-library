@@ -30,12 +30,14 @@ class MessageListModel extends GemsJoinModel
         $this->metaModel->set('messageShortClass', [
             'label' => $this->_('Message type'),
             SqlRunnerInterface::NO_SQL => true,
+            'no_text_search' => true,
             'order' => 20,
         ]);
 
         $this->metaModel->set('messageInfo', [
             'label' => $this->_('Message info'),
             SqlRunnerInterface::NO_SQL => true,
+            'no_text_search' => true,
             'order' => 30,
         ]);
 
@@ -62,6 +64,7 @@ class MessageListModel extends GemsJoinModel
         $this->metaModel->set('message', [
             'label' => $this->_('Message'),
             SqlRunnerInterface::NO_SQL => true,
+            'no_text_search' => true,
             'order' => 70,
             'formatFunction' => [$this, 'prePrint'],
         ]);
@@ -69,6 +72,7 @@ class MessageListModel extends GemsJoinModel
         $this->metaModel->set('stamps', [
             'label' => $this->_('Stamps'),
             SqlRunnerInterface::NO_SQL => true,
+            'no_text_search' => true,
             'order' => 80,
             'formatFunction' => [$this, 'prePrintStamps'],
         ]);
