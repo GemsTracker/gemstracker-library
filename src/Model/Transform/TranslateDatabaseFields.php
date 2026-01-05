@@ -246,6 +246,9 @@ class TranslateDatabaseFields extends \Zalt\Model\Transform\ModelTransformerAbst
 //            file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($row, true) . "\n", FILE_APPEND);
 //            file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->tableKeys, true) . "\n", FILE_APPEND);
             foreach ($this->getTranslatingFields($model) as $field => $original) {
+                if (!array_key_exists($field, $row)) {
+                    continue;
+                }
                 $table = $model->get($original, 'table');
                 $key = $this->getTranslationKeyForRow($table, $original, $row);
                 if ($key) {
