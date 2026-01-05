@@ -439,7 +439,7 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         /** @var \Gems\Model\Respondent\RespondentModel $model */
         $model = $this->getModel();
         try {
-            $model->move($fromOrgId, $fromPatientId, $toOrgId, $toPatientId);    
+            $model->move($fromOrgId, $fromPatientId, $toOrgId, $toPatientId, $this->keepConsent);
         } catch (RespondentAlreadyExists $exc) {
             $info = $exc->getInfo();
             switch ($info) {
