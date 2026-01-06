@@ -5213,7 +5213,7 @@ msgstr "Gegevens cache opgeschoond"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/ProjectInformationHandler.php:281
 msgid "Auto config cache has been cleared"
-msgstr "Autro configuratie cache opgeschoond"
+msgstr "Auto configuratie cache opgeschoond"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/ProjectInformationHandler.php:288
 msgid "Config cache has been cleared"
