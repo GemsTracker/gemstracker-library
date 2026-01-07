@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-10 11:37+0100\n"
+"POT-Creation-Date: 2026-01-07 17:44+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Roel van Meer <roel.van.meer@peercode.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -24,12 +24,12 @@ msgstr ""
 "X-Poedit-SearchPath-4: magnafacta/MUtil/src\n"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:12
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:45
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:49
 msgid "Value is required and can't be empty"
 msgstr "Value is required and can't be empty"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:13
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:95
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:99
 msgid "Invalid type given, value should be string, integer or float"
 msgstr "Invalid type given, value should be string, integer or float"
 
@@ -43,6 +43,7 @@ msgid "Your account is temporarily blocked, please wait %s minutes"
 msgstr "Your account is temporarily blocked, please wait %s minutes"
 
 #: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:19
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:28
 #: gemstracker/gemstracker/src/AuthNew/Adapter/GenericRoutedAuthentication.php:40
 #: gemstracker/gemstracker/src/AuthNew/AuthenticationMiddleware.php:103
 msgid "You are not allowed to login from this location."
@@ -56,11 +57,15 @@ msgstr "One or more IPs are illegal."
 msgid "Either '%description%' or '%fieldDescription%' must be entered."
 msgstr "Either '%description%' or '%fieldDescription%' must be entered."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:28
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:29
+msgid "Account not found or inactive."
+msgstr "Account not found or inactive."
+
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:32
 msgid "A duplicate export code matching '%value%' was found."
 msgstr "A duplicate export code matching '%value%' was found."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:31
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:35
 msgid ""
 "'%value%' is not a base 32 string. Only A through Z, 2 to 7 and = at the end "
 "are allowed."
@@ -68,104 +73,104 @@ msgstr ""
 "'%value%' is not a base 32 string. Only A through Z, 2 to 7 and = at the end "
 "are allowed."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:34
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:38
 msgid "At least %min% checked value(s) required"
 msgstr "At least %min% checked value(s) required"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:35
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:39
 msgid "Not more then %max% checked value(s) allowed"
 msgstr "Not more then %max% checked value(s) allowed"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:38
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:42
 #, php-format
 msgid "Date should be '%dateAfter%' or later."
 msgstr "Date should be '%dateAfter%' or later."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:39
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:43
 msgid "Should be empty if valid from date is not set."
 msgstr "Should be empty if valid from date is not set."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:42
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:46
 #, php-format
 msgid "Date should be '%dateBefore%' or earlier."
 msgstr "Date should be '%dateBefore%' or earlier."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:46
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:50
 msgid "The input is an empty string"
 msgstr "The input is an empty string"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:49
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:53
 msgid "%value% is not a valid date."
 msgstr "%value% is not a valid date."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:52
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:56
 msgid "No record matching %value% was found."
 msgstr "No record matching %value% was found."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:53
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:57
 msgid "A duplicate record matching '%value%' was found."
 msgstr "A duplicate record matching '%value%' was found."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:56
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:60
 msgid "Only relative paths are allowed"
 msgstr "Only relative paths are allowed"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:59
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:63
 msgid "'%pattern%' characters are forbidden in a path"
 msgstr "'%pattern%' characters are forbidden in a path"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:62
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:66
 msgid "This is not a valid %testDescription%."
 msgstr "This is not a valid %testDescription%."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:63
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:67
 msgid "A %testDescription% cannot contain letters."
 msgstr "A %testDescription% cannot contain letters."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:64
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:68
 msgid "%value% is too long for a %testDescription%. Should be %length% digits."
 msgstr ""
 "%value% is too long for a %testDescription%. Should be %length% digits."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:65
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:69
 msgid ""
 "%value% is too short for a %testDescription%. Should be %length% digits."
 msgstr ""
 "%value% is too short for a %testDescription%. Should be %length% digits."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:68
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:72
 #: gemstracker/gemstracker/src/Handlers/Auth/ChangePasswordHandler.php:96
 #: gemstracker/gemstracker/src/Handlers/Auth/ResetPasswordChangeHandler.php:105
 msgid "Must be the same as %fieldDescription%."
 msgstr "Must be the same as %fieldDescription%."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:71
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:75
 msgid "This value is not allowed."
 msgstr "This value is not allowed."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:74
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:78
 msgid "The characters =, + and | are not allowed here."
 msgstr "The characters =, + and | are not allowed here."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:77
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:81
 msgid "Html tags may not be entered here."
 msgstr "Html tags may not be entered here."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:80
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:84
 msgid ""
 "No letters, ':' or '\\' are allowed directly after a '<' or '&' character."
 msgstr ""
 "No letters, ':' or '\\' are allowed directly after a '<' or '&' character."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:83
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:87
 msgid "Values may not be the same."
 msgstr "Values may not be the same."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:86
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:90
 msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 msgstr "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:89
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:93
 msgid ""
 "Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
 "problem."
@@ -173,15 +178,15 @@ msgstr ""
 "Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
 "problem."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:92
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:96
 msgid "To set '%description%' you have to set '%fieldDescription%'."
 msgstr "To set '%description%' you have to set '%fieldDescription%'."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:96
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:100
 msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
 msgstr "'%value%' is not an email address (e.g. name@somewhere.com)."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:99
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:103
 msgid ""
 "'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
 "nobody@nowhere.org)."
@@ -189,48 +194,48 @@ msgstr ""
 "'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
 "nobody@nowhere.org)."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:102
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:106
 msgid "'%value%' must contain only digits"
 msgstr "'%value%' must contain only digits"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:103
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:107
 msgid "'%value%' is an empty string"
 msgstr "'%value%' is an empty string"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:104
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:108
 msgid "Invalid type given. String, integer or float expected"
 msgstr "Invalid type given. String, integer or float expected"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:107
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:111
 #, no-php-format
 msgid "Only %extension% files are accepted."
 msgstr "Only %extension% files are accepted."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:110
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:114
 msgid "'%value%' is not greater than '%min%'"
 msgstr "'%value%' is not greater than '%min%'"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:125
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:129
 msgid "Back to login"
 msgstr "Back to login"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:126
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:130
 msgid "Enter your token..."
 msgstr "Enter your token..."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:127
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:131
 msgid "Please enter your organization and your username or e-mail address."
 msgstr "Please enter your organization and your username or e-mail address."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:128
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:132
 msgid "Request reset"
 msgstr "Request reset"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:129
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:133
 msgid "Request password reset"
 msgstr "Request password reset"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:130
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:134
 msgid ""
 "We will then send you an e-mail with a link. The link will bring you to a "
 "page where you can set a new password of your choice."
@@ -238,36 +243,36 @@ msgstr ""
 "We will then send you an e-mail with a link. The link will bring you to a "
 "page where you can set a new password of your choice."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:131
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:135
 msgid "Password rules"
 msgstr "Password rules"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:132
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:136
 #, php-format
 msgid "A password %s."
 msgstr "A password %s."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:133
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:137
 msgid "A password:"
 msgstr "A password:"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:134
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:138
 msgid "You have been inactive for a while. You will be logged out shortly."
 msgstr "You have been inactive for a while. You will be logged out shortly."
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:135
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:139
 msgid "Stay logged in"
 msgstr "Stay logged in"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:136
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:140
 msgid "Ignore"
 msgstr "Ignore"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:137
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:141
 msgid "Logout"
 msgstr "Logout"
 
-#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:138
+#: gemstracker/gemstracker/languages/StaticMessageStrings/FakeTranslations.php:142
 msgid "You are not logged in"
 msgstr "You are not logged in"
 
@@ -308,7 +313,6 @@ msgstr "No rows in %s."
 #: gemstracker/gemstracker/src/Batch/BatchRunner.php:44
 #: gemstracker/gemstracker/src/Export/RespondentExport.php:569
 #: gemstracker/gemstracker/src/Snippets/Ask/ShowFirstOpenSnippet.php:158
-#: gemstracker/gemstracker/src/Snippets/Batch/BatchRunnerSnippet.php:41
 #: gemstracker/gemstracker/src/Snippets/Communication/CommJobExecuteBatchSnippet.php:57
 #: gemstracker/gemstracker/src/Snippets/Communication/CommJobExecuteFormSnippet.php:71
 #: gemstracker/gemstracker/src/Snippets/FormSnippetAbstractMUtil.php:209
@@ -415,7 +419,7 @@ msgstr "Location"
 #: gemstracker/gemstracker/src/Export/RespondentExport.php:273
 #: gemstracker/gemstracker/src/Handlers/Setup/Database/MigrationHandlerAbstract.php:51
 #: gemstracker/gemstracker/src/Model/AppointmentModel.php:243
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:183
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:185
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:140
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:178
 #: gemstracker/gemstracker/src/Model/TrackBuilder/SourceModel.php:77
@@ -877,7 +881,7 @@ msgstr[0] "role"
 msgstr[1] "roles"
 
 #: gemstracker/gemstracker/src/Actions/TemplateAction.php:65
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:243
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:257
 #, php-format
 msgid "Edit %s %s"
 msgstr "Edit %s %s"
@@ -1109,7 +1113,7 @@ msgstr "Procedure"
 #: gemstracker/gemstracker/src/Agenda/Filter/FieldLikeModelDependency.php:88
 #: gemstracker/gemstracker/src/Model/AppointmentModel.php:206
 #: gemstracker/gemstracker/src/Model/AppointmentModel.php:269
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:171
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:173
 #: gemstracker/gemstracker/src/Model/CommTemplateModel.php:162
 #: gemstracker/gemstracker/src/Model/EmailTokenModel.php:100
 #: gemstracker/gemstracker/src/Model/EpisodeOfCareModel.php:148
@@ -1764,12 +1768,10 @@ msgid "An authentication code has been sent to your phone by sms"
 msgstr "An authentication code has been sent to your phone by sms"
 
 #: gemstracker/gemstracker/src/Batch/BatchRunner.php:45
-#: gemstracker/gemstracker/src/Snippets/Batch/BatchRunnerSnippet.php:42
 msgid "Restart"
 msgstr "Restart"
 
 #: gemstracker/gemstracker/src/Batch/BatchRunner.php:46
-#: gemstracker/gemstracker/src/Snippets/Batch/BatchRunnerSnippet.php:43
 #, php-format
 msgid "Start %s jobs"
 msgstr "Start %s jobs"
@@ -1867,7 +1869,7 @@ msgstr "Round"
 #: gemstracker/gemstracker/src/Condition/ConditionLoader.php:212
 #: gemstracker/gemstracker/src/Export/RespondentExport.php:355
 #: gemstracker/gemstracker/src/Export/RespondentExport.php:371
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:174
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:176
 #: gemstracker/gemstracker/src/Model/EmailTokenModel.php:48
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:275
 #: gemstracker/gemstracker/src/Model/TrackBuilder/ChartConfigModel.php:36
@@ -2162,7 +2164,7 @@ msgstr "Same survey code"
 #: gemstracker/gemstracker/src/Condition/Round/RepeatLessCondition.php:61
 #: gemstracker/gemstracker/src/Export/RespondentExport.php:270
 #: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:142
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:177
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:179
 #: gemstracker/gemstracker/src/Model/EmailTokenModel.php:58
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:294
 #: gemstracker/gemstracker/src/Model/TrackBuilder/ChartConfigModel.php:45
@@ -2387,7 +2389,7 @@ msgstr "Organization one of %s"
 #: gemstracker/gemstracker/src/Export/Db/AnswerModelContainer.php:241
 #: gemstracker/gemstracker/src/Export/ModelSource/AnswerExportModelSource.php:138
 #: gemstracker/gemstracker/src/Export/RespondentExport.php:272
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:167
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:169
 #: gemstracker/gemstracker/src/Model/EmailTokenModel.php:37
 #: gemstracker/gemstracker/src/Model/OrganizationModel.php:360
 #: gemstracker/gemstracker/src/Model/Translator/TokenAnswerTranslator.php:90
@@ -2746,7 +2748,6 @@ msgid "(Re)check answers"
 msgstr "(Re)check answers"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:354
-#| msgid "E-mail code"
 msgid "Email Token"
 msgstr "Email Token"
 
@@ -2858,12 +2859,10 @@ msgstr "Clear cache"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:629
 #: gemstracker/gemstracker/src/Handlers/Setup/ProjectInformationHandler.php:383
-#| msgid "Clear cache"
 msgid "Clear config cache"
 msgstr "Clear config cache"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:636
-#| msgid "Maintenance mode"
 msgid "Maintenance Mode!"
 msgstr "Maintenance Mode!"
 
@@ -3130,7 +3129,6 @@ msgid "Execute"
 msgstr "Execute"
 
 #: gemstracker/gemstracker/src/Config/Menu.php:1325
-#| msgid "Lock tables"
 msgid "Lock jobs"
 msgstr "Lock jobs"
 
@@ -3786,7 +3784,7 @@ msgstr "New password is active."
 msgid "Too many login attempts"
 msgstr "Too many login attempts"
 
-#: gemstracker/gemstracker/src/Handlers/Auth/EmbedLoginHandler.php:210
+#: gemstracker/gemstracker/src/Handlers/Auth/EmbedLoginHandler.php:213
 msgid "Unable to authenticate"
 msgstr "Unable to authenticate"
 
@@ -4077,7 +4075,7 @@ msgstr[1] "your setup"
 
 #: gemstracker/gemstracker/src/Handlers/Overview/ComplianceHandler.php:141
 #: gemstracker/gemstracker/src/Handlers/Overview/FieldOverviewHandler.php:127
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:150
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:152
 #: gemstracker/gemstracker/src/Model/RespondentModel.php:321
 #: gemstracker/gemstracker/src/Repository/TokenRepository.php:692
 #: gemstracker/gemstracker/src/Snippets/Agenda/AppointmentsTableSnippet.php:197
@@ -4123,7 +4121,7 @@ msgstr "Compliance"
 #: gemstracker/gemstracker/src/Handlers/Project/ProjectTracksHandler.php:143
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:311
 #: gemstracker/gemstracker/src/Handlers/Respondent/TrackHandler.php:256
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:413
+#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:407
 #: gemstracker/gemstracker/src/Snippets/Agenda/AppointmentCheckSnippetAbstract.php:188
 #: gemstracker/gemstracker/src/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:176
 #: gemstracker/gemstracker/src/Tracker/Snippets/EditTrackSnippetAbstract.php:164
@@ -4444,7 +4442,7 @@ msgid "Checking round assignments for track '%s' of respondent %s, %s."
 msgstr "Checking round assignments for track '%s' of patient %s, %s."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:153
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:266
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:175
 #: gemstracker/gemstracker/src/Snippets/Track/CheckRoundsInformation.php:40
 msgid ""
 "Updates existing token description and order to the current round "
@@ -4454,7 +4452,7 @@ msgstr ""
 "description and order."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:154
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:267
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:176
 #: gemstracker/gemstracker/src/Snippets/Track/CheckRoundsInformation.php:41
 msgid ""
 "Updates the survey of unanswered tokens when the round survey was changed."
@@ -4462,22 +4460,21 @@ msgstr ""
 "Updates the survey of unanswered tokens when the round survey was changed."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:155
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:268
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:177
 #: gemstracker/gemstracker/src/Snippets/Track/CheckRoundsInformation.php:42
 msgid "Removes unanswered tokens when the round is no longer active."
 msgstr "Removes unanswered tokens when the round is no longer active."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:156
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:269
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:178
 #: gemstracker/gemstracker/src/Snippets/Track/CheckRoundsInformation.php:43
 msgid "Creates new tokens for new rounds."
 msgstr "Creates new tokens for new rounds."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:157
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:417
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:270
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:434
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:466
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:166
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:179
 #: gemstracker/gemstracker/src/Snippets/Track/CheckRoundsInformation.php:45
 #: gemstracker/gemstracker/src/Snippets/Track/RecalcFieldsInformation.php:44
 msgid ""
@@ -4488,7 +4485,7 @@ msgstr ""
 "round settings."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:158
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:271
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:180
 #: gemstracker/gemstracker/src/Snippets/Track/CheckRoundsInformation.php:49
 msgid ""
 "Run this code when a track has changed or when the code has changed and the "
@@ -4498,7 +4495,7 @@ msgstr ""
 "track must be adjusted."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:159
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:272
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:181
 #: gemstracker/gemstracker/src/Snippets/Track/CheckRoundsInformation.php:52
 msgid ""
 "If you do not run this code after changing a track, then the old tracks "
@@ -4547,15 +4544,13 @@ msgid "Recalculating fields for track '%s' of respondent %s, %s."
 msgstr "Recalculating fields for track '%s' of patient %s, %s."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:414
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:431
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:463
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:163
 #: gemstracker/gemstracker/src/Snippets/Track/RecalcFieldsInformation.php:40
 msgid "Recalculates the values the fields should have."
 msgstr "Recalculates the values the fields should have."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:415
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:432
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:464
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:164
 #: gemstracker/gemstracker/src/Snippets/Track/RecalcFieldsInformation.php:41
 msgid ""
 "Couple existing appointments to tracks where an appointment field is not "
@@ -4565,8 +4560,7 @@ msgstr ""
 "filled."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:416
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:433
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:465
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:165
 #: gemstracker/gemstracker/src/Snippets/Track/RecalcFieldsInformation.php:42
 msgid ""
 "Overwrite existing appointments to tracks e.g. when the filters have changed."
@@ -4574,8 +4568,7 @@ msgstr ""
 "Overwrite existing appointments to tracks e.g. when the filters have changed."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:418
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:435
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:467
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:167
 #: gemstracker/gemstracker/src/Snippets/Track/RecalcFieldsInformation.php:48
 msgid ""
 "Run this code when automatically calculated track fields have changed, when "
@@ -4587,8 +4580,7 @@ msgstr ""
 "changed and the track must be adjusted."
 
 #: gemstracker/gemstracker/src/Handlers/Respondent/RespondentTrackHandler.php:419
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:436
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:468
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:168
 #: gemstracker/gemstracker/src/Snippets/Track/RecalcFieldsInformation.php:51
 msgid ""
 "If you do not run this code after changing track fields, then the old fields "
@@ -5032,18 +5024,18 @@ msgstr[1] "masks"
 msgid "No masks found!"
 msgstr "No masks found!"
 
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:115
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:125
 msgid "Checking all respondents."
 msgstr "Checking all patients."
 
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:117
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:176
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:127
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:190
 #: gemstracker/gemstracker/src/Snippets/Organization/CheckOrganizationInformation.php:39
 msgid "Executes respondent change event for all active respondents."
 msgstr "Executes patient change event for all active patients."
 
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:119
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:178
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:129
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:192
 #: gemstracker/gemstracker/src/Snippets/Organization/CheckOrganizationInformation.php:42
 msgid ""
 "Run this code when the respondent change event was changed or e.g. when a "
@@ -5052,26 +5044,26 @@ msgstr ""
 "Run this code when the patient change event was changed or e.g. when a new "
 "\"default\" track was created."
 
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:142
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:152
 #, php-format
 msgid "Nothing to do: respondent change event for %s not set."
 msgstr "Nothing to do: patient change event for %s not set."
 
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:149
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:159
 #, php-format
 msgid "Nothing to do: %s has no respondents."
 msgstr "Nothing to do: %s has no patients."
 
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:171
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:185
 #, php-format
 msgid "Checking respondents for '%s'."
 msgstr "Checking patients for '%s'."
 
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:253
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:267
 msgid "Participating organizations"
 msgstr "Participating organizations"
 
-#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:309
+#: gemstracker/gemstracker/src/Handlers/Setup/OrganizationHandler.php:323
 msgid "organization"
 msgid_plural "organizations"
 msgstr[0] "organization"
@@ -5154,7 +5146,6 @@ msgid "file not found"
 msgstr "file not found"
 
 #: gemstracker/gemstracker/src/Handlers/Setup/ProjectInformationHandler.php:262
-#| msgid "Cache cleaned"
 msgid "Data cache cleaned"
 msgstr "Data cache cleaned"
 
@@ -5553,26 +5544,20 @@ msgid_plural "fields"
 msgstr[0] "field"
 msgstr[1] "fields"
 
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:263
+#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:265
 msgid "Checking round assignments for all tracks."
 msgstr "Checking round assignments for all tracks."
 
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:293
+#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:286
 #, php-format
 msgid "Checking round assignments for track %d '%s'."
 msgstr "Checking round assignments for track %d '%s'."
 
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:428
+#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:422
 msgid "Recalculating fields for all tracks."
 msgstr "Recalculating fields for all tracks."
 
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:430
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:462
-#: gemstracker/gemstracker/src/Snippets/Track/RecalcFieldsInformation.php:37
-msgid "Track field recalculation"
-msgstr "Track field recalculation"
-
-#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:457
+#: gemstracker/gemstracker/src/Handlers/TrackBuilder/TrackMaintenanceHandler.php:443
 #, php-format
 msgid "Recalculating fields for track %d '%s'."
 msgstr "Recalculating fields for track %d '%s'."
@@ -5902,46 +5887,46 @@ msgstr "Discharge"
 msgid "Additional info"
 msgstr "Additional info"
 
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:146
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:148
 #: gemstracker/gemstracker/src/Snippets/Mail/Log/MailLogSearchSnippet.php:73
 msgid "Date sent"
 msgstr "Date sent"
 
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:153
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:155
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:101
 msgid "Receiver"
 msgstr "Receiver"
 
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:156
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:158
 msgid "To address"
 msgstr "To address"
 
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:160
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:162
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:84
 msgid "Sender"
 msgstr "Sender"
 
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:163
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:165
 msgid "From address"
 msgstr "From address"
 
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:180
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:182
 #: gemstracker/gemstracker/src/Snippets/Tracker/InsertSurveySnippet.php:640
 msgid "Fill out by"
 msgstr "Fill out by"
 
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:188
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:190
 #: gemstracker/gemstracker/src/Model/EmailTokenModel.php:73
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:158
 #: gemstracker/gemstracker/src/Snippets/Mail/MailFormSnippet.php:156
 msgid "Template"
 msgstr "Template"
 
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:191
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:193
 msgid "Job"
 msgstr "Job"
 
-#: gemstracker/gemstracker/src/Model/CommLogModel.php:211
+#: gemstracker/gemstracker/src/Model/CommLogModel.php:213
 msgid "manual"
 msgstr "manual"
 
@@ -7773,6 +7758,11 @@ msgstr "%s: %s"
 #: gemstracker/gemstracker/src/Util/TrackData.php:181
 msgid "Inactive"
 msgstr "Inactive"
+
+#: gemstracker/gemstracker/src/Repository/TrackDataRepository.php:162
+#: gemstracker/gemstracker/src/Snippets/Track/RecalcFieldsInformation.php:37
+msgid "Track field recalculation"
+msgstr "Track field recalculation"
 
 #: gemstracker/gemstracker/src/Screens/Respondent/Browse/GemsDefaultBrowse.php:42
 msgid "(default Gems table display)"
@@ -11194,7 +11184,7 @@ msgid_plural "%d tokens imported."
 msgstr[0] "%d token imported."
 msgstr[1] "%d tokens imported."
 
-#: gemstracker/gemstracker/src/Task/Respondent/UpdateRespondentTask.php:61
+#: gemstracker/gemstracker/src/Task/Respondent/UpdateRespondentTask.php:73
 #, php-format
 msgid "%d respondents checked, %d respondents were changed."
 msgstr "%d patients checked, %d patients were changed."

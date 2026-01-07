@@ -15,6 +15,7 @@ use Gems\Batch\BatchRunnerLoader;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Menu\RouteHelper;
 use Gems\Model\Dependency\ActivationDependency;
+use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Tracker\TrackMaintenance\TrackMaintenanceSnippet;
 use Gems\SnippetsLoader\GemsSnippetResponder;
@@ -209,6 +210,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         CurrentUserRepository $currentUserRepository,
         protected readonly BatchRunnerLoader $batchRunnerLoader,
         protected readonly RouteHelper $routeHelper,
+        protected readonly TrackDataRepository $trackDataRepository,
         protected readonly TrackModel $trackModel,
         protected readonly TrackUsageCounter $usageCounter,
     ) {
@@ -261,16 +263,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($this->_('Checking round assignments for all tracks.'));
-
-        $batchRunner->setJobInfo([
-            $this->_('Updates existing token description and order to the current round description and order.'),
-            $this->_('Updates the survey of unanswered tokens when the round survey was changed.'),
-            $this->_('Removes unanswered tokens when the round is no longer active.'),
-            $this->_('Creates new tokens for new rounds.'),
-            $this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
-            $this->_('Run this code when a track has changed or when the code has changed and the track must be adjusted.'),
-            $this->_('If you do not run this code after changing a track, then the old tracks remain as they were and only newly created tracks will reflect the changes.'),
-        ]);
+        $batchRunner->setJobInfo($this->trackDataRepository->getCheckTracksJobsInfo());
 
         return $batchRunner->getResponse($this->request);
     }
@@ -294,6 +287,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($title);
+        $batchRunner->setJobInfo($this->trackDataRepository->getCheckTracksJobsInfo());
 
         return $batchRunner->getResponse($this->request);
     }
@@ -426,15 +420,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($this->_('Recalculating fields for all tracks.'));
-        $batchRunner->setJobInfo([
-            $this->_('Track field recalculation'),
-            $this->_('Recalculates the values the fields should have.'),
-            $this->_('Couple existing appointments to tracks where an appointment field is not filled.'),
-            $this->_('Overwrite existing appointments to tracks e.g. when the filters have changed.'),
-            $this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
-            $this->_('Run this code when automatically calculated track fields have changed, when the appointment filters used by this track have changed or when the code has changed and the track must be adjusted.'),
-            $this->_('If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'),
-        ]);
+        $batchRunner->setJobInfo($this->trackDataRepository->getCheckFieldsJobsInfo());
 
         return $batchRunner->getResponse($this->request);
     }
@@ -458,15 +444,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($title);
-        $batchRunner->setJobInfo([
-            $this->_('Track field recalculation'),
-            $this->_('Recalculates the values the fields should have.'),
-            $this->_('Couple existing appointments to tracks where an appointment field is not filled.'),
-            $this->_('Overwrite existing appointments to tracks e.g. when the filters have changed.'),
-            $this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
-            $this->_('Run this code when automatically calculated track fields have changed, when the appointment filters used by this track have changed or when the code has changed and the track must be adjusted.'),
-            $this->_('If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'),
-        ]);
+        $batchRunner->setJobInfo($this->trackDataRepository->getCheckFieldsJobsInfo());
 
         return $batchRunner->getResponse($this->request);
     }

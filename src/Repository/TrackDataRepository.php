@@ -156,6 +156,32 @@ class TrackDataRepository
         return $this->cachedResultFetcher->fetchAll('allTracks', $select, null, $this->cacheTags);
     }
 
+    public function getCheckFieldsJobsInfo(): array
+    {
+        return [
+            $this->translator->_('Track field recalculation'),
+            $this->translator->_('Recalculates the values the fields should have.'),
+            $this->translator->_('Couple existing appointments to tracks where an appointment field is not filled.'),
+            $this->translator->_('Overwrite existing appointments to tracks e.g. when the filters have changed.'),
+            $this->translator->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
+            $this->translator->_('Run this code when automatically calculated track fields have changed, when the appointment filters used by this track have changed or when the code has changed and the track must be adjusted.'),
+            $this->translator->_('If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'),
+        ];
+    }
+
+    public function getCheckTracksJobsInfo(): array
+    {
+        return [
+            $this->translator->_('Updates existing token description and order to the current round description and order.'),
+            $this->translator->_('Updates the survey of unanswered tokens when the round survey was changed.'),
+            $this->translator->_('Removes unanswered tokens when the round is no longer active.'),
+            $this->translator->_('Creates new tokens for new rounds.'),
+            $this->translator->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
+            $this->translator->_('Run this code when a track has changed or when the code has changed and the track must be adjusted.'),
+            $this->translator->_('If you do not run this code after changing a track, then the old tracks remain as they were and only newly created tracks will reflect the changes.'),
+        ];
+    }
+
     /**
      * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
      * that are active and are insertable
