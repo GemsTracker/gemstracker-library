@@ -8,6 +8,7 @@ use Gems\Exception\SymfonyValidatorException;
 use Mezzio\Router\RouteResult;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface as SerializerExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -20,7 +21,21 @@ class MapRequest
     {
     }
 
-    public function mapRequestBody(ServerRequestInterface $request, string $dtoClassName, bool $allowExtraAttributes = true): object|null
+    private function getQueryParams(ServerRequestInterface $request): array
+    {
+        $params = $request->getQueryParams();
+
+        foreach($params as $key => $param) {
+            if (str_starts_with($param, '[') && str_ends_with($param, ']')) {
+                $value = trim($param, '[]');
+                $params[$key] = explode(',', $value);
+            }
+        }
+
+        return $params;
+    }
+
+    public function mapRequestBody(ServerRequestInterface $request, string $dtoClassName, bool $allowExtraAttributes = true, bool $typeEnforcement = true): object|null
     {
         $rawBody = $request->getBody()->getContents();
         if (empty($rawBody)) {
@@ -36,6 +51,7 @@ class MapRequest
                     // 'groups' => ['post'], // Apply specific groups if needed
                     // Disallow extra fields not defined in the DTO
                     'allow_extra_attributes' => $allowExtraAttributes,
+                    ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => !$typeEnforcement,
                 ]
             );
         } catch (SerializerExceptionInterface $e) {
@@ -52,14 +68,14 @@ class MapRequest
 
     public function mapRequestQuery(ServerRequestInterface $request, string $dtoClassName, bool $allowExtraAttributes = true): object
     {
-        $queryParams = $request->getQueryParams();
+        $queryParams = $this->getQueryParams($request);
 
-        return $this->mapDtoFromArray($queryParams, $dtoClassName, $allowExtraAttributes);
+        return $this->mapDtoFromArray($queryParams, $dtoClassName, $allowExtraAttributes, false);
     }
 
     public function mapAllParams(ServerRequestInterface $request, string $dtoClassName, bool $allowExtraAttributes = true): object
     {
-        $queryParams = $request->getQueryParams();
+        $queryParams = $this->getQueryParams($request);
 
         $rawBody = $request->getBody()->getContents();
         $bodyParams = empty($rawBody) ? [] : json_decode($rawBody, true);
@@ -67,10 +83,10 @@ class MapRequest
 
         $mergedData = array_merge($queryParams, $bodyParams, $routeParams);
 
-        return $this->mapDtoFromArray($mergedData, $dtoClassName, $allowExtraAttributes);
+        return $this->mapDtoFromArray($mergedData, $dtoClassName, $allowExtraAttributes, false);
     }
 
-    private function mapDtoFromArray(array $data, string $dtoClassName, bool $allowExtraAttributes = true): object
+    private function mapDtoFromArray(array $data, string $dtoClassName, bool $allowExtraAttributes = true, bool $typeEnforcement = true): object
     {
 
         // Optional context for denormalization
@@ -78,6 +94,7 @@ class MapRequest
             // 'groups' => ['query'], // Apply specific groups if needed
             // Disallow extra fields not defined in the DTO
             'allow_extra_attributes' => $allowExtraAttributes,
+            ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => !$typeEnforcement,
         ];
 
         try {
