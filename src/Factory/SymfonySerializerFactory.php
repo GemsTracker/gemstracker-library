@@ -24,16 +24,19 @@ class SymfonySerializerFactory implements FactoryInterface
         $metadataFactory = new ClassMetadataFactory(new AttributeLoader());
 
         $normalizers = [
+            new DateTimeNormalizer(),
             new ObjectNormalizer(
                 classMetadataFactory: $metadataFactory,
                 nameConverter: null,
                 propertyAccessor: null,
-                propertyTypeExtractor: $reflectionExtractor,classDiscriminatorResolver: null, defaultContext: [
+                propertyTypeExtractor: $reflectionExtractor,
+                classDiscriminatorResolver: null,
+                defaultContext: [
                     'allow_extra_attributes' => false,
                     ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => false,
                     ObjectNormalizer::SKIP_NULL_VALUES => true,
                 ]),
-            new DateTimeNormalizer(),
+
         ];
 
         $encoders = [
