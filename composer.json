@@ -73,7 +73,7 @@
         "laminas/laminas-hydrator": "4.16.*",
         "laminas/laminas-i18n": "^2.28",
         "laminas/laminas-permissions-acl": "^2.9",
-        "laminas/laminas-servicemanager": "^3.11",
+        "laminas/laminas-servicemanager": "^3.23",
         "laminas/laminas-stratigility": "^3.9.0",
         "laminas/laminas-uri": "2.*",
         "laminas/laminas-validator": "^2.60",
