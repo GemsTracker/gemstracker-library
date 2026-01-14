@@ -149,7 +149,7 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
         $updateData['gto_valid_until']        = $this->formData['gto_valid_until'];
         $updateData['gto_valid_until_manual'] = $this->formData['gto_valid_until_manual'];
         $updateData['gto_comment']            = $this->formData['gto_comment'];
-        \MUtil_Echo::track($updateData);
+        // \MUtil_Echo::track($updateData);
         $this->token->refresh($updateData);
 
         $respTrack = $this->token->getRespondentTrack();

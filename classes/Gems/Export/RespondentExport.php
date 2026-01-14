@@ -677,14 +677,14 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             }
             
             $content = $this->prepareWordExport($content);
-            file_put_contents('D:\temp\wordExport.html', $content);
+            // file_put_contents('D:\temp\wordExport.html', $content);
             
             $section = $this->_word->addSection();
             \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
             \PhpOffice\PhpWord\Shared\Html::addHtml($section, $content, false, false);
 
             if ($format == 'pdf') {
-                \PhpOffice\PhpWord\Settings::setPdfRenderer(\PhpOffice\PhpWord\Settings::PDF_RENDERER_DOMPDF, VENDOR_DIR . '/dompdf/dompdf');  
+                \PhpOffice\PhpWord\Settings::setPdfRenderer(\PhpOffice\PhpWord\Settings::PDF_RENDERER_DOMPDF, VENDOR_DIR . '/dompdf/dompdf');
                 $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
 
                 header("Content-Type: application/pdf");
