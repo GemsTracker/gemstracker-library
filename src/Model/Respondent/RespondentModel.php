@@ -446,7 +446,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
      * @return array The new respondent
      * @throws \Gems\Exception|RespondentAlreadyExists
      */
-    public function copyToOrg($fromOrgId, $fromPid, $toOrgId, $toPid, $keepConsent = false)
+    public function copyToOrg(int $fromOrgId, string $fromPid, int $toOrgId, string $toPid, bool $keepConsent = false): array
     {
         // Maybe we should disable masking, just to be sure
         $this->maskRepository->disableMaskRepository();
@@ -625,7 +625,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
      * @return array The new respondent
      * @throws RespondentAlreadyExists
      */
-    public function move($fromOrgId, $fromPid, $toOrgId, $toPid)
+    public function move(int $fromOrgId, string $fromPid, int $toOrgId, string $toPid, bool $keepConsent = false): array
     {
         // Maybe we should disable masking, just to be sure
         $this->maskRepository->disableMaskRepository();
@@ -651,6 +651,11 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         }
 
         if ($filter && empty($patientTo)) {
+            if (!$keepConsent) {
+                // Set consent to unknown on new organization
+                $patientFrom['gr2o_consent'] = 'Unknown';
+            }
+
             $result = $this->save($patientFrom, $filter);
 
             $this->logConsentChanges($result, true);
