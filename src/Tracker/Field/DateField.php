@@ -126,7 +126,12 @@ class DateField extends FieldAbstract
 
         if ($calcUsing) {
             // Get the used fields with values
-            foreach (array_filter($calcUsing) as $value) {
+            foreach ($calcUsing as $value) {
+                if ($value === null) {
+                    // Empty the Date field if we calculate using appointments, but these are empty
+                    $currentValue = null;
+                    continue;
+                }
                 $appointment = $this->agenda->getAppointment($value);
 
                 if ($appointment->exists) {
