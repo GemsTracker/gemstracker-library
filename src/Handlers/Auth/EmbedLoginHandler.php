@@ -167,21 +167,16 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
                 if ($url) {
                     if ($url instanceof RedirectResponse) {
-                        $this->logInfo(sprintf(
-                            "Login for end user: %s, patient: %s successful, redirecting...",
-                            $identity->getLoginName(),
-                            $identity->getPatientId()
-                        ));
                         $response = $url;
                     } else {
-                        $this->logInfo(sprintf(
-                            "Login for end user: %s, patient: %s successful, redirecting to: %s",
-                            $identity->getLoginName(),
-                            $identity->getPatientId(),
-                            $url
-                        ));
                         $response = new RedirectResponse($url);
                     }
+                    $this->logInfo(sprintf(
+                        "Login for end user: %s, patient: %s successful, redirecting to: %s",
+                        $identity->getLoginName(),
+                        $identity->getPatientId(),
+                        $response->getHeaderLine('Location')
+                    ));
                     return CookieResponse::addCookieToResponse(
                         $request,
                         $response,
