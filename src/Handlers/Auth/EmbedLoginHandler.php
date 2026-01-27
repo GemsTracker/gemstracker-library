@@ -107,7 +107,8 @@ class EmbedLoginHandler implements RequestHandlerInterface
             }
 
             $this->logInfo(sprintf(
-                "Login user: %s, organization: %s, end user: %s, patient: %s, key: %s",
+                "Login ip: %s, user: %s, organization: %s, end user: %s, patient: %s, key: %s",
+                $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE),
                 $input['epd'] ?? 'n/a',
                 $input['org'] ?? 'n/a',
                 $input['usr'] ?? 'n/a',
