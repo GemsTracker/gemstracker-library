@@ -101,9 +101,9 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 unset($input['patientId']);
             }
 
-            $logKey = null;
+            $logKey = '';
             if ($this->showKeyInLog) {
-                $logKey = $input['key'];
+                $logKey = $input['key'] ?? 'n/a';
             }
 
             $this->logInfo(sprintf(
