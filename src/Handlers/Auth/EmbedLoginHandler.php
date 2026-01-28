@@ -101,13 +101,14 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 unset($input['patientId']);
             }
 
-            $logKey = null;
+            $logKey = '';
             if ($this->showKeyInLog) {
-                $logKey = $input['key'];
+                $logKey = $input['key'] ?? 'n/a';
             }
 
             $this->logInfo(sprintf(
-                "Login user: %s, organization: %s, end user: %s, patient: %s, key: %s",
+                "Login ip: %s, user: %s, organization: %s, end user: %s, patient: %s, key: %s",
+                $request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE),
                 $input['epd'] ?? 'n/a',
                 $input['org'] ?? 'n/a',
                 $input['usr'] ?? 'n/a',
@@ -167,21 +168,16 @@ class EmbedLoginHandler implements RequestHandlerInterface
 
                 if ($url) {
                     if ($url instanceof RedirectResponse) {
-                        $this->logInfo(sprintf(
-                            "Login for end user: %s, patient: %s successful, redirecting...",
-                            $identity->getLoginName(),
-                            $identity->getPatientId()
-                        ));
                         $response = $url;
                     } else {
-                        $this->logInfo(sprintf(
-                            "Login for end user: %s, patient: %s successful, redirecting to: %s",
-                            $identity->getLoginName(),
-                            $identity->getPatientId(),
-                            $url
-                        ));
                         $response = new RedirectResponse($url);
                     }
+                    $this->logInfo(sprintf(
+                        "Login for end user: %s, patient: %s successful, redirecting to: %s",
+                        $identity->getLoginName(),
+                        $identity->getPatientId(),
+                        $response->getHeaderLine('Location')
+                    ));
                     return CookieResponse::addCookieToResponse(
                         $request,
                         $response,
