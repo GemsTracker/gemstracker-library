@@ -47,7 +47,7 @@ class LastPatientCondition extends LastAnswerCondition
     public function getLastAnswer(string $questionCode, Token $token): string
     {
         $answer         = 'N/A';    // Default if we find no answer
-        $date           = $token->getValidFrom();
+        $date           = $token->getValidUntil();
         $questionCodeUc = strtoupper($questionCode);
 
         if (! $date) {
