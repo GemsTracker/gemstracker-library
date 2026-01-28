@@ -10,6 +10,7 @@ use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -27,7 +28,7 @@ class SymfonySerializerFactory implements FactoryInterface
             new DateTimeNormalizer(),
             new ObjectNormalizer(
                 classMetadataFactory: $metadataFactory,
-                nameConverter: null,
+                nameConverter: new CamelCaseToSnakeCaseNameConverter(),
                 propertyAccessor: null,
                 propertyTypeExtractor: $reflectionExtractor,
                 classDiscriminatorResolver: null,
