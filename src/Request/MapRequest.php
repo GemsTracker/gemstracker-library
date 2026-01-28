@@ -29,6 +29,10 @@ class MapRequest
             if (str_starts_with($param, '[') && str_ends_with($param, ']')) {
                 $value = trim($param, '[]');
                 $params[$key] = explode(',', $value);
+                continue;
+            }
+            if ($param === 'null') {
+                $params[$key] = null;
             }
         }
 
