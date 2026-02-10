@@ -19,6 +19,12 @@ class BrowseSnippet extends VueSnippetAbstract
 
     protected array $headers;
 
+    protected int|null $perPage = null;
+
+    protected array $rowClasses = [];
+
+    protected array $searchStructure = [];
+
     protected string $tag = 'data-table';
 
     protected function getAttributes(): array
@@ -27,6 +33,13 @@ class BrowseSnippet extends VueSnippetAbstract
         $attributes['resource'] = $this->getDataResource();
         $attributes['endpoint'] = $this->getDataEndpoint();
         $attributes[':headers'] = $this->getHeaders();
+        $attributes[':search-structure'] = $this->getSearchStructure();
+        if (isset($this->perPage)) {
+            $attributes[':per-page'] = $this->perPage;
+        }
+        if (isset($this->rowClasses)) {
+            $attributes[':row-classes'] = json_encode($this->rowClasses);
+        }
 
         return $attributes;
     }
@@ -44,5 +57,10 @@ class BrowseSnippet extends VueSnippetAbstract
     protected function getHeaders(): string
     {
         return json_encode($this->headers);
+    }
+
+    protected function getSearchStructure(): string
+    {
+        return json_encode($this->searchStructure);
     }
 }

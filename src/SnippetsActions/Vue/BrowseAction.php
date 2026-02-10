@@ -17,6 +17,12 @@ class BrowseAction extends AbstractAction
 
     public array $headers = [];
 
+    public int|null $perPage = null;
+
+    public array $rowClasses = [];
+
+    public array $searchStructure = [];
+
     public string $tag;
 
     public array $vueOptions = [];
