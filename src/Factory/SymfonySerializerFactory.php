@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -26,6 +27,7 @@ class SymfonySerializerFactory implements FactoryInterface
 
         $normalizers = [
             new DateTimeNormalizer(),
+            new BackedEnumNormalizer(),
             new ObjectNormalizer(
                 classMetadataFactory: $metadataFactory,
                 nameConverter: new CamelCaseToSnakeCaseNameConverter(),
