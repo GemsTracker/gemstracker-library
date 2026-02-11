@@ -135,7 +135,7 @@ class FilterCreateTrackCheckerTest extends TestCase
      */
     public function testCreateFromCurrentField(bool $expected, int $waitDays, bool $hasPreviousAppointmentDate, bool $hasCurrentAppointmentDate = true, bool $sameAppointment = false): void
     {
-        $agenda = $this->getAgenda();
+        $agenda = $this->createMock(Agenda::class);
 
         $appointmentDate = new DateTimeImmutable('2026-01-20');
         if (!$hasCurrentAppointmentDate) {
@@ -145,6 +145,7 @@ class FilterCreateTrackCheckerTest extends TestCase
         $respondentTrack = $this->createMock(RespondentTrack::class);
 
         $fieldData = [];
+        $previousAppointment = null;
         if ($hasPreviousAppointmentDate && $appointmentDate) {
             $previousFieldDate = $appointmentDate->sub(new DateInterval('P5D'));
             $previousAppointment = $this->getAppointment([

@@ -81,10 +81,10 @@ class FilterCreateTrackChecker
         FilterTracer|null $filterTracer = null
     ): bool
     {
-        $createTrack = $this->createAfterWaitDays($appointment, $filter, $respTrack, $filterTracer);
+        $createTrack = $this->createAfterWaitDays($agenda, $appointment, $filter, $respTrack, $filterTracer);
 
         if ($createTrack) {
-            $createTrack = $this->createWhenNotInThisTrack($appointment, $filter, $respTrack, $filterTracer);
+            $createTrack = $this->createWhenNotInThisTrack($agenda, $appointment, $filter, $respTrack, $filterTracer);
         }
 
         return $createTrack;
@@ -177,9 +177,7 @@ class FilterCreateTrackChecker
         }
 
         if (!isset($fieldData[$fieldId])) {
-            // Check from start if track has no field with this data ????
-            // OR return true; ??
-            return $this->createFromStart($agenda, $appointment, $filter, $respTrack, $filterTracer);
+            return true;
         }
 
         if ($fieldData[$fieldId] == $appointment->getId()) {
@@ -196,13 +194,11 @@ class FilterCreateTrackChecker
         $appointmentDate = $appointment->getAdmissionTime();
 
         if (!$appointmentDate) {
-            // Check from start if track has no field with this data ????
-            // OR return true; ??
-            return $this->createFromStart($agenda, $appointment, $filter, $respTrack, $filterTracer);
+            return true;
         }
 
         $diff = $curr->diff($appointmentDate);
-        if ($diff && $diff->days <= $wait) {
+        if ($diff->days <= $wait) {
             if ($filterTracer) {
                 $filterTracer->setSkipCreationMessage(sprintf(
                     $this->translator->_('%d days since previous track field date, %d required'),
