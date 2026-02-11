@@ -2,6 +2,7 @@
 
 namespace Gems\Agenda\Repository;
 
+use Gems\Agenda\Agenda;
 use Gems\Agenda\Appointment;
 use Gems\Agenda\EpisodeOfCare;
 use Gems\Agenda\Filter\TrackFieldFilterCalculation;
@@ -83,12 +84,13 @@ class TrackFieldFilterRepository
     }
 
     public function shouldCreateTrack(
+        Agenda $agenda,
         Appointment $appointment,
         TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool
     {
-        return $this->createTrackChecker->shouldCreateTrack($appointment, $filter, $respTrack, $filterTracer);
+        return $this->createTrackChecker->shouldCreateTrack($agenda, $appointment, $filter, $respTrack, $filterTracer);
     }
 }

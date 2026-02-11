@@ -2,6 +2,7 @@
 
 namespace Gems\Agenda\Repository;
 
+use Gems\Agenda\Agenda;
 use Gems\Agenda\Appointment;
 use Gems\Agenda\Filter\TrackFieldFilterCalculationInterface;
 use Gems\Agenda\FilterTracer;
@@ -17,13 +18,9 @@ class FilterCreateTrackChecker
 
     /**
      * Has the track ended <wait days> ago?
-     *
-     * @param TrackFieldFilterCalculationInterface $filter
-     * @param RespondentTrack $respTrack
-     *
-     * @return bool
      */
     public function createAfterWaitDays(
+        Agenda $agenda,
         Appointment $appointment,
         TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
@@ -75,13 +72,9 @@ class FilterCreateTrackChecker
 
     /**
      * Always report the track should be created
-     *
-     * @param TrackFieldFilterCalculationInterface $filter
-     * @param RespondentTrack $respTrack
-     *
-     * @return boolean
      */
     public function createAlways(
+        Agenda $agenda,
         Appointment $appointment,
         TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
@@ -99,30 +92,23 @@ class FilterCreateTrackChecker
 
     /**
      * Always report the track should be created
-     *
-     * @param TrackFieldFilterCalculationInterface $filter
-     * @param RespondentTrack $respTrack
-     *
-     * @return boolean
      */
     public function createAlwaysNoEndDate(
+        Agenda $agenda,
         Appointment $appointment,
         TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
         FilterTracer|null $filterTracer = null
     ): bool
     {
-        return $this->createWhenNotInThisTrack($appointment, $filter, $respTrack, $filterTracer);
+        return $this->createWhenNotInThisTrack($agenda, $appointment, $filter, $respTrack, $filterTracer);
     }
 
     /**
      * Always report the track should be created
-     *
-     * @param TrackFieldFilterCalculationInterface $filter
-     * @param RespondentTrack $respTrack
-     * @return boolean
      */
     public function createFromStart(
+        Agenda $agenda,
         Appointment $appointment,
         TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
@@ -172,18 +158,72 @@ class FilterCreateTrackChecker
         return $createTrack;
     }
 
+    public function createFromCurrentField(
+        Agenda $agenda,
+        Appointment $appointment,
+        TrackFieldFilterCalculationInterface $filter,
+        RespondentTrack $respTrack,
+        FilterTracer|null $filterTracer = null
+    ): bool
+    {
+        $curr        = $appointment->getAdmissionTime();
+        $wait        = $filter->getWaitDays();
+        $fieldId = $filter->getFieldId();
+        $fieldData = $respTrack->getFieldData();
+
+        if (!$curr) {
+            // Do not create track if there is no admission time
+            return false;
+        }
+
+        if (!isset($fieldData[$fieldId])) {
+            // Check from start if track has no field with this data ????
+            // OR return true; ??
+            return $this->createFromStart($agenda, $appointment, $filter, $respTrack, $filterTracer);
+        }
+
+        if ($fieldData[$fieldId] == $appointment->getId()) {
+            if ($filterTracer) {
+                $filterTracer->setSkipCreationMessage(
+                    $this->translator->_('track has already been created')
+                );
+            }
+            return false;
+        }
+
+        $appointmentId = $fieldData[$fieldId];
+        $appointment = $agenda->getAppointment($appointmentId);
+        $appointmentDate = $appointment->getAdmissionTime();
+
+        if (!$appointmentDate) {
+            // Check from start if track has no field with this data ????
+            // OR return true; ??
+            return $this->createFromStart($agenda, $appointment, $filter, $respTrack, $filterTracer);
+        }
+
+        $diff = $curr->diff($appointmentDate);
+        if ($diff && $diff->days <= $wait) {
+            if ($filterTracer) {
+                $filterTracer->setSkipCreationMessage(sprintf(
+                    $this->translator->_('%d days since previous track field date, %d required'),
+                    $diff->days,
+                    $wait
+                ));
+            }
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Always return the track should NOT be created
      *
      * This should never be called as 0 is not a creator, the code is here just
      * to make sure calling without checking has the correct result
-     *
-     * @param TrackFieldFilterCalculationInterface $filter
-     * @param RespondentTrack $respTrack
-     *
-     * @return boolean
      */
     public function createNever(
+        Agenda $agenda,
         Appointment $appointment,
         TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
@@ -197,14 +237,10 @@ class FilterCreateTrackChecker
     }
 
     /**
-     * Only return true when no open track exists
-     *
-     * @param TrackFieldFilterCalculationInterface $filter
-     * @param RespondentTrack $respTrack
-     *
-     * @return boolean
+     * Only return true when no open track existsd
      */
     public function createNoOpen(
+        Agenda $agenda,
         Appointment $appointment,
         TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
@@ -215,7 +251,7 @@ class FilterCreateTrackChecker
         $createTrack = !$respTrack->isOpen();
 
         if ($createTrack) {
-            $createTrack = $this->createWhenNotInThisTrack($appointment, $filter, $respTrack, $filterTracer);
+            $createTrack = $this->createWhenNotInThisTrack($agenda, $appointment, $filter, $respTrack, $filterTracer);
         } elseif ($filterTracer) {
             $filterTracer->setSkipCreationMessage(
                 $this->translator->_('an open track exists')
@@ -226,14 +262,10 @@ class FilterCreateTrackChecker
     }
 
     /**
-     * Only return true when no open track exists
-     *
-     * @param TrackFieldFilterCalculationInterface $filter
-     * @param RespondentTrack $respTrack
-     *
-     * @return boolean
+     * Only return true when no open track existsd
      */
     public function createWhenNoOpen(
+        Agenda $agenda,
         Appointment $appointment,
         TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
@@ -244,7 +276,7 @@ class FilterCreateTrackChecker
         $createTrack = !$respTrack->isOpen();
 
         if ($createTrack) {
-            $createTrack = $this->createAfterWaitDays($appointment, $filter, $respTrack, $filterTracer);
+            $createTrack = $this->createAfterWaitDays($agenda, $appointment, $filter, $respTrack, $filterTracer);
         } elseif ($filterTracer) {
             $filterTracer->setSkipCreationMessage(
                 $this->translator->_('an open track exists')
@@ -252,7 +284,7 @@ class FilterCreateTrackChecker
         }
 
         if ($createTrack) {
-            $createTrack = $this->createWhenNotInThisTrack($appointment, $filter, $respTrack, $filterTracer);
+            $createTrack = $this->createWhenNotInThisTrack($agenda, $appointment, $filter, $respTrack, $filterTracer);
         }
 
         return $createTrack;
@@ -260,13 +292,9 @@ class FilterCreateTrackChecker
 
     /**
      * Create when current appointment is not assigned to this field already
-     *
-     * @param TrackFieldFilterCalculationInterface $filter
-     * @param RespondentTrack $respTrack
-     *
-     * @return boolean
      */
     public function createWhenNotInThisTrack(
+        Agenda $agenda,
         Appointment $appointment,
         TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
@@ -291,6 +319,7 @@ class FilterCreateTrackChecker
     }
 
     public function shouldCreateTrack(
+        Agenda $agenda,
         Appointment $appointment,
         TrackFieldFilterCalculationInterface $filter,
         RespondentTrack $respTrack,
@@ -298,12 +327,13 @@ class FilterCreateTrackChecker
     ): bool
     {
         return match($filter->getCreatorType()) {
-            0 => $this->createNever($appointment, $filter, $respTrack, $filterTracer),
-            1 => $this->createWhenNoOpen($appointment, $filter, $respTrack, $filterTracer),
-            2 => $this->createAlways($appointment, $filter, $respTrack, $filterTracer),
-            3 => $this->createAlwaysNoEndDate($appointment, $filter, $respTrack, $filterTracer),
-            4 => $this->createFromStart($appointment, $filter, $respTrack, $filterTracer),
-            5 => $this->createNoOpen($appointment, $filter, $respTrack, $filterTracer),
+            0 => $this->createNever($agenda, $appointment, $filter, $respTrack, $filterTracer),
+            1 => $this->createWhenNoOpen($agenda, $appointment, $filter, $respTrack, $filterTracer),
+            2 => $this->createAlways($agenda, $appointment, $filter, $respTrack, $filterTracer),
+            3 => $this->createAlwaysNoEndDate($agenda, $appointment, $filter, $respTrack, $filterTracer),
+            4 => $this->createFromStart($agenda, $appointment, $filter, $respTrack, $filterTracer),
+            5 => $this->createNoOpen($agenda, $appointment, $filter, $respTrack, $filterTracer),
+            6 => $this->createFromCurrentField($agenda, $appointment, $filter, $respTrack, $filterTracer),
             default => false,
         };
     }

@@ -15,9 +15,8 @@ use Gems\Agenda\Repository\LocationRepository;
 use Gems\Agenda\Repository\ProcedureRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker\RespondentTrack;
+use GemsTest\testUtils\TranslatorMockTrait;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Zalt\Mock\MockTranslator;
 
 /**
@@ -27,22 +26,20 @@ use Zalt\Mock\MockTranslator;
  */
 class FilterCreateTrackCheckerTest extends TestCase
 {
-
-    use ProphecyTrait;
+    use TranslatorMockTrait;
 
     /**
      * Check createAfterWaitDays method, enddate (if true) will be five days before the appointment.
      * Provide different waitDays to check if the desired result is true of false
      *  
      * @dataProvider createAfterWaitDays_NoEndDateProvider
-     * @param DateTimeInterface $waitDays
-     * @param DateTimeInterface $endDate
      */
-    public function testCreateAfterWaitDays_NoEndDate($expected, $waitDays, $endDate)
+    public function testCreateAfterWaitDays(bool $expected, int $waitDays, bool $hasEndDate)
     {
+        $agenda = $this->getAgenda();
         $appointmentDate = new DateTimeImmutable('2018-01-01');
 
-        if ($endDate) {
+        if ($hasEndDate) {
             $trackEndDate = $appointmentDate->sub(new DateInterval('P5D'));
             $respTrack    = $this->_getRespondentTrack($trackEndDate);
         } else {
@@ -60,10 +57,10 @@ class FilterCreateTrackCheckerTest extends TestCase
 
         $filter = new TrackFieldFilterCalculation(1,2, $appointmentFilter, 1, $waitDays);
 
-        $this->assertEquals($expected, $checker->createAfterWaitDays($appointment, $filter, $respTrack));
+        $this->assertEquals($expected, $checker->createAfterWaitDays($agenda, $appointment, $filter, $respTrack));
     }
 
-    public static function createAfterWaitDays_NoEndDateProvider()
+    public static function createAfterWaitDays_NoEndDateProvider(): array
     {
         return [
             'noenddate'             => [false, 2, false],
@@ -78,14 +75,13 @@ class FilterCreateTrackCheckerTest extends TestCase
      * Provide different waitDays to check if the desired result is true of false
      * 
      * @dataProvider createFromStartProvider
-     * @param DateTimeInterface $startDate
-     * @param DateTimeInterface $waitDays
      */
-    public function testCreateFromStart($expected, $waitDays, $startDate)
+    public function testCreateFromStart(bool $expected, int $waitDays, bool $hasStartDate): void
     {
+        $agenda = $this->getAgenda();
         $appointmentDate = new DateTimeImmutable('2018-01-01');
 
-        if ($startDate) {
+        if ($hasStartDate) {
             $trackStartDate = $appointmentDate->sub(new DateInterval('P5D'));
             $respTrack    = $this->_getRespondentTrack(null, $trackStartDate);
         } else {
@@ -104,10 +100,10 @@ class FilterCreateTrackCheckerTest extends TestCase
         $filter = new TrackFieldFilterCalculation(1,2, $appointmentFilter, 1, $waitDays);
 
 
-        $this->assertEquals($expected, $checker->createFromStart($appointment, $filter, $respTrack));
+        $this->assertEquals($expected, $checker->createFromStart($agenda, $appointment, $filter, $respTrack));
     }
 
-    public static function createFromStartProvider()
+    public static function createFromStartProvider(): array
     {
         return [
             'nostartdate'             => [false, 2, false],
@@ -117,8 +113,9 @@ class FilterCreateTrackCheckerTest extends TestCase
         ];
     }
 
-    public function testCreateNever()
+    public function testCreateNever(): void
     {
+        $agenda = $this->getAgenda();
         $appointment = $this->getAppointment([
             'gap_id_appointment' => 1
         ]);
@@ -130,26 +127,88 @@ class FilterCreateTrackCheckerTest extends TestCase
 
         $respTrack = $this->_getRespondentTrack();
 
-        $this->assertEquals(false, $checker->createNever($appointment, $filter, $respTrack));
+        $this->assertEquals(false, $checker->createNever($agenda, $appointment, $filter, $respTrack));
     }
 
-    protected function getAppointment(array $appointmentData)
+    /**
+     * @dataProvider createFromCurrentFieldProvider
+     */
+    public function testCreateFromCurrentField(bool $expected, int $waitDays, bool $hasPreviousAppointmentDate, bool $hasCurrentAppointmentDate = true, bool $sameAppointment = false): void
     {
-        $agendaPropecy = $this->prophesize(Agenda::class);
+        $agenda = $this->getAgenda();
 
-        $activityRepositoryProphecy = $this->prophesize(ActivityRepository::class);
-        $locationRepositoryProphecy = $this->prophesize(LocationRepository::class);
-        $procedureRepositoryProphecy = $this->prophesize(ProcedureRepository::class);
-        $respondentRepositoryProphecy = $this->prophesize(RespondentRepository::class);
+        $appointmentDate = new DateTimeImmutable('2026-01-20');
+        if (!$hasCurrentAppointmentDate) {
+            $appointmentDate = null;
+        }
+
+        $respondentTrack = $this->createMock(RespondentTrack::class);
+
+        $fieldData = [];
+        if ($hasPreviousAppointmentDate && $appointmentDate) {
+            $previousFieldDate = $appointmentDate->sub(new DateInterval('P5D'));
+            $previousAppointment = $this->getAppointment([
+                'gap_id_appointment' => 122,
+                'gap_admission_time' => $previousFieldDate,
+            ]);
+            $fieldData = [
+                'a__1' => 122,
+            ];
+            $agenda->method('getAppointment')->willReturn($previousAppointment);
+        }
+        $respondentTrack->method('getFieldData')->willReturn($fieldData);
+
+        $appointment = $this->getAppointment([
+            'gap_id_appointment' => 123,
+            'gap_admission_time' => $appointmentDate
+        ]);
+        if ($sameAppointment && $previousAppointment) {
+            $appointment = $previousAppointment;
+        }
+
+        $checker = $this->getChecker();
+
+        $appointmentFilter = new SubjectAppointmentFilter(1001, 'createTestFilter', 10, true, null, null, null, null, null);
+
+        $filter = new TrackFieldFilterCalculation(1,2, $appointmentFilter, 1, $waitDays);
+
+        $this->assertEquals($expected, $checker->createFromCurrentField($agenda, $appointment, $filter, $respondentTrack));
+    }
+
+    public static function createFromCurrentFieldProvider(): array
+    {
+        return [
+            'noPreviousAppointmentDate'     => [true, 2, false, true],
+            'noCurrentAppointmentDate'      => [false, 2, true, false],
+            'appointmentDateBeforeWaitDays' => [true, 2, true, true],
+            'appointmentDateOnWaitDays'     => [false, 5, true, true],
+            'appointmentDateAfterWaitDays'  => [false, 6, true, true],
+            'alreadyAssignedAppointment'   => [false, 6, true, true, true],
+        ];
+    }
+
+    protected function getAgenda(): Agenda
+    {
+        return $this->createMock(Agenda::class);
+    }
+
+    protected function getAppointment(array $appointmentData): Appointment
+    {
+        $agenda = $this->getAgenda();
+
+        $activityRepository = $this->createMock(ActivityRepository::class);
+        $locationRepository = $this->createMock(LocationRepository::class);
+        $procedureRepository = $this->createMock(ProcedureRepository::class);
+        $respondentRepository = $this->createMock(RespondentRepository::class);
 
         return new Appointment(
             $appointmentData,
-            new MockTranslator(),
-            $agendaPropecy->reveal(),
-            $activityRepositoryProphecy->reveal(),
-            $locationRepositoryProphecy->reveal(),
-            $procedureRepositoryProphecy->reveal(),
-            $respondentRepositoryProphecy->reveal(),
+            $this->getTranslator(),
+            $agenda,
+            $activityRepository,
+            $locationRepository,
+            $procedureRepository,
+            $respondentRepository,
         );
     }
 
@@ -164,18 +223,16 @@ class FilterCreateTrackCheckerTest extends TestCase
      * @param DateTimeInterface|null $endDate
      * @param DateTimeInterface|null $startDate
      *
-     * @return \Gems\Tracker\RespondentTrack
+     * @return RespondentTrack
      */
-    protected function _getRespondentTrack($endDate = null, $startDate = null)
+    protected function _getRespondentTrack(DateTimeInterface|null $endDate = null, DateTimeInterface|null $startDate = null): RespondentTrack
     {
+        $respondentTrack = $this->createMock(RespondentTrack::class);
+        $respondentTrack->method('getEndDate')->willReturn($endDate);
+        $respondentTrack->method('getStartDate')->willReturn($startDate);
+        $respondentTrack->method('getFieldData')->willReturn([]);
 
-        $respondentTrack = $this->prophesize(RespondentTrack::class);
-        $respondentTrack->getEndDate()->willReturn($endDate);
-        $respondentTrack->getStartDate()->willReturn($startDate);
-        $respondentTrack->getFieldData()->willReturn([]);
-
-
-        return $respondentTrack->reveal();
+        return $respondentTrack;
     }
 
 }
