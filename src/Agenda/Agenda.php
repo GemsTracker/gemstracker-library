@@ -162,7 +162,7 @@ class Agenda
                     continue;
                 }
 
-                $createTrack = $this->trackFieldFilterRepository->shouldCreateTrack($appointment, $filter, $respTrack, $filterTracer);
+                $createTrack = $this->trackFieldFilterRepository->shouldCreateTrack($this, $appointment, $filter, $respTrack, $filterTracer);
                 if ($createTrack === false) {
                     break;  // Stop checking
                 }
@@ -928,6 +928,7 @@ class Agenda
             2 => $this->translator->_('Create new on minimum end date difference'),
             5 => $this->translator->_('Create new when all surveys have been completed'),
             1 => $this->translator->_('Create new when all surveys have been completed and on minimum end date'),
+            6 => $this->translator->_('Create new on minimum difference of current appointment field'),
             ];
     }
     /**
