@@ -6,6 +6,7 @@ use Gems\Cache\HelperAdapter;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\Util\UtilDbHelper;
+use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Predicate\PredicateSet;
 use Zalt\Base\TranslatorInterface;
@@ -131,6 +132,41 @@ class TrackDataRepository
             [$where],
             'asort'
         );
+    }
+
+    public function getAllTracksWithRoundDescriptions(bool $externalName = false): array
+    {
+        $trackColumns = [
+            'id' => 'gtr_id_track',
+        ];
+
+        if ($externalName) {
+            $trackColumns['trackName'] = 'gtr_external_name';
+        } else {
+            $trackColumns['trackName'] = 'gtr_track_name';
+        }
+
+        $columns = [];
+        $columns['roundDescriptions'] = new Expression("CONCAT('[',GROUP_CONCAT(DISTINCT JSON_OBJECT('id', gro_round_description, 'name', gro_round_description)),']')");
+
+        $select = $this->resultFetcher->getSelect('gems__rounds');
+        $select
+            ->columns($columns)
+            ->join('gems__tracks', 'gtr_id_track = gro_id_track', $trackColumns)
+            ->group('gtr_id_track')
+            ->order(['gtr_track_name', 'gtr_id_track']);
+
+        $test = $this->resultFetcher->getSqlString($select);
+
+        $result = $this->cachedResultFetcher->fetchAll('allTracksWithRoundDescriptions', $select, null, $this->cacheTags);
+
+        return array_map(function ($row) {
+            if ($row['id'] === 8261) {
+                $test = true;
+            }
+           $row['roundDescriptions'] = json_decode($row['roundDescriptions'], true);
+           return $row;
+        }, $result);
     }
 
     public function getAllActiveTrackOptions(): array
