@@ -28,7 +28,8 @@ class TokenMailFields extends RespondentMailFields
         $organization = $this->token->getOrganization();
         $survey = $this->token->getSurvey();
 
-        $tokenLink      = $organization->getLoginUrl() . '/ask/forward/' . $this->token->getTokenId();
+        $tokenLink         = $organization->getLoginUrl() . '/ask/forward/' . $this->token->getTokenId();
+        $tokenToSurveyLink = $organization->getLoginUrl() . '/ask/to-survey/' . $this->token->getTokenId();
         $tokenLoginLink = $organization->getLoginUrl() . '/respondent/' .
             $this->token->getPatientNumber() . '/' .
             $this->token->getOrganizationId() . '/track/' .
@@ -53,6 +54,7 @@ class TokenMailFields extends RespondentMailFields
             'token_login_url'  => $tokenLoginLink,
             'token_until' => $this->token->getValidUntil() instanceof \DateTimeInterface ? $this->token->getValidUntil()->format('Y-m-d') : null,
             'token_url' => $tokenLink,
+            'token_to_survey_url' => $tokenToSurveyLink,
             'token_url_input' => $askUrl . 'index/' . $this->token->getTokenId(),
             'track' => $this->token->getTrackName(),
         ];
