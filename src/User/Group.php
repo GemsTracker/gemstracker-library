@@ -133,7 +133,7 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
      *
      * @return string
      */
-    public function getDefaultNewStaffGroup()
+    public function getDefaultNewStaffGroup(): string|int|null
     {
         return $this->_get('ggp_default_group');
     }

@@ -296,7 +296,7 @@ class User
         return $greeting . $this->getLastName();
     }
 
-    public function getDefaultNewStaffGroup(): string
+    public function getDefaultNewStaffGroup(): string|int|null
     {
         $group = $this->getGroup();
         return $group->getDefaultNewStaffGroup();
