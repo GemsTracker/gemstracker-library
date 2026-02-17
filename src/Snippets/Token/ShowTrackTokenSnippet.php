@@ -54,6 +54,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         protected TokenRepository $tokenRepository,
         protected MenuSnippetHelper $menuSnippetHelper,
         protected CurrentUserRepository $currentUserRepository,
+        protected array $config,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $metaModelLoader, $maskRepository, $tracker, $messenger);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
@@ -443,7 +444,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
 
     protected function getLastButtonItems(): array
     {
-        return [
+        $items = [
             [
                 'route' => 'respondent.show',
                 'label' => $this->_('Show patient'),
@@ -470,6 +471,15 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
                 'label' => $this->_('(Re)check answers'),
             ],
         ];
+
+        if (isset($this->config['survey']['paper-answers']) && $this->config['survey']['paper-answers'] === true) {
+            $items[] = [
+                'route' => 'respondent.tracks.token.answered-on-paper',
+                'label' => $this->_('Answered on paper'),
+            ];
+        }
+
+        return $items;
     }
 
 
