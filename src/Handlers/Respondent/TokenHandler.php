@@ -25,6 +25,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Respondent\TokenEmailSnippet;
+use Gems\Snippets\Tracker\TokenAnsweredOnFormSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Token;
 use Mezzio\Session\SessionMiddleware;
@@ -203,6 +204,23 @@ class TokenHandler extends TokenSearchHandlerAbstract
 
             $this->addSnippets($snippets, $params);
         }
+    }
+
+    public function answeredOnPaperAction(): void
+    {
+        $params = $this->_processParameters(
+            [
+                'csrfName' => 'getCsrfTokenName',
+                'csrfToken' => 'getCsrfToken',
+                'formTitle' => $this->_('Answered on paper'),
+                'receptionCode' => 'paper',
+            ]
+            + $this->defaultTokenParameters);
+
+        $this->addSnippets([
+            TokenAnsweredOnFormSnippet::class,
+        ],
+            $params);
     }
 
     /**
