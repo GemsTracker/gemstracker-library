@@ -54,7 +54,7 @@ class TokenMailFields extends RespondentMailFields
             'token_login_url'  => $tokenLoginLink,
             'token_until' => $this->token->getValidUntil() instanceof \DateTimeInterface ? $this->token->getValidUntil()->format('Y-m-d') : null,
             'token_url' => $tokenLink,
-            'token_to_survey_url' => $tokenToSurveyLink,
+            'token_direct_url' => $tokenToSurveyLink,
             'token_url_input' => $askUrl . 'index/' . $this->token->getTokenId(),
             'track' => $this->token->getTrackName(),
         ];
