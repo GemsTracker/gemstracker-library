@@ -258,6 +258,10 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                     $label = $this->_('Start date difference');
                     $description = $this->_('Any previous track must have an start date at least this many days in the past.');
                     break;
+                case 6:
+                    $label = $this->_('Appointment date difference');
+                    $description = $this->_('Any previous track must have an appointment in the same appointment field at least this many days in the past.');
+                    break;
                 case 5:
                     break;
 
