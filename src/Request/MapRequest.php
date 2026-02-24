@@ -35,6 +35,10 @@ class MapRequest
                 $params[$key] = null;
             }
         }
+        if (isset($params['per_page'])) {
+            $params['perPage'] = $params['per_page'];
+            unset($params['per_page']);
+        }
 
         return $params;
     }
@@ -98,7 +102,8 @@ class MapRequest
             // 'groups' => ['query'], // Apply specific groups if needed
             // Disallow extra fields not defined in the DTO
             'allow_extra_attributes' => $allowExtraAttributes,
-            ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => !$typeEnforcement,
+            ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+            'input_keys' => array_keys($data),
         ];
 
         try {
