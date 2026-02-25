@@ -927,9 +927,11 @@ class CommJobRepository
         $this->truncateTransientTokenSelection();
 
         $filter = [
-            'gtr_active'          => 1,
-            'gsu_active'          => 1,
-            'grc_success'         => 1,
+            'gtr_active'                => 1,
+            'gsu_active'                => 1,
+            'token_rc.grc_success'      => 1,
+            'respondent_rc.grc_success' => 1,
+            'track_rc.grc_success'      => 1,
             'gto_completion_time IS NULL',
             'gto_valid_from <= CURRENT_TIMESTAMP',
             '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)',
@@ -939,9 +941,12 @@ class CommJobRepository
         $select = $this->resultFetcher->getSelect('gems__tokens');
         $select->columns(['gto_id_token', 'gto_id_respondent', 'gto_id_organization', 'gto_id_track', 'gto_id_survey'])
             ->join('gems__respondent2track', 'gr2t_id_respondent_track = gto_id_respondent_track', [])
+            ->join('gems__respondent2org', 'gr2o_id_user = gto_id_respondent AND gr2o_id_organization = gto_id_organization', [])
             ->join('gems__tracks', 'gto_id_track = gtr_id_track', [])
             ->join('gems__surveys', 'gto_id_survey = gsu_id_survey', [])
-            ->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', [])
+            ->join(['token_rc' => 'gems__reception_codes'], 'gto_reception_code = token_rc.grc_id_reception_code', [])
+            ->join(['respondent_rc' => 'gems__reception_codes'], 'gr2o_reception_code = respondent_rc.grc_id_reception_code', [])
+            ->join(['track_rc' => 'gems__reception_codes'], 'gr2o_reception_code = track_rc.grc_id_reception_code', [])
             ->where($filter);
 
         return $this->resultFetcher->insertIntoTable('gems__transient_comm_tokens', $select);

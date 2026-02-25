@@ -22,7 +22,6 @@ use GemsTest\TestData\General\TestTrackSeed;
 use GemsTest\testUtils\ConfigTrait;
 use GemsTest\testUtils\ContainerTrait;
 use GemsTest\testUtils\DatabaseTestCase;
-use GemsTest\testUtils\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -78,6 +77,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
         TestMailCodesSeed::class,
         TestRolesSeed::class,
         TestGroupsSeed::class,
+        CommJobRepositoryTestRetractSeed::class,
     ];
 
     protected function getRepository(): CommJobRepository
@@ -236,7 +236,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
     public function testGetSendableTokensSendOneMarkTwo(): void
     {
         $repository = $this->getRepository();
-        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
+        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\', \'2345-bcde\')');
         $tokens = $repository->getSendableTokens(800);
 
         $expected = [
@@ -254,7 +254,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
     public function testGetSendableTokensSendTwoMarkTwo(): void
     {
         $repository = $this->getRepository();
-        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
+        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\', \'2345-bcde\')');
         $this->resultFetcher->query('UPDATE gems__comm_jobs SET gcj_process_method = \'M\' WHERE gcj_id_job = 800');
         $tokens = $repository->getSendableTokens(800);
 
@@ -274,7 +274,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
     public function testGetSendableTokensSendOneMarkOne(): void
     {
         $repository = $this->getRepository();
-        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
+        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\', \'2345-bcde\')');
         $this->resultFetcher->query('UPDATE gems__comm_jobs SET gcj_process_method = \'A\' WHERE gcj_id_job = 800');
         $tokens = $repository->getSendableTokens(800);
 
@@ -291,7 +291,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
     public function testGetSendableTokensNestedSendOneMarkTwo(): void
     {
         $repository = $this->getRepository();
-        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
+        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\', \'2345-bcde\')');
         $tokens = $repository->getSendableTokensNested(800);
 
         $expected = [
@@ -306,7 +306,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
     public function testGetSendableTokensNestedSendTwoMarkTwo(): void
     {
         $repository = $this->getRepository();
-        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
+        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\', \'2345-bcde\')');
         $this->resultFetcher->query('UPDATE gems__comm_jobs SET gcj_process_method = \'M\' WHERE gcj_id_job = 800');
         $tokens = $repository->getSendableTokensNested(800);
 
@@ -321,7 +321,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
     public function testGetSendableTokensNestedSendOneMarkOne(): void
     {
         $repository = $this->getRepository();
-        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
+        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\', \'2345-bcde\')');
         $this->resultFetcher->query('UPDATE gems__comm_jobs SET gcj_process_method = \'A\' WHERE gcj_id_job = 800');
         $tokens = $repository->getSendableTokensNested(800);
 
@@ -336,7 +336,7 @@ class CommJobRepositoryTest extends DatabaseTestCase
     {
         $repository = $this->getRepository();
 
-        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\')');
+        $this->resultFetcher->query('UPDATE gems__tokens SET gto_valid_from = NOW() WHERE gto_id_token IN (\'1234-abcd\', \'4321-dcba\', \'2345-bcde\')');
 
         $job = $repository->getJob(800);
         $tokenData = $repository->getTokenData($job);
