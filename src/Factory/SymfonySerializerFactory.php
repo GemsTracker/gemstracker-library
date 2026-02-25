@@ -30,7 +30,7 @@ class SymfonySerializerFactory implements FactoryInterface
             new BackedEnumNormalizer(),
             new ObjectNormalizer(
                 classMetadataFactory: $metadataFactory,
-                nameConverter: new CamelCaseToSnakeCaseNameConverter(),
+                nameConverter: null,
                 propertyAccessor: null,
                 propertyTypeExtractor: $reflectionExtractor,
                 classDiscriminatorResolver: null,
