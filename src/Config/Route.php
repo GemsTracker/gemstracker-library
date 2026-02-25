@@ -865,6 +865,7 @@ class Route
                     'correct',
                     'check-token',
                     'check-token-answers',
+                    'answered-on-paper',
                 ],
                 parameters: [
                     'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
@@ -881,8 +882,9 @@ class Route
                     'correct',
                     'check-token',
                     'check-token-answers',
+                    'answered-on-paper',
                 ],
-                postRoutes: array_merge($this->defaultPostRoutes, ['correct', 'email', 'undelete', 'answer-export',]),
+                postRoutes: array_merge($this->defaultPostRoutes, ['correct', 'email', 'undelete', 'answer-export','answered-on-paper']),
                 parentParameters: [
                     'id1',
                     'id2',

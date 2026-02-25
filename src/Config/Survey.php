@@ -11,7 +11,7 @@ class Survey
             'tracks' => $this->getTrackSettings(),
              /* Optional default TrackId */
             //'defaultTrackId' => 700
-
+            'paper-answers' => false,
         ];
     }
 

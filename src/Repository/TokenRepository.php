@@ -48,6 +48,7 @@ class TokenRepository
             'O' => $this->translator->_('Open - can be answered now'),
             'P' => $this->translator->_('Open - partially answered'),
             'A' => $this->translator->_('Answered'),
+            'E' => $this->translator->_('Answered on paper'),
             'I' => $this->translator->_('Incomplete - missed deadline'),
             'M' => $this->translator->_('Missed deadline'),
             'D' => $this->translator->_('Token does not exist'),
@@ -80,6 +81,8 @@ class TokenRepository
         switch ($value) {
             case 'A':
                 return 'answered';
+            case 'E':
+                return 'answered-on-paper';
             case 'I':
                 return 'incomplete';
             case 'M':
@@ -124,6 +127,7 @@ class TokenRepository
         return new Expression("
             CASE
                 WHEN gto_id_token IS NULL OR grc_success = 0 THEN 'D'
+                WHEN gto_completion_time IS NOT NULL AND gto_reception_code = 'paper' THEN 'E'
                 WHEN gto_completion_time IS NOT NULL         THEN 'A'
                 WHEN gto_valid_from IS NULL                  THEN 'U'
                 WHEN gto_valid_from > CURRENT_TIMESTAMP      THEN 'W'
@@ -148,6 +152,8 @@ class TokenRepository
                 return 'gto_id_token IS NULL OR grc_success = 0';
             case 'A':
                 return 'grc_success = 1 AND gto_completion_time IS NOT NULL';
+            case 'E':
+                return 'grc_success = 1 AND gto_completion_time IS NOT NULL AND gto_reception_code = \'paper\'';
             case 'U':
                 return 'grc_success = 1 AND gto_valid_from IS NULL';
             case 'W':
@@ -207,6 +213,10 @@ class TokenRepository
             $spanA->i(['class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true]);
             $spanA->i(['class' => 'fa fa-check fa-stack-1x fa-inverse', 'renderClosingTag' => true]);
 
+            $spanE = Html::create('span', ['class' => 'fa-stack', 'renderClosingTag' => true]);
+            $spanE->i(['class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true]);
+            $spanE->i(['class' => 'fa fa-map fa-stack-1x fa-inverse', 'renderClosingTag' => true]);
+
             $spanP = Html::create('span', ['class' => 'fa-stack', 'renderClosingTag' => true]);
             $spanP->i(['class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true]);
             $spanP->i(['class' => 'fa fa-pause fa-stack-1x fa-inverse', 'renderClosingTag' => true]);
@@ -227,6 +237,7 @@ class TokenRepository
                 'W' => $spanW,
                 'O' => $spanO,
                 'A' => $spanA,
+                'E' => $spanE,
                 'P' => $spanP,
                 'I' => $spanI,
                 'M' => $spanM,
@@ -627,6 +638,15 @@ class TokenRepository
                     }
                     if ($completionTime instanceof \DateTimeInterface) {
                         return sprintf($this->translator->_('Completed on %s'), $completionTime->format($displayFormat));
+                    }
+                }
+            case 'E': // Answered on paper
+                if ($completionTime) {
+                    if (! $completionTime instanceof \DateTimeInterface) {
+                        $completionTime = \DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $completionTime);
+                    }
+                    if ($completionTime instanceof \DateTimeInterface) {
+                        return sprintf($this->translator->_('Completed on paper on %s '), $completionTime->format($displayFormat));
                     }
                 }
 
