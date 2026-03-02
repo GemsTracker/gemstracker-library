@@ -21,7 +21,7 @@ class TokenMailFields extends RespondentMailFields
         parent::__construct($token->getRespondent(), $config);
     }
 
-    public function getMailFields(string $language = null): array
+    public function getMailFields(?string $language = null): array
     {
         $mailFields = parent::getMailFields();
 
