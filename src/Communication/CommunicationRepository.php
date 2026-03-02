@@ -356,7 +356,7 @@ class CommunicationRepository
     public function getTokenMailFields(Token $token, ?string $language = null, array $jobContext = []): array
     {
         $mailFieldCreator = new TokenMailFields($token, $this->translator, $this->resultFetcher, $this->config);
-        return $mailFieldCreator->getMailFields($language);
+        return $mailFieldCreator->getMailFields($language, $jobContext);
     }
 
     protected function getTransportIdFromFrom(string $from): int|null
