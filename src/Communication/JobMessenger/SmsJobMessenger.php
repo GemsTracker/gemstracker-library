@@ -60,7 +60,7 @@ class SmsJobMessenger implements JobMessengerInterface
     {
         $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
-        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
+        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language, $job);
         $mailTexts = $this->communicationRepository->getCommunicationTexts($job['gcj_id_message'], $language);
 
         $twigLoader = new ArrayLoader([

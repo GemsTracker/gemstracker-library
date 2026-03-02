@@ -32,7 +32,7 @@ class MailJobMessenger implements JobMessengerInterface
     {
         $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
-        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
+        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language, $job);
         $mailTexts = $this->communicationRepository->getCommunicationTexts($job['gcj_id_message'], $language);
         if ($mailTexts === null) {
             throw new MailException('No template data found');
