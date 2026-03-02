@@ -353,7 +353,7 @@ class CommunicationRepository
         return '(unknown template)';
     }
 
-    public function getTokenMailFields(Token $token, string $language = null): array
+    public function getTokenMailFields(Token $token, ?string $language = null): array
     {
         $mailFieldCreator = new TokenMailFields($token, $this->translator, $this->resultFetcher, $this->config);
         return $mailFieldCreator->getMailFields($language);
