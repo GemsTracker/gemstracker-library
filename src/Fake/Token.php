@@ -69,6 +69,7 @@ class Token extends \Gems\Tracker\Token
             'grs_id_user' => 0,
             'gto_valid_from' => $now,
             'gto_valid_until' => $nextMonth,
+            'gto_mail_sent_num' => 0,
 
             'gr2o_id_user' => 0,
             'gr2o_patient_nr' => 'TEST001',
