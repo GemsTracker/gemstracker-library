@@ -56,11 +56,11 @@ class BrowseSnippet extends VueSnippetAbstract
 
     protected function getHeaders(): string
     {
-        return json_encode($this->headers);
+        return json_encode(array_values($this->headers));
     }
 
     protected function getSearchStructure(): string
     {
-        return json_encode($this->searchStructure);
+        return json_encode(array_values($this->searchStructure));
     }
 }
