@@ -36,13 +36,13 @@ class CommRepository
         string $body = null,
     ): bool
     {
-        $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
-        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
-        $mailTemplate = $this->communicationRepository->getTemplate($token->getOrganization());
-
         $job = [
             'gcj_id_message' => $templateId,
         ];
+
+        $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
+        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language, $job);
+        $mailTemplate = $this->communicationRepository->getTemplate($token->getOrganization());
 
         $currentUserId = $this->currentUserRepository->getCurrentUserId();
 
