@@ -31,12 +31,23 @@ class EventDispatcherFactory implements FactoryInterface
             if (isset($config['events']['listeners'])) {
                 foreach($config['events']['listeners'] as $eventName => $listeners) {
                     foreach((array)$listeners as $listener) {
-                        if (is_string($listener)) {
-                            $event->addListener($eventName, $listener);
-                            continue;
+                        $listenerCallable = $listener;
+                        $priority = 0;
+                        if (is_array($listener)) {
+                            list($listenerCallable, $priority) = $listener;
                         }
-                        // Assume array with listener callable and priority
-                        $event->addListener($eventName, $listener[0], $listener[1]);
+
+                        if (is_string($listenerCallable)) {
+                            if (class_exists($listenerCallable)) {
+                                $listenerClass = $container->get($listenerCallable);
+                                $event->addListener($eventName, $listenerClass, $priority);
+                                continue;
+                            }
+                            if (is_callable($listenerCallable)) {
+                                $event->addListener($eventName, $listenerCallable, $priority);
+                                continue;
+                            }
+                        }
                     }
                 }
             }
