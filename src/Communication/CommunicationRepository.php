@@ -2,6 +2,7 @@
 
 namespace Gems\Communication;
 
+use Gems\Communication\Event\TokenMailFieldEvent;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
@@ -356,7 +357,11 @@ class CommunicationRepository
     public function getTokenMailFields(Token $token, ?string $language = null, array $jobContext = []): array
     {
         $mailFieldCreator = new TokenMailFields($token, $this->translator, $this->resultFetcher, $this->config);
-        return $mailFieldCreator->getMailFields($language, $jobContext);
+        $mailFields = $mailFieldCreator->getMailFields($language);
+        $event = new TokenMailFieldEvent($token, $language, $jobContext);
+        $event->addMailFields($mailFields);
+        $this->eventDispatcher->dispatch($event);
+        return $event->getMailFields();
     }
 
     protected function getTransportIdFromFrom(string $from): int|null
