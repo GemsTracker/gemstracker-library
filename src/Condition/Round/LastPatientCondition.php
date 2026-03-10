@@ -61,7 +61,7 @@ class LastPatientCondition extends LastAnswerCondition
             ->andReceptionCodes()
             ->onlySucces()
             ->onlyCompleted()
-            ->forWhere([sprintf("gto_completion_time < %s", $date->format(Tracker::DB_DATETIME_FORMAT))])
+            ->forWhere(['gto_completion_time < ?' => $date->format(Tracker::DB_DATETIME_FORMAT)])
             ->order('gto_completion_time DESC');
 //        $select = $this->tracker->getTokenSelect();
 //        $select->andRespondents()
