@@ -6666,16 +6666,12 @@ msgid "Changed by"
 msgstr "Veranderd door"
 
 #: gemstracker-library/src/Model/Respondent/RespondentMailableLogModel.php:66
-#, fuzzy
-#| msgid "(Previous or track start)"
 msgid "Previous mail status"
-msgstr "(Vorige of start traject)"
+msgstr "Vorige mail status"
 
 #: gemstracker-library/src/Model/Respondent/RespondentMailableLogModel.php:70
-#, fuzzy
-#| msgid "Test mail sent to %s"
 msgid "New mail status"
-msgstr "Test email verzonden naar %s"
+msgstr "Nieuwe mail status"
 
 #: gemstracker-library/src/Model/Respondent/RespondentModel.php:205
 msgid "No organization available to add respondent to."
@@ -9693,16 +9689,13 @@ msgid "No consent changes found"
 msgstr "Geen toestemmingswijzigingen gevonden"
 
 #: gemstracker-library/src/Snippets/Respondent/Consent/RespondentMailableLogSnippet.php:57
-#, fuzzy, php-format
-#| msgid "Consent change log for respondent %s, %s at %s"
+#, php-format
 msgid "Mail status change log for respondent %s, %s at %s"
-msgstr "Toestemmingswijzigingen voor patiënt %s, %s bij %s"
+msgstr "Mail status wijzigingen voor patiënt %s, %s bij %s"
 
 #: gemstracker-library/src/Snippets/Respondent/Consent/RespondentMailableLogSnippet.php:64
-#, fuzzy
-#| msgid "No consent changes found"
 msgid "No mail status changes found"
-msgstr "Geen toestemmingswijzigingen gevonden"
+msgstr "Geen mail status wijzigingen gevonden"
 
 #: gemstracker-library/src/Snippets/Respondent/DeleteRespondentSnippet.php:171
 msgid "Restore tracks"
