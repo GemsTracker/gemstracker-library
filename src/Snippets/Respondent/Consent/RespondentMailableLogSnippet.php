@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  *
  * @package    Gems
@@ -39,18 +41,7 @@ class RespondentMailableLogSnippet extends ModelTableSnippetAbstract
 
     protected array $menuShowRoutes = [];
 
-    /**
-     *
-     * @var \Gems\Model\RespondentModel
-     */
-    protected $model;
-
-    /**
-     * Optional
-     *
-     * @var \Gems\Tracker\Respondent
-     */
-    protected $respondent;
+    protected Respondent $respondent;
 
     public function __construct(
         SnippetOptions $snippetOptions,
