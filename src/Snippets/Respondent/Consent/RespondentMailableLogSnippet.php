@@ -81,6 +81,7 @@ class RespondentMailableLogSnippet extends ModelTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
+        $this->respondentMailableLogModel->applyBrowseSettings();
         return $this->respondentMailableLogModel;
     }
 

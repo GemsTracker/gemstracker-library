@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Gems\Model\Respondent;
 
+use Gems\Model\GemsJoinModel;
 use Gems\Model\MetaModelLoader;
 use Zalt\Base\TranslatorInterface;
-use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
 /**
@@ -19,7 +19,7 @@ use Zalt\Model\Sql\SqlRunnerInterface;
  * @subpackage Model\Respondent
  * @since      Class available since version 2.0.67
  */
-class RespondentMailableLogModel extends \Gems\Model\SqlTableModel
+class RespondentMailableLogModel extends GemsJoinModel
 {
     public function __construct(
         MetaModelLoader $metaModelLoader,
@@ -29,6 +29,19 @@ class RespondentMailableLogModel extends \Gems\Model\SqlTableModel
     )
     {
         parent::__construct('gems__log_respondent_mailables', $metaModelLoader, $sqlRunner, $translate);
+
+        $this->addLeftTable(
+            'gems__mail_codes',
+            ['glrm_old_mailable' => 'old_mail_code.gmc_id'],
+            false,
+            'old_mail_code'
+        );
+        $this->addLeftTable(
+            'gems__mail_codes',
+            ['glrm_new_mailable' => 'new_mail_code.gmc_id'],
+            false,
+            'new_mail_code'
+        );
 
         $this->applySettings();
     }
@@ -65,6 +78,16 @@ class RespondentMailableLogModel extends \Gems\Model\SqlTableModel
         $this->metaModel->set('glrm_created_by', [
             'label' => $this->_('Changed by'),
             'multiOptions' => $respondentMetaModel->get('gr2o_changed_by', 'multiOptions')
+        ]);
+    }
+
+    public function applyBrowseSettings(): void
+    {
+        $this->metaModel->set('glrm_old_mailable', [
+            'column_expression' => 'old_mail_code.gmc_mail_to_target',
+        ]);
+        $this->metaModel->set('glrm_new_mailable', [
+            'column_expression' => 'new_mail_code.gmc_mail_to_target',
         ]);
     }
 }
