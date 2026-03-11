@@ -46,16 +46,26 @@ class RespondentConsentLogModel extends \Gems\Model\SqlTableModel
             $valueOptions = array_merge($valueOptions, $options);
         }
 
-        $this->metaModel->set('glrc_consent_field', 'label', $this->_('Type'),
-            'multiOptions', $fieldOptions);
-        $this->metaModel->set('glrc_old_consent', 'label', $this->_('Previous consent'),
-            'multiOptions', $valueOptions);
-        $this->metaModel->set('glrc_new_consent', 'label', $this->_('New consent'),
-            'multiOptions', $valueOptions);
-        $this->metaModel->set('glrc_created', 'label', $this->_('Changed on'),
-            'dateFormat', $respondentMetaModel->get('gr2o_changed_by', 'dateFormat'),
-            'formatFunction', $respondentMetaModel->get('gr2o_changed_by', 'formatFunction'));
-        $this->metaModel->set('glrc_created_by', 'label', $this->_('Changed by'),
-            'multiOptions', $respondentMetaModel->get('gr2o_changed_by', 'multiOptions'));
+        $this->metaModel->set('glrc_consent_field', [
+            'label' => $this->_('Type'),
+            'multiOptions' => $fieldOptions
+        ]);
+        $this->metaModel->set('glrc_old_consent', [
+            'label' => $this->_('Previous consent'),
+            'multiOptions' => $valueOptions
+        ]);
+        $this->metaModel->set('glrc_new_consent', [
+            'label' => $this->_('New consent'),
+            'multiOptions' => $valueOptions
+        ]);
+        $this->metaModel->set('glrc_created', [
+            'label' => $this->_('Changed on'),
+            'dateFormat' => $respondentMetaModel->get('gr2o_changed_by', 'dateFormat'),
+            'formatFunction' => $respondentMetaModel->get('gr2o_changed_by', 'formatFunction')
+        ]);
+        $this->metaModel->set('glrc_created_by', [
+            'label' => $this->_('Changed by'),
+            'multiOptions' => $respondentMetaModel->get('gr2o_changed_by', 'multiOptions')
+        ]);
     }
 }
