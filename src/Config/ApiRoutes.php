@@ -5,6 +5,7 @@ namespace Gems\Config;
 use Gems\Api\Handlers\PingHandler;
 use Gems\Api\RestModelConfigProviderAbstract;
 use Gems\Communication\Handler\TestCommunicationEmailHandler;
+use Gems\Communication\Handler\UnsubscribeHandler;
 use Gems\Handlers\Api\CommFieldsHandler;
 use Gems\Handlers\Api\Respondent\OtherPatientNumbersHandler;
 use Gems\Middleware\LocaleMiddleware;
@@ -158,6 +159,12 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                     'body',
                 ],
                 organizationIdField: 'gto_id_organization',
+            ),
+            ...$this->createRoute(
+                name: 'unsubscribe',
+                path: '/unsubscribe',
+                handler: UnsubscribeHandler::class,
+                allowedMethods: ['POST'],
             ),
             ...$this->createRoute(
                 name: 'comm-fields',
