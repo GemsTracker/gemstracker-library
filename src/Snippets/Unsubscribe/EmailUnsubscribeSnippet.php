@@ -69,10 +69,14 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
         MenuSnippetHelper $menuHelper,
         protected readonly CurrentUserRepository $currentUserRepository,
         protected readonly MessageBusInterface $messageBus,
+        array $config,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
 
         $this->currentOrganizationId = $this->currentUserRepository->getCurrentOrganizationId();
+
+        $this->unsubscribedValue = $config['communication']['unsubscribe']['unsubscribeValue'] ?? 0;
+
     }
 
     /**
