@@ -23,8 +23,9 @@ class ChangeSubscriptionValueHandler
 
     public function __invoke(SubscriptionInfo $unsubscribeInfo): void
     {
-        $info = $this->getRespondentInfo($unsubscribeInfo->email, $unsubscribeInfo->organizationId);
-        if ($info['gr2o_mailable'] === $unsubscribeInfo->subscriptionValue) {
+        $respondentList = $this->getRespondentInfo($unsubscribeInfo->email, $unsubscribeInfo->organizationId);
+
+        if (!count($respondentList)) {
             return;
         }
 
@@ -34,13 +35,19 @@ class ChangeSubscriptionValueHandler
             $unsubscribeInfo->subscriptionValue
         );
 
-        $this->logMailableChange(
-            $info['gr2o_id_user'],
-            $unsubscribeInfo->organizationId,
-            $this->unsubscribedValue,
-            $info['gr2o_mailable'],
-            $unsubscribeInfo->comment
-        );
+        foreach($respondentList as $patientInfo) {
+            if ($patientInfo['gr2o_mailable'] === $unsubscribeInfo->subscriptionValue) {
+                continue;
+            }
+
+            $this->logMailableChange(
+                $patientInfo['gr2o_id_user'],
+                $unsubscribeInfo->organizationId,
+                $this->unsubscribedValue,
+                $patientInfo['gr2o_mailable'],
+                $unsubscribeInfo->comment
+            );
+        }
     }
 
     private function updateRespondentMailable(string $email, string $organizationId, int $subscriptionValue): void
@@ -68,7 +75,6 @@ class ChangeSubscriptionValueHandler
                 'gr2o_id_user',
                 'gr2o_mailable',
             ])
-            ->from('gems__respondent2org')
             ->where([
                 'gr2o_email' => $email,
                 'gr2o_id_organization' => $organizationId,

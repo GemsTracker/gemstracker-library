@@ -3,12 +3,15 @@
 namespace Gems\Config;
 
 use Gems\Api\Handlers\PingHandler;
+use Gems\Api\Middleware\ApiRequestExceptionMiddleware;
 use Gems\Api\RestModelConfigProviderAbstract;
 use Gems\Communication\Handler\TestCommunicationEmailHandler;
 use Gems\Communication\Handler\UnsubscribeHandler;
 use Gems\Handlers\Api\CommFieldsHandler;
 use Gems\Handlers\Api\Respondent\OtherPatientNumbersHandler;
+use Gems\Middleware\AuditLogMiddleware;
 use Gems\Middleware\LocaleMiddleware;
+use Gems\Middleware\RateLimitMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Model\CommTemplateModel;
 use Gems\Model\EmailTokenModel;
@@ -28,6 +31,27 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                     'middleware' => $this->getMiddleware(),
                 ],
                 $this->getRoutes()
+            ),
+            ...$this->routeGroup(
+                [
+                    'path' => $this->pathPrefix,
+                    'middleware' => [
+                        SecurityHeadersMiddleware::class,
+                        RateLimitMiddleware::class,
+                        LocaleMiddleware::class,
+                        AuditLogMiddleware::class,
+
+                        ApiRequestExceptionMiddleware::class,
+                    ],
+                ],
+                [
+                    ...$this->createRoute(
+                        name: 'unsubscribe',
+                        path: '/unsubscribe',
+                        handler: UnsubscribeHandler::class,
+                        allowedMethods: ['POST'],
+                    ),
+                ]
             ),
             ...$this->routeGroup(
                 [
@@ -159,12 +183,6 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                     'body',
                 ],
                 organizationIdField: 'gto_id_organization',
-            ),
-            ...$this->createRoute(
-                name: 'unsubscribe',
-                path: '/unsubscribe',
-                handler: UnsubscribeHandler::class,
-                allowedMethods: ['POST'],
             ),
             ...$this->createRoute(
                 name: 'comm-fields',
