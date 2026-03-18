@@ -9,6 +9,8 @@ CREATE TABLE if not exists gems__log_respondent_mailables (
         glrm_old_mailable       tinyint null default null references gems__mail_codes (gmc_id),
         glrm_new_mailable       tinyint null default null references gems__mail_codes (gmc_id),
 
+        glrm_comment            text CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' null default null,
+
         glrm_created            timestamp not null default current_timestamp,
         glrm_created_by         bigint unsigned not null,
 
