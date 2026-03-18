@@ -52,7 +52,7 @@ class RespondentMailableLogSnippet extends ModelTableSnippetAbstract
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
 
-        if ($this->respondent instanceof \Gems\Tracker\Respondent && $this->respondent->exists) {
+        if ($this->respondent instanceof Respondent && $this->respondent->exists) {
             $this->caption = sprintf(
                 $this->_('Mail status change log for respondent %s, %s at %s'),
                 $this->respondent->getPatientNumber(),
@@ -80,7 +80,7 @@ class RespondentMailableLogSnippet extends ModelTableSnippetAbstract
     {
         $filter = parent::getFilter($metaModel);
         unset($filter['gr2o_patient_nr'], $filter['gr2o_id_organization']);
-        if ($this->respondent && $this->respondent->exists) {
+        if ($this->respondent instanceof Respondent && $this->respondent->exists) {
             $filter['glrm_id_user'] = $this->respondent->getId();
             $filter['glrm_id_organization'] = $this->respondent->getOrganizationId();
         }
