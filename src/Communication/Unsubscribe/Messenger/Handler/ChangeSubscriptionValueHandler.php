@@ -10,11 +10,6 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler]
 class ChangeSubscriptionValueHandler
 {
-    /**
-     * @var int The value to assign while unsubscribing
-     */
-    protected int $unsubscribedValue = 0;
-
     public function __construct(
         private readonly ResultFetcher $resultFetcher,
     )
@@ -43,7 +38,7 @@ class ChangeSubscriptionValueHandler
             $this->logMailableChange(
                 $patientInfo['gr2o_id_user'],
                 $unsubscribeInfo->organizationId,
-                $this->unsubscribedValue,
+                $unsubscribeInfo->subscriptionValue,
                 $patientInfo['gr2o_mailable'],
                 $unsubscribeInfo->comment
             );
