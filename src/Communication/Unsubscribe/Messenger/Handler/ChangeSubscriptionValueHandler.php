@@ -45,7 +45,7 @@ class ChangeSubscriptionValueHandler
         }
     }
 
-    private function updateRespondentMailable(string $email, string $organizationId, int $subscriptionValue): void
+    private function updateRespondentMailable(string $email, int $organizationId, int $subscriptionValue): void
     {
         $sql = 'UPDATE gems__respondent2org
             SET gr2o_mailable = :mailable, gr2o_changed_by = gr2o_id_user
