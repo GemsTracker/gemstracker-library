@@ -813,7 +813,6 @@ class ConfigProvider
             'default.POST' => '60/60',
             'participate.subscribe.POST' => '10/60',
             'participate.unsubscribe.POST' => '10/60',
-            'api.unsubscribe.POST' => '10/60',
         ];
     }
 

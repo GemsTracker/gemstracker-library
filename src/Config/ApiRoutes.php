@@ -37,27 +37,6 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                     'path' => $this->pathPrefix,
                     'middleware' => [
                         SecurityHeadersMiddleware::class,
-                        RateLimitMiddleware::class,
-                        LocaleMiddleware::class,
-                        AuditLogMiddleware::class,
-
-                        ApiRequestExceptionMiddleware::class,
-                    ],
-                ],
-                [
-                    ...$this->createRoute(
-                        name: 'unsubscribe',
-                        path: '/unsubscribe',
-                        handler: UnsubscribeHandler::class,
-                        allowedMethods: ['POST'],
-                    ),
-                ]
-            ),
-            ...$this->routeGroup(
-                [
-                    'path' => $this->pathPrefix,
-                    'middleware' => [
-                        SecurityHeadersMiddleware::class,
                         LocaleMiddleware::class,
                     ],
                 ],
