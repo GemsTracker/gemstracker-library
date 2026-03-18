@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Gems\Snippets\Respondent\Consent;
 
 use Gems\Menu\MenuSnippetHelper;
-use Gems\Model\Respondent\RespondentMailableLogModel;
+use Gems\Model\Respondent\RespondentMailstatusLogModel;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker\Respondent;
 use Zalt\Base\RequestInfo;
@@ -28,7 +28,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version v2.0.67
  */
-class RespondentMailableLogSnippet extends ModelTableSnippetAbstract
+class RespondentMailstatusLogSnippet extends ModelTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -48,7 +48,7 @@ class RespondentMailableLogSnippet extends ModelTableSnippetAbstract
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
-        protected readonly RespondentMailableLogModel $respondentMailableLogModel,
+        protected readonly RespondentMailstatusLogModel $respondentMailstatusLogModel,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
 
@@ -72,8 +72,8 @@ class RespondentMailableLogSnippet extends ModelTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
-        $this->respondentMailableLogModel->applyBrowseSettings();
-        return $this->respondentMailableLogModel;
+        $this->respondentMailstatusLogModel->applyBrowseSettings();
+        return $this->respondentMailstatusLogModel;
     }
 
     public function getFilter(MetaModelInterface $metaModel): array

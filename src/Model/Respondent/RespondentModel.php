@@ -623,7 +623,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
      */
     public function logMailableChanges(array $newValues, bool $ignoreOld = false): int
     {
-        $logModel = $this->metaModel->getMetaModelLoader()->createModel(RespondentMailableLogModel::class);
+        $logModel = $this->metaModel->getMetaModelLoader()->createModel(RespondentMailstatusLogModel::class);
 
         $changes = 0;
         foreach ($this->mailableFields as $mailable) {

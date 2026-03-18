@@ -19,7 +19,7 @@ use Zalt\Model\Sql\SqlRunnerInterface;
  * @subpackage Model\Respondent
  * @since      Class available since version 2.0.67
  */
-class RespondentMailableLogModel extends GemsJoinModel
+class RespondentMailstatusLogModel extends GemsJoinModel
 {
     public function __construct(
         MetaModelLoader $metaModelLoader,
