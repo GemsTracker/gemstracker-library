@@ -5,6 +5,7 @@ namespace Gems\Communication\Unsubscribe\Messenger\Handler;
 
 use Gems\Communication\Unsubscribe\Messenger\Message\SubscriptionInfo;
 use Gems\Db\ResultFetcher;
+use Gems\Model\Respondent\RespondentMailstatusLogModel;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -12,6 +13,7 @@ class ChangeSubscriptionValueHandler
 {
     public function __construct(
         private readonly ResultFetcher $resultFetcher,
+        private readonly RespondentMailstatusLogModel $respondentMailstatusLogModel,
     )
     {
     }
@@ -86,6 +88,15 @@ class ChangeSubscriptionValueHandler
         string|null $comment,
     ): void
     {
-        // TODO: Log unsubscribe
+        $values['glrm_id_user'] = $respondentId;
+        $values['glrm_id_organization'] = $organizationId;
+        $values['glrm_mailable_field'] = 'gr2o_mailable';
+        $values['glrm_old_mailable'] = $oldCode;
+        $values['glrm_new_mailable'] = $newCode;
+        $values['glrm_comment'] = $comment;
+        $values['glrm_created'] = "CURRENT_TIMESTAMP";
+        $values['glrm_created_by'] = $respondentId;
+
+        $this->respondentMailstatusLogModel->save($values);
     }
 }
