@@ -28,7 +28,7 @@ class RespondentMailableLogModel extends GemsJoinModel
         protected readonly RespondentModel $respondentModel,
     )
     {
-        parent::__construct('gems__log_respondent_mailables', $metaModelLoader, $sqlRunner, $translate);
+        parent::__construct('gems__log_respondent_mailstatus', $metaModelLoader, $sqlRunner, $translate);
 
         $this->addLeftTable(
             'gems__mail_codes',

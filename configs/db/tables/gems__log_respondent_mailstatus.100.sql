@@ -1,4 +1,4 @@
-CREATE TABLE if not exists gems__log_respondent_mailables (
+CREATE TABLE if not exists gems__log_respondent_mailstatus (
         glrm_id                 bigint unsigned not null auto_increment,
 
         glrm_id_user            bigint unsigned not null references gems__respondents (grs_id_user),
