@@ -19,6 +19,7 @@ class Export
         'SpssExport' => 'SPSS',
         'CsvExport' => 'CSV',
         //'StreamingStataExport' => 'Stata (xml)',
+        'TextExport' => 'Text',
     ];
 
     protected array $streamingExportClasses = [

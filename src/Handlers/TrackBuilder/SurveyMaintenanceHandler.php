@@ -18,6 +18,9 @@ use Gems\Locale\Locale;
 use Gems\Pdf;
 use Gems\Repository\SurveyRepository;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\SnippetsActions\Browse\BrowseFilteredAction;
+use Gems\SnippetsActions\Export\ExportAction;
+use Gems\SnippetsActions\Export\ExportSurveySettingsAction;
 use Gems\Tracker;
 use Gems\Tracker\Model\SurveyMaintenanceModel;
 use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
@@ -30,6 +33,8 @@ use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsActions\Browse\BrowseTableAction;
+use Zalt\SnippetsActions\ModelActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -91,6 +96,8 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         'ModelFormSnippet',
         'Survey\\SurveyQuestionsSnippet'
     ];
+
+    protected string $exportSettingsActionClass = ExportSurveySettingsAction::class;
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -269,6 +276,17 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $this->surveyMaintenanceModel->applyStringAction($action, $detailed);
         return $this->surveyMaintenanceModel;
+    }
+
+    public function exportSettingsAction()
+    {
+        $this->exportActionClass = $this->exportSettingsActionClass;
+
+        $model  = $this->getExportModel();
+        $metaModel = $model->getMetaModel();
+        $metaModel->set('gsu_export_code', 'order', 1);
+
+        return $this->exportAction();
     }
 
     /**

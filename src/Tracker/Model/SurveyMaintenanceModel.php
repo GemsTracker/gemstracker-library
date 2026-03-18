@@ -121,6 +121,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
             $this->metaModel->set('track_usage', [
                 'label' => $this->_('Usage'),
                 'elementClass' => 'Exhibitor',
+                'noExport' => true,
                 'noSort' => true,
                 'no_text_search' => true,
             ]);
@@ -129,9 +130,10 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
             $this->metaModel->set('calc_duration', [
                 'label' => $this->_('Duration calculated'),
                 'elementClass' => 'Html',
+                'noExport' => true,
                 'noSort' => true,
                 'no_text_search' => true,
-            ]);
+                ]);
             $this->metaModel->setOnLoad('calc_duration', [$this, 'calculateDuration']);
 
             $this->metaModel->set('gsu_duration', [
@@ -266,27 +268,35 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
             'label' => $this->_('Available languages'),
             'elementClass' => 'Exhibitor',
             'itemDisplay' => [$this, 'formatLanguages'],
+            'noExport' => true,
         ]);
 
         $this->metaModel->set('gso_source_name', [
             'label' => $this->_('Source'),
             'elementClass' => 'Exhibitor',
+            'noExport' => true,
         ]);
         $this->metaModel->set('gsu_surveyor_active', [
             'label' => $this->_('Active in source'),
             'elementClass' => 'Exhibitor',
             'multiOptions' => $yesNo,
+            'noExport' => true,
         ]);
-        $this->metaModel->set('gsu_surveyor_id',    'label', $this->_('Source survey id'),
-                'elementClass', 'Exhibitor'
-                );
-        $this->metaModel->set('gsu_status_show',        'label', $this->_('Status in source'),
-                'elementClass', 'Exhibitor'
-                );
-        $this->metaModel->set('gsu_survey_warnings',        'label', $this->_('Warnings'),
-                'elementClass', 'Exhibitor',
-                'formatFunction', [$this, 'formatWarnings']
-                );
+        $this->metaModel->set('gsu_surveyor_id', [
+            'label' => $this->_('Source survey id'),
+            'elementClass' =>  'Exhibitor'
+            ]);
+        $this->metaModel->set('gsu_status_show', [
+            'label' => $this->_('Status in source'),
+            'elementClass' => 'Exhibitor',
+            'noExport' => true,
+            ]);
+        $this->metaModel->set('gsu_survey_warnings', [
+            'label' => $this->_('Warnings'),
+            'elementClass' => 'Exhibitor',
+            'formatFunction' => [$this, 'formatWarnings'],
+            'noExport' => true,
+            ]);
 
         $this->metaModel->set('gsu_active', [
             'label' => sprintf($this->_('Active in %s'), $this->configAccessor->getAppName()),
@@ -359,6 +369,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
             'description' => $this->_('The organizations where the survey may be inserted.'),
             'elementClass' => 'MultiCheckbox',
             'multiOptions' => $this->organizationRepository->getOrganizationsWithRespondents(),
+            'noExport' => true,
             'required' => true,
             'type' => new ConcatenatedType('|', $this->_(', ')),
         ]);

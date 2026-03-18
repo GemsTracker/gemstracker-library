@@ -371,7 +371,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     public function exportAction()
     {
         $model  = $this->getExportModel();
-        $action = $this->responder->getSnippetsAction(ExportAction::class);
+        $action = $this->responder->getSnippetsAction($this->exportActionClass);
 
         if ($action instanceof ModelActionInterface) {
             $action->model = $model;
@@ -509,10 +509,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     protected function getExportModel(): DataReaderInterface
     {
-        $model = $this->getModel();
-        $noExportColumns = $model->getMetaModel()->getColNames('noExport');
+        $model           = $this->getModel();
+        $metaModel       = $model->getMetaModel();
+        $noExportColumns = $metaModel->getColNames('noExport');
         foreach($noExportColumns as $colName) {
-            $model->remove($colName, 'label');
+            $metaModel->remove($colName, 'label');
         }
         return $model;
     }

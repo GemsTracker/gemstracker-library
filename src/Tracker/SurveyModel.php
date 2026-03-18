@@ -14,7 +14,6 @@ use Zalt\String\Str;
 
 class SurveyModel extends GemsJoinModel
 {
-
     /**
      * Constant containing css classname for main questions
      */

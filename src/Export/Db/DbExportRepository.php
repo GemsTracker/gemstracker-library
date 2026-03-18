@@ -164,7 +164,7 @@ class DbExportRepository
 
     public function getExportResult(string $exportId, int $userId): StatementInterface|ResultSet|null
     {
-        $select = $this->unbufferedResultFetcher->getSelect('gems__file_exports')
+        $select = $this->resultFetcher->getSelect('gems__file_exports')
             ->columns(['gfex_data', 'gfex_file_name', 'gfex_schema_name', 'gfex_export_type', 'gfex_export_settings', 'gfex_column_order', 'gfex_row_count'])
             ->where([
                 'gfex_export_id' => $exportId,
@@ -172,7 +172,7 @@ class DbExportRepository
             ])
             ->order(['gfex_schema_name', 'gfex_order']);
 
-        return $this->unbufferedResultFetcher->query($select);
+        return $this->resultFetcher->query($select);
     }
 
     protected function getExportTypeClassName(string $exportType): string|null
