@@ -42,47 +42,6 @@ class TextExport extends ExportAbstract implements DownloadableInterface, Export
         return 'TextExport';
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function addHeader($filename)
-    {
-        $file = fopen($filename, 'w');
-        $bom = pack("CCC", 0xef, 0xbb, 0xbf);
-        fwrite($file, $bom);
-
-        $name = $this->getName();
-        if (isset($this->data[$name], $this->data[$name]['format'], $this->data[$name]['format'][0]) && in_array('addHeader', $this->data[$name]['format'])) {
-            $labeledCols = $this->getLabeledColumns();
-            $labels      = array();
-
-            if (in_array('formatVariable', $this->data[$name]['format'])) {
-                foreach($labeledCols as $columnName) {
-                    $labels[] = $this->metaModel->get($columnName, 'label');
-                }
-            } else {
-                $labels = $labeledCols;
-            }
-
-            if (isset($this->data[$name]) && isset($this->data[$name]['delimiter'])) {
-                $this->delimiter = $this->data[$name]['delimiter'];
-            }
-        } else {
-            $labels = array_keys($this->data);
-        }
-
-        fwrite($file, implode($this->delimiter, str_replace($this->delimiter, ' ', $labels)));
-        fclose($file);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addRow($row, $file)
-    {
-        fwrite($file, implode($this->delimiter, str_replace($this->delimiter, ' ', $row)));
-    }
-
     public function downloadFile(Iterator $iterator, DataExtractorInterface $extractor, string $exportId, string $fileName, array $exportSettings): array
     {
         $tempFileName = $this->tempExportDir . $exportId . '.' . static::EXTENSION;
@@ -91,11 +50,9 @@ class TextExport extends ExportAbstract implements DownloadableInterface, Export
         $bom  = pack("CCC", 0xef, 0xbb, 0xbf);
         fwrite($file, $bom);
 
-        $name = $this->getName();
         // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($exportSettings, true) . "\n", FILE_APPEND);
 
         while ($row = $iterator->current()) {
-
             $data = $extractor->extractData($row);
 
             $this->writeRow($file, $data);
