@@ -4,11 +4,18 @@ namespace Gems;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
+use Gems\Api\Middleware\ApiAuthenticationMiddleware;
+use Gems\Api\Middleware\ApiOrganizationGateMiddleware;
+use Gems\Api\Middleware\ApiRequestExceptionMiddleware;
+use Gems\Api\Middleware\SessionAuthCustomHeaderMiddleware;
 use Gems\Auth\Acl\AclFactory;
 use Gems\Auth\Acl\DbGroupAdapter;
 use Gems\Auth\Acl\DbRoleAdapter;
 use Gems\Auth\Acl\GroupAdapterInterface;
 use Gems\Auth\Acl\RoleAdapterInterface;
+use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\AuthNew\MaybeAuthenticatedMiddleware;
+use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Cache\CacheFactory;
 use Gems\Cache\HelperAdapter;
 use Gems\Command\ClearConfigCache;
@@ -47,7 +54,18 @@ use Gems\Menu\RouteHelper;
 use Gems\Menu\RouteHelperFactory;
 use Gems\Messenger\MessengerFactory;
 use Gems\Messenger\TransportFactory;
+use Gems\Middleware\AclMiddleware;
+use Gems\Middleware\AuditLogMiddleware;
+use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Middleware\HandlerCsrfMiddleware;
+use Gems\Middleware\LegacyCurrentUserMiddleware;
+use Gems\Middleware\LocaleMiddleware;
+use Gems\Middleware\MaintenanceModeMiddleware;
+use Gems\Middleware\MenuMiddleware;
+use Gems\Middleware\RateLimitMiddleware;
+use Gems\Middleware\SecurityHeadersMiddleware;
+use Gems\Middleware\SiteGateMiddleware;
 use Gems\Model\Bridge\GemsFormBridge;
 use Gems\Model\Bridge\GemsValidatorBridge;
 use Gems\Model\MetaModelLoader as GemsMetaModelLoader;
@@ -176,6 +194,7 @@ class ConfigProvider
             'overLoaderPaths'          => $this->getOverloaderPaths(),
             'password'                 => $this->getPasswordSettings(),
             'supplementary_privileges' => $this->getSupplementaryPrivileges(),
+            'routeGroups'              => $this->getRouteGroupSettings(),
             'routes'                   => $this->getRouteSettings(),
             'ratelimit'                => $this->getRatelimitSettings(),
             'responseData'             => $this->getResponseDataSettings(),
@@ -840,6 +859,94 @@ class ConfigProvider
                     dirname(__DIR__) . '/configs/db_response_data/tables',
                 ],
             ],
+        ];
+    }
+
+    protected function getRouteGroupSettings(): array
+    {
+        return [
+            'api' => [
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    LocaleMiddleware::class,
+                    ApiAuthenticationMiddleware::class,
+                    AuditLogMiddleware::class,
+                    AclMiddleware::class,
+                    ApiOrganizationGateMiddleware::class,
+                    SessionAuthCustomHeaderMiddleware::class,
+                    LegacyCurrentUserMiddleware::class,
+                    ApiRequestExceptionMiddleware::class,
+                ],
+            ],
+            'authenticated' => [
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LocaleMiddleware::class,
+                    SiteGateMiddleware::class,
+                    AuthenticationMiddleware::class,
+                    CsrfMiddleware::class,
+                    MaintenanceModeMiddleware::class,
+                    RateLimitMiddleware::class,
+                    AclMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
+                    AuditLogMiddleware::class,
+                    MenuMiddleware::class,
+                ],
+            ],
+            'maybe-authenticated' => [
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LocaleMiddleware::class,
+                    SiteGateMiddleware::class,
+                    MaybeAuthenticatedMiddleware::class,
+                    CsrfMiddleware::class,
+                    MaintenanceModeMiddleware::class,
+                    RateLimitMiddleware::class,
+                    AclMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
+                    AuditLogMiddleware::class,
+                    MenuMiddleware::class,
+                ],
+            ],
+            'public' => [
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LocaleMiddleware::class,
+                    SiteGateMiddleware::class,
+                    NotAuthenticatedMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
+                    MaintenanceModeMiddleware::class,
+                    RateLimitMiddleware::class,
+                    AclMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
+                    AuditLogMiddleware::class,
+                    MenuMiddleware::class,
+                ],
+            ],
+            'idle-poll' => [
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LocaleMiddleware::class,
+                    SiteGateMiddleware::class,
+                    CsrfMiddleware::class,
+                    RateLimitMiddleware::class,
+                    AclMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
+                ]
+            ],
+
         ];
     }
 
