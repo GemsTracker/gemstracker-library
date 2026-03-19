@@ -22,14 +22,13 @@ class ClearTranslationCache extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($this->cacheLocation && file_exists($this->cacheLocation)) {
-            $filesystem = new Filesystem();
-            $filesystem->remove($this->cacheLocation);
-            if (file_exists($this->cacheLocation)) {
-                $output->writeln("<comment>Translation cache at '$this->cacheLocation' was NOT cleared!</comment>");
-                return static::FAILURE;
+            if (unlink($this->cacheLocation)) {
+                $output->writeln("<info>Translation cache at '$this->cacheLocation' has been cleared</info>");
+                return static::SUCCESS;
             }
-            $output->writeln("<info>Translation cache at '$this->cacheLocation' has been cleared</info>");
-            return static::SUCCESS;
+            $output->writeln("<comment>Translation cache at '$this->cacheLocation' was NOT cleared!</comment>");
+            return static::FAILURE;
+
         }
         $output->writeln("<comment>No Translation cache found at '$this->cacheLocation'</comment>");
         return static::FAILURE;

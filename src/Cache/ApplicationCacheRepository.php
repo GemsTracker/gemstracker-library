@@ -24,7 +24,7 @@ class ApplicationCacheRepository
 
     public function clearAutoConfigCache(): bool
     {
-        /** @var AutoConfigurator $autoconfigurator */
+        /** @var AutoConfigurator $autoConfigurator */
         $autoConfigurator = $this->container->get(AutoConfigurator::class);
         $autoconfigCachefile = $autoConfigurator->getAutoconfigFilename();
 

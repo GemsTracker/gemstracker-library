@@ -35,7 +35,9 @@ class TranslationFactory implements FactoryInterface
         $language = $this->locale->getCurrentLanguage();
 
         $cacheDir = $this->config['translations']['cacheDir'] ?? null;
-        $cacheVary = Env::get('APP_VERSION');
+        $cacheVary = [
+            Env::get('APP_VERSION')
+        ];
 
         $translator = $this->getTranslator($language, $cacheDir, $cacheVary);
 
@@ -123,9 +125,9 @@ class TranslationFactory implements FactoryInterface
         return [];
     }
 
-    protected function getTranslator(string $locale, string|null $cacheDir, string|null $cacheVary): TranslatorInterface
+    protected function getTranslator(string $locale, string|null $cacheDir, array|null $cacheVary): TranslatorInterface
     {
-        $translator = new Translator($locale, null, $cacheDir, $cacheVary);
+        $translator = new Translator($locale, null, $cacheDir, false, $cacheVary);
         $translator = $this->addResourcesToTranslator($translator);
 
         return new SymfonyTranslator($translator);
