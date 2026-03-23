@@ -29,7 +29,7 @@ class MonologFactory implements FactoryInterface
             foreach($logConfig['writers'] as $handlerName => $handlerConfig) {
                 $priority = Level::Debug;
                 if (isset($handlerConfig['priority'])) {
-                    $priority = $handlerConfig['priority'];
+                    $priority = Logger::toMonologLevel($handlerConfig['priority']);
                 }
                 $handler = null;
                 switch($handlerName) {
