@@ -24,6 +24,7 @@ class ErrorLogEventListener
                     'status' => $response->getStatusCode(),
                     'method' => $request->getMethod(),
                     'uri'    => (string) $request->getUri(),
+                    'exception' => $error,
                 ]
             );
             return;
