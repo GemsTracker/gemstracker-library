@@ -159,6 +159,7 @@ class ConfigProvider
             'auth'                     => $this->getAuthSettings(),
             'autoconfig'               => $this->getAutoConfigSettings(),
             'cache'                    => $this->getCacheSettings(),
+            'communication'            => $this->getCommunicationSettings(),
             'contact'                  => $this->getContactSettings(),
             'console'                  => $this->getConsoleSettings(),
             'db'                       => $this->getDbSettings(),
@@ -339,6 +340,15 @@ class ConfigProvider
 
         return [
             'adapter' => $cacheAdapter,
+        ];
+    }
+
+    public function getCommunicationSettings(): array
+    {
+        return [
+            'unsubscribe' => [
+                'unsubscribeValue' => 0,
+            ],
         ];
     }
 

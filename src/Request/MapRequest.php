@@ -94,7 +94,7 @@ class MapRequest
         return $this->mapDtoFromArray($mergedData, $dtoClassName, $allowExtraAttributes, false);
     }
 
-    private function mapDtoFromArray(array $data, string $dtoClassName, bool $allowExtraAttributes = true, bool $typeEnforcement = true): object
+    public function mapDtoFromArray(array $data, string $dtoClassName, bool $allowExtraAttributes = true, bool $typeEnforcement = true): object
     {
 
         // Optional context for denormalization

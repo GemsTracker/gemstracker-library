@@ -12,15 +12,11 @@
 namespace Gems\Snippets\Unsubscribe;
 
 use Gems\Audit\AuditLog;
+use Gems\Communication\Unsubscribe\Messenger\Message\SubscriptionInfo;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\FormSnippetAbstract;
-use Gems\User\Organization;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Literal;
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\Sql\Where;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Message\MessengerInterface;
@@ -36,11 +32,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class EmailUnsubscribeSnippet extends FormSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\User\Organization
-     */
-    protected Organization $currentOrganization;
+
+    protected int $currentOrganizationId;
 
     /**
      * Since this forms acts as if it was successful when a valid e-mail address was
@@ -74,13 +67,16 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
         MessengerInterface $messenger,
         AuditLog $auditLog,
         MenuSnippetHelper $menuHelper,
-        protected Loader $loader,
-        protected readonly Adapter $db,
         protected readonly CurrentUserRepository $currentUserRepository,
+        protected readonly MessageBusInterface $messageBus,
+        array $config,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $auditLog, $menuHelper);
 
-        $this->currentOrganization = $this->currentUserRepository->getCurrentOrganization();
+        $this->currentOrganizationId = $this->currentUserRepository->getCurrentOrganizationId();
+
+        $this->unsubscribedValue = $config['communication']['unsubscribe']['unsubscribeValue'] ?? 0;
+
     }
 
     /**
@@ -90,7 +86,6 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
      */
     protected function addFormElements(mixed $form)
     {
-//        \MUtil\EchoOut\EchoOut::track('EmailUnsubscribeSnippet');
         // Veld inlognaam
         $element = $form->createElement('text', 'email');
         $element->setLabel($this->_('Your E-Mail address'))
@@ -136,48 +131,13 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
         $this->addMessage($this->unsubscribedMessage ?:
                 $this->_('If your E-email address is known, you have been unsubscribed.'));
 
-        $sql = new Sql($this->db);
-        $select = $sql->select()
-            ->columns([
-                'gr2o_patient_nr',
-                'gr2o_id_organization',
-                'gr2o_id_user',
-                'gr2o_mailable',
-            ])
-            ->from('gems__respondent2org')
-            ->where([
-                'gr2o_email' => $this->formData['email'],
-                'gr2o_id_organization' => $this->currentOrganization->getId(),
-            ]);
-
-        $resultSet = $sql->prepareStatementForSqlObject($select)->execute();
-
-        // \MUtil\EchoOut\EchoOut::track($rows);
-        foreach ($resultSet as $id => $row) {
-            // Save respondent & ord id
-            $this->userData[$id]['gr2o_id_user']         = $row['gr2o_id_user'];
-            $this->userData[$id]['gr2o_id_organization'] = $this->currentOrganization->getId();
-
-            if ($row['gr2o_mailable']) {
-                $values = [
-                    'gr2o_mailable' => $this->unsubscribedValue,
-                    'gr2o_changed' => new Literal('CURRENT_TIMESTAMP'),
-                    'gr2o_changed_by' => $row['gr2o_id_user'],
-                ];
-
-                $update = $sql->update('gems__respondent2org')
-                    ->where([
-                        'gr2o_email' => $this->formData['email'],
-                        'gr2o_id_organization' => $this->currentOrganization->getId(),
-                    ])->where(function (Where $where) {
-                        $where->notEqualTo('gr2o_mailable', $this->unsubscribedValue);
-                    })->set($values);
-                $sql->prepareStatementForSqlObject($update)->execute();
-
-                // Signal something has actually changed for logging purposes
-                $this->realChange = true;
-            }
-        }
+        $unsubscribeInfo = new SubscriptionInfo(
+            $this->formData['email'],
+            $this->currentOrganizationId,
+            $this->unsubscribedValue,
+            $this->formData['comment'] ?? null,
+        );
+        $this->messageBus->dispatch($unsubscribeInfo);
 
         // Always act like something was saved when
         return 1;

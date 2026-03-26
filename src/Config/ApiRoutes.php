@@ -3,11 +3,15 @@
 namespace Gems\Config;
 
 use Gems\Api\Handlers\PingHandler;
+use Gems\Api\Middleware\ApiRequestExceptionMiddleware;
 use Gems\Api\RestModelConfigProviderAbstract;
 use Gems\Communication\Handler\TestCommunicationEmailHandler;
+use Gems\Communication\Handler\UnsubscribeHandler;
 use Gems\Handlers\Api\CommFieldsHandler;
 use Gems\Handlers\Api\Respondent\OtherPatientNumbersHandler;
+use Gems\Middleware\AuditLogMiddleware;
 use Gems\Middleware\LocaleMiddleware;
+use Gems\Middleware\RateLimitMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Model\CommTemplateModel;
 use Gems\Model\EmailTokenModel;
