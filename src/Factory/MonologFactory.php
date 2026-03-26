@@ -7,6 +7,7 @@ namespace Gems\Factory;
 
 
 use Gems\ConfigProvider;
+use Gems\Log\Handler\SentryHandler;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\RedisHandler;
@@ -29,7 +30,7 @@ class MonologFactory implements FactoryInterface
             foreach($logConfig['writers'] as $handlerName => $handlerConfig) {
                 $priority = Level::Debug;
                 if (isset($handlerConfig['priority'])) {
-                    $priority = $handlerConfig['priority'];
+                    $priority = Logger::toMonologLevel($handlerConfig['priority']);
                 }
                 $handler = null;
                 switch($handlerName) {
@@ -46,6 +47,12 @@ class MonologFactory implements FactoryInterface
 
                         if ($redis instanceof Redis) {
                             $handler = new RedisHandler($redis, $key, $priority);
+                        }
+                        break;
+                    case 'sentry':
+                        if (function_exists('Sentry\init')) {
+                            $sentryOptions = $handlerConfig['options'] ?? [];
+                            $handler = new SentryHandler($priority, $sentryOptions);
                         }
                         break;
                     /*case 'db':

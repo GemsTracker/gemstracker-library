@@ -615,6 +615,17 @@ class ConfigProvider
                             'stream' => 'data/logs/php-error.log',
                         ],
                     ],
+                    // 'sentry' => [
+                    //     'name' => 'sentry',
+                    //     'priority' => LogLevel::ERROR,
+                    //     'options' => [
+                    //         'dsn' => $_ENV['SENTRY_DSN'] ?? null,
+                    //         'environment' => $_ENV['APP_ENV'] ?? 'prod',
+                    //         'release' => $_ENV['APP_VERSION'] ?? null,
+                    //         'traces_sample_rate' => (float) ($_ENV['SENTRY_TRACES_SAMPLE_RATE'] ?? 0),
+                    //         'send_default_pii' => false,
+                    //     ],
+                    // ],
                 ],
             ],
             'LegacyLogger' => [
