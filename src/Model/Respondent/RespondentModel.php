@@ -84,6 +84,12 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
      */
     public array $consentFields = ['gr2o_consent'];
 
+    /**
+     *
+     * @var array Of field names containing mailable status
+     */
+    public array $mailableFields = ['gr2o_mailable'];
+
     protected string $currentGroup = '';
 
     protected int $currentOrganizationId;
@@ -351,6 +357,10 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $this->addColumn($consent, 'old_' . $consent);
             $this->metaModel->set('old_' . $consent, ['elementClass' => 'hidden']);
         }
+        foreach ($this->mailableFields as $mailable) {
+            $this->addColumn($mailable, 'old_' . $mailable);
+            $this->metaModel->set('old_' . $mailable, ['elementClass' => 'hidden']);
+        }
 
         $activatingMultiType = new ActivatingMultiType(
             $this->receptionCodeRepository->getRespondentRestoreCodes(),
@@ -484,6 +494,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $toPatient['gr2o_reception_code']  = ReceptionCodeRepository::RECEPTION_OK;
         $result = $this->save($toPatient);
         $this->logConsentChanges($result, true);
+        $this->logMailableChanges($result, true);
 
         // Now re-enable the mask feature
         $this->maskRepository->enableMaskRepository();
@@ -604,6 +615,48 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         return $changes;
     }
 
+    /**
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param bool $ignoreOld
+     * @return int Number of mailable changes logged
+     */
+    public function logMailableChanges(array $newValues, bool $ignoreOld = false): int
+    {
+        $logModel = $this->metaModel->getMetaModelLoader()->createModel(RespondentMailstatusLogModel::class);
+
+        $changes = 0;
+        foreach ($this->mailableFields as $mailable) {
+            $oldMailable = 'old_' . $mailable;
+
+            if (isset($newValues['gr2o_id_user'], $newValues['gr2o_id_organization'], $newValues[$mailable])) {
+
+
+                if ($ignoreOld) {
+                    $goOld = true;
+                } else {
+                    $goOld = array_key_exists($oldMailable, $newValues) &&  // Old mailable can be empty
+                        ($newValues[$mailable] != $newValues[$oldMailable]);
+                }
+
+                if ($goOld) {
+                    $values['glrm_id_user'] = $newValues['gr2o_id_user'];
+                    $values['glrm_id_organization'] = $newValues['gr2o_id_organization'];
+                    $values['glrm_mailable_field'] = $mailable;
+                    $values['glrm_old_mailable'] = $ignoreOld ? null : $newValues[$oldMailable];
+                    $values['glrm_new_mailable'] = $newValues[$mailable];
+                    $values['glrm_created'] = "CURRENT_TIMESTAMP";
+                    $values['glrm_created_by'] = $this->currentUserId;
+
+                    $logModel->save($values);
+                    $changes++;
+                }
+            }
+        }
+
+        return $changes;
+    }
+
     public function makeConsentEditable(): void
     {
         $this->setIfExists('gr2o_consent', [
@@ -659,6 +712,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
             $result = $this->save($patientFrom, $filter);
 
             $this->logConsentChanges($result, true);
+            $this->logMailableChanges($result, true);
         } else {
             // already exists, return current patient
             // we can not delete the other records, maybe mark as inactive or throw an error
@@ -687,6 +741,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         $output = parent::save($newValues, $filter, $saveTables);
 
         $this->logConsentChanges($output, $ignoreOld);
+        $this->logMailableChanges($output, $ignoreOld);
 
         if (isset($output['gr2o_id_organization']) && isset($output['grs_id_user'])) {
             // Tell the organization it has at least one user

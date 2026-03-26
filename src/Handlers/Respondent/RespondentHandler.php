@@ -94,6 +94,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     protected array $changeConsentSnippets = [
         'Respondent\\Consent\\RespondentConsentFormSnippet',
         'Respondent\\Consent\\RespondentConsentLogSnippet',
+        'Respondent\\Consent\\RespondentMailstatusLogSnippet',
     ];
 
     /**
