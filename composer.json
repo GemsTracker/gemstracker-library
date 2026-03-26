@@ -106,6 +106,7 @@
         "shardj/zf1-future": "^1.23",
         "spomky-labs/otphp": "^11.1",
         "symfony/cache": "^6.4",
+        "symfony/config": "^6.4",
         "symfony/console": "^6.4",
         "symfony/doctrine-messenger": "^6.4",
         "symfony/event-dispatcher": "^6.4",

@@ -2,6 +2,7 @@
 
 namespace Gems\Translate;
 
+use Gems\Helper\Env;
 use Gems\Locale\Locale;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -33,7 +34,12 @@ class TranslationFactory implements FactoryInterface
 
         $language = $this->locale->getCurrentLanguage();
 
-        $translator = $this->getTranslator($language);
+        $cacheDir = $this->config['translations']['cacheDir'] ?? null;
+        $cacheVary = [
+            Env::get('APP_VERSION')
+        ];
+
+        $translator = $this->getTranslator($language, $cacheDir, $cacheVary);
 
         $this->locale->setTranslator($translator);
 
@@ -119,9 +125,9 @@ class TranslationFactory implements FactoryInterface
         return [];
     }
 
-    protected function getTranslator(string $locale): TranslatorInterface
+    protected function getTranslator(string $locale, string|null $cacheDir, array|null $cacheVary): TranslatorInterface
     {
-        $translator = new Translator($locale);
+        $translator = new Translator($locale, null, $cacheDir, false, $cacheVary);
         $translator = $this->addResourcesToTranslator($translator);
 
         return new SymfonyTranslator($translator);
