@@ -97,7 +97,7 @@ class EventListeners implements AutoConfigInterface
         }
 
         foreach((array)$events as $event) {
-            $newConfig['events']['listeners'][$event] = [$listener, $priority];
+            $newConfig['events']['listeners'][$event][] = [$listener, $priority];
         }
 
         return $newConfig;

@@ -19,6 +19,7 @@ use Gems\Condition\Comparator\ComparatorAbstract;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Condition\TrackConditionInterface;
 use Gems\Config\App;
+use Gems\Config\AutoConfig\EventListeners;
 use Gems\Config\AutoConfig\MessageHandlers;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
@@ -107,6 +108,7 @@ use Mezzio\Session\SessionPersistenceInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -322,6 +324,7 @@ class ConfigProvider
                     AsCommand::class => ['config' => 'console.commands'],
                     AsMessageHandler::class => MessageHandlers::class,
                     AsStreamLogger::class => AutoConfigAttributeLogger::class,
+                    AsEventListener::class => EventListeners::class,
                 ],
             ],
         ];
