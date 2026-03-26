@@ -132,4 +132,9 @@ class ExportDownloadSnippet extends ModelTableSnippet
             $downloadLink,
         ];
     }
+
+    protected function getEditUrls(TableBridge $bridge, array $keys): array
+    {
+        return [];
+    }
 }

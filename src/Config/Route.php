@@ -1418,12 +1418,17 @@ class Route
                     'attributes',
                     'check',
                     'answer-import',
+                    'export-settings'
                 ],
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'check',
                     'answer-import',
                     'attributes',
+                ],
+                postRoutes: [
+                    ...$this->defaultPostRoutes,
+                    'export-settings',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'track-builder.survey-maintenance.update-survey',

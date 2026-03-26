@@ -1662,6 +1662,11 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                         [
+                            'name' => 'track-builder.survey-maintenance.export-settings',
+                            'label' => $this->translator->trans('Export settings'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
                             'name' => 'track-builder.survey-maintenance.update-survey.run',
                             'label' => $this->translator->trans('Update to new survey'),
                             'type' => 'route-link-item',

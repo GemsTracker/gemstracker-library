@@ -4,6 +4,7 @@ namespace Gems\Export\Type;
 
 use DateTimeInterface;
 use Gems\Html;
+use Zalt\File\File;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\AElement;
 use Zalt\Html\ElementInterface;
@@ -27,6 +28,8 @@ abstract class ExportAbstract implements ExportInterface
     )
     {
         $this->tempExportDir = $config['export']['tempExportDir'] ?? 'data/export/';
+
+        File::ensureDir($this->tempExportDir);
     }
 
     /**
