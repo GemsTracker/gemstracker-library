@@ -11,6 +11,7 @@ namespace Gems\Model\Respondent;
 
 use Gems\Model\GemsJoinModel;
 use Gems\Model\MetaModelLoader;
+use Gems\Repository\StaffRepository;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
 
@@ -21,11 +22,14 @@ use Zalt\Model\Sql\SqlRunnerInterface;
  */
 class RespondentMailstatusLogModel extends GemsJoinModel
 {
+    protected int|null $currentRespondentId = null;
+
     public function __construct(
         MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
         protected readonly RespondentModel $respondentModel,
+        protected readonly StaffRepository $staffRepository,
     )
     {
         parent::__construct('gems__log_respondent_mailstatus', $metaModelLoader, $sqlRunner, $translate);
@@ -81,6 +85,11 @@ class RespondentMailstatusLogModel extends GemsJoinModel
         ]);
     }
 
+    public function setCurrentRespondentId(int|null $respondentId): void
+    {
+        $this->currentRespondentId = $respondentId;
+    }
+
     public function applyBrowseSettings(): void
     {
         $this->metaModel->set('glrm_old_mailable', [
@@ -88,6 +97,16 @@ class RespondentMailstatusLogModel extends GemsJoinModel
         ]);
         $this->metaModel->set('glrm_new_mailable', [
             'column_expression' => 'new_mail_code.gmc_mail_to_target',
+        ]);
+
+        $changers = $this->staffRepository->getStaff();
+        $respondentId = $this->currentRespondentId;
+        if ($respondentId !== null) {
+            $changers[$respondentId] = $this->_('Patient');
+        }
+        $this->metaModel->set('glrm_created_by', [
+            'label' => $this->_('Changed by'),
+            'multiOptions' => $changers,
         ]);
     }
 }
