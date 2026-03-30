@@ -72,6 +72,9 @@ class RespondentMailstatusLogSnippet extends ModelTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
+        if ($this->respondent instanceof Respondent && $this->respondent->exists) {
+            $this->respondentMailstatusLogModel->setCurrentRespondentId((int) $this->respondent->getId());
+        }
         $this->respondentMailstatusLogModel->applyBrowseSettings();
         return $this->respondentMailstatusLogModel;
     }
