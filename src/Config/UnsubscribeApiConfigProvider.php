@@ -18,7 +18,7 @@ class UnsubscribeApiConfigProvider extends RestModelConfigProviderAbstract
             'routes' => [
                 ...$this->createRoute(
                     name: 'unsubscribe',
-                    path: '/unsubscribe',
+                    path: '/api/unsubscribe',
                     handler: UnsubscribeHandler::class,
                     allowedMethods: ['POST'],
                     middleware: [
