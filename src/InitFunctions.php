@@ -12,6 +12,7 @@ namespace Gems;
 
 use Gems\Handlers\NotFoundHandler;
 use Gems\Middleware\ClientIpMiddleware;
+use Gems\Route\PipedRouteGroupMiddleware;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Mezzio\Application;
 use Mezzio\Helper\ServerUrlMiddleware;
@@ -109,6 +110,8 @@ class InitFunctions
                 $app->pipe($middleware);
             }
         }
+
+        $app->pipe(new PipedRouteGroupMiddleware($container, $config['routeGroups'] ?? []));
 
         $app->pipe(\Gems\Middleware\DbProfilerMiddleware::class);
 
