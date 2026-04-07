@@ -40,7 +40,7 @@ class GemsLogRespondentCommunicationsFixesPatch extends PatchAbstract
                 $statements[] = sprintf('ALTER TABLE %s DROP FOREIGN KEY %s', $this->table, $foreignKey);
             }
         }
-        if (! $this->databaseInfo->tableHasConstraint('gems__log_respondent_communications', 'grco_id_by')) {
+        if (! $this->databaseInfo->tableHasIndexOnColumns($this->table, 'grco_id_by')) {
             $statements[] = 'ALTER TABLE gems__log_respondent_communications ADD KEY grco_id_by (grco_id_by)';
         }
 
