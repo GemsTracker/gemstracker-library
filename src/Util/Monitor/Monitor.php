@@ -363,7 +363,11 @@ This message was sent automatically.
                 ->setTo($to);
 
         if ($job->start()) {
-            $job->sendOtherMail($initSubject, $initHtml);
+            try {
+                $job->sendOtherMail($initSubject, $initHtml);
+            } catch (\Exception $e) {
+                throw new \RuntimeException('Maintenance mode has been enabled, but the notification email could not be sent. Please check the email DSN configuration.', 0, $e);
+            }
         }
 
         return true;

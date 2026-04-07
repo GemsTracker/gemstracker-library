@@ -42,7 +42,12 @@ class MaintenanceMode extends Command
                 $io->warning('Maintenance mode is already ON');
                 return static::SUCCESS;
             }
-            $this->monitor->reverseMaintenanceMonitor();
+            try {
+                $this->monitor->reverseMaintenanceMonitor();
+            } catch (\RuntimeException $e) {
+                $io->warning('Maintenance mode has been turned ON, but the notification email could not be sent. Please check the email DSN configuration.');
+                return static::SUCCESS;
+            }
             $io->warning('Maintenance mode has been turned ON');
             return static::SUCCESS;
         }
