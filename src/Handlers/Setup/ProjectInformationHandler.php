@@ -398,10 +398,15 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
          */
         $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
         $messenger->clearMessages();
-        if ($this->monitor->reverseMaintenanceMonitor()) {
+        try {
+            if ($this->monitor->reverseMaintenanceMonitor()) {
+                $messenger->addSuccess($this->_('Maintenance mode set ON'));
+            } else {
+                $messenger->addSuccess($this->_('Maintenance mode set OFF'));
+            }
+        } catch (\RuntimeException $e) {
             $messenger->addSuccess($this->_('Maintenance mode set ON'));
-        } else {
-            $messenger->addSuccess($this->_('Maintenance mode set OFF'));
+            $messenger->addWarning($this->_('Failed to send maintenance mode notification email. Please check the email DSN configuration.'));
         }
 
         // Redirect
