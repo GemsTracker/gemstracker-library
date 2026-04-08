@@ -12,6 +12,7 @@ namespace Gems;
 
 use Gems\Handlers\NotFoundHandler;
 use Gems\Middleware\ClientIpMiddleware;
+use Gems\Middleware\LazyRouteMiddlewareMiddleware;
 use Gems\Route\PipedRouteGroupMiddleware;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Mezzio\Application;
@@ -164,7 +165,16 @@ class InitFunctions
     public static function routes(Application $app, MiddlewareFactory $factory, ContainerInterface $container): void
     {
         $config = $container->get('config');
-        \Mezzio\Container\ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
+
+        $routes = array_map(function(array $route) {
+            $route['options']['middleware'] = $route['middleware'] ?? [];
+            $route['middleware'] = LazyRouteMiddlewareMiddleware::class;
+            return $route;
+        },
+            $config['routes']);
+
+
+        \Mezzio\Container\ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, ['routes' => $routes]);
 
         //$app->get('/', App\Handler\HomePageHandler::class, 'home');
         //$app->get('/api/ping', App\Handler\PingHandler::class, 'api.ping');
