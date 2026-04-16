@@ -267,6 +267,11 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
 
             }
         }
+        $output['gtf_create_wait_days'] = [
+            'label' => null,
+            'description' => null,
+            'elementClass' => 'Hidden',
+        ];
         if ($label && $description) {
             $output['gtf_create_wait_days'] = [
                 'label'        => $label,
