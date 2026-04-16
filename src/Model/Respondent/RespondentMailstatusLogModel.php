@@ -74,6 +74,9 @@ class RespondentMailstatusLogModel extends GemsJoinModel
             'label' => $this->_('New mail status'),
             'multiOptions' => $valueOptions
         ]);
+        $this->metaModel->set('glrm_comment', [
+            'label' => $this->_('Comment'),
+        ]);
         $this->metaModel->set('glrm_created', [
             'label' => $this->_('Changed on'),
             'dateFormat' => $respondentMetaModel->get('gr2o_changed_by', 'dateFormat'),
