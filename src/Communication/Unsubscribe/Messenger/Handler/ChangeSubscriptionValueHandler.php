@@ -40,8 +40,8 @@ class ChangeSubscriptionValueHandler
             $this->logMailableChange(
                 $patientInfo['gr2o_id_user'],
                 $unsubscribeInfo->organizationId,
-                $unsubscribeInfo->subscriptionValue,
                 $patientInfo['gr2o_mailable'],
+                $unsubscribeInfo->subscriptionValue,
                 $unsubscribeInfo->comment
             );
         }
