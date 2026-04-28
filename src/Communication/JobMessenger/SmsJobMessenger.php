@@ -14,6 +14,7 @@ use Gems\Tracker\Token;
 use Gems\User\Filter\DutchPhonenumberFilter;
 use Gems\Util\Phone\PhoneNumberFactory;
 use League\HTMLToMarkdown\HtmlConverter;
+use libphonenumber\NumberParseException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
@@ -145,7 +146,11 @@ class SmsJobMessenger implements JobMessengerInterface
             return false;
         }
 
-        $phoneNumber = $this->phoneNumberFactory->fromString($number);
+        try {
+            $phoneNumber = $this->phoneNumberFactory->fromString($number);
+        } catch (NumberParseException $e) {
+            return false;
+        }
 
         if (!$phoneNumber->isValid()) {
             return false;
