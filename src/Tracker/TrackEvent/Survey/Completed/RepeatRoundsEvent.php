@@ -13,9 +13,10 @@ namespace Gems\Tracker\TrackEvent\Survey\Completed;
 
 use Gems\Date\Period;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Tracker\ReceptionCode;
 use Gems\Tracker\Token;
 use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
-use MUtil\Translate\Translator;
+use Zalt\Base\TranslatorInterface;
 
 /**
  *
@@ -28,17 +29,22 @@ class RepeatRoundsEvent implements SurveyCompletedEventInterface
 {
     protected int $currentUserId;
 
-    public function __construct(protected Translator $translator, CurrentUserRepository $currentUserRepository)
+    public function __construct(protected TranslatorInterface $translator, CurrentUserRepository $currentUserRepository)
     {
         $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
-    
+
+    public function checkReceptionCode(ReceptionCode $code): bool
+    {
+        return $code->isSuccess();
+    }
+
     /**
      * @inheritDoc
      */
     public function getEventName(): string
     {
-        return $this->translator->_('Repeat rounds on \'repeatRound\' with \'repeatUnit/Count\'.');
+        return $this->translator->_('Repeat rounds with calculated validity on \'repeatRound\' with \'repeat[From][Unit|Count]\'.');
     }
 
     /**
@@ -79,7 +85,6 @@ class RepeatRoundsEvent implements SurveyCompletedEventInterface
             // \MUtil\EchoOut\EchoOut::track($oldRoundDescription, $matches);
             throw new \Gems\Exception("RepeatRounds event called on round with description not ending in a number!");
             // Abort on no new description
-            return [];
         }
         $oldRoundCount = intval($matches[1]);
         $newRoundCount = $oldRoundCount + 1;
@@ -105,7 +110,7 @@ class RepeatRoundsEvent implements SurveyCompletedEventInterface
         
         // \MUtil\EchoOut\EchoOut::track($oldRoundDescription, $newRoundDescription);
         foreach ($allTokens as $next) {
-            if ($next->getReceptionCode()->isSuccess() && ($next->getRoundDescription() == $oldRoundDescription)) {
+            if ($this->checkReceptionCode($next->getReceptionCode()) && ($next->getRoundDescription() == $oldRoundDescription)) {
                 $newValues = [
                     'gto_id_round'           => 0,
                     'gto_round_order'        => ++$newOrder,
