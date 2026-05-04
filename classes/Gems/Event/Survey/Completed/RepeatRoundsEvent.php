@@ -26,13 +26,18 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
      * @var \Gems_User_User
      */
     protected $currentUser;
+
+    public function checkReceptionCode(\Gems_Util_ReceptionCode $code)
+    {
+        return $code->isSuccess();
+    }
     
     /**
      * @inheritDoc
      */
     public function getEventName()
     {
-        return $this->_('Repeat rounds on \'repeatRound\' with \'repeat[From][Unit|Count]\'.');
+        return $this->_('Repeat rounds with calculated validity on \'repeatRound\' with \'repeat[From][Unit|Count]\'.');
     }
 
     /**
@@ -125,7 +130,7 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
         
         // \MUtil_Echo::track($oldRoundDescription, $newRoundDescription);
         foreach ($allTokens as $next) {
-            if ($next->getReceptionCode()->isSuccess() && ($next->getRoundDescription() == $oldRoundDescription)) {
+            if ($this->checkReceptionCode($next->getReceptionCode()) && ($next->getRoundDescription() == $oldRoundDescription)) {
                 $newValues = [
                     'gto_id_round'           => 0,
                     'gto_round_order'        => ++$newOrder,

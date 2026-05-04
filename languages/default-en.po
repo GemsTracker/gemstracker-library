@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 12:11+0100\n"
+"POT-Creation-Date: 2026-05-04 17:16+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -195,7 +195,7 @@ msgstr " (%s)"
 #: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:597
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:936
 #: classes/Gems/Tracker/Model/TrackModel.php:158
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:578
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:582
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:847
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1005
 msgid ", "
@@ -999,13 +999,10 @@ msgstr "In (..|..)"
 
 #: classes/Gems/Condition/Round/LastAnswerCondition.php:63
 #, php-format
-#| msgid "Last answer to question `%s`"
 msgid "Last answer in track to question `%s`"
 msgstr "Last answer in track to question `%s`"
 
 #: classes/Gems/Condition/Round/LastAnswerCondition.php:68
-#| msgid ""
-#| "Look back from the current survey and find the first answered question"
 msgid ""
 "Look back from the current survey and find the first answered question "
 "within the track"
@@ -1032,13 +1029,10 @@ msgstr "There is no question with `%s` in this track."
 
 #: classes/Gems/Condition/Round/LastPatientCondition.php:24
 #, php-format
-#| msgid "Last answer to question `%s`"
 msgid "Last answer for respondent to question `%s`"
 msgstr "Last answer for patient to question `%s`"
 
 #: classes/Gems/Condition/Round/LastPatientCondition.php:29
-#| msgid ""
-#| "Look back from the current survey and find the first answered question"
 msgid ""
 "Look back from the current survey and find the first answered question for "
 "the respondent"
@@ -1047,7 +1041,6 @@ msgstr ""
 "the patient"
 
 #: classes/Gems/Condition/Round/LastPatientCondition.php:72
-#| msgid "Round is not for respondents"
 msgid "Previous answer for respondent"
 msgstr "Previous answer for patient"
 
@@ -4827,9 +4820,13 @@ msgstr ""
 "Import and assign relations, prefix fields with relationfield code, followed "
 "by %s"
 
-#: classes/Gems/Event/Survey/Completed/RepeatRoundsEvent.php:35
-msgid "Repeat rounds on 'repeatRound' with 'repeat[From][Unit|Count]'."
-msgstr "Repeat rounds on 'repeatRound' with 'repeat[From][Unit|Count]'."
+#: classes/Gems/Event/Survey/Completed/RepeatRoundsEvent.php:40
+msgid ""
+"Repeat rounds with calculated validity on 'repeatRound' with 'repeat[From]"
+"[Unit|Count]'."
+msgstr ""
+"Repeat rounds with calculated validity on 'repeatRound' with 'repeat[From]"
+"[Unit|Count]'."
 
 #: classes/Gems/Event/Survey/Completed/SetInformedConsent.php:45
 msgid "Use the 'informedconsent' answer to set the informed consent."
@@ -11633,78 +11630,78 @@ msgstr ""
 msgid "Corrected anonymization for survey '%s'"
 msgstr "Corrected anonymization for survey '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:582
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:586
 #, php-format
 msgid "Added to token table '%s' the field(s): %s"
 msgstr "Added to token table '%s' the field(s): %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:587
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:591
 #, php-format
 msgid "Attribute fields not created for token table for '%s'"
 msgstr "Attribute fields not created for token table for '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:588
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:592
 #, php-format
 msgid "Required fields: %s"
 msgstr "Required fields: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:598
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:602
 #, php-format
 msgid "Updated token attribute descriptions for '%s'"
 msgstr "Updated token attribute descriptions for '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:634
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:638
 #, php-format
 msgid "The status of the '%s' survey has changed."
 msgstr "The status of the '%s' survey has changed."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:640
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:644
 #, php-format
 msgid "Survey '%s' IS NO LONGER ACTIVE!!!"
 msgstr "Survey '%s' IS NO LONGER ACTIVE!!!"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:646
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:650
 #, php-format
 msgid "The status of the '%s' survey has changed to '%s'."
 msgstr "The status of the '%s' survey has changed to '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:649
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:653
 #, php-format
 msgid "The status warning for the '%s' survey was removed."
 msgstr "The status warning for the '%s' survey was removed."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:655
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:659
 #, php-format
 msgid "The name of the '%s' survey has changed to '%s'."
 msgstr "The name of the '%s' survey has changed to '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:660
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:664
 #, php-format
 msgid "The description of the '%s' survey has changed to '%s'."
 msgstr "The description of the '%s' survey has changed to '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:665
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:669
 #, php-format
 msgid "The available languages of the '%s' survey has changed to '%s'."
 msgstr "The available languages of the '%s' survey has changed to '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:671
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:675
 #, php-format
 msgid "The warning messages of the '%s' survey have been changed to '%s'."
 msgstr "The warning messages of the '%s' survey have been changed to '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:675
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:679
 #, php-format
 msgid "The warning messages of the '%s' survey have been cleared."
 msgstr "The warning messages of the '%s' survey have been cleared."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:690
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:694
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:838
 #, php-format
 msgid "Imported the '%s' survey."
 msgstr "Imported the '%s' survey."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:692
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:696
 #, php-format
 msgid "Skipped the '%s' survey because it has an expiry date."
 msgstr "Skipped the '%s' survey because it has an expiry date."
@@ -13303,6 +13300,16 @@ msgstr "An error occurred!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
+
+#~| msgid ""
+#~| "Repeat rounds with delayed calculation on 'repeatRound' with "
+#~| "'repeat[From][Unit|Count]'."
+#~ msgid ""
+#~ "Repeat rounds with delayed validity calculation on 'repeatRound' with "
+#~ "'repeat[From][Unit|Count]'."
+#~ msgstr ""
+#~ "Repeat rounds with delayed validity calculation on 'repeatRound' with "
+#~ "'repeat[From][Unit|Count]'."
 
 #~ msgid "Todo"
 #~ msgstr "Todo"

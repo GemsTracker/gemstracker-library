@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 12:13+0100\n"
+"POT-Creation-Date: 2026-05-04 17:16+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: ISO-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -195,7 +195,7 @@ msgstr " (%s)"
 #: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:597
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:936
 #: classes/Gems/Tracker/Model/TrackModel.php:158
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:578
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:582
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:847
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1005
 msgid ", "
@@ -4880,9 +4880,13 @@ msgstr ""
 "Importeer en wijs relaties toe. Velden moeten beginnen met de code van het "
 "relatieveld gevolgd door %s"
 
-#: classes/Gems/Event/Survey/Completed/RepeatRoundsEvent.php:35
-msgid "Repeat rounds on 'repeatRound' with 'repeat[From][Unit|Count]'."
-msgstr "Herhaal rondes middels 'repeatRound' met 'repeat[From][Unit|Count]'."
+#: classes/Gems/Event/Survey/Completed/RepeatRoundsEvent.php:40
+msgid ""
+"Repeat rounds with calculated validity on 'repeatRound' with 'repeat[From]"
+"[Unit|Count]'."
+msgstr ""
+"Herhaal rondes met al berekende geldigheid actief middels 'repeatRound' met "
+"'repeat[From][Unit|Count]'."
 
 #: classes/Gems/Event/Survey/Completed/SetInformedConsent.php:45
 msgid "Use the 'informedconsent' answer to set the informed consent."
@@ -11746,78 +11750,78 @@ msgstr ""
 msgid "Corrected anonymization for survey '%s'"
 msgstr "Anonimizatie gecorrigeerd van vragenlijst '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:582
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:586
 #, php-format
 msgid "Added to token table '%s' the field(s): %s"
 msgstr "Toegevoegd aan kenmerk tabel '%s', de velden: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:587
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:591
 #, php-format
 msgid "Attribute fields not created for token table for '%s'"
 msgstr "Attribuut velden niet toegevoegd voor de kenmerk tabel '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:588
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:592
 #, php-format
 msgid "Required fields: %s"
 msgstr "Verplicht veld: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:598
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:602
 #, php-format
 msgid "Updated token attribute descriptions for '%s'"
 msgstr "Token attribuut omschrijvingen bijgewerkt voor '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:634
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:638
 #, php-format
 msgid "The status of the '%s' survey has changed."
 msgstr "De status van de vragenlijst '%s' is veranderd."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:640
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:644
 #, php-format
 msgid "Survey '%s' IS NO LONGER ACTIVE!!!"
 msgstr "De vragenlijst '%s' IS NIET MEER ACTIEF!!!"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:646
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:650
 #, php-format
 msgid "The status of the '%s' survey has changed to '%s'."
 msgstr "De status van de vragenlijst '%s' is veranderd naar '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:649
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:653
 #, php-format
 msgid "The status warning for the '%s' survey was removed."
 msgstr "De status waarschuwing voor de vragenlijst '%s' is verdwenen."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:655
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:659
 #, php-format
 msgid "The name of the '%s' survey has changed to '%s'."
 msgstr "De naam van de vragenlijst '%s' is veranderd in '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:660
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:664
 #, php-format
 msgid "The description of the '%s' survey has changed to '%s'."
 msgstr "De omschrijving van de vragenlijst '%s' is veranderd naar '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:665
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:669
 #, php-format
 msgid "The available languages of the '%s' survey has changed to '%s'."
 msgstr "De beschikbare talen van de vragenlijst '%s' zijn veranderd naar '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:671
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:675
 #, php-format
 msgid "The warning messages of the '%s' survey have been changed to '%s'."
 msgstr "Waarschuwingen van de vragenlijst '%s' zijn veranderd naar '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:675
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:679
 #, php-format
 msgid "The warning messages of the '%s' survey have been cleared."
 msgstr "De vragenlijst '%s' heeft geen waarschuwingen meer."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:690
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:694
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:838
 #, php-format
 msgid "Imported the '%s' survey."
 msgstr "De vragenlijst '%s' is geïmporteerd."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:692
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:696
 #, php-format
 msgid "Skipped the '%s' survey because it has an expiry date."
 msgstr "Vragenlijst '%s' overgeslagen omdat deze een vervaldatum heeft."
@@ -13437,6 +13441,13 @@ msgstr "Er trad een fout op!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Neem contact op met systeembeheer"
+
+#~ msgid ""
+#~ "Repeat rounds with delayed validity calculation on 'repeatRound' with "
+#~ "'repeat[From][Unit|Count]'."
+#~ msgstr ""
+#~ "Herhaal rondes met uitgestelde geldigheidsberekening middels "
+#~ "'repeatRound' met 'repeat[From][Unit|Count]'."
 
 #~ msgid "Todo"
 #~ msgstr "Te doen"
