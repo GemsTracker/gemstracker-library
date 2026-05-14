@@ -12,6 +12,7 @@
 namespace Gems\Agenda;
 
 use Gems\Agenda\Event\AppointmentChangedEvent;
+use Gems\Agenda\Event\CreateTrackFromFilterEvent;
 use Gems\Agenda\Filter\AppointmentFilterInterface;
 use Gems\Agenda\Filter\TrackFieldFilterCalculationInterface;
 use Gems\Agenda\Repository\ActivityRepository;
@@ -180,12 +181,16 @@ class Agenda
                 $engine = $this->tracker->getTrackEngine($filter->getTrackId());
                 if (in_array($appointment->getOrganizationId(), $engine->getOrganizationIds())) {
                     $respTrack = $this->_createTrack($appointment, $filter);
+
                     $existingTracks[$trackId][] = $respTrack;
 
                     $tokenChanges += $respTrack->getCount();
                     if ($filterTracer) {
                         $filterTracer->addFilter($filter, $createTrack, $respTrack);
                     }
+
+                    $event = new CreateTrackFromFilterEvent($appointment, $filter, $respTrack);
+                    $this->eventDispatcher->dispatch($event);
                 }
             }
         }
@@ -229,11 +234,17 @@ class Agenda
      */
     protected function _createTrack(Appointment $appointment, TrackFieldFilterCalculationInterface $filter): RespondentTrack
     {
+        $admissionTime = $appointment->getAdmissionTime();
+        if ($admissionTime instanceof \DateTimeImmutable) {
+            $admissionTime = $admissionTime->setTime(0, 0);
+        }
+
         $trackData = [
             'gr2t_comment' => sprintf(
                 $this->translator->_('Track created by %s filter'),
                 $filter->getAppointmentFilter()->getName()
             ),
+            //'gr2t_start_date' => $admissionTime,
         ];
 
         $fields    = [
