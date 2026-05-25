@@ -47,6 +47,8 @@ use Gems\Menu\RouteHelper;
 use Gems\Menu\RouteHelperFactory;
 use Gems\Messenger\MessengerFactory;
 use Gems\Messenger\TransportFactory;
+use Gems\Messenger\Batch\BatchStoreInterface;
+use Gems\Messenger\Batch\DatabaseBatchStore;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\Bridge\GemsFormBridge;
 use Gems\Model\Bridge\GemsValidatorBridge;
@@ -501,6 +503,7 @@ class ConfigProvider
 
                 // Messenger
                 'messenger.bus.default' => MessageBusInterface::class,
+                BatchStoreInterface::class => DatabaseBatchStore::class,
 
                 // Session
                 //SessionPersistenceInterface::class => CacheSessionPersistence::class,
