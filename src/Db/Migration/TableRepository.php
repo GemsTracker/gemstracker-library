@@ -21,7 +21,7 @@ class TableRepository extends MigrationRepositoryAbstract
     public function createMigrationTable()
     {
         $tablesInfo = $this->getTableInfoFromFiles();
-        if (isset($tablesInfo[$this->migrationTableName])) {
+        if (isset($tablesInfo[$this->getIdFromName($this->migrationTableName)])) {
             $this->createTable($tablesInfo[$this->migrationTableName]);
             return;
         }
@@ -239,7 +239,7 @@ class TableRepository extends MigrationRepositoryAbstract
     public function hasMigrationTable(): bool
     {
         $tableData = $this->getTableInfoFromDb();
-        if (isset($tableData[$this->migrationTableName])) {
+        if (isset($tableData[$this->getIdFromName($this->migrationTableName)])) {
             return true;
         }
         return false;
