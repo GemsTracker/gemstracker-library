@@ -132,9 +132,9 @@
         "phpoffice/phpword": "v1.4.*",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^1.12",
-        "phpunit/phpunit": "^10.5.0",
+        "phpunit/phpunit": "^10.5.32",
         "symfony/redis-messenger": "^6.4",
-        "vimeo/psalm": "^5.0@dev"
+        "vimeo/psalm": "^5.0|^6.1@dev"
     },
     "autoload-dev": {
         "psr-0": {
