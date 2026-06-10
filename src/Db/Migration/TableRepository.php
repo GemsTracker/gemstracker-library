@@ -22,7 +22,7 @@ class TableRepository extends MigrationRepositoryAbstract
     {
         $tablesInfo = $this->getTableInfoFromFiles();
         if (isset($tablesInfo[$this->getIdFromName($this->migrationTableName)])) {
-            $this->createTable($tablesInfo[$this->migrationTableName]);
+            $this->createTable($tablesInfo[$this->getIdFromName($this->migrationTableName)]);
             return;
         }
         throw new MigrationException(sprintf('Migration table %s could not be created', $this->migrationTableName));

@@ -512,7 +512,7 @@ class StaffModel extends GemsJoinModel
         $check  = ['elementClass' => 'Checkbox'];
         $hidden = ['elementClass' => 'Hidden', 'label' => null];
         $select = ['elementClass' => 'Select'];
-        $switch = new ValueSwitchDependency(null, $this->translate);
+        $switch = new ValueSwitchDependency([], $this->translate);
         $switch->setDependsOn('gsf_is_embedded');
         $switch->setSwitches([
             0 => [
