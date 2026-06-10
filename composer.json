@@ -133,6 +133,7 @@
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^1.12",
         "phpunit/phpunit": "^10.5.0",
+        "symfony/redis-messenger": "^6.4",
         "vimeo/psalm": "^5.0@dev"
     },
     "autoload-dev": {
