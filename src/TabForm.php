@@ -303,10 +303,10 @@ class TabForm extends \Gems\Form
     /**
      * Set the view object
      *
-     * @param \Zend_View_Interface $view
+     * @param \Zend_View_Interface|null $view
      * @return \Gems\TabForm
      */
-    public function setView(\Zend_View_Interface $view = null) {
+    public function setView(?\Zend_View_Interface $view = null) {
         /**
          * If the form is populated... and we have a tab set... select it
          */

@@ -19,7 +19,7 @@ class ErrorLogEventListenerDelegatorFactory implements DelegatorFactoryInterface
      * @param array|null $options
      * @return ErrorHandler
      */
-    public function __invoke(ContainerInterface $container, $name, callable $callback, array $options = null)
+    public function __invoke(ContainerInterface $container, $name, callable $callback, ?array $options = null)
     {
         $listener = new ErrorLogEventListener();
         if ($container->has(Loggers::class)) {

@@ -79,11 +79,11 @@ class TableRepository extends MigrationRepositoryAbstract
     public function createTables(array $tableNames): void
     {
         $allTables = $this->getInfo();
-        foreach(array_keys($allTables) as $tableName) {
+        foreach(array_column($allTables, 'name', 'id') as $tableId => $tableName) {
             if (!in_array($tableName, $tableNames)) {
                 continue;
             }
-            $this->createTable($allTables[$tableName]);
+            $this->createTable($allTables[$tableId]);
             $key = array_search($tableName, $tableNames, true);
             if ($key !== false) {
                 unset($tableNames[$key]);

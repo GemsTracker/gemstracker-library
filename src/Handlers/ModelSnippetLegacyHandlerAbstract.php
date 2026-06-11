@@ -615,7 +615,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @param string $separator
      * @return string
      */
-    public function getTitle(string $separator = null): string
+    public function getTitle(?string $separator = null): string
     {
         return '';
     }

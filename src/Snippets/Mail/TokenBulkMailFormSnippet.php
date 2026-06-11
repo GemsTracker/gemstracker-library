@@ -155,10 +155,10 @@ class TokenBulkMailFormSnippet extends MailFormSnippet
      * Returns the name of the user mentioned in this token
      * in human-readable format
      *
-     * @param  array $tokenData
+     * @param array|null $tokenData
      * @return string
      */
-    public function getTokenName(array $tokenData = null)
+    public function getTokenName(?array $tokenData = null)
     {
         $data[] = $tokenData['grs_first_name'];
         $data[] = $tokenData['grs_surname_prefix'];

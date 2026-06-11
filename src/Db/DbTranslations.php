@@ -12,14 +12,12 @@ class DbTranslations extends \MUtil\Registry\TargetAbstract
      * Config for database translations
      * The to translate tables as keys with an array of all table columns with translations as value
      *
-     * @var array|null
+     * @param array|null $config
      */
-    protected $config;
-
-    public function __construct(array $config=null)
-    {
-        $this->config = $config;
-    }
+    public function __construct(
+        protected ?array $config=null,
+    )
+    { }
 
     public function translateRow($row)
     {

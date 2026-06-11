@@ -19,7 +19,7 @@ class CacheFactory
 {
     protected string $defaultCacheDirectory = 'data/cache';
 
-    public function __invoke(ContainerInterface $container, string $requestedName, array $options = null): AdapterInterface
+    public function __invoke(ContainerInterface $container, string $requestedName, ?array $options = null): AdapterInterface
     {
         $config = $this->getCacheConfig($container);
 

@@ -572,7 +572,7 @@ class Agenda
      * @param $where mixed Optional extra string or array filter
      * @return array of $episodeId => \Gems\Agenda\EpisodeOfCare
      */
-    public function getEpisodesFor(Respondent $respondent, string|array $where = null): array
+    public function getEpisodesFor(Respondent $respondent, string|array|null $where = null): array
     {
         return $this->getEpisodesForRespId($respondent->getId(), $respondent->getOrganizationId(), $where);
     }
@@ -733,10 +733,10 @@ class Agenda
     /**
      * Returns an array with identical key => value pairs containing care provision locations.
      *
-     * @param int $orgId Optional to select for single organization
+     * @param int|null $orgId Optional to select for single organization
      * @return array
      */
-    public function getLocations(int $orgId = null): array
+    public function getLocations(?int $orgId = null): array
     {
         $locations = $this->locationRepository->getActiveLocationsData($orgId);
         return array_column($locations,'glo_name', 'glo_id_location');

@@ -726,7 +726,7 @@ class RespondentModel extends GemsJoinModel implements ApplyLegacyActionInterfac
         return $result;
     }
 
-    public function save(array $newValues, array $filter = null, array $saveTables = null): array
+    public function save(array $newValues, ?array $filter = null, ?array $saveTables = null): array
     {
         $newValues = $this->checkIds($newValues);
 

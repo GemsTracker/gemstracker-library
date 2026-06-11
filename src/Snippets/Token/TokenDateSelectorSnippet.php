@@ -69,10 +69,10 @@ class TokenDateSelectorSnippet extends \Zalt\Snippets\SnippetAbstract
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @param \Zend_View_Abstract|null $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput(?\Zend_View_Abstract $view = null)
     {
         if ($this->sortParamAsc) {
             $this->dateSelector->getModel()->setSortParamAsc($this->sortParamAsc);

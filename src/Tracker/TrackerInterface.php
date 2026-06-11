@@ -80,10 +80,10 @@ interface TrackerInterface
      * @param int $userId         Id of the user who takes the action (for logging)
      * @param mixed $respTrackData Optional array containing field values or the start date.
      * @param array $trackFieldsData
-     * @param SessionInterface $session
+     * @param SessionInterface|null $session
      * @return \Gems\Tracker\RespondentTrack The newly created track
      */
-    public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int|null $userId, int|array|null $respTrackData = null, array $trackFieldsData = [], SessionInterface $session = null): RespondentTrack;
+    public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int|null $userId, int|array|null $respTrackData = null, array $trackFieldsData = [], ?SessionInterface $session = null): RespondentTrack;
 
     /**
      * Dynamically load and create a [Gems|Project]_Tracker class

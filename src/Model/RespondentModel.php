@@ -717,7 +717,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      *
      * @param string $patientId   Can be empty if $respondentId is passed
      * @param int $organizationId When null looks at all organizations
-     * @param int $respondentId   Pass when at hand, is looked up otherwise
+     * @param ?int $respondentId   Pass when at hand, is looked up otherwise
      * @param boolean $active     When true only tracks with a success code are returned
      * @return boolean
      */
@@ -1085,11 +1085,11 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      * Save a single model item.
      *
      * @param array $newValues The values to store for a single model item.
-     * @param array $filter If the filter contains old key values these are used
+     * @param array|null $filter If the filter contains old key values these are used
      * to decide on update versus insert.
      * @return array The values as they are after saving (they may change).
      */
-    public function save(array $newValues, array $filter = null, array $saveTables = null): array
+    public function save(array $newValues, ?array $filter = null, ?array $saveTables = null): array
     {
         // If the respondent id is not set, check using the
         // patient number and then the ssn

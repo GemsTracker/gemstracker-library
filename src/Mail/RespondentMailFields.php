@@ -14,7 +14,7 @@ class RespondentMailFields extends OrganizationMailFields
         parent::__construct($respondent->getOrganization(), $config);
     }
 
-    public function getMailFields(string $language = null): array
+    public function getMailFields(?string $language = null): array
     {
         $mailFields = parent::getMailFields();
 

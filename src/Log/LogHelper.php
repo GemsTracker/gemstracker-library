@@ -4,7 +4,7 @@ namespace Gems\Log;
 
 class LogHelper
 {
-     public static function getMessageFromException(\Exception $exception, \Zend_Controller_Request_Abstract $request = null): string
+     public static function getMessageFromException(\Exception $exception, ?\Zend_Controller_Request_Abstract $request = null): string
      {
          $info = [];
 

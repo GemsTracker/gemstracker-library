@@ -510,7 +510,7 @@ abstract class DateSelectorAbstract
         return $filter;
     }
 
-    protected function processSelectorFilterName($name, RequestInfo $requestInfo, array $filter, array $defaults = null)
+    protected function processSelectorFilterName($name, RequestInfo $requestInfo, array $filter, ?array $defaults = null)
     {
         if (isset($filter[$name])) {
             return $filter[$name];

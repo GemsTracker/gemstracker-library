@@ -222,10 +222,10 @@ class TrackDataRepository
      * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
      * that are active and are insertable
      *
-     * @param int $organizationId Optional organization id
+     * @param int|null $organizationId Optional organization id
      * @return array
      */
-    public function getInsertableSurveys(int $organizationId = null)
+    public function getInsertableSurveys(?int $organizationId = null)
     {
         $where = new Predicate();
         $where->equalTo('gsu_active', 1)->and->equalTo('gsu_insertable', 1);

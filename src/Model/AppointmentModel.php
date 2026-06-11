@@ -349,7 +349,7 @@ class AppointmentModel extends GemsMaskedModel
         return $this->autoTrackUpdate;
     }
 
-    public function save(array $newValues, array $filter = null, array $saveTables = null): array
+    public function save(array $newValues, ?array $filter = null, ?array $saveTables = null): array
     {
         // When appointment id is not set, then check for existing instances of
         // this appointment using the source information

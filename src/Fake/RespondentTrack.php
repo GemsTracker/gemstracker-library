@@ -11,7 +11,7 @@ class RespondentTrack extends \Gems\Tracker\RespondentTrack
         ];
     }
 
-    public function refresh(array $gemsData = null): self
+    public function refresh(?array $gemsData = null): self
     {
         return $this;
     }

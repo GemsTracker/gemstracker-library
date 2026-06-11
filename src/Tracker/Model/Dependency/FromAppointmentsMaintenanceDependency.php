@@ -141,10 +141,10 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
     /**
      * Get the calculate from options
      *
-     * @param int $trackId
+     * @param int|null $trackId
      * @return array
      */
-    protected function getOptions(int $trackId = null): array
+    protected function getOptions(?int $trackId = null): array
     {
         if (null === $trackId) {
             $trackId = $this->trackId;

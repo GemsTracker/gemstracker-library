@@ -69,11 +69,11 @@ interface TrackEngineInterface
      * Check for the existence of all tokens and create them otherwise
      *
      * @param \Gems\Tracker\RespondentTrack $respTrack The respondent track to check
-     * @param SessionInterface $session
+     * @param SessionInterface|null $session
      * @param int $userId Id of the user who takes the action (for logging)
      * @param \Gems\Task\TaskRunnerBatch|null $batch for counters
      */
-    public function checkRoundsFor(RespondentTrack $respTrack, SessionInterface $session = null, int $userId, ?TaskRunnerBatch $batch = null): void;
+    public function checkRoundsFor(RespondentTrack $respTrack, ?SessionInterface $session, int $userId, ?TaskRunnerBatch $batch = null): void;
 
     /**
      * Check the valid from and until dates in the track starting at a specified token
@@ -226,10 +226,10 @@ interface TrackEngineInterface
      * Look up the round id for the previous round
      *
      * @param int $roundId  \Gems round id
-     * @param int $roundOrder Optional extra round order, for when the current round may have changed.
+     * @param int|null $roundOrder Optional extra round order, for when the current round may have changed.
      * @return int|null \Gems round id
      */
-    public function getPreviousRoundId(int $roundId, int $roundOrder = null): ?int;
+    public function getPreviousRoundId(int $roundId, ?int $roundOrder = null): ?int;
 
     /**
      * Get all respondent relation fields

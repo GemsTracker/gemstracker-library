@@ -35,11 +35,11 @@ class StaffRepository
         int $organizationId,
         int $groupId,
         string $lastName,
-        string $firstName = null,
-        string $surnamePrefix = null,
-        string $email = null,
-        string $phoneNumber = null,
-        string $jobTitle = null,
+        ?string $firstName = null,
+        ?string $surnamePrefix = null,
+        ?string $email = null,
+        ?string $phoneNumber = null,
+        ?string $jobTitle = null,
         string $gender = 'U',
     )
     {

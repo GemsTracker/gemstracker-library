@@ -123,7 +123,7 @@ abstract class UserDefinitionAbstract implements UserDefinitionInterface
      * @param Group|null $group
      * @return bool
      */
-    public function isTwoFactorRequired(string $ipAddress, bool $hasKey, Group $group = null): bool
+    public function isTwoFactorRequired(string $ipAddress, bool $hasKey, ?Group $group = null): bool
     {
         if ($group) {
             return $group->isTwoFactorRequired($ipAddress, $hasKey);

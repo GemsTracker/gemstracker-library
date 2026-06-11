@@ -16,7 +16,7 @@ class GemsMaskedModel extends GemsJoinModel
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
         MaskRepository $maskRepository,
-        string $modelName = null,
+        ?string $modelName = null,
         bool $savable = true,
     ) {
         parent::__construct($tableName, $metaModelLoader, $sqlRunner, $translate, $modelName, $savable);

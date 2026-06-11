@@ -26,7 +26,7 @@ trait AuditLogDataCleanupTrait
      */
     protected array $extraNotLoggedFields = [];
 
-    public function cleanupLogData(array $newData, DataWriterInterface $model = null): array
+    public function cleanupLogData(array $newData, ?DataWriterInterface $model = null): array
     {
         $output    = [];
 

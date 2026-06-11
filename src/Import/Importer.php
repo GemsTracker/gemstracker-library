@@ -34,7 +34,7 @@ class Importer extends \MUtil\Model\Importer
      * @param \MUtil\Task\TaskBatch $batch Optional batch with different source etc..
      * @return \MUtil\Task\TaskBatch
      */
-    protected function getBasicImportBatch($idPart, \MUtil\Task\TaskBatch $batch = null)
+    protected function getBasicImportBatch($idPart, ?\MUtil\Task\TaskBatch $batch = null)
     {
         if (null === $batch) {
             $batch = $this->loader->getTaskRunnerBatch('check_' . basename($this->sourceModel->getName()) . '_' . $idPart);
@@ -48,7 +48,7 @@ class Importer extends \MUtil\Model\Importer
      * @param \MUtil\Task\TaskBatch $batch Optional batch with different source etc..
      * @return \MUtil\Task\TaskBatch
      */
-    public function getImportOnlyBatch(\MUtil\Task\TaskBatch $batch = null)
+    public function getImportOnlyBatch(?\MUtil\Task\TaskBatch $batch = null)
     {
         if (! $this->_importBatch instanceof \MUtil\Task\TaskBatch) {
             $batch = $this->loader->getTaskRunnerBatch(__CLASS__ . '_import_' .

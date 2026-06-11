@@ -6,7 +6,7 @@ use Gems\User\UserPasswordResetException;
 
 class UserPasswordMailFields extends UserMailFields
 {
-    public function getMailFields(string $language = null): array
+    public function getMailFields(?string $language = null): array
     {
         $mailFields = parent::getMailFields();
 

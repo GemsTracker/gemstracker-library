@@ -11,7 +11,7 @@ class DatePicker extends Text
 
     protected $_elementClass = 'form-control date-picker';
 
-    public function render(Zend_View_Interface $view = null)
+    public function render(?Zend_View_Interface $view = null)
     {
         if ($this->_value instanceof DateTimeInterface && isset($this->dateFormat)) {
             $this->_value = $this->_value->format($this->dateFormat);

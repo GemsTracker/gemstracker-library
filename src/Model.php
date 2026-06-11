@@ -500,7 +500,7 @@ class Model
      * @param string $prefix Three letter code
      * @param int|null $userid \Gems user id
      */
-    public static function setChangeFieldsByPrefix(DatabaseModelAbstract $model, string $prefix, int $userid = null): void
+    public static function setChangeFieldsByPrefix(DatabaseModelAbstract $model, string $prefix, ?int $userid = null): void
     {
         $changed_field    = $prefix . '_changed';
         $changed_by_field = $prefix . '_changed_by';

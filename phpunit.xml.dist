@@ -10,7 +10,7 @@
     </testsuite>
   </testsuites>
   <coverage/>
-  <source>
+  <source restrictDeprecations="true">
     <include>
       <directory suffix=".php">src</directory>
     </include>

@@ -27,7 +27,7 @@ class CommFieldsRepository
     {
     }
 
-    public function getCommFields(string $target, string $locale, string|int|null $id, int $organizationId = null): array
+    public function getCommFields(string $target, string $locale, string|int|null $id, ?int $organizationId = null): array
     {
         return match ($target) {
             'token' => $this->getTokenFields($id, $locale),

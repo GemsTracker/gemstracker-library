@@ -53,7 +53,7 @@ class Log extends \Zend_Log
      * @param \Exception|\Error                        $exception
      * @param \Zend_Controller_Request_Abstract $request
      */
-    public function logError($exception, \Zend_Controller_Request_Abstract $request = null)
+    public function logError($exception, ?\Zend_Controller_Request_Abstract $request = null)
     {
         $info = array();
 

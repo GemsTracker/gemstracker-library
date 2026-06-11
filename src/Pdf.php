@@ -287,7 +287,7 @@ class Pdf
      * @param string $subdir Optional sub-directory, when starting with / or x:\ only $subdir is used. Function creates subdirectory if it does not exist.
      * @return string
      */
-    public function getUploadDir(string $subdir = null): string
+    public function getUploadDir(string $subdir = ''): string
     {
         $dir = $this->config['rootDir'] . '/data/uploads';
 

@@ -149,7 +149,7 @@ class MenuSnippetHelper
      * @param array $paramLateMappings
      * @return array[] routename => [label, Late::url]
      */
-    public function getLateRelatedUrls(array $names, array $paramLateMappings = [], BridgeInterface $bridge = null): array
+    public function getLateRelatedUrls(array $names, array $paramLateMappings = [], ?BridgeInterface $bridge = null): array
     {
         $output = [];
         foreach ($this->getRelatedRoutes($names) as $name) {
@@ -166,7 +166,7 @@ class MenuSnippetHelper
      * @param array  $paramLateMappings
      * @return array [label, Late::url]
      */
-    public function getLateRouteUrl(string $route, array $paramLateMappings = [], BridgeInterface $bridge = null, $ignoreErrors = false, array $queryParams = []): ?array
+    public function getLateRouteUrl(string $route, array $paramLateMappings = [], ?BridgeInterface $bridge = null, $ignoreErrors = false, array $queryParams = []): ?array
     {
         try {
             $menuItem = $this->menu->find($route);
@@ -193,7 +193,7 @@ class MenuSnippetHelper
      * @param array $paramLateMappings
      * @return array[] routename => [label, Late::url]
      */
-    public function getLateRouteUrls(array $names, array $paramLateMappings = [], BridgeInterface $bridge = null): array
+    public function getLateRouteUrls(array $names, array $paramLateMappings = [], ?BridgeInterface $bridge = null): array
     {
         $output = [];
         foreach ($names as $name) {

@@ -19,7 +19,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class MailerFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): MailerInterface
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): MailerInterface
     {
         $config = $container->get('config');
         $transport = $this->getTransport($config);

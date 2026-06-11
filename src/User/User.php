@@ -365,10 +365,10 @@ class User
      *
      * In practice: starts uppercase
      *
-     * @param string $locale
+     * @param null|string $locale
      * @return string Greeting
      */
-    public function getGenderHello(string $locale = null): string|null
+    public function getGenderHello(?string $locale = null): string|null
     {
         $greetings = $this->translatedUtil->getGenderHello($locale);
 

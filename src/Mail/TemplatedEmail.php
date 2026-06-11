@@ -22,7 +22,7 @@ class TemplatedEmail extends Email
     protected ?TemplateRendererInterface $template;
 
 
-    public function __construct(TemplateRendererInterface $template, Headers $headers = null, AbstractPart $body = null)
+    public function __construct(TemplateRendererInterface $template, ?Headers $headers = null, ?AbstractPart $body = null)
     {
         parent::__construct($headers, $body);
         $this->template = $template;

@@ -220,11 +220,11 @@ interface SourceInterface
      * Returns a model for the survey answers
      *
      * @param Survey $survey
-     * @param ?string $language Optional (ISO) language string
+     * @param string|null $language Optional (ISO) language string
      * @param int|string|null $sourceSurveyId Optional Survey ID used by source
      * @return FullDataInterface
      */
-    public function getSurveyAnswerModel(Survey $survey, string $language = null, int|string|null $sourceSurveyId = null): FullDataInterface;
+    public function getSurveyAnswerModel(Survey $survey, ?string $language = null, int|string|null $sourceSurveyId = null): FullDataInterface;
 
     /**
      * Returns the url that (should) start the survey for this token

@@ -221,10 +221,10 @@ class Tracker implements TrackerInterface
      * @param int $userId          Id of the user who takes the action (for logging)
      * @param mixed $respTrackData Optional array containing field values or the start date.
      * @param array $trackFieldsData
-     * @param SessionInterface $session
+     * @param SessionInterface|null $session
      * @return \Gems\Tracker\RespondentTrack The newly created track
      */
-    public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int|null $userId = null, int|array|null $respTrackData = [], array $trackFieldsData = [], SessionInterface $session = null): RespondentTrack
+    public function createRespondentTrack(int $respondentId, int $organizationId, int $trackId, int|null $userId = null, int|array|null $respTrackData = [], array $trackFieldsData = [], ?SessionInterface $session = null): RespondentTrack
     {
         $userId = $this->_checkUserId($userId);
         $trackEngine = $this->getTrackEngine($trackId);
@@ -726,7 +726,7 @@ class Tracker implements TrackerInterface
      *
      * @return TokenValidator
      */
-    public function getTokenValidator(string $clientIpAddress = null): TokenValidator
+    public function getTokenValidator(?string $clientIpAddress = null): TokenValidator
     {
         /**
          * @var TokenValidator $tokenValidator
@@ -912,13 +912,13 @@ class Tracker implements TrackerInterface
      * Does not reflect changes to tracks or rounds.
      *
      * @param \Gems\Task\TaskRunnerBatch $batch The batch to load
-     * @param int $respondentId   Id of the respondent to check for or NULL
-     * @param int $userId         Id of the user who takes the action (for logging)
-     * @param int $orgId          Optional Id of the organization to check for
+     * @param int|null $respondentId   Id of the respondent to check for or NULL
+     * @param int|null $userId         Id of the user who takes the action (for logging)
+     * @param int|null $orgId          Optional Id of the organization to check for
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
      * @return void
      */
-    public function loadCompletedTokensBatch(TaskRunnerBatch $batch, int $respondentId = null, int|null $userId = null, int $orgId = null, bool $quickCheck = false): void
+    public function loadCompletedTokensBatch(TaskRunnerBatch $batch, int|null $respondentId = null, int|null $userId = null, int|null $orgId = null, bool $quickCheck = false): void
     {
         $userId = $this->_checkUserId($userId);
 
@@ -1048,7 +1048,7 @@ class Tracker implements TrackerInterface
     /**
      * @inheritdoc
      */
-    public function recalculateTokens(SessionInterface $session, string $batch_id, int $userId = null, array $cond = []): TaskRunnerBatch
+    public function recalculateTokens(SessionInterface $session, string $batch_id, ?int $userId = null, array $cond = []): TaskRunnerBatch
     {
         $userId = $this->_checkUserId($userId);
         $tokenSelect = new LaminasTokenSelect($this->resultFetcher);

@@ -38,7 +38,7 @@ class ReportHeaderSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput(?\Zend_View_Abstract $view = null)
     {
         $html = $this->getHtmlSequence();
         $html->h2($this->_('Respondent report'));

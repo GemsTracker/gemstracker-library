@@ -25,7 +25,7 @@ abstract class JQueryExtenderAbstract implements \MUtil\Html\HtmlInterface
     protected $name;
     protected $view;
 
-    public function __construct(array $options = null)
+    public function __construct(?array $options = null)
     {
         $args = \MUtil\Ra::args(func_get_args());
 

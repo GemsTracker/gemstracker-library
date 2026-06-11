@@ -48,7 +48,7 @@ class HelperAdapter extends TagAwareAdapter
         return null;
     }
 
-    public function setCacheItem(string $key, mixed $value, array|string $tag=null,
+    public function setCacheItem(string $key, mixed $value, array|string|null $tag=null,
         DateInterval|int|null $expiresAfter=null)
     {
         $item = $this->getItem($key);

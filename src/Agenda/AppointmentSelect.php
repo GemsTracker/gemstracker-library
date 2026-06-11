@@ -134,7 +134,7 @@ class AppointmentSelect
      * @param boolean $sortAsc Retrieve first or last appointment first
      * @return \Gems\Agenda\AppointmentSelect
      */
-    public function forPeriod(DateTimeInterface $from = null, DateTimeInterface $until = null, $sortAsc = true)
+    public function forPeriod(?DateTimeInterface $from = null, ?DateTimeInterface $until = null, $sortAsc = true)
     {
         if ($from) {
             $this->_select->where("gap_admission_time >= ?", $from->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat')));

@@ -118,7 +118,7 @@ class CommunicationRepository
      * Get the prefered template language
      * @return string language code
      */
-    public function getCommunicationLanguage(string $language = null): string
+    public function getCommunicationLanguage(?string $language = null): string
     {
         if (isset($this->config['email']['multiLanguage']) && $this->config['email']['multiLanguage'] === true && $language) {
             return $language;
@@ -275,7 +275,7 @@ class CommunicationRepository
         return null;
     }
 
-    public function getRespondentMailFields(Respondent $respondent, string $language = null): array
+    public function getRespondentMailFields(Respondent $respondent, ?string $language = null): array
     {
         $mailFieldCreator = new RespondentMailFields($respondent, $this->config);
         return $mailFieldCreator->getMailFields($language);
@@ -405,13 +405,13 @@ class CommunicationRepository
         return $transports;
     }
 
-    public function getUserMailFields(User $user, string $language = null): array
+    public function getUserMailFields(User $user, ?string $language = null): array
     {
         $mailFieldCreator = new UserMailFields($user, $this->config);
         return $mailFieldCreator->getMailFields($language);
     }
 
-    public function getUserPasswordMailFields(User $user, string $language = null): array
+    public function getUserPasswordMailFields(User $user, ?string $language = null): array
     {
         $mailFieldCreator = new UserPasswordMailFields($user, $this->config);
         return $mailFieldCreator->getMailFields($language);

@@ -49,7 +49,7 @@ class RoundModel extends GemsJoinModel
      * @param array|null $saveTables Array of table names => save mode
      * @return int The number of items deleted
      */
-    public function delete($filter = null, array $saveTables = null): int
+    public function delete($filter = null, ?array $saveTables = null): int
     {
         $this->metaModel->trackUsage();
         $rows = $this->load($filter, null, ['gro_id_round', 'gro_active']);

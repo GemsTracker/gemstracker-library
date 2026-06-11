@@ -344,10 +344,10 @@ class LaminasTokenSelect
      * Select only a specific respondent
      *
      * @param int $respondentId
-     * @param int $organizationId Optional
+     * @param int|null $organizationId Optional
      * @return self
      */
-    public function forRespondent(int $respondentId, int $organizationId = null): self
+    public function forRespondent(int $respondentId, ?int $organizationId = null): self
     {
         if (null !== $respondentId) {
             $this->select->where(['gto_id_respondent' => $respondentId]);

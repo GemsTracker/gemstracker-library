@@ -502,10 +502,10 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @param \Zend_View_Abstract|null $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null) {
+    public function getHtmlOutput(?\Zend_View_Abstract $view = null) {
         $form = parent::getHtmlOutput($view);
 
         $html = \MUtil\Html::create()->div(['id' => 'survey-compare']);

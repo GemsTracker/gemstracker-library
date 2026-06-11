@@ -29,7 +29,7 @@ class GemsJoinModel extends \Zalt\Model\Sql\JoinModel
         MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
-        string $modelName = null,
+        ?string $modelName = null,
         bool $savable = true,
     )
     {
