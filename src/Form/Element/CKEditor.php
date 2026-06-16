@@ -189,10 +189,10 @@ class CKEditor extends \Zend_Form_Element_Textarea {
      *
      * Ensures that the view object has the CKEditor view helper path set.
      *
-     * @param  \Zend_View_Interface $view
+     * @param  \Zend_View_Interface|null $view
      * @return self
      */
-    public function setView(\Zend_View_Interface $view = null) {
+    public function setView(?\Zend_View_Interface $view = null) {
         if (null !== $view) {
             if (false === $view->getPluginLoader('helper')->getPaths('CKEditor_View_Helper')) {
                 $view->addHelperPath('CKEditor/View/Helper', 'CKEditor_View_Helper');

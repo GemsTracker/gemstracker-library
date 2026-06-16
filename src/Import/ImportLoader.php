@@ -216,7 +216,7 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
      * @param \MUtil\Model\ModelAbstract $targetModel
      * @return \Gems\Import\Importer
      */
-    public function getImporter($controller, \MUtil\Model\ModelAbstract $targetModel = null)
+    public function getImporter($controller, ?\MUtil\Model\ModelAbstract $targetModel = null)
     {
         $importer = $this->_loadClass('Importer', true);
 

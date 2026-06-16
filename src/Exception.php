@@ -35,10 +35,10 @@ class Exception extends \Exception
      *
      * @param String $msg The message
      * @param int $code the HttpResponseCode for this exception
-     * @param \Exception $previous
+     * @param \Exception|null $previous
      * @param string $info Optional extra information on the exception
      */
-    public function __construct($msg = '', $code = 200, \Exception $previous = null, $info = null)
+    public function __construct($msg = '', $code = 200, ?\Exception $previous = null, $info = null)
     {
         parent::__construct($msg, $code, $previous);
 

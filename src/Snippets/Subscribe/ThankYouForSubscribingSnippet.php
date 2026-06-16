@@ -26,10 +26,10 @@ class ThankYouForSubscribingSnippet extends \MUtil\Snippets\SnippetAbstract
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @param \Zend_View_Abstract|null $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput(?\Zend_View_Abstract $view = null)
     {
         $html = $this->getHtmlSequence();
         $html->h2($this->_('Thank you for subscribing!'));

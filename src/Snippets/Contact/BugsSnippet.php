@@ -39,7 +39,7 @@ class BugsSnippet extends TranslatableSnippetAbstract
     /**
      * Create the snippets content
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @param \Zend_View_Abstract|null $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput()

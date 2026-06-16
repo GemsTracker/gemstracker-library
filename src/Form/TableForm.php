@@ -249,7 +249,7 @@ class TableForm extends \Gems\Form
     /**
      * Load default decorators
      *
-     * @return void
+     * @return TableForm
      */
     public function loadDefaultDecorators()
     {
@@ -275,10 +275,10 @@ class TableForm extends \Gems\Form
     /**
      * Fix the decorators the first time we try to render the form
      *
-     * @param \Zend_View_Interface $view
+     * @param \Zend_View_Interface|null $view
      * @return string
      */
-    public function render(\Zend_View_Interface $view = null)
+    public function render(?\Zend_View_Interface $view = null)
     {
         if ($this->_getIsRendered()) {
             return;

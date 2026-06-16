@@ -59,7 +59,7 @@ class RouteHelper
         return $links;
     }
 
-    public function getLateRouteUrl(string $name, array $paramLateMappings = [], BridgeInterface $bridge = null, $ignoreErrors = false, array $queryParams = []): ?LateCall
+    public function getLateRouteUrl(string $name, array $paramLateMappings = [], ?BridgeInterface $bridge = null, $ignoreErrors = false, array $queryParams = []): ?LateCall
     {
         $route = $this->getRoute($name);
         if (null === $route) {

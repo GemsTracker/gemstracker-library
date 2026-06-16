@@ -381,7 +381,7 @@ abstract class TrackEngineAbstract implements TrackEngineInterface
     }
 
 
-    public function checkRoundsFor(RespondentTrack $respTrack, SessionInterface $session = null, int $userId, ?TaskRunnerBatch $batch = null): void
+    public function checkRoundsFor(RespondentTrack $respTrack, ?SessionInterface $session, int $userId, ?TaskRunnerBatch $batch = null): void
     {
         if (null === $batch) {
             $batch = new TaskRunnerBatch('tmptrack' . $respTrack->getRespondentTrackId(), $this->overloader, $session);

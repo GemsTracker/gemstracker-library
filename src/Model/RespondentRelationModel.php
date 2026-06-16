@@ -147,7 +147,7 @@ class RespondentRelationModel extends JoinModel
      * @param int $organizationId
      * @return array
      */
-    public function getRelationsFor(int $respondentId, ?string $patientNr = null, int $organizationId = null, bool $onlyActive = true)
+    public function getRelationsFor(int $respondentId, ?string $patientNr = null, ?int $organizationId = null, bool $onlyActive = true)
     {
         static $relationsCache = array();
 

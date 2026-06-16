@@ -23,7 +23,7 @@ class DoctrineDbalFactory implements FactoryInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): Connection
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Connection
     {
         $config = $container->get('config');
 

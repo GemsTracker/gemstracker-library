@@ -262,7 +262,7 @@ class TrackModel extends SqlTableModel
         return (bool)!$this->resultFetcher->fetchOne($sql, [$trackId]);
     }
 
-    public function save(array $newValues, array $filter = null): array
+    public function save(array $newValues, ?array $filter = null): array
     {
         // Allow to add default fields to any new track
         if ($defaultFields = $this->getDefaultFields()) {

@@ -258,10 +258,10 @@ class ShowTokenLoopAbstract extends TranslatableSnippetAbstract
     /**
      * Formats an until date for this display
      *
-     * @param DateTimeInterface $dateTime
+     * @param \DateTimeInterface|null $dateTime
      * @return mixed
      */
-    public function formatUntil(\DateTimeInterface $dateTime = null)
+    public function formatUntil(?\DateTimeInterface $dateTime = null)
     {
         if (false === $this->showUntil) { return; }
 

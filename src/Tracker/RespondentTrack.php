@@ -317,10 +317,10 @@ class RespondentTrack
      * Save the values if any have been changed
      *
      * @param array $values
-     * @param int $userId
+     * @param null|int $userId
      * @return int
      */
-    protected function _updateTrack(array $values, int $userId  = null): int
+    protected function _updateTrack(array $values, ?int $userId  = null): int
     {
         if (null === $userId) {
             $userId = $this->currentUserId;
@@ -1228,7 +1228,7 @@ class RespondentTrack
     /**
      * Find out if there are field update events and delegate to the event if needed
      *
-     * @param array $fieldData Optional field data to use instead of data currently stored at object
+     * @param array|null $fieldData Optional field data to use instead of data currently stored at object
      * @return void
      */
     public function handleFieldUpdate(?array $oldFieldData = null): void

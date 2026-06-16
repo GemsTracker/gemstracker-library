@@ -36,6 +36,9 @@ class Html extends \Zalt\Html\Html
 
     public static function actionLink(...$args): AElement
     {
+        /**
+         * @var AElement $element
+         */
         $element = parent::createArray('a', $args);
         $element->appendAttrib('class', 'actionlink btn'); // Keeps existing classes
         return $element;
@@ -48,7 +51,7 @@ class Html extends \Zalt\Html\Html
         return $element;
     }
 
-    public static function init(\MUtil\Html\Creator $creator = null): ?Creator
+    public static function init(?\MUtil\Html\Creator $creator = null): ?Creator
     {
         if (null === $creator) {
             $mutilCreator = \MUtil\Html::getCreator();

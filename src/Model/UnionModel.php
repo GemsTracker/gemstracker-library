@@ -27,7 +27,7 @@ class UnionModel extends \Zalt\Model\Ra\UnionModel
     public function __construct(
         MetaModelLoader $metaModelLoader,
         TranslatorInterface $translate,
-        string $modelName = null,
+        ?string $modelName = null,
         string $modelField = 'sub',
     )
     {

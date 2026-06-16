@@ -397,11 +397,11 @@ class Loader extends LoaderAbstract
 
     /**
      *
-     * @param string                            $id
-     * @param \MUtil\Batch\Stack\Stackinterface $stack Optional different stack than session stack
+     * @param string                                 $id
+     * @param \MUtil\Batch\Stack\Stackinterface|null $stack Optional different stack than session stack
      * @return \Gems\Task\TaskRunnerBatch
      */
-    public function getTaskRunnerBatch($id, \MUtil\Batch\Stack\Stackinterface $stack = null)
+    public function getTaskRunnerBatch($id, ?\MUtil\Batch\Stack\Stackinterface $stack = null)
     {
         $id = preg_replace('/[^a-zA-Z0-9_]/', '', $id);
 

@@ -100,10 +100,11 @@ class TrackField extends FieldAbstract
     /**
      * Return the lookup array for this field
      *
-     * @param int $organizationId Organization Id
+     * @param int|null $respondentId
+     * @param int|null $organizationId Organization Id
      * @return array
      */
-    protected function getLookup(int $respondentId = null, int $organizationId = null): array
+    protected function getLookup(?int $respondentId = null, ?int $organizationId = null): array
     {
         if ($respondentId !== null && $organizationId !== null) {
 

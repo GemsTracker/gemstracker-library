@@ -24,7 +24,7 @@ class DoctrineOrmFactory implements FactoryInterface
      * @return EntityManagerInterface
      * @throws \Doctrine\ORM\ORMException
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): EntityManagerInterface
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): EntityManagerInterface
     {
         $connection = $container->get(Connection::class);
         $config = $container->get('config');

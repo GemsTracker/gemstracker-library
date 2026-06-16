@@ -7,13 +7,11 @@ use Gems\Db\ConfigRepository;
 use Gems\Db\LegacyDbAdapter\PdoMysqlAdapter;
 use Gems\Db\LegacyDbAdapter\PdoSqliteAdapter;
 use Interop\Container\ContainerInterface;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class LegacyZendDatabaseFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         /**
          * @var array[]

@@ -23,7 +23,7 @@ namespace Gems\Exception;
  */
 class Coding extends \Gems\Exception
 {
-    public function __construct($msg = '', $code = 200, \Exception $previous = null)
+    public function __construct($msg = '', $code = 200, ?\Exception $previous = null)
     {
         parent::__construct($msg, $code, $previous, 'This is a setup error, please warn the programmer if you see this.');
     }

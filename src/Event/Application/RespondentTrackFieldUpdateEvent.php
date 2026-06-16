@@ -13,6 +13,7 @@
 namespace Gems\Event\Application;
 
 
+use Gems\Tracker\RespondentTrack;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -32,33 +33,18 @@ class RespondentTrackFieldUpdateEvent extends Event
     protected $fieldData;
 
     /**
-     * @var array|null
-     */
-    protected $oldFieldData;
-
-    /**
-     * @var \Gems\Tracker\RespondentTrack
-     */
-    protected $respondentTrack;
-
-    /**
-     * @var int User ID
-     */
-    protected $userId;
-
-    /**
      * RespondentTrackFieldUpdateEvent constructor.
      *
-     * @param \Gems\Tracker\RespondentTrack $respondentTrack
-     * @param                               $userId
-     * @param array|null                    $oldFieldData Optional, field data before save
-     * @param array|null                    $fieldData    Optional, field data after save
+     * @param RespondentTrack $respondentTrack
+     * @param int             $userId
+     * @param array|null      $oldFieldData Optional, field data before save
+     * @param array|null      $fieldData    Optional, field data after save
      */
-    public function __construct(\Gems\Tracker\RespondentTrack $respondentTrack, $userId, array $oldFieldData = null, array $fieldData = null)
+    public function __construct(
+        protected readonly RespondentTrack $respondentTrack,
+        protected readonly int $userId,
+        protected readonly ?array $oldFieldData = null, ?array $fieldData = null)
     {
-        $this->respondentTrack = $respondentTrack;
-        $this->userId          = $userId;
-        $this->oldFieldData    = $oldFieldData;
         $this->fieldData       = $fieldData ?: $respondentTrack->getFieldData();
     }
 

@@ -14,7 +14,7 @@ class UserMailFields extends OrganizationMailFields
         parent::__construct($user->getBaseOrganization(), $config);
     }
 
-    public function getMailFields(string $language = null): array
+    public function getMailFields(?string $language = null): array
     {
         $mailFields = parent::getMailFields();
         $organizationLoginUrl = $mailFields['organization_login_url'];

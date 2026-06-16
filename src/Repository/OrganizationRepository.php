@@ -124,10 +124,10 @@ class OrganizationRepository
      *
      * On empty this will return all organizations
      *
-     * @param string $code
+     * @param string|null $code
      * @return array key = gor_id_organization, value = gor_name
      */
-    public function getOrganizationsByCode(string $code = null): array
+    public function getOrganizationsByCode(?string $code = null): array
     {
         if (is_null($code)) {
             return $this->getOrganizations();

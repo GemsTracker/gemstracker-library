@@ -143,10 +143,10 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
      * This is the actual implementation of the condition
      *
      * @param RespondentTrack $respTrack
-     * @param array $fieldData Optional field data to use instead of data currently stored at object
+     * @param array|null $fieldData Optional field data to use instead of data currently stored at object
      * @return bool
      */
-    public function isTrackValid(RespondentTrack $respTrack, array $fieldData = null): bool
+    public function isTrackValid(RespondentTrack $respTrack, ?array $fieldData = null): bool
     {
         $minAge  = $this->_data['gcon_condition_text2'];
         $ageUnit = $this->_data['gcon_condition_text3'];

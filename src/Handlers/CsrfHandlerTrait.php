@@ -25,7 +25,7 @@ trait CsrfHandlerTrait
 {
     protected RequestInfo $requestInfo;
 
-    public function getCsrfToken(string $tokenName = null)
+    public function getCsrfToken(?string $tokenName = null)
     {
         /** @var CsrfGuardInterface $csrfGuard */
         $csrfGuard = $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);

@@ -52,7 +52,7 @@ class MetaModelLoader extends \Zalt\Model\MetaModelLoader
         }
     }
 
-    public function createJoinModel(string $startTable, string $modelName = null, bool $savable = true): GemsJoinModel
+    public function createJoinModel(string $startTable, ?string $modelName = null, bool $savable = true): GemsJoinModel
     {
         if ($modelName === null) {
             $modelName = $startTable;

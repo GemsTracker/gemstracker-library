@@ -27,11 +27,11 @@ class PDOCollector extends \DebugBar\DataCollector\PDO\PDOCollector
      * Collects data from a single TraceablePDO instance
      *
      * @param TraceablePDO $pdo
-     * @param TimeDataCollector $timeCollector
+     * @param TimeDataCollector|null $timeCollector
      * @param string|null $connectionName the pdo connection (eg default | read | write)
      * @return array
      */
-    protected function collectPDO(TraceablePDO|\DebugBar\DataCollector\PDO\TraceablePDO $pdo, TimeDataCollector $timeCollector = null, $connectionName = null)
+    protected function collectPDO(TraceablePDO|\DebugBar\DataCollector\PDO\TraceablePDO $pdo, ?TimeDataCollector $timeCollector = null, $connectionName = null)
     {
         if (empty($connectionName) || $connectionName == 'default') {
             $connectionName = 'pdo';

@@ -127,10 +127,10 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
      * This is the actual implementation of the condition
      *
      * @param \Gems\Tracker\RespondentTrack $respTrack
-     * @param array $fieldData Optional field data to use instead of data currently stored at object
+     * @param array|null $fieldData Optional field data to use instead of data currently stored at object
      * @return bool
      */
-    public function isTrackValid(RespondentTrack $respTrack, array $fieldData = null): bool
+    public function isTrackValid(RespondentTrack $respTrack, ?array $fieldData = null): bool
     {
         $orgId = $respTrack->getOrganizationId();
 

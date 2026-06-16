@@ -238,7 +238,7 @@ class AddTracksSnippet extends TranslatableSnippetAbstract
      * If project uses the \Gems\Project\Tracks\StandAloneSurveysInterface, show a survey
      * drowpdown for both staff and patient
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @param \Zend_View_Abstract|null $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput()

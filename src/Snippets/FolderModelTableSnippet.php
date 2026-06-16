@@ -121,11 +121,11 @@ class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
      * @param \MUtil\Html\HtmlElement $td      The element / cell to add the conditional link
      * @param \MUtil\Model\Bridge\TableBridge $bridge
      * @param string $icon                    Name of icon file
-     * @param \Gems\Menu\SubMenuItem $menuItem The menu item to add
+     * @param \Gems\Menu\SubMenuItem|null      $menuItem The menu item to add
      * @param mixed $options                  Other values for for link (not used for blank)
      * @return void
      */
-    protected function addFileImage(\MUtil\Html\HtmlElement $td, \MUtil\Model\Bridge\TableBridge $bridge, $icon, \Gems\Menu\SubMenuItem $menuItem = null, $options = null)
+    protected function addFileImage(\MUtil\Html\HtmlElement $td, \MUtil\Model\Bridge\TableBridge $bridge, $icon, ?\Gems\Menu\SubMenuItem $menuItem = null, $options = null)
     {
         static $blank;
 
@@ -229,10 +229,10 @@ class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @param \Zend_View_Abstract|null $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput(?\Zend_View_Abstract $view = null)
     {
         $table = parent::getHtmlOutput($view);
         $table->getOnEmpty()->class = 'centerAlign';

@@ -206,7 +206,7 @@ class Respondent
      *
      * @return string
      */
-    public function getDearGreeting(string $language = null): string
+    public function getDearGreeting(?string $language = null): string
     {
         if ($language === null) {
             $language = $this->getLanguage();
@@ -269,7 +269,7 @@ class Respondent
      * Get the proper greeting of respondent
      * @return string
      */
-    public function getGreeting(string $language = null): string
+    public function getGreeting(?string $language = null): string
     {
         if ($language === null) {
             $language = $this->getLanguage();
@@ -431,7 +431,7 @@ class Respondent
      * Get the propper salutation of respondent
      * @return string
      */
-    public function getSalutation(string $language = null): string
+    public function getSalutation(?string $language = null): string
     {
         if ($language === null) {
             $language = $this->getLanguage();

@@ -158,10 +158,10 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
 
     /**
      * @param \Gems\Tracker\RespondentTrack $respTrack
-     * @param array $fieldData Optional field data to use instead of data currently stored at object
+     * @param array $fieldData|null Optional field data to use instead of data currently stored at object
      * @return array fieldKey => value
      */
-    protected function getUsedFieldsValues(RespondentTrack $respTrack, array $fieldData = null): array
+    protected function getUsedFieldsValues(RespondentTrack $respTrack, ?array $fieldData = null): array
     {
         $defs      = $respTrack->getTrackEngine()->getFieldsDefinition();
         $fields    = $fieldData ? $fieldData : $respTrack->getFieldData();
@@ -209,10 +209,10 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
      * This is the actual implementation of the condition
      *
      * @param \Gems\Tracker\RespondentTrack $respTrack
-     * @param array $fieldData Optional field data to use instead of data currently stored at object
+     * @param array|null $fieldData Optional field data to use instead of data currently stored at object
      * @return bool
      */
-    public function isTrackValid(RespondentTrack $respTrack, array $fieldData = null): bool
+    public function isTrackValid(RespondentTrack $respTrack, ?array $fieldData = null): bool
     {
         $locations = $this->getUsedLocations();
 

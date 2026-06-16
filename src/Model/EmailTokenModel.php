@@ -115,7 +115,7 @@ class EmailTokenModel extends GemsJoinModel
         }
     }
 
-    public function save(array $newValues, array $filter = null, array $saveTables = null): array
+    public function save(array $newValues, ?array $filter = null, ?array $saveTables = null): array
     {
         $this->maskRepository->disableMaskRepository();
         if (!isset($newValues['gto_id_token'])) {

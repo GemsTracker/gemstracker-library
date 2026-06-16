@@ -47,10 +47,10 @@ class LdapUserDefinition extends StaffUserDefinition
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems\User\User $user Optional, the user whose password might change
+     * @param User|null $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(User $user = null): bool
+    public function canSetPassword(?User $user = null): bool
     {
         return false;
     }

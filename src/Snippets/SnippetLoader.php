@@ -144,10 +144,10 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
      * Searches and loads a .php snippet file.
      *
      * @param string $filename The name of the snippet
-     * @param array $extraSourceParameters name/value pairs to add to the source for this snippet
+     * @param array|null $extraSourceParameters name/value pairs to add to the source for this snippet
      * @return \MUtil\Snippets\SnippetInterface The snippet
      */
-    public function getSnippet($className, array $extraSourceParameters = null)
+    public function getSnippet($className, ?array $extraSourceParameters = null)
     {
         try {
             $this->addRegistryContainer($extraSourceParameters, 'tmpContainer');

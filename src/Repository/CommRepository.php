@@ -28,12 +28,12 @@ class CommRepository
 
     public function sendTokenEmail(
         Token $token,
-        int $templateId = null,
-        string $from = null,
-        string $fromName = null,
-        string $to = null,
-        string $subject = null,
-        string $body = null,
+        ?int $templateId = null,
+        ?string $from = null,
+        ?string $fromName = null,
+        ?string $to = null,
+        ?string $subject = null,
+        ?string $body = null,
     ): bool
     {
         $job = [
@@ -82,13 +82,13 @@ class CommRepository
     }
 
     protected function getEmail(
-        int $templateId = null,
+        ?int $templateId = null,
         string $language = 'en',
-        string $from = null,
+        ?string $from = null,
         string $fromName = '',
         Address|string|array|null $to = null,
-        string $subject = null,
-        string $body = null,
+        ?string $subject = null,
+        ?string $body = null,
         array $mailFields = [],
         string $mailTemplate = 'mail::gems',
         string|null $type = null,

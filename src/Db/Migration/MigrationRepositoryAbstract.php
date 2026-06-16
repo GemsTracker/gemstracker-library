@@ -64,6 +64,11 @@ abstract class MigrationRepositoryAbstract
         return $resultFetcher->fetchAll($select);
     }
 
+    public function getNameFromId(string $name): string
+    {
+        return Str::kebab(str_replace(' ', '\\',$name));
+    }
+
     public function getModelName(): string
     {
         return $this->modelName;

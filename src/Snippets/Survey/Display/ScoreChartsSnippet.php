@@ -27,7 +27,7 @@ class ScoreChartsSnippet extends \Gems\Snippets\Tracker\Answers\TrackAnswersMode
      * @param \Zend_View_Abstract $view
      * @return mixed
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput(?\Zend_View_Abstract $view = null)
     {
         $snippets = array();
 

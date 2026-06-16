@@ -18,10 +18,10 @@ class InitDbExport extends TaskAbstract
     protected ProjectOverloader|null $overLoader = null;
 
     public function execute(
-        string|int $modelIdentifier = null,
+        string|int|null $modelIdentifier = null,
         array $searchFilter = [],
         array $modelApplyFunctions = [],
-        string $exportType = null,
+        ?string $exportType = null,
         array $postData = [],
         int $count = 1,
         int $rowsPerBatch = 500
