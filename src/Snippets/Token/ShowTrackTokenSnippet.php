@@ -499,17 +499,17 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             return $this->_('This token is for a staff member and cannot be E-mailed');
         }
 
-        $respondent = $this->token->getRespondent();;
+        $respondent = $this->token->getRespondent();
 
         // If we have a relation, return that address
         if ($this->token->hasRelation()) {
             $relation = $this->token->getRelation();
 
             if (! $relation) {
-                return $this->_('This token is for a relation but the relation is not set');;
+                return $this->_('This token is for a relation but the relation is not set');
             }
             if (! $relation->isMailable()) {
-                return $this->_('This token is for a relation but the relation is not set to mailable');;
+                return $this->_('This token is for a relation but the relation is not set to mailable');
             }
 
             $filler = $relation;
@@ -523,12 +523,12 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         }
 
 
-        if ($this->token->getRespondentTrack()->isMailable()) {
-            return $this->_('The track is set to not mailable');;
+        if (!$this->token->getRespondentTrack()->isMailable()) {
+            return $this->_('The track is set to not mailable');
         }
 
         if ($filler->getMailCode() < $survey->getMailCode()) {
-            return $this->_('The respondent is set to not mailable');;
+            return $this->_('The respondent is set to not mailable');
         }
 
         return "Error: token should be mailable!";
