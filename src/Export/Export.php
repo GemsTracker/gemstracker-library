@@ -25,6 +25,7 @@ class Export
     protected array $streamingExportClasses = [
         'StreamingExcelExport' => 'Excel (xlsx)',
         'CsvExport' => 'CSV',
+        'SpssExport' => 'SPSS',
     ];
 
     /**

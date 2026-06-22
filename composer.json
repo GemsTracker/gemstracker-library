@@ -78,6 +78,7 @@
         "laminas/laminas-uri": "2.*",
         "laminas/laminas-validator": "^2.60",
         "league/html-to-markdown": "^5.1",
+        "maennchen/zipstream-php": "^3.1",
         "magnafacta/mutil": "^2.0.2",
         "magnafacta/zalt-html": "^1.0.10",
         "magnafacta/zalt-laminas-filter": "^1.0.1",
