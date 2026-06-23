@@ -101,21 +101,19 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
              *
              * @var ValueSwitchDependency $hiderGroup
              */
-            $hiderGroup = $this->metaModelLoader->createDependency(ValueSwitchDependency::class);
-            $hiderGroup->setSwitches([0 => ['gsu_answer_groups' => $hideSetting]]);
+            $hiderGroup = $this->metaModelLoader->createDependency(ValueSwitchDependency::class, [0 => ['gsu_answer_groups' => $hideSetting]]);
             $this->metaModel->addDependency($hiderGroup, ['gsu_answers_by_group']);
 
             /**
              * @var ValueSwitchDependency $hiderOrg
              */
-            $hiderOrg = $this->metaModelLoader->createDependency(ValueSwitchDependency::class);
             $switches = [0 => [
                 'gsu_valid_for_length'     => $hideSetting,
                 'gsu_valid_for_unit'       => $hideSetting,
                 'gsu_insert_organizations' => $hideSetting,
                 'toggleOrg'                => $hideSetting,
             ],];
-            $hiderOrg->setSwitches($switches);
+            $hiderOrg = $this->metaModelLoader->createDependency(ValueSwitchDependency::class, $switches);
             $this->metaModel->addDependency($hiderOrg, 'gsu_insertable');
 
             $this->metaModel->set('track_usage', [
