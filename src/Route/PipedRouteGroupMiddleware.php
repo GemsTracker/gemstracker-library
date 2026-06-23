@@ -14,7 +14,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 class PipedRouteGroupMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly ContainerInterface $container,
         private readonly MiddlewareFactoryInterface $middlewareFactory,
         private readonly array $groups,
     )

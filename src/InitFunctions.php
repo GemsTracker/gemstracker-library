@@ -112,7 +112,7 @@ class InitFunctions
             }
         }
 
-        $app->pipe(new PipedRouteGroupMiddleware($container, $config['routeGroups'] ?? []));
+        $app->pipe(new PipedRouteGroupMiddleware($factory, $config['routeGroups'] ?? []));
 
         $app->pipe(\Gems\Middleware\DbProfilerMiddleware::class);
 

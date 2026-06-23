@@ -15,7 +15,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 class LazyRouteMiddlewareMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly ContainerInterface $container,
         private readonly MiddlewareFactoryInterface $middlewareFactory,
     )
     {
