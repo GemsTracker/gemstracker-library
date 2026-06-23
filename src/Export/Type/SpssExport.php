@@ -316,6 +316,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
         $datFile = parent::downloadFile($iterator, $extractor, time(), $fileName, $exportSettings);
         foreach ($datFile as $tempName => $newName) {
             $zip->addFile(str_replace(self::EXTENSION, 'dat', $newName), file_get_contents($tempName));
+            unlink($tempName);
         }
         $zip->finish();
     }
