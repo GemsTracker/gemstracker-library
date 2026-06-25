@@ -1,4 +1,5 @@
 gems__rounds:
+  - gro_id_round: "0"
   - gro_id_track: "0"
     gro_id_order: 10
     gro_id_survey: 0

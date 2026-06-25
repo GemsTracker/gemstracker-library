@@ -11,6 +11,7 @@
 
 namespace Gems;
 
+use Gems\Export\Type\ExportInterface;
 use Mezzio\Session\SessionInterface;
 
 /**
@@ -100,11 +101,11 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
 
     /**
      *
-     * @return \Gems\Export\ExportInterface
+     * @return \Gems\Export\Type\ExportInterface
      */
-    public function getExport(string $type, ?SessionInterface $session = null, ?\Gems\Task\TaskRunnerBatch $batch = null)
+    public function getExport(string $type): ExportInterface
     {
-        return $this->_getClass($type, null, [$session, $batch, $this->getExportTempDir()]);
+        return $this->_getClass($type);
     }
 
     /**

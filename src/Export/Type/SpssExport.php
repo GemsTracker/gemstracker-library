@@ -2,17 +2,19 @@
 
 namespace Gems\Export\Type;
 
-use Iterator;
-use OpenSpout\Common\Entity\Row;
-use ZipArchive;
 use Gems\Export\Db\DataExtractorInterface;
+use Gems\Task\Export\SpssAfterTask;
+use Gems\Task\ExportRunnerBatch;
+use Iterator;
 use MUtil\Form;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\CSV\Options;
 use OpenSpout\Writer\CSV\Writer;
 use OpenSpout\Writer\WriterInterface;
 use Zalt\Model\MetaModelInterface;
+use ZipArchive;
 
-class SpssExport extends CsvExportAbstract implements DownloadableInterface, ExportSettingsGeneratorInterface, ModelResultSettingsInterface
+class SpssExport extends CsvExportAbstract implements ApplyExportBatchTypeInterface, DownloadableInterface, ExportSettingsGeneratorInterface, ModelResultSettingsInterface, StreamableInterface
 {
     public const DELIMITER = ',';
 
@@ -20,7 +22,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
 
     protected array $columnLengths = [];
 
-    public int $defaultAlphaSize   = 64;
+    public int $defaultAlphaSize = 64;
 
     public int $defaultNumericSize = 5;
 
@@ -34,6 +36,11 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
             $writer->addRow(Row::fromValues($data));
             $iterator->next();
         }
+    }
+
+    public function applyExportBatch(ExportRunnerBatch $batch): void
+    {
+        $batch->addTask(SpssAfterTask::class);
     }
 
     protected function createSpsFile(string $baseFileName, string $exportId, array $headers, array $exportSettings): array
@@ -50,7 +57,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
 
     protected function createSpsFileData(string $baseFileName, array $headers, array $exportSettings): string
     {
-        $datDownloadName = $baseFileName . '.' . static::EXTENSION;
+        $datDownloadName = $baseFileName . '.dat';
         $data = "SET UNICODE=ON.\n" .
             "SHOW LOCALE.\n" .
             "PRESERVE LOCALE.\n" .
@@ -59,7 +66,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
             " /TYPE=TXT\n" .
             " /FILE=\"" . $datDownloadName . "\"\n" .
             " /DELCASE=LINE\n" .
-            " /DELIMITERS=\"".static::DELIMITER."\"\n" .
+            " /DELIMITERS=\"" . static::DELIMITER . "\"\n" .
             " /QUALIFIER=\"'\"\n" .
             " /ARRANGEMENT=DELIMITED\n" .
             " /FIRSTCASE=1\n" .
@@ -70,19 +77,19 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
         $columnNames = array_keys($headers);
 
         $variableTypes = $this->getVariableTypes($columnNames, $columnTypes);
-        foreach($variableTypes as $columnName => $type) {
+        foreach ($variableTypes as $columnName => $type) {
             $data .= "\n " . $columnName . ' ' . $type;
         }
         $data .= ".\nCACHE.\nEXECUTE.\n";
         $data .= "\n*Define variable labels.\n";
-        foreach($headers as $columnName => $label) {
+        foreach ($headers as $columnName => $label) {
             $filteredLabel = "'" . $this->formatString($label) . "'";
-            $data .="VARIABLE LABELS " . $this->fixName($columnName) . " " . $filteredLabel . "." . "\n";
+            $data .= "VARIABLE LABELS " . $this->fixName($columnName) . " " . $filteredLabel . "." . "\n";
         }
         $data .= "\n*Define value labels.\n";
 
         $columnOptions = $exportSettings['modelMetaData']['multiOptions'] ?? [];
-        foreach($columnOptions as $columnName => $multiOptions) {
+        foreach ($columnOptions as $columnName => $multiOptions) {
             $data .= 'VALUE LABELS ' . $this->fixName($columnName);
             foreach ($multiOptions as $option => $label) {
                 $filteredLabel = "'" . $this->formatString($label) . "'";
@@ -104,12 +111,13 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
     }
 
     public function downloadFile(
-        Iterator $iterator,
+        Iterator               $iterator,
         DataExtractorInterface $extractor,
-        string $exportId,
-        string $fileName,
-        array $exportSettings
-    ): array {
+        string                 $exportId,
+        string                 $fileName,
+        array                  $exportSettings
+    ): array
+    {
 
 
         // Remove extension;
@@ -129,17 +137,17 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
 
         $deleteFiles = [];
 
-        foreach($datFile as $tempName => $newName) {
+        foreach ($datFile as $tempName => $newName) {
             $zipArchive->addFile($tempName, $newName);
             $deleteFiles[] = $tempName;
         }
-        foreach($spsFile as $tempName => $newName) {
+        foreach ($spsFile as $tempName => $newName) {
             $zipArchive->addFile($tempName, $newName);
             $deleteFiles[] = $tempName;
         }
         $zipArchive->close();
 
-        foreach($deleteFiles as $file) {
+        foreach ($deleteFiles as $file) {
             if (file_exists($file)) {
                 unlink($file);
             }
@@ -150,8 +158,8 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
 
     protected function findLengths(array $row): void
     {
-        foreach($row as $columnName => $value) {
-            $length = strlen((string) $value);
+        foreach ($row as $columnName => $value) {
+            $length = strlen((string)$value);
             if (isset($this->columnLengths[$columnName]) && $this->columnLengths[$columnName] >= $length) {
                 continue;
             }
@@ -223,7 +231,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
     {
         return [
             $this->translator->_('Export to SPSS'),
-            $this->translator->_("Extract all files from the downloaded zip and open the .sps file.\n" .
+            $this->translator->_("Download both the .sps and the .dat file and open the .sps file.\n" .
                 "Change line number 8 to include the full path to the .dat file:\n" .
                 "    /FILE=\"filename.dat\"  ==>  /FILE=\"c:\\downloads\\filename.dat\"\n" .
                 "Choose Run/All and all your data should be visible."
@@ -242,7 +250,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
     protected function getVariableTypes($columnNames, $columnTypes): array
     {
         $types = [];
-        foreach($columnNames as $columnName) {
+        foreach ($columnNames as $columnName) {
             $filteredColumnName = $this->fixName($columnName);
             if (!isset($columnTypes[$columnName])) {
                 continue;
@@ -251,7 +259,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
                 MetaModelInterface::TYPE_DATE => 'SDATE10',
                 MetaModelInterface::TYPE_DATETIME => 'DATETIME23',
                 MetaModelInterface::TYPE_TIME => 'TIME8.0',
-                MetaModelInterface::TYPE_NUMERIC => 'F' . ($this->columnLengths[$columnName] ?? $this->defaultNumericSize) . '.' . (($this->columnLengths[$columnName] ?? $this->defaultNumericSize)-1),
+                MetaModelInterface::TYPE_NUMERIC => 'F' . ($this->columnLengths[$columnName] ?? $this->defaultNumericSize) . '.' . (($this->columnLengths[$columnName] ?? $this->defaultNumericSize) - 1),
                 default => 'A' . ($this->columnLengths[$columnName] ?? $this->defaultAlphaSize),
             };
 
@@ -265,5 +273,28 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
         $options = new Options();
         $options->FIELD_DELIMITER = static::DELIMITER;
         return new Writer($options);
+    }
+
+    public function streamResult(\Iterator $iterator, DataExtractorInterface $extractor, string $fileName, array $exportSettings): void
+    {
+        if(str_ends_with($fileName, '.sps')) {
+            // SpssAfterTask creates an extra db export row for the sps file
+            $headers = $extractor->extractData($iterator->current());
+            $output  = $this->createSpsFileData($fileName, $headers, $exportSettings);
+
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/text');
+            header("Content-Disposition: attachment; filename={$fileName}");
+            header('Cache-Control: private, max-age=0, must-revalidate');
+            header('Expires: 0');
+            header('Pragma: public');
+            header('Content-Length: ' . strlen($output));
+
+            $stream = fopen(sprintf('data://text/plain,%s', $output), 'r');
+            fpassthru($stream);
+
+        } else {
+            parent::streamResult($iterator, $extractor, $fileName, $exportSettings);
+        }
     }
 }
