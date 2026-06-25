@@ -109,6 +109,7 @@ class SurveyMaintenanceModel extends GemsJoinModel implements ApplyLegacyActionI
              * @var ValueSwitchDependency $hiderOrg
              */
             $hiderOrg = $this->metaModelLoader->createDependency(ValueSwitchDependency::class);
+            
             $switches = [0 => [
                 'gsu_valid_for_length'     => $hideSetting,
                 'gsu_valid_for_unit'       => $hideSetting,
