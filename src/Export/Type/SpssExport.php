@@ -2,23 +2,24 @@
 
 namespace Gems\Export\Type;
 
-use Iterator;
-use OpenSpout\Common\Entity\Cell;
-use ZipArchive;
 use Gems\Export\Db\DataExtractorInterface;
+use Gems\Task\Export\SpssAfterTask;
+use Gems\Task\ExportRunnerBatch;
+use Iterator;
 use MUtil\Form;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\CSV\Options;
 use OpenSpout\Writer\CSV\Writer;
 use OpenSpout\Writer\WriterInterface;
 use Zalt\Model\MetaModelInterface;
+use ZipArchive;
 use ZipStream\ZipStream;
 
-class SpssExport extends CsvExportAbstract implements DownloadableInterface, ExportSettingsGeneratorInterface, ModelResultSettingsInterface, StreamableInterface
+class SpssExport extends CsvExportAbstract implements ApplyExportBatchTypeInterface, DownloadableInterface, ExportSettingsGeneratorInterface, ModelResultSettingsInterface, StreamableInterface
 {
     public const DELIMITER = ',';
 
-    public const EXTENSION = 'zip';
+    public const EXTENSION = 'dat';
 
     protected array $columnLengths = [];
 
@@ -36,6 +37,11 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
             $writer->addRow(Row::fromValues($data));
             $iterator->next();
         }
+    }
+
+    public function applyExportBatch(ExportRunnerBatch $batch): void
+    {
+        $batch->addTask(SpssAfterTask::class);
     }
 
     protected function createSpsFile(string $baseFileName, string $exportId, array $headers, array $exportSettings): array
@@ -226,7 +232,7 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
     {
         return [
             $this->translator->_('Export to SPSS'),
-            $this->translator->_("Extract all files from the downloaded zip and open the .sps file.\n" .
+            $this->translator->_("Download both the .sps and the .dat file and open the .sps file.\n" .
                 "Change line number 8 to include the full path to the .dat file:\n" .
                 "    /FILE=\"filename.dat\"  ==>  /FILE=\"c:\\downloads\\filename.dat\"\n" .
                 "Choose Run/All and all your data should be visible."
@@ -295,29 +301,25 @@ class SpssExport extends CsvExportAbstract implements DownloadableInterface, Exp
 
     public function streamResult(\Iterator $iterator, DataExtractorInterface $extractor, string $fileName, array $exportSettings): void
     {
-        $zip = new ZipStream(
-            outputName: $fileName,
-            sendHttpHeaders: true,
-        );
+        if(str_ends_with($fileName, '.sps')) {
+            // SpssAfterTask creates an extra db export row for the sps file
+            $headers = $extractor->extractData($iterator->current());
+            $output  = $this->createSpsFileData($fileName, $headers, $exportSettings);
 
-        $headers = $extractor->extractData($iterator->current());
-        // $iterator->next();
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/text');
+            header("Content-Disposition: attachment; filename={$fileName}");
+            header('Cache-Control: private, max-age=0, must-revalidate');
+            header('Expires: 0');
+            header('Pragma: public');
+            header('Content-Length: ' . strlen($output));
 
-        $zip->addFile(str_replace(self::EXTENSION, 'sps', $fileName), $this->createSpsFileData($fileName, $headers, $exportSettings));
+            $stream = fopen(sprintf('data://text/plain,%s', $output), 'r');
+            fpassthru($stream);
+            exit();
 
-//        // Try to directly create output
-//        $output = [];
-//        while ($row = $iterator->current()) {
-//            $output[] = $this->outputRow($extractor->extractData($row));
-//            $iterator->next();
-//        }
-//        $zip->addFile(str_replace(self::EXTENSION, 'dat', $fileName), implode("\n", $output));
-
-        $datFile = parent::downloadFile($iterator, $extractor, time(), $fileName, $exportSettings);
-        foreach ($datFile as $tempName => $newName) {
-            $zip->addFile(str_replace(self::EXTENSION, 'dat', $newName), file_get_contents($tempName));
-            unlink($tempName);
+        } else {
+            parent::streamResult($iterator, $extractor, $fileName, $exportSettings);
         }
-        $zip->finish();
     }
 }

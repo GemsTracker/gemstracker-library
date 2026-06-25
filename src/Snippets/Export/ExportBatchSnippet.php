@@ -14,6 +14,7 @@ namespace Gems\Snippets\Export;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Export\Db\ModelExportRepository;
+use Gems\Export\Type\ApplyExportBatchTypeInterface;
 use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\SnippetsActions\Export\ExportAction;
@@ -138,7 +139,10 @@ class ExportBatchSnippet extends SnippetAbstract
 
         $batch->setSessionVariable('last_active_at', time());
 
-        $export = $this->loader->getExport()->getExport($type, null, $batch);
+        $export = $this->loader->getExport()->getExport($type);
+        if ($batch && $export instanceof ApplyExportBatchTypeInterface) {
+            $export->applyExportBatch($batch);
+        }
 
         if ($helpLines = $export->getHelpInfo()) {
             $jobInfo = [...$jobInfo, ...$helpLines];
