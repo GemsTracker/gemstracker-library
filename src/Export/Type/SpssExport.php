@@ -13,7 +13,6 @@ use OpenSpout\Writer\CSV\Writer;
 use OpenSpout\Writer\WriterInterface;
 use Zalt\Model\MetaModelInterface;
 use ZipArchive;
-use ZipStream\ZipStream;
 
 class SpssExport extends CsvExportAbstract implements ApplyExportBatchTypeInterface, DownloadableInterface, ExportSettingsGeneratorInterface, ModelResultSettingsInterface, StreamableInterface
 {
@@ -276,29 +275,6 @@ class SpssExport extends CsvExportAbstract implements ApplyExportBatchTypeInterf
         return new Writer($options);
     }
 
-//    protected function outputRow(array $data): string
-//    {
-//        $row = Row::fromValues($data);
-//        $output = [];
-//        foreach ($row->getCells() as $cell) {
-//            /**
-//             * @var Cell $cell
-//             */
-//            $value = $cell->getValue();
-//            if ($value instanceof \DateTimeInterface) {
-//                $value = $value->format('Y-m-d H:i:s');
-//            } else {
-//                $value = (string) $value;
-//            }
-//
-//            if (str_contains($value, "'")) {
-//
-//            }
-//        }
-//
-//        return implode(",", $output);
-//    }
-
     public function streamResult(\Iterator $iterator, DataExtractorInterface $extractor, string $fileName, array $exportSettings): void
     {
         if(str_ends_with($fileName, '.sps')) {
@@ -316,7 +292,6 @@ class SpssExport extends CsvExportAbstract implements ApplyExportBatchTypeInterf
 
             $stream = fopen(sprintf('data://text/plain,%s', $output), 'r');
             fpassthru($stream);
-            exit();
 
         } else {
             parent::streamResult($iterator, $extractor, $fileName, $exportSettings);

@@ -140,7 +140,7 @@ class ExportBatchSnippet extends SnippetAbstract
         $batch->setSessionVariable('last_active_at', time());
 
         $export = $this->loader->getExport()->getExport($type);
-        if ($batch && $export instanceof ApplyExportBatchTypeInterface) {
+        if ($export instanceof ApplyExportBatchTypeInterface) {
             $export->applyExportBatch($batch);
         }
 
