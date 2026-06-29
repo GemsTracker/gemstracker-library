@@ -14,6 +14,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Gems\Versions;
+use Laminas\Db\Adapter\Exception\InvalidQueryException;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\TableGateway\TableGateway;
@@ -35,6 +36,8 @@ class AuditLog
      * Array of data to save to the gems__log_activity table.
      */
     protected array $logData = [];
+
+    public static bool $noDbInstalled = false;
 
     /**
      * @var string[] Attributes for which defaults are taken from config during creation.
@@ -82,6 +85,9 @@ class AuditLog
      */
     public function getAction(string|null $routeName = null): array
     {
+        if (self::$noDbInstalled) {
+            return [];
+        }
         if ($routeName === null) {
             $routeName = strtolower($this->getRouteName());
         }
@@ -120,19 +126,23 @@ class AuditLog
             unset($logAction['gls_app_version']);
         }
 
-        $table = new TableGateway('gems__log_setup', $this->cachedResultFetcher->getAdapter());
-        if (isset($actions[$routeName])) {
-            $id = $logAction['gls_id_action'];
-            unset($logAction['gls_id_action']);
-            $table->update($logAction, ['gls_id_action' => $id]);
-        } else {
-            $table->insert($logAction);
+        try {
+            $table = new TableGateway('gems__log_setup', $this->cachedResultFetcher->getAdapter());
+            if (isset($actions[$routeName])) {
+                $id = $logAction['gls_id_action'];
+                unset($logAction['gls_id_action']);
+                $table->update($logAction, ['gls_id_action' => $id]);
+            } else {
+                $table->insert($logAction);
+            }
+        } catch (InvalidQueryException $e) {
+            self::$noDbInstalled = true;
         }
 
         $this->cachedResultFetcher->invalidateTags($this->actionsCacheTags);
 
         $actions = $this->getDbActions(true);
-        return $actions[$routeName];
+        return $actions[$routeName] ?? [];
     }
 
     /**
@@ -239,6 +249,9 @@ class AuditLog
 
     public function getDbActions(bool $refresh = false): array
     {
+        if (self::$noDbInstalled) {
+            return [];
+        }
         if ($refresh) {
             // Delete cache value
             $this->cachedResultFetcher->getCache()->deleteItem($this->actionsCacheKey);
@@ -246,9 +259,15 @@ class AuditLog
         $select = $this->cachedResultFetcher->getSelect('gems__log_setup');
         $select->order(['gls_name']);
 
-        $actions = $this->cachedResultFetcher->fetchAll($this->actionsCacheKey, $select, null, $this->actionsCacheTags);
-        if ($actions) {
-            return array_combine(array_column($actions, 'gls_name'), $actions);
+        try {
+            $actions = $this->cachedResultFetcher->fetchAll($this->actionsCacheKey, $select, null, $this->actionsCacheTags);
+            if ($actions) {
+                return array_combine(array_column($actions, 'gls_name'), $actions);
+            }
+        } catch (InvalidQueryException $e) {
+            self::$noDbInstalled = true;
+
+            error_log(__CLASS__ . '->' . __FUNCTION__ . '->' . __LINE__ . '->' . $e->getMessage());
         }
         return [];
     }
@@ -499,7 +518,7 @@ class AuditLog
         $this->setRequest($request);
         $actionData = $this->getAction();
 
-        if (!$this->shouldLogAction($actionData, $changed)) {
+        if (self::$noDbInstalled || !$this->shouldLogAction($actionData, $changed)) {
             return null;
         }
 

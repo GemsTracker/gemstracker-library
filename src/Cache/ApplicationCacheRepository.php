@@ -15,6 +15,7 @@ class ApplicationCacheRepository
     public function __construct(
         protected ContainerInterface $container,
     ) {}
+
     public function clearCache(): bool
     {
         /** @var CacheItemPoolInterface $cache */
