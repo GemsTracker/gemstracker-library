@@ -40,6 +40,7 @@ class SeedRepository extends MigrationRepositoryAbstract
         'yml',
         'yaml',
         'json',
+        'sql',
     ];
 
     protected function getSeedDataFromFile(SplFileInfo $file): array|null
@@ -51,6 +52,9 @@ class SeedRepository extends MigrationRepositoryAbstract
         }
         if ($extension === 'json') {
             return json_decode($file->getContents(), true);
+        }
+        if ($extension === 'sql') {
+            return ['query' => $file->getContents()];
         }
 
         return null;
@@ -326,17 +330,20 @@ class SeedRepository extends MigrationRepositoryAbstract
             if ($foreignKeyChecks === false) {
                 $resultFetcher->query('SET foreign_key_checks = 0');
             }
-            foreach($seedInfo['data'] as $seedTable => $seedRows) {
-                $sqlQueries = $this->getQueriesFromRows($adapter, $seedTable, $this->resolveReferences($seedRows, $generatedValues));
+            if (isset($seedInfo['data']['query']) && $seedInfo['data']['query']) {
+                $resultFetcher->query($seedInfo['data']['query']);
+            } else {
+                foreach ($seedInfo['data'] as $seedTable => $seedRows) {
+                    $sqlQueries = $this->getQueriesFromRows($adapter, $seedTable, $this->resolveReferences($seedRows, $generatedValues));
 
-                foreach($sqlQueries as $index => $sqlQuery) {
-                    $this->lastSql = $sqlQuery;
-                    $resultFetcher->query($sqlQuery);
-                    $generatedValues[$seedTable.'.'.$index] = $resultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
-                    $finalQueries[] = $sqlQuery;
+                    foreach ($sqlQueries as $index => $sqlQuery) {
+                        $this->lastSql = $sqlQuery;
+                        $resultFetcher->query($sqlQuery);
+                        $generatedValues[$seedTable . '.' . $index] = $resultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
+                        $finalQueries[] = $sqlQuery;
+                    }
                 }
             }
-
             if ($localTransaction) {
                 if ($foreignKeyChecks === false) {
                     $resultFetcher->query('SET foreign_key_checks = 1');

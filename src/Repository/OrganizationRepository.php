@@ -2,12 +2,14 @@
 
 namespace Gems\Repository;
 
+use Gems\Audit\AuditLog;
 use Gems\Config\ConfigAccessor;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\User\Organization;
 use Gems\User\UserLoader;
 use Gems\Util\UtilDbHelper;
+use Laminas\Db\Adapter\Exception\InvalidQueryException;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Zalt\Loader\ProjectOverloader;
 
@@ -189,19 +191,23 @@ class OrganizationRepository
      */
     public function getOrganizationsForLogin(): array
     {
-        $result = $this->utilDbHelper->getTranslatedPairsCached(
-            'gems__organizations',
-            'gor_id_organization',
-            'gor_name',
-            ['organizations'],
-            [
-                'gor_active' => 1,
-                'gor_has_login' => 1,
-            ],
-            'natsort'
-        );
-        if ($result) {
-            return $result;
+        try {
+            $result = $this->utilDbHelper->getTranslatedPairsCached(
+                'gems__organizations',
+                'gor_id_organization',
+                'gor_name',
+                ['organizations'],
+                [
+                    'gor_active' => 1,
+                    'gor_has_login' => 1,
+                ],
+                'natsort'
+            );
+            if ($result) {
+                return $result;
+            }
+        } catch (InvalidQueryException $e) {
+            AuditLog::$noDbInstalled = true;
         }
         return static::getNotOrganizationArray();
     }

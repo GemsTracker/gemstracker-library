@@ -3,6 +3,7 @@
          bootstrap="vendor/autoload.php" executionOrder="depends,defects" failOnRisky="true" failOnWarning="true" colors="true" cacheDirectory=".phpunit.cache"
          beStrictAboutCoverageMetadata="true"
          displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
       >
   <testsuites>
     <testsuite name="default">
