@@ -256,6 +256,8 @@ class AuditLog
             // Delete cache value
             $this->cachedResultFetcher->getCache()->deleteItem($this->actionsCacheKey);
         }
+        $select = $this->cachedResultFetcher->getSelect('gems__log_setup');
+        $select->order(['gls_name']);
 
         try {
             $actions = $this->cachedResultFetcher->fetchAll($this->actionsCacheKey, $select, null, $this->actionsCacheTags);
