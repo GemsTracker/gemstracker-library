@@ -3,6 +3,7 @@
 namespace Gems\SnippetsActions\Vue;
 
 use Gems\Snippets\Vue\CreateEditSnippet;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsActions\AbstractAction;
 use Zalt\SnippetsActions\NoCsrfInterface;
 use Zalt\SnippetsActions\PostActionInterface;
@@ -19,4 +20,6 @@ class CreateAction extends AbstractAction implements PostActionInterface, NoCsrf
     public string $dataEndpoint;
 
     public string $dataResource;
+
+    public string $idParameter = MetaModelInterface::REQUEST_ID;
 }
