@@ -43,7 +43,7 @@ class AgendaStaffRepository
             'gas_created' => new Expression('NOW()'),
             'gas_created_by' => $this->currentUserId,
         ];
-        if ($sourceId !== null) {
+        if ($sourceId !== null && $source !== null) {
             $data['gas_source'] = $source;
         }
 
