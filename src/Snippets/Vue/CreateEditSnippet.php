@@ -19,6 +19,8 @@ class CreateEditSnippet extends VueSnippetAbstract
 
     protected string $formType = 'horizontal';
 
+    protected string $idParameter = MetaModelInterface::REQUEST_ID;
+
     protected ?string $submitLabel = null;
 
     protected ?string $abortAction = 'index';
@@ -33,7 +35,7 @@ class CreateEditSnippet extends VueSnippetAbstract
         $attributes['form-type'] = $this->formType;
 
         if ($this->createData === false) {
-            $attributes['edit'] = $this->requestInfo->getParam(MetaModelInterface::REQUEST_ID);
+            $attributes['edit'] = $this->requestInfo->getParam($this->idParameter);
         }
 
         if ($this->submitLabel) {
