@@ -493,7 +493,7 @@ class Respondent
             ])
             ->limit(1);
 
-        return (boolean) $this->resultFetcher->fetchOne($select);
+        return (bool) $this->resultFetcher->fetchOne($select);
     }
 
     /**
@@ -511,7 +511,7 @@ class Respondent
             ])
             ->limit(1);
 
-        return (boolean) $this->resultFetcher->fetchOne($select);
+        return (bool) $this->resultFetcher->fetchOne($select);
     }
 
     /**

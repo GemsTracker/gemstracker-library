@@ -163,7 +163,7 @@ class ComplianceLegenda extends \Zalt\Snippets\TranslatableSnippetAbstract
         }
         // \MUtil\EchoOut\EchoOut::track($this->output);
 
-        return (boolean) $this->output;
+        return (bool) $this->output;
     }
 
 }

@@ -299,7 +299,7 @@ class Appointment
      */
     public function hasEpisode(): bool
     {
-        return (boolean) $this->data['gap_id_episode'];
+        return (bool) $this->data['gap_id_episode'];
     }
 
     /**

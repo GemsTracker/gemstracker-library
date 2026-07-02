@@ -473,7 +473,7 @@ class ProjectSettings extends \ArrayObject
     public function getEmailBounce()
     {
         if ($this->offsetExists('email') && isset($this->email['bounce'])) {
-            return (boolean) $this->email['bounce'];
+            return (bool) $this->email['bounce'];
         }
         return false;
     }
@@ -498,7 +498,7 @@ class ProjectSettings extends \ArrayObject
     public function getEmailMultiLanguage()
     {
         if ($this->offsetExists('email') && isset($this->email['multiLanguage'])) {
-            return (boolean) $this->email['multiLanguage'];
+            return (bool) $this->email['multiLanguage'];
         } else {
             return true;
         }
@@ -975,7 +975,7 @@ class ProjectSettings extends \ArrayObject
     public function getStaffBounce()
     {
         if ($this->offsetExists('email') && isset($this->email['staffBounce'])) {
-            return (boolean) $this->email['staffBounce'];
+            return (bool) $this->email['staffBounce'];
         }
         return $this->getEmailBounce();
     }
@@ -1192,7 +1192,7 @@ class ProjectSettings extends \ArrayObject
             $cons = $this->offsetGet('console');
 
             if (isset($cons['allow'])) {
-                return (boolean) $cons['allow'];
+                return (bool) $cons['allow'];
             }
         }
 
@@ -1253,7 +1253,7 @@ class ProjectSettings extends \ArrayObject
      */
     public function isMultiLocale()
     {
-        return (boolean) (isset($this['multiLocale']) && $this['multiLocale']);
+        return (bool) (isset($this['multiLocale']) && $this['multiLocale']);
     }
 
     /**

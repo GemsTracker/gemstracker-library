@@ -91,7 +91,7 @@ class ReceptionCode extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function hasDescription()
     {
-        return (boolean) $this->_get('grc_description');
+        return (bool) $this->_get('grc_description');
     }
 
     /**
@@ -100,7 +100,7 @@ class ReceptionCode extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function hasRedoCode()
     {
-        return (boolean) $this->_get('grc_redo_survey');
+        return (bool) $this->_get('grc_redo_survey');
     }
 
     /**
@@ -120,7 +120,7 @@ class ReceptionCode extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function isForRespondents()
     {
-        return (boolean) $this->_get('grc_for_respondents');
+        return (bool) $this->_get('grc_for_respondents');
     }
 
     /**
@@ -130,7 +130,7 @@ class ReceptionCode extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function isForTracks()
     {
-        return (boolean) $this->_get('grc_for_tracks');
+        return (bool) $this->_get('grc_for_tracks');
     }
 
     /**
@@ -150,7 +150,7 @@ class ReceptionCode extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function isOverwriter()
     {
-        return (boolean) $this->_get('grc_overwrite_answers');
+        return (bool) $this->_get('grc_overwrite_answers');
     }
 
     /**
@@ -173,7 +173,7 @@ class ReceptionCode extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function isSuccess()
     {
-        return (boolean) $this->_get('grc_success');
+        return (bool) $this->_get('grc_success');
     }
 
     /**

@@ -67,6 +67,6 @@ class RecalculateTracks implements RespondentChangedEventInterface
             }
         }
 
-        return (boolean) $changes;
+        return (bool) $changes;
     }
 }

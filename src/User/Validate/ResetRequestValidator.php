@@ -83,6 +83,6 @@ class ResetRequestValidator implements \Zend_Validate_Interface
             $this->_message = $this->translate->_('User not found or no e-mail address known or user cannot be reset.');
         }
 
-        return (boolean) ! $this->_message;
+        return (bool) ! $this->_message;
     }
 }

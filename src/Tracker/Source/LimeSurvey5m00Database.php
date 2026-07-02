@@ -5,7 +5,6 @@ namespace Gems\Tracker\Source;
 
 class LimeSurvey5m00Database extends LimeSurvey3m00Database
 {
-
     /**
      *
      * @var string class name for creating field maps

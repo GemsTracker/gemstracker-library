@@ -371,7 +371,7 @@ class StreamingExcelExport extends ExportAbstract
             if (is_int($result)) {
                 $result = (int) $result;
             } else {
-                $result = (double) $result;
+                $result = (float) $result;
             }
         } else {
             $result = $this->filterCsvInjection($result);

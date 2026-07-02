@@ -54,6 +54,6 @@ class SubjectEpisodeFilter extends EpisodeFilterAbstract
 
         $regex = '/' . str_replace(array('%', '_'), array('.*', '.{1,1}'),$this->text1) . '/i';
 
-        return (boolean) preg_match($regex, $episode->getSubject());
+        return (bool) preg_match($regex, $episode->getSubject());
     }
 }

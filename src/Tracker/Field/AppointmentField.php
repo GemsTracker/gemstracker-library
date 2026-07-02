@@ -73,9 +73,9 @@ class AppointmentField extends FieldAbstract
      * The key for the current calculation to self::$_lastActiveAppointment  and
      * self::$_lastActiveAppointmentIds
      *
-     * @var string|int|null
+     * @var string|int
      */
-    protected string|int|null $_lastActiveKey = null;
+    protected string|int|null $_lastActiveKey = '';
 
     /**
      * The format string for outputting appointments
@@ -228,7 +228,7 @@ class AppointmentField extends FieldAbstract
      */
     public function calculationStart(array $trackData): FieldAbstract
     {
-        $this->_lastActiveKey = null;
+        $this->_lastActiveKey = '';
         $this->setDefaultLastActiveKey($trackData);
         if ($this->_lastActiveKey) {
             self::$_lastActiveAppointment[$this->_lastActiveKey]    = null;
@@ -342,7 +342,10 @@ class AppointmentField extends FieldAbstract
 
     public function getLastActiveKey(): string|null
     {
-        return $this->_lastActiveKey;
+        if ($this->_lastActiveKey) {
+            return $this->_lastActiveKey;
+        }
+        return null;
     }
 
     /**

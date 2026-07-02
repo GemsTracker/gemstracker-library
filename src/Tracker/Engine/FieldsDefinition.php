@@ -646,7 +646,7 @@ class FieldsDefinition
             if ($field instanceof FieldInterface) {
                 if ($field->hasManualSetOption()) {
                     $mkey          = $field->getManualKey();
-                    $manual        = isset($fieldData[$mkey ]) ? (boolean) $fieldData[$mkey] : false;
+                    $manual        = isset($fieldData[$mkey ]) ? (bool) $fieldData[$mkey] : false;
                     $output[$mkey] = $manual ? 1 : 0;
                 } else {
                     $manual = false;
@@ -704,10 +704,10 @@ class FieldsDefinition
                 if ($field->hasManualSetOption()) {
                     $mKey = $field->getManualKey();
                     if (array_key_exists($mKey, $fieldData)) {
-                        $manual = (boolean) $fieldData[$mKey];
+                        $manual = (bool) $fieldData[$mKey];
                     }
                     if (array_key_exists($mKey, $oldFieldData)) {
-                        $oldManual = (boolean)$oldFieldData[$mKey];
+                        $oldManual = (bool)$oldFieldData[$mKey];
                     }
                 }
 

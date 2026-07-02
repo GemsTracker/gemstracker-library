@@ -141,7 +141,7 @@ class TrackSurveyOverviewSnippet extends \Zalt\Snippets\TranslatableSnippetAbstr
                 $this->trackName = $this->trackEngine->getTrackName();
             }
         }
-        return (boolean) isset($this->trackName) && parent::hasHtmlOutput();
+        return (bool) isset($this->trackName) && parent::hasHtmlOutput();
     }
 
     public static function oneLine($line)

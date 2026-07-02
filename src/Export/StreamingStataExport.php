@@ -517,7 +517,7 @@ class StreamingStataExport extends ExportAbstract
             if (is_int($result)) {
                 $result = (int) $result;
             } else {
-                $result = (double) $result;
+                $result = (float) $result;
             }
         }
 
@@ -681,7 +681,7 @@ class StreamingStataExport extends ExportAbstract
                 case Model::TYPE_NUMERIC:
                     break;
 
-                case Model::TYPE_CHILD_MODEL;
+                case Model::TYPE_CHILD_MODEL:
                     break;
 
                 //When no type set... assume string
