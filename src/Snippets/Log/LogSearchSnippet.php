@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Log;
 
+use Gems\Audit\AuditLog;
 use Gems\Config\ConfigAccessor;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
@@ -48,6 +49,8 @@ class LogSearchSnippet extends AutosearchInRespondentSnippet
         StatusMessengerInterface $messenger,
         PeriodSelectRepository $periodSelectRepository,
         protected CurrentUserRepository $currentUserRepository,
+        protected readonly AuditLog $auditLog,
+
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $configAccessor, $menuSnippetHelper, $metaModelLoader, $resultFetcher, $messenger, $periodSelectRepository);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
@@ -72,12 +75,7 @@ class LogSearchSnippet extends AutosearchInRespondentSnippet
 
         $elements[] = $this->_('Specific action');
 
-        $sql = "SELECT gls_id_action, gls_name
-                    FROM gems__log_setup
-                    WHERE gls_when_no_user = 1 OR gls_on_action = 1 OR gls_on_change = 1 OR gls_on_post = 1
-                    ORDER BY gls_name";
-
-        $elements[] = $this->_createSelectElement('gla_action', $sql, $this->_('(any action)'));
+        $elements[] = $this->_createSelectElement('gla_action', $this->auditLog->getActionOptions(), $this->_('(any action)'));
 
         $elements[] = $this->_createSelectElement(
                 'gla_organization',

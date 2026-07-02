@@ -256,8 +256,6 @@ class AuditLog
             // Delete cache value
             $this->cachedResultFetcher->getCache()->deleteItem($this->actionsCacheKey);
         }
-        $select = $this->cachedResultFetcher->getSelect('gems__log_setup');
-        $select->order(['gls_name']);
 
         try {
             $actions = $this->cachedResultFetcher->fetchAll($this->actionsCacheKey, $select, null, $this->actionsCacheTags);
@@ -270,6 +268,20 @@ class AuditLog
             error_log(__CLASS__ . '->' . __FUNCTION__ . '->' . __LINE__ . '->' . $e->getMessage());
         }
         return [];
+    }
+
+    public function getActions(): array
+    {
+        $select  = $this->cachedResultFetcher->getSelect('gems__log_setup');
+        $select->order(['gls_name']);
+
+        return $this->cachedResultFetcher->fetchAll($this->actionsCacheKey, $select, null, $this->actionsCacheTags);
+    }
+
+    public function getActionOptions(): array
+    {
+        $actions = $this->getActions();
+        return array_column($actions, 'gls_name', 'gls_id_action');
     }
 
     /**

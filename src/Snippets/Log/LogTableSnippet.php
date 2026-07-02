@@ -64,9 +64,9 @@ class LogTableSnippet extends ModelTableSnippetAbstract
             $this->columns = [];
             $br   = Html::create('br');
 
-            $this->columns[10] = ['gla_created', $br, 'gls_name'];
+            $this->columns[10] = ['gla_created', $br, 'gla_action'];
             $this->columns[20] = ['gla_message'];
-            $this->columns[30] = ['staff_name', $br, 'gla_role'];
+            $this->columns[30] = ['gla_by', $br, 'gla_role'];
             $this->columns[40] = ['respondent_name', $br, 'gla_organization'];
         }
 

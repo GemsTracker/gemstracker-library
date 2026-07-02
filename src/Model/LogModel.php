@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Gems\Model;
 
+use Gems\Audit\AuditLog;
 use Gems\Model\Type\MaskedJsonType;
+use Gems\Repository\StaffRepository;
 use Gems\User\Mask\MaskRepository;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Sql\SqlRunnerInterface;
@@ -37,34 +39,20 @@ class LogModel extends GemsMaskedModel
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
         MaskRepository $maskRepository,
+        private readonly AuditLog $auditLog,
+        private readonly StaffRepository $staffRepository,
     ) {
         parent::__construct('gems__log_activity', $metaModelLoader, $sqlRunner, $translate, $maskRepository);
 
         $metaModelLoader->setChangeFields($this->metaModel, 'gla');
 
-        $this->addTable('gems__log_setup', ['gla_action' => 'gls_id_action'])
-            ->addLeftTable('gems__respondents', ['gla_respondent_id' => 'grs_id_user'])
-            ->addLeftTable('gems__staff', ['gla_by' => 'gsf_id_user']);
+        $this->addLeftTable('gems__respondents', ['gla_respondent_id' => 'grs_id_user']);
 
         $this->addColumns();
     }
 
     private function addColumns(): void
     {
-        $this->addColumn(
-            sprintf(
-                "CASE WHEN gla_by IS NULL THEN '%s'
-                    ELSE CONCAT(
-                        COALESCE(gsf_last_name, '-'),
-                        ', ',
-                        COALESCE(CONCAT(gsf_first_name, ' '), ''),
-                        COALESCE(gsf_surname_prefix, '')
-                        )
-                    END",
-                $this->_('(no user)')
-            ),
-            'staff_name'
-        );
         $this->addColumn(
             sprintf(
                 "CASE WHEN gla_respondent_id IS NULL THEN '%s'
@@ -86,6 +74,8 @@ class LogModel extends GemsMaskedModel
      */
     public function applyBrowseSettings($detailed = false): void
     {
+
+
         $this->metaModel->resetOrder();
 
         //Not only active, we want to be able to read the log for inactive organizations too
@@ -100,15 +90,17 @@ class LogModel extends GemsMaskedModel
         $this->metaModel->set('gla_created', [
             'label' => $this->_('Date'),
         ]);
-        $this->metaModel->set('gls_name', [
+        $this->metaModel->set('gla_action', [
             'label' => $this->_('Action'),
+            'multiOptions' => $this->auditLog->getActionOptions(),
         ]);
         $this->metaModel->set('gla_organization', [
             'label' => $this->_('Organization'),
             'multiOptions' => $organizationPairs,
         ]);
-        $this->metaModel->set('staff_name', [
+        $this->metaModel->set('gla_by', [
             'label' => $this->_('Staff'),
+            'multiOptions' => $this->staffRepository->getStaff(),
         ]);
         $this->metaModel->set('gla_role', [
             'label' => $this->_('Role'),
