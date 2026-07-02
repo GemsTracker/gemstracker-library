@@ -66,7 +66,8 @@ class UserAccessTokenGenerator
             try {
                 $this->accessTokenRepository->persistNewAccessToken($accessToken);
 
-                return $accessToken;
+                // @phpstan-ignore-next-line
+                return (string) $accessToken;
             } catch (UniqueTokenIdentifierConstraintViolationException $e) {
                 if ($maxGenerationAttempts === 0) {
                     throw $e;

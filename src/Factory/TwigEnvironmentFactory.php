@@ -6,11 +6,12 @@ use Psr\Container\ContainerInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-class TwigEnvironmentFactory extends \Mezzio\Twig\TwigEnvironmentFactory
+class TwigEnvironmentFactory
 {
     public function __invoke(ContainerInterface $container): Environment
     {
-        $environment = parent::__invoke($container);
+        $factory = new \Mezzio\Twig\TwigEnvironmentFactory();
+        $environment = $factory($container);
         $loader = $environment->getLoader();
         if ($loader instanceof FilesystemLoader) {
             $namespaces = $loader->getNamespaces();
