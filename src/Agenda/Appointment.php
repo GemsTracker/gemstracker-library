@@ -278,7 +278,7 @@ class Appointment
     /**
      * The source id of the appointment
      */
-    public function getSourceId(): string|int
+    public function getSourceId(): string|int|null
     {
         return $this->data['gap_id_in_source'];
     }

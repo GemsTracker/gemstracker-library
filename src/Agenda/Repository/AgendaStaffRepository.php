@@ -27,22 +27,28 @@ class AgendaStaffRepository
      * @param int $organizationId Organization ID
      * @return int|null Last insert value
      */
-    public function createStaff(string $name, int $organizationId): int|null
+    public function createStaff(string $name, int $organizationId, string|null $sourceId = null, string|null $source = null): int|null
     {
         if (strlen($name) > 250) {
             $name = substr_replace($name, '...', 247);
         }
 
-        $table = new TableGateway('gems__agenda_staff', $this->cachedResultFetcher->getAdapter());
-        $result = $table->insert([
+        $data = [
             'gas_name' => $name,
             'gas_id_organization' => $organizationId,
             'gas_match_to' => $name,
+            'gas_id_in_source' => $sourceId,
             'gas_changed' => new Expression('NOW()'),
             'gas_changed_by' => $this->currentUserId,
             'gas_created' => new Expression('NOW()'),
             'gas_created_by' => $this->currentUserId,
-        ]);
+        ];
+        if ($sourceId !== null && $source !== null) {
+            $data['gas_source'] = $source;
+        }
+
+        $table = new TableGateway('gems__agenda_staff', $this->cachedResultFetcher->getAdapter());
+        $result = $table->insert($data);
 
         $this->cachedResultFetcher->getCache()->invalidateTags($this->staffCacheTags);
 
@@ -128,7 +134,7 @@ class AgendaStaffRepository
      * @param $create bool Should the resource be created if it is not known
      * @return int|null activity ID that was matched or null
      */
-    public function matchStaff(string $name, int $organizationId, bool $create = true): int|null
+    public function matchStaff(string $name, int $organizationId, bool $create = true, string|null $sourceId = null, string|null $source = null): int|null
     {
         $staffMembers = $this->getMatchList();
 
@@ -137,7 +143,7 @@ class AgendaStaffRepository
         }
 
         if ($create) {
-            return $this->createStaff($name, $organizationId);
+            return $this->createStaff($name, $organizationId, $sourceId, $source);
         }
 
         return null;
@@ -161,6 +167,6 @@ class AgendaStaffRepository
             }
         }
 
-        return $this->matchStaff($name, $organizationId, $create);
+        return $this->matchStaff($name, $organizationId, $create, $sourceId, $source);
     }
 }
