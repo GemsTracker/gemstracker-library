@@ -9,6 +9,11 @@ use Psr\Http\Message\ResponseInterface;
 
 class OAuthClient extends HttpClient
 {
+    private array $grants = [
+        'password',
+        'client_credentials',
+    ];
+
     public function __construct(
         public readonly string $name,
         array $config,
@@ -31,7 +36,10 @@ class OAuthClient extends HttpClient
             if ($this->oauthClientRepository->accessTokenIsValid($this->name)) {
                 return $this->oauthClientRepository->getAccessToken($this->name);
             }
-            if ($this->oauthClientRepository->refreshTokenIsValid($this->name)) {
+
+            $useRefreshToken = $this->config['use_refresh_token'] ?? true;
+
+            if ($useRefreshToken && $this->oauthClientRepository->refreshTokenIsValid($this->name)) {
                 return $this->getNewAccessTokenFromRefreshToken($this->oauthClientRepository->getRefreshToken($this->name));
             }
         }
@@ -47,8 +55,7 @@ class OAuthClient extends HttpClient
     protected function getNewAccessToken(): string|null
     {
         if ($this->config && isset($this->config['credentials'], $this->config['credentials']['grant_type'])) {
-            if ($this->config['credentials']['grant_type'] === 'password') {
-
+            if (in_array($this->config['credentials']['grant_type'], $this->grants)) {
                 $options = [
                     'form_params' => $this->config['credentials'],
                 ];
@@ -81,7 +88,7 @@ class OAuthClient extends HttpClient
                 $refreshInterval = $this->config['refresh_token_interval'];
             }
 
-            $this->oauthClientRepository->setAccessToken($response['access_token'], $response['expires_in'], $refreshToken, $refreshInterval);
+            $this->oauthClientRepository->setAccessToken($this->name, $response['access_token'], $response['expires_in'], $refreshToken, $refreshInterval);
 
             return $response['access_token'];
         }
@@ -95,7 +102,7 @@ class OAuthClient extends HttpClient
     protected function getNewAccessTokenFromRefreshToken(string $refreshToken): string|null
     {
         if ($this->config && isset($this->config['credentials'], $this->config['credentials']['grant_type'])) {
-            if ($this->config['credentials']['grant_type'] === 'password') {
+            if (in_array($this->config['credentials']['grant_type'], $this->grants)) {
 
                 $options = [
                     'form_params' => $this->config['credentials'],
