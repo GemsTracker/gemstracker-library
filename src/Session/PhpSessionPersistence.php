@@ -2,14 +2,16 @@
 
 namespace Gems\Session;
 
+use Mezzio\Session\InitializePersistenceIdInterface;
 use Mezzio\Session\Persistence\CacheHeadersGeneratorTrait;
 use Mezzio\Session\Persistence\SessionCookieAwareTrait;
 use Mezzio\Session\Session;
 use Mezzio\Session\SessionInterface;
+use Mezzio\Session\SessionPersistenceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PhpSessionPersistence extends \Mezzio\Session\Ext\PhpSessionPersistence
+class PhpSessionPersistence  implements InitializePersistenceIdInterface, SessionPersistenceInterface
 {
     use CacheHeadersGeneratorTrait;
     use SessionCookieAwareTrait;
