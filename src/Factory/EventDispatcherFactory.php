@@ -20,12 +20,12 @@ class EventDispatcherFactory implements FactoryInterface
         if (isset($config['events'])) {
             if (isset($config['events']['subscribers'])) {
                 foreach($config['events']['subscribers'] as $subscriberClass) {
-                    if ($container->has($subscriberClass)) {
+                    /*if ($container->has($subscriberClass)) {
                         $subscriber = $container->get($subscriberClass);
                     } else {
                         $subscriber = new $subscriberClass;
-                    }
-                    $event->addSubscriber($subscriber);
+                    }*/
+                    $event->addLazySubscriber($subscriberClass);
                 }
             }
             if (isset($config['events']['listeners'])) {
@@ -39,8 +39,14 @@ class EventDispatcherFactory implements FactoryInterface
 
                         if (is_string($listenerCallable)) {
                             if (class_exists($listenerCallable)) {
-                                $listenerClass = $container->get($listenerCallable);
-                                $event->addListener($eventName, $listenerClass, $priority);
+                                //$listenerClass = $container->get($listenerCallable);
+                                $event->addListener(
+                                    $eventName,
+                                    static function (...$args) use ($container, $listenerCallable) {
+                                        return $container->get($listenerCallable)(...$args);
+                                    },
+                                    $priority
+                                );
                                 continue;
                             }
                             if (is_callable($listenerCallable)) {
