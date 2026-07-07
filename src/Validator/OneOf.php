@@ -84,7 +84,7 @@ class OneOf extends \Laminas\Validator\AbstractValidator
         $this->setValue((string) $value);
 
         $fieldSet = isset($context[$this->fieldName]) && $context[$this->fieldName];
-        $valueSet = (boolean) $value;
+        $valueSet = (bool) $value;
 
         if ($valueSet && (! $fieldSet))  {
             return true;

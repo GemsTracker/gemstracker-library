@@ -844,7 +844,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      */
     public function hasTracks($patientId, $organizationId, $respondentId = null, $active = false)
     {
-        return (boolean) $this->countTracks($patientId, $organizationId, $respondentId, $active);
+        return (bool) $this->countTracks($patientId, $organizationId, $respondentId, $active);
     }
 
     /**

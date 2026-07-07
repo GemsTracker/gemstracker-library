@@ -150,7 +150,6 @@ class LimeSurvey3m00Database extends SourceAbstract
         Loggers $loggers,
         protected readonly HelperAdapter $cache,
         protected readonly Locale $locale,
-
         protected readonly CurrentUrlRepository $currentUrlRepository,
     ) {
         parent::__construct($_sourceData, $_gemsResultFetcher, $translate, $tokenLibrary, $tracker, $valueEncryptor, $config);

@@ -47,7 +47,7 @@ class CheckTrackImportTask extends \MUtil\Task\TaskAbstract
                 $batch->addMessage($this->_('No "track" data found in import file.'));
                 break;
 
-            case 1;
+            case 1:
                 $trackData = reset($tracksData);
                 $lineNr    = key($tracksData);
 

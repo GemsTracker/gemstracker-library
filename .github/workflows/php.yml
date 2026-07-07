@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  phpunit:
+  dbunit:
 
     runs-on: ubuntu-latest
 
@@ -31,7 +31,51 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: COMPOSER_ROOT_VERSION=2.x-dev composer install --prefer-dist --no-progress
+
+      - name: Run phpunit
+        run: vendor/bin/phpunit
+
+  phpunit:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4', '8.5']
+
+    services:
+      mysql:
+        image: "mysql:8.0"
+        env:
+          MYSQL_DATABASE: gems_test
+          MYSQL_USER: gems
+          MYSQL_PASSWORD: test
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
     - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: dom, curl, json, libxml, mbstring
+        coverage: xdebug
 
     - name: Cache Composer packages
       id: composer-cache

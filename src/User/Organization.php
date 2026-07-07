@@ -145,7 +145,7 @@ class Organization extends CachedArrayTargetAbstract
      */
     public function canCreateRespondents()
     {
-        return (boolean) $this->_get('gor_add_respondents');
+        return (bool) $this->_get('gor_add_respondents');
     }
 
     /**
@@ -451,7 +451,7 @@ class Organization extends CachedArrayTargetAbstract
             $siteId = null;
         }
 
-        if (isset($this->sites[$siteId])) {
+        if ($siteId && isset($this->sites[$siteId])) {
             return $this->sites[$siteId];
         }
 

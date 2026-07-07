@@ -47,7 +47,7 @@ class CheckVersionImportTask extends \MUtil\Task\TaskAbstract
                 // $batch->addMessage($this->_('No "version" data found in import file.'));
                 // break;
 
-            case 1;
+            case 1:
                 break;
 
             default:

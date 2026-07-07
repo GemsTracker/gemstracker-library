@@ -117,7 +117,7 @@ abstract class CachedArrayTargetAbstract extends \Gems\Registry\TargetAbstract
      */
     protected function _has($name)
     {
-        return (boolean) isset($this->_data[$name]);
+        return (bool) isset($this->_data[$name]);
     }
 
     /**
@@ -125,7 +125,7 @@ abstract class CachedArrayTargetAbstract extends \Gems\Registry\TargetAbstract
      */
     protected function _hasCacheId()
     {
-        return (boolean) $this->_id;
+        return (bool) $this->_id;
     }
 
     /**

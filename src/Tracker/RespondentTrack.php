@@ -1451,7 +1451,7 @@ class RespondentTrack
         $fieldsChanged    = $fieldDef->changed;
 
         $changes       = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
-        $fieldsChanged = (boolean) $changes;
+        $fieldsChanged = (bool) $changes;
 
         $this->handleFieldUpdate($oldFieldData);
 

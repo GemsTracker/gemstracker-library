@@ -313,7 +313,7 @@ class MaskStore extends \Gems\Loader\TargetLoaderAbstract
         } else {
             $compiled = $this->_compiledNormalModelSettings;
         }
-        // \MUtil\EchoOut\EchoOut::track($hideWhollyMasked, (boolean) $compiled);
+        // \MUtil\EchoOut\EchoOut::track($hideWhollyMasked, (bool) $compiled);
         if (! is_array($compiled)) {
             $compiled = [];
             foreach ($this->_settings as $name => $setting) {

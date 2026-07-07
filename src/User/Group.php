@@ -223,7 +223,7 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function isActive()
     {
-        return (boolean) $this->_get('ggp_group_active');
+        return (bool) $this->_get('ggp_group_active');
     }
 
     /**

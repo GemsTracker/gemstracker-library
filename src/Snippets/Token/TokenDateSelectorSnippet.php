@@ -110,6 +110,6 @@ class TokenDateSelectorSnippet extends \Zalt\Snippets\SnippetAbstract
      */
     public function hasHtmlOutput(): bool
     {
-        return (boolean) $this->dateSelector;
+        return (bool) $this->dateSelector;
     }
 }

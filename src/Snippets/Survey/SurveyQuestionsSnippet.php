@@ -255,7 +255,7 @@ class SurveyQuestionsSnippet extends TableSnippetAbstract
         }
         // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->data, true) . "\n", FILE_APPEND);
 
-        return (boolean) $this->data;
+        return (bool) $this->data;
     }
 
     public function showAnswers($answers)

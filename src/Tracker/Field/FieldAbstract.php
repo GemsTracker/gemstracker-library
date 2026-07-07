@@ -301,7 +301,7 @@ abstract class FieldAbstract implements FieldInterface
      */
     public function hasCalculation(): bool
     {
-        return (boolean) $this->fieldDefinition['gtf_calculate_using'];
+        return (bool) $this->fieldDefinition['gtf_calculate_using'];
     }
 
     /**

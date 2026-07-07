@@ -101,7 +101,7 @@ class EditTrackSnippet extends EditTrackSnippetAbstract
 
         } else {
             // Check if the input has changed, i.e. one of the dates may have changed
-            $refresh = (boolean) $changed;
+            $refresh = (bool) $changed;
         }
 
         if ($refresh) {
