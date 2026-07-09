@@ -24,7 +24,6 @@ class PrefixedUnderscoreNamingStrategy implements NamingStrategyInterface
         if (! isset($this->alternative)) {
             $this->alternative = new UnderscoreNamingStrategy();
         }
-    )
         return $this->alternative->hydrate($name, $data);
     }
 
