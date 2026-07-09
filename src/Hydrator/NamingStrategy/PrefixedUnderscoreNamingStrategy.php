@@ -7,7 +7,7 @@ use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 
 class PrefixedUnderscoreNamingStrategy implements NamingStrategyInterface
 {
-    private readonly UnderscoreNamingStrategy $alternative;
+    private UnderscoreNamingStrategy $alternative;
 
     public function __construct(
         protected string|null $prefix = null,
@@ -21,6 +21,10 @@ class PrefixedUnderscoreNamingStrategy implements NamingStrategyInterface
         if ($this->prefix && str_starts_with($name, $this->prefix)) {
             $name = substr($name, strlen($this->prefix));
         }
+        if (! isset($this->alternative)) {
+            $this->alternative = new UnderscoreNamingStrategy();
+        }
+    )
         return $this->alternative->hydrate($name, $data);
     }
 
@@ -28,6 +32,9 @@ class PrefixedUnderscoreNamingStrategy implements NamingStrategyInterface
     {
         if ($this->prefix) {
             return $this->prefix . $this->alternative->extract($name, $object);
+        }
+        if (! isset($this->alternative)) {
+            $this->alternative = new UnderscoreNamingStrategy();
         }
         return $this->alternative->extract($name, $object);
     }
