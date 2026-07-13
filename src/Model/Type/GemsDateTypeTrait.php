@@ -11,8 +11,11 @@ declare(strict_types=1);
 
 namespace Gems\Model\Type;
 
+use DateTimeInterface;
+use Carbon\Carbon;
 use Laminas\Db\Sql\Expression;
 use Zalt\Base\TranslateableTrait;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Model\Type\AbstractDateType;
 use Zalt\Validator\Model\Date\IsDateModelValidator;
 use Zend_Db_Expr;
@@ -37,6 +40,26 @@ trait GemsDateTypeTrait
         return parent::checkValue($value);
     }
 
+    public function format($value, string $name, MetaModelInterface $metaModel)
+    {
+        if (! $value instanceof DateTimeInterface) {
+            $value = self::toDate(
+                $value,
+                $metaModel->getWithDefault($name, 'storageFormat', $this->storageFormat),
+                $metaModel->getWithDefault($name, 'dateFormat', $this->dateFormat),
+                false);
+        }
+        if ($value instanceof DateTimeInterface) {
+            $carbon = Carbon::instance($value)->locale($this->translate->getLocale());
+            return $carbon->translatedFormat($metaModel->getWithDefault($name, 'dateFormat', $this->dateFormat));
+        }
+        if (! $value) {
+            return $this->getNullDisplayValue($name, $metaModel);
+        }
+
+        return $value;
+    }
+
     protected function getExtraSettings(): array
     {
         return [
@@ -45,4 +68,6 @@ trait GemsDateTypeTrait
             IsDateModelValidator::$notDateMessageKey => $this->_("'%value%' is not a valid date in the format '%format%'."),
             ];
     }
+
+
 }
