@@ -76,6 +76,8 @@ class Tracker implements TrackerInterface
     public const DB_DATE_FORMAT = 'Y-m-d';
     public const DB_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
+    protected string $_defaultSourceClass = 'LimeSurvey5m00Database';
+
     /**
      *
      * @var array of \Gems\Tracker\RespondentTrack
@@ -90,6 +92,8 @@ class Tracker implements TrackerInterface
     protected array $_sourceClasses = [
         'LimeSurvey3m00Database' => 'Lime Survey 3.00 DB',
         'LimeSurvey5m00Database' => 'Lime Survey 5.00 DB',
+        'LimeSurvey3m00SharedSource' => 'Shared Lime Survey 3.00 DB',
+        'LimeSurvey5m00SharedSource' => 'Shared Lime Survey 5.00 DB',
     ];
 
     /**
@@ -393,6 +397,11 @@ class Tracker implements TrackerInterface
          * @var AskTokenForm
          */
         return $this->overLoader->create('Tracker\\Form\\AskTokenForm', $args);
+    }
+
+    public function getDefaultSourceClass(): string
+    {
+        return $this->_defaultSourceClass;
     }
 
     /**

@@ -21,6 +21,7 @@ class PrefixedUnderscoreNamingStrategy implements NamingStrategyInterface
         if ($this->prefix && str_starts_with($name, $this->prefix)) {
             $name = substr($name, strlen($this->prefix));
         }
+        // Should not occur, but it sometimes happens, so it's better to test
         if (! isset($this->alternative)) {
             $this->alternative = new UnderscoreNamingStrategy();
         }
@@ -32,6 +33,7 @@ class PrefixedUnderscoreNamingStrategy implements NamingStrategyInterface
         if ($this->prefix) {
             return $this->prefix . $this->alternative->extract($name, $object);
         }
+        // Should not occur, but it sometimes happens, so it's better to test
         if (! isset($this->alternative)) {
             $this->alternative = new UnderscoreNamingStrategy();
         }

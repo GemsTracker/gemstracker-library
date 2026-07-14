@@ -112,15 +112,22 @@ class StaffModel extends GemsJoinModel
 
     protected function _addLoginSettings(bool $editing): void
     {
-        if ($this->currentUser->hasPrivilege('pr.staff.see.all') || (! $editing)) {
-            // Select organization
+        if (null === $this->currentUser) {
             $options = $this->organizationRepository->getOrganizations();
+            $organizations = $this->organizationRepository->getOrganizations();
+            $organization  = $this->organizationRepository->getOrganization(array_key_first($organizations));
         } else {
-            $options = $this->currentUser->getAllowedOrganizations();
+            if ($this->currentUser->hasPrivilege('pr.staff.see.all') || (! $editing)) {
+                // Select organization
+                $options = $this->organizationRepository->getOrganizations();
+            } else {
+                $options = $this->currentUser->getAllowedOrganizations();
+            }
+            $organization = $this->currentUser->getCurrentOrganization();
         }
         $this->metaModel->set('gsf_id_organization', [
             'label' => $this->_('Organization'),
-            'default' => $this->currentUser->getCurrentOrganizationId(),
+            'default' => $organization->getId(),
             'multiOptions' => $options,
             'required' => true,
         ]);
@@ -134,7 +141,7 @@ class StaffModel extends GemsJoinModel
         } else {
             $this->metaModel->set('gul_user_class', [
                 'label' => $this->_('User Definition'),
-                'default' => $this->currentUser->getCurrentOrganization()->getDefaultUserClass(),
+                'default' => $organization->getDefaultUserClass(),
                 'multiOptions' => $defaultStaffDefinitions,
                 'order' => $this->metaModel->getOrder('gsf_id_organization') + 1,
                 'required' => true,
@@ -286,8 +293,8 @@ class StaffModel extends GemsJoinModel
 
         $this->metaModel->set('gsf_id_primary_group', [
             'label' => $this->_('Primary group'),
-            'default' => $this->currentUser->getDefaultNewStaffGroup(),
-            'multiOptions' => $editing ? $this->currentUser->getAllowedStaffGroups() : $this->groupRepository->getStaffGroupOptions()
+            'default' => $this->currentUser?->getDefaultNewStaffGroup(),
+            'multiOptions' => $editing ? $this->currentUser?->getAllowedStaffGroups() : $this->groupRepository->getStaffGroupOptions()
         ]);
 
         if ($detailed) {
@@ -328,7 +335,7 @@ class StaffModel extends GemsJoinModel
         ]);
 
 
-        $organizations = $this->currentUser->getAllowedOrganizations();
+        $organizations = $this->currentUser?->getAllowedOrganizations() ?? [];
         if (1 == count($organizations)) {
             $this->metaModel->set('gsf_id_organization', [
                 'elementClass' => 'Exhibitor',

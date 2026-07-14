@@ -225,7 +225,7 @@ class Organization extends CachedArrayTargetAbstract
 
     public function getAfterTrackChangeRoute(): string
     {
-        return $this->get('gor_track_change_route', $this->defaultTrackChangeRoute);
+        return $this->get('gor_track_change_route') ?? $this->defaultTrackChangeRoute;
     }
 
     /**

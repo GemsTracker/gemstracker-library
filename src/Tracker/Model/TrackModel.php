@@ -82,9 +82,11 @@ class TrackModel extends SqlTableModel
             ),
             'translate' => true
         ]);
+        $engines = $this->tracker->getTrackEngineList($detailed);
         $this->metaModel->set('gtr_track_class', [
             'label' => $this->translate->_('Track Engine'),
-            'multiOptions' => $this->tracker->getTrackEngineList($detailed)
+            'default' => array_key_first($engines),
+            'multiOptions' => $engines
         ]);
         $this->metaModel->set('gtr_survey_rounds', ['label' => $this->translate->_('Surveys')]);
 

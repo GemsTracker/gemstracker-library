@@ -28,7 +28,7 @@ class ColorPicker extends \ZendX_JQuery_Form_Element_ColorPicker
      * - \Zend_Config: \Zend_Config with options for configuring element
      *
      * @param  string|array|\Zend_Config $spec
-     * @param  array|\Zend_Config $options
+     * @param  array|\Zend_Config|null $options
      * @return void
      * @throws \Zend_Form_Exception if no element name after initialization
      */

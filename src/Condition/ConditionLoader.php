@@ -122,6 +122,7 @@ class ConditionLoader
                 $conditionList[$conditionClassName] = $condition->getName();
             }
         }
+        asort($conditionList);
 
         $this->cache->setCacheItem($key, $conditionList);
 

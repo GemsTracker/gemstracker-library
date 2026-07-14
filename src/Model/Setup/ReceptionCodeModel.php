@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\Model\Setup;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Handlers\Setup\ReceptionCodeHandler;
 use Gems\Html;
 use Gems\Model\MetaModelLoader;
@@ -35,6 +36,7 @@ class ReceptionCodeModel extends \Gems\Model\SqlTableModel implements ApplyActio
         protected readonly MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner, 
         TranslatorInterface $translate,
+        protected readonly ConfigAccessor $configAccessor,
         protected readonly ReceptionCodeLibrary $receptionCodeLibrary,
         protected readonly Translated $translateUtil,
     )
@@ -60,7 +62,17 @@ class ReceptionCodeModel extends \Gems\Model\SqlTableModel implements ApplyActio
                 'value' => Html::create('h4', $this->_('Additional actions')),
                 ]);
         }
-        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $action->isDetailed());
+        // Maybe throw this out
+        $newConfig = [
+            'locale' =>  [
+                'default' => 'en',
+                'availableLocales' => array_keys($this->configAccessor->getLocales()),
+            ],
+        ];
+
+        // dump($newConfig->getLocales(), $newConfig->getDefaultLocale());
+
+        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $action->isDetailed(), $newConfig);
     }
 
     public function applySettings()
