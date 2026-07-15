@@ -43,10 +43,10 @@ class UnbufferedResultFetcher extends ResultFetcher
     {
         $resource = $this->db->getDriver()->getConnection()->getResource();
         if (defined('\\Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY')) {
-            // @phpstan-ignore classConstant.notFound
+            // @phpstan-ignore class.notFound
             $attribute = \Pdo\Mysql::ATTR_USE_BUFFERED_QUERY;
         } else {
-            $attribute = \Pdo::MYSQL_ATTR_USE_BUFFERED_QUERY;
+            $attribute = \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY;
         }
         $query_buffered = false;
         $connection_buffered = $resource->getAttribute($attribute);
