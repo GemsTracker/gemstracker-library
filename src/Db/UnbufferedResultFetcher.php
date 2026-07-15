@@ -6,6 +6,7 @@ use Gems\Exception;
 use Laminas\Db\Adapter\Driver\Mysqli\Mysqli;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 use Laminas\Db\Sql\Select;
+use Pdo\Mysql;
 
 /**
  * Variant of the ResultFetcher that does unbuffered queries. Use this if the
@@ -42,15 +43,20 @@ class UnbufferedResultFetcher extends ResultFetcher
     private function pdo_query(Select|string $select, ?array $params = null)
     {
         $resource = $this->db->getDriver()->getConnection()->getResource();
+        if (defined('\\Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY')) {
+            $attribute = Mysql::ATTR_USE_BUFFERED_QUERY;
+        } else {
+            $attribute = \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY;
+        }
         $query_buffered = false;
-        $connection_buffered = $resource->getAttribute(\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY);
+        $connection_buffered = $resource->getAttribute($attribute);
 
         if ($query_buffered != $connection_buffered) {
-            $this->db->getDriver()->getConnection()->getResource()->setAttribute(\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY, $query_buffered);
+            $this->db->getDriver()->getConnection()->getResource()->setAttribute($attribute, $query_buffered);
         }
         $result = parent::query($select, $params);
         if ($query_buffered != $connection_buffered) {
-            $this->db->getDriver()->getConnection()->getResource()->setAttribute(\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY, $connection_buffered);
+            $this->db->getDriver()->getConnection()->getResource()->setAttribute($attribute, $connection_buffered);
         }
 
         return $result;

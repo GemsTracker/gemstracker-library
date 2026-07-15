@@ -47,6 +47,7 @@
         "ext-mbstring": "*",
         "ext-mysqli": "*",
         "ext-openssl": "*",
+        "ext-pdo": "*",
         "ext-soap": "*",
         "ext-xmlreader": "*",
         "ext-xmlwriter": "*",
