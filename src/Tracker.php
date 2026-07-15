@@ -1038,17 +1038,6 @@ class Tracker implements TrackerInterface
         if (! $batch->isLoaded()) {
 
             $batch->addTask('Tracker\\LoadTokensFor', 'Tracker\\CheckTokenCompletion', 0, $userId);
-//            // Process one row at a time to prevent out of memory errors for really big resultsets.
-//            $resultSet = $this->unbufferedResultFetcher->query($tokenSelect->getSelect());
-//            if ($resultSet instanceof ResultSet) {
-//                while ($resultSet->valid()) {
-//                    $tokenData = $resultSet->current();
-//                    $tokenId = $tokenData['gto_id_token'];
-//                    $batch->setTask('Tracker\\CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
-//                    $batch->addToCounter('tokens');
-//                    $resultSet->next();
-//                }
-//            }
         }
 
         return $batch;
