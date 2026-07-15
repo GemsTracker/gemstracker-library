@@ -85,7 +85,7 @@ class DbTranslationRepository
 
         foreach ($data as &$row) {
             $key = $row[$keyField] ?? false;
-            if ($key) {
+            if (strlen($row[$keyField])) {
                 $row = $this->translateRow($tableName, $key, $row);
             }
         }
