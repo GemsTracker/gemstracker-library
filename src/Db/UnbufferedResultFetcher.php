@@ -43,14 +43,14 @@ class UnbufferedResultFetcher extends ResultFetcher
     {
         $resource = $this->db->getDriver()->getConnection()->getResource();
         $query_buffered = false;
-        $connection_buffered = $resource->getAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY);
+        $connection_buffered = $resource->getAttribute(\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY);
 
         if ($query_buffered != $connection_buffered) {
-            $this->db->getDriver()->getConnection()->getResource()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $query_buffered);
+            $this->db->getDriver()->getConnection()->getResource()->setAttribute(\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY, $query_buffered);
         }
         $result = parent::query($select, $params);
         if ($query_buffered != $connection_buffered) {
-            $this->db->getDriver()->getConnection()->getResource()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $connection_buffered);
+            $this->db->getDriver()->getConnection()->getResource()->setAttribute(\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY, $connection_buffered);
         }
 
         return $result;

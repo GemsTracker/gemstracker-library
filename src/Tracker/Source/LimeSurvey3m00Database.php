@@ -146,7 +146,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         TokenLibrary $tokenLibrary,
         Tracker $tracker,
         ValueEncryptor $valueEncryptor,
-        array $config,
+        protected readonly array $config,
         Loggers $loggers,
         protected readonly HelperAdapter $cache,
         protected readonly Locale $locale,

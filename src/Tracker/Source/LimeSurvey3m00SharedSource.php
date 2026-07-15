@@ -141,7 +141,7 @@ class LimeSurvey3m00SharedSource extends LimeSurvey3m00Database
      */
     protected function _getReturnURI(Organization|null $organization = null): string
     {
-        return substr($this->currentUrlRepository->getCurrentUrl(), 0, -strlen($this->_getSite())) . '{TOKEN:ATTRIBUTE_5}/ask/return/' . MetaModelInterface::REQUEST_ID . '/{substr(TOKEN,strlen(TOKEN:ATTRIBUTE_5))}';
+        return substr($this->currentUrlRepository->getCurrentUrl(), 0, -strlen($this->_getSite())) . '{TOKEN:ATTRIBUTE_5}/ask/return/{substr(TOKEN,strlen(TOKEN:ATTRIBUTE_5))}';
     }
 
     /**
@@ -153,7 +153,7 @@ class LimeSurvey3m00SharedSource extends LimeSurvey3m00Database
     {
         return sprintf(
             $this->translate->_('Back to %s', [], null, $language),
-            $this->_getProjectName()
+            '{TOKEN:ATTRIBUTE_6}'
         );
     }
 }
