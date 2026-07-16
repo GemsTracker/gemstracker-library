@@ -3,6 +3,7 @@
 namespace Gems\Db\Migration;
 
 use Gems\Db\Databases;
+use Gems\Db\ResponseDbAdapter;
 use Gems\Db\ResultFetcher;
 use Gems\Model\IteratorModel;
 use Gems\Model\MetaModelLoader;
@@ -103,29 +104,33 @@ abstract class MigrationRepositoryAbstract
     protected function getResourceDirectories(string $resource): array
     {
         $resourceDirectories = $this->config['migrations'][$resource] ?? [];
-        if (isset($this->config['responseData']['enabled'], $this->config['responseData']['migrations'][$resource]) && $this->config['responseData']['enabled'] === true) {
-            $resourceDirectories = array_merge($resourceDirectories, $this->config['responseData']['migrations'][$resource]);
-        }
-
-        foreach($resourceDirectories as $key=>$resourceDirectory) {
+        $resources = [];
+        foreach ($resourceDirectories as $key => $resourceDirectory) {
             if (is_string($resourceDirectory)) {
                 if (is_dir($resourceDirectory)) {
-                    $resourceDirectories[$key] = [
+                    $resources[$key] = [
                         'db' => $this->defaultDatabase,
                         'path' => $resourceDirectory,
                         'module' => 'gems',
                     ];
-                    continue;
                 }
-                // Dir does not exist
-                unset($resourceDirectories[$key]);
-            }
-            if (isset($resourceDirectory['class'])) {
-                // not a dir, but a php class
-                unset($resourceDirectories[$key]);
             }
         }
-
-        return $resourceDirectories;
+        if (isset($this->config['responseData']['enabled'], $this->config['responseData']['migrations'][$resource]) && $this->config['responseData']['enabled'] === true) {
+            // $resourceDirectories = array_merge($resourceDirectories, $this->config['responseData']['migrations'][$resource]);
+            $db = ResponseDbAdapter::class;
+            foreach ($this->config['responseData']['migrations'][$resource] as $key => $resourceDirectory) {
+                if (is_string($resourceDirectory)) {
+                    if (is_dir($resourceDirectory)) {
+                        $resources[$key] = [
+                            'db' => $db,
+                            'path' => $resourceDirectory,
+                            'module' => 'gemsdata',
+                        ];
+                    }
+                }
+            }
+        }
+        return $resources;
     }
 }
