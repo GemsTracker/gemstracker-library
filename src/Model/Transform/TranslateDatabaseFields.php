@@ -110,7 +110,7 @@ class TranslateDatabaseFields extends \Zalt\Model\Transform\ModelTransformerAbst
 
         $keys = [];
         foreach ($this->tableKeys[$tableName] as $field) {
-            if (isset($row[$field])) {
+            if (isset($row[$field]) && strlen($row[$field])) {
                 $keys[] = $row[$field];
             } else {
                 return null;
@@ -174,7 +174,7 @@ class TranslateDatabaseFields extends \Zalt\Model\Transform\ModelTransformerAbst
         }
 
         $keys = $this->getTableKeyForRow($tableName, $field, $row);
-        if ($keys) {
+        if ($keys || strlen($keys ?? '')) {
             return $this->getTranslationKey($tableName, $field, $keys);
         }
 

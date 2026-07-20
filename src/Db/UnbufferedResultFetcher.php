@@ -42,15 +42,21 @@ class UnbufferedResultFetcher extends ResultFetcher
     private function pdo_query(Select|string $select, ?array $params = null)
     {
         $resource = $this->db->getDriver()->getConnection()->getResource();
+        if (defined('\\Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY')) {
+            // @phpstan-ignore class.notFound
+            $attribute = \Pdo\Mysql::ATTR_USE_BUFFERED_QUERY;
+        } else {
+            $attribute = \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY;
+        }
         $query_buffered = false;
-        $connection_buffered = $resource->getAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY);
+        $connection_buffered = $resource->getAttribute($attribute);
 
         if ($query_buffered != $connection_buffered) {
-            $this->db->getDriver()->getConnection()->getResource()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $query_buffered);
+            $this->db->getDriver()->getConnection()->getResource()->setAttribute($attribute, $query_buffered);
         }
         $result = parent::query($select, $params);
         if ($query_buffered != $connection_buffered) {
-            $this->db->getDriver()->getConnection()->getResource()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $connection_buffered);
+            $this->db->getDriver()->getConnection()->getResource()->setAttribute($attribute, $connection_buffered);
         }
 
         return $result;

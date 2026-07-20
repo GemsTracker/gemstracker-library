@@ -174,7 +174,7 @@ class EditRoundSnippetAbstract extends ModelFormSnippetAbstract
 
         // Check the survey name
         $surveys = $this->trackDataRepository->getAllSurveys(false);
-        if (isset($surveys[$this->formData['gro_id_survey']])) {
+        if (isset($this->formData['gro_id_survey'], $surveys[$this->formData['gro_id_survey']])) {
             $this->formData['gro_survey_name'] = $surveys[$this->formData['gro_id_survey']];
         } else {
             // Currently required

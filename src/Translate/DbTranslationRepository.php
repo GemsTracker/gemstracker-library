@@ -87,6 +87,8 @@ class DbTranslationRepository
             $key = $row[$keyField] ?? false;
             if ($key) {
                 $row = $this->translateRow($tableName, $key, $row);
+            } elseif (is_array($row) && 0 == $row[$keyField]) {
+                $row = $this->translateRow($tableName, "0", $row);
             }
         }
         return $data;

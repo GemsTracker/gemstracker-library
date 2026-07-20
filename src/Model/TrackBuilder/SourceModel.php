@@ -50,10 +50,9 @@ class SourceModel extends SqlTableModel
         ]);
 
         $sourceClasses = $this->tracker->getSourceClasses();
-        end($sourceClasses);
         $this->metaModel->set('gso_ls_class', [
             'label' => $this->_('Adaptor class'),
-            'default' => key($sourceClasses),
+            'default' => $this->tracker->getDefaultSourceClass(),
             'multiOptions' => $sourceClasses
         ]);
 

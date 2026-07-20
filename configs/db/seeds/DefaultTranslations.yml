@@ -1,0 +1,109 @@
+gems__translations:
+  -
+    gtrs_id: 100000
+    gtrs_table: "gems__consents"
+    gtrs_field: "gco_description"
+    gtrs_keys: "Yes"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Ja"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100001
+    gtrs_table: "gems__consents"
+    gtrs_field: "gco_description"
+    gtrs_keys: "No"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Nee"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100002
+    gtrs_table: "gems__consents"
+    gtrs_field: "gco_description"
+    gtrs_keys: "Unknown"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Onbekend"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100003
+    gtrs_table: "gems__mail_codes"
+    gtrs_field: "gmc_mail_to_target"
+    gtrs_keys: "100"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Ja"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100004
+    gtrs_table: "gems__mail_codes"
+    gtrs_field: "gmc_mail_to_target"
+    gtrs_keys: "0"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Nee"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100005
+    gtrs_table: "gems__mail_codes"
+    gtrs_field: "gmc_mail_cause_target"
+    gtrs_keys: "0"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Niet mailen"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100006
+    gtrs_table: "gems__reception_codes"
+    gtrs_field: "grc_description"
+    gtrs_keys: "moved"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Verplaatst naar nieuwe vragenlijst"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100007
+    gtrs_table: "gems__reception_codes"
+    gtrs_field: "grc_description"
+    gtrs_keys: "paper"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Op papier ingevuld"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100008
+    gtrs_table: "gems__reception_codes"
+    gtrs_field: "grc_description"
+    gtrs_keys: "redo"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Antwoorden aanpassen"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100009
+    gtrs_table: "gems__reception_codes"
+    gtrs_field: "grc_description"
+    gtrs_keys: "refused"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Vragenlijst geweigerd"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100010
+    gtrs_table: "gems__reception_codes"
+    gtrs_field: "grc_description"
+    gtrs_keys: "retract"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Consent ingetrokken"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1
+  -
+    gtrs_id: 100011
+    gtrs_table: "gems__reception_codes"
+    gtrs_field: "grc_description"
+    gtrs_keys: "stop"
+    gtrs_iso_lang: "nl"
+    gtrs_translation: "Deelname gestopt"
+    gtrs_changed_by: 1
+    gtrs_created_by: 1

@@ -27,6 +27,10 @@ class GemsLogRespondentConsentsPatch extends PatchAbstract
     public function up(): array
     {
         $statements = [];
+        if ($this->databaseInfo->tableHasForeignKey('gems__log_respondent_consents', 'glrc_id_user', 'gems__respondents', 'grs_id_user')) {
+            $name = $this->databaseInfo->getForeignKeyName('gems__log_respondent_consents', 'glrc_id_user', 'gems__respondents', 'grs_id_user');
+            $statements[] = "ALTER TABLE gems__log_respondent_consents DROP FOREIGN KEY $name";
+        }
         if ($this->databaseInfo->tableHasConstraint('gems__log_respondent_consents', 'glrc_id_user')) {
             $statements[] = 'ALTER TABLE gems__log_respondent_consents DROP KEY glrc_id_user';
         }

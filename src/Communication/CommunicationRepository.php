@@ -19,6 +19,7 @@ use Gems\Mail\UserPasswordMailFields;
 use Gems\Repository\CommFieldRepository;
 use Gems\Tracker\Respondent;
 use Gems\Tracker\Token;
+use Gems\Translate\CachedDbTranslationRepository;
 use Gems\User\Organization;
 use Gems\User\User;
 use Laminas\Db\Sql\Expression;
@@ -57,6 +58,7 @@ class CommunicationRepository
         MailBouncer $mailBouncer,
         protected array $config,
         protected ContainerInterface $container,
+        protected readonly CachedDbTranslationRepository $dbTranslationRepository,
     )
     {
         if ($this->eventDispatcher instanceof EventDispatcher) {
@@ -284,25 +286,26 @@ class CommunicationRepository
     public function getRespondentMailCodes(): array
     {
         $select = $this->cachedResultFetcher->getSelect('gems__mail_codes');
-        $select->columns([
-            'gmc_id',
-            'gmc_mail_to_target',
-        ])->where([
-            'gmc_for_respondents' => 1,
-            'gmc_active' => 1,
-        ]);
+        $select->columns(['gmc_mail_to_target AS untranslated_description', 'gmc_mail_to_target', 'gmc_id'])
+            ->where([
+                'gmc_for_respondents' => 1,
+                'gmc_active' => 1,
+            ])->order(['gmc_id']);
 
-        $result = $this->cachedResultFetcher->fetchPairs(
-            'respondentMailCodes',
-            $select,
-            null,
-            ['mailcodes'],
-        );
-        if ($result) {
-            ksort($result);
-            return $result;
+        $result = $this->cachedResultFetcher->fetchAll(__FUNCTION__, $select, null, ['mailcodes']);
+        $codes =  $this->dbTranslationRepository->translateTable(__FUNCTION__, 'gems__mail_codes', 'gmc_id', $result);
+
+        $codeValues = array_column($codes, 'gmc_mail_to_target', 'untranslated_description');
+        if ($this->config['model']['translateDatabaseFields'] ?? false) {
+            return $codeValues;
         }
-        return [];
+
+        // If NOT tranlated from the database, the use normal translations
+        $output       = [];
+        foreach ($codeValues as $key => $value) {
+            $output[$key] = $this->translator->_($value);
+        }
+        return $output;
     }
 
     /**

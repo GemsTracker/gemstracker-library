@@ -136,6 +136,8 @@ interface TrackerInterface
      */
     public function getAskTokenForm(mixed $args_array = null): AskTokenForm;
 
+    public function getDefaultSourceClass(): string;
+
     /**
      *
      * @param int|array $respTrackData Track id or array containing trackdata

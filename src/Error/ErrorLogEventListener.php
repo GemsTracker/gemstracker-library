@@ -58,7 +58,6 @@ class ErrorLogEventListener
                     break;
                 case E_USER_NOTICE:
                 case E_NOTICE:
-                case E_STRICT:
                     $errorType = 'Notice';
                     break;
                 case E_RECOVERABLE_ERROR:

@@ -146,7 +146,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         TokenLibrary $tokenLibrary,
         Tracker $tracker,
         ValueEncryptor $valueEncryptor,
-        array $config,
+        protected readonly array $config,
         Loggers $loggers,
         protected readonly HelperAdapter $cache,
         protected readonly Locale $locale,
@@ -353,7 +353,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected function _getLanguage(int|string $sourceSurveyId, string|null $language): string
     {
-        if (! isset($this->_languageMap[$sourceSurveyId][$language])) {
+        if (! ($language && isset($this->_languageMap[$sourceSurveyId][$language]))) {
             if ($language && $this->_isLanguage($sourceSurveyId, $language)) {
                 $this->_languageMap[$sourceSurveyId][$language] = $language;
             } else {
@@ -363,10 +363,11 @@ class LimeSurvey3m00Database extends SourceAbstract
                     FROM ' . $this->_getSurveysTableName() . '
                     WHERE sid = ?';
 
-                $this->_languageMap[$sourceSurveyId][$language] = $lsResultFetcher->fetchOne($sql, [$sourceSurveyId]);
+                $language = $lsResultFetcher->fetchOne($sql, [$sourceSurveyId]) ?? $this->defaultLanguage;
+                $this->_languageMap[$sourceSurveyId][$language] = $language;
 
                 if (! $this->_languageMap[$sourceSurveyId][$language]) {
-                    $this->_languageMap[$sourceSurveyId][$language] = $language ?? $this->defaultLanguage;
+                    $this->_languageMap[$sourceSurveyId][$language] = $language;
                 }
             }
         }

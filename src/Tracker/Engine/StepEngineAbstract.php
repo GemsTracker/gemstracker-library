@@ -992,10 +992,10 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         $first  = ! $this->getPreviousRoundId($itemData['gro_id_round'], $itemData['gro_id_order']);
 
         // Update the current round data
-        if (isset($this->_rounds[$itemData['gro_id_round']])) {
+        if (isset($itemData['gro_id_round'], $this->_rounds[$itemData['gro_id_round']])) {
             $this->_rounds[$itemData['gro_id_round']] = $itemData + $this->_rounds[$itemData['gro_id_round']];
         } else {
-            $this->_rounds[$itemData['gro_id_round']] = $itemData;
+            $this->_rounds[$itemData['gro_id_round'] ?? ''] = $itemData;
         }
 
         // Default result

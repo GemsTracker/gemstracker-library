@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gems\Model\Setup;
 
+use Gems\Config\ConfigAccessor;
 use Gems\Model\MetaModelLoader;
 use Gems\Util\Translated;
 use Zalt\Base\TranslatorInterface;
@@ -29,6 +30,7 @@ class MailCodeModel extends \Gems\Model\SqlTableModel implements \Zalt\SnippetsA
         protected readonly MetaModelLoader $metaModelLoader,
         SqlRunnerInterface $sqlRunner,
         TranslatorInterface $translate,
+        protected readonly ConfigAccessor $configAccessor,
         protected readonly Translated $translatedUtil,
     )
     {
@@ -42,7 +44,17 @@ class MailCodeModel extends \Gems\Model\SqlTableModel implements \Zalt\SnippetsA
 
     public function applyAction(SnippetActionInterface $action): void
     {
-        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $action->isDetailed());
+        // Maybe throw this out
+        $newConfig = [
+            'locale' =>  [
+                'default' => 'en',
+                'availableLocales' => array_keys($this->configAccessor->getLocales()),
+            ],
+        ];
+
+        // dump($newConfig->getLocales(), $newConfig->getDefaultLocale());
+
+        $this->metaModelLoader->addDatabaseTranslations($this->metaModel, $action->isDetailed(), $newConfig);
     }
 
     public function applySettings()
@@ -52,8 +64,8 @@ class MailCodeModel extends \Gems\Model\SqlTableModel implements \Zalt\SnippetsA
         $this->metaModel->set('gmc_id', [
             'label' => $this->_('Value'),
             'description' => $this->_('The higher the number, the likelier to mail'),
-            'size'  => '3',
-            'validators[digits]'  => 'Digits',
+            'size' => '3',
+            'validators[digits]' => 'Digits',
             'validators[unique]' => ModelUniqueValidator::class,
             ]);
 
@@ -101,5 +113,13 @@ class MailCodeModel extends \Gems\Model\SqlTableModel implements \Zalt\SnippetsA
             'description' => $this->_('This mail code can be assigned to a track.'),
             'multiOptions' => $yesNo,
             ]);
+    }
+
+    public function save(array $newValues, ?array $filter = null): array
+    {
+        if (isset($newValues['gmc_id']) && (! $newValues['gmc_id'])) {
+            $newValues['gmc_id'] = (string) $newValues['gmc_id'];
+        }
+        return parent::save($newValues, $filter);
     }
 }
