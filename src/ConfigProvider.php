@@ -26,6 +26,7 @@ use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Db\Migration\PatchAbstract;
 use Gems\Csrf\GemsCsrfGuardFactory;
+use Gems\Db\Migration\SeedInterface;
 use Gems\Db\ResponseDbAdapter;
 use Gems\Db\ResponseDbAdapterFactory;
 use Gems\Error\ErrorLogEventListenerDelegatorFactory;
@@ -305,6 +306,7 @@ class ConfigProvider
                     RespondentChangedEventInterface::class => ['config' => 'tracker.trackEvents.Respondent/Change'],
                     RoundChangedEventInterface::class => ['config' => 'tracker.trackEvents.Round/Changed'],
                     RoundConditionInterface::class => ['config' => 'tracker.conditions.round'],
+                    SeedInterface::class => ['config' => 'migrations.seeds'],
                     ShowScreenInterface::class => ['config' => 'screens.Respondent/Show'],
                     SubscribeScreenInterface::class => ['config' => 'screens.Respondent/Subscribe'],
                     SurveyBeforeAnsweringEventInterface::class => ['config' => 'tracker.trackEvents.Survey/BeforeAnswering'],

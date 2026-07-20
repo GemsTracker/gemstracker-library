@@ -67,6 +67,11 @@ class ConfigAccessor
         return $this->config['auth']['loginTemplate'] ?? 'gems::login';
     }
 
+    public function getDbSettings(): array
+    {
+        return $this->config['db'] ?? [];
+    }
+
     public function getDefaultLocale(): string
     {
         return $this->config['locale']['default'] ?? 'en';
