@@ -3,6 +3,7 @@
 namespace Gems\Db\Migration;
 
 use Gems\Db\Databases;
+use Gems\Db\ResponseDbAdapter;
 use Gems\Db\ResultFetcher;
 use Gems\Model\IteratorModel;
 use Gems\Model\MetaModelLoader;
@@ -103,9 +104,6 @@ abstract class MigrationRepositoryAbstract
     protected function getResourceDirectories(string $resource): array
     {
         $resourceDirectories = $this->config['migrations'][$resource] ?? [];
-        if (isset($this->config['responseData']['enabled'], $this->config['responseData']['migrations'][$resource]) && $this->config['responseData']['enabled'] === true) {
-            $resourceDirectories = array_merge($resourceDirectories, $this->config['responseData']['migrations'][$resource]);
-        }
 
         foreach($resourceDirectories as $key=>$resourceDirectory) {
             if (is_string($resourceDirectory)) {
@@ -123,6 +121,20 @@ abstract class MigrationRepositoryAbstract
             if (isset($resourceDirectory['class'])) {
                 // not a dir, but a php class
                 unset($resourceDirectories[$key]);
+            }
+        }
+        if (isset($this->config['responseData']['enabled'], $this->config['responseData']['migrations'][$resource]) && $this->config['responseData']['enabled'] === true) {
+            $db = ResponseDbAdapter::class;
+            foreach ($this->config['responseData']['migrations'][$resource] as $resourceDirectory) {
+                if (is_string($resourceDirectory)) {
+                    if (is_dir($resourceDirectory)) {
+                        $resourceDirectories[] = [
+                            'db' => $db,
+                            'path' => $resourceDirectory,
+                            'module' => 'gemsdata',
+                        ];
+                    }
+                }
             }
         }
 

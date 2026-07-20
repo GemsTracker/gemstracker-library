@@ -29,6 +29,9 @@ class Databases
         if ($this->container->has($containerAlias)) {
             return $this->container->get($containerAlias);
         }
+        if ($this->container->has($name)) {
+            return $this->container->get($name);
+        }
 
         return null;
     }

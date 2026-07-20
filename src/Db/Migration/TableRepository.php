@@ -30,6 +30,7 @@ class TableRepository extends MigrationRepositoryAbstract
 
     public function createTable(array $tableInfo): void
     {
+        // print_r($tableInfo);
         if (!isset($tableInfo['db'], $tableInfo['sql']) || empty($tableInfo['sql'])) {
             throw new MigrationException('Not enough table info to create table');
         }
@@ -189,6 +190,7 @@ class TableRepository extends MigrationRepositoryAbstract
     public function getTableInfoFromFiles(): array
     {
         $tableDirectories = $this->getTablesDirectories();
+        // print_r($tableDirectories);
         $tables = [];
 
         foreach($tableDirectories as $tableDirectory) {
