@@ -84,7 +84,7 @@ class Psr11EventDispatcher extends EventDispatcher
     /**
      * If supplied listener name is a class, register that as Listener, instead of a callable from the subscriber
      *
-     * @param EventSubscriberInterface $eventSubscriber
+     * @param string $eventSubscriberClass
      * @param string $listener
      * @return callable
      */
