@@ -52,6 +52,16 @@ class ConfigAccessor
         return [];
     }
 
+    public function getAppDir(): string
+    {
+        return $this->config['app']['dir'] ?? dirname(getcwd());
+    }
+
+    public function getAppEnv(): string
+    {
+        return $this->config['app']['env'] ?? 'production';
+    }
+
     public function getAppName(): string
     {
         return $this->config['app']['name'] ?? 'GemsTracker';
