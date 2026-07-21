@@ -75,15 +75,15 @@ class CalendarSearchSnippet extends AutosearchPeriodFormSnippet
 
         $orgs = $this->currentUser->getRespondentOrganizations();
         if (count($orgs) > 1) {
-            $elements[] = $this->_createSelectElement('gap_id_organization', $orgs, $this->_('(all organizations)'));
+            $elements['gap_id_organization'] = $this->_createSelectElement('gap_id_organization', $orgs, $this->_('(all organizations)'));
         }
 
         $locations = $this->agenda->getLocations();
         if (count($locations) > 1) {
-            $elements[] = $this->_createSelectElement('gap_id_location', $locations, $this->_('(all locations)'));
+            $elements['gap_id_location'] = $this->_createSelectElement('gap_id_location', $locations, $this->_('(all locations)'));
         }
 
-        $elements[] = null;
+        $elements['break'] = null;
 
         $this->addPeriodSelectors($elements, 'gap_admission_time');
 

@@ -85,7 +85,7 @@ abstract class ConfigurableCommandAbstract extends Command
         $result = [];
         foreach ($this->arguments as $name => $settings) {
             $label = $settings['label'];
-            if ($defaults[$name]) {
+            if ($defaults[$name] ?? false) {
                 if ($settings['encrypted'] ?? false) {
                     $defaults[$name] = $this->valueEncryptor->decrypt($defaults[$name]);
                 }
@@ -106,7 +106,7 @@ abstract class ConfigurableCommandAbstract extends Command
             $result[$name] = $helper->ask($input, $output, $question);
 
             if (null === $result[$name]) {
-                if ($defaults[$name]) {
+                if ($defaults[$name] ?? false) {
                     $result[$name] = $defaults[$name];
                     continue;
                 }
