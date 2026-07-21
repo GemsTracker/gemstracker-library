@@ -7,6 +7,8 @@ use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunSeedMigrationEvent;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Metadata\Source\Factory;
+use Laminas\Db\Sql\Predicate\Expression;
+use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Sql;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
@@ -148,23 +150,22 @@ class SeedRepository extends MigrationRepositoryAbstract
         return $seedInfo;
     }
 
-    protected function getKeyFilter(Adapter $adapter, $tableName, $row): array|null
+    protected function getKeyFilter(Adapter $adapter, $tableName, $row): ?Predicate
     {
         $keysets = $this->getTableKeysets($adapter, $tableName);
         $filter = [];
+
+        // Check seed for all keys
         foreach($keysets as $keys) {
-            $skipFilter = false;
             foreach($keys as $key) {
                 if (isset($row[$key])) {
-                    $filter[$key] = $row[$key];
-                } else {
-                    $skipFilter = true;
+                    $filter[$key] = new Expression("$key = ?", $row[$key]);
                 }
             }
-            if ($filter && (! $skipFilter)) {
-                // Return first searchable value
-                return $filter;
-            }
+        }
+        // print_r($filter);
+        if ($filter) {
+            return new Predicate($filter, Predicate::COMBINED_BY_OR);
         }
 
         return null;
