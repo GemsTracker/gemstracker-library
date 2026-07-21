@@ -115,7 +115,7 @@ class LayoutRenderer
 
         $params += $defaultParams;
 
-        $env = Env::get('APP_ENV', '');
+        $env = $this->config['app']['env'] ?? Env::get('APP_ENV', 'production');
         if (str_starts_with($env, 'prod')) {
             $showEnv = false;
         } else {
