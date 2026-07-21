@@ -11,6 +11,7 @@ class App
         return [
             'name' => 'GemsTracker',
             'description' => 'GEneric Medical Survey Tracker',
+            'dir' => dirname(getcwd()),
             'env' => Env::get('APP_ENV', 'production'),
             'key' => Env::get('APP_KEY'),
         ];

@@ -834,15 +834,16 @@ class ConfigProvider
 
     protected function getResponseDataSettings(): array
     {
-        return [
-            'enabled' => false,
-            // 'database' => 'gems_data',
-            'migrations' => [
-                'tables' => [
-                    dirname(__DIR__) . '/configs/db_response_data/tables',
+        return array_merge(self::mergeDbSettings(['database' => 'gems_data'], $this->getDbSettings()),
+            [
+                'enabled' => false,
+                'migrations' => [
+                    'tables' => [
+                        dirname(__DIR__) . '/configs/db_response_data/tables',
+                    ],
                 ],
-            ],
-        ];
+            ]
+        );
     }
 
     protected function getRouteSettings()
@@ -1038,5 +1039,16 @@ class ConfigProvider
             'resource' => 'resource/js/gems-vue.js',
             // 'style' => 'resource/css/gems-vue.css',
         ];
+    }
+
+    public static function mergeDbSettings($newSettings, $coreSettings): array
+    {
+        foreach ($coreSettings as $key => $value) {
+            if (! isset($newSettings[$key])) {
+                $newSettings[$key] = $value;
+            }
+        }
+
+        return $newSettings;
     }
 }
