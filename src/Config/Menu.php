@@ -161,6 +161,11 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                         [
+                            'name' => 'respondent.overview',
+                            'label' => $this->translator->trans('Overview'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
                             'name' => 'respondent.relations.index',
                             'label' => $this->translator->trans('Relations'),
                             'type' => 'route-link-item',

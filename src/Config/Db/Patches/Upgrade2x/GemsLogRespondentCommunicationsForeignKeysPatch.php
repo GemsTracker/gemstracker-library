@@ -39,6 +39,7 @@ class GemsLogRespondentCommunicationsForeignKeysPatch extends PatchAbstract
         foreach ($this->foreignKeys as $foreignKeyData) {
             list($col, $refTable, $refCol) = $foreignKeyData;
             if (!$this->databaseInfo->tableHasForeignKey($this->table, $col, $refTable, $refCol)) {
+                $statements[] = sprintf('DELETE FROM %s WHERE (%s) NOT IN (SELECT %s FROM %s)', $this->table, $col, $refCol, $refTable);
                 $statements[] = sprintf('ALTER TABLE %s ADD FOREIGN KEY (%s) REFERENCES %s(%s)', $this->table, $col, $refTable, $refCol);
             }
         }
