@@ -11,8 +11,18 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Model\JoinModel;
+use Gems\Tracker;
+use Gems\User\User;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\TranslatorInterface;
+use Zalt\Late\RepeatableByKeyValue;
+use Zalt\Model\Bridge\BridgeAbstract;
 use Zalt\Model\Data\DataReaderInterface;
-use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -23,23 +33,8 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.8.2
  */
-class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract {
-
-    /**
-     * Sets pagination on or off.
-     *
-     * @var boolean
-     */
-    //public $browse = true;
-
-    /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-    public bool $showMenu = false;
-    
-    public $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
-
+class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
+{
     /**
      * Set a fixed model filter.
      *
@@ -47,10 +42,14 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array
      */
-    protected $_fixedFilter = array(
+    protected $_fixedFilter = [
         'gto_completion_time IS NOT NULL',
-        'grc_success' => 1
-    );
+        'grc_success' => 1,
+        ];
+
+    public $bridgeMode = BridgeAbstract::MODE_ROWS;
+
+    protected readonly User $currentUser;
 
     /**
      * Set a fixed model sort.
@@ -59,47 +58,39 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array
      */
-    public $extraSort = array('gto_completion_time' => SORT_DESC);
+    public $extraSort = ['gto_completion_time' => SORT_DESC];
+
+    public array $menuShowRoutes = ['track.answer'];
+
+    public bool $showMenu = false;
 
     /**
      *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-    
-    public $menuActionController = array('track');
-    public array $menuShowRoutes = array('answer');
-
-    /**
-     *
-     * @var \MUtil\Model\ModelAbstract
+     * @var DataReaderInterface
      */
     protected $model;
-
-    /**
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
 
     /**
      * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
-    /**
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
-
-    public function afterRegistry() 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        protected readonly Tracker $tracker,
+    )
     {
-        // parent::afterRegistry();
-        if (!($this->tracker instanceof \Gems\Tracker)) {
-            $this->tracker = $this->loader->getTracker();
-        }
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
         $this->onEmpty = $this->_('No summary available');
     }
-    
+
+    /*
     public function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         parent::addBrowseTableColumns($bridge, $dataModel);
@@ -112,9 +103,41 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 //            $link->appendAttrib('class', 'inline-answers');
 //            $bridge->addItemLink($link);
 //        }
+    } //*/
+
+    /**
+     * Creates the model
+     *
+     * @return DataReaderInterface
+     */
+    protected function createModel(): DataReaderInterface
+    {
+        if (!$this->model instanceof \Gems\Tracker\Model\StandardTokenModel) {
+            $model = $this->tracker->getTokenModel();
+
+            $metaModel = $model->getMetaModel();
+            $metaModel->set('gto_id_token', [
+                'label' => $this->_('Summary'),
+                'formatFunction' => [$this, 'getData'],
+                ]);
+            $metaModel->set('gsu_survey_name', [
+                'label' => $this->_('Survey'),
+                ]);
+            if (!$metaModel->has('forgroup')) {
+                $model->addColumn('gems__groups.ggp_name', 'forgroup');
+            }
+            $metaModel->set('forgroup', [
+                'label' => $this->_('Filler'),
+                ]);
+            $metaModel->setKeys(['gr2o_patient_nr', 'gto_id_organization']);
+
+            $this->model = $model;
+        }
+
+        return $this->model;
     }
 
-    public function getHtmlOutput(?\Zend_View_Abstract $view = null) 
+    public function getHtmlOutput(?\Zend_View_Abstract $view = null)
     {
         // Make sure we can use jQuery
 
@@ -131,32 +154,12 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         return $html;
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
-    protected function createModel(): DataReaderInterface
-    {
-        if (!$this->model instanceof \Gems\Tracker\Model\StandardTokenModel) {
-            $model = $this->loader->getTracker()->getTokenModel();
-            $model->set('gto_id_token', 'label', $this->_('Summary'), 'formatFunction', array($this, 'getData'));
-            $model->set('gsu_survey_name', 'label', $this->_('Survey'));
-            $model->set('forgroup', 'label', $this->_('Filler'));
-            $model->setKeys(array('gr2o_patient_nr', 'gto_id_organization'));
-
-            $this->model = $model;
-        }
-
-        return $this->model;
-    }
-
     public function getData($tokenId) {
         try {
             $token = $this->tracker->getToken($tokenId);
             $responses = $token->getRawAnswers();
             $scores = array();
-            $questions = $token->getSurvey()->getQuestionList($this->loader->getCurrentUser()->getLocale());
+            $questions = $token->getSurvey()->getQuestionList($this->currentUser->getLocale());
             foreach($responses as $key=>$value) {
                 if (strtoupper(substr($key,0,5)) == 'SCORE') {
                     if (empty($value)) {
@@ -171,13 +174,13 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
             }
             if (!empty($scores)) {
-                $repeater = new \MUtil\Lazy\RepeatableByKeyValue($scores);
-                $div      = \MUtil\Html::create('div')->setRepeater($repeater)->setAttrib('class', 'row overviewtable');
-                $div->div($repeater->key, array('class' => 'col-md-6'))->setOnEmpty(\MUtil\Html::raw('empty'));
+                $repeater = new RepeatableByKeyValue($scores);
+                $div      = Html::create('div')->setRepeater($repeater)->setAttrib('class', 'row overviewtable');
+                $div->div($repeater->key, array('class' => 'col-md-6'))->setOnEmpty(Html::raw('empty'));
                 $div->div($repeater->value, array('class' => 'col-md-6', 'renderWithoutContent'=>false));
                 return $div;
             } else {
-                return \MUtil\Html::create('div', array('class'=>'row'))->div($this->_('No summary available'), array('class'=>'col-md-12'));
+                return Html::create('div', array('class'=>'row'))->div($this->_('No summary available'), array('class'=>'col-md-12'));
             }
         } catch (\Exception $exc) {
             return null;

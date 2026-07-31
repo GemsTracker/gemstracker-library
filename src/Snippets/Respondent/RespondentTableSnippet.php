@@ -170,12 +170,12 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
         $hasPhone     = $dataModel->getMetaModel()->has('grs_phone_1');
         $hasBirthday  = $dataModel->getMetaModel()->has('grs_birthday');
 
-        if (! ($hasPhone || $hasBirthday)) {
+        if (! ($hasPhone && $hasBirthday)) {
             return;
         }
 
-        $maskBirthday = $hasBirthday && $this->maskRepository->isFieldMaskedWhole('grs_birthday');
-        $maskPhone    = $hasPhone && $this->maskRepository->isFieldMaskedWhole('grs_phone_1');
+        $maskBirthday = $this->maskRepository->isFieldMaskedWhole('grs_birthday');
+        $maskPhone    = $this->maskRepository->isFieldMaskedWhole('grs_phone_1');
 
         if ($maskBirthday && $maskPhone) {
             return;
@@ -186,11 +186,9 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
             return;
         }
 
-        if (! $maskPhone)  {
-            // Display separator and phone sign only if phone exist.
-            $phonesep = Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, Html::raw('&#9743; '));
-        }
-        if ($maskBirthday) {
+        // Display separator and phone sign only if phone exist.
+        $phonesep = Html::raw('&#9743; ');
+        if ($maskBirthday && $hasPhone) {
             $bridge->addMultiSort($phonesep, 'grs_phone_1');
             return;
         }
