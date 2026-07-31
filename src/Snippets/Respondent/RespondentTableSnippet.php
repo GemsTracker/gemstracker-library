@@ -170,7 +170,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
         $hasPhone     = $dataModel->getMetaModel()->has('grs_phone_1');
         $hasBirthday  = $dataModel->getMetaModel()->has('grs_birthday');
 
-        if (! ($hasPhone && $hasBirthday)) {
+        if ((! $hasPhone) && (! $hasBirthday)) {
             return;
         }
 
