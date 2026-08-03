@@ -39,9 +39,8 @@ class TestEmail extends Command
         $email = $input->getArgument('email');
         $io = new SymfonyStyle($input, $output);
 
-        if ($input->hasArgument('dsn')) {
-            $dsn = $input->getArgument('dsn');
-        } else {
+        $dsn = $input->getArgument('dsn');
+        if (! $dsn) {
             $dsn = $this->getDsn();
         }
 
