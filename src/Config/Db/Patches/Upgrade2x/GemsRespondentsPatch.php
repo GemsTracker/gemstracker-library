@@ -33,7 +33,7 @@ class GemsRespondentsPatch extends PatchAbstract
         if ($this->databaseInfo->tableHasConstraint('gems__respondents', 'grs_bsn')) {
             $statements[] = 'ALTER TABLE gems__respondents DROP KEY grs_bsn';
         }
-        if (! $this->databaseInfo->tableHasConstraint('gems__respondents', 'grs_ssn')) {
+        if ($this->databaseInfo->tableHasColumn('gems__respondents', 'grs_ssn') && ! $this->databaseInfo->tableHasConstraint('gems__respondents', 'grs_ssn')) {
             $statements[] = 'ALTER TABLE gems__respondents ADD UNIQUE KEY grs_ssn (grs_ssn)';
         }
 

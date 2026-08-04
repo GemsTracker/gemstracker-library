@@ -8,10 +8,12 @@ use Gems\Db\ResultFetcher;
 use Gems\Model\MetaModelLoader;
 use Gems\Model\Respondent\RespondentModel;
 use Gems\Tracker\Respondent;
+use Laminas\Db\Adapter\Exception\InvalidQueryException;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Predicate\PredicateSet;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Permissions\Acl\Acl;
 use Zalt\Loader\ProjectOverloader;
@@ -112,7 +114,18 @@ class RespondentRepository
         if ($organizationId !== null) {
             $select->where(['gr2o_id_organization' => $organizationId]);
         }
-        return $this->resultFetcher->fetchRow($select);
+
+        try {
+            return $this->resultFetcher->fetchRow($select);
+        } catch (InvalidQueryException $iqe) {
+            if (str_contains($iqe->getMessage(), 'grs_ssn')) {
+                // This does not occur often, but for those few occasions this keeps the software working
+                $select->reset(Select::JOINS);
+                return $this->resultFetcher->fetchRow($select);
+            }
+
+            throw $iqe;
+        }
     }
 
     public function getPatientByRespondentId(int $respondentId, ?int $organizationId): ?array

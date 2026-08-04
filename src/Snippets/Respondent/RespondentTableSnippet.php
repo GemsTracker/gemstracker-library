@@ -123,7 +123,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
         if ($dataModel->getJoinStore()->hasTable('gems__respondent2track')) {
             $track = $this->getTracksLink($bridge, $metaModel);
             $bridge->addMultiSort($track, $br, 'gr2t_track_info');
-        } else {
+        } elseif ($metaModel->has('grs_address_1')) {
             $maskAddress = $this->maskRepository->isFieldMaskedWhole('grs_address_1');
             $maskZip     = $this->maskRepository->isFieldMaskedWhole('grs_zipcode');
             $maskCity    = $this->maskRepository->isFieldMaskedWhole('grs_city');
@@ -167,6 +167,13 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      */
     protected function addBrowseColumn4(TableBridge $bridge, DataReaderInterface $dataModel)
     {
+        $hasPhone     = $dataModel->getMetaModel()->has('grs_phone_1');
+        $hasBirthday  = $dataModel->getMetaModel()->has('grs_birthday');
+
+        if ((! $hasPhone) && (! $hasBirthday)) {
+            return;
+        }
+
         $maskBirthday = $this->maskRepository->isFieldMaskedWhole('grs_birthday');
         $maskPhone    = $this->maskRepository->isFieldMaskedWhole('grs_phone_1');
 
@@ -174,17 +181,14 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
             return;
         }
 
-        if ($maskPhone && ! $maskBirthday)  {
+        if (($maskPhone || ! $hasPhone) && ! $maskBirthday)  {
             $bridge->addMultiSort('grs_birthday');
             return;
         }
 
-        if (! $maskPhone)  {
-
-            // Display separator and phone sign only if phone exist.
-            $phonesep = Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, Html::raw('&#9743; '));
-        }
-        if ($maskBirthday) {
+        // Display separator and phone sign only if phone exist.
+        $phonesep = Html::raw('&#9743; ');
+        if ($maskBirthday && $hasPhone) {
             $bridge->addMultiSort($phonesep, 'grs_phone_1');
             return;
         }

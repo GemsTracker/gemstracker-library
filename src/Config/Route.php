@@ -717,7 +717,6 @@ class Route
                     ...$this->defaultPages,
                     'change-consent',
                     'change-organization',
-                    'overview',
                     'export-archive',
                 ],
                 parameters: [
@@ -738,6 +737,27 @@ class Route
                 ],
                 genericImport: true,
                 genericExport: true,
+            ),
+            ...$this->createRoute(
+                name: 'respondent.overview',
+                path: '/respondent/overview/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/{tr:\d+}/{rn:.+}',
+                middleware: [
+                    \Gems\Middleware\HandlerCsrfMiddleware::class,
+                    \Gems\Middleware\LegacyCurrentUserMiddleware::class,
+                    \Gems\Middleware\LegacyModelMiddleware::class,
+                    \Gems\Handlers\Respondent\RespondentHandler::class,
+                ],
+                options: [
+                    'controller' => \Gems\Handlers\Respondent\RespondentHandler::class,
+                    'action' => 'overview',
+                    'privilege' => 'pr.respondent.overview',
+                ],
+                params: [
+                    'id1' => '[a-zA-Z0-9-_]+',
+                    'id2' => '\d+',
+                    'tr'  => '\d+',
+                    'rn'  => '.+',
+                ],
             ),
             ...$this->createSnippetRoutes(
                 baseName: 'respondent.episodes-of-care',
