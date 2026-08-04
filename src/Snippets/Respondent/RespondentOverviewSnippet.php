@@ -176,7 +176,9 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             if (!empty($scores)) {
                 $repeater = new RepeatableByKeyValue($scores);
                 $div      = Html::create('div')->setRepeater($repeater)->setAttrib('class', 'row overviewtable');
+                // @phpstan-ignore property.notFound
                 $div->div($repeater->key, array('class' => 'col-md-6'))->setOnEmpty(Html::raw('empty'));
+                // @phpstan-ignore property.notFound
                 $div->div($repeater->value, array('class' => 'col-md-6', 'renderWithoutContent'=>false));
                 return $div;
             } else {
