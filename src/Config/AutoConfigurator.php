@@ -17,6 +17,11 @@ class AutoConfigurator
 
     protected ?array $filePaths = null;
 
+    protected array $skipFiles = [
+        'Gems\\JQuery\\Form\\Element\\ColorPicker',
+        'Gems\\JQuery\\Form\\Element\\DatePicker',
+    ];
+
     protected ?array $sortedFilePaths = null;
 
     public function __construct(protected readonly array $config)
@@ -98,8 +103,10 @@ class AutoConfigurator
             }
 
             try {
-                $fileReflector = new ReflectionClass($className);
-                $this->checkFileForAutoconfiguration($fileReflector);
+                if (! in_array($className, $this->skipFiles)) {
+                    $fileReflector = new ReflectionClass($className);
+                    $this->checkFileForAutoconfiguration($fileReflector);
+                }
             } catch (ReflectionException $e) {
 //                file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  $e->getMessage() . "\n", FILE_APPEND);
                 //echo $e->getMessage();
