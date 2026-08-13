@@ -75,10 +75,7 @@ class EmbeddedUserData extends \ArrayObject
     {
         $userLoader = $this->getUserLoader();
 
-        if ($userLoader instanceof DeferredUserLoaderInterface) {
-            return $userLoader->getDeferredUser($embeddedUser, $deferredLogin);
-        }
-        return null;
+        return $userLoader->getDeferredUser($embeddedUser, $deferredLogin);
     }
 
     /**

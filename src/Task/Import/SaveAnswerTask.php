@@ -32,7 +32,7 @@ class SaveAnswerTask extends \MUtil\Task\TaskAbstract
 
     /**
      *
-     * @var \Iterator
+     * @var \Iterator|null
      */
     protected $iterator;
 
@@ -83,14 +83,14 @@ class SaveAnswerTask extends \MUtil\Task\TaskAbstract
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      *
-     * @param array $row Row to save
+     * @param array|int|null $row Row to save
      */
     public function execute($row = null,
             $noToken = \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR,
             $tokenCompletion = \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR)
     {
         // \MUtil\EchoOut\EchoOut::track($row);
-        if ($this->iterator instanceof \Iterator && !is_array($row) && is_int($row)) {
+        if ($this->iterator instanceof \Iterator && (!is_array($row)) && is_int($row)) {
             $key = $row;
             if ($key < $this->iterator->key()) { $this->iterator->rewind(); }
             while ($key > $this->iterator->key()) {

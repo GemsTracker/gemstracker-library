@@ -4,14 +4,18 @@
     <form method="post">
         {{ csrf() }}
 
-        <div class="form-group">
-            <label class="control-label" for="organization">{{ trans.organization }}</label>
-            <select class="form-control" name="organization" id="organization">
-                {% for id, name in organizations %}
-                    <option value="{{ id }}" {{ (id == (input.organization ?? null)) ? 'selected' }}>{{ name }}</option>
-                {% endfor %}
-            </select>
-        </div>
+        {%  if hideOrganizations %}
+            <input type="hidden" class="form-control" name="organization" id="organization" value="{{ input.organization }}">
+        {%  else %}
+            <div class="form-group">
+                <label class="control-label" for="organization">{{ trans.organization }}</label>
+                <select class="form-control" name="organization" id="organization">
+                    {% for id, name in organizations %}
+                        <option value="{{ id }}" {{ (id == (input.organization ?? null)) ? 'selected' }}>{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {%  endif %}
 
         <div class="form-group">
             <label class="control-label" for="username">{{ trans.username }}</label>

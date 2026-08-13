@@ -287,6 +287,7 @@ class ConfigProvider
             'allowLoginOnWithoutOrganization' => false,
             'allowRespondentEmailLogin' => false,
             'allowStaffEmailLogin' => false,
+            'alwaysShowOrganizations' => false,
         ];
     }
 

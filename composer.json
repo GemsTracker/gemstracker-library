@@ -80,11 +80,11 @@
         "laminas/laminas-validator": "^2.60",
         "league/html-to-markdown": "^5.1",
         "magnafacta/mutil": "^2.0.2",
-        "magnafacta/zalt-html": "^1.0.10",
+        "magnafacta/zalt-html": "^1.0.18",
         "magnafacta/zalt-laminas-filter": "^1.0.1",
         "magnafacta/zalt-laminas-validator": "^1.0.1",
         "magnafacta/zalt-model": "^2.0.18",
-        "magnafacta/zalt-util": "^1.0.3",
+        "magnafacta/zalt-util": "^1.0.4",
         "mezzio/mezzio": "^3.16",
         "mezzio/mezzio-csrf": "^1.5",
         "mezzio/mezzio-fastroute": "^3.5.0",
@@ -128,11 +128,11 @@
     "require-dev": {
         "dompdf/dompdf":  "3.1.*",
         "itsgoingd/clockwork": "^5.1",
-        "jangregor/phpstan-prophecy": "1.*",
+        "jangregor/phpstan-prophecy": "2.3",
         "phing/phing": "^2.17.3",
         "phpoffice/phpword": "v1.4.*",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "^1.12",
+        "phpstan/phpstan": "^2.2",
         "phpunit/phpunit": "^10.5.32",
         "symfony/redis-messenger": "^6.4",
         "vimeo/psalm": "^5.0|^6.1@dev"
@@ -200,9 +200,8 @@
         ],
         "test-nodb": [
             "vendor/bin/phpunit --exclude-group database tests"
-        ],
-        "stan": [
-            "vendor/bin/phpstan --memory-limit=512M"
+        ],        "stan": [
+            "vendor/bin/phpstan --configuration=phpstan.neon.dist --memory-limit=512M"
         ]
     }
 }

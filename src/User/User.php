@@ -390,9 +390,8 @@ class User
     {
         $greeting[] = $this->getGenderGreeting($locale);
         $greeting[] = $this->getFullName(false);
-        array_filter($greeting);
 
-        return join(' ', $greeting);
+        return join(' ', array_filter($greeting));
     }
 
     public function getGroup(bool $current = true): Group

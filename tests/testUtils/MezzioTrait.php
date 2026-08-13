@@ -4,6 +4,7 @@ namespace GemsTest\testUtils;
 
 use Mezzio\Application;
 
+// @phpstan-ignore trait.unused
 trait MezzioTrait
 {
     protected Application $app;

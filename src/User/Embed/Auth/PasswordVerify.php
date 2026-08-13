@@ -53,11 +53,7 @@ class PasswordVerify extends EmbeddedAuthAbstract
             $authentication = GemsTrackerAuthentication::fromUser($this->db, $deferredUser, $secretKey);
             $result = $authentication->authenticate();
 
-            if ($result instanceof AuthenticationResult) {
-                return $result->isValid();
-            }
-
-            return (bool) $result;
+            return $result->isValid();
         }
 
         return false;

@@ -16,6 +16,7 @@ use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Repository\LoginRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\User\PasswordChecker;
 use Gems\User\User;
@@ -42,7 +43,7 @@ class LoginHandler implements RequestHandlerInterface
 {
     private FlashMessagesInterface $flash;
 
-    private string $loginTemplate = 'gems::login';
+    protected string $loginTemplate = 'gems::login';
     private StatusMessengerInterface $statusMessenger;
     private array $organizations;
 
@@ -59,6 +60,7 @@ class LoginHandler implements RequestHandlerInterface
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
         protected readonly ConfigAccessor $config,
+        protected readonly LoginRepository $loginRepository,
     ) {
         $this->loginTemplate = $config->getAuthTemplate();
     }
@@ -80,20 +82,27 @@ class LoginHandler implements RequestHandlerInterface
         $cookiesParams = $request->getCookieParams();
         $previousOrganizationId = $cookiesParams[CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE] ?? null;
         $input = $this->flash->getFlash('login_input');
-        if ($input === null && $previousOrganizationId !== null) {
-            $input['organization'] = $previousOrganizationId;
+        if ($input === null) {
+            if ($previousOrganizationId !== null) {
+                $input['organization'] = $previousOrganizationId;
+            } else {
+                $input['organization'] = array_key_first($this->organizations);
+            }
         }
 
+        $trans = [
+            'organization' => $this->translator->trans('Organization'),
+            'username' => $this->translator->trans('Username'),
+            'password' => $this->translator->trans('Password'),
+            'login' => $this->translator->trans('Login'),
+        ] + $this->loginRepository->getLoginTexts();
+
         $data = [
-            'trans' => [
-                'organization' => $this->translator->trans('Organization'),
-                'username' => $this->translator->trans('Username'),
-                'password' => $this->translator->trans('Password'),
-                'login' => $this->translator->trans('Login'),
-            ],
+            'trans' => $trans,
+            'hideOrganizations' => (! $this->config->alwaysShowOrganizations()) && (1 == count($this->organizations)),
             'organizations' => $this->organizations,
             'input' => $input,
-        ];
+       ];
 
         return new HtmlResponse($this->layoutRenderer->renderTemplate($this->loginTemplate, $request, $data));
     }
@@ -105,6 +114,9 @@ class LoginHandler implements RequestHandlerInterface
 
         $input = $request->getParsedBody();
 
+        if ((! isset($input['organization'])) && $this->config->allowLoginOnWithoutOrganization()) {
+            $input['organization'] = array_key_first($this->organizations);
+        }
         $organizationValidation = new ValidatorChain();
         $organizationValidation->attach(new NotEmpty());
         $organizationValidation->attach(new Digits());

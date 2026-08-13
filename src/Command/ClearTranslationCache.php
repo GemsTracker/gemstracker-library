@@ -2,6 +2,7 @@
 
 namespace Gems\Command;
 
+use Gems\Cache\ApplicationCacheRepository;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -13,24 +14,20 @@ use Symfony\Component\Filesystem\Filesystem;
 class ClearTranslationCache extends Command
 {
     protected ?string $cacheLocation;
-    public function __construct(array $config)
+    public function __construct(
+        protected readonly ApplicationCacheRepository $applicationCacheRepository,
+    )
     {
-        $this->cacheLocation = $config['translations']['cacheDir'] ?? null;
         parent::__construct();
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this->cacheLocation && file_exists($this->cacheLocation)) {
-            if (unlink($this->cacheLocation)) {
-                $output->writeln("<info>Translation cache at '$this->cacheLocation' has been cleared</info>");
-                return static::SUCCESS;
-            }
-            $output->writeln("<comment>Translation cache at '$this->cacheLocation' was NOT cleared!</comment>");
-            return static::FAILURE;
-
+        if ($this->applicationCacheRepository->clearTranslationCache()) {
+            $output->writeln('<info>Translation cache has been cleared</info>');
+        } else {
+            $output->writeln('<error>Translation cache could not be cleared</error>');
         }
-        $output->writeln("<comment>No Translation cache found at '$this->cacheLocation'</comment>");
         return static::FAILURE;
     }
 }

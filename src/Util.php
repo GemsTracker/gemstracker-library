@@ -227,13 +227,7 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
                 // I did not want to add loader to util, can no longer tell why
                 $org = $this->currentUser->getCurrentOrganization();
 
-                if ($org instanceof \Gems\User\Organization) {
-                    $uri = $org->getPreferredSiteUrl();
-                } else {
-                    throw new \Gems\Exception\Coding(
-                        __CLASS__ . '->' . __FUNCTION__ . "() should not be called when there is no current organization."
-                    );
-                }
+                $uri = $org->getPreferredSiteUrl();
             }
         }
         if ($subpath && ($subpath[0] != '/')) {
