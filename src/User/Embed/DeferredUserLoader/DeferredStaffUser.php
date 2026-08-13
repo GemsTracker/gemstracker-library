@@ -102,7 +102,7 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
 
         $user = $this->userLoader->getUser($deferredLogin, $embeddedUser->getBaseOrganizationId());
 
-        if ($user instanceof User && $user->isActive()) {
+        if ($user->isActive()) {
             $this->checkCurrentSettings($embeddedUser, $embeddedUserData, $user);
 
             return $user;

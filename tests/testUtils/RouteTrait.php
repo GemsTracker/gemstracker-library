@@ -6,6 +6,7 @@ use Gems\InitFunctions;
 use Mezzio\Application;
 use Mezzio\MiddlewareFactory;
 
+// @phpstan-ignore trait.unused
 trait RouteTrait
 {
     protected function initRoutes(): void

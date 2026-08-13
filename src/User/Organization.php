@@ -570,7 +570,7 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @return null?\Gems\Screens\UnsubscribeScreenInterface
+     * @return null|\Gems\Screens\UnsubscribeScreenInterface
      */
     public function getUnsubscribeScreen(): ?UnsubscribeScreenInterface
     {
@@ -586,7 +586,7 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @return null?string Url
+     * @return null|string Url
      */
     public function getUnsubscribeUrl(): ?string
     {

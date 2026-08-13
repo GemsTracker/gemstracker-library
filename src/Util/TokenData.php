@@ -494,7 +494,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      * Generate a token item with (in the future) a copy to clipboard button
      *
      * @param string $tokenStatus
-     * @param boolean $memberType To determine whether the token is answerable by staff
+     * @param string $memberType To determine whether the token is answerable by staff
      * @return string
      */
     public function getTokenCopyLinkClass($tokenStatus, $memberType)
@@ -510,7 +510,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      * @param string $tokenId
      * @param string $tokenStatus
      * @param boolean $canMail
-     * @return \MUtil\Html\AElement
+     * @return \MUtil\Html\AElement|null
      */
     public function getTokenEmailLink($tokenId, $tokenStatus, $canMail)
     {
@@ -530,6 +530,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
                 return $link;
             }
         }
+        return null;
     }
 
     /**

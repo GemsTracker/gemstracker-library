@@ -22,6 +22,16 @@ class ConfigAccessor
     )
     { }
 
+    public function allowLoginOnWithoutOrganization(): bool
+    {
+        return $this->config['auth']['allowLoginOnWithoutOrganization'] ?? false;
+    }
+
+    public function alwaysShowOrganizations(): bool
+    {
+        return $this->config['auth']['alwaysShowOrganizations'] ?? false;
+    }
+
     public function canTfaBeDisabled(): bool
     {
         return $this->config['twofactor']['allowAuthenticatorRemoval'] ?? false;

@@ -124,7 +124,6 @@ class CommTemplateModel extends GemsJoinModel
 
         $html = Html::div(['class' => 'comm-translations']);
         foreach ($translations as $translation) {
-            // @phpstan-ignore method.notFound
             $html->hr();
             $div = $html->div(['class' => 'comm-translation']);
             foreach ($translation as $field => $value) {

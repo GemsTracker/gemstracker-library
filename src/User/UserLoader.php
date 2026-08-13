@@ -389,11 +389,11 @@ class UserLoader
     /**
      * Returns a user object, that may be empty if no user exist.
      *
-     * @param string $loginName
+     * @param string|null $loginName
      * @param int $currentOrganizationId
      * @return \Gems\User\User But ! ->isActive when the user does not exist
      */
-    public function getUser(string $loginName, int $currentOrganizationId): User
+    public function getUser(string|null $loginName, int $currentOrganizationId): User
     {
         $user = $this->getUserClass($loginName, $currentOrganizationId);
 
@@ -462,11 +462,11 @@ class UserLoader
     /**
      * Returns the name of the user definition class of this user.
      *
-     * @param string $loginName
+     * @param string|null $loginName
      * @param int $organizationId
      * @return \Gems\User\User But ! ->isActive when the user does not exist
      */
-    protected function getUserClass(string $loginName, int $organizationId): User
+    protected function getUserClass(string|null $loginName, int $organizationId): User
     {
         //First check for project user, as this one can run without a db
         if ((null !== $loginName) && $this->isProjectUser($loginName)) {

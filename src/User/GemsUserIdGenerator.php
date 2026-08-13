@@ -55,6 +55,7 @@ class GemsUserIdGenerator
             $insert = $sql->insert('gems__user_ids')->values($values);
             try {
                 $result = $sql->prepareStatementForSqlObject($insert)->execute();
+                // @phpunit-ignore-next-line instanceof.alwaysTrue
                 if ((!$result instanceof ResultInterface) || 0 === $result->getAffectedRows()) {
                     $out = null;
                 }
