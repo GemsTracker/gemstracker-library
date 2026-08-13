@@ -32,7 +32,7 @@ class SaveAnswerTask extends \MUtil\Task\TaskAbstract
 
     /**
      *
-     * @var \Iterator
+     * @var \Iterator|null
      */
     protected $iterator;
 

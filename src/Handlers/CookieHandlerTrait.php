@@ -95,6 +95,7 @@ trait CookieHandlerTrait
     {
         if ($this->_cookiesSet) {
             foreach ($this->_cookiesSet as $cookie) {
+                // @phpstan-ignore-next-line instanceof.alwaysTrue
                 if ($cookie instanceof SetCookie) {
                     $response = FigResponseCookies::set($response, $cookie);
                 }
