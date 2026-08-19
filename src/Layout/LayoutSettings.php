@@ -98,6 +98,12 @@ class LayoutSettings
         return $this->template;
     }
 
+    public function setMinimalOutput(): void
+    {
+        $this->disableMenu();
+        $this->setTemplate('gems::autofilter');
+    }
+
     /**
      * @param string $template Twig template name
      */
