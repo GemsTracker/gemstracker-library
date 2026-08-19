@@ -137,7 +137,7 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         return $this->model;
     }
 
-    public function getHtmlOutput(?\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         // Make sure we can use jQuery
 
@@ -145,12 +145,13 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $this->columns[] = array('gsu_survey_name');
         $this->columns[] = array('forgroup');
         $this->columns[] = array('gto_id_token');
-        
-        $html = parent::getHtmlOutput($view);
-        if($roundDescription = $this->requestInfo->getParam('gto_round_description')) {
-            $html->caption($roundDescription);
+
+        $html = Html::div(['id' => 'overviewResult']);
+        if($roundDescription = $this->requestInfo->getParam('rn')) {
+            $html->h2($roundDescription);
         }
-        
+        $html->append(parent::getHtmlOutput());
+
         return $html;
     }
 
@@ -197,7 +198,7 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * 
      * @see \Gems\Snippets\Respondent\TrafficLightTokenSnippet
      * @param \MUtil\Model\ModelAbstract $model
-     */
+     * /
     public function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         // 
@@ -207,6 +208,6 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             // $this->request->setParam('gto_round_description', $roundDecription);
         }
         // parent::processFilterAndSort($model);
-    }
+    } // */
 
 }

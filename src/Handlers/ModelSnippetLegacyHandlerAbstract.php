@@ -316,9 +316,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
             $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
 
             if ($this->responder instanceof GemsSnippetResponder) {
-                $layoutSettings = $this->responder->getLayoutSettings();
-                $layoutSettings->disableMenu();
-                $layoutSettings->setTemplate('gems::autofilter');
+                $this->responder->getLayoutSettings()->setMinimalOutput();
             }
         }
 

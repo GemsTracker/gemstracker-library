@@ -785,10 +785,9 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         if ($this->overviewSnippets) {
             $params = $this->_processParameters($this->overviewParameters);
 
-            /*$menuList          = $this->menu->getMenuList();
-            $menuList->addParameterSources($this->request, $this->menu->getParameterSource());
-            $menuList->addCurrentParent($this->_('Cancel'));
-            $params['buttons'] = $menuList;*/
+            if ($this->responder instanceof GemsSnippetResponder) {
+                $this->responder->getLayoutSettings()->setMinimalOutput();
+            }
             $this->addSnippets($this->overviewSnippets, $params);
         }
     }
