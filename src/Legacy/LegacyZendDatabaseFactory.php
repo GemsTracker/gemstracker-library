@@ -43,29 +43,33 @@ class LegacyZendDatabaseFactory implements FactoryInterface
         }
 
         if (!isset($databaseConfig['dbname'])) {
-            throw new Exception('No database set in config');
+            // throw new Exception('No database set in config');
         }
 
         $adapter = null;
         if ($container->has(\PDO::class)) {
-            switch(strtolower($databaseConfig['driver'])) {
-                case 'pdo_mysql':
-                    $adapter = new PdoMysqlAdapter($databaseConfig);
-                    break;
-                case 'pdo_sqlite':
-                    $adapter = new PdoSqliteAdapter($databaseConfig);
-                    break;
-                case 'pdo_pgsql':
-                    $adapter = new PdoSqliteAdapter($databaseConfig);
-                    break;
-                case 'pdo_sqlsrv':
-                    $adapter = new PdoSqliteAdapter($databaseConfig);
-                    break;
-                default:
-                    $adapter = null;
-                    break;
+            if (! isset($databaseConfig['dbname'])) {
+                error_log(__CLASS__ . '->' . __FUNCTION__ . '->' . __LINE__ . '-> Database name not set');
+                $adapter = new PdoSqliteAdapter(['driver' => 'pdo_sqlite', 'dbname' => 'empty',  'memory' => true]);
+            } else {
+                switch (strtolower($databaseConfig['driver'])) {
+                    case 'pdo_mysql':
+                        $adapter = new PdoMysqlAdapter($databaseConfig);
+                        break;
+                    case 'pdo_sqlite':
+                        $adapter = new PdoSqliteAdapter($databaseConfig);
+                        break;
+                    case 'pdo_pgsql':
+                        $adapter = new PdoSqliteAdapter($databaseConfig);
+                        break;
+                    case 'pdo_sqlsrv':
+                        $adapter = new PdoSqliteAdapter($databaseConfig);
+                        break;
+                    default:
+                        $adapter = null;
+                        break;
+                }
             }
-
             if ($adapter instanceof \Zend_Db_Adapter_Abstract) {
                 $adapter->setConnection($container->get(\PDO::class));
             }

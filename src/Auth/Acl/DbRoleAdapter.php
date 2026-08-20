@@ -4,7 +4,6 @@ namespace Gems\Auth\Acl;
 
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RoleGatherPrivilegeDropsEvent;
-use Laminas\Db\Adapter\Exception\InvalidQueryException;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class DbRoleAdapter implements RoleAdapterInterface
@@ -33,7 +32,7 @@ class DbRoleAdapter implements RoleAdapterInterface
 
             try {
                 $dbRoles = $this->resultFetcher->fetchAll($select);
-            } catch (InvalidQueryException $e) {
+            } catch (\Exception $e) {
                 error_log(__CLASS__ . '->' . __FUNCTION__ . '->' . __LINE__ . '->' . $e->getMessage());
                 $dbRoles = [];
             }

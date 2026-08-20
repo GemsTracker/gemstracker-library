@@ -30,7 +30,13 @@ class DoctrineDbalFactory implements FactoryInterface
         $configRepository = new ConfigRepository($config);
         $databaseConfig = $configRepository->getDoctrineConfig();
 
-        $connection = DriverManager::getConnection($databaseConfig);
+        // print_r($databaseConfig);
+        if (isset($databaseConfig['host'], $databaseConfig['user'])) {
+            $connection = DriverManager::getConnection($databaseConfig);
+        } else {
+            error_log(__CLASS__ . '->' . __FUNCTION__ . '->' . __LINE__ . '-> Database Host en User not set');
+            $connection = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+        }
 
         $cache = $container->get(CacheItemPoolInterface::class);
         if ($cache instanceof CacheItemPoolInterface) {
