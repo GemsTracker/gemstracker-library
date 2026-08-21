@@ -108,9 +108,10 @@ abstract class ConfigurableCommandAbstract extends Command
             if (null === $result[$name]) {
                 if ($defaults[$name] ?? false) {
                     $result[$name] = $defaults[$name];
-                    continue;
                 }
+            }
 
+            if (null === $result[$name]) {
                 if ($settings['required'] ?? false) {
                     $io = new SymfonyStyle($input, $output);
                     $io->error($settings['label'] . ' is required!');
@@ -131,6 +132,14 @@ abstract class ConfigurableCommandAbstract extends Command
                 }
             }
 
+            if (isset($settings['template'])) {
+                if (isset($settings['templateFunction'])) {
+                    $function = [$this, $settings['templateFunction']];
+                    $defaults = str_replace($settings['template'], $function($result[$name]), $defaults);
+                } else {
+                    $defaults = str_replace($settings['template'], $result[$name], $defaults);
+                }
+            }
         }
 
         return $this->saveSettings($result, $input, $output);

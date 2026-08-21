@@ -38,6 +38,9 @@ class GenerateJsTranslations extends Command
                 $output->writeln(sprintf('Created %s translation file \'%s\' with %d base translations', $language, $filename, $translationCount));
             }
         }
+        if (! $translationPaths) {
+            $output->writeln('No translation paths found in config.');
+        }
 
         return static::SUCCESS;
     }
