@@ -98,7 +98,7 @@ abstract class ConfigurableCommandAbstract extends Command
             if (isset($settings['choices'])) {
                 $question = new ChoiceQuestion($label . ': ', $settings['choices'], $defaults[$name]);
             } else {
-                $question = new Question($label . ': ');
+                $question = new Question($label . ': ', $defaults[$name]);
                 if (isset($settings['password'])) {
                     $question->setHidden(true);
                 }
@@ -120,7 +120,7 @@ abstract class ConfigurableCommandAbstract extends Command
             }
 
             if (isset($settings['password'])) {
-                $question = new Question($settings['label'] . ' repeat: ');
+                $question = new Question($settings['label'] . ' repeat: ', $defaults[$name]);
                 $question->setHidden(true);
 
                 $check = $helper->ask($input, $output, $question);

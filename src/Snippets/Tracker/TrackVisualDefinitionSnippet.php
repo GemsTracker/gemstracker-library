@@ -14,14 +14,15 @@ namespace Gems\Snippets\Tracker;
 use Gems\Db\ResultFetcher;
 use Gems\Exception\Coding;
 use Gems\Menu\MenuSnippetHelper;
-use Gems\Menu\RouteHelper;
-use MUtil\Model\SelectModel;
+use Gems\Model\MetaModelLoader;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Select;
 use Zalt\Base\RequestInfo;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Sql\Laminas\LaminasSelectModel;
 use Zalt\SnippetsLoader\SnippetOptions;
-use Zend_Db_Adapter_Abstract;
 
 /**
  * Provides a visual overview of the track definition
@@ -74,7 +75,8 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
-        protected Zend_Db_Adapter_Abstract $db,
+        protected readonly MetaModelLoader $modelLoader,
+        protected readonly ResultFetcher $resultFetcher,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
         if (empty($this->trackId)) {
@@ -82,46 +84,55 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
         }
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
     protected function createModel(): DataReaderInterface
     {
-        if (!$this->_model instanceof \MUtil\Model\SelectModel) {
+        if (! $this->_model instanceof LaminasSelectModel) {
+            $select = $this->resultFetcher->getSelect();
+            $select->from('gems__rounds')
+                ->columns([new Expression('COALESCE(gro_round_description, "_null_")'), 'gro_round_description'])
+                ->where(['gro_id_track' => $this->trackId]);
+            $rounds = $this->resultFetcher->fetchPairs($select);
 
-            $select = $this->db->select()->distinct()->from('gems__rounds', ['gro_round_description', 'gro_round_description'])->where('gro_id_track = ?', $this->trackId);
-            $rounds = $this->db->fetchPairs($select);
+            $platform = $this->resultFetcher->getPlatform();
 
             $fields = [
-                'gems__surveys.gsu_survey_name',
-                'round_order' => new \Zend_Db_Expr('min(gro_id_order)')
+                'gsu_survey_name' => new Expression('gems__surveys.gsu_survey_name'),
+                'round_order' => new Expression('min(gro_id_order)')
             ];
-            foreach ($rounds as $round) {
+
+            foreach ($rounds as $roundId => $round) {
                 if ($round === null) {
+                    $fields[$roundId] = new Expression('max(case when (gro_round_description IS NULL AND gro_condition > 0) then concat("C ", gcon_name) when gro_round_description IS NULL then "X" else NULL end)');
                     continue;
                 }
-                $fields[$round] = new \Zend_Db_Expr('max(case when (gro_round_description = ' . $this->db->quote($round) . ' AND gro_condition > 0) then "C" when gro_round_description = ' . $this->db->quote($round) . ' then "X" else NULL end)');
+                $fields[$roundId] = new Expression('max(case when (gro_round_description = ' . $platform->quoteValue($round) . ' AND gro_condition > 0) then concat("C ", gcon_name) when gro_round_description = ' . $platform->quoteValue($round) . ' then "X" else NULL end)');
             }
-            $fields['filler'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
+            $fields['filler'] = new Expression('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
 
-            $sql = $this->db->select()->from('gems__rounds', [])
-                    ->join('gems__surveys', 'gro_id_survey = gsu_id_survey', [])
-                    ->joinLeft('gems__track_fields', 'gro_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
-                    ->joinLeft('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
-                    ->where('gro_active = 1')   //Only active rounds
-                    ->where('gro_id_track = ?', $this->trackId)
-                    ->group(['gro_id_survey', 'filler'])
-                    ->columns($fields);
+            $sql = $this->resultFetcher->getSelect();
+            $sql->from('gems__rounds')
+                ->join('gems__surveys', 'gro_id_survey = gsu_id_survey', [])
+                ->join('gems__track_fields', new \Laminas\Db\Sql\Predicate\Expression('gro_id_relationfield = gtf_id_field AND gtf_field_type = "relation"'), [], Select::JOIN_LEFT)
+                ->join('gems__groups', 'gsu_id_primary_group =  ggp_id_group', [], Select::JOIN_LEFT)
+                ->join('gems__conditions', 'gro_condition =  gcon_id', [], Select::JOIN_LEFT)
+                ->where([
+                    'gro_active' => 1,
+                    'gro_id_track' => $this->trackId
+                ])->group(['gems__surveys.gsu_survey_name', $fields['filler']])
+                ->columns($fields);
 
-            $model = new SelectModel($sql, 'track-plan');
-            //$model->setKeys(array('gsu_survey_name'));
-            $model->resetOrder();
-            $model->set('filler', 'label', $this->_('Filler'));
-            $model->set('gsu_survey_name', 'label', $this->_('Survey'));            
-            foreach ($rounds as $round) {
-                $model->set($round, 'label', $round, 'formatFunction', [$this, 'visualRoundStatus']);
+
+            $model = $this->modelLoader->createModel(LaminasSelectModel::class, 'track-plan', $sql);
+            $metaModel = $model->getMetaModel();
+            $metaModel->setKeys(['gsu_survey_name']);
+            $metaModel->resetOrder();
+            $metaModel->set('filler', ['label' => $this->_('Filler')]);
+            $metaModel->set('gsu_survey_name', ['label' => $this->_('Survey')]);
+            foreach ($rounds as $roundId => $round) {
+                $metaModel->set($roundId, [
+                    'label' => $round ?? ' ',
+                    'formatFunction' => [$this, 'visualRoundStatus'],
+                ]);
             }
             $this->_model = $model;
         }
@@ -132,12 +143,13 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
     /**
      * Show a check or cross for true or false values
      *
-     * @param bool $value
+     * @param string $value
      * @return mixed
      */
     public function visualRoundStatus($value)
     {
-        switch ($value) {
+        $char = $value ? substr($value, 0, 1) : '';
+        switch ($char) {
             case 'X':
                 // yes
 
@@ -145,6 +157,9 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
                 break;
             case 'C':
                 // Condition
+                if (strlen($value) > 2) {
+                    return Html::create()->i(['class' => 'fa fa-question-circle', 'style' => 'color: orange;', 'title' => sprintf($this->_('Condition: %s'), substr($value, 2))]);
+                }
                 return Html::create()->i(['class' => 'fa fa-question-circle', 'style' => 'color: orange;', 'title' => $this->_('Condition')]);
                 break;
             default:
