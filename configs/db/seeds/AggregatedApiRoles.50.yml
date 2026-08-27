@@ -1,0 +1,32 @@
+gems__roles:
+  - grl_id_role: 810
+    grl_name: showrespondent
+    grl_description: privileges for show respondent
+    grl_parents: null
+    grl_privileges: pr.respondent.show,pr.api.fhir.care-plan.structure,pr.api.fhir.care-plan.GET,pr.api.fhir.patient.structure,pr.api.fhir.patient.GET,pr.api.fhir.questionnaire-task.structure,pr.api.fhir.questionnaire-task.GET,pr.api.insertable-questionnaire.structure,pr.api.insertable-questionnaire.GET,pr.api.tracks.structure,pr.api.tracks.GET,pr.api.other-patient-numbers,pr.islogin
+    grl_changed_by: 1
+    grl_created_by: 1
+
+  - grl_id_role: 811
+    grl_name: findtoken
+    grl_description: privileges for find token
+    grl_parents: null
+    grl_privileges: pr.respondent.find-token.index,pr.api.fhir.questionnaire-task.structure,pr.api.fhir.questionnaire-task.GET,pr.islogin
+    grl_changed_by: 1
+    grl_created_by: 1
+
+  - grl_id_role: 812
+    grl_name: emailnow
+    grl_description: privileges for email-now
+    grl_parents: null
+    grl_privileges: pr.respondent.tracks.token.email,pr.api.respondent.email-token.structure,pr.api.respondent.email-token.GET,pr.api.respondent.email-token.PATCH,pr.api.comm-fields,pr.islogin
+    grl_changed_by: 1
+    grl_created_by: 1
+
+  - grl_id_role: 813
+    grl_name: commtemplate
+    grl_description: privileges for comm template editing
+    grl_parents: null
+    grl_privileges: pr.setup.communication.template.index,pr.setup.communication.template.create,pr.setup.communication.template.show,pr.setup.communication.template.edit,pr.api.comm-template.structure,pr.api.comm-template.GET,pr.api.comm-template.PATCH,pr.api.comm-template.POST,pr.api.comm-fields,pr.api.test-communication-email,pr.islogin
+    grl_changed_by: 1
+    grl_created_by: 1
