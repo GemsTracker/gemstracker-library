@@ -91,6 +91,7 @@ class PrefillAnswers extends FillBirthDayGender
         $this->log("Filling rd respondent fields");
         $respondent = $token->getRespondent();
         $this->addCheckedValue('rdAge', $respondent->getAge());
+        $this->addCheckedValue('rdAgeMonths', $respondent->getAge(null, true));
         $this->addCheckedValue('rdSex', $respondent->getGender());
         $this->addCheckedValue('rdName', $respondent->getName());
         $birthDate = $respondent->getBirthday();
