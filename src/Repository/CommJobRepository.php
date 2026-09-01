@@ -946,7 +946,7 @@ class CommJobRepository
             ->join('gems__surveys', 'gto_id_survey = gsu_id_survey', [])
             ->join(['token_rc' => 'gems__reception_codes'], 'gto_reception_code = token_rc.grc_id_reception_code', [])
             ->join(['respondent_rc' => 'gems__reception_codes'], 'gr2o_reception_code = respondent_rc.grc_id_reception_code', [])
-            ->join(['track_rc' => 'gems__reception_codes'], 'gr2o_reception_code = track_rc.grc_id_reception_code', [])
+            ->join(['track_rc' => 'gems__reception_codes'], 'gr2t_reception_code = track_rc.grc_id_reception_code', [])
             ->where($filter);
 
         return $this->resultFetcher->insertIntoTable('gems__transient_comm_tokens', $select);
