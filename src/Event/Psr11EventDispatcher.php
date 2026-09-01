@@ -50,7 +50,7 @@ class Psr11EventDispatcher extends EventDispatcher
         foreach ($subscriber->getSubscribedEvents() as $eventName => $params) {
             if (\is_string($params)) {
                 $this->addListener($eventName, $this->getListenerFromSubscriber($subscriber, $params));
-            } elseif (is_array($params) && !empty($params) && \is_string($params[0])) {
+            } elseif (!empty($params) && \is_string($params[0])) {
                 $this->addListener($eventName, $this->getListenerFromSubscriber($subscriber, $params[0]), $params[1] ?? 0);
             } else {
                 foreach ($params as $listener) {
