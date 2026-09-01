@@ -17,6 +17,28 @@ class Psr11EventDispatcher extends EventDispatcher
         parent::__construct();
     }
 
+    public function addLazySubscriber(string $subscriberClass): void
+    {
+        if (!is_a($subscriberClass, EventSubscriberInterface::class, true)) {
+            throw new \InvalidArgumentException(sprintf('%s is not a subscriber', $subscriberClass));
+        }
+
+        foreach ($subscriberClass::getSubscribedEvents() as $eventName => $params) {
+            if (\is_string($params)) {
+                $this->addListener($eventName, $this->getLazyListenerFromSubscriber($subscriberClass, $params));
+            } elseif (is_array($params) && !empty($params) && \is_string($params[0])) {
+                $this->addListener($eventName, $this->getLazyListenerFromSubscriber($subscriberClass, $params[0]), $params[1] ?? 0);
+            } else {
+                foreach ($params as $listener) {
+                    if (!isset($listener[0])) {
+                        $test = true;
+                    }
+                    $this->addListener($eventName, $this->getLazyListenerFromSubscriber($subscriberClass, $listener[0]), $listener[1] ?? 0);
+                }
+            }
+        }
+    }
+
     /**
      * If supplied listener name is a class, register that as Listener, instead of a callable from the subscriber
      *
@@ -57,6 +79,26 @@ class Psr11EventDispatcher extends EventDispatcher
             }
             $listener($event, $eventName, $this);
         }
+    }
+
+    /**
+     * If supplied listener name is a class, register that as Listener, instead of a callable from the subscriber
+     *
+     * @param string $eventSubscriberClass
+     * @param string $listener
+     * @return callable
+     */
+    protected function getLazyListenerFromSubscriber(string $eventSubscriberClass, string $listener): callable
+    {
+        if (class_exists($listener)) {
+            return $listener;
+        }
+
+        $container = $this->container;
+
+        return static function (...$args) use ($container, $eventSubscriberClass, $listener) {
+            return $container->get($eventSubscriberClass)->$listener(...$args);
+        };
     }
 
     /**
