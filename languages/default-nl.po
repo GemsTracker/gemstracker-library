@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-21 13:58+0200\n"
+"POT-Creation-Date: 2026-08-26 17:34+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Roel van Meer <roel.van.meer@peercode.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -484,7 +484,7 @@ msgstr "Weet u het heel erg zeker?"
 #: gemstracker/gemstracker/src/Snippets/Agenda/AppointmentCleanupSnippet.php:222
 #: gemstracker/gemstracker/src/Snippets/ModelConfirmDataChangeSnippet.php:160
 #: gemstracker/gemstracker/src/Snippets/Tracker/TrackMaintenance/TrackMaintenanceSearchSnippet.php:74
-#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:144
+#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:156
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:113
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:117
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:136
@@ -2005,7 +2005,7 @@ msgstr "Voorwaarden kunnen maar één keer gekozen worden."
 #: gemstracker/gemstracker/src/Condition/Round/AndCondition.php:65
 #: gemstracker/gemstracker/src/Condition/Round/AndCondition.php:66
 #: gemstracker/gemstracker/src/Model/ConditionModel.php:75
-#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:148
+#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:163
 #: gemstracker/gemstracker/src/Tracker/Engine/TrackEngineAbstract.php:883
 msgid "Condition"
 msgstr "Voorwaarde"
@@ -2214,7 +2214,7 @@ msgstr "Dezelfde vragenlijstcode"
 #: gemstracker/gemstracker/src/Snippets/Tracker/Compliance/ComplianceLegenda.php:72
 #: gemstracker/gemstracker/src/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:100
 #: gemstracker/gemstracker/src/Snippets/Tracker/TrackSurveyOverviewSnippet.php:99
-#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:122
+#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:130
 #: gemstracker/gemstracker/src/Tracker/Engine/TrackEngineAbstract.php:826
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:322
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:230
@@ -3421,7 +3421,7 @@ msgstr "Relatie ID"
 #: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:159
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:244
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentOverviewSnippet.php:130
-#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:121
+#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:129
 msgid "Filler"
 msgstr "Invuller"
 
@@ -11104,6 +11104,11 @@ msgstr "Dit traject kan aan een patiënt toegewezen worden van %s tot %s."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "Dit traject kan sinds %s aan een patiënt toegewezen worden."
+
+#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:161
+#, php-format
+msgid "Condition: %s"
+msgstr "Voorwaarde: %s"
 
 #: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionTitleSnippet.php:39
 #, php-format

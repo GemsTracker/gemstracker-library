@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-21 13:53+0200\n"
+"POT-Creation-Date: 2026-08-26 17:34+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Roel van Meer <roel.van.meer@peercode.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -478,7 +478,7 @@ msgstr "Are you really sure?"
 #: gemstracker/gemstracker/src/Snippets/Agenda/AppointmentCleanupSnippet.php:222
 #: gemstracker/gemstracker/src/Snippets/ModelConfirmDataChangeSnippet.php:160
 #: gemstracker/gemstracker/src/Snippets/Tracker/TrackMaintenance/TrackMaintenanceSearchSnippet.php:74
-#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:144
+#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:156
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:113
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:117
 #: gemstracker/gemstracker/src/Tracker/Source/LimeSurvey3m00FieldMap.php:136
@@ -1980,7 +1980,7 @@ msgstr "Conditions may be chosen only once."
 #: gemstracker/gemstracker/src/Condition/Round/AndCondition.php:65
 #: gemstracker/gemstracker/src/Condition/Round/AndCondition.php:66
 #: gemstracker/gemstracker/src/Model/ConditionModel.php:75
-#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:148
+#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:163
 #: gemstracker/gemstracker/src/Tracker/Engine/TrackEngineAbstract.php:883
 msgid "Condition"
 msgstr "Condition"
@@ -2188,7 +2188,7 @@ msgstr "Same survey code"
 #: gemstracker/gemstracker/src/Snippets/Tracker/Compliance/ComplianceLegenda.php:72
 #: gemstracker/gemstracker/src/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:100
 #: gemstracker/gemstracker/src/Snippets/Tracker/TrackSurveyOverviewSnippet.php:99
-#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:122
+#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:130
 #: gemstracker/gemstracker/src/Tracker/Engine/TrackEngineAbstract.php:826
 #: gemstracker/gemstracker/src/Tracker/Model/StandardTokenModel.php:322
 #: gemstracker/gemstracker/src/Tracker/Model/TokenModel.php:230
@@ -3393,7 +3393,7 @@ msgstr "Relation ID"
 #: gemstracker/gemstracker/src/Handlers/Overview/SummaryHandler.php:159
 #: gemstracker/gemstracker/src/Model/Setup/CommJobModel.php:244
 #: gemstracker/gemstracker/src/Snippets/Respondent/RespondentOverviewSnippet.php:130
-#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:121
+#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:129
 msgid "Filler"
 msgstr "Filler"
 
@@ -3697,11 +3697,6 @@ msgid "Combine multiple files to separate sheets in one excel file"
 msgstr "Combine multiple files to separate sheets in one excel file"
 
 #: gemstracker/gemstracker/src/Export/Type/SpssExport.php:234
-#| msgid ""
-#| "Extract all files from the downloaded zip and open the .sps file.\n"
-#| "Change line number 8 to include the full path to the .dat file:\n"
-#| "    /FILE=\"filename.dat\"  ==>  /FILE=\"c:\\downloads\\filename.dat\"\n"
-#| "Choose Run/All and all your data should be visible."
 msgid ""
 "Download both the .sps and the .dat file and open the .sps file.\n"
 "Change line number 8 to include the full path to the .dat file:\n"
@@ -10970,6 +10965,12 @@ msgstr "This track can be assigned from %s until %s."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "This track can be assigned since %s."
+
+#: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionSnippet.php:161
+#, php-format
+#| msgid "Conditions"
+msgid "Condition: %s"
+msgstr "Condition: %s"
 
 #: gemstracker/gemstracker/src/Snippets/Tracker/TrackVisualDefinitionTitleSnippet.php:39
 #, php-format

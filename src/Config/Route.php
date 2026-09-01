@@ -740,7 +740,7 @@ class Route
             ),
             ...$this->createRoute(
                 name: 'respondent.overview',
-                path: '/respondent/overview/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/{tr:\d+}/{rn:.+}',
+                path: '/respondent/overview/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/{tr:\d+}/{rn:.*}',
                 middleware: [
                     \Gems\Middleware\HandlerCsrfMiddleware::class,
                     \Gems\Middleware\LegacyCurrentUserMiddleware::class,
