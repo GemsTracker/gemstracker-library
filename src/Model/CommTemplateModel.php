@@ -26,9 +26,9 @@ class CommTemplateModel extends GemsJoinModel
         protected readonly array $config,
         protected readonly Translated $translatedUtil,
         protected readonly Locale $locale,
+        string $name = 'commTemplate',
     ) {
-        parent::__construct('gems__comm_templates', $metaModelLoader, $sqlRunner, $translate, 'commTemplate');
-
+        parent::__construct('gems__comm_templates', $metaModelLoader, $sqlRunner, $translate, $name);
 
         $this->metaModel->set('gct_id_template', [
             'apiName' => 'id',
@@ -137,7 +137,6 @@ class CommTemplateModel extends GemsJoinModel
 
         return $html;
     }
-
 
     protected function getSubModel(): DataReaderInterface
     {

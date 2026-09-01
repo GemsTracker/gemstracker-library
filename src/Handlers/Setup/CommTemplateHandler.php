@@ -40,19 +40,19 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public array $cacheTags = ['commTemplates'];
 
-    protected array $createEditSnippets = [
-        ContentTitleSnippet::class,
-        CreateEditSnippet::class,
-        CurrentButtonRowSnippet::class,
-    ];
-
     protected array $createParameters = [
         'addCurrentSiblings' => true,
         'contentTitle' => 'getCreateTitle',
         'vueOptions' => 'getVueOptions',
     ];
 
-    protected array $editParameters = [
+    protected array $createEditSnippets = [
+        ContentTitleSnippet::class,
+        CreateEditSnippet::class,
+        CurrentButtonRowSnippet::class,
+    ];
+
+   protected array $editParameters = [
         'addCurrentSiblings' => true,
         'contentTitle' => 'getEditTitle',
         'vueOptions' => 'getVueOptions',
