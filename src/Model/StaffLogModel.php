@@ -21,7 +21,7 @@ class StaffLogModel extends LogModel
         parent::__construct($metaModelLoader, $sqlRunner, $translate, $maskRepository, $auditLog, $staffRepository);
 
         $this->getMetaModel()->setKeys([
-            'id' => 'gsf_id_user',
+            'id' => 'gla_by',
             'logId' => 'gla_id'
         ]);
     }
