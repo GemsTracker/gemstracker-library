@@ -16,6 +16,8 @@ use DateTimeInterface;
 
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\TokenEvent;
+use Gems\Event\Application\TokenSurveyBeforeAnswerEvent;
+use Gems\Event\Application\TokenSurveyCompletedEvent;
 use Gems\Exception\Coding;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
@@ -1586,7 +1588,7 @@ class Token
         $survey = $this->getSurvey();
         $completedEvent = $survey->getSurveyCompletedEvent();
 
-        $eventName = 'gems.survey.completed';
+        $eventName = TokenSurveyCompletedEvent::class;
 
         if ($this->eventDispatcher->hasListeners($eventName)) {
             // Remove previous gems survey completed events if set
@@ -1604,7 +1606,7 @@ class Token
         }
 
         if ($completedEvent) {
-            $eventFunction = function (TokenEvent $event) use ($completedEvent) {
+            $eventFunction = function (TokenSurveyCompletedEvent $event) use ($completedEvent) {
                 $token = $event->getToken();
                 try {
                     $changed = $completedEvent->processTokenData($token);
@@ -1618,7 +1620,7 @@ class Token
             $this->eventDispatcher->addListener($eventName, $eventFunction, 100);
         }
 
-        $tokenEvent = new TokenEvent($this);
+        $tokenEvent = new TokenSurveyCompletedEvent($this);
         try {
             $this->eventDispatcher->dispatch($tokenEvent, $eventName);
         } catch (\Exception $e) {
@@ -1655,14 +1657,14 @@ class Token
         $survey = $this->getSurvey();
         $beforeAnswerEvent  = $survey->getSurveyBeforeAnsweringEvent();
 
-        $eventName = 'gems.survey.before-answering';
+        $eventName = TokenSurveyBeforeAnswerEvent::class;
 
         if (! $beforeAnswerEvent && !$this->eventDispatcher->hasListeners($eventName)) {
             return null;
         }
 
         if ($beforeAnswerEvent) {
-            $eventFunction = function (TokenEvent $event) use ($beforeAnswerEvent) {
+            $eventFunction = function (TokenSurveyBeforeAnswerEvent $event) use ($beforeAnswerEvent) {
                 $token = $event->getToken();
                 try {
                     $changed = $beforeAnswerEvent->processTokenInsertion($token);
@@ -1676,10 +1678,10 @@ class Token
             $this->eventDispatcher->addListener($eventName, $eventFunction, 100);
         }
 
-        $tokenEvent = new TokenEvent($this);
+        $tokenEvent = new TokenSurveyBeforeAnswerEvent($this);
 
         try {
-            $this->eventDispatcher->dispatch($tokenEvent, $eventName);
+            $this->eventDispatcher->dispatch($tokenEvent);
         } catch (\Exception $e) {
             $this->logger->error(sprintf(
                 "Before answering before event error for token %s on survey '%s': %s",
