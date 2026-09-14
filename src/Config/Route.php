@@ -124,43 +124,53 @@ class Route
         return [
             ...$this->getCustomMiddlewareRoutes(),
 
-            ...$this->routeGroup([
-                'middleware' => static::$loggedOutMiddleware,
-            ], [
+            ...$this->routeGroup(
+                'public',
+                [],
+                [
                 ...$this->getLoggedOutRoutes(),
-            ]),
+                ]
+            ),
 
-            ...$this->routeGroup([
-                'middleware' => static::$loggedInMiddleware,
-            ], [
-                ...$this->getGeneralRoutes(),
-                ...$this->getCalendarRoutes(),
-                ...$this->getRespondentRoutes(),
-                ...$this->getOverviewRoutes(),
-                ...$this->getProjectRoutes(),
-                ...$this->getSetupRoutes(),
-                ...$this->getExportRoutes(),
-                ...$this->getTrackBuilderRoutes(),
-                ...$this->getOptionRoutes(),
-            ]),
+            ...$this->routeGroup(
+                'authenticated',
+                [],
+                [
+                    ...$this->getGeneralRoutes(),
+                    ...$this->getCalendarRoutes(),
+                    ...$this->getRespondentRoutes(),
+                    ...$this->getOverviewRoutes(),
+                    ...$this->getProjectRoutes(),
+                    ...$this->getSetupRoutes(),
+                    ...$this->getExportRoutes(),
+                    ...$this->getTrackBuilderRoutes(),
+                    ...$this->getOptionRoutes(),
+                ]
+            ),
 
             ...$this->getApiRoutes(),
 
 
-            ...$this->routeGroup([
-                'middleware' => static::$maybeLoggedInMiddleware,
-            ], [
-                ...$this->getAskRoutes(),
-                ...$this->getContactRoutes(),
-                ...$this->getParticipateRoutes(),
-                ...$this->getAlwaysAvailableRoutes(),
-            ]),
+            ...$this->routeGroup(
+                'maybe-authenticated',
+                [
+                ],
+                [
+                    ...$this->getAskRoutes(),
+                    ...$this->getContactRoutes(),
+                    ...$this->getParticipateRoutes(),
+                    ...$this->getAlwaysAvailableRoutes(),
+                ]
+            ),
 
-            ...$this->routeGroup([
-                'middleware' => static::$idlePollMiddleware,
-            ], [
-                ...$this->getIdlePollRoutes(),
-            ]),
+            ...$this->routeGroup(
+                'idle-poll',
+                [
+                ],
+                [
+                    ...$this->getIdlePollRoutes(),
+                ]
+            ),
         ];
     }
 
