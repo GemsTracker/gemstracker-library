@@ -16,6 +16,7 @@ use DateTimeInterface;
 
 use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
+use Gems\Event\Application\RoundChangedEvent;
 use Gems\Event\Application\TokenEvent;
 use Gems\Event\Application\RespondentTrackFieldUpdateEvent;
 use Gems\Event\Application\RespondentTrackFieldEvent;
@@ -1301,11 +1302,11 @@ class RespondentTrack
             $this->_checkStart = $token;
         }
 
-        $eventName = 'gems.round.changed';
+        $eventName = RoundChangedEvent::class;
 
         // Process any events
         if ($roundChangedEvent = $this->getTrackEngine()->getRoundChangedEvent($token->getRoundId())) {
-            $eventFunction = function (TokenEvent $event) use ($roundChangedEvent, $userId) {
+            $eventFunction = function (RoundChangedEvent $event) use ($roundChangedEvent, $userId) {
                 $token = $event->getToken();
                 $respondentTrack = $token->getRespondentTrack();
                 try {
@@ -1320,9 +1321,9 @@ class RespondentTrack
             $this->event->addListener($eventName, $eventFunction, 100);
         }
 
-        $tokenEvent = new TokenEvent($token);
+        $tokenEvent = new RoundChangedEvent($token);
         try {
-            $this->event->dispatch($tokenEvent, $eventName);
+            $this->event->dispatch($tokenEvent);
         } catch (\Exception $e) {
             $this->logger->error(sprintf(
                 "Round changed after event error for token %s on survey '%s': %s",
