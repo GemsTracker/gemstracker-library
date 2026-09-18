@@ -922,7 +922,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
 
         if ($token->isCompleted() && $this->currentUser?->hasPrivilege('pr.token.answers')) {
             $output[] = 'Tracker\\Answers\\SingleTokenAnswerModelSnippet';
-        } elseif ($this->currentUser?->hasPrivilege('pr.project.questions')) {
+        } elseif ($this->currentUser?->hasPrivilege('pr.project.surveys.show')) {
             $output[] = 'Survey\\SurveyQuestionsSnippet';
         }
         return $output;

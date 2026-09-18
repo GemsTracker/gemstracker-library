@@ -295,7 +295,7 @@ class CommunicationRepository
         $result = $this->cachedResultFetcher->fetchAll(__FUNCTION__, $select, null, ['mailcodes']);
         $codes =  $this->dbTranslationRepository->translateTable(__FUNCTION__, 'gems__mail_codes', 'gmc_id', $result);
 
-        $codeValues = array_column($codes, 'gmc_mail_to_target', 'untranslated_description');
+        $codeValues = array_column($codes, 'gmc_mail_to_target', 'gmc_id');
         if ($this->config['model']['translateDatabaseFields'] ?? false) {
             return $codeValues;
         }
