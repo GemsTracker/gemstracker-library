@@ -26,15 +26,15 @@ class ApiRoutes extends RestModelConfigProviderAbstract
     {
         return [
             ...$this->routeGroup(
+                'public-api',
                 [
-                    'path' => $this->pathPrefix,
                     'middleware' => $this->getMiddleware(),
                 ],
                 $this->getRoutes()
             ),
             ...$this->routeGroup(
+                'api',
                 [
-                    'path' => $this->pathPrefix,
                     'middleware' => [
                         SecurityHeadersMiddleware::class,
                         LocaleMiddleware::class,

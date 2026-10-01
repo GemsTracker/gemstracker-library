@@ -124,13 +124,16 @@ class Route
         return [
             ...$this->getCustomMiddlewareRoutes(),
 
-            ...$this->routeGroup([
+            ...$this->routeGroup('public',
+                [
                 'middleware' => static::$loggedOutMiddleware,
             ], [
                 ...$this->getLoggedOutRoutes(),
             ]),
 
-            ...$this->routeGroup([
+            ...$this->routeGroup(
+                'authenticated',
+                [
                 'middleware' => static::$loggedInMiddleware,
             ], [
                 ...$this->getGeneralRoutes(),
@@ -147,7 +150,8 @@ class Route
             ...$this->getApiRoutes(),
 
 
-            ...$this->routeGroup([
+            ...$this->routeGroup('maybe-authenticated',
+                [
                 'middleware' => static::$maybeLoggedInMiddleware,
             ], [
                 ...$this->getAskRoutes(),
@@ -156,7 +160,8 @@ class Route
                 ...$this->getAlwaysAvailableRoutes(),
             ]),
 
-            ...$this->routeGroup([
+            ...$this->routeGroup('idle',
+                [
                 'middleware' => static::$idlePollMiddleware,
             ], [
                 ...$this->getIdlePollRoutes(),
