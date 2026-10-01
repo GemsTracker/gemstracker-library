@@ -4,6 +4,8 @@ namespace Gems\Messenger;
 
 
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Messenger\Batch\BatchMiddleware;
+use Gems\Messenger\Batch\MessengerBatchRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -60,6 +62,7 @@ class MessengerFactory implements FactoryInterface
         }
 
         $middleware = [
+            new BatchMiddleware($container),
             new CurrentUserMiddleware($container->get(CurrentUserRepository::class)),
             new AddBusNameStampMiddleware($this->busName),
             new RejectRedeliveredMessageMiddleware(),
