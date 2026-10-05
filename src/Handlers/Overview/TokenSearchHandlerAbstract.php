@@ -346,18 +346,24 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
      */
     public function indexAction(): void
     {
-        if ($this->checkForAnswersOnLoad) {
-            $session = $this->request->getAttribute(SessionInterface::class);
-            $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-            $this->tracker->processCompletedTokens(
-                $session,
-                null,
-                $currentUser->getUserId(),
-                $currentUser->getCurrentOrganizationId(),
-                true
-            );
-        }
+        $this->checkForAnswersOnLoad();
 
         parent::indexAction();
+    }
+
+    protected function checkForAnswersOnLoad(?int $respondentId = null): void
+    {
+        if (!$this->checkForAnswersOnLoad) {
+            return;
+        }
+        $session = $this->request->getAttribute(SessionInterface::class);
+        $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        $this->tracker->processCompletedTokens(
+            $session,
+            $respondentId,
+            $currentUser->getUserId(),
+            $currentUser->getCurrentOrganizationId(),
+            true
+        );
     }
 }

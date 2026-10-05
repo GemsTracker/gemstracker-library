@@ -14,6 +14,7 @@ namespace Gems\Handlers\Respondent;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Exception;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Handlers\Overview\TokenSearchHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
@@ -463,6 +464,13 @@ class TokenHandler extends TokenSearchHandlerAbstract
     public function getTopic(int $count = 1): string
     {
         return $this->plural('token', 'tokens', $count);
+    }
+
+    public function indexAction(): void
+    {
+        $this->checkForAnswersOnLoad($this->getRespondentId());
+
+        ModelSnippetLegacyHandlerAbstract::indexAction();
     }
 
     /**
