@@ -27,6 +27,9 @@ class ConfigAccessor
         return $this->config['auth']['allowLoginOnWithoutOrganization'] ?? false;
     }
 
+    /**
+     * @deprecated
+     */
     public function alwaysShowOrganizations(): bool
     {
         return $this->config['auth']['alwaysShowOrganizations'] ?? false;
@@ -209,5 +212,16 @@ class ConfigAccessor
             return $this->config['survey']['details']['usage'] !== false;
         }
         return true;
+    }
+
+    public function showOrganizationsAtLogin(int $orgCount): bool
+    {
+        if (isset($this->config['auth']['alwaysShowOrganizations']) && $this->config['auth']['alwaysShowOrganizations']) {
+            return true;
+        }
+        if (isset($this->config['auth']['alwaysHideOrganizations']) && $this->config['auth']['alwaysHideOrganizations']) {
+            return false;
+        }
+        return $orgCount > 1;
     }
 }

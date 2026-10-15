@@ -50,7 +50,7 @@ class LaminasAppointmentSelect
         return $this->resultFetcher->fetchOne($this->select);
     }
 
-    public function fetchRow(): array
+    public function fetchRow(): ?array
     {
         return $this->resultFetcher->fetchRow($this->select);
     }

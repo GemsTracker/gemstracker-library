@@ -99,7 +99,7 @@ class LoginHandler implements RequestHandlerInterface
 
         $data = [
             'trans' => $trans,
-            'hideOrganizations' => (! $this->config->alwaysShowOrganizations()) && (1 == count($this->organizations)),
+            'hideOrganizations' => (! $this->config->showOrganizationsAtLogin(count($this->organizations))),
             'organizations' => $this->organizations,
             'input' => $input,
        ];

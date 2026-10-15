@@ -1779,6 +1779,11 @@ class Menu
                             ],
                         ],
                         [
+                            'name' => 'track-builder.track-maintenance.import',
+                            'label' => $this->translator->trans('Import'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
                             'name' => 'track-builder.track-maintenance.track-overview.index',
                             'label' => $this->translator->trans('Track per org'),
                             'type' => 'route-link-item',

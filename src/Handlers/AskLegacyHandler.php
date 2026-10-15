@@ -284,7 +284,7 @@ class AskLegacyHandler extends SnippetLegacyHandlerAbstract
         $form->setDescription(sprintf($this->_('Enter your %s token'), $this->project->getName()));
         $this->html->h3($form->getDescription());
         $this->html[] = $form;
-        $this->html->pInfo(
+        $this->html->p(['class' => 'ínfo'],
             $this->_('Tokens identify a survey that was assigned to you personally.'), ' ',
             $this->_('Entering the token and pressing OK will open that survey.'), ' '
         );
@@ -295,7 +295,7 @@ class AskLegacyHandler extends SnippetLegacyHandlerAbstract
             }
         }
 
-        $this->html->pInfo(
+        $this->html->p(['class' => 'ínfo'],
             $this->_('A token consists of two groups of four letters and numbers, separated by an optional hyphen. Tokens are case insensitive.'), ' ',
             $this->_('The number zero and the letter O are treated as the same; the same goes for the number one and the letter L.')
         );

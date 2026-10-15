@@ -1492,6 +1492,7 @@ class Route
                 ],
                 postRoutes: [
                     ...$this->defaultPostRoutes,
+                    'import',
                     'export',
                 ],
             ),
