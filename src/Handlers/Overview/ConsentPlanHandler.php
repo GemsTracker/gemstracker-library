@@ -124,6 +124,13 @@ class ConsentPlanHandler extends GemsHandler
                 ['gor_name', 'gor_id_organization']);
         $select->group(['gor_name', 'gor_id_organization']);
 
+        $allowedOrganizationIds = $this->currentUser->getAllowedOrganizationIds();
+        if ($allowedOrganizationIds) {
+            $select->where(['gr2o_id_organization' => $allowedOrganizationIds]);
+        } else {
+            $select->where('1 = 0');
+        }
+
         if ($action->isDetailed()) {
             $select->group([$fields[$year], $fields[$month]]);
         }

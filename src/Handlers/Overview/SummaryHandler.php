@@ -64,7 +64,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      *
      * @var array String or array of snippets name
      */
-    protected array $autofilterSnippets = [ 
+    protected array $autofilterSnippets = [
         SummaryTableSnippet::class,
     ];
 
@@ -99,7 +99,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     ];
 
     public function __construct(
-        SnippetResponderInterface $responder, 
+        SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected readonly CurrentUserRepository $currentUserRepository,
@@ -110,7 +110,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     )
     {
         parent::__construct($responder, $translate, $cache);
-        
+
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
@@ -126,9 +126,9 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * @return DataReaderInterface
      */
     public function createModel($detailed, $action): DataReaderInterface
-    {      
+    {
         $select = $this->getSelect();
-        
+
         $dataModel = $this->metaModelLoader->createModel(LaminasSelectModel::class, 'summary', $select);
         $metaModel = $dataModel->getMetaModel();
 
@@ -201,10 +201,6 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function getSearchDefaults(): array
     {
-        if (! isset($this->defaultSearchData['gto_id_organization'])) {
-            $this->defaultSearchData['gto_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
-        }
-
         if (!isset($this->defaultSearchData['gto_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
             $tracks = $this->trackDataRepository->getTracksForOrgs($orgs);
@@ -215,7 +211,20 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         return parent::getSearchDefaults();
     }
-    
+
+    public function getSearchFilter(bool $useRequest = true): array
+    {
+        $searchFilter = parent::getSearchFilter($useRequest);
+
+        if (! isset($searchFilter['gto_id_organization'])) {
+            $searchFilter['gto_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
+        } else {
+            $this->currentUser->assertAccessToOrganizationId($searchFilter['gto_id_organization'], null);
+        }
+
+        return $searchFilter;
+    }
+
     public function getSelect() : Select
     {
         $fields['answered'] = new Expression("SUM(
@@ -292,7 +301,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         return $select;
     }
-        
+
     /**
      * Helper function to allow generalized statements about the items in the model.
      *

@@ -57,7 +57,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
      * @var \Gems\User\User
      */
     public $currentUser;
-    
+
     /**
      * Where statement filtering on track start / end dates
      *
@@ -170,7 +170,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         $sql     = "SELECT COUNT(*)
             FROM gems__respondent2track INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
             WHERE gr2t_id_track = ? AND grc_success = 1" . $this->orgWhere;
-        
+
         // Add the period filter - if any
         $type  = new GemsDateTimeType($this->translate);
         $where = $this->periodSelectRepository->createPeriodFilter($filter, $type->dateFormat, $type->storageFormat, $this->getSearchDefaults());
@@ -326,7 +326,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
                 $model->getFieldName('gr2t2f_value', $subName),
                 $this->trackId
                 );
-        
+
         // Add the period filter - if any
         if ($this->dateWhere) {
             $sql .= ' AND ' . $this->dateWhere;
@@ -383,10 +383,6 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
      */
     public function getSearchDefaults(): array
     {
-        if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
-            $this->defaultSearchData['gr2t_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
-        }
-        
         if (!isset($this->defaultSearchData['gtf_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
             $tracks = $this->trackDataRepository->getTracksForOrgs($orgs);
@@ -396,6 +392,19 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         }
 
         return parent::getSearchDefaults();
+    }
+
+    public function getSearchFilter(bool $useRequest = true): array
+    {
+        $searchFilter = parent::getSearchFilter($useRequest);
+
+        if (! isset($searchFilter['gr2t_id_organization'])) {
+            $searchFilter['gr2t_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
+        } else {
+            $this->currentUser->assertAccessToOrganizationId($searchFilter['gr2t_id_organization'], null);
+        }
+
+        return $searchFilter;
     }
 
     /**

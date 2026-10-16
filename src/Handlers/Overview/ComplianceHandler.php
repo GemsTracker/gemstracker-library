@@ -52,7 +52,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     protected array $autofilterParameters = [
         'extraFilter' => ['grc_success' => 1],
     ];
-    
+
     /**
      * The snippets used for the autofilter action.
      *
@@ -177,7 +177,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             ->where([
                 'gro_id_track' => $filter['gr2t_id_track'],
                 'gsu_active' => 1, //Only active surveys
-            ])   
+            ])
             ->order('gro_id_order');
 
         if (array_key_exists('fillerfilter', $filter)) {
@@ -187,7 +187,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             $select->having($having);
         }
         $data = $this->resultFetcher->fetchAll($select);
-        
+
         if (! $data) {
             return $model;
         }
@@ -281,10 +281,6 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function getSearchDefaults(): array
     {
-        if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
-            $this->defaultSearchData['gr2t_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
-        }
-
         if (!isset($this->defaultSearchData['gr2t_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
             $tracks = $this->trackDataRepository->getTracksForOrgs($orgs);
@@ -294,6 +290,19 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         }
 
         return parent::getSearchDefaults();
+    }
+
+    public function getSearchFilter(bool $useRequest = true): array
+    {
+        $searchFilter = parent::getSearchFilter($useRequest);
+
+        if (! isset($searchFilter['gr2t_id_organization'])) {
+            $searchFilter['gr2t_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
+        } else {
+            $this->currentUser->assertAccessToOrganizationId($searchFilter['gr2t_id_organization'], null);
+        }
+
+        return $searchFilter;
     }
 
     /**

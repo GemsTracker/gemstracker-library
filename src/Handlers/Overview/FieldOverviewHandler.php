@@ -50,7 +50,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
      *
      * @var mixed String or array of snippets name
      */
-    protected array $autofilterSnippets = [ 
+    protected array $autofilterSnippets = [
         FieldOverviewTableSnippet::class,
         ];
 
@@ -179,10 +179,6 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
      */
     public function getSearchDefaults(): array
     {
-        if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
-            $this->defaultSearchData['gr2t_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
-        }
-
         if (!isset($this->defaultSearchData['gr2t_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
             $tracks = $this->trackDataRepository->getTracksForOrgs($orgs);
@@ -192,6 +188,19 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         }
 
         return parent::getSearchDefaults();
+    }
+
+    public function getSearchFilter(bool $useRequest = true): array
+    {
+        $searchFilter = parent::getSearchFilter($useRequest);
+
+        if (! isset($searchFilter['gr2t_id_organization'])) {
+            $searchFilter['gr2t_id_organization'] = array_keys($this->currentUser->getRespondentOrganizations());
+        } else {
+            $this->currentUser->assertAccessToOrganizationId($searchFilter['gr2t_id_organization'], null);
+        }
+
+        return $searchFilter;
     }
 
     /**
