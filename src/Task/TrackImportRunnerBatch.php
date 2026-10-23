@@ -17,7 +17,7 @@ use Zalt\Html\UrlArrayAttribute;
  * @subpackage Task
  * @since      Class available since version 1.0
  */
-class TrackExportRunnerBatch extends TaskRunnerBatch
+class TrackImportRunnerBatch extends TaskRunnerBatch
 {
     public function getDownloadUrl()
     {
