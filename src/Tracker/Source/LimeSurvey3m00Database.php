@@ -35,6 +35,7 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Ddl\AlterTable;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Data\FullDataInterface;
@@ -151,6 +152,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         protected readonly HelperAdapter $cache,
         protected readonly Locale $locale,
         protected readonly CurrentUrlRepository $currentUrlRepository,
+        protected readonly EventDispatcherInterface $eventDispatcher,
     ) {
         parent::__construct($_sourceData, $_gemsResultFetcher, $translate, $tokenLibrary, $tracker, $valueEncryptor, $config);
 
@@ -1179,7 +1181,10 @@ class LimeSurvey3m00Database extends SourceAbstract
         }
 
         if ($values) {
-            return $this->_getFieldMap($sourceSurveyId)->mapKeysToTitles($values);
+            $result =  $this->_getFieldMap($sourceSurveyId)->mapKeysToTitles($values);
+            $filterEvent = new FilterRawTokenAnswerRowEvent($surveyId, $sourceSurveyId, static::$metaFields, $result);
+            $this->eventDispatcher->dispatch($filterEvent);
+            return $filterEvent->rawTokenAnswerRow;
         } else {
             return array();
         }
@@ -1234,12 +1239,18 @@ class LimeSurvey3m00Database extends SourceAbstract
             if (isset($filter[$tokenField])) {
                 foreach ($rows as $values) {
                     $token = $this->_getToken($values['token'], true);  // Reverse map
-                    $results[$token] = $map->mapKeysToTitles($values);
+                    $mappedValues = $map->mapKeysToTitles($values);
+                    $filterEvent = new FilterRawTokenAnswerRowEvent($surveyId, $sourceSurveyId, static::$metaFields, $mappedValues);
+                    $this->eventDispatcher->dispatch($filterEvent);
+                    $results[$token] = $filterEvent->rawTokenAnswerRow;
                 }
             } else {
                 //@@TODO If we do the mapping in the select statement, maybe we can gain some performance here
                 foreach ($rows as $values) {
-                    $results[] = $map->mapKeysToTitles($values);
+                    $mappedValues = $map->mapKeysToTitles($values);
+                    $filterEvent = new FilterRawTokenAnswerRowEvent($surveyId, $sourceSurveyId, static::$metaFields, $mappedValues);
+                    $this->eventDispatcher->dispatch($filterEvent);
+                    $results[] = $filterEvent->rawTokenAnswerRow;
                 }
             }
             return $results;
