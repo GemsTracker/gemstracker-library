@@ -825,6 +825,9 @@ class CommJobRepository
         if ($token->inSource()) {
             if ($token->checkTokenCompletion($this->currentUserId)) {
                 // Completion may change the result of the initial query
+                if ($token->isCompleted()) {
+                    $this->removeFromTranscientTokenList($tokenId);
+                }
                 return true;
             }
         }
@@ -908,6 +911,13 @@ class CommJobRepository
     {
         $transient_table = new TableGateway('gems__transient_comm_tokens', $this->resultFetcher->getAdapter());
         return $transient_table->select()->count();
+    }
+
+    private function removeFromTranscientTokenList(string $tokenId): void
+    {
+        $this->resultFetcher->deleteFromTable('gems__transient_comm_tokens', [
+            'gtct_id_token' => $tokenId,
+        ]);
     }
 
     public function truncateTransientTokenSelection(): void
