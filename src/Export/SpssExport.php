@@ -126,7 +126,7 @@ class SpssExport extends ExportAbstract
                 }
             }
         }
-        fputcsv($file, $exportRow, $this->delimiter, "'");
+        fputcsv($file, $exportRow, $this->delimiter, "'", escape: '\\');
         if ($changed) {
             $modelData = [];
             foreach ($exportRow as $name => $value) {
