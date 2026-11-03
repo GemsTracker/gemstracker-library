@@ -11,7 +11,6 @@
 
 namespace Gems\Tracker\Snippets;
 
-use Gems\Audit\AuditLog;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Model\MetaModelLoader;
 use Gems\Task\TrackExportRunnerBatch;
@@ -47,6 +46,12 @@ use Zalt\SnippetsLoader\SnippetOptions;
 class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstract
 {
     use ZendFormSnippetTrait { ZendFormSnippetTrait::beforeDisplay as zendBeforeDisplay; }
+
+    /**
+     *
+     * @var \Gems\Audit\AuditLog
+     * /
+    protected $accesslog;
 
     /**
      *
@@ -87,13 +92,12 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         CacheItemPoolInterface $cache,
-        protected readonly AuditLog $auditLog,
-        protected readonly BatchRunnerLoader $batchRunnerLoader,
-        protected readonly MetaModelLoader $metaModelLoader,
-        protected readonly ProjectOverloader $overloader,
-        protected readonly ServerRequestInterface $request,
-        protected readonly SessionInterface $session,
-        protected readonly Translated $translatedUtil,
+        protected BatchRunnerLoader $batchRunnerLoader,
+        protected MetaModelLoader $metaModelLoader,
+        protected ProjectOverloader $overloader,
+        protected ServerRequestInterface $request,
+        protected SessionInterface $session,
+        protected Translated $translatedUtil,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
@@ -169,7 +173,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             $data['localfile']    = '...' . substr($localFilename, -30);
             $data['downloadname'] = $downloadName;
             ksort($data);
-            $this->auditLog->logChange($this->requestInfo, null, array_filter($data));
+            // $this->accesslog->logChange($this->requestInfo, null, array_filter($data));
 
             $headers['Content-Type'] = "application/download";
             $headers['Content-Disposition'] = "attachment; filename=\"" . $downloadName . "\"";
