@@ -126,6 +126,7 @@ class FilterRepository
         if (isset($allFilterData[$filterId])) {
             $targetFilterData = $allFilterData[$filterId];
             if (in_array($targetFilterData['gaf_class'], $this->subFilterClasses)) {
+                // @phpstan-ignore smallerOrEqual.alwaysTrue
                 for ($i = 1; $i <= 4; $i++) {
                     $targetSubFilterId = $targetFilterData['gaf_filter_text'.$i] ?? null;
                     if ($targetSubFilterId === $subFilterId) {

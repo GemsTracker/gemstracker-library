@@ -656,7 +656,7 @@ class LimeSurvey3m00Database extends SourceAbstract
                             // FIXME: This is not platform agnostic!
                             $lsAdapter->query($sql, $lsAdapter::QUERY_MODE_EXECUTE);
                             $messages[] = sprintf($this->translate->_("Added to token table '%s' the field(s): %s"), $surveyor_title, $fields);
-                        } catch (\RuntimeException $e) {
+                        } catch (\Exception $e) {
                             $surveyor_status .= 'Token attributes could not be created. ';
                             $surveyor_status .= $e->getMessage() . ' ';
 

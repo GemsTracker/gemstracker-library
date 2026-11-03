@@ -605,7 +605,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         $trackIds        = array_column($data, 'gto_id_respondent_track', 'gto_id_respondent_track');
 
         // Check for cookie set for this patient
-        if (! isset($trackIds[$currentTrackId])) {
+        if (! ($currentTrackId && isset($trackIds[$currentTrackId]))) {
             $currentTrackId =  reset($trackIds);
         }
         
@@ -706,7 +706,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
                     'gr2o_patient_nr' => $row['gr2o_patient_nr'],
                     'gr2o_id_organization' => $row['gr2o_id_organization'],
                 ];
-                $summaryLink = $this->createTrackLink($this->_overviewRoute, $params, $summaryIcon);
+                $summaryLink = null; // $this->createTrackLink($this->_overviewRoute, $params, $summaryIcon);
                 if (!$summaryLink) {
                     $summaryLink = Html::create('div', $summaryIcon, array('renderClosingTag' => true));
                 }
