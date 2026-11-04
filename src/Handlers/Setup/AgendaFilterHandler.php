@@ -136,33 +136,6 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
         parent::__construct($responder, $translate, $cache);
     }
 
-    /*
-    public function checkFilterAction()
-    {
-        $this->configAccessor->extendBatchLoadTime();
-
-        $where    = ['gsu_id_source' => $sourceId];
-
-        $session = $this->request->getAttribute(SessionInterface::class);
-        $batch   = $this->tracker->refreshTokenAttributes($session, 'attributeCheckSource' . $sourceId, $where);
-        $batch->setBaseUrl($this->requestInfo->getBasePath());
-
-        $title = sprintf($this->_('Refreshing token attributes for %s source.'),
-            $this->tracker->getSource($sourceId)->getName());
-
-        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
-        $batchRunner->setTitle($title);
-        $batchRunner->setJobInfo([
-            $this->_(
-                'Refreshes the attributes for a token as stored in the source.'
-            ),
-            $this->_(
-                'Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'
-            ),
-        ]);
-        return $batchRunner->getResponse($this->request);
-    } // */
-
     protected function createModel(bool $detailed, string $action): DataReaderInterface
     {
         $model = $this->appointmentFilterModel;
