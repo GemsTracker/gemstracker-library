@@ -55,12 +55,6 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     protected TrackExportRunnerBatch $batch;
 
     /**
-     *
-     * @var \Gems\User\User
-     * /
-    protected $currentUser;
-
-    /**
      * The number of seconds to wait before the file download starts
      *
      * @var int
@@ -169,7 +163,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             $data['localfile']    = '...' . substr($localFilename, -30);
             $data['downloadname'] = $downloadName;
             ksort($data);
-            $this->auditLog->logChange($this->requestInfo, null, array_filter($data));
+            $this->auditLog->logChange($this->request, null, array_filter($data));
 
             $headers['Content-Type'] = "application/download";
             $headers['Content-Disposition'] = "attachment; filename=\"" . $downloadName . "\"";

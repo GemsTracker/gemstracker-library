@@ -136,6 +136,7 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
         parent::__construct($responder, $translate, $cache);
     }
 
+    /*
     public function checkFilterAction()
     {
         $this->configAccessor->extendBatchLoadTime();
@@ -160,7 +161,7 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
             ),
         ]);
         return $batchRunner->getResponse($this->request);
-    }
+    } // */
 
     protected function createModel(bool $detailed, string $action): DataReaderInterface
     {
