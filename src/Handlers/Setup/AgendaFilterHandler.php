@@ -14,9 +14,6 @@ namespace Gems\Handlers\Setup;
 use Gems\Agenda\Agenda;
 use Gems\Agenda\AppointmentFilterModel;
 use Gems\Agenda\Filter\AppointmentFilterInterface;
-use Gems\Batch\BatchRunner;
-use Gems\Batch\BatchRunnerLoader;
-use Gems\Config\ConfigAccessor;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Snippets\Agenda\ApplyFiltersInformation;
 use Gems\Snippets\Agenda\CalendarExampleTableSnippet;
@@ -27,7 +24,6 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\Tracker\Fields\FilterSearchFormSnippet;
-use Mezzio\Session\SessionInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Zalt\Base\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeInterface;
@@ -129,9 +125,7 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         CacheItemPoolInterface $cache,
         protected Agenda $agenda,
-        protected readonly AppointmentFilterModel $appointmentFilterModel,
-        protected readonly BatchRunnerLoader $batchRunnerLoader,
-        protected readonly ConfigAccessor $configAccessor,
+        protected readonly AppointmentFilterModel $appointmentFilterModel
     ) {
         parent::__construct($responder, $translate, $cache);
     }
