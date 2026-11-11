@@ -23,7 +23,7 @@ class TrackImportRunnerBatch extends TaskRunnerBatch
 
     public function getDownloadUrl()
     {
-        return UrlArrayAttribute::toUrlString($this->baseUrl + ['current_step' => $this->step]);
+        return UrlArrayAttribute::toUrlString($this->baseUrl + []);
     }
 
     public function getJsAttributes(): array
@@ -31,9 +31,9 @@ class TrackImportRunnerBatch extends TaskRunnerBatch
         $output = parent::getJsAttributes();
 
         $output[':restart-load'] = 'true';
-        $output['init-url']     = UrlArrayAttribute::toUrlString($this->baseUrl + ['current_step' => $this->step - 1, $this->progressParameterName => $this->progressParameterInitValue]);
-        $output['run-url']      = UrlArrayAttribute::toUrlString($this->baseUrl + ['current_step' => $this->step - 1, $this->progressParameterName => $this->progressParameterRunValue]);
-        $output['restart-url']  = UrlArrayAttribute::toUrlString($this->baseUrl + ['current_step' => 1]);
+        $output['init-url']     = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterInitValue]);
+        $output['run-url']      = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterRunValue]);
+        $output['restart-url']  = UrlArrayAttribute::toUrlString($this->baseUrl + []);
         $output['download-url'] = $this->getDownloadUrl();
 
         return $output;

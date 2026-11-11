@@ -64,6 +64,8 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
      */
     const ROUND_LEAVE      = -2;
 
+    protected int $importId;
+
     protected ?DataReaderInterface $importModel = null;
 
     protected ?ResponseInterface $response;
@@ -94,6 +96,8 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
 
         $this->cache = $cache;
+
+        $this->getSessionData();
         // $this->layoutAutoWidthFactor = 0;
     }
 
@@ -414,7 +418,7 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             $batch->autoStart   = false;
 
             // Keep the filename after $batch->getMessages(true) cleared the previous
-            $this->addMessage($batch->getMessages(true));
+            $this->addMessage($batch->getMessages());
             if ($this->nextDisabled) {
                 $element->pInfo($this->_('Import errors occurred!'));
             } else {
@@ -639,7 +643,7 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             }
         }
 
-        $this->session->set(__CLASS__ . '-' . $this->formData['importId'], $this->sessionData);
+        $this->saveSessionData();
     }
 
     /**
@@ -782,8 +786,8 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
 
     protected function getImportCheckBatch(): TrackImportRunnerBatch
     {
-        $batch = new TrackImportRunnerBatch('track_import_check' . $this->formData['importId'], $this->overloader, $this->session);
-
+        $batch = new TrackImportRunnerBatch('track_import_check' . $this->sessionData['importId'], $this->overloader, $this->session);
+        $batch->setImportId($this->sessionData['importId']);
         $import = $this->loadImportData();
 
         $batch->setVariable('import', $import);
@@ -860,7 +864,8 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
 
     protected function getImportCreateBatch(): TrackImportRunnerBatch
     {
-        $batch = new TrackImportRunnerBatch('track_import_create' . $this->formData['importId'], $this->overloader, $this->session);
+        $batch = new TrackImportRunnerBatch('track_import_create' . $this->sessionData['importId'], $this->overloader, $this->session);
+        $batch->setImportId($this->sessionData['importId']);
         $import = $this->loadImportData();
 
         $batch->setVariable('import', $import);
@@ -910,7 +915,8 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
 
     protected function getImportMergeBatch(): TrackImportRunnerBatch
     {
-        $batch = new TrackImportRunnerBatch('track_import_merge' . $this->formData['importId'], $this->overloader, $this->session);
+        $batch = new TrackImportRunnerBatch('track_import_merge' . $this->sessionData['importId'], $this->overloader, $this->session);
+        $batch->setImportId($this->sessionData['importId']);
         $import = $this->loadImportData();
 
         $batch->setVariable('import', $import);
@@ -975,6 +981,11 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         return $batch;
     }
 
+    public function getImportName(): string
+    {
+        return (new \ReflectionClass($this->requestInfo->getCurrentController()))->getShortName() . '_';
+    }
+
     /**
      * Returns an array with the allowed section names as keys and
      * as a value true when the field list is reset for every item
@@ -1014,11 +1025,59 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         return 4;
     }
 
+    public function isNextClicked(): bool
+    {
+        $result = parent::isNextClicked();
+        if ($result) {
+            $this->sessionData['currentStep'] = $this->currentStep + 1;
+            $this->saveSessionData();
+        }
+        return $result;
+    }
+
+    public function isPreviousClicked(): bool
+    {
+        $result = parent::isPreviousClicked();
+        if ($result && $this->currentStep > 1) {
+            $this->currentStep--;
+            $this->sessionData['currentStep'] = $this->currentStep;
+            $this->saveSessionData();
+        }
+        return $result;
+    }
+
+    public function isFinishedClicked(): bool
+    {
+        $result = parent::isFinishedClicked();
+        if ($result) {
+            $this->session->unset($this->getSessionName());
+        }
+        return $result;
+    }
+
+    protected function getSessionData(): array
+    {
+        $data = $this->session->get($this->getSessionName());
+        if (!isset($data['importId'])) {
+            $data['importId'] = mt_rand(10000,99999) . time();
+            $this->session->set($this->getSessionName(), $data);
+        }
+        $this->sessionData = $data;
+        $this->importId = $data['importId'];
+        $this->currentStep = $data['currentStep'] ?? 1;
+        return $this->sessionData;
+    }
+
+    protected function getSessionName(): string
+    {
+        return $this->getImportName() . 'sessionData';
+    }
+
     public function getTitleFor(int $step)
     {
         return sprintf(
             $this->_('%s track import. Step %d of %d.'),
-            $this->trackEngine->getTrackName(),
+            $this->trackEngine?->getTrackName() ?? $this->_('New'),
             $step,
             $this->getStepCount(),
         );
@@ -1035,7 +1094,6 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
 
         if ($this->requestInfo->isPost() && $model instanceof FullDataInterface) {
             $this->formData = $model->loadPostData($this->requestInfo->getRequestPostParams() + $this->formData, true);
-
         } else {
             // Assume that if formData is set it is the correct formData
             if (! $this->formData)  {
@@ -1043,20 +1101,21 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             }
         }
 
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+        if (!isset($this->formData[$this->stepFieldName]) && isset($queryParams[$this->stepFieldName])) {
+            $this->formData[$this->stepFieldName] = $queryParams[$this->stepFieldName];
+        }
+
         if (isset($this->formData['gtr_id_track']) && $this->formData['gtr_id_track']) {
             $this->trackEngine = $this->tracker->getTrackEngine($this->formData['gtr_id_track']);
         }
-        if (! (isset($this->formData['importId']) && $this->formData['importId'])) {
-            $this->formData['importId'] = mt_rand(10000,99999) . time();
-        }
-        $this->sessionData = $this->session->get(__CLASS__ . '-' . $this->formData['importId'], []);
 
         if (! (isset($this->sessionData['localfile']) && $this->sessionData['localfile'])) {
             $importDirectory = $this->configAccessor->getImportDirectory();
 
             $this->sessionData['localfile'] = File::createTemporaryIn(
                     $importDirectory,
-                    $this->requestInfo->getCurrentController() . '_'
+                (new \ReflectionClass($this->requestInfo->getCurrentController()))->getShortName() . '_'
                     );
         }
 
@@ -1170,6 +1229,11 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         return $this->sessionData['importData'];
     }
 
+    protected function saveSessionData(): void
+    {
+        $this->session->set($this->getSessionName(), $this->sessionData);
+    }
+
     /**
      * Set what to do when the form is 'finished'.
      *
@@ -1183,6 +1247,8 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         }
 
         $import = $this->loadImportData();
+
+        $this->session->unset($this->getSessionName());
 
         if (isset($import['trackId']) && $import['trackId']) {
             $this->afterSaveRouteUrl = $this->menuSnippetHelper->getRouteUrl('track-builder.track-maintenance.show', ['trackId' => $import['trackId']]);
