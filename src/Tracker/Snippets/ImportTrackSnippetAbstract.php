@@ -787,7 +787,6 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     protected function getImportCheckBatch(): TrackImportRunnerBatch
     {
         $batch = new TrackImportRunnerBatch('track_import_check' . $this->sessionData['importId'], $this->overloader, $this->session);
-        $batch->setImportId($this->sessionData['importId']);
         $import = $this->loadImportData();
 
         $batch->setVariable('import', $import);
@@ -865,7 +864,6 @@ class ImportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     protected function getImportCreateBatch(): TrackImportRunnerBatch
     {
         $batch = new TrackImportRunnerBatch('track_import_create' . $this->sessionData['importId'], $this->overloader, $this->session);
-        $batch->setImportId($this->sessionData['importId']);
         $import = $this->loadImportData();
 
         $batch->setVariable('import', $import);
