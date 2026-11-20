@@ -36,7 +36,7 @@ class BatchRunner
     {
         $queryParams = $request->getQueryParams();
 
-        if (isset($queryParams[$this->batch->progressParameterName]) && $queryParams[$this->batch->progressParameterName] == 'init') {
+        if (isset($queryParams[$this->batch->progressParameterName]) && $queryParams[$this->batch->progressParameterName] == $this->batch->progressParameterInitValue) {
             $progress = $this->batch->getProgress();
             $data = [
                 'count' => $progress->getCount(),

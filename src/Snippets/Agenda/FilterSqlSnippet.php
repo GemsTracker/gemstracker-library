@@ -21,23 +21,11 @@ use Gems\Agenda\Filter\AppointmentFilterInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 18-Dec-2019 12:01:58
  */
-class FilterSqlSnippet extends \MUtil\Snippets\SnippetAbstract
+class FilterSqlSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\Agenda\AppointmentFilterInterface
-     */
-    protected $calSearchFilter;
+    protected ?AppointmentFilterInterface $calSearchFilter = null;
 
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract|null $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(?\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         $html = $this->getHtmlSequence();
         $html->h4($this->_('Episode SQL'));
