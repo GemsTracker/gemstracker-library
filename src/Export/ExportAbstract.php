@@ -324,6 +324,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Target\TargetAbstract impleme
                 }
                 $view = $viewRenderer->view;
 
+                // @phpstan-ignore argument.type
                 $result = $result->render($view);
             }
         }

@@ -421,7 +421,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
                     if ($element->getLabel()) {
                         $labelDecor = $element->getDecorator('Label');
 
-                        if ($labelDecor) {
+                        if ($labelDecor instanceof \Zend_Form_Decorator_Label) {
                             $appendLabel = \Zend_Form_Decorator_Abstract::APPEND === $labelDecor->getPlacement();
 
                             if (! $appendLabel) {

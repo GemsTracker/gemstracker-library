@@ -30,7 +30,7 @@ class FilterSqlSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
         $html = $this->getHtmlSequence();
         $html->h4($this->_('Episode SQL'));
         $html->pre($this->calSearchFilter->getSqlEpisodeWhere());
-        $html->h4($this->_('Appointment SQL'));
+        $html-> h4($this->_('Appointment SQL'));
         $html->pre($this->calSearchFilter->getSqlAppointmentsWhere());
 
         return $html;

@@ -174,7 +174,7 @@ class TableForm extends \Gems\Form
      * Get a ViewHelper or ZendX decorator to add in front of the decorator chain
      *
      * @param \Zend_Form_Element $element
-     * @return null|\Zend_Form_Decorator_Abstract
+     * @return null|\Zend_Form_Decorator_Interface
      */
     private function _getImportantDecorator($element)
     {

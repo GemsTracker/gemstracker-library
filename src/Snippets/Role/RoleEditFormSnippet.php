@@ -201,7 +201,7 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         //Always add nologin privilege to 'nologin' role
         if (isset($this->formData['grl_name']) && $this->formData['grl_name'] == 'nologin') {
             $this->formData['grl_privileges'][] = 'pr.nologin';
-        } elseif (isset($this->formData['grl_name']) && $this->formData['grl_name'] !== 'nologin') {
+        } elseif (isset($this->formData['grl_name']) && $this->formData['grl_name'] != 'nologin') {
             //Assign islogin to all other roles
             $this->formData['grl_privileges'][] = 'pr.islogin';
         }

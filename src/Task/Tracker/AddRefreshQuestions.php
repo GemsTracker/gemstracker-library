@@ -102,6 +102,7 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
             }
             $view = $viewRenderer->view;
 
+            // @phpstan-ignore argument.type
             $result = $result->render($view);
         }
 
