@@ -353,7 +353,7 @@ class Agenda
         $select->where(['gap_id_appointment' => $appointmentId]);
 
         $data = $this->resultFetcher->fetchRow($select);
-        return $this->maskRepository->applyMaskToRow($data);
+        return $this->maskRepository->applyMaskToRow($data ?? []);
     }
 
     /**
