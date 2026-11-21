@@ -120,6 +120,11 @@ class ConfigAccessor
         return $this->config['ldap'] ?? [];
     }
 
+    public function getImportDirectory(): string
+    {
+        return $this->config['import']['dirs']['success'] ?? 'data/uploads/success';
+    }
+
     /**
      * @return array<string, string> locale string => locale description
      */
