@@ -747,7 +747,7 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
     protected function getRecursiveDirectoryIterator($dir)
     {
         return new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($dir, \FilesystemIterator::CURRENT_AS_FILEINFO),
+                new \RecursiveDirectoryIterator($dir, \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::SKIP_DOTS),
                 \RecursiveIteratorIterator::SELF_FIRST,
                 \RecursiveIteratorIterator::CATCH_GET_CHILD
                 );

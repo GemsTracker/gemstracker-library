@@ -83,7 +83,7 @@ class RExport extends ExportAbstract
         
         $labels = $this->getLabeledColumns();
         
-        fputcsv($file, $labels, $this->delimiter, '"');
+        fputcsv($file, $labels, $this->delimiter, '"', escape: '\\');
 
         fclose($file);
     }
@@ -107,7 +107,7 @@ class RExport extends ExportAbstract
                 $changed = true;
             }
         }
-        fputcsv($file, $exportRow, $this->delimiter, '"');
+        fputcsv($file, $exportRow, $this->delimiter, '"', escape: '\\');
         if ($changed) {
             if ($this->batch) {
                 $this->batch->setVariable('model', $this->getModel());

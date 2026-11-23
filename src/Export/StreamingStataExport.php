@@ -468,7 +468,7 @@ class StreamingStataExport extends ExportAbstract
 
         $writer->startElement('variable_labels');
             foreach($columnHeaders as $colname => $columnHeader) {
-                $cleanLabel = utf8_encode(strip_tags(html_entity_decode($columnHeader['label'])));
+                $cleanLabel = mb_convert_encoding(strip_tags(html_entity_decode($columnHeader['label'])), 'UTF-8', 'ISO-8859-1');
 
                 $writer->startElement('vlabel');
                     $writer->writeAttribute('varname', $colname);

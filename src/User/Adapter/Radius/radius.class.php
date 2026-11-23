@@ -413,7 +413,7 @@ class Radius
             $previous_result = '';
             for ($xor_loop = 0; $xor_loop <= 15; $xor_loop++)
             {
-                $value1 = ord(substr($padded_password, ($full_loop * 16) + $xor_loop, 1));
+                $value1 = ord(substr($padded_password, ($full_loop * 16) + $xor_loop, 1)[0]);
                 $value2 = hexdec(substr($xor_value, 2*$xor_loop, 2));
                 $xor_result = $value1 ^ $value2;
                 $previous_result .= chr($xor_result);
@@ -579,7 +579,7 @@ class Radius
         $attribute_index = -1;
         for ($attributes_loop = 0; $attributes_loop < count($this->_attributes_to_send); $attributes_loop++)
         {
-            if ($type == ord(substr($this->_attributes_to_send[$attributes_loop], 0, 1)))
+            if ($type == ord(substr($this->_attributes_to_send[$attributes_loop], 0, 1)[0]))
             {
                 $attribute_index = $attributes_loop;
                 break;
@@ -643,10 +643,10 @@ class Radius
                     $attribute_value = $attribute_raw_value;
                     break;
                 case 'A': // Address, 32 bit value, most significant octet first.
-                    $attribute_value = ord(substr($attribute_raw_value, 0, 1)).'.'.ord(substr($attribute_raw_value, 1, 1)).'.'.ord(substr($attribute_raw_value, 2, 1)).'.'.ord(substr($attribute_raw_value, 3, 1));
+                    $attribute_value = ord(substr($attribute_raw_value, 0, 1)[0]).'.'.ord(substr($attribute_raw_value, 1, 1)[0]).'.'.ord(substr($attribute_raw_value, 2, 1)[0]).'.'.ord(substr($attribute_raw_value, 3, 1)[0]);
                     break;
                 case 'I': // Integer, 32 bit unsigned value, most significant octet first.
-                    $attribute_value = (ord(substr($attribute_raw_value, 0, 1))*256*256*256)+(ord(substr($attribute_raw_value, 1, 1))*256*256)+(ord(substr($attribute_raw_value, 2, 1))*256)+ord(substr($attribute_raw_value, 3, 1));
+                    $attribute_value = (ord(substr($attribute_raw_value, 0, 1)[0])*256*256*256)+(ord(substr($attribute_raw_value, 1, 1)[0])*256*256)+(ord(substr($attribute_raw_value, 2, 1)[0])*256)+ord(substr($attribute_raw_value, 3, 1)[0]);
                     break;
                 case 'D': // Time, 32 bit unsigned value, most significant octet first -- seconds since 00:00:00 UTC, January 1, 1970. (not used in this RFC)
                     $attribute_value = NULL;
@@ -666,12 +666,12 @@ class Radius
     {
         $result = array();
         $offset_in_raw = 0;
-        $vendor_id = (ord(substr($vendor_specific_raw_value, 0, 1))*256*256*256)+(ord(substr($vendor_specific_raw_value, 1, 1))*256*256)+(ord(substr($vendor_specific_raw_value, 2, 1))*256)+ord(substr($vendor_specific_raw_value, 3, 1));
+        $vendor_id = (ord(substr($vendor_specific_raw_value, 0, 1)[0])*256*256*256)+(ord(substr($vendor_specific_raw_value, 1, 1)[0])*256*256)+(ord(substr($vendor_specific_raw_value, 2, 1)[0])*256)+ord(substr($vendor_specific_raw_value, 3, 1)[0]);
         $offset_in_raw += 4;
         while ($offset_in_raw < strlen($vendor_specific_raw_value))
         {
-            $vendor_type = (ord(substr($vendor_specific_raw_value, 0+$offset_in_raw, 1)));
-            $vendor_length = (ord(substr($vendor_specific_raw_value, 1+$offset_in_raw, 1)));
+            $vendor_type = (ord(substr($vendor_specific_raw_value, 0+$offset_in_raw, 1)[0]));
+            $vendor_length = (ord(substr($vendor_specific_raw_value, 1+$offset_in_raw, 1)[0]));
             $attribute_specific = substr($vendor_specific_raw_value, 2+$offset_in_raw, $vendor_length);
             $result[] = array($vendor_id, $vendor_type, $attribute_specific);
             $offset_in_raw += ($vendor_length);
@@ -761,8 +761,8 @@ class Radius
                 $readable_attributes = '';
                 foreach($this->_attributes_to_send as $one_attribute_to_send)
                 {
-                    $attribute_info = $this->GetAttributesInfo(ord(substr($one_attribute_to_send,0,1)));
-                    $this->DebugInfo('Attribute '.ord(substr($one_attribute_to_send,0,1)).' ('.$attribute_info[0].'), length '.(ord(substr($one_attribute_to_send,1,1))-2).', format '.$attribute_info[1].', value <em>'.$this->DecodeAttribute(substr($one_attribute_to_send,2), ord(substr($one_attribute_to_send,0,1))).'</em>');
+                    $attribute_info = $this->GetAttributesInfo(ord(substr($one_attribute_to_send,0,1)[0]));
+                    $this->DebugInfo('Attribute '.ord(substr($one_attribute_to_send,0,1)[0]).' ('.$attribute_info[0].'), length '.(ord(substr($one_attribute_to_send,1,1)[0])-2).', format '.$attribute_info[1].', value <em>'.$this->DecodeAttribute(substr($one_attribute_to_send,2), ord(substr($one_attribute_to_send,0,1)[0])).'</em>');
                 }
             }
             $read_socket_array   = array($_socket_to_server);
@@ -793,20 +793,20 @@ class Radius
             }
         }
 
-        $this->_radius_packet_received = intval(ord(substr($received_packet, 0, 1)));
+        $this->_radius_packet_received = intval(ord(substr($received_packet, 0, 1)[0]));
 
         $this->DebugInfo('<b>Packet type '.$this->_radius_packet_received.' ('.$this->GetRadiusPacketInfo($this->_radius_packet_received).')'.' received</b>');
 
         if ($this->_radius_packet_received > 0)
         {
-            $this->_identifier_received = intval(ord(substr($received_packet, 1, 1)));
-            $packet_length = (intval(ord(substr($received_packet, 2, 1))) * 256) + (intval(ord(substr($received_packet, 3, 1))));
+            $this->_identifier_received = intval(ord(substr($received_packet, 1, 1)[0]));
+            $packet_length = (intval(ord(substr($received_packet, 2, 1)[0])) * 256) + (intval(ord(substr($received_packet, 3, 1)[0])));
             $this->_response_authenticator = substr($received_packet, 4, 16);
             $attributes_content = substr($received_packet, 20, ($packet_length - 4 - 16));
             while (strlen($attributes_content) > 2)
             {
-                $attribute_type = intval(ord(substr($attributes_content,0,1)));
-                $attribute_length = intval(ord(substr($attributes_content,1,1)));
+                $attribute_type = intval(ord(substr($attributes_content,0,1)[0]));
+                $attribute_length = intval(ord(substr($attributes_content,1,1)[0]));
                 $attribute_raw_value = substr($attributes_content,2,$attribute_length-2);
                 $attributes_content = substr($attributes_content, $attribute_length);
 
