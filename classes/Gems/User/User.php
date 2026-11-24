@@ -1487,11 +1487,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * @return string or null
+     * @return array or null
      */
-    public function getSessionPatientNr()
+    public function getSessionPatientNrs()
     {
-        return $this->_getVar('current_user_patNr', null);
+        return $this->_getVar('current_user_patNrs', null);
     }
 
     /**
@@ -2384,7 +2384,13 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function setSessionPatientNr($patientNr, $orgId)
     {
-        $this->_setVar('current_user_patNr', $patientNr);
+        $patNrs = $this->_getVar('current_user_patNrs');
+        if (! is_array($patNrs)) {
+            $patNrs = [];
+        }
+        $patNrs[$patientNr] = $patientNr;
+
+        $this->_setVar('current_user_patNrs', $patNrs);
         $this->_setVar('current_user_orgId', $orgId);
 
         return $this;

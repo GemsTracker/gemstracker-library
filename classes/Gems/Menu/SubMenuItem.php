@@ -646,8 +646,11 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
             $source[$key] = $value;
         }
         if ($this->_hiddenOrgId) {
-            if ($this->currentUser->getSessionPatientNr() && $this->currentUser->getSessionOrganizionId()) {
-                $request->setParam(\MUtil_Model::REQUEST_ID1, $this->currentUser->getSessionPatientNr());
+            $patNrs = $this->currentUser->getSessionPatientNrs();
+            if ($patNrs && $this->currentUser->getSessionOrganizionId()) {
+                if (! isset($patNrs[$request->getParam(\MUtil_Model::REQUEST_ID1)])) {
+                    $request->setParam(\MUtil_Model::REQUEST_ID1, reset($patNrs));
+                }
                 $request->setParam(\MUtil_Model::REQUEST_ID2, $this->currentUser->getSessionOrganizionId());
             } elseif ($patientId = $request->getParam(\MUtil_Model::REQUEST_ID)) {
                 $request->setParam(\MUtil_Model::REQUEST_ID1, $patientId);

@@ -240,6 +240,17 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
         $embeddedUserData = $embeddedUser->getEmbedderData();
         $redirector       = $embeddedUserData->getRedirector();
 
+        // Save other logged in patient numbers
+        if ($deferredUser->getUserId() === $this->currentUser->getUserId()) {
+            $patNrs = $this->currentUser->getSessionPatientNrs();
+           if (is_array($patNrs)) {
+               $orgId  = $this->currentUser->getSessionOrganizionId();
+               foreach ($patNrs as $patNr) {
+                    $deferredUser->setSessionPatientNr($patNr, $orgId);
+               }
+            }
+        }
+
         if ($redirector instanceof RedirectAbstract) {
             $redirector->answerRegistryRequest('request', $this->getRequest());
         }
