@@ -153,22 +153,20 @@ class SeedRepository extends MigrationRepositoryAbstract
     protected function getKeyFilter(Adapter $adapter, $tableName, $row): ?Predicate
     {
         $keysets = $this->getTableKeysets($adapter, $tableName);
-        $filter = [];
+        $filter = new Predicate();
 
-        // Check seed for all keys
         foreach($keysets as $keys) {
+            $keyset = new Predicate();
             foreach($keys as $key) {
-                if (isset($row[$key])) {
-                    $filter[$key] = new Expression("$key = ?", $row[$key]);
+                if (!isset($row[$key])) {
+                    continue 2; // incomplete key, skip!
                 }
+                $keyset->equalTo($key, $row[$key]);
             }
-        }
-        // print_r($filter);
-        if ($filter) {
-            return new Predicate($filter, Predicate::COMBINED_BY_OR);
+            $filter->orPredicate($keyset);
         }
 
-        return null;
+        return count($filter) ? $filter : null;
     }
 
     protected function getTableKeysets(Adapter $adapter, string $tableName): array
