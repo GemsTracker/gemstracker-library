@@ -81,7 +81,9 @@ class LimeSurvey3m00FieldMap
         protected TranslatorInterface $translate,
         protected string $tablePrefix,
         protected HelperAdapter $cache,
-        protected int $sourceId
+        protected int $sourceId,
+        /** @var class-string<LimeSurvey3m00Database> */
+        protected string $databaseClass = LimeSurvey3m00Database::class,
     ) {
         $this->lsResultFetcher = new ResultFetcher($lsAdapter);
     }
@@ -595,7 +597,7 @@ class LimeSurvey3m00FieldMap
      */
     protected function _getSurveysTableName(): string
     {
-        return $this->tablePrefix . LimeSurvey3m00Database::SURVEYS_TABLE;
+        return $this->tablePrefix . $this->databaseClass::SURVEYS_TABLE;
     }
 
     /**
@@ -605,7 +607,7 @@ class LimeSurvey3m00FieldMap
      */
     protected function _getSurveyTableName(): string
     {
-        return $this->tablePrefix . LimeSurvey3m00Database::SURVEY_TABLE . $this->sourceSurveyId;
+        return $this->tablePrefix . $this->databaseClass::SURVEY_TABLE . $this->sourceSurveyId;
     }
 
     /**
@@ -615,7 +617,7 @@ class LimeSurvey3m00FieldMap
      */
     protected function _getTokenTableName(): string
     {
-        return $this->tablePrefix . LimeSurvey3m00Database::TOKEN_TABLE . $this->sourceSurveyId;
+        return $this->tablePrefix . $this->databaseClass::TOKEN_TABLE . $this->sourceSurveyId;
     }
 
     /**

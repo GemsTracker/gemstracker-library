@@ -17,7 +17,7 @@ class LimeSurvey5m00FieldMap extends LimeSurvey3m00FieldMap
      */
     protected function _getAnswersTranslateTableName(): string
     {
-        return $this->tablePrefix . self::ANSWERS_TRANSLATE_TABLE;
+        return $this->tablePrefix . static::ANSWERS_TRANSLATE_TABLE;
     }
 
     /**
@@ -132,6 +132,6 @@ class LimeSurvey5m00FieldMap extends LimeSurvey3m00FieldMap
      */
     protected function _getQuestionsTranslateTableName(): string
     {
-        return $this->tablePrefix . self::QUESTION_TRANSLATE_TABLE;
+        return $this->tablePrefix . static::QUESTION_TRANSLATE_TABLE;
     }
 }
