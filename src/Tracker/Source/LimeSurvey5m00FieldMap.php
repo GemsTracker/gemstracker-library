@@ -65,7 +65,7 @@ class LimeSurvey5m00FieldMap extends LimeSurvey3m00FieldMap
             SELECT q.sid, q.type, q.qid, q.gid, qt.question, q.title, qt.help,
                 q.other, q.question_order,
                 g.group_order, gt.group_name, gt.description,
-                sq.title AS sq_title, sq.question_order, sqt.question AS sq_question, sq.scale_id,
+                sq.qid AS sq_qid, sq.title AS sq_title, sq.question_order, sqt.question AS sq_question, sq.scale_id,
                 at.value AS hidden,
                 CASE WHEN q.relevance IS NULL OR q.relevance = '' OR q.relevance = 1 OR NOT EXISTS (SELECT * FROM $cTable AS cn WHERE cn.qid = q.qid) THEN 0 ELSE 1 END AS hasConditon,
                 q.relevance AS relevance,
