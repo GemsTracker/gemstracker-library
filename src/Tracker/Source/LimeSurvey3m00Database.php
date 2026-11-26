@@ -337,7 +337,8 @@ class LimeSurvey3m00Database extends SourceAbstract
                     $this->translate,
                     $this->addDatabasePrefix(''),
                     $this->cache,
-                    $this->getId()
+                    $this->getId(),
+                    static::class,
             );
         }
 
@@ -445,7 +446,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected function _getSurveyLanguagesTableName(): string
     {
-        return $this->addDatabasePrefix(self::SURVEYS_LANG_TABLE, false);
+        return $this->addDatabasePrefix(static::SURVEYS_LANG_TABLE, false);
     }
 
     /**
@@ -456,7 +457,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected function _getSurveyTableName(int|string $sourceSurveyId): string
     {
-        return $this->addDatabasePrefix(self::SURVEY_TABLE . $sourceSurveyId, false);
+        return $this->addDatabasePrefix(static::SURVEY_TABLE . $sourceSurveyId, false);
     }
 
     /**
@@ -466,7 +467,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected function _getSurveysTableName(): string
     {
-        return $this->addDatabasePrefix(self::SURVEYS_TABLE, false);
+        return $this->addDatabasePrefix(static::SURVEYS_TABLE, false);
     }
 
     /**
@@ -494,7 +495,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     protected function _getTokenTableName(int|string $sourceSurveyId): string
     {
-        return $this->addDatabasePrefix(self::TOKEN_TABLE . $sourceSurveyId, false);
+        return $this->addDatabasePrefix(static::TOKEN_TABLE . $sourceSurveyId, false);
     }
 
     /**
@@ -531,7 +532,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         $sourceDb  = $this->getSourceDatabase();
         $metadata = Factory::createSourceFromAdapter($sourceDb);
         $tables    = array_map('strtolower', $metadata->getTableNames());
-        $tableName = $this->addDatabasePrefix(self::SURVEYS_TABLE, false); // Get name without database prefix.
+        $tableName = $this->addDatabasePrefix(static::SURVEYS_TABLE, false); // Get name without database prefix.
 
         $active = in_array($tableName, $tables);
 
@@ -858,7 +859,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         if ($token->isCompleted()) {
             $completionTime = $token->getCompletionTime();
             if ($completionTime instanceof DateTimeInterface) {
-                $values['completed'] = $completionTime->format(self::LS_DB_COMPLETION_FORMAT);
+                $values['completed'] = $completionTime->format(static::LS_DB_COMPLETION_FORMAT);
             }
         }
 
@@ -955,11 +956,11 @@ class LimeSurvey3m00Database extends SourceAbstract
             if ($answers[$fieldName] instanceof DateTimeInterface) {
                 return $answers[$fieldName];
             }
-            $output = DateTimeImmutable::createFromFormat(self::LS_DB_DATETIME_FORMAT, $answers[$fieldName]);
+            $output = DateTimeImmutable::createFromFormat(static::LS_DB_DATETIME_FORMAT, $answers[$fieldName]);
             if ($output instanceof DateTimeInterface) {
                 return $output;
             }
-            $output = DateTimeImmutable::createFromFormat(self::LS_DB_DATE_FORMAT, $answers[$fieldName]);
+            $output = DateTimeImmutable::createFromFormat(static::LS_DB_DATE_FORMAT, $answers[$fieldName]);
             if ($output instanceof DateTimeInterface) {
                 return $output;
             }
@@ -1002,7 +1003,7 @@ class LimeSurvey3m00Database extends SourceAbstract
                 $submitDate = $this->getAnswerDateTime('submitdate', $token, $surveyId, $sourceSurveyId);
 
             } else {
-                if ($token->cacheHas(self::CACHE_TOKEN_INFO)) {
+                if ($token->cacheHas(static::CACHE_TOKEN_INFO)) {
                     // Use token info when loaded to prevent extra query if not needed
                     $tokenInfo = $this->getTokenInfo($token, $surveyId, $sourceSurveyId);
 
@@ -1023,7 +1024,7 @@ class LimeSurvey3m00Database extends SourceAbstract
                     $submitDate = $lsResultFetcher->fetchOne("SELECT submitdate FROM $lsSurvey WHERE token = ? LIMIT 1", [$tokenId]);
 
                     if ($submitDate) {
-                        $submitDate = DateTimeImmutable::createFromFormat(self::LS_DB_DATETIME_FORMAT, $submitDate);
+                        $submitDate = DateTimeImmutable::createFromFormat(static::LS_DB_DATETIME_FORMAT, $submitDate);
                         if (! $submitDate) {
                             $submitDate = false; // Null does not trigger cacheHas()
                         }
@@ -1401,7 +1402,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      */
     public function getTokenInfo(Token $token, int $surveyId, int|string|null $sourceSurveyId, array|null $fields = null): array|null
     {
-        if (! $token->cacheHas(self::CACHE_TOKEN_INFO)) {
+        if (! $token->cacheHas(static::CACHE_TOKEN_INFO)) {
             if (null === $sourceSurveyId) {
                 $sourceSurveyId = $this->_getSid($surveyId);
             }
@@ -1420,9 +1421,9 @@ class LimeSurvey3m00Database extends SourceAbstract
                 $result = null;
             }
 
-            $token->cacheSet(self::CACHE_TOKEN_INFO, $result);
+            $token->cacheSet(static::CACHE_TOKEN_INFO, $result);
         } else {
-            $result = $token->cacheGet(self::CACHE_TOKEN_INFO);
+            $result = $token->cacheGet(static::CACHE_TOKEN_INFO);
         }
 
         if ($fields !== null) $result = array_intersect_key((array) $result, array_flip($fields));
@@ -1487,8 +1488,8 @@ class LimeSurvey3m00Database extends SourceAbstract
         }
 
         $values = [
-            'validfrom'  => $lsFrom->format(self::LS_DB_DATETIME_FORMAT),
-            'validuntil' => $lsUntil->format(self::LS_DB_DATETIME_FORMAT)
+            'validfrom'  => $lsFrom->format(static::LS_DB_DATETIME_FORMAT),
+            'validuntil' => $lsUntil->format(static::LS_DB_DATETIME_FORMAT)
         ];
 
         return $values;
@@ -1600,8 +1601,8 @@ class LimeSurvey3m00Database extends SourceAbstract
         $current   = new Expression('CURRENT_TIMESTAMP');
 
         if ($completionTime instanceof DateTimeInterface) {
-            $answers['submitdate']  = $completionTime->format(self::LS_DB_DATETIME_FORMAT);
-            $tokenData['completed'] = $completionTime->format(self::LS_DB_COMPLETION_FORMAT);
+            $answers['submitdate']  = $completionTime->format(static::LS_DB_DATETIME_FORMAT);
+            $tokenData['completed'] = $completionTime->format(static::LS_DB_COMPLETION_FORMAT);
         } else {
             $answers['submitdate']  = null;
             $tokenData['completed'] = 'N';
