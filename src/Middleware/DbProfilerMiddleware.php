@@ -2,6 +2,7 @@
 
 namespace Gems\Middleware;
 
+use Gems\Helper\Env;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Profiler\Profiler;
 use Psr\Container\ContainerInterface;
@@ -19,10 +20,7 @@ class DbProfilerMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
-
-        $test = $this->container->get(Adapter::class);
-
-        if (isset($_ENV['DB_PROFILE']) && $_ENV['DB_PROFILE'] === '1') {
+        if (Env::get('DB_PROFILE') === '1') {
             /**
              * @var Adapter $dbAdapter
              */
