@@ -267,18 +267,22 @@ class LimeSurvey3m00FieldMap
 
                 case 'R':     //Ranking question
                     //Check the needed slots in attributes table
-                    $possibleAnswers = count($this->_getMultiOptions($row));
-                    $maxAnswers      = $this->_getQuestionAttribute($row['qid'], 'max_answers', $possibleAnswers);
-                    $slots           = min($maxAnswers, $possibleAnswers);
+                    $possibleAnswers = count($this->_getMultiOptions($row) ?: []);
+                    $slots = $this->getRankingSlotCount($row, $possibleAnswers);
 
                     for ($a = 1; $a <= $slots; $a++) {
                         $row1 = $row;
                         $row1['code'] = $row['title'] . '_' . $a;
-                        $row1['sgq'] = $row['sgq'] . $a;
+                        $row1['sgq'] = $this->getRankingFieldName($row, $a);
                         $row1['sq_title'] = $a;
                         $row1['sq_question'] = sprintf($this->translate->_('Rank %d'), $a);
                         $map[$row1['sgq']] = $row1;
                     }
+                    // LS7+: ranking items in ls7 are subitems, and can be skipped. LS <7 has no such rows for R questions
+                    while($i + 1 < $rowscount && $rows[$i +1]['qid'] == $row['qid']) {
+                        $i++;
+                    }
+
                     break;
 
                 case 'M':    //Multiple options with other
@@ -1032,6 +1036,18 @@ class LimeSurvey3m00FieldMap
         }
 
         return $results;
+    }
+
+    protected function getRankingFieldName(array $fieldInfo, int $slot): string
+    {
+        return $fieldInfo['sgq'] . $slot;
+    }
+
+    protected function getRankingSlotCount(array $fieldInfo, int $possibleAnswers): int
+    {
+        $maxAnswers = (int) $this->_getQuestionAttribute($fieldInfo['qid'], 'max_answers', $possibleAnswers);
+
+        return min($maxAnswers, $possibleAnswers);
     }
 
     /**
