@@ -854,7 +854,7 @@ class LimeSurvey3m00FieldMap
 
     protected function getFieldTableDataType($fieldname)
     {
-        if (isset($this->tableMetaData)) {
+        if (!isset($this->tableMetaData)) {
             $this->loadTableMetaData();
         }
 
