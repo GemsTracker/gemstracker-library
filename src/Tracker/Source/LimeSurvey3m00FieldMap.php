@@ -44,6 +44,10 @@ class LimeSurvey3m00FieldMap
     public const GROUPS_TABLE       = 'groups';
     public const QUESTIONS_TABLE    = 'questions';
 
+    public const QUESTION_COMMENT_FIELD_SUFFIX = 'comment';
+
+    public const QUESTION_OTHER_FIELD_SUFFIX = 'other';
+
     /**
      * Internal type, used for startdate, submitdate, datestamp fields
      */
@@ -232,10 +236,9 @@ class LimeSurvey3m00FieldMap
         $rows = $this->getQuestionMapRows();
 
         $rowscount = count($rows);
-        foreach($rows as &$row) {
-            $row['sgq'] = $row['sid'] . 'X' . $row['gid'] . 'X' . $row['qid'];
+        foreach($rows as $key=>$row) {
+            $rows[$key]['sgq'] = $this->getBaseSurveyQuestionFieldName($row);
         }
-        unset($row);    // To prevent strange error
 
         $map = [];
         for ($i = 0; $i < $rowscount; $i++) {
@@ -249,14 +252,14 @@ class LimeSurvey3m00FieldMap
                 case '1':        //Dual scale
                     //Check scale header in attributes table
                     $row1 = $row;
-                    $row1['sgq'] .= $row['sq_title'] . '#0';
+                    $row1['sgq'] .= $this->getSurveySubQuestionFieldPart($row) . '#0';
                     $row1['code'] = $row['title'] . '_' . $row['sq_title'] . '#0';
                     $row1['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerA', 'scale 1');
                     $map[$row1['sgq']] = $row1;
 
                     $row2 = $row;
                     $row2['scale_id'] = 1;
-                    $row2['sgq'] .= $row['sq_title'] . '#1';
+                    $row2['sgq'] .= $this->getSurveySubQuestionFieldPart($row) . '#1';
                     $row2['code'] = $row['title'] . '_' . $row['sq_title'] . '#1';
                     $row2['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerB', 'scale 2');
                     $map[$row2['sgq']] = $row2;
@@ -283,7 +286,9 @@ class LimeSurvey3m00FieldMap
                 case 'P':    //Multiple options with other and comment
                     do {
                         $row = $rows[$i];
-                        $row['sgq'] .= $row['sq_title'];
+                        if (!is_null($row['sq_qid'])) {
+                            $row['sgq'] .= $this->getSurveySubQuestionFieldPart($row);
+                        }
                         if ($rows[$i]['type'] === 'O') {    // List, only one answer don't add _
                             $row['code'] = $row['title'];
                         } else {
@@ -292,7 +297,7 @@ class LimeSurvey3m00FieldMap
                         $map[$row['sgq']] = $row;
                         $row1 = $row;
                         if ($row['type'] !== 'M') {
-                            $row1['sgq'] .= 'comment';
+                            $row1['sgq'] .= static::QUESTION_COMMENT_FIELD_SUFFIX;
                             $row1['code'] .= 'comment';
                             $row1['sq_title'] .= 'comment';
                             $row1['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
@@ -304,7 +309,7 @@ class LimeSurvey3m00FieldMap
                     $i--;
                     if ($other) {
                         $row = $rows[$i];
-                        $row['sgq'] .= 'other';
+                        $row['sgq'] .= static::QUESTION_OTHER_FIELD_SUFFIX;
                         $row['sq_title'] = 'other';
                         $row['code'] = $row['title'] . '_' . $row['sq_title'];
                         $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
@@ -334,7 +339,8 @@ class LimeSurvey3m00FieldMap
                     do {
                         foreach($tmprow as $row2) {
                             $row1 = $rows[$i];
-                            $row1['sgq'] .= $row1['sq_title'] . '_' . $row2['sq_title'];
+
+                            $row1['sgq'] .= $this->getSurveyDualSubQuestionFieldPart($row1, $row2);
                             $row1['code'] = $row1['title']. '_' .$row1['sq_title'] . '_' . $row2['sq_title'];
                             $row1['sq_question1'] = $row2['sq_question'];
                             $map[$row1['sgq']] = $row1;
@@ -362,12 +368,12 @@ class LimeSurvey3m00FieldMap
                 default:
                     $row['code'] = $row['title'];
                     if (!is_null($row['sq_title'])) {
-                        $row['sgq'] .= $row['sq_title'];
+                        $row['sgq'] .= $this->getSurveySubQuestionFieldPart($row);
                         $row['code'] .= '_' . $row['sq_title'];
                     }
                     $map[$row['sgq']] = $row;
                     if ($other) {
-                        $row['sgq'] .= 'other';
+                        $row['sgq'] .= static::QUESTION_OTHER_FIELD_SUFFIX;
                         $row['code'] .= 'other';
                         $row['sq_title'] = 'other';
                         $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
@@ -825,6 +831,21 @@ class LimeSurvey3m00FieldMap
         }
     }
 
+    protected function getBaseSurveyQuestionFieldName(array $fieldInfo): string
+    {
+        return $fieldInfo['sid'] . 'X' . $fieldInfo['gid'] . 'X' . $fieldInfo['qid'];
+    }
+
+    protected function getSurveySubQuestionFieldPart(array $fieldInfo): string
+    {
+        return $fieldInfo['sq_title'];
+    }
+
+    protected function getSurveyDualSubQuestionFieldPart(array $fieldInfo1, array $fieldInfo2): string
+    {
+        return $fieldInfo1['sq_title'] . '_' . $fieldInfo2['sq_title'];
+    }
+
     protected function getDateFormats($fieldname, $type): array
     {
         $tmpres = [];
@@ -928,7 +949,7 @@ class LimeSurvey3m00FieldMap
                     $tmpres['answers'] = ['']; // Empty array prevents "n/a" display
 
                     $parent = $tmpres;
-                    $parent['id'] = $field['sid'] . 'X' . $field['gid'] . 'X' . $field['qid'];
+                    $parent['id'] = $this->getBaseSurveyQuestionFieldName($field);
                     $parent['code'] = $field['title'];
 
                     // Add non answered question for grouping
