@@ -92,6 +92,7 @@ class Tracker implements TrackerInterface
     protected array $_sourceClasses = [
         'LimeSurvey3m00Database' => 'Lime Survey 3.00 DB',
         'LimeSurvey5m00Database' => 'Lime Survey 5.00 DB',
+        'LimeSurvey7m00Database' => 'Lime Survey 7.00 DB',
         'LimeSurvey3m00SharedSource' => 'Shared Lime Survey 3.00 DB',
         'LimeSurvey5m00SharedSource' => 'Shared Lime Survey 5.00 DB',
     ];
