@@ -6,6 +6,12 @@ namespace Gems\Tracker\Source;
 class LimeSurvey7m00Database extends LimeSurvey3m00Database
 {
     /**
+     *
+     * @var string class name for creating field maps
+     */
+    protected string $fieldMapClass = LimeSurvey7m00FieldMap::class;
+
+    /**
      * @var string[] metadata fields that are included in a survey table
      */
     public static array $metaFields = [
